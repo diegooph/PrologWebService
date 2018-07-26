@@ -26,39 +26,35 @@ public class Durations {
         return formatDuration(duration.toMillis(), format);
     }
 
-    public static Duration getSumOfHoursInRangeOnDays(ZoneId zoneId,
-                                                      LocalDateTime dateTimeFrom,
+    public static Duration getSumOfHoursInRangeOnDays(LocalDateTime dateTimeFrom,
                                                       LocalDateTime dateTimeTo,
                                                       TimeRange timeRange) {
-        return getDurationOnDaysWithPrecision(zoneId, dateTimeFrom, dateTimeTo, timeRange.getStart(), timeRange.getEnd(), ChronoUnit.HOURS);
+        return getDurationOnDaysWithPrecision(dateTimeFrom, dateTimeTo, timeRange.getStart(), timeRange.getEnd(), ChronoUnit.HOURS);
     }
 
-    public static Duration getSumOfMinutesInRangeOnDays(ZoneId zoneId,
-                                                        LocalDateTime dateTimeFrom,
+    public static Duration getSumOfMinutesInRangeOnDays(LocalDateTime dateTimeFrom,
                                                         LocalDateTime dateTimeTo,
                                                         TimeRange timeRange) {
-        return getDurationOnDaysWithPrecision(zoneId, dateTimeFrom, dateTimeTo, timeRange.getStart(), timeRange.getEnd(), ChronoUnit.MINUTES);
+        return getDurationOnDaysWithPrecision(dateTimeFrom, dateTimeTo, timeRange.getStart(), timeRange.getEnd(), ChronoUnit.MINUTES);
     }
 
-    public static Duration getDurationOnDaysWithPrecision(ZoneId zoneId,
-                                                          LocalDateTime dateTimeFrom,
+    public static Duration getDurationOnDaysWithPrecision(LocalDateTime dateTimeFrom,
                                                           LocalDateTime dateTimeTo,
                                                           TimeRange timeRange,
                                                           ChronoUnit precision) {
-        final long count = DateTimeRange.of(dateTimeFrom, dateTimeTo, zoneId)
+        final long count = DateTimeRange.of(dateTimeFrom, dateTimeTo)
                 .streamOn(precision)
                 .filter(getFilter(timeRange.getStart(), timeRange.getEnd()))
                 .count();
         return Duration.of(count, precision);
     }
 
-    public static Duration getDurationOnDaysWithPrecision(ZoneId zoneId,
-                                                          LocalDateTime dateTimeFrom,
+    public static Duration getDurationOnDaysWithPrecision(LocalDateTime dateTimeFrom,
                                                           LocalDateTime dateTimeTo,
                                                           LocalTime dailyTimeFrom,
                                                           LocalTime dailyTimeTo,
                                                           ChronoUnit precision) {
-        final long count = DateTimeRange.of(dateTimeFrom, dateTimeTo, zoneId)
+        final long count = DateTimeRange.of(dateTimeFrom, dateTimeTo)
                 .streamOn(precision)
                 .filter(getFilter(dailyTimeFrom, dailyTimeTo))
                 .count();
@@ -66,20 +62,20 @@ public class Durations {
     }
 
     @VisibleForTesting
-    public static Predicate<? super ZonedDateTime> getFilter(LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
+    public static Predicate<? super LocalDateTime> getFilter(LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
         return dailyTimeFrom.isBefore(dailyTimeTo) ?
                 filterFromTo(dailyTimeFrom, dailyTimeTo) :
                 filterToFrom(dailyTimeFrom, dailyTimeTo);
     }
 
-    private static Predicate<? super ZonedDateTime> filterFromTo(LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
+    private static Predicate<? super LocalDateTime> filterFromTo(LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
         return zdt -> {
             LocalTime time = zdt.toLocalTime();
             return (time.equals(dailyTimeFrom) || time.isAfter(dailyTimeFrom)) && time.isBefore(dailyTimeTo);
         };
     }
 
-    private static Predicate<? super ZonedDateTime> filterToFrom(LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
+    private static Predicate<? super LocalDateTime> filterToFrom(LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
         return zdt -> {
             LocalTime time = zdt.toLocalTime();
             return (time.equals(dailyTimeFrom) || time.isAfter(dailyTimeFrom)) || (time.isBefore(dailyTimeTo));

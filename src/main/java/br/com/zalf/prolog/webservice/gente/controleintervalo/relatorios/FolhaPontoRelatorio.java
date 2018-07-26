@@ -1,17 +1,18 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.util.date.Durations;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Clt;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import com.google.common.base.Preconditions;
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -22,15 +23,22 @@ public final class FolhaPontoRelatorio {
     private final List<FolhaPontoDia> marcacoesDias;
     private Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados;
 
+    @SerializedName("dataHoraGeracaoRelatorio")
     @NotNull
-    private final LocalDateTime dataHoraGeracaoRelatorio;
+    private final LocalDateTime dataHoraGeracaoRelatorioZoned;
+
+    @Exclude
+    @NotNull
+    private final LocalDateTime dataHoraGeracaoRelatorioUtc;
 
     public FolhaPontoRelatorio(@NotNull final Colaborador colaborador,
                                @NotNull final List<FolhaPontoDia> marcacoesDias,
-                               @NotNull final LocalDateTime dataHoraGeracaoRelatorio) {
+                               @NotNull final LocalDateTime dataHoraGeracaoRelatorioUtc,
+                               @NotNull final LocalDateTime dataHoraGeracaoRelatorioZoned) {
         this.colaborador = colaborador;
         this.marcacoesDias = marcacoesDias;
-        this.dataHoraGeracaoRelatorio = dataHoraGeracaoRelatorio;
+        this.dataHoraGeracaoRelatorioUtc = dataHoraGeracaoRelatorioUtc;
+        this.dataHoraGeracaoRelatorioZoned = dataHoraGeracaoRelatorioZoned;
     }
 
     @NotNull
@@ -51,8 +59,7 @@ public final class FolhaPontoRelatorio {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     public void calculaTempoEmCadaTipoIntervalo(@NotNull final LocalDate dataInicial,
                                                 @NotNull final LocalDate dataFinal,
-                                                @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade,
-                                                @NotNull final ZoneId zoneId) {
+                                                @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade) {
         //noinspection ConstantConditions
         Preconditions.checkState(marcacoesDias != null);
 
@@ -72,8 +79,8 @@ public final class FolhaPontoRelatorio {
             final List<FolhaPontoIntervalo> intervalosDia = marcacoesDias.get(i).getIntervalosDia();
             for (int j = 0; j < intervalosDia.size(); j++) {
                 final FolhaPontoIntervalo intervalo = intervalosDia.get(j);
-                final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
-                final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
+                final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicioUtc();
+                final LocalDateTime dataHoraFim = intervalo.getDataHoraFimUtc();
                 somaTempoDecorrido(
                         segundosTotaisTipoIntervalo,
                         segundosTotaisHorasNoturnas,
@@ -83,8 +90,7 @@ public final class FolhaPontoRelatorio {
                         filtroInicio,
                         // Sem o filtro de fim for maior que o horário atual do sistema, precisamos garantir que os
                         // cálculos utilizem o horário atual e não o filtro de fim.
-                        filtroFim.isBefore(dataHoraGeracaoRelatorio) ? filtroFim : dataHoraGeracaoRelatorio,
-                        zoneId);
+                        filtroFim.isBefore(dataHoraGeracaoRelatorioUtc) ? filtroFim : dataHoraGeracaoRelatorioUtc);
             }
         }
 
@@ -100,8 +106,7 @@ public final class FolhaPontoRelatorio {
                                     @Nullable final LocalDateTime dataHoraInicio,
                                     @Nullable final LocalDateTime dataHoraFim,
                                     @NotNull final LocalDateTime filtroInicio,
-                                    @NotNull final LocalDateTime filtroFim,
-                                    @NotNull final ZoneId zoneId) {
+                                    @NotNull final LocalDateTime filtroFim) {
         // Calcula a diferença de tempo entre início e fim, se ambos existirem.
         if (dataHoraInicio != null && dataHoraFim != null) {
             // Precisamos cobrir 4 diferentes casos:
@@ -140,7 +145,7 @@ public final class FolhaPontoRelatorio {
             }
             final long segundos = ChronoUnit.SECONDS.between(inicio, fim);
             final long segundosNoturnos = Durations
-                    .getSumOfMinutesInRangeOnDays(zoneId, inicio, fim, Clt.RANGE_HORAS_NOTURNAS)
+                    .getSumOfMinutesInRangeOnDays(inicio, fim, Clt.RANGE_HORAS_NOTURNAS)
                     .toMinutes() * 60;
             segundosTotaisTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);
             segundosTotaisHorasNoturnas.merge(intervalo.getCodTipoIntervalo(), segundosNoturnos, (a, b) -> a + b);

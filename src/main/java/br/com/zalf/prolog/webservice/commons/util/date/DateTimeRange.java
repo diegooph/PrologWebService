@@ -3,8 +3,6 @@ package br.com.zalf.prolog.webservice.commons.util.date;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.Objects;
@@ -20,67 +18,61 @@ import java.util.stream.StreamSupport;
  */
 public class DateTimeRange {
 
-    private final ZonedDateTime from;
-    private final ZonedDateTime to;
+    private final LocalDateTime from;
+    private final LocalDateTime to;
 
-    private DateTimeRange(ZonedDateTime from, ZonedDateTime to) {
+    private DateTimeRange(LocalDateTime from, LocalDateTime to) {
         this.from = from;
         this.to = to;
     }
 
     /**
-     * Returns a {@link DateTimeRange} which will beginn (inclusive) and end (exclusive) with the corresponding {@link ZonedDateTime}s of
-     * {@code from} and {@code to} after the {@code zoneId} has been applied.
+     * Returns a {@link DateTimeRange} which will beginn (inclusive) and end (exclusive) with the corresponding
+     * {@link LocalDateTime}s of
+     * {@code from} and {@code to}.
      *
-     * @param from
-     *            A {@link LocalDateTime} to which the {@code zoneId} will be applied. The resulting {@link ZonedDateTime} will be the
-     *            beginning point in time of the {@link DateTimeRange} to create. This point in time is inclusive.
-     * @param to
-     *            A {@link LocalDateTime} to which the {@code zoneId} will be applied. The resulting {@link ZonedDateTime} will be the
-     *            ending point in time of the {@link DateTimeRange} to create. This point in time is exclusive.
-     * @param zoneId
-     *            {@link ZonedDateTime} to be applied on {@code from} and {@code to}.
+     * @param from The beginning point in time of the {@link DateTimeRange} to create. This point in time is inclusive.
+     * @param to   The ending point in time of the {@link DateTimeRange} to create. This point in time is exclusive.
      * @return A {@link DateTimeRange}, not null.
      */
-    public static DateTimeRange of(LocalDateTime from, LocalDateTime to, ZoneId zoneId) {
+    public static DateTimeRange of(LocalDateTime from, LocalDateTime to) {
         Objects.requireNonNull(from);
         Objects.requireNonNull(to);
-        Objects.requireNonNull(zoneId);
 
-        return new DateTimeRange(ZonedDateTime.of(from, zoneId), ZonedDateTime.of(to, zoneId));
+        return new DateTimeRange(from, to);
     }
 
     /**
-     * Returns a {@link Stream} which processes this {@link DateTimeRange} with a resolution accroding to the {@code unit}.
+     * Returns a {@link Stream} which processes this {@link DateTimeRange} with a resolution accroding to the {@code
+     * unit}.
      *
-     * @param unit
-     *            Unit to resolve this {@link DateTimeRange} for streaming.
+     * @param unit Unit to resolve this {@link DateTimeRange} for streaming.
      * @return A {@link Stream}, not null.
      */
-    public Stream<ZonedDateTime> streamOn(ChronoUnit unit) {
+    public Stream<LocalDateTime> streamOn(ChronoUnit unit) {
         Objects.requireNonNull(unit);
 
-        ZonedDateTimeSpliterator zonedDateTimeSpliterator = new ZonedDateTimeSpliterator(from, to, unit);
-        return StreamSupport.stream(zonedDateTimeSpliterator, false);
+        LocalDateTimeSpliterator localDateTimeSpliterator = new LocalDateTimeSpliterator(from, to, unit);
+        return StreamSupport.stream(localDateTimeSpliterator, false);
     }
 
     @VisibleForTesting
-    public static class ZonedDateTimeSpliterator implements Spliterator<ZonedDateTime> {
+    public static class LocalDateTimeSpliterator implements Spliterator<LocalDateTime> {
 
         private final ChronoUnit unit;
 
-        private ZonedDateTime current;
-        private ZonedDateTime to;
+        private LocalDateTime current;
+        private LocalDateTime to;
 
         @VisibleForTesting
-        public ZonedDateTimeSpliterator(ZonedDateTime from, ZonedDateTime to, ChronoUnit unit) {
+        public LocalDateTimeSpliterator(LocalDateTime from, LocalDateTime to, ChronoUnit unit) {
             this.current = from.truncatedTo(unit);
             this.to = to.truncatedTo(unit);
             this.unit = unit;
         }
 
         @Override
-        public boolean tryAdvance(Consumer<? super ZonedDateTime> action) {
+        public boolean tryAdvance(Consumer<? super LocalDateTime> action) {
             boolean canAdvance = current.isBefore(to);
 
             if (canAdvance) {
@@ -92,17 +84,17 @@ public class DateTimeRange {
         }
 
         @Override
-        public Spliterator<ZonedDateTime> trySplit() {
+        public Spliterator<LocalDateTime> trySplit() {
             long halfSize = estimateSize() / 2;
             if (halfSize == 0) {
                 return null;
             }
 
-            ZonedDateTime splittedFrom = current.plus(halfSize, unit);
-            ZonedDateTime splittedTo = to;
+            LocalDateTime splittedFrom = current.plus(halfSize, unit);
+            LocalDateTime splittedTo = to;
             to = splittedFrom;
 
-            return new ZonedDateTimeSpliterator(splittedFrom, splittedTo, unit);
+            return new LocalDateTimeSpliterator(splittedFrom, splittedTo, unit);
         }
 
         @Override
@@ -111,16 +103,15 @@ public class DateTimeRange {
         }
 
         @Override
-        public Comparator<? super ZonedDateTime> getComparator() {
-            // sorted in natural order
+        public Comparator<? super LocalDateTime> getComparator() {
+            // Sorted in natural order.
             return null;
         }
 
         @Override
         public int characteristics() {
-            return Spliterator.NONNULL | Spliterator.IMMUTABLE | Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.ORDERED | Spliterator.SORTED | Spliterator.DISTINCT;
+            return Spliterator.NONNULL | Spliterator.IMMUTABLE | Spliterator.SIZED | Spliterator.SUBSIZED |
+                    Spliterator.ORDERED | Spliterator.SORTED | Spliterator.DISTINCT;
         }
-
     }
-
 }

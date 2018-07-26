@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,6 +10,7 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +36,11 @@ final class ControleIntervaloRelatorioConverter {
                                                                @NotNull final LocalDate dataFinal,
                                                                @NotNull final ZoneId zoneIdUnidade)
             throws Throwable {
-        final LocalDateTime dataHoraGeracaoRelatorio = LocalDateTime.now(zoneIdUnidade);
+        final LocalDateTime dataHoraGeracaoRelatorioUtc = Now.localDateTimeUtc();
+        final LocalDateTime dataHoraGeracaoRelatorioZoned = dataHoraGeracaoRelatorioUtc
+                .atZone(ZoneOffset.UTC)
+                .withZoneSameInstant(zoneIdUnidade)
+                .toLocalDateTime();
         final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
         final Map<Long, TipoIntervalo> tiposIntervalosUnidade = toTiposIntervalosToMap(tiposIntervalos);
         Long cpfAnterior = null;
@@ -64,9 +70,8 @@ final class ControleIntervaloRelatorioConverter {
                 Log.d(TAG, "Colaborador alterado. Anterior: " + cpfAnterior + " - Atual: " + cpfAtual);
                 //noinspection ConstantConditions
                 final FolhaPontoRelatorio folhaPontoRelatorio = createFolhaPontoRelatorio(cpfAnterior,
-                        nomeAnterior, diaAnterior, dias, intervalosDia, dataHoraGeracaoRelatorio);
-                folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(dataInicial, dataFinal, tiposIntervalosUnidade,
-                        zoneIdUnidade);
+                        nomeAnterior, diaAnterior, dias, intervalosDia, dataHoraGeracaoRelatorioUtc, dataHoraGeracaoRelatorioZoned);
+                folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(dataInicial, dataFinal, tiposIntervalosUnidade);
                 relatorios.add(folhaPontoRelatorio);
                 dias = new ArrayList<>();
                 intervalosDia = new ArrayList<>();
@@ -89,6 +94,8 @@ final class ControleIntervaloRelatorioConverter {
             final FolhaPontoIntervalo intervalo = new FolhaPontoIntervalo(
                     dataHoraInicio,
                     dataHoraFim,
+                    rSet.getObject("DATA_HORA_INICIO_UTC", LocalDateTime.class),
+                    rSet.getObject("DATA_HORA_FIM_UTC", LocalDateTime.class),
                     codTipoIntervaloLong,
                     rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
                     rSet.getBoolean("TROCOU_DIA"));
@@ -100,9 +107,8 @@ final class ControleIntervaloRelatorioConverter {
         }
         if (diaAnterior != null) {
             final FolhaPontoRelatorio folhaPontoRelatorio = createFolhaPontoRelatorio(cpfAnterior,
-                    nomeAnterior, diaAnterior, dias, intervalosDia, dataHoraGeracaoRelatorio);
-            folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(dataInicial, dataFinal, tiposIntervalosUnidade,
-                    zoneIdUnidade);
+                    nomeAnterior, diaAnterior, dias, intervalosDia, dataHoraGeracaoRelatorioUtc, dataHoraGeracaoRelatorioZoned);
+            folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(dataInicial, dataFinal, tiposIntervalosUnidade);
             relatorios.add(folhaPontoRelatorio);
         }
         return relatorios;
@@ -114,12 +120,13 @@ final class ControleIntervaloRelatorioConverter {
                                                                  @NotNull final LocalDate diaAnterior,
                                                                  @NotNull final List<FolhaPontoDia> dias,
                                                                  @NotNull final List<FolhaPontoIntervalo> intervalosDia,
-                                                                 @NotNull final LocalDateTime dataHoraGeracaoRelatorio) {
+                                                                 @NotNull final LocalDateTime dataHoraGeracaoRelatorioUtc,
+                                                                 @NotNull final LocalDateTime dataHoraGeracaoRelatorioZoned) {
         dias.add(new FolhaPontoDia(diaAnterior, intervalosDia));
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(cpfAnterior);
         colaborador.setNome(nomeAnterior);
-        return new FolhaPontoRelatorio(colaborador, dias, dataHoraGeracaoRelatorio);
+        return new FolhaPontoRelatorio(colaborador, dias, dataHoraGeracaoRelatorioUtc, dataHoraGeracaoRelatorioZoned);
     }
 
     @NotNull
