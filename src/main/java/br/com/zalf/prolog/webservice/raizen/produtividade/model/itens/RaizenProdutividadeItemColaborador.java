@@ -10,12 +10,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public class RaizenProdutividadeItemColaborador extends RaizenProdutividadeItem {
     @NotNull
-    private final String cpf;
+    private final Long cpf;
     @Nullable
     private final String nome;
     private final boolean colaboradorCadastrado;
 
-    public RaizenProdutividadeItemColaborador(@NotNull final String cpf, @Nullable final String nome) {
+    public RaizenProdutividadeItemColaborador(@NotNull final Long cpf, @Nullable final String nome) {
         super(RaizenProdutividadeItemTipo.ITEM_COLABORADOR);
         this.cpf = cpf;
         this.nome = nome;
@@ -23,7 +23,7 @@ public class RaizenProdutividadeItemColaborador extends RaizenProdutividadeItem 
     }
 
     @NotNull
-    public String getCpf() {
+    public Long getCpf() {
         return cpf;
     }
 

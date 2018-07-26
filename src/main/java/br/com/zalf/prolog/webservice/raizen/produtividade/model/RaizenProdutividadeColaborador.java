@@ -15,12 +15,12 @@ import java.util.List;
  */
 public class RaizenProdutividadeColaborador extends RaizenProdutividade {
     @NotNull
-    private final String cpf;
+    private final Long cpf;
     @Nullable
     private final String nome;
     private final boolean colaboradorCadastrado;
 
-    public RaizenProdutividadeColaborador(@NotNull final String cpf,
+    public RaizenProdutividadeColaborador(@NotNull final Long cpf,
                                           @Nullable final String nome) {
         super(RaizenProdutividadeAgrupamento.POR_COLABORADOR);
         this.cpf = cpf;
@@ -29,7 +29,7 @@ public class RaizenProdutividadeColaborador extends RaizenProdutividade {
     }
 
     @NotNull
-    public String getCpf() {
+    public Long getCpf() {
         return cpf;
     }
 
