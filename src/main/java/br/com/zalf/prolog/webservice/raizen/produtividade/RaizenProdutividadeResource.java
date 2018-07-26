@@ -81,7 +81,9 @@ public class RaizenProdutividadeResource {
 
     @GET
     @UsedBy(platforms = Platform.ANDROID)
-    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS)
+    @Secured(permissions = {
+            Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS,
+            Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS})
     @Path("/colaboradores/{codColaborador}")
     public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
                                                                       @QueryParam("mes") int mes,
