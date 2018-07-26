@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("/raizen/produtividade")
+@Path("/raizen/produtividades")
 @DebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
