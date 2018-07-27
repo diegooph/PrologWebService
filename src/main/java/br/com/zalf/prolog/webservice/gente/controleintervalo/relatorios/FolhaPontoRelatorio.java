@@ -63,9 +63,8 @@ public final class FolhaPontoRelatorio {
         //noinspection ConstantConditions
         Preconditions.checkState(marcacoesDias != null);
 
-        // TODO: hardcoded aqui as horas iniciais e finais?
-        final LocalDateTime filtroInicio = dataInicial.atTime(LocalTime.of(0, 0, 0));
-        final LocalDateTime filtroFim = dataFinal.atTime(LocalTime.of(23, 59, 59));
+        final LocalDateTime filtroInicio = dataInicial.atTime(LocalTime.MIN);
+        final LocalDateTime filtroFim = dataFinal.atTime(LocalTime.MAX);
 
         // Map para irmos somando o tempo em segundos que o colaborador passou em cada tipo de intervalo dado
         // o período filtrado.
