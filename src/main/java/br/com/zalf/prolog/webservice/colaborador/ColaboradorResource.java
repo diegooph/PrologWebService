@@ -68,7 +68,7 @@ public class ColaboradorResource {
 	}
 	
 	@GET
-	@Path("/{codUnidade}/")
+	@Path("unidades/{codUnidade}/")
 	@Secured(permissions = Pilares.Gente.Colaborador.VISUALIZAR)
 	public List<Colaborador> getAll(@PathParam("codUnidade") Long codUnidade,
 									@QueryParam("apenasAtivos") boolean apenasAtivos) {
