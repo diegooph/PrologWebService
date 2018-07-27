@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -30,14 +31,30 @@ public interface AfericaoDao {
     boolean update(Afericao afericao) throws SQLException;
 
     /**
-     * adiciona uma aferição ao veículo da placa
+     * Busca objeto contendo informações necessárias para se iniciar uma aferição do {@link Veiculo}.
      *
      * @param placa placa do veículo
      * @param tipoAfericao tipo da aferição que será realizada
-     * @return retorna uma nova aferição
-     * @throws SQLException se ocorrer erro no banco
+     * @return retorna o objeto da nova aferição
+     * @throws SQLException se ocorrer erro na busca
      */
-    NovaAfericao getNovaAfericao(String placa, String tipoAfericao) throws SQLException;
+    @NotNull
+    NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
+                                           @NotNull final String placa,
+                                           @NotNull final String tipoAfericao) throws SQLException;
+
+    /**
+     * Busca objeto contendo informações necessárias para se iniciar uma aferição do {@link Pneu}.
+     *
+     * @param codPneu placa do veículo
+     * @param tipoAfericao tipo da aferição que será realizada
+     * @return retorna o objeto da nova aferição
+     * @throws SQLException se ocorrer erro na busca
+     */
+    @NotNull
+    NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
+                                             @NotNull final Long codPneu,
+                                             @NotNull final TipoAfericao tipoAfericao) throws Throwable;
 
     /**
      * retorna as restrições de medidas da unidade

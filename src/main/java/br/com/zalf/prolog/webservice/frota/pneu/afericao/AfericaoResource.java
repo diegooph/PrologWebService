@@ -2,10 +2,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -69,12 +67,24 @@ public class AfericaoResource {
     }
 
     @GET
-    @Path("/nova/{placaVeiculo}")
+    @Path("/unidades/{codUnidade}/nova-placa/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
-    public NovaAfericao getNovaAfericao(@PathParam("placaVeiculo") @Required String placa,
-                                        @QueryParam("tipoAfericao") @Required String tipoAfericao,
-                                        @HeaderParam("Authorization") @Required String userToken) throws Exception {
-        return service.getNovaAfericao(placa, tipoAfericao, userToken);
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@PathParam("codUnidade") @Required Long codUnidade,
+                                                  @PathParam("placaVeiculo") @Required String placa,
+                                                  @QueryParam("tipoAfericao") @Required String tipoAfericao,
+                                                  @HeaderParam("Authorization") @Required String userToken) throws
+            ProLogException {
+        return service.getNovaAfericaoPlaca(codUnidade, placa, tipoAfericao, userToken);
+    }
+
+    @GET
+    @Path("/unidades/{codUnidade}/nova-avulsa/{codPneu}")
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
+    public NovaAfericaoAvulsa getNovaAfericaoAvulsa(@PathParam("codUnidade") @Required Long codUnidade,
+                                                    @PathParam("codPneu") @Required Long codPneu,
+                                                    @QueryParam("tipoAfericao") @Required String tipoAfericao) throws
+            ProLogException {
+        return service.getNovaAfericaoAvulsa(codUnidade, codPneu, tipoAfericao);
     }
 
     @GET
@@ -126,21 +136,5 @@ public class AfericaoResource {
     @Path("/restricoes/{codUnidade}")
     public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getRestricaoByCodUnidade(codUnidade);
-    }
-
-    /**
-     * @deprecated use {@link #getNovaAfericao(String, String, String)} instead.
-     */
-    @GET
-    @Path("/{placaVeiculo}")
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
-    @Deprecated
-    public NovaAfericao DEPRECATED_GET_NOVA_AFERICAO(@PathParam("placaVeiculo") @Required String placa,
-                                                     @HeaderParam("Authorization") @Required String userToken)
-            throws Exception {
-        // Mapeia fixo como se sempre estivesse iniciando uma aferição de SULCO_PRESSAO para não quebrar os
-        // apps rodando com esse método. Não há problema em fazer isso atualmente pois essa informação de tipo
-        // não é utilizada pelo ProLog. Apenas na integração com a Avilan para barrar certos tipos de aferição.
-        return service.getNovaAfericao(placa, TipoAfericao.SULCO_PRESSAO.asString(), userToken);
     }
 }

@@ -2,11 +2,12 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.time.Clock;
@@ -17,9 +18,11 @@ import java.util.List;
  * Classe AfericaoService responsavel por comunicar-se com a interface DAO
  */
 public class AfericaoService {
-
-    private final AfericaoDao dao = Injection.provideAfericaoDao();
     private static final String TAG = AfericaoService.class.getSimpleName();
+    @NotNull
+    private final AfericaoDao dao = Injection.provideAfericaoDao();
+    @NotNull
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     public boolean insert(Afericao afericao, Long codUnidade, String userToken) {
         try {
@@ -42,14 +45,28 @@ public class AfericaoService {
         }
     }
 
-    public NovaAfericao getNovaAfericao(String placa, String tipoAfericao, String userToken) throws Exception {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(Long codUnidade,
+                                                  String placa,
+                                                  String tipoAfericao,
+                                                  String userToken) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
-                    .getNovaAfericao(placa, tipoAfericao);
-        } catch (Exception e) {
+                    .getNovaAfericaoPlaca(codUnidade, placa, tipoAfericao);
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar NovaAfericao para a placa: " + placa, e);
-            throw e;
+            throw exceptionHandler.map(e, "Erro ao inicar uma nova aferição");
+        }
+    }
+
+    public NovaAfericaoAvulsa getNovaAfericaoAvulsa(Long codUnidade,
+                                                    Long codPneu,
+                                                    String tipoAfericao) throws ProLogException {
+        try {
+            return dao.getNovaAfericaoAvulsa(codUnidade, codPneu, TipoAfericao.fromString(tipoAfericao));
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar NovaAfericao para o pneu: " + codPneu, e);
+            throw exceptionHandler.map(e, "Erro ao inicar uma nova aferição");
         }
     }
 

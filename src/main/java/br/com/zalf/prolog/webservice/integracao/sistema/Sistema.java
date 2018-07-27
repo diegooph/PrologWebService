@@ -2,11 +2,11 @@ package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
@@ -76,9 +76,10 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
-                                        @NotNull String tipoAfericao) throws Exception {
-        return getIntegradorProLog().getNovaAfericao(placaVeiculo, tipoAfericao);
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull String tipoAfericao) throws Exception {
+        return getIntegradorProLog().getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
     }
 
     @Override

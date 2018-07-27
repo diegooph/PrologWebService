@@ -270,8 +270,9 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
-                                        @NotNull String tipoAfericao) throws Exception {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull String tipoAfericao) throws Exception {
         /*
          * A Avilan não suporta afericões de Sulco e Pressão separadamente, então lançamos uma
          * exceção caso o tipo selecionado for diferentes de {@link TipoAfericao#SULCO_PRESSAO}
@@ -287,7 +288,6 @@ public final class AvaCorpAvilan extends Sistema {
          * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
          * que não esteja presente na mesma unidade dele.
          */
-        final Long codUnidade = getCodUnidade();
         final List<String> placas = getPlacasVeiculosByTipo(codUnidade, FILTRO_TODOS);
         if (!placas.contains(placaVeiculo)) {
             throw new AvaCorpAvilanException(

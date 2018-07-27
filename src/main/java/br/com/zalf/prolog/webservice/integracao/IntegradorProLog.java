@@ -7,12 +7,12 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -158,9 +158,10 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
-                                        @NotNull String tipoAfericao) throws Exception {
-        return afericaoDao.getNovaAfericao(placaVeiculo, tipoAfericao);
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull String tipoAfericao) throws Exception {
+        return afericaoDao.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
     }
 
     @Override

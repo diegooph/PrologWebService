@@ -4,11 +4,11 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
@@ -111,12 +111,13 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
-                                        @NotNull String tipoAfericao) throws Exception {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull String tipoAfericao) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getNovaAfericao(placaVeiculo, tipoAfericao);
+            return getSistema().getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
         } else {
-            return integradorProLog.getNovaAfericao(placaVeiculo, tipoAfericao);
+            return integradorProLog.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
         }
     }
 
