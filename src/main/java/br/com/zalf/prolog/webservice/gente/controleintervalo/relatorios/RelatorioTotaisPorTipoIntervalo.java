@@ -8,7 +8,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -70,19 +73,8 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         }
         header = criaHeader();
         table = new HashMap<>();
-
-        String cpfAnterior = null;
         while (rSet.next()) {
-            final String cpfAtual = rSet.getString("CPF_COLABORADOR");
-            if (cpfAnterior == null) {
-                cpfAnterior = cpfAtual;
-            }
-            // Verificamos se trocou o colaborador.
-            if (cpfAnterior.equals(cpfAtual)) {
-                addInfosIntervaloToTable();
-            } else {
-                addInfosIntervaloToTable();
-            }
+            addInfosIntervaloToTable();
         }
     }
 

@@ -162,8 +162,8 @@ public interface ControleIntervaloRelatoriosDao {
      * @param out              - Arquivo onde os dados serão armazenados para retornar.
      * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
      * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
-     * @param dataInicial  - Data inicial do período de filtro.
-     * @param dataFinal    - Data final do período de filtro.
+     * @param dataInicial      - Data inicial do período de filtro.
+     * @param dataFinal        - Data final do período de filtro.
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
      */
@@ -181,8 +181,8 @@ public interface ControleIntervaloRelatoriosDao {
      *
      * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
      * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
-     * @param dataInicial  - Data inicial do período de filtro.
-     * @param dataFinal    - Data final do período de filtro.
+     * @param dataInicial      - Data inicial do período de filtro.
+     * @param dataFinal        - Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      */
