@@ -125,15 +125,15 @@ public class ControleIntervaloRelatorioResource {
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@PathParam("codUnidade") @Required Long codUnidade,
                                                             @PathParam("cpf") @Required String cpf,
                                                             @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
-                                                            @QueryParam("dataHoraInicial") @Required String dataHoraInicial,
-                                                            @QueryParam("dataHoraFinal") @Required String dataHoraFinal)
+                                                            @QueryParam("dataInicial") @Required String dataInicial,
+                                                            @QueryParam("dataFinal") @Required String dataFinal)
             throws ProLogException {
         return service.getFolhaPontoRelatorio(
                 codUnidade,
                 codTipoIntervalo,
                 cpf,
-                dataHoraInicial,
-                dataHoraFinal);
+                dataInicial,
+                dataFinal);
     }
 
     @GET
