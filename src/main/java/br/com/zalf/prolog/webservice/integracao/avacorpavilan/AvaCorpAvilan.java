@@ -6,10 +6,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -318,7 +315,7 @@ public final class AvaCorpAvilan extends Sistema {
         veiculo.setListPneus(pneus);
 
         // Cria NovaAfericao.
-        final NovaAfericao novaAfericao = new NovaAfericao();
+        final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
         novaAfericao.setVeiculo(veiculo);
         novaAfericao.setRestricao(restricao);
         novaAfericao.setEstepesVeiculo(veiculo.getEstepes());

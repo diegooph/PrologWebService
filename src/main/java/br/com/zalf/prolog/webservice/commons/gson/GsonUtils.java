@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ResponseImagemChecklist;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
@@ -109,6 +110,7 @@ public final class GsonUtils {
         builder.registerTypeAdapterFactory(Pneu.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(QuantidadeServicos.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(PneuServicoRealizado.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(NovaAfericao.provideTypeAdapterFactory());
 
         sGson = builder.create();
     }
