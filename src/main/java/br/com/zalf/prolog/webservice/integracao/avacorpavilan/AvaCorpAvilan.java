@@ -324,14 +324,14 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
-    public boolean insertAfericao(@NotNull Afericao afericao,
+    public boolean insertAfericao(@NotNull AfericaoPlaca afericaoPlaca,
                                   @NotNull Long codUnidade) throws Exception {
-        return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericao), getCpf(), getDataNascimento());
+        return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericaoPlaca), getCpf(), getDataNascimento());
     }
 
     @NotNull
     @Override
-    public Afericao getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Exception {
+    public AfericaoPlaca getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Exception {
 
         final AfericaoFiltro afericaoFiltro = requester.getAfericaoByCodigo(
                 Math.toIntExact(codAfericao),
@@ -343,26 +343,26 @@ public final class AvaCorpAvilan extends Sistema {
         final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
                 dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(codTipoVeiculoAvilan));
 
-        final Afericao afericao = AvaCorpAvilanConverter.convert(posicaoPneuMapper, afericaoFiltro, codUnidade);
+        final AfericaoPlaca afericaoPlaca = AvaCorpAvilanConverter.convert(posicaoPneuMapper, afericaoFiltro, codUnidade);
 
         final Short codDiagrama = dao.getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(codTipoVeiculoAvilan);
         final Optional<DiagramaVeiculo> optional = getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(codDiagrama);
         if (!optional.isPresent()) {
             throw new IllegalStateException("Erro ao buscar diagrama de código: " + codDiagrama);
         }
-        afericao.getVeiculo().setDiagrama(optional.get());
-        return afericao;
+        afericaoPlaca.getVeiculo().setDiagrama(optional.get());
+        return afericaoPlaca;
     }
 
     @NotNull
     @Override
-    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
-                                       @NotNull String codTipoVeiculo,
-                                       @NotNull String placaVeiculo,
-                                       long dataInicial,
-                                       long dataFinal,
-                                       int limit,
-                                       long offset) throws Exception {
+    public List<AfericaoPlaca> getAfericoes(@NotNull Long codUnidade,
+                                            @NotNull String codTipoVeiculo,
+                                            @NotNull String placaVeiculo,
+                                            long dataInicial,
+                                            long dataFinal,
+                                            int limit,
+                                            long offset) throws Exception {
         // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
         // vazio.
         final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();

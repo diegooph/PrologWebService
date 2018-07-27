@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
 import org.jetbrains.annotations.NotNull;
@@ -19,17 +19,17 @@ interface OperacoesIntegradasAfericao {
                                            @NotNull final String placaVeiculo,
                                            @NotNull final String tipoAfericao) throws Exception;
 
-    boolean insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Exception;
+    boolean insertAfericao(@NotNull final AfericaoPlaca afericaoPlaca, @NotNull final Long codUnidade) throws Exception;
 
     @NotNull
-    Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Exception;
+    AfericaoPlaca getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Exception;
 
     @NotNull
-    List<Afericao> getAfericoes(@NotNull final Long codUnidade,
-                                @NotNull final String codTipoVeiculo,
-                                @NotNull final String placaVeiculo,
-                                final long dataInicial,
-                                final long dataFinal,
-                                final int limit,
-                                final long offset) throws Exception;
+    List<AfericaoPlaca> getAfericoes(@NotNull final Long codUnidade,
+                                     @NotNull final String codTipoVeiculo,
+                                     @NotNull final String placaVeiculo,
+                                     final long dataInicial,
+                                     final long dataFinal,
+                                     final int limit,
+                                     final long offset) throws Exception;
 }

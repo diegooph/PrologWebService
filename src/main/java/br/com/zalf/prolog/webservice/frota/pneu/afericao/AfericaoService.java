@@ -24,21 +24,21 @@ public class AfericaoService {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
-    public boolean insert(Afericao afericao, Long codUnidade, String userToken) {
+    public boolean insert(AfericaoPlaca afericaoPlaca, Long codUnidade, String userToken) {
         try {
-            afericao.setDataHora(LocalDateTime.now(Clock.systemUTC()));
+            afericaoPlaca.setDataHora(LocalDateTime.now(Clock.systemUTC()));
             return RouterAfericao
                     .create(dao, userToken)
-                    .insertAfericao(afericao, codUnidade);
+                    .insertAfericao(afericaoPlaca, codUnidade);
         } catch (Exception e) {
             Log.e(TAG, "Erro ao inserir a aferição", e);
             return false;
         }
     }
 
-    public boolean updateKmAfericao(Afericao afericao) {
+    public boolean updateKmAfericao(AfericaoPlaca afericaoPlaca) {
         try {
-            return dao.update(afericao);
+            return dao.update(afericaoPlaca);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao atualizar o KM de uma aferição", e);
             return false;
@@ -70,7 +70,7 @@ public class AfericaoService {
         }
     }
 
-    public Afericao getByCod(Long codUnidade, Long codAfericao, String userToken) {
+    public AfericaoPlaca getByCod(Long codUnidade, Long codAfericao, String userToken) {
         try {
             return RouterAfericao
                     .create(dao, userToken)
@@ -92,14 +92,14 @@ public class AfericaoService {
         }
     }
 
-    public List<Afericao> getAfericoes(Long codUnidade,
-                                       String codTipoVeiculo,
-                                       String placaVeiculo,
-                                       long dataInicial,
-                                       long dataFinal,
-                                       int limit,
-                                       long offset,
-                                       final String userToken) {
+    public List<AfericaoPlaca> getAfericoes(Long codUnidade,
+                                            String codTipoVeiculo,
+                                            String placaVeiculo,
+                                            long dataInicial,
+                                            long dataFinal,
+                                            int limit,
+                                            long offset,
+                                            final String userToken) {
         try {
             return RouterAfericao
                     .create(dao, userToken)
@@ -114,8 +114,8 @@ public class AfericaoService {
     }
 
     @Deprecated
-    public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit,
-                                                          long offset) {
+    public List<AfericaoPlaca> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit,
+                                                               long offset) {
         try {
             return dao.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
         } catch (SQLException e) {

@@ -14,21 +14,21 @@ public interface AfericaoDao {
     /**
      * insere uma aferição lincada com o código da unidade
      *
-     * @param afericao   uma aferição
+     * @param afericaoPlaca   uma aferição
      * @param codUnidade código da unidade
      * @return valor da operação
      * @throws SQLException se ocorrer erro no banco
      */
-    boolean insert(Afericao afericao, Long codUnidade) throws SQLException;
+    boolean insert(AfericaoPlaca afericaoPlaca, Long codUnidade) throws SQLException;
 
     /**
      * Atualiza uma aferição
      *
-     * @param afericao      objeto {@link Afericao} para ser atualizado
+     * @param afericaoPlaca      objeto {@link AfericaoPlaca} para ser atualizado
      * @return              verdadeiro se operação for sucesso, falso caso contrário
      * @throws SQLException se ocorrer erro no banco
      */
-    boolean update(Afericao afericao) throws SQLException;
+    boolean update(AfericaoPlaca afericaoPlaca) throws SQLException;
 
     /**
      * Busca objeto contendo informações necessárias para se iniciar uma aferição do {@link Veiculo}.
@@ -84,8 +84,8 @@ public interface AfericaoDao {
      */
     CronogramaAfericao getCronogramaAfericao(Long codUnidade) throws SQLException;
 
-    List<Afericao> getAfericoes(Long codUnidade, String codTipoVeiculo, String placaVeiculo, long dataInicial,
-                                long dataFinal, int limit, long offset) throws SQLException;
+    List<AfericaoPlaca> getAfericoes(Long codUnidade, String codTipoVeiculo, String placaVeiculo, long dataInicial,
+                                     long dataFinal, int limit, long offset) throws SQLException;
 
     /**
      * retorna uma aferição através do código dela
@@ -95,7 +95,7 @@ public interface AfericaoDao {
      * @return a aferição
      * @throws SQLException se ocorrer erro no banco
      */
-    Afericao getByCod(Long codUnidade, Long codAfericao) throws SQLException;
+    AfericaoPlaca getByCod(Long codUnidade, Long codAfericao) throws SQLException;
 
     /**
      * pega a lista de aferições executadas
@@ -108,5 +108,5 @@ public interface AfericaoDao {
      * @throws SQLException se ocorrer erro no banco
      */
     @Deprecated
-    List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit, long offset) throws SQLException;
+    List<AfericaoPlaca> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit, long offset) throws SQLException;
 }

@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConverter;
@@ -115,14 +115,14 @@ public class AvaCorpAvilanConverterTest {
         final long kmVeiculo = 42;
         final long tempoRealizacaoMillis = TimeUnit.MINUTES.toMillis(5);
 
-        final Afericao afericao = new Afericao();
+        final AfericaoPlaca afericaoPlaca = new AfericaoPlaca();
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(Long.parseLong(CPF));
         colaborador.setDataNascimento(parseDate(DATA_NASCIMENTO));
-        afericao.setColaborador(colaborador);
-        afericao.setDataHora(LocalDateTime.now(Clock.systemUTC()));
-        afericao.setKmMomentoAfericao(kmVeiculo);
-        afericao.setTempoRealizacaoAfericaoInMillis(tempoRealizacaoMillis);
+        afericaoPlaca.setColaborador(colaborador);
+        afericaoPlaca.setDataHora(LocalDateTime.now(Clock.systemUTC()));
+        afericaoPlaca.setKmMomentoAfericao(kmVeiculo);
+        afericaoPlaca.setTempoRealizacaoAfericaoInMillis(tempoRealizacaoMillis);
 
         final AvaCorpAvilanDao dao = new AvaCorpAvilanDaoImpl();
         final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(dao
@@ -139,9 +139,9 @@ public class AvaCorpAvilanConverterTest {
         veiculoProLog.setKmAtual(kmVeiculo);
         veiculoProLog.setPlaca(VEICULO_COM_PNEUS);
         veiculoProLog.setListPneus(pneus);
-        afericao.setVeiculo(veiculoProLog);
+        afericaoPlaca.setVeiculo(veiculoProLog);
 
-        final IncluirMedida2 incluirMedida = AvaCorpAvilanConverter.convert(afericao);
+        final IncluirMedida2 incluirMedida = AvaCorpAvilanConverter.convert(afericaoPlaca);
         assertNotNull(incluirMedida);
 
         assertTrue(incluirMedida.getVeiculo().equals(veiculoProLog.getPlaca()));

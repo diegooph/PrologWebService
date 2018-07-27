@@ -19,19 +19,19 @@ public abstract class NovaAfericao {
         this.tipo = tipo;
     }
 
-    @NotNull
-    public static RuntimeTypeAdapterFactory<NovaAfericao> provideTypeAdapterFactory() {
-        return RuntimeTypeAdapterFactory
-                .of(NovaAfericao.class, "tipo")
-                .registerSubtype(NovaAfericaoPlaca.class, TipoNovaAfericao.AFERICAO_PLACA.asString())
-                .registerSubtype(NovaAfericaoAvulsa.class, TipoNovaAfericao.AFERICAO_AVULSA.asString());
-    }
-
     public Restricao getRestricao() {
         return restricao;
     }
 
     public void setRestricao(Restricao restricao) {
         this.restricao = restricao;
+    }
+
+    @NotNull
+    public static RuntimeTypeAdapterFactory<NovaAfericao> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(NovaAfericao.class, "tipo")
+                .registerSubtype(NovaAfericaoPlaca.class, TipoNovaAfericao.AFERICAO_PLACA.asString())
+                .registerSubtype(NovaAfericaoAvulsa.class, TipoNovaAfericao.AFERICAO_AVULSA.asString());
     }
 }

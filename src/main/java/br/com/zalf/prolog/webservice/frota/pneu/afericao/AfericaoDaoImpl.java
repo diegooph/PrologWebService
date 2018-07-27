@@ -30,7 +30,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public boolean insert(Afericao afericao, Long codUnidade) throws SQLException {
+    public boolean insert(AfericaoPlaca afericaoPlaca, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -41,18 +41,18 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt = conn.prepareStatement("INSERT INTO AFERICAO(DATA_HORA, PLACA_VEICULO, CPF_AFERIDOR, KM_VEICULO, "
                     + "TEMPO_REALIZACAO, TIPO_AFERICAO, COD_UNIDADE) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
-            stmt.setObject(1, afericao.getDataHora().atOffset(ZoneOffset.UTC));
-            stmt.setString(2, afericao.getVeiculo().getPlaca());
-            stmt.setLong(3, afericao.getColaborador().getCpf());
-            stmt.setLong(4, afericao.getKmMomentoAfericao());
-            stmt.setLong(5, afericao.getTempoRealizacaoAfericaoInMillis());
-            stmt.setString(6, afericao.getTipoMedicaoColetadaAfericao().asString());
+            stmt.setObject(1, afericaoPlaca.getDataHora().atOffset(ZoneOffset.UTC));
+            stmt.setString(2, afericaoPlaca.getVeiculo().getPlaca());
+            stmt.setLong(3, afericaoPlaca.getColaborador().getCpf());
+            stmt.setLong(4, afericaoPlaca.getKmMomentoAfericao());
+            stmt.setLong(5, afericaoPlaca.getTempoRealizacaoAfericaoInMillis());
+            stmt.setString(6, afericaoPlaca.getTipoMedicaoColetadaAfericao().asString());
             stmt.setLong(7, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                afericao.setCodigo(rSet.getLong("CODIGO"));
-                insertValores(afericao, codUnidade, conn);
-                veiculoDao.updateKmByPlaca(afericao.getVeiculo().getPlaca(), afericao.getKmMomentoAfericao(), conn);
+                afericaoPlaca.setCodigo(rSet.getLong("CODIGO"));
+                insertValores(afericaoPlaca, codUnidade, conn);
+                veiculoDao.updateKmByPlaca(afericaoPlaca.getVeiculo().getPlaca(), afericaoPlaca.getKmMomentoAfericao(), conn);
             }
             conn.commit();
         } catch (SQLException e) {
@@ -67,14 +67,14 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public boolean update(Afericao afericao) throws SQLException {
+    public boolean update(AfericaoPlaca afericaoPlaca) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE afericao SET km_veiculo = ? WHERE codigo = ?");
-            stmt.setLong(1, afericao.getVeiculo().getKmAtual());
-            stmt.setLong(2, afericao.getCodigo());
+            stmt.setLong(1, afericaoPlaca.getVeiculo().getKmAtual());
+            stmt.setLong(2, afericaoPlaca.getCodigo());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 return false;
@@ -259,14 +259,14 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public List<Afericao> getAfericoes(Long codUnidade,
-                                       String codTipoVeiculo,
-                                       String placaVeiculo,
-                                       long dataInicial,
-                                       long dataFinal,
-                                       int limit,
-                                       long offset) throws SQLException {
-        final List<Afericao> afericoes = new ArrayList<>();
+    public List<AfericaoPlaca> getAfericoes(Long codUnidade,
+                                            String codTipoVeiculo,
+                                            String placaVeiculo,
+                                            long dataInicial,
+                                            long dataFinal,
+                                            int limit,
+                                            long offset) throws SQLException {
+        final List<AfericaoPlaca> afericoes = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -313,11 +313,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public Afericao getByCod(Long codUnidade, Long codAfericao) throws SQLException {
+    public AfericaoPlaca getByCod(Long codUnidade, Long codAfericao) throws SQLException {
         Connection conn = null;
         ResultSet rSet = null;
         PreparedStatement stmt = null;
-        Afericao afericao = null;
+        AfericaoPlaca afericaoPlaca = null;
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final List<PneuComum> pneus = new ArrayList<>();
         try {
@@ -358,7 +358,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             rSet = stmt.executeQuery();
 
             if (rSet.next()) {
-                afericao = createAfericaoResumida(rSet);
+                afericaoPlaca = createAfericaoResumida(rSet);
                 pneus.add(createPneuAfericao(rSet));
                 final Veiculo veiculo =
                         veiculoDao.getVeiculoByPlaca(rSet.getString("PLACA_VEICULO"), false);
@@ -366,21 +366,21 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     pneus.add(createPneuAfericao(rSet));
                 }
                 veiculo.setListPneus(pneus);
-                afericao.setVeiculo(veiculo);
+                afericaoPlaca.setVeiculo(veiculo);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return afericao;
+        return afericaoPlaca;
     }
 
     @Override
     @Deprecated
-    public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades,
-                                                          List<String> placas,
-                                                          int limit,
-                                                          long offset) throws SQLException {
-        final List<Afericao> afericoes = new ArrayList<>();
+    public List<AfericaoPlaca> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades,
+                                                               List<String> placas,
+                                                               int limit,
+                                                               long offset) throws SQLException {
+        final List<AfericaoPlaca> afericoes = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -487,7 +487,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return placa;
     }
 
-    private void insertValores(Afericao afericao, Long codUnidade, Connection conn) throws SQLException {
+    private void insertValores(AfericaoPlaca afericaoPlaca, Long codUnidade, Connection conn) throws SQLException {
         final PneuDao pneuDao = Injection.providePneuDao();
         final PreparedStatement stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
                 + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, " +
@@ -495,13 +495,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 "ALTURA_SULCO_INTERNO, POSICAO, VIDA_MOMENTO_AFERICAO) VALUES "
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         final ServicoDao servicoDao = Injection.provideServicoDao();
-        for (PneuComum pneu : afericao.getVeiculo().getListPneus()) {
-            stmt.setLong(1, afericao.getCodigo());
+        for (PneuComum pneu : afericaoPlaca.getVeiculo().getListPneus()) {
+            stmt.setLong(1, afericaoPlaca.getCodigo());
             stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
 
             // Já aproveitamos esse switch para atualizar as medições do pneu na tabela PNEU.
-            switch (afericao.getTipoMedicaoColetadaAfericao()) {
+            switch (afericaoPlaca.getTipoMedicaoColetadaAfericao()) {
                 case SULCO_PRESSAO:
                     pneuDao.updateMedicoes(pneu, codUnidade, conn);
                     stmt.setDouble(4, pneu.getPressaoAtual());
@@ -533,9 +533,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
             // Insere/atualiza os serviços que os pneus aferidos possam ter gerado.
             final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
-            final List<TipoServico> listServicosACadastrar = getServicosACadastrar(pneu, restricao, afericao
+            final List<TipoServico> listServicosACadastrar = getServicosACadastrar(pneu, restricao, afericaoPlaca
                     .getTipoMedicaoColetadaAfericao());
-            insertOrUpdateServicos(pneu, afericao.getCodigo(), codUnidade, listServicosACadastrar, conn, servicoDao);
+            insertOrUpdateServicos(pneu, afericaoPlaca.getCodigo(), codUnidade, listServicosACadastrar, conn, servicoDao);
         }
     }
 
@@ -633,26 +633,26 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
-    private Afericao createAfericaoResumida(ResultSet rSet) throws SQLException {
-        final Afericao afericao = new Afericao();
-        afericao.setCodigo(rSet.getLong("COD_AFERICAO"));
-        afericao.setCodUnidade(rSet.getLong("COD_UNIDADE"));
-        afericao.setDataHora(rSet.getObject("DATA_HORA", LocalDateTime.class));
-        afericao.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
-        afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.fromString(rSet.getString("TIPO_AFERICAO")));
-        afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
+    private AfericaoPlaca createAfericaoResumida(ResultSet rSet) throws SQLException {
+        final AfericaoPlaca afericaoPlaca = new AfericaoPlaca();
+        afericaoPlaca.setCodigo(rSet.getLong("COD_AFERICAO"));
+        afericaoPlaca.setCodUnidade(rSet.getLong("COD_UNIDADE"));
+        afericaoPlaca.setDataHora(rSet.getObject("DATA_HORA", LocalDateTime.class));
+        afericaoPlaca.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
+        afericaoPlaca.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.fromString(rSet.getString("TIPO_AFERICAO")));
+        afericaoPlaca.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
 
         // Veículo no qual aferição foi realizada.
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(rSet.getString("PLACA_VEICULO"));
-        afericao.setVeiculo(veiculo);
+        afericaoPlaca.setVeiculo(veiculo);
 
         // Colaborador que realizou a aferição.
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(rSet.getLong("CPF"));
         colaborador.setNome(rSet.getString("NOME"));
-        afericao.setColaborador(colaborador);
-        return afericao;
+        afericaoPlaca.setColaborador(colaborador);
+        return afericaoPlaca;
     }
 
     private void insertInconsistencia(Long codAfericao, String placa, PneuComum pneu, Long codUnidade, Connection

@@ -38,10 +38,10 @@ public class AfericaoResource {
     @POST
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
     @Path("/{codUnidade}")
-    public Response insert(Afericao afericao,
+    public Response insert(AfericaoPlaca afericaoPlaca,
                            @PathParam("codUnidade") Long codUnidade,
                            @HeaderParam("Authorization") String userToken) {
-        if (service.insert(afericao, codUnidade, userToken)) {
+        if (service.insert(afericaoPlaca, codUnidade, userToken)) {
             return Response.ok("Aferição inserida com sucesso");
         } else {
             return Response.error("Erro ao inserir aferição");
@@ -50,8 +50,8 @@ public class AfericaoResource {
 
     @PUT
     @Secured
-    public Response update(Afericao afericao) {
-        if (service.updateKmAfericao(afericao)) {
+    public Response update(AfericaoPlaca afericaoPlaca) {
+        if (service.updateKmAfericao(afericaoPlaca)) {
             return Response.ok("Km atualizado com sucesso");
         } else {
             return Response.error("Erro ao atualizar o KM");
@@ -94,7 +94,7 @@ public class AfericaoResource {
             Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    public List<Afericao> getAfericoesByCodUnidadeByPlaca(
+    public List<AfericaoPlaca> getAfericoesByCodUnidadeByPlaca(
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codTipoVeiculo") String codTipoVeiculo,
             @PathParam("placaVeiculo") String placaVeiculo,
@@ -121,9 +121,9 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/{codUnidade}/{codAfericao}")
-    public Afericao getByCod(@PathParam("codUnidade") Long codUnidade,
-                             @PathParam("codAfericao") Long codAfericao,
-                             @HeaderParam("Authorization") String userToken) {
+    public AfericaoPlaca getByCod(@PathParam("codUnidade") Long codUnidade,
+                                  @PathParam("codAfericao") Long codAfericao,
+                                  @HeaderParam("Authorization") String userToken) {
         return service.getByCod(codUnidade, codAfericao, userToken);
     }
 
