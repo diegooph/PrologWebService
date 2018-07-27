@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
+package br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.commons.OrderByClause;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuTipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuTipoServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
