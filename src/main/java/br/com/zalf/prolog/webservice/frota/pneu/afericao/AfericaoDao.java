@@ -12,14 +12,14 @@ import java.util.List;
 public interface AfericaoDao {
 
     /**
-     * insere uma aferição lincada com o código da unidade
+     * Insere uma aferição lincada com o código da unidade.
      *
-     * @param afericaoPlaca   uma aferição
+     * @param afericao uma aferição
      * @param codUnidade código da unidade
      * @return valor da operação
      * @throws SQLException se ocorrer erro no banco
      */
-    boolean insert(AfericaoPlaca afericaoPlaca, Long codUnidade) throws SQLException;
+    boolean insert(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws SQLException;
 
     /**
      * Atualiza uma aferição
