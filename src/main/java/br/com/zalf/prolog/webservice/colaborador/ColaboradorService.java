@@ -19,7 +19,6 @@ import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -91,12 +90,24 @@ public class ColaboradorService {
         }
     }
 
-    public List<Colaborador> getAllByUnidade(Long codUnidade, boolean apenasAtivos) {
+    @NotNull
+    public List<Colaborador> getAllByUnidade(Long codUnidade, boolean apenasAtivos) throws ProLogException {
         try {
             return dao.getAllByUnidade(codUnidade, apenasAtivos);
-        } catch (SQLException e) {
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar os colaboradores";
             Log.e(TAG, String.format("Erro ao buscar todos os colaboradores da unidade %d", codUnidade), e);
-            return Collections.emptyList();
+            throw exceptionHandler.map(e, errorMessage);
+        }
+    }
+
+    public List<Colaborador> getAllByEmpresa(final Long codEmrpesa, final boolean apenasAtivos) throws ProLogException {
+        try {
+            return dao.getAllByEmpresa(codEmrpesa, apenasAtivos);
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar os colaboradores";
+            Log.e(TAG, String.format("Erro ao buscar todos os colaboradores da empresa %d", codEmrpesa), e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 

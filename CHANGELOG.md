@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.70"></a>
 ## Version [v0.0.70](https://github.com/luizfp/PrologWeb/compare/v0.0.69...v0.0.70) (release-date) [unreleased]
 
+### Features
+* Cria busca dos colaboradores por código de empresa
+
 ### Refactors
 * Altera path da busca de todos os colaboradores de uma unidade
 

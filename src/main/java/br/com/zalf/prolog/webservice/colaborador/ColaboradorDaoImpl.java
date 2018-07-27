@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChang
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import com.google.common.base.Preconditions;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.time.Clock;
@@ -231,6 +231,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         return null;
     }
 
+    @NotNull
     @Override
     public Colaborador getByToken(@NotNull String token) throws SQLException {
         Connection conn = null;
@@ -267,68 +268,16 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         return null;
     }
 
+    @NotNull
     @Override
-    public List<Colaborador> getAllByUnidade(Long codUnidade, boolean apenasAtivos) throws SQLException {
-        List<Colaborador> list = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  C.CODIGO, " +
-                    "  C.CPF, " +
-                    "  C.PIS, " +
-                    "  C.MATRICULA_AMBEV, " +
-                    "  C.MATRICULA_TRANS, " +
-                    "  C.DATA_NASCIMENTO, " +
-                    "  C.DATA_ADMISSAO, " +
-                    "  C.DATA_DEMISSAO, " +
-                    "  C.STATUS_ATIVO, " +
-                    "  initcap(C.NOME)          AS NOME_COLABORADOR, " +
-                    "  EM.NOME         AS NOME_EMPRESA, " +
-                    "  EM.CODIGO       AS COD_EMPRESA, " +
-                    "  EM.LOGO_THUMBNAIL_URL, " +
-                    "  R.REGIAO        AS NOME_REGIONAL, " +
-                    "  R.CODIGO        AS COD_REGIONAL, " +
-                    "  U.NOME          AS NOME_UNIDADE, " +
-                    "  U.CODIGO        AS COD_UNIDADE, " +
-                    "  EQ.NOME         AS NOME_EQUIPE, " +
-                    "  EQ.CODIGO       AS COD_EQUIPE, " +
-                    "  S.NOME          AS NOME_SETOR, " +
-                    "  S.CODIGO        AS COD_SETOR, " +
-                    "  C.COD_FUNCAO, " +
-                    "  F.NOME          AS NOME_FUNCAO, " +
-                    "  C.COD_PERMISSAO AS PERMISSAO " +
-                    "FROM COLABORADOR C " +
-                    "  JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO " +
-                    "  JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE " +
-                    "  JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE " +
-                    "  JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA " +
-                    "  JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL " +
-                    "  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE " +
-                    "WHERE C.COD_UNIDADE = ? " +
-                    " AND (? = 1 OR C.STATUS_ATIVO = ?)" +
-                    "ORDER BY C.NOME ASC");
-            stmt.setLong(1, codUnidade);
+    public List<Colaborador> getAllByUnidade(@NotNull final Long codUnidade, final boolean apenasAtivos) throws Throwable {
+        return internalGetAll(codUnidade, apenasAtivos, true);
+    }
 
-            //noinspection Duplicates
-            if (apenasAtivos) {
-                stmt.setInt(2, 0);
-                stmt.setBoolean(3, true);
-            } else {
-                stmt.setInt(2, 1);
-                stmt.setBoolean(3, false);
-            }
-
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                list.add(createColaborador(rSet));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return list;
+    @NotNull
+    @Override
+    public List<Colaborador> getAllByEmpresa(@NotNull final Long codEmpresa, final boolean apenasAtivos) throws Throwable {
+        return internalGetAll(codEmpresa, apenasAtivos, false);
     }
 
     @Override
@@ -508,6 +457,38 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         }
 
         return false;
+    }
+
+    @NotNull
+    private List<Colaborador> internalGetAll(@NotNull final Long codigoFiltro,
+                                             final boolean apenasAtivos,
+                                             final boolean porUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            if (porUnidade) {
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADORES_GET_ALL_BY_UNIDADE(?, ?);");
+            } else {
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADORES_GET_ALL_BY_EMPRESA(?, ?);");
+            }
+            stmt.setLong(1, codigoFiltro);
+            if (apenasAtivos) {
+                stmt.setBoolean(2, true);
+            } else {
+                stmt.setNull(2, Types.BOOLEAN);
+            }
+
+            rSet = stmt.executeQuery();
+            final List<Colaborador> colaboradores = new ArrayList<>();
+            while (rSet.next()) {
+                colaboradores.add(createColaborador(rSet));
+            }
+            return colaboradores;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     private Visao getVisaoByCpf(Long cpf) throws SQLException {
