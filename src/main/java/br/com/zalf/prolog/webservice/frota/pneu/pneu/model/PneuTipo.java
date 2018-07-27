@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PneuAfericaoAvulsa;
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,8 @@ public enum PneuTipo {
     PNEU_ANALISE("PNEU_ANALISE", PneuAnalise.class),
     PNEU_DESCARTE("PNEU_DESCARTE", PneuDescarte.class),
     PNEU_ESTOQUE("PNEU_ESTOQUE", PneuEstoque.class),
-    PNEU_EM_USO("PNEU_EM_USO", PneuEmUso.class);
+    PNEU_EM_USO("PNEU_EM_USO", PneuEmUso.class),
+    PNEU_AFERICAO_AVULSA("PNEU_AFERICAO_AVULSA", PneuAfericaoAvulsa.class);
 
     @NotNull
     final String tipo;

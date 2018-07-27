@@ -119,7 +119,7 @@ public abstract class Pneu {
     @NotNull
     private PneuTipo tipo;
 
-    Pneu(@NotNull final PneuTipo pneuTipo) {
+    public Pneu(@NotNull final PneuTipo pneuTipo) {
         this.tipo = pneuTipo;
     }
 

@@ -29,7 +29,7 @@ public final class NovaAfericaoPlaca extends NovaAfericao {
     private boolean deveAferirEstepes;
 
     public NovaAfericaoPlaca() {
-        super(TipoNovaAfericao.AFERICAO_PLACA);
+        super(TipoProcessoColetaAfericao.PLACA);
     }
 
     public Veiculo getVeiculo() {

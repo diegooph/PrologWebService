@@ -13,9 +13,9 @@ public abstract class NovaAfericao {
 
     @Exclude
     @NotNull
-    private final TipoNovaAfericao tipo;
+    private final TipoProcessoColetaAfericao tipo;
 
-    public NovaAfericao(@NotNull final TipoNovaAfericao tipo) {
+    public NovaAfericao(@NotNull final TipoProcessoColetaAfericao tipo) {
         this.tipo = tipo;
     }
 
@@ -31,7 +31,7 @@ public abstract class NovaAfericao {
     public static RuntimeTypeAdapterFactory<NovaAfericao> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
                 .of(NovaAfericao.class, "tipo")
-                .registerSubtype(NovaAfericaoPlaca.class, TipoNovaAfericao.AFERICAO_PLACA.asString())
-                .registerSubtype(NovaAfericaoAvulsa.class, TipoNovaAfericao.AFERICAO_AVULSA.asString());
+                .registerSubtype(NovaAfericaoPlaca.class, TipoProcessoColetaAfericao.PLACA.asString())
+                .registerSubtype(NovaAfericaoAvulsa.class, TipoProcessoColetaAfericao.PNEU_AVULSO.asString());
     }
 }
