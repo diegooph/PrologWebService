@@ -63,7 +63,7 @@ public class AfericaoService {
                                                     Long codPneu,
                                                     String tipoAfericao) throws ProLogException {
         try {
-            return dao.getNovaAfericaoAvulsa(codUnidade, codPneu, TipoAfericao.fromString(tipoAfericao));
+            return dao.getNovaAfericaoAvulsa(codUnidade, codPneu, TipoMedicaoColetadaAfericao.fromString(tipoAfericao));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar NovaAfericao para o pneu: " + codPneu, e);
             throw exceptionHandler.map(e, "Erro ao inicar uma nova aferição");

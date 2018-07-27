@@ -10,7 +10,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServi
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ModeloPlacasAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -149,9 +149,9 @@ public final class AvaCorpAvilanConverter {
     public static IncluirMedida2 convert(@NotNull final Afericao afericao) throws ParseException {
         checkNotNull(afericao, "afericao não pode ser null!");
 
-        if (afericao.getTipoAfericao() != TipoAfericao.SULCO_PRESSAO) {
+        if (afericao.getTipoMedicaoColetadaAfericao() != TipoMedicaoColetadaAfericao.SULCO_PRESSAO) {
             throw new IllegalStateException("Só é possível realizar aferições que sejam de Sulco e Pressão na " +
-                    "integração com a Avilan. Tipo recebido: " + afericao.getTipoAfericao() +
+                    "integração com a Avilan. Tipo recebido: " + afericao.getTipoMedicaoColetadaAfericao() +
                     " Veículo: " + afericao.getVeiculo().getPlaca());
         }
 
@@ -582,7 +582,7 @@ public final class AvaCorpAvilanConverter {
         afericao.setKmMomentoAfericao(afericaoFiltro.getOdometro());
 
         // Na integração todas as aferições devem ser de sulco e pressão, já que o Latromi não tem essa diferenciação.
-        afericao.setTipoAfericao(TipoAfericao.SULCO_PRESSAO);
+        afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO_PRESSAO);
 
         if (afericaoFiltro.getDataRealizacao().length() > AvaCorpAvilanUtils.AVILAN_DATE_PATTERN_STRING_SIZE) {
             // Antes da integração, não era salvo no ERP da Avilan a hora da aferição, apenas a data. Se o tamanho da

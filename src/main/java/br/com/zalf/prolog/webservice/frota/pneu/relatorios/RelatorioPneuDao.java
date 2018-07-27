@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
@@ -236,7 +236,7 @@ public interface RelatorioPneuDao {
     Map<StatusPneu, Integer> getQtdPneusByStatus(@NotNull final List<Long> codUnidades) throws SQLException;
 
     /**
-     * Método para buscar a quantidade de aferições realizadas para cada {@link TipoAfericao},
+     * Método para buscar a quantidade de aferições realizadas para cada {@link TipoMedicaoColetadaAfericao},
      * dado um período de filtragem e as unidades selecionadas.
      *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.

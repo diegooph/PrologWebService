@@ -47,14 +47,14 @@ public interface AfericaoDao {
      * Busca objeto contendo informações necessárias para se iniciar uma aferição do {@link Pneu}.
      *
      * @param codPneu placa do veículo
-     * @param tipoAfericao tipo da aferição que será realizada
+     * @param tipoMedicaoColetadaAfericao tipo da aferição que será realizada
      * @return retorna o objeto da nova aferição
      * @throws SQLException se ocorrer erro na busca
      */
     @NotNull
     NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
                                              @NotNull final Long codPneu,
-                                             @NotNull final TipoAfericao tipoAfericao) throws Throwable;
+                                             @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable;
 
     /**
      * retorna as restrições de medidas da unidade

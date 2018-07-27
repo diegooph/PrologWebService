@@ -46,7 +46,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(3, afericao.getColaborador().getCpf());
             stmt.setLong(4, afericao.getKmMomentoAfericao());
             stmt.setLong(5, afericao.getTempoRealizacaoAfericaoInMillis());
-            stmt.setString(6, afericao.getTipoAfericao().asString());
+            stmt.setString(6, afericao.getTipoMedicaoColetadaAfericao().asString());
             stmt.setLong(7, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -106,7 +106,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     @Override
     public NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
                                                     @NotNull final Long codPneu,
-                                                    @NotNull final TipoAfericao tipoAfericao) throws Throwable {
+                                                    @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable {
         final NovaAfericaoAvulsa novaAfericao = new NovaAfericaoAvulsa();
         final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
         novaAfericao.setRestricao(restricao);
@@ -212,14 +212,14 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             // Seta para calcular informações de pressão.
             stmt.setObject(1, OffsetDateTime.now(Clock.system(zoneId)));
             stmt.setString(2, zoneId.getId());
-            stmt.setString(3, TipoAfericao.PRESSAO.asString());
-            stmt.setString(4, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(3, TipoMedicaoColetadaAfericao.PRESSAO.asString());
+            stmt.setString(4, TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
 
             // Seta para calcular informações de sulco.
             stmt.setObject(5, OffsetDateTime.now(Clock.system(zoneId)));
             stmt.setString(6, zoneId.getId());
-            stmt.setString(7, TipoAfericao.SULCO.asString());
-            stmt.setString(8, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(7, TipoMedicaoColetadaAfericao.SULCO.asString());
+            stmt.setString(8, TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
             stmt.setLong(9, codUnidade);
             stmt.setLong(10, codUnidade);
             rSet = stmt.executeQuery();
@@ -501,7 +501,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(3, codUnidade);
 
             // Já aproveitamos esse switch para atualizar as medições do pneu na tabela PNEU.
-            switch (afericao.getTipoAfericao()) {
+            switch (afericao.getTipoMedicaoColetadaAfericao()) {
                 case SULCO_PRESSAO:
                     pneuDao.updateMedicoes(pneu, codUnidade, conn);
                     stmt.setDouble(4, pneu.getPressaoAtual());
@@ -534,12 +534,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             // Insere/atualiza os serviços que os pneus aferidos possam ter gerado.
             final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
             final List<TipoServico> listServicosACadastrar = getServicosACadastrar(pneu, restricao, afericao
-                    .getTipoAfericao());
+                    .getTipoMedicaoColetadaAfericao());
             insertOrUpdateServicos(pneu, afericao.getCodigo(), codUnidade, listServicosACadastrar, conn, servicoDao);
         }
     }
 
-    private List<TipoServico> getServicosACadastrar(PneuComum pneu, Restricao restricao, TipoAfericao tipoAfericao) {
+    private List<TipoServico> getServicosACadastrar(PneuComum pneu, Restricao restricao, TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) {
         final List<TipoServico> servicos = new ArrayList<>();
 
         // Verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão.
@@ -578,7 +578,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             // Uma aferição de PRESSAO pode abrir serviço de calibragem e de inspeção.
             // Para facilitar o código e não poluir a criação dos serviços, é mais simples deixar criar qualquer tipo
             // de serviço e apenas remover depois de acordo com o tipo da aferição.
-            switch (tipoAfericao) {
+            switch (tipoMedicaoColetadaAfericao) {
                 case SULCO:
                     servicos.removeIf(s -> !s.equals(TipoServico.MOVIMENTACAO));
                     break;
@@ -639,7 +639,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         afericao.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         afericao.setDataHora(rSet.getObject("DATA_HORA", LocalDateTime.class));
         afericao.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
-        afericao.setTipoAfericao(TipoAfericao.fromString(rSet.getString("TIPO_AFERICAO")));
+        afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.fromString(rSet.getString("TIPO_AFERICAO")));
         afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
 
         // Veículo no qual aferição foi realizada.

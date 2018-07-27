@@ -35,7 +35,7 @@ public class Afericao {
      */
     private long tempoRealizacaoAfericaoInMillis;
 
-    private TipoAfericao tipoAfericao;
+    private TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao;
 
     public Afericao() {
 
@@ -97,12 +97,12 @@ public class Afericao {
         this.tempoRealizacaoAfericaoInMillis = tempoRealizacaoAfericaoInMillis;
     }
 
-    public TipoAfericao getTipoAfericao() {
-        return tipoAfericao;
+    public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao() {
+        return tipoMedicaoColetadaAfericao;
     }
 
-    public void setTipoAfericao(TipoAfericao tipoAfericao) {
-        this.tipoAfericao = tipoAfericao;
+    public void setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) {
+        this.tipoMedicaoColetadaAfericao = tipoMedicaoColetadaAfericao;
     }
 
     @Override
@@ -114,7 +114,7 @@ public class Afericao {
                 ", colaborador=" + colaborador +
                 ", kmMomentoAfericao=" + kmMomentoAfericao +
                 ", tempoRealizacaoAfericaoInMillis=" + tempoRealizacaoAfericaoInMillis +
-                ", tipoAfericao=" + tipoAfericao +
+                ", tipoAfericao=" + tipoMedicaoColetadaAfericao +
                 '}';
     }
 }

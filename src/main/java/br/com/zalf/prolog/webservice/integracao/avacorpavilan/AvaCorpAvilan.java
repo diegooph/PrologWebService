@@ -277,10 +277,10 @@ public final class AvaCorpAvilan extends Sistema {
          * A Avilan não suporta afericões de Sulco e Pressão separadamente, então lançamos uma
          * exceção caso o tipo selecionado for diferentes de {@link TipoAfericao#SULCO_PRESSAO}
          */
-        if (!tipoAfericao.equals(TipoAfericao.SULCO_PRESSAO.asString())) {
+        if (!tipoAfericao.equals(TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString())) {
             throw new TipoAfericaoNotSupported(
                     Response.Status.BAD_REQUEST.getStatusCode(),
-                    "Avilan só aceita aferição de " + TipoAfericao.SULCO_PRESSAO.getLegibleString(),
+                    "Avilan só aceita aferição de " + TipoMedicaoColetadaAfericao.SULCO_PRESSAO.getLegibleString(),
                     "Usuários da Avilan não podem realizar aferições de Sulco ou Pressão separadamente.");
         }
 

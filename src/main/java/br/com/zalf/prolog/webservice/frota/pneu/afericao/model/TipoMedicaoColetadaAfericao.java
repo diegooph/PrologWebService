@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public enum TipoAfericao implements BarColor {
+public enum TipoMedicaoColetadaAfericao implements BarColor {
     SULCO("SULCO") {
         @Nonnull
         @Override
@@ -56,7 +56,7 @@ public enum TipoAfericao implements BarColor {
     @Nonnull
     private final String stringRepresentation;
 
-    TipoAfericao(@Nonnull final String stringRepresentation) {
+    TipoMedicaoColetadaAfericao(@Nonnull final String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 
@@ -68,12 +68,12 @@ public enum TipoAfericao implements BarColor {
         return stringRepresentation;
     }
 
-    public static TipoAfericao fromString(@Nonnull final String string) {
+    public static TipoMedicaoColetadaAfericao fromString(@Nonnull final String string) {
         Preconditions.checkNotNull(string, "string cannot be null!");
 
-        for (final TipoAfericao tipoAfericao : TipoAfericao.values()) {
-            if (string.equals(tipoAfericao.stringRepresentation)) {
-                return tipoAfericao;
+        for (final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao : TipoMedicaoColetadaAfericao.values()) {
+            if (string.equals(tipoMedicaoColetadaAfericao.stringRepresentation)) {
+                return tipoMedicaoColetadaAfericao;
             }
         }
 

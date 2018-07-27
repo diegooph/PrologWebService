@@ -103,18 +103,18 @@ public class ModeloPlacasAfericao {
         private int quantidadePneus;
 
         /**
-         * Indica se a {@link #placa} permite aferição do tipo {@link TipoAfericao#SULCO}.
+         * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoColetadaAfericao#SULCO}.
          */
         private boolean podeAferirSulco;
 
         /**
-         * Indica se a {@link #placa} permite aferição do tipo {@link TipoAfericao#PRESSAO}.
+         * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoColetadaAfericao#PRESSAO}.
          */
         private boolean podeAferirPressao;
 
         /**
-         * Indica se a {@link #placa} permite aferição do tipo {@link TipoAfericao#SULCO} e
-         * do tipo {@link TipoAfericao#PRESSAO}.
+         * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoColetadaAfericao#SULCO} e
+         * do tipo {@link TipoMedicaoColetadaAfericao#PRESSAO}.
          */
         private boolean podeAferirSulcoPressao;
 

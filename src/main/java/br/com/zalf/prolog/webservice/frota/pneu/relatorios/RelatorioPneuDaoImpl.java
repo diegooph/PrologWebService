@@ -11,7 +11,7 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
@@ -464,9 +464,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "      ORDER BY A.DATA_HORA::DATE ASC) AS DADOS " +
                     "GROUP BY DATA, DADOS.DATA_FORMATADA " +
                     "ORDER BY DATA ASC;");
-            stmt.setString(1, TipoAfericao.PRESSAO.asString());
-            stmt.setString(2, TipoAfericao.SULCO.asString());
-            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(1, TipoMedicaoColetadaAfericao.PRESSAO.asString());
+            stmt.setString(2, TipoMedicaoColetadaAfericao.SULCO.asString());
+            stmt.setString(3, TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
             stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             stmt.setDate(5, dataInicial);
             stmt.setDate(6, dataFinal);
@@ -552,11 +552,11 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "      WHERE V.STATUS_ATIVO = TRUE " +
                     "            AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS DADOS;");
             stmt.setDate(1, new Date(Now.utcMillis()));
-            stmt.setString(2, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(3, TipoAfericao.PRESSAO.asString());
+            stmt.setString(2, TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(3, TipoMedicaoColetadaAfericao.PRESSAO.asString());
             stmt.setDate(4, new Date(Now.utcMillis()));
-            stmt.setString(5, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(6, TipoAfericao.SULCO.asString());
+            stmt.setString(5, TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(6, TipoMedicaoColetadaAfericao.SULCO.asString());
             stmt.setArray(7, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
