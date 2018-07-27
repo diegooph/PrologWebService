@@ -59,7 +59,7 @@ public interface ColaboradorDao {
 	 * @return uma lista de colaboradores.
 	 * @throws SQLException caso não seja possível buscar os dados.
 	 */
-	List<Colaborador> getAll(Long codUnidade, boolean apenasAtivos) throws SQLException;
+	List<Colaborador> getAllByUnidade(Long codUnidade, boolean apenasAtivos) throws SQLException;
 
 	/**
 	 * Busca apenas os motoristas e ajudantes de uma unidade

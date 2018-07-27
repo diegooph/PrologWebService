@@ -268,7 +268,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
-    public List<Colaborador> getAll(Long codUnidade, boolean apenasAtivos) throws SQLException {
+    public List<Colaborador> getAllByUnidade(Long codUnidade, boolean apenasAtivos) throws SQLException {
         List<Colaborador> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;

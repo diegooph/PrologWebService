@@ -91,9 +91,9 @@ public class ColaboradorService {
         }
     }
 
-    public List<Colaborador> getAll(Long codUnidade, boolean apenasAtivos) {
+    public List<Colaborador> getAllByUnidade(Long codUnidade, boolean apenasAtivos) {
         try {
-            return dao.getAll(codUnidade, apenasAtivos);
+            return dao.getAllByUnidade(codUnidade, apenasAtivos);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar todos os colaboradores da unidade %d", codUnidade), e);
             return Collections.emptyList();
