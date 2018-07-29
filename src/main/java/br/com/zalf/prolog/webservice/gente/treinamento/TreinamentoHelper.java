@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.webservice.commons.util.Now;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 
 import java.sql.Date;

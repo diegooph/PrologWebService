@@ -1,11 +1,19 @@
 Change Log
 ==========
 
+<a name="v0.0.70"></a>
+## Version [v0.0.70](https://github.com/luizfp/PrologWeb/compare/v0.0.69...v0.0.70) (2018-07-29)
+
+### Features
+* Cria relatório com o tempo total por tipo de marcação no controle de jornada
+* Cálcula horas noturnas no relatório de folha de ponto
+
 <a name="v0.0.69"></a>
 ## Version [v0.0.69](https://github.com/luizfp/PrologWeb/compare/v0.0.68...v0.0.69) (2018-07-19)
 
 ### Features
 * Cria validator para o insert do Modelo de Quiz
+* Cria relatório para mostrar o total de tempo gasto em cada tipo de intervalo por cada colaborador
 
 ### Refactors
 * Adiciona permissão de movimentação na busca de uma recapadora específica
@@ -55,7 +63,6 @@ Change Log
 ### Features
 * Cria back end para salvar mensagens de contato de possíveis clientes
 * Ativa método de listagem de marcações de um colaborador
-* Cria relatório para mostrar o total de tempo gasto em cada tipo de intervalo por cada colaborador
 
 ### Refactor
 * Altera componente da Dashboard para mostrar apenas os veículos ativos e não apenas os veículos com pneus vinculados
