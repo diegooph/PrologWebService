@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.70"></a>
-## Version [v0.0.70](https://github.com/luizfp/PrologWeb/compare/v0.0.69...v0.0.70) (release-date) [unreleased]
+## Version [v0.0.70](https://github.com/luizfp/PrologWeb/compare/v0.0.69...v0.0.70) (2018-07-29)
 
 ### Features
 * Cria relatório com o tempo total por tipo de marcação no controle de jornada
