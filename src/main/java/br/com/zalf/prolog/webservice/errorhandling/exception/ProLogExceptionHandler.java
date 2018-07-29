@@ -19,7 +19,7 @@ public class ProLogExceptionHandler {
     }
 
     public ProLogException map(@NotNull final Throwable throwable,
-                                      @NotNull final String fallBackErrorMessage) {
+                               @NotNull final String fallBackErrorMessage) {
         if (throwable instanceof SQLException) {
             return sqlTranslator.doTranslate((SQLException) throwable, fallBackErrorMessage);
         }
