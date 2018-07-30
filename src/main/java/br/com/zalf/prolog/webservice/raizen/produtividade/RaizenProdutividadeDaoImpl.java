@@ -34,7 +34,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     public void insertOrUpdateProdutividadeRaizen(@NotNull final String token,
                                                   @NotNull final Long codEmpresa,
                                                   @NotNull final List<RaizenProdutividadeItemInsert> raizenItens)
-            throws SQLException {
+            throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -51,7 +51,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public void insertRaizenProdutividadeItem(@NotNull final String token,
                                               @NotNull final Long codEmpresa,
-                                              @NotNull final RaizenProdutividadeItemInsert item) throws SQLException {
+                                              @NotNull final RaizenProdutividadeItemInsert item) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -64,7 +64,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public void updateRaizenProdutividadeItem(@NotNull final String token,
                                               @NotNull final Long codEmpresa,
-                                              @NotNull final RaizenProdutividadeItemInsert item) throws SQLException {
+                                              @NotNull final RaizenProdutividadeItemInsert item) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
@@ -104,7 +104,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     public List<RaizenProdutividade> getRaizenProdutividadeColaborador(@NotNull final Long codEmpresa,
                                                                        @NotNull final LocalDate dataInicial,
                                                                        @NotNull final LocalDate dataFinal) throws
-            SQLException {
+            Throwable {
         final List<RaizenProdutividade> produtividades = new ArrayList<>();
         RaizenProdutividadeColaborador raizenProdutividadeColaborador = null;
         Connection conn = null;
@@ -142,7 +142,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     public List<RaizenProdutividade> getRaizenProdutividadeData(@NotNull final Long codEmpresa,
                                                                 @NotNull final LocalDate dataInicial,
                                                                 @NotNull final LocalDate dataFinal) throws
-            SQLException {
+            Throwable {
         final List<RaizenProdutividade> produtividades = new ArrayList<>();
         RaizenProdutividadeData raizenProdutividadeData = null;
         Connection conn = null;
@@ -192,7 +192,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             if (rSet.next()) {
                 return createRaizenProdutividadeItemVisualizacao(rSet);
             } else {
-                throw new SQLException("Item não encontrado com código: " + codItem);
+                throw new Throwable("Item não encontrado com código: " + codItem);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -203,7 +203,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@NotNull final Long codColaborador,
                                                                       final int mes,
-                                                                      final int ano) throws SQLException {
+                                                                      final int ano) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -227,7 +227,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @Override
     public void deleteRaizenProdutividadeItens(@NotNull final Long codEmpresa,
-                                               @NotNull final List<Long> codRaizenProdutividade) throws SQLException {
+                                               @NotNull final List<Long> codRaizenProdutividade) throws Throwable {
         if (codRaizenProdutividade.isEmpty())
             return;
 
@@ -240,7 +240,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setLong(1, codEmpresa);
             stmt.setArray(2, PostgresUtils.ListLongToArray(conn, codRaizenProdutividade));
             if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao deletar produtividade");
+                throw new Throwable("Erro ao deletar produtividade");
             }
         } finally {
             closeConnection(conn, stmt, null);
@@ -251,7 +251,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                                                        @NotNull final String token,
                                                        @NotNull final Long codEmpresa,
                                                        @NotNull final RaizenProdutividadeItemInsert item)
-            throws SQLException {
+            throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO RAIZEN.PRODUTIVIDADE (CPF_MOTORISTA," +
@@ -281,7 +281,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setString(10, token);
             stmt.setLong(11, codEmpresa);
             if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao inserir item na tabela produtividade");
+                throw new Throwable("Erro ao inserir item na tabela produtividade");
             }
         } finally {
             closeStatement(stmt);
@@ -292,7 +292,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                                                     @NotNull final String token,
                                                     @NotNull final Long codEmpresa,
                                                     @NotNull final RaizenProdutividadeItemInsert item) throws
-            SQLException {
+            Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE RAIZEN.PRODUTIVIDADE SET CPF_MOTORISTA = ?," +
@@ -335,7 +335,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @NotNull
     private RaizenProdutividadeColaborador createRaizenProdutividadeColaborador(@NotNull final ResultSet rSet,
                                                                                 @NotNull final List<RaizenProdutividade> produtividades)
-            throws SQLException {
+            throws Throwable {
         final List<RaizenProdutividadeItemData> itensData = new ArrayList<>();
         itensData.add(createRaizenProdutividadeItemData(rSet));
         final RaizenProdutividadeColaborador raizenProdutividadeColaborador = new RaizenProdutividadeColaborador(
@@ -348,7 +348,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @NotNull
     private RaizenProdutividadeData createRaizenProdutividadeData(
             @NotNull final ResultSet rSet,
-            @NotNull final List<RaizenProdutividade> produtividades) throws SQLException {
+            @NotNull final List<RaizenProdutividade> produtividades) throws Throwable {
         final List<RaizenProdutividadeItemColaborador> itensColaborador = new ArrayList<>();
         itensColaborador.add(createRaizenProdutividadeItemColaborador(rSet));
         final RaizenProdutividadeData raizenProdutividadeData = new RaizenProdutividadeData(
@@ -360,7 +360,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @NotNull
     private RaizenprodutividadeItemIndividual createRaizenProdutividadeItemIndividual(@NotNull final ResultSet rSet)
-            throws SQLException {
+            throws Throwable {
         final RaizenprodutividadeItemIndividual item = new RaizenprodutividadeItemIndividual();
         item.setDataViagem(rSet.getDate("DATA_VIAGEM"));
         item.setValor(rSet.getBigDecimal("VALOR"));
@@ -374,7 +374,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @NotNull
     private RaizenProdutividadeItemColaborador createRaizenProdutividadeItemColaborador(ResultSet rSet) throws
-            SQLException {
+            Throwable {
         final RaizenProdutividadeItemColaborador item = new RaizenProdutividadeItemColaborador(
                 rSet.getLong("CPF_MOTORISTA"),
                 rSet.getString("NOME_MOTORISTA"));
@@ -393,7 +393,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     }
 
     @NotNull
-    private RaizenProdutividadeItemData createRaizenProdutividadeItemData(ResultSet rSet) throws SQLException {
+    private RaizenProdutividadeItemData createRaizenProdutividadeItemData(ResultSet rSet) throws Throwable {
         final RaizenProdutividadeItemData item = new RaizenProdutividadeItemData();
         item.setCodigo(rSet.getLong("CODIGO"));
         item.setPlaca(rSet.getString("PLACA"));
@@ -411,7 +411,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     }
 
     @NotNull
-    private RaizenProdutividadeItemVisualizacao createRaizenProdutividadeItemVisualizacao(ResultSet rSet) throws SQLException {
+    private RaizenProdutividadeItemVisualizacao createRaizenProdutividadeItemVisualizacao(ResultSet rSet) throws Throwable {
         final RaizenProdutividadeItemVisualizacao item = new RaizenProdutividadeItemVisualizacao();
         item.setCodigo(rSet.getLong("CODIGO"));
         item.setPlaca(rSet.getString("PLACA"));

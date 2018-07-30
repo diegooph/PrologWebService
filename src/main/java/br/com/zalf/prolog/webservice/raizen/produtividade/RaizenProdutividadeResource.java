@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.raizen.produtividade;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.errorhandling.exception.RaizenProdutividadeException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -41,7 +41,7 @@ public class RaizenProdutividadeResource {
                                               @PathParam("codEmpresa") Long codEmpresa,
                                               @FormDataParam("file") InputStream fileInputStream,
                                               @FormDataParam("file") FormDataContentDisposition fileDetail) throws
-            Exception {
+            ProLogException {
         return service.uploadRaizenProdutividade(token, codEmpresa, fileInputStream, fileDetail);
     }
 
@@ -52,7 +52,7 @@ public class RaizenProdutividadeResource {
     public Response insertRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
                                               RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws
-            Exception {
+            ProLogException {
         return service.insertRaizenProdutividade(token, codEmpresa, raizenProdutividadeItemInsert);
     }
 
@@ -63,7 +63,7 @@ public class RaizenProdutividadeResource {
     public Response updateRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
                                               RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws
-            Exception {
+            ProLogException {
         return service.updateRaizenProdutividade(token, codEmpresa, raizenProdutividadeItemInsert);
     }
 
@@ -79,7 +79,7 @@ public class RaizenProdutividadeResource {
                                                             @QueryParam("dataInicial") String dataIncial,
                                                             @QueryParam("dataFinal") String dataFinal,
                                                             @QueryParam("tipoAgrupamento") String agrupamento)
-            throws RaizenProdutividadeException {
+            throws ProLogException {
         return service.getRaizenProdutividade(codEmpresa, dataIncial, dataFinal, agrupamento);
     }
 
@@ -93,7 +93,7 @@ public class RaizenProdutividadeResource {
     @Path("/{codEmpresa}/itens/{codItem}")
     public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(@PathParam("codEmpresa") final Long codEmpresa,
                                                                           @PathParam("codItem") final Long codItem)
-            throws RaizenProdutividadeException {
+            throws ProLogException {
         return service.getRaizenProdutividadeItem(codEmpresa, codItem);
     }
 
@@ -106,7 +106,7 @@ public class RaizenProdutividadeResource {
     public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
                                                                       @QueryParam("mes") int mes,
                                                                       @QueryParam("ano") int ano)
-            throws RaizenProdutividadeException {
+            throws ProLogException {
         return service.getRaizenProdutividade(codColaborador, mes, ano);
     }
 
@@ -115,7 +115,7 @@ public class RaizenProdutividadeResource {
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.DELETAR)
     @Path("/{codEmpresa}")
     public Response deleteRaizenProdutividadeItens(@PathParam("codEmpresa") Long codEmpresa,
-                                                   List<Long> codRaizenProdutividades) throws Exception {
+                                                   List<Long> codRaizenProdutividades) throws ProLogException {
         return service.deleteRaizenProdutividade(codEmpresa, codRaizenProdutividades);
     }
 }

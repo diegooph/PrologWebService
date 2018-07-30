@@ -6,7 +6,8 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
-import br.com.zalf.prolog.webservice.errorhandling.exception.RaizenProdutividadeException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeAgrupamento;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
@@ -21,9 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -33,34 +32,44 @@ import java.util.List;
  */
 public class RaizenProdutividadeService {
     private static final String TAG = RaizenProdutividadeService.class.getSimpleName();
+    @NotNull
     private final RaizenProdutividadeDao dao = Injection.provideRaizenProdutividadeDao();
+    @NotNull
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     public Response uploadRaizenProdutividade(@NotNull final String token,
                                               @NotNull final Long codEmpresa,
                                               @NotNull final InputStream fileInputStream,
                                               @NotNull final FormDataContentDisposition fileDetail)
-            throws RaizenProdutividadeException {
-        final File file = createFileFromImport(codEmpresa, fileInputStream, fileDetail);
-        readAndInsertImport(token, codEmpresa, file);
-        return Response.ok("Upload realizado com sucesso!");
+            throws ProLogException {
+        try {
+            final File file = createFileFromImport(codEmpresa, fileInputStream, fileDetail);
+            final List<RaizenProdutividadeItemInsert> raizenProdutividadeItens = RaizenProdutividadeReader
+                    .readListFromCsvFilePath(file);
+            dao.insertOrUpdateProdutividadeRaizen(TokenCleaner.getOnlyToken(token), codEmpresa,
+                    raizenProdutividadeItens);
+            return Response.ok("Upload realizado com sucesso!");
+        } catch (final Throwable e) {
+            final String errorMessage = "Não foi possível inserir os dados no banco de dados, tente novamente!";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
+        }
     }
 
     public Response insertRaizenProdutividade(@NotNull final String token,
                                               @NotNull final Long codEmpresa,
                                               @NotNull final RaizenProdutividadeItemInsert
                                                       raizenProdutividadeItemInsert)
-            throws RaizenProdutividadeException {
+            throws ProLogException {
         Preconditions.checkNotNull(raizenProdutividadeItemInsert, "raizenProdutividadeItemInsert não pode ser nulla!");
         try {
             dao.insertRaizenProdutividadeItem(TokenCleaner.getOnlyToken(token), codEmpresa,
                     raizenProdutividadeItemInsert);
             return Response.ok("Produtividade cadastrada com sucesso");
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao cadastrar/alterar a produtividade", e);
-            throw new RaizenProdutividadeException(
-                    "Não foi possível cadastrar este item, tente novamente",
-                    "Erro ao cadastrar a produtividade",
-                    e);
+        } catch (Throwable e) {
+            final String errorMessage = "Não foi possível cadastrar este item, tente novamente";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -68,18 +77,16 @@ public class RaizenProdutividadeService {
                                               @NotNull final Long codEmpresa,
                                               @NotNull final RaizenProdutividadeItemInsert
                                                       updateRaizenProdutividadeItemInsert)
-            throws RaizenProdutividadeException {
+            throws ProLogException {
         Preconditions.checkNotNull(updateRaizenProdutividadeItemInsert, "Produtividade não pode ser nulla!");
         try {
             dao.updateRaizenProdutividadeItem(TokenCleaner.getOnlyToken(token), codEmpresa,
                     updateRaizenProdutividadeItemInsert);
             return Response.ok("Produtividade alterada com sucesso");
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao alterar a produtividade");
-            throw new RaizenProdutividadeException(
-                    "Não foi possível cadastrar este item, tente novamente",
-                    "Erro ao cadastrar a produtividade",
-                    e);
+        } catch (Throwable e) {
+            final String errorMessage = "Não foi possível atualizar este item, tente novamente";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -88,9 +95,10 @@ public class RaizenProdutividadeService {
                                                             @NotNull final String dataInicial,
                                                             @NotNull final String dataFinal,
                                                             @NotNull final String agrupamento)
-            throws RaizenProdutividadeException {
-        final RaizenProdutividadeAgrupamento tipoAgrupamento = RaizenProdutividadeAgrupamento.fromString(agrupamento);
+            throws ProLogException {
         try {
+            final RaizenProdutividadeAgrupamento tipoAgrupamento = RaizenProdutividadeAgrupamento.fromString
+                    (agrupamento);
             switch (tipoAgrupamento) {
                 case POR_COLABORADOR:
                     return dao.getRaizenProdutividadeColaborador(
@@ -106,106 +114,67 @@ public class RaizenProdutividadeService {
                     throw new IllegalStateException();
 
             }
-        } catch (final Exception e) {
-            Log.e(TAG, "Erro ao buscar produtividade", e);
-            throw new RaizenProdutividadeException(
-                    "Não foi possível buscar a produtividade, tente novamente",
-                    null,
-                    e);
+        } catch (final Throwable e) {
+            final String errorMessage = "Não foi possível buscar a produtividade, tente novamente";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
     @NotNull
     public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(@NotNull final Long codEmpresa,
                                                                           @NotNull final Long codItem)
-            throws RaizenProdutividadeException {
+            throws ProLogException {
         try {
             return dao.getRaizenProdutividadeItemVisualizacao(codEmpresa, codItem);
-        } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao buscar produtividade item", throwable);
-            throw new RaizenProdutividadeException(
-                    "Não foi possível buscar o item, tente novamente",
-                    "Erro ao buscar item produtividade",
-                    throwable);
+        } catch (final Throwable e) {
+            final String errorMessage = "Não foi possível buscar o item, tente novamente";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
     public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@NotNull final Long codColaborador,
                                                                       final int mes,
                                                                       final int ano)
-            throws RaizenProdutividadeException {
+            throws ProLogException {
         try {
             return dao.getRaizenProdutividade(
                     codColaborador,
                     mes,
                     ano);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar produtividade", e);
-            throw new RaizenProdutividadeException(
-                    "Não foi possível buscar a produtividade, tente novamente",
-                    "Erro ao buscar produtividade",
-                    e);
+        } catch (Throwable e) {
+            final String errorMessage = "Não foi possível buscar a produtividade, tente novamente";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
     public Response deleteRaizenProdutividade(@NotNull final Long codEmpresa,
                                               @NotNull final List<Long> codRaizenProdutividades)
-            throws RaizenProdutividadeException {
+            throws ProLogException {
         try {
             dao.deleteRaizenProdutividadeItens(codEmpresa, codRaizenProdutividades);
             return Response.ok("Produtividades deletadas com sucesso!");
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao deletar os itens da produtividade", e);
-            throw new RaizenProdutividadeException(
-                    "Não foi possível deletar estes itens, tente novamente",
-                    "Erro ao deletar os itens",
-                    e);
+        } catch (Throwable e) {
+            final String errorMessage = "Não foi possível deletar estes itens, tente novamente";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
     private File createFileFromImport(@NotNull final Long codEmpresa,
                                       @NotNull final InputStream fileInputStream,
                                       @NotNull final FormDataContentDisposition fileDetail)
-            throws RaizenProdutividadeException {
-        try {
-            final String fileName = String.valueOf(Now.utcMillis()) + "_" + codEmpresa
-                    + "_" + fileDetail.getFileName().replace(" ", "_");
-            // Pasta temporária
-            final File tmpDIr = Files.createTempDir();
-            final File file = new File(tmpDIr, fileName);
-            final FileOutputStream out = new FileOutputStream(file);
-            IOUtils.copy(fileInputStream, out);
-            IOUtils.closeQuietly(out);
-            return file;
-        } catch (IOException e) {
-            Log.e(TAG, "Erro ao ler arquivo binário no import: " + codEmpresa);
-            throw new RaizenProdutividadeException(
-                    "Arquivo importado possui inconsistências",
-                    "Erro ao ler arquivo binário no import",
-                    e);
-        }
-    }
-
-    private void readAndInsertImport(@NotNull final String token,
-                                     @NotNull final Long codEmpresa,
-                                     @NotNull final File file) throws RaizenProdutividadeException {
-        try {
-            final List<RaizenProdutividadeItemInsert> raizenProdutividadeItens = RaizenProdutividadeReader
-                    .readListFromCsvFilePath(file);
-            dao.insertOrUpdateProdutividadeRaizen(TokenCleaner.getOnlyToken(token), codEmpresa,
-                    raizenProdutividadeItens);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inserir dados da escala no BD", e);
-            throw new RaizenProdutividadeException(
-                    "Não foi possível inserir os dados no banco de dados, tente novamente!",
-                    "Erro ao inserir informações no banco",
-                    e);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao ler arquivo no servidor", e);
-            throw new RaizenProdutividadeException(
-                    "O arquivo enviado está com problemas, tente novamente!",
-                    "Erro ao ler arquivo no servidor",
-                    e);
-        }
+            throws Throwable {
+        final String fileName = String.valueOf(Now.utcMillis()) + "_" + codEmpresa
+                + "_" + fileDetail.getFileName().replace(" ", "_");
+        // Pasta temporária
+        final File tmpDIr = Files.createTempDir();
+        final File file = new File(tmpDIr, fileName);
+        final FileOutputStream out = new FileOutputStream(file);
+        IOUtils.copy(fileInputStream, out);
+        IOUtils.closeQuietly(out);
+        return file;
     }
 }
