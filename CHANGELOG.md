@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.71"></a>
 ## Version [v0.0.71](https://github.com/luizfp/PrologWeb/compare/v0.0.70...v0.0.71) (release-date) [unreleased]
 
+### Bug Fixes
+* Corrige cálculo das horas noturnas no relatório de folha de ponto do controle de jornada
+
 <a name="v0.0.70"></a>
 ## Version [v0.0.70](https://github.com/luizfp/PrologWeb/compare/v0.0.69...v0.0.70) (2018-07-29)
 

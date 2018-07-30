@@ -33,19 +33,26 @@ public class Durations {
                                                       @NotNull final LocalDateTime dateTimeTo,
                                                       @NotNull final TimeRange timeRange,
                                                       @NotNull final ZoneId zoneId) {
-        final ZonedDateTime zdtStart = dateTimeFrom.atZone(zoneId);
-        final ZonedDateTime zdtStop = dateTimeTo.atZone(zoneId);
+        final ZonedDateTime fromTz = dateTimeFrom.atZone(zoneId);
+        final ZonedDateTime toTz = dateTimeTo.atZone(zoneId);
+        return getSumOfHoursInRangeOnDays(fromTz, toTz, timeRange, zoneId);
+    }
 
-        final Interval interval = Interval.of(zdtStart.toInstant(), zdtStop.toInstant());
+    @NotNull
+    public static Duration getSumOfHoursInRangeOnDays(@NotNull final ZonedDateTime fromTz,
+                                                      @NotNull final ZonedDateTime toTz,
+                                                      @NotNull final TimeRange timeRange,
+                                                      @NotNull final ZoneId zoneId) {
+        final Interval interval = Interval.of(fromTz.toInstant(), toTz.toInstant());
 
-        final LocalDate ldStart = zdtStart.toLocalDate();
-        final LocalDate ldStop = zdtStop.toLocalDate();
+        final LocalDate ldStart = fromTz.toLocalDate();
+        final LocalDate ldStop = toTz.toLocalDate();
         LocalDate localDate = ldStart;
 
         final LocalTime timeStart = timeRange.getStart();
         final LocalTime timeStop = timeRange.getEnd();
 
-        final long initialCapacity = (ChronoUnit.DAYS.between(ldStart, dateTimeTo) + 1);
+        final long initialCapacity = (ChronoUnit.DAYS.between(ldStart, ldStop) + 1);
         final Map<LocalDate, Interval> dateToIntervalMap = new HashMap<>((int) initialCapacity);
         while (!localDate.isAfter(ldStop)) {
             final ZonedDateTime zdtTargetStart = localDate.atTime(timeStart).atZone(zoneId);
@@ -55,7 +62,7 @@ public class Durations {
             if (interval.overlaps(target)) {
                 intersection = interval.intersection(target);
             } else {
-                final ZonedDateTime emptyInterval = localDate.atTime(timeStart).atZone(zoneId);   // Better than NULL I suppose.
+                final ZonedDateTime emptyInterval = localDate.atTime(timeStart).atZone(zoneId); // Better than NULL I suppose.
                 intersection = Interval.of(emptyInterval.toInstant(), emptyInterval.toInstant());
             }
             dateToIntervalMap.put(localDate, intersection);

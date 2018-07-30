@@ -10,10 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -80,8 +77,8 @@ public final class FolhaPontoRelatorio {
             final List<FolhaPontoIntervalo> intervalosDia = marcacoesDias.get(i).getIntervalosDia();
             for (int j = 0; j < intervalosDia.size(); j++) {
                 final FolhaPontoIntervalo intervalo = intervalosDia.get(j);
-                final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicioUtc();
-                final LocalDateTime dataHoraFim = intervalo.getDataHoraFimUtc();
+                final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
+                final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
                 somaTempoDecorrido(
                         segundosTotaisTipoIntervalo,
                         segundosTotaisHorasNoturnas,
@@ -89,9 +86,9 @@ public final class FolhaPontoRelatorio {
                         dataHoraInicio,
                         dataHoraFim,
                         filtroInicio,
-                        // Sem o filtro de fim for maior que o horário atual do sistema, precisamos garantir que os
+                        // Se o filtro de fim for maior que o horário atual do sistema, precisamos garantir que os
                         // cálculos utilizem o horário atual e não o filtro de fim.
-                        filtroFim.isBefore(dataHoraGeracaoRelatorioUtc) ? filtroFim : dataHoraGeracaoRelatorioUtc,
+                        filtroFim.isBefore(dataHoraGeracaoRelatorioZoned) ? filtroFim : dataHoraGeracaoRelatorioZoned,
                         zoneId);
             }
         }
@@ -146,9 +143,11 @@ public final class FolhaPontoRelatorio {
             } else {
                 throw new IllegalStateException("Condição não mapeada! :(");
             }
-            final long segundos = ChronoUnit.SECONDS.between(inicio, fim);
+            final ZonedDateTime inicioZoned = inicio.atZone(zoneId);
+            final ZonedDateTime fimZoned = fim.atZone(zoneId);
+            final long segundos = ChronoUnit.SECONDS.between(inicioZoned, fimZoned);
             final long segundosNoturnos = Durations
-                    .getSumOfHoursInRangeOnDays(inicio, fim, Clt.RANGE_HORAS_NOTURNAS, zoneId)
+                    .getSumOfHoursInRangeOnDays(inicioZoned, fimZoned, Clt.RANGE_HORAS_NOTURNAS, zoneId)
                     .getSeconds();
             segundosTotaisTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);
             segundosTotaisHorasNoturnas.merge(intervalo.getCodTipoIntervalo(), segundosNoturnos, (a, b) -> a + b);
