@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
+import br.com.zalf.prolog.webservice.commons.util.date.TimeRange;
 import org.jetbrains.annotations.NotNull;
 
 /**

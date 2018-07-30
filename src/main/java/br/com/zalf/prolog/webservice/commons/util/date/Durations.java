@@ -1,13 +1,15 @@
 package br.com.zalf.prolog.webservice.commons.util.date;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TimeRange;
-import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.jetbrains.annotations.NotNull;
+import org.threeten.extra.Interval;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 24/07/2018
@@ -26,59 +28,46 @@ public class Durations {
         return formatDuration(duration.toMillis(), format);
     }
 
-    public static Duration getSumOfHoursInRangeOnDays(LocalDateTime dateTimeFrom,
-                                                      LocalDateTime dateTimeTo,
-                                                      TimeRange timeRange) {
-        return getDurationOnDaysWithPrecision(dateTimeFrom, dateTimeTo, timeRange.getStart(), timeRange.getEnd(), ChronoUnit.HOURS);
-    }
+    @NotNull
+    public static Duration getSumOfHoursInRangeOnDays(@NotNull final LocalDateTime dateTimeFrom,
+                                                      @NotNull final LocalDateTime dateTimeTo,
+                                                      @NotNull final TimeRange timeRange,
+                                                      @NotNull final ZoneId zoneId) {
+        final ZonedDateTime zdtStart = dateTimeFrom.atZone(zoneId);
+        final ZonedDateTime zdtStop = dateTimeTo.atZone(zoneId);
 
-    public static Duration getSumOfMinutesInRangeOnDays(LocalDateTime dateTimeFrom,
-                                                        LocalDateTime dateTimeTo,
-                                                        TimeRange timeRange) {
-        return getDurationOnDaysWithPrecision(dateTimeFrom, dateTimeTo, timeRange.getStart(), timeRange.getEnd(), ChronoUnit.MINUTES);
-    }
+        final Interval interval = Interval.of(zdtStart.toInstant(), zdtStop.toInstant());
 
-    public static Duration getDurationOnDaysWithPrecision(LocalDateTime dateTimeFrom,
-                                                          LocalDateTime dateTimeTo,
-                                                          TimeRange timeRange,
-                                                          ChronoUnit precision) {
-        final long count = DateTimeRange.of(dateTimeFrom, dateTimeTo)
-                .streamOn(precision)
-                .filter(getFilter(timeRange.getStart(), timeRange.getEnd()))
-                .count();
-        return Duration.of(count, precision);
-    }
+        final LocalDate ldStart = zdtStart.toLocalDate();
+        final LocalDate ldStop = zdtStop.toLocalDate();
+        LocalDate localDate = ldStart;
 
-    public static Duration getDurationOnDaysWithPrecision(LocalDateTime dateTimeFrom,
-                                                          LocalDateTime dateTimeTo,
-                                                          LocalTime dailyTimeFrom,
-                                                          LocalTime dailyTimeTo,
-                                                          ChronoUnit precision) {
-        final long count = DateTimeRange.of(dateTimeFrom, dateTimeTo)
-                .streamOn(precision)
-                .filter(getFilter(dailyTimeFrom, dailyTimeTo))
-                .count();
-        return Duration.of(count, precision);
-    }
+        final LocalTime timeStart = timeRange.getStart();
+        final LocalTime timeStop = timeRange.getEnd();
 
-    @VisibleForTesting
-    public static Predicate<? super LocalDateTime> getFilter(LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
-        return dailyTimeFrom.isBefore(dailyTimeTo) ?
-                filterFromTo(dailyTimeFrom, dailyTimeTo) :
-                filterToFrom(dailyTimeFrom, dailyTimeTo);
-    }
+        final long initialCapacity = (ChronoUnit.DAYS.between(ldStart, dateTimeTo) + 1);
+        final Map<LocalDate, Interval> dateToIntervalMap = new HashMap<>((int) initialCapacity);
+        while (!localDate.isAfter(ldStop)) {
+            final ZonedDateTime zdtTargetStart = localDate.atTime(timeStart).atZone(zoneId);
+            final ZonedDateTime zdtTargetStop = localDate.plusDays(1).atTime(timeStop).atZone(zoneId);
+            final Interval target = Interval.of(zdtTargetStart.toInstant(), zdtTargetStop.toInstant());
+            final Interval intersection;
+            if (interval.overlaps(target)) {
+                intersection = interval.intersection(target);
+            } else {
+                final ZonedDateTime emptyInterval = localDate.atTime(timeStart).atZone(zoneId);   // Better than NULL I suppose.
+                intersection = Interval.of(emptyInterval.toInstant(), emptyInterval.toInstant());
+            }
+            dateToIntervalMap.put(localDate, intersection);
+            // Setup the next loop.
+            localDate = localDate.plusDays(1);
+        }
 
-    private static Predicate<? super LocalDateTime> filterFromTo(LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
-        return zdt -> {
-            LocalTime time = zdt.toLocalTime();
-            return (time.equals(dailyTimeFrom) || time.isAfter(dailyTimeFrom)) && time.isBefore(dailyTimeTo);
-        };
-    }
-
-    private static Predicate<? super LocalDateTime> filterToFrom(LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
-        return zdt -> {
-            LocalTime time = zdt.toLocalTime();
-            return (time.equals(dailyTimeFrom) || time.isAfter(dailyTimeFrom)) || (time.isBefore(dailyTimeTo));
-        };
+        Duration totalDuration = Duration.ZERO;
+        final List<LocalDate> dates = new ArrayList<>(dateToIntervalMap.keySet());
+        for (final LocalDate date : dates) {
+            totalDuration = totalDuration.plus(dateToIntervalMap.get(date).toDuration());
+        }
+        return totalDuration;
     }
 }
