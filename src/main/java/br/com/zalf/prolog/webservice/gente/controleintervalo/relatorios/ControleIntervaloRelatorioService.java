@@ -144,6 +144,7 @@ public class ControleIntervaloRelatorioService {
         }
     }
 
+    @NotNull
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
                                                             @NotNull final String codTipoIntervalo,
                                                             @NotNull final String cpf,
@@ -164,7 +165,7 @@ public class ControleIntervaloRelatorioService {
                     "dataInicial: %s \n" +
                     "dataFinal: %s", codUnidade, codTipoIntervalo, cpf, dataInicial, dataFinal);
             Log.e(TAG, errorMessage, e);
-            throw exceptionHandler.map(e, errorMessage);
+            throw exceptionHandler.map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
