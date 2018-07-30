@@ -223,7 +223,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        PneuDao pneuDao = Injection.providePneuDao();
+        final PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(VEICULOS_BY_PLACA);

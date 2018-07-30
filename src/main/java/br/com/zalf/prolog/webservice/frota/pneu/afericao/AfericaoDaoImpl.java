@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
@@ -22,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
-
-    private static final String TAG = AfericaoDaoImpl.class.getSimpleName();
 
     public AfericaoDaoImpl() {
 
@@ -103,7 +102,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
         final Veiculo veiculo = veiculoDao.getVeiculoByPlaca(placa, true);
-        final List<PneuComum> estepes = veiculo.getEstepes();
+        final List<Pneu> estepes = veiculo.getEstepes();
         novaAfericao.setEstepesVeiculo(estepes);
         novaAfericao.setVeiculo(veiculo);
         final Restricao restricao = getRestricoesByPlaca(placa);
@@ -123,13 +122,25 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return novaAfericao;
     }
 
+    @NotNull
     @Override
-    public Restricao getRestricaoByCodUnidade(Long codUnidade) throws SQLException {
+    public Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws SQLException {
         Connection conn = null;
+        try {
+            conn = getConnection();
+            return getRestricaoByCodUnidade(conn, codUnidade);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Restricao getRestricaoByCodUnidade(@NotNull final Connection conn, @NotNull final Long codUnidade)
+            throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM, ER" +
                     ".TOLERANCIA_CALIBRAGEM, ER.TOLERANCIA_INSPECAO, "
                     + "ER.PERIODO_AFERICAO_SULCO, ER.PERIODO_AFERICAO_PRESSAO "
@@ -145,7 +156,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 throw new SQLException("Dados de restrição não encontrados para a unidade: " + codUnidade);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeStatement(stmt);
+            closeResultSet(rSet);
         }
     }
 
@@ -329,7 +341,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PreparedStatement stmt = null;
         AfericaoPlaca afericaoPlaca = null;
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        final List<PneuComum> pneus = new ArrayList<>();
+        final List<Pneu> pneus = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
@@ -497,61 +509,72 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return placa;
     }
 
-    private void insertValores(Afericao afericao, Long codUnidade, Connection conn) throws Throwable {
+    private void insertValores(@NotNull final Afericao afericao,
+                               @NotNull final Long codUnidade,
+                               @NotNull final Connection conn) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
+        final ServicoDao servicoDao = Injection.provideServicoDao();
+        final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
+
         final PreparedStatement stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
                 + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, " +
                 "ALTURA_SULCO_CENTRAL_EXTERNO, ALTURA_SULCO_EXTERNO, " +
                 "ALTURA_SULCO_INTERNO, POSICAO, VIDA_MOMENTO_AFERICAO) VALUES "
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        // TODO: parei aqui
-//        for (PneuComum pneu : afericao.getVeiculo().getListPneus()) {
-//            stmt.setLong(1, afericao.getCodigo());
-//            stmt.setLong(2, pneu.getCodigo());
-//            stmt.setLong(3, codUnidade);
-//
-//            // Já aproveitamos esse switch para atualizar as medições do pneu na tabela PNEU.
-//            switch (afericao.getTipoMedicaoColetadaAfericao()) {
-//                case SULCO_PRESSAO:
-//                    pneuDao.updateMedicoes(pneu, codUnidade, conn);
-//                    stmt.setDouble(4, pneu.getPressaoAtual());
-//                    stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
-//                    stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
-//                    stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
-//                    stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
-//                    break;
-//                case SULCO:
-//                    pneuDao.updateSulcos(pneu.getCodigo(), pneu.getSulcosAtuais(), codUnidade, conn);
-//                    stmt.setNull(4, Types.REAL);
-//                    stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
-//                    stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
-//                    stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
-//                    stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
-//                    break;
-//                case PRESSAO:
-//                    pneuDao.updatePressao(pneu.getCodigo(), pneu.getPressaoAtual(), codUnidade, conn);
-//                    stmt.setDouble(4, pneu.getPressaoAtual());
-//                    stmt.setNull(5, Types.REAL);
-//                    stmt.setNull(6, Types.REAL);
-//                    stmt.setNull(7, Types.REAL);
-//                    stmt.setNull(8, Types.REAL);
-//                    break;
-//            }
-//            stmt.setInt(9, pneu.getPosicao());
-//            stmt.setInt(10, pneu.getVidaAtual());
-//            stmt.executeUpdate();
-//
-//            // Insere/atualiza os serviços que os pneus aferidos possam ter gerado.
-//            final ServicoDao servicoDao = Injection.provideServicoDao();
-//            final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
-//            final List<TipoServico> listServicosACadastrar = getServicosACadastrar(pneu, restricao, afericao
-//                    .getTipoMedicaoColetadaAfericao());
-//            insertOrUpdateServicos(pneu, afericao.getCodigo(), codUnidade, listServicosACadastrar, conn, servicoDao);
-//        }
+        final List<Pneu> pneusAferidos = afericao.getPneusAferidos();
+        for (Pneu pneu : pneusAferidos) {
+            stmt.setLong(1, afericao.getCodigo());
+            stmt.setLong(2, pneu.getCodigo());
+            stmt.setLong(3, codUnidade);
+
+            // Já aproveitamos esse switch para atualizar as medições do pneu na tabela PNEU.
+            switch (afericao.getTipoMedicaoColetadaAfericao()) {
+                case SULCO_PRESSAO:
+                    pneuDao.updateMedicoes(conn, codUnidade, pneu.getCodigo(), pneu.getSulcosAtuais(), pneu.getPressaoAtual());
+                    stmt.setDouble(4, pneu.getPressaoAtual());
+                    stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
+                    stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
+                    stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
+                    stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
+                    break;
+                case SULCO:
+                    pneuDao.updateSulcos(pneu.getCodigo(), pneu.getSulcosAtuais(), codUnidade, conn);
+                    stmt.setNull(4, Types.REAL);
+                    stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
+                    stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
+                    stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
+                    stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
+                    break;
+                case PRESSAO:
+                    pneuDao.updatePressao(pneu.getCodigo(), pneu.getPressaoAtual(), codUnidade, conn);
+                    stmt.setDouble(4, pneu.getPressaoAtual());
+                    stmt.setNull(5, Types.REAL);
+                    stmt.setNull(6, Types.REAL);
+                    stmt.setNull(7, Types.REAL);
+                    stmt.setNull(8, Types.REAL);
+                    break;
+            }
+            stmt.setInt(9, pneu.getPosicao());
+            stmt.setInt(10, pneu.getVidaAtual());
+            stmt.executeUpdate();
+
+            // Insere/atualiza os serviços que os pneus aferidos possam ter gerado.
+            final List<TipoServico> listServicosACadastrar = getServicosACadastrar(
+                    pneu,
+                    restricao,
+                    afericao.getTipoMedicaoColetadaAfericao());
+            insertOrUpdateServicos(
+                    conn,
+                    servicoDao,
+                    codUnidade,
+                    pneu.getCodigo(),
+                    afericao.getCodigo(),
+                    listServicosACadastrar);
+        }
     }
 
-    private List<TipoServico> getServicosACadastrar(PneuComum pneu, Restricao restricao, TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) {
+    private List<TipoServico> getServicosACadastrar(Pneu pneu, Restricao restricao, TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) {
         final List<TipoServico> servicos = new ArrayList<>();
 
         // Verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão.
@@ -614,32 +637,35 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return restricao;
     }
 
-    private void insertOrUpdateServicos(PneuComum pneu, long codAfericao, Long codUnidade, List<TipoServico>
-            servicosPendentes,
-                                        Connection conn, ServicoDao servicoDao) throws SQLException {
+    private void insertOrUpdateServicos(@NotNull final Connection conn,
+                                        @NotNull final ServicoDao servicoDao,
+                                        @NotNull final Long codUnidade,
+                                        @NotNull final Long codPneu,
+                                        @NotNull final Long codAfericao,
+                                        @NotNull final List<TipoServico> servicosPendentes) throws Throwable {
         // Se não houver nenhum serviço para inserir/atualizar podemos retornar e poupar uma consulta ao banco.
         if (servicosPendentes.isEmpty())
             return;
 
-        final List<TipoServico> servicosCadastrados = servicoDao.getServicosCadastradosByPneu(pneu.getCodigo(),
-                codUnidade);
+        final List<TipoServico> servicosCadastrados = servicoDao.getServicosCadastradosByPneu(codPneu, codUnidade);
 
         for (TipoServico servicoPendente : servicosPendentes) {
             // Se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente, convertemos a antiga
             // calibragem para uma inspeção.
-            if (servicoPendente.equals(TipoServico.INSPECAO) && servicosCadastrados.contains(TipoServico.CALIBRAGEM)) {
-                servicoDao.calibragemToInspecao(pneu.getCodigo(), codUnidade, conn);
+            if (servicoPendente.equals(TipoServico.INSPECAO)
+                    && servicosCadastrados.contains(TipoServico.CALIBRAGEM)) {
+                servicoDao.calibragemToInspecao(codPneu, codUnidade, conn);
             } else {
                 if (servicosCadastrados.contains(servicoPendente)) {
-                    servicoDao.incrementaQtdApontamentosServico(pneu.getCodigo(), codUnidade, servicoPendente, conn);
+                    servicoDao.incrementaQtdApontamentosServico(codPneu, codUnidade, servicoPendente, conn);
 
                     // Não podemos criar um serviço de calibragem caso já exista um de inspeção aberto.
                     // Já que calibragens (se existirem) são convertidas para inspeções quando um serviço de inspeção
                     // precisa ser aberto se deixassemos esse caso passar, geraria um erro bizarro onde acabariamos
                     // com duas inspeções abertas para o mesmo pneu. :s
-                } else if (!(servicosCadastrados.contains(TipoServico.INSPECAO) && servicoPendente.equals(TipoServico
-                        .CALIBRAGEM))) {
-                    servicoDao.criaServico(pneu.getCodigo(), codAfericao, servicoPendente, codUnidade, conn);
+                } else if (!(servicosCadastrados.contains(TipoServico.INSPECAO)
+                        && servicoPendente.equals(TipoServico.CALIBRAGEM))) {
+                    servicoDao.criaServico(codPneu, codAfericao, servicoPendente, codUnidade, conn);
                 }
             }
         }

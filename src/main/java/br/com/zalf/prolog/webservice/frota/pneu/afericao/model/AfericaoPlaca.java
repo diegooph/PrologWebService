@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Created by jean on 04/04/16.
@@ -36,5 +40,11 @@ public final class AfericaoPlaca extends Afericao {
 
     public void setKmMomentoAfericao(long kmMomentoAfericao) {
         this.kmMomentoAfericao = kmMomentoAfericao;
+    }
+
+    @NotNull
+    @Override
+    public List<Pneu> getPneusAferidos() {
+        return getVeiculo().getListPneus();
     }
 }

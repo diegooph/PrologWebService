@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -18,7 +19,7 @@ public interface PneuDao {
      * @return lista de pneus
      * @throws SQLException caso ocorra erro no banco
      */
-    List<PneuComum> getPneusByPlaca(String placa) throws SQLException;
+    List<Pneu> getPneusByPlaca(String placa) throws SQLException;
 
     /**
      * insere um pneu
@@ -32,15 +33,14 @@ public interface PneuDao {
     Long insert(Pneu pneu, Long codUnidade) throws Throwable;
 
     /**
-     * atualiza medições do pneu no banco
-     *
-     * @param pneu       um pneu
-     * @param codUnidade código da unidade
-     * @param conn       conexão do banco
-     * @return valor da operação
-     * @throws SQLException caso ocorra erro no banco
+     * Atualiza medições do pneu no banco.
      */
-    boolean updateMedicoes(PneuComum pneu, Long codUnidade, Connection conn) throws SQLException;
+    @CanIgnoreReturnValue
+    boolean updateMedicoes(@NotNull final Connection conn,
+                           @NotNull final Long codUnidade,
+                           @NotNull final Long codPneu,
+                           @NotNull final Sulcos novosSulcos,
+                           final double novaPressao) throws Throwable;
 
     /**
      * atualiza valores do pneu
@@ -56,6 +56,7 @@ public interface PneuDao {
     /**
      * Atualiza a pressão do pneu.
      */
+    @CanIgnoreReturnValue
     boolean updatePressao(Long codPneu, double pressao, Long codUnidade, Connection conn) throws SQLException;
 
     /**

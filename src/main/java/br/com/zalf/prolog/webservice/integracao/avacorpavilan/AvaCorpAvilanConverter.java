@@ -164,7 +164,7 @@ public final class AvaCorpAvilanConverter {
         // seja aferida, então a placa dela será setada em .setVeiculo().
 
         final ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
-        for (final PneuComum pneu : afericaoPlaca.getVeiculo().getListPneus()) {
+        for (final Pneu pneu : afericaoPlaca.getVeiculo().getListPneus()) {
             final MedidaPneu medidaPneu = new MedidaPneu();
             medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
             medidaPneu.setNumeroFogoPneu(pneu.getCodigoCliente());
@@ -304,11 +304,11 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static List<PneuComum> convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
+    public static List<Pneu> convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
                                           @Nonnull final ArrayOfPneu arrayOfPneu) {
         checkNotNull(posicaoPneuMapper, "posicaoPneuMapper não pode ser null!");
         checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
-        final List<PneuComum> pneus = new ArrayList<>();
+        final List<Pneu> pneus = new ArrayList<>();
 
         // Modelo de Pneu e Banda serão iguais para todos os pneus. Pneus sempre terão 4 sulcos.
         final ModeloPneu modeloPneu = new ModeloPneu();
@@ -340,7 +340,7 @@ public final class AvaCorpAvilanConverter {
         }
 
         // Ordena lista pelas posições do ProLog.
-        pneus.sort(PneuComum.POSICAO_PNEU_COMPARATOR);
+        pneus.sort(Pneu.POSICAO_PNEU_COMPARATOR);
 
         return pneus;
     }
@@ -528,7 +528,7 @@ public final class AvaCorpAvilanConverter {
         final AfericaoPlaca afericaoPlaca = convertAfericaoSemPneus(afericaoFiltro, codUnidadeAfericao);
 
         // Pneus - Medidas.
-        final List<PneuComum> pneus = new ArrayList<>();
+        final List<Pneu> pneus = new ArrayList<>();
         final List<PneuFiltro> pneusAvilan = afericaoFiltro.getPneus().getPneuFiltro();
         for (int i = 0; i < pneusAvilan.size(); i++) {
             final PneuFiltro pneuFiltro = pneusAvilan.get(i);

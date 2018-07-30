@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
@@ -103,7 +104,7 @@ final class ServicoConverter {
         veiculo.setKmAtual(resultSet.getLong("KM_ATUAL_VEICULO"));
         veiculo.setKmAberturaServico(resultSet.getInt("KM_ABERTURA_SERVICO"));
 
-        final List<PneuComum> pneus = new ArrayList<>();
+        final List<Pneu> pneus = new ArrayList<>();
         // Aqui precisa ser um do-while porque já é feito um resultSet.next() antes de chamar
         // esse método. Se fizessemos apenas um while, perderíamos o primeiro elemento.
         do {

@@ -195,11 +195,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public List<PneuComum> getPneusByPlaca(String placa) throws SQLException {
+    public List<Pneu> getPneusByPlaca(String placa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<PneuComum> listPneu = new ArrayList<>();
+        List<Pneu> listPneu = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(BASE_QUERY_BUSCA_PNEU +
@@ -240,22 +240,26 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean updateMedicoes(PneuComum pneu, Long codUnidade, Connection conn) throws SQLException {
+    public boolean updateMedicoes(@NotNull final Connection conn,
+                                  @NotNull final Long codUnidade,
+                                  @NotNull final Long codPneu,
+                                  @NotNull final Sulcos novosSulcos,
+                                  final double novaPressao) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE PNEU SET "
                     + "PRESSAO_ATUAL = ?, ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, " +
                     "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? "
                     + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
-            stmt.setDouble(1, pneu.getPressaoAtual());
-            stmt.setDouble(2, pneu.getSulcosAtuais().getInterno());
-            stmt.setDouble(3, pneu.getSulcosAtuais().getExterno());
-            stmt.setDouble(4, pneu.getSulcosAtuais().getCentralInterno());
-            stmt.setDouble(5, pneu.getSulcosAtuais().getCentralExterno());
-            stmt.setLong(6, pneu.getCodigo());
+            stmt.setDouble(1, novaPressao);
+            stmt.setDouble(2, novosSulcos.getInterno());
+            stmt.setDouble(3, novosSulcos.getExterno());
+            stmt.setDouble(4, novosSulcos.getCentralInterno());
+            stmt.setDouble(5, novosSulcos.getCentralExterno());
+            stmt.setLong(6, codPneu);
             stmt.setLong(7, codUnidade);
             if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao atualizar medições do pneu: " + pneu.getCodigo());
+                throw new SQLException("Erro ao atualizar medições do pneu: " + codPneu);
             }
         } finally {
             closeStatement(stmt);
