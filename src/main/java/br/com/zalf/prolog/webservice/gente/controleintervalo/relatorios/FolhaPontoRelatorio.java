@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -59,7 +60,8 @@ public final class FolhaPontoRelatorio {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     public void calculaTempoEmCadaTipoIntervalo(@NotNull final LocalDate dataInicial,
                                                 @NotNull final LocalDate dataFinal,
-                                                @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade) {
+                                                @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade,
+                                                @NotNull final ZoneId zoneId) {
         //noinspection ConstantConditions
         Preconditions.checkState(marcacoesDias != null);
 
@@ -89,7 +91,8 @@ public final class FolhaPontoRelatorio {
                         filtroInicio,
                         // Sem o filtro de fim for maior que o horário atual do sistema, precisamos garantir que os
                         // cálculos utilizem o horário atual e não o filtro de fim.
-                        filtroFim.isBefore(dataHoraGeracaoRelatorioUtc) ? filtroFim : dataHoraGeracaoRelatorioUtc);
+                        filtroFim.isBefore(dataHoraGeracaoRelatorioUtc) ? filtroFim : dataHoraGeracaoRelatorioUtc,
+                        zoneId);
             }
         }
 
@@ -105,7 +108,8 @@ public final class FolhaPontoRelatorio {
                                     @Nullable final LocalDateTime dataHoraInicio,
                                     @Nullable final LocalDateTime dataHoraFim,
                                     @NotNull final LocalDateTime filtroInicio,
-                                    @NotNull final LocalDateTime filtroFim) {
+                                    @NotNull final LocalDateTime filtroFim,
+                                    @NotNull final ZoneId zoneId) {
         // Calcula a diferença de tempo entre início e fim, se ambos existirem.
         if (dataHoraInicio != null && dataHoraFim != null) {
             // Precisamos cobrir 4 diferentes casos:
@@ -144,7 +148,7 @@ public final class FolhaPontoRelatorio {
             }
             final long segundos = ChronoUnit.SECONDS.between(inicio, fim);
             final long segundosNoturnos = Durations
-                    .getSumOfMinutesInRangeOnDays(inicio, fim, Clt.RANGE_HORAS_NOTURNAS)
+                    .getSumOfHoursInRangeOnDays(inicio, fim, Clt.RANGE_HORAS_NOTURNAS, zoneId)
                     .toMinutes() * 60;
             segundosTotaisTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);
             segundosTotaisHorasNoturnas.merge(intervalo.getCodTipoIntervalo(), segundosNoturnos, (a, b) -> a + b);

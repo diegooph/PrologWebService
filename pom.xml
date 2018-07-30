@@ -168,6 +168,13 @@
 			<version>8.0.45</version>
 		</dependency>
 
+		<!-- Esse projeto adiciona classes extras utilitárias as novas classes do pacote java.time do Java 8.
+			 http://www.threeten.org/threeten-extra/ -->
+		<dependency>
+			<groupId>org.threeten</groupId>
+			<artifactId>threeten-extra</artifactId>
+			<version>1.3.2</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>prolog.webservice</finalName>
