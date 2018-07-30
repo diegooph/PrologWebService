@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
 import org.jetbrains.annotations.NotNull;
@@ -26,11 +27,11 @@ interface OperacoesIntegradasAfericao {
     Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable;
 
     @NotNull
-    List<Afericao> getAfericoes(@NotNull final Long codUnidade,
-                                @NotNull final String codTipoVeiculo,
-                                @NotNull final String placaVeiculo,
-                                @NotNull final LocalDate dataInicial,
-                                @NotNull final LocalDate dataFinal,
-                                final int limit,
-                                final long offset) throws Throwable;
+    List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
+                                           @NotNull final String codTipoVeiculo,
+                                           @NotNull final String placaVeiculo,
+                                           @NotNull final LocalDate dataInicial,
+                                           @NotNull final LocalDate dataFinal,
+                                           final int limit,
+                                           final long offset) throws Throwable;
 }

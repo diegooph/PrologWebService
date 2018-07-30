@@ -99,18 +99,18 @@ public class AfericaoService {
         }
     }
 
-    public List<Afericao> getAfericoes(Long codUnidade,
-                                       String codTipoVeiculo,
-                                       String placaVeiculo,
-                                       String dataInicial,
-                                       String dataFinal,
-                                       int limit,
-                                       long offset,
-                                       final String userToken) throws ProLogException {
+    public List<AfericaoPlaca> getAfericoesPlacas(Long codUnidade,
+                                                  String codTipoVeiculo,
+                                                  String placaVeiculo,
+                                                  String dataInicial,
+                                                  String dataFinal,
+                                                  int limit,
+                                                  long offset,
+                                                  final String userToken) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
-                    .getAfericoes(
+                    .getAfericoesPlacas(
                             codUnidade,
                             codTipoVeiculo,
                             placaVeiculo,

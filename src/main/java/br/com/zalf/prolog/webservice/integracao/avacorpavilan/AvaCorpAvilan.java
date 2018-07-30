@@ -365,13 +365,13 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
-                                       @NotNull String codTipoVeiculo,
-                                       @NotNull String placaVeiculo,
-                                       @NotNull LocalDate dataInicial,
-                                       @NotNull LocalDate dataFinal,
-                                       int limit,
-                                       long offset) throws Throwable {
+    public List<AfericaoPlaca> getAfericoesPlacas(@NotNull Long codUnidade,
+                                                  @NotNull String codTipoVeiculo,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull LocalDate dataInicial,
+                                                  @NotNull LocalDate dataFinal,
+                                                  int limit,
+                                                  long offset) throws Throwable {
         // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
         // vazio.
         final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();

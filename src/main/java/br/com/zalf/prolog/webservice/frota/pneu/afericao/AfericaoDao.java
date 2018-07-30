@@ -96,13 +96,20 @@ public interface AfericaoDao {
     List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
-    List<Afericao> getAfericoes(@NotNull final Long codUnidade,
-                                @NotNull final String codTipoVeiculo,
-                                @NotNull final String placaVeiculo,
-                                @NotNull final LocalDate dataInicial,
-                                @NotNull final LocalDate dataFinal,
-                                final int limit,
-                                final long offset) throws Throwable;
+    List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
+                                           @NotNull final String codTipoVeiculo,
+                                           @NotNull final String placaVeiculo,
+                                           @NotNull final LocalDate dataInicial,
+                                           @NotNull final LocalDate dataFinal,
+                                           final int limit,
+                                           final long offset) throws Throwable;
+
+    @NotNull
+    List<AfericaoAvulsa> getAfericoesAvulsas(@NotNull final Long codUnidade,
+                                             @NotNull final LocalDate dataInicial,
+                                             @NotNull final LocalDate dataFinal,
+                                             final int limit,
+                                             final long offset) throws Throwable;
 
     /**
      * retorna uma aferição através do código dela

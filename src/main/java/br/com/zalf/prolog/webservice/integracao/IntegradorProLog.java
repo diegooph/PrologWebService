@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -179,14 +180,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
-                                       @NotNull String codTipoVeiculo,
-                                       @NotNull String placaVeiculo,
-                                       @NotNull LocalDate dataInicial,
-                                       @NotNull LocalDate dataFinal,
-                                       int limit,
-                                       long offset) throws Throwable {
-        return afericaoDao.getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit,
+    public List<AfericaoPlaca> getAfericoesPlacas(@NotNull Long codUnidade,
+                                                  @NotNull String codTipoVeiculo,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull LocalDate dataInicial,
+                                                  @NotNull LocalDate dataFinal,
+                                                  int limit,
+                                                  long offset) throws Throwable {
+        return afericaoDao.getAfericoesPlacas(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit,
                 offset);
     }
 

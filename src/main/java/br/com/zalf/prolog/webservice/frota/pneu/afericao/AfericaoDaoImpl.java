@@ -288,13 +288,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @NotNull
     @Override
-    public List<Afericao> getAfericoes(@NotNull final Long codUnidade,
-                                       @NotNull final String codTipoVeiculo,
-                                       @NotNull final String placaVeiculo,
-                                       @NotNull final LocalDate dataInicial,
-                                       @NotNull final LocalDate dataFinal,
-                                       final int limit,
-                                       final long offset) throws Throwable {
+    public List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
+                                                  @NotNull final String codTipoVeiculo,
+                                                  @NotNull final String placaVeiculo,
+                                                  @NotNull final LocalDate dataInicial,
+                                                  @NotNull final LocalDate dataFinal,
+                                                  final int limit,
+                                                  final long offset) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -330,14 +330,24 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setInt(8, limit);
             stmt.setLong(9, offset);
             rSet = stmt.executeQuery();
-            final List<Afericao> afericoes = new ArrayList<>();
+            final List<AfericaoPlaca> afericoes = new ArrayList<>();
             while (rSet.next()) {
-                afericoes.add(createAfericaoResumida(rSet));
+                afericoes.add(createAfericaoResumidaPlaca(rSet));
             }
             return afericoes;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    @Override
+    public List<AfericaoAvulsa> getAfericoesAvulsas(@NotNull final Long codUnidade,
+                                                    @NotNull final LocalDate dataInicial,
+                                                    @NotNull final LocalDate dataFinal,
+                                                    final int limit,
+                                                    final long offset) {
+        return null;
     }
 
     @NotNull
@@ -385,7 +395,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             rSet = stmt.executeQuery();
             Afericao afericao;
             if (rSet.next()) {
-                afericao = createAfericaoResumida(rSet);
+                afericao = createAfericaoResumidaPlaca(rSet);
                 if (afericao instanceof AfericaoPlaca) {
                     final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                     final List<Pneu> pneus = new ArrayList<>();
@@ -663,26 +673,27 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private Afericao createAfericaoResumida(@NotNull final ResultSet rSet) throws Throwable {
-        final String tipoProcessoColetaString = rSet.getString("TIPO_PROCESSO_COLETA");
-        final TipoProcessoColetaAfericao tipoProcesso = TipoProcessoColetaAfericao.fromString(tipoProcessoColetaString);
+    private AfericaoPlaca createAfericaoResumidaPlaca(@NotNull final ResultSet rSet) throws Throwable {
+        final AfericaoPlaca afericaoPlaca = new AfericaoPlaca();
+        // Veículo no qual aferição foi realizada.
+        final Veiculo veiculo = new Veiculo();
+        veiculo.setPlaca(rSet.getString("PLACA_VEICULO"));
+        afericaoPlaca.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
+        afericaoPlaca.setVeiculo(veiculo);
+        setDadosComunsAfericaoResumida(rSet, afericaoPlaca);
+        return afericaoPlaca;
+    }
 
-        final Afericao afericao;
-        // O tipo do processo já será setado ao instanciarmos o objeto correto.
-        if (tipoProcesso.equals(TipoProcessoColetaAfericao.PLACA)) {
-            final AfericaoPlaca afericaoPlaca = new AfericaoPlaca();
-            // Veículo no qual aferição foi realizada.
-            final Veiculo veiculo = new Veiculo();
-            veiculo.setPlaca(rSet.getString("PLACA_VEICULO"));
-            afericaoPlaca.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
-            afericaoPlaca.setVeiculo(veiculo);
-            afericao = afericaoPlaca;
-        } else {
-            final AfericaoAvulsa afericaoAvulsa = new AfericaoAvulsa();
-            // TODO: Setar pneu aferido
-            afericao = afericaoAvulsa;
-        }
+    @NotNull
+    private Afericao createAfericaResumidaAvulsa(@NotNull final ResultSet rSet) throws Throwable {
+        final AfericaoAvulsa afericaoAvulsa = new AfericaoAvulsa();
+        // TODO:
+        setDadosComunsAfericaoResumida(rSet, afericaoAvulsa);
+        return afericaoAvulsa;
+    }
 
+    private void setDadosComunsAfericaoResumida(@NotNull final ResultSet rSet,
+                                                @NotNull final Afericao afericao) throws Throwable {
         // Atributos em comum.
         afericao.setCodigo(rSet.getLong("COD_AFERICAO"));
         afericao.setCodUnidade(rSet.getLong("COD_UNIDADE"));
@@ -696,6 +707,5 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         colaborador.setCpf(rSet.getLong("CPF"));
         colaborador.setNome(rSet.getString("NOME"));
         afericao.setColaborador(colaborador);
-        return afericao;
     }
 }

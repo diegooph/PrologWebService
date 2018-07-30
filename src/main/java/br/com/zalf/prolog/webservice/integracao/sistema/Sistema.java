@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -98,15 +99,15 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
-                                       @NotNull String codTipoVeiculo,
-                                       @NotNull String placaVeiculo,
-                                       @NotNull LocalDate dataInicial,
-                                       @NotNull LocalDate dataFinal,
-                                       int limit,
-                                       long offset) throws Throwable {
+    public List<AfericaoPlaca> getAfericoesPlacas(@NotNull Long codUnidade,
+                                                  @NotNull String codTipoVeiculo,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull LocalDate dataInicial,
+                                                  @NotNull LocalDate dataFinal,
+                                                  int limit,
+                                                  long offset) throws Throwable {
         return getIntegradorProLog()
-                .getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
+                .getAfericoesPlacas(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
     }
 
     @NotNull

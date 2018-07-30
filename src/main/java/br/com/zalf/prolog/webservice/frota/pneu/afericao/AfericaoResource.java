@@ -87,13 +87,13 @@ public class AfericaoResource {
     }
 
     @GET
-    @Path("/{codUnidade}/{codTipoVeiculo}/{placaVeiculo}")
+    @Path("/unidades/{codUnidade}/tipos-veiculos/{codTipoVeiculo}/placas/{placaVeiculo}")
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR,
             Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    public List<Afericao> getAfericoesByCodUnidadeByPlaca(
+    public List<AfericaoPlaca> getAfericoesPlacas(
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codTipoVeiculo") String codTipoVeiculo,
             @PathParam("placaVeiculo") String placaVeiculo,
@@ -102,7 +102,7 @@ public class AfericaoResource {
             @QueryParam("limit") int limit,
             @QueryParam("offset") long offset,
             @HeaderParam("Authorization") String userToken) throws ProLogException {
-        return service.getAfericoes(
+        return service.getAfericoesPlacas(
                 codUnidade,
                 codTipoVeiculo,
                 placaVeiculo,
@@ -114,14 +114,40 @@ public class AfericaoResource {
     }
 
     @GET
+    @Path("/unidades/{codUnidade}/avulsas")
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR,
             Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @Path("/{codUnidade}/{codAfericao}")
-    public Afericao getByCod(@PathParam("codUnidade") Long codUnidade,
-                             @PathParam("codAfericao") Long codAfericao,
+    public List<Afericao> getAfericoesAvulsas(
+            @PathParam("codUnidade") Long codUnidade,
+            @QueryParam("dataInicial") String dataInicial,
+            @QueryParam("dataFinal") String dataFinal,
+            @QueryParam("limit") int limit,
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) throws ProLogException {
+        return null;
+//        return service.getAfericoesPlacas(
+//                codUnidade,
+//                codTipoVeiculo,
+//                placaVeiculo,
+//                dataInicial,
+//                dataFinal,
+//                limit,
+//                offset,
+//                userToken);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @Path("/{codAfericao}/unidades/{codUnidade}")
+    public Afericao getByCod(@PathParam("codAfericao") Long codAfericao,
+                             @PathParam("codUnidade") Long codUnidade,
                              @HeaderParam("Authorization") String userToken) throws ProLogException {
         return service.getByCod(codUnidade, codAfericao, userToken);
     }
