@@ -197,10 +197,9 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM RAIZEN.PRODUTIVIDADE RP WHERE RP.CODIGO = ?" +
-                    " AND RP.COD_EMPRESA = ?;");
-            stmt.setLong(1, codItem);
-            stmt.setLong(2, codEmpresa);
+            stmt = conn.prepareStatement("SELECT * FROM RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_GET_ITEM_POR_CODIGO(?, ?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codItem);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createRaizenProdutividadeItemVisualizacao(rSet);
@@ -263,8 +262,10 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         final RaizenProdutividadeItemVisualizacao item = new RaizenProdutividadeItemVisualizacao();
         item.setCodigo(rSet.getLong("CODIGO"));
         item.setPlaca(rSet.getString("PLACA"));
+        item.setColaboradorCadastrado(rSet.getBoolean("PLACA_CADASTRADA"));
         item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
         item.setCpfColaborador(rSet.getLong("CPF_MOTORISTA"));
+        item.setColaboradorCadastrado(rSet.getBoolean("MOTORISTA_CADASTRADO"));
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
