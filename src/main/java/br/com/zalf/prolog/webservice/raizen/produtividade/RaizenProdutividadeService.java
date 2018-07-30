@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.raizen.produtividade.error.RaizenProdutividadeValidator;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeAgrupamento;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
@@ -61,8 +62,8 @@ public class RaizenProdutividadeService {
                                               @NotNull final RaizenProdutividadeItemInsert
                                                       raizenProdutividadeItemInsert)
             throws ProLogException {
-        Preconditions.checkNotNull(raizenProdutividadeItemInsert, "raizenProdutividadeItemInsert não pode ser nulla!");
         try {
+            RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(raizenProdutividadeItemInsert);
             dao.insertRaizenProdutividadeItem(TokenCleaner.getOnlyToken(token), codEmpresa,
                     raizenProdutividadeItemInsert);
             return Response.ok("Produtividade cadastrada com sucesso");
@@ -78,8 +79,8 @@ public class RaizenProdutividadeService {
                                               @NotNull final RaizenProdutividadeItemInsert
                                                       updateRaizenProdutividadeItemInsert)
             throws ProLogException {
-        Preconditions.checkNotNull(updateRaizenProdutividadeItemInsert, "Produtividade não pode ser nulla!");
         try {
+            RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(updateRaizenProdutividadeItemInsert);
             dao.updateRaizenProdutividadeItem(TokenCleaner.getOnlyToken(token), codEmpresa,
                     updateRaizenProdutividadeItemInsert);
             return Response.ok("Produtividade alterada com sucesso");

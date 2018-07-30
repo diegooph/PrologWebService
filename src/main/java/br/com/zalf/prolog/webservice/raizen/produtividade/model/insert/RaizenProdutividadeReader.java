@@ -88,7 +88,7 @@ public class RaizenProdutividadeReader {
         }
         //TONELADA
         if (!linha[7].trim().isEmpty()) {
-            item.setTonelada(Double.parseDouble(linha[7].trim().replaceAll(",", ".")));
+            item.setToneladas(Double.parseDouble(linha[7].trim().replaceAll(",", ".")));
         }
         return item;
     }

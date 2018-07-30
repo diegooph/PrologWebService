@@ -15,7 +15,7 @@ public class RaizenProdutividadeItemInsert {
     private String usina;
     private String fazenda;
     private double raio;
-    private double tonelada;
+    private double toneladas;
     private Long codEmpresa;
     private Long cpfMotorista;
     private LocalDate dataViagem;
@@ -72,12 +72,12 @@ public class RaizenProdutividadeItemInsert {
         this.raio = raio;
     }
 
-    public double getTonelada() {
-        return tonelada;
+    public double getToneladas() {
+        return toneladas;
     }
 
-    public void setTonelada(final double tonelada) {
-        this.tonelada = tonelada;
+    public void setToneladas(final double toneladas) {
+        this.toneladas = toneladas;
     }
 
     public Long getCodEmpresa() {
