@@ -149,7 +149,7 @@ public final class FolhaPontoRelatorio {
             final long segundos = ChronoUnit.SECONDS.between(inicio, fim);
             final long segundosNoturnos = Durations
                     .getSumOfHoursInRangeOnDays(inicio, fim, Clt.RANGE_HORAS_NOTURNAS, zoneId)
-                    .toMinutes() * 60;
+                    .getSeconds();
             segundosTotaisTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);
             segundosTotaisHorasNoturnas.merge(intervalo.getCodTipoIntervalo(), segundosNoturnos, (a, b) -> a + b);
         } else {
