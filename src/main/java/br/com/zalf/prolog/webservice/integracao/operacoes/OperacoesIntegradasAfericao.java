@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
@@ -19,7 +20,7 @@ interface OperacoesIntegradasAfericao {
                                            @NotNull final String placaVeiculo,
                                            @NotNull final String tipoAfericao) throws Exception;
 
-    boolean insertAfericao(@NotNull final AfericaoPlaca afericaoPlaca, @NotNull final Long codUnidade) throws Exception;
+    boolean insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
     AfericaoPlaca getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Exception;

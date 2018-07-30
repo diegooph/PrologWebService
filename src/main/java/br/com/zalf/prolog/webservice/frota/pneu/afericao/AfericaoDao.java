@@ -17,9 +17,9 @@ public interface AfericaoDao {
      * @param afericao uma aferição
      * @param codUnidade código da unidade
      * @return valor da operação
-     * @throws SQLException se ocorrer erro no banco
+     * @throws Throwable se ocorrer erro no banco
      */
-    boolean insert(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws SQLException;
+    boolean insert(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Atualiza uma aferição

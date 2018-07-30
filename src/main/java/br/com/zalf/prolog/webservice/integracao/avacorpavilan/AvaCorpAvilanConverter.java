@@ -7,10 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ModeloPlacasAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -147,7 +144,7 @@ public final class AvaCorpAvilanConverter {
 
     @VisibleForTesting
     public static IncluirMedida2 convert(@NotNull final AfericaoPlaca afericaoPlaca) throws ParseException {
-        checkNotNull(afericaoPlaca, "afericao não pode ser null!");
+        checkNotNull(afericaoPlaca, "afericaoPlaca não pode ser null!");
 
         if (afericaoPlaca.getTipoMedicaoColetadaAfericao() != TipoMedicaoColetadaAfericao.SULCO_PRESSAO) {
             throw new IllegalStateException("Só é possível realizar aferições que sejam de Sulco e Pressão na " +

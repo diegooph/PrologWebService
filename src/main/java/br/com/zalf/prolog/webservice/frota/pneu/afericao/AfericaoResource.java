@@ -38,10 +38,10 @@ public class AfericaoResource {
     @POST
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
     @Path("/{codUnidade}")
-    public Response insert(AfericaoPlaca afericaoPlaca,
+    public Response insert(Afericao afericao,
                            @PathParam("codUnidade") Long codUnidade,
-                           @HeaderParam("Authorization") String userToken) {
-        if (service.insert(afericaoPlaca, codUnidade, userToken)) {
+                           @HeaderParam("Authorization") String userToken) throws ProLogException {
+        if (service.insert(afericao, codUnidade, userToken)) {
             return Response.ok("Aferição inserida com sucesso");
         } else {
             return Response.error("Erro ao inserir aferição");

@@ -31,7 +31,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @Override
     public boolean insert(@NotNull final Afericao afericao,
-                          @NotNull final Long codUnidade) throws SQLException {
+                          @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -64,10 +64,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 insertValores(afericao, codUnidade, conn);
             }
             conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            conn.rollback();
-            return false;
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -496,7 +497,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return placa;
     }
 
-    private void insertValores(Afericao afericao, Long codUnidade, Connection conn) throws SQLException {
+    private void insertValores(Afericao afericao, Long codUnidade, Connection conn) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final PreparedStatement stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
                 + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, " +

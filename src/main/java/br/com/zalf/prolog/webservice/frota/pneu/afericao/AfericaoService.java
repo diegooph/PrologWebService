@@ -24,15 +24,17 @@ public class AfericaoService {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
-    public boolean insert(AfericaoPlaca afericaoPlaca, Long codUnidade, String userToken) {
+    public boolean insert(@NotNull final Afericao afericao,
+                          @NotNull final Long codUnidade,
+                          @NotNull final String userToken) throws ProLogException {
         try {
-            afericaoPlaca.setDataHora(LocalDateTime.now(Clock.systemUTC()));
+            afericao.setDataHora(LocalDateTime.now(Clock.systemUTC()));
             return RouterAfericao
                     .create(dao, userToken)
-                    .insertAfericao(afericaoPlaca, codUnidade);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao inserir a aferição", e);
-            return false;
+                    .insertAfericao(afericao, codUnidade);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao inserir aferição", e);
+            throw exceptionHandler.map(e, "Erro ao inserir aferição, tente novamente");
         }
     }
 

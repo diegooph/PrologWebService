@@ -1,11 +1,12 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.errorhandling.exception.IntegracaoException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -324,9 +325,16 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
-    public boolean insertAfericao(@NotNull AfericaoPlaca afericaoPlaca,
-                                  @NotNull Long codUnidade) throws Exception {
-        return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericaoPlaca), getCpf(), getDataNascimento());
+    public boolean insertAfericao(@NotNull Afericao afericao,
+                                  @NotNull Long codUnidade) throws Throwable {
+        if (afericao instanceof AfericaoPlaca) {
+            final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
+            return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericaoPlaca), getCpf(), getDataNascimento());
+        } else {
+            throw new IntegracaoException(
+                    Response.Status.BAD_REQUEST.getStatusCode(),
+                    "A Avilan só suporta aferição de uma placa e não de pneu avulso");
+        }
     }
 
     @NotNull
