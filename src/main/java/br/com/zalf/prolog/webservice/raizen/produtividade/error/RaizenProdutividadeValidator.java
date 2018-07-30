@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,7 +29,7 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
         throw new IllegalStateException(RaizenProdutividadeValidator.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static void validacaoAtributosRaizenProdutividade(@Nullable final RaizenProdutividadeItemInsert itemInsert)
+    public static void validacaoAtributosRaizenProdutividade(@NotNull final RaizenProdutividadeItemInsert itemInsert)
             throws GenericException {
         try {
             checkNotNull(itemInsert, "Não pode ser nulo");
@@ -118,13 +117,13 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
         }
     }
 
-    private static void validacaoRaio(@NotNull final double raio) throws ProLogException {
+    private static void validacaoRaio(final double raio) throws ProLogException {
         checkNotNull(raio, "Você precisa fornecer o raio");
         checkArgument(Double.parseDouble(String.valueOf(raio)) > 0,
                 "Valor inválido\nO raio não pode ser negativo");
     }
 
-    private static void validacaoToneladas(@NotNull final double toneladas) throws ProLogException {
+    private static void validacaoToneladas(final double toneladas) throws ProLogException {
         checkNotNull(toneladas, "Você precisa fornecer a tonelada");
         checkArgument(Double.parseDouble(String.valueOf(toneladas)) > 0,
                 "Valor inválido\nA tonelada não pode ser negativa");
