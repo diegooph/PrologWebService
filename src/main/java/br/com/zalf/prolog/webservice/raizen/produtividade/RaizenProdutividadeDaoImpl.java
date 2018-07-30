@@ -231,6 +231,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                 rSet.getString("NOME_MOTORISTA"));
         item.setCodigo(rSet.getLong("CODIGO"));
         item.setPlaca(rSet.getString("PLACA"));
+        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
@@ -246,6 +247,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         final RaizenProdutividadeItemData item = new RaizenProdutividadeItemData();
         item.setCodigo(rSet.getLong("CODIGO"));
         item.setPlaca(rSet.getString("PLACA"));
+        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
         item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
@@ -262,7 +264,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         final RaizenProdutividadeItemVisualizacao item = new RaizenProdutividadeItemVisualizacao();
         item.setCodigo(rSet.getLong("CODIGO"));
         item.setPlaca(rSet.getString("PLACA"));
-        item.setColaboradorCadastrado(rSet.getBoolean("PLACA_CADASTRADA"));
+        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
         item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
         item.setCpfColaborador(rSet.getLong("CPF_MOTORISTA"));
         item.setColaboradorCadastrado(rSet.getBoolean("MOTORISTA_CADASTRADO"));
