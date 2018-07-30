@@ -19,13 +19,21 @@ public final class FolhaPontoTipoIntervalo extends TipoIntervalo {
     @SerializedName("tempoTotalTipoIntervaloSegundos")
     private Duration tempoTotalTipoIntervalo;
 
+    /**
+     * O tempo somado que o colaborador passou em horas noturnas (conforme definido pela CLT) nesse tipo de intervalo,
+     * de acordo com o período buscado no relatório.
+     */
+    @SerializedName("tempoTotalHorasNoturnasSegundos")
+    private Duration tempoTotalHorasNoturnas;
+
     public FolhaPontoTipoIntervalo() {
 
     }
 
     @NotNull
     public static FolhaPontoTipoIntervalo createFromTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
-                                                                  @NotNull final Long tempoTotalTipoIntervaloSegundos) {
+                                                                  @NotNull final Long tempoTotalTipoIntervaloSegundos,
+                                                                  @NotNull final Long tempoTotalHorasNoturnasSegundos) {
         final FolhaPontoTipoIntervalo folhaTipo = new FolhaPontoTipoIntervalo();
         folhaTipo.setCodigo(tipoIntervalo.getCodigo());
         folhaTipo.setCodigoPorUnidade(tipoIntervalo.getCodigoPorUnidade());
@@ -38,6 +46,7 @@ public final class FolhaPontoTipoIntervalo extends TipoIntervalo {
         folhaTipo.setTempoRecomendado(tipoIntervalo.getTempoRecomendado());
         folhaTipo.setUnidade(tipoIntervalo.getUnidade());
         folhaTipo.setTempoTotalTipoIntervalo(Duration.ofSeconds(tempoTotalTipoIntervaloSegundos));
+        folhaTipo.setTempoTotalHorasNoturnas(Duration.ofSeconds(tempoTotalHorasNoturnasSegundos));
         return folhaTipo;
     }
 
@@ -47,6 +56,14 @@ public final class FolhaPontoTipoIntervalo extends TipoIntervalo {
 
     public void setTempoTotalTipoIntervalo(final Duration tempoTotalTipoIntervalo) {
         this.tempoTotalTipoIntervalo = tempoTotalTipoIntervalo;
+    }
+
+    public Duration getTempoTotalHorasNoturnas() {
+        return tempoTotalHorasNoturnas;
+    }
+
+    public void setTempoTotalHorasNoturnas(final Duration tempoTotalHorasNoturnas) {
+        this.tempoTotalHorasNoturnas = tempoTotalHorasNoturnas;
     }
 
     @Override

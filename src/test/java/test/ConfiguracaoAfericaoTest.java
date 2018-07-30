@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ConfiguracaoAfericaoTeste extends BaseTest {
+public class ConfiguracaoAfericaoTest extends BaseTest {
     @Override
     public void initialize() {
         // Do nothing

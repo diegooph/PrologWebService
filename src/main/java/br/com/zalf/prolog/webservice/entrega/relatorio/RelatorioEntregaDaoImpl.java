@@ -2,10 +2,10 @@ package br.com.zalf.prolog.webservice.entrega.relatorio;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;

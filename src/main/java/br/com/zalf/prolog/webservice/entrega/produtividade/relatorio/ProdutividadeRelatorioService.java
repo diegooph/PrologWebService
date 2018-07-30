@@ -100,8 +100,8 @@ public class ProdutividadeRelatorioService {
             return dao.getRelatorioProdutividadeColaborador(
                     codUnidade,
                     cpfColaborador,
-                    ProLogDateParser.validateAndParse(dataInicial),
-                    ProLogDateParser.validateAndParse(dataFinal));
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar o relatório de produtividade dos colaboradores", e);
             throw new RuntimeException(e);

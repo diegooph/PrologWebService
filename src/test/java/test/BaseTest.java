@@ -1,6 +1,5 @@
 package test;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import org.junit.Before;
 
@@ -11,7 +10,7 @@ import java.time.LocalDate;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public abstract class BaseTest extends DatabaseConnection {
+public abstract class BaseTest {
 
     protected static long COD_UNIDADE = 5;
     protected static LocalDate DATA_INICIAL = LocalDate.parse("2018-03-18");
