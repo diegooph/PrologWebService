@@ -9,8 +9,7 @@ public enum ProLogErrorCodes {
 	INTEGRACAO(5),
 	RECAPADORA_EXCEPTION(6),
 	RECURSO_JA_EXISTE(7),
-	VERSAO_APP_BLOQUEADA(8),
-	RAIZEN_PRODUTIVIDADE(9);
+	VERSAO_APP_BLOQUEADA(8);
 
 	private final int errorCode;
 
