@@ -30,19 +30,19 @@ final class ControleIntervaloRelatorioConverter {
     }
 
     @NotNull
-    static List<FolhaPontoRelatorio> createFolhaPontoRelatorio(@NotNull final ResultSet rSet,
-                                                               @NotNull final List<TipoIntervalo> tiposIntervalos,
-                                                               @NotNull final LocalDate dataInicial,
-                                                               @NotNull final LocalDate dataFinal,
-                                                               @NotNull final ZoneId zoneIdUnidade)
-            throws Throwable {
+    static List<FolhaPontoRelatorio> createFolhaPontoRelatorio(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<TipoIntervalo> tiposIntervalos,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal,
+            @NotNull final ZoneId zoneIdUnidade) throws Throwable {
         final LocalDateTime dataHoraGeracaoRelatorioUtc = Now.localDateTimeUtc();
         final LocalDateTime dataHoraGeracaoRelatorioZoned = dataHoraGeracaoRelatorioUtc
                 .atZone(ZoneOffset.UTC)
                 .withZoneSameInstant(zoneIdUnidade)
                 .toLocalDateTime();
         final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
-        final Map<Long, TipoIntervalo> tiposIntervalosUnidade = toTiposIntervalosToMap(tiposIntervalos);
+        final Map<Long, TipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(tiposIntervalos);
         Long cpfAnterior = null;
         String nomeAnterior = null;
         LocalDate diaAnterior = null;
@@ -130,11 +130,10 @@ final class ControleIntervaloRelatorioConverter {
     }
 
     @NotNull
-    private static Map<Long, TipoIntervalo> toTiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
+    private static Map<Long, TipoIntervalo> tiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
         final Map<Long, TipoIntervalo> tiposIntervalosMap = new HashMap<>();
-        tiposIntervalos.forEach(tipoIntervalo -> tiposIntervalosMap.put(
-                tipoIntervalo.getCodigo(),
-                tipoIntervalo));
+        tiposIntervalos.forEach(
+                tipoIntervalo -> tiposIntervalosMap.put(tipoIntervalo.getCodigo(),tipoIntervalo));
         return tiposIntervalosMap;
     }
 }

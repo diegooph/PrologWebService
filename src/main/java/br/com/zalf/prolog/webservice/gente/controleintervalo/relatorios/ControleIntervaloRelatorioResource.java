@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -122,12 +121,12 @@ public class ControleIntervaloRelatorioResource {
     @GET
     @Secured
     @Path("/folha-ponto/{codUnidade}/{codTipoIntervalo}/{cpf}")
-    public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@PathParam("codUnidade") @Required Long codUnidade,
-                                                            @PathParam("cpf") @Required String cpf,
-                                                            @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
-                                                            @QueryParam("dataInicial") @Required String dataInicial,
-                                                            @QueryParam("dataFinal") @Required String dataFinal)
-            throws ProLogException {
+    public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(
+            @PathParam("codUnidade") @Required Long codUnidade,
+            @PathParam("cpf") @Required String cpf,
+            @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) throws Throwable {
         return service.getFolhaPontoRelatorio(
                 codUnidade,
                 codTipoIntervalo,
