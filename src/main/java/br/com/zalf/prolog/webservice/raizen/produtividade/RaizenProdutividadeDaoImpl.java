@@ -8,13 +8,14 @@ import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutivid
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeData;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemColaborador;
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemData;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemVisualizacao;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenprodutividadeItemIndividual;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLDataException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,12 +122,18 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             while (rSet.next()) {
                 final Long cpfMotoristaAtual = rSet.getLong("CPF_MOTORISTA");
                 if (primeiraLinha) {
-                    raizenProdutividadeColaborador = createRaizenProdutividadeColaborador(rSet, produtividades);
+                    raizenProdutividadeColaborador = RaizenProdutividadeConverter.createRaizenProdutividadeColaborador(
+                            rSet,
+                            produtividades);
                 } else {
                     if (raizenProdutividadeColaborador.getCpf().equals(cpfMotoristaAtual)) {
-                        raizenProdutividadeColaborador.getItensRaizen().add(createRaizenProdutividadeItemData(rSet));
+                        raizenProdutividadeColaborador
+                                .getItensRaizen()
+                                .add(RaizenProdutividadeConverter.createRaizenProdutividadeItemData(rSet));
                     } else {
-                        raizenProdutividadeColaborador = createRaizenProdutividadeColaborador(rSet, produtividades);
+                        raizenProdutividadeColaborador = RaizenProdutividadeConverter.createRaizenProdutividadeColaborador(
+                                rSet,
+                                produtividades);
                     }
                 }
                 primeiraLinha = false;
@@ -159,12 +166,18 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             while (rSet.next()) {
                 final LocalDate dataAtual = rSet.getObject("DATA_VIAGEM", LocalDate.class);
                 if (primeiraLinha) {
-                    raizenProdutividadeData = createRaizenProdutividadeData(rSet, produtividades);
+                    raizenProdutividadeData = RaizenProdutividadeConverter.createRaizenProdutividadeData(
+                            rSet,
+                            produtividades);
                 } else {
                     if (raizenProdutividadeData.getData().equals(dataAtual)) {
-                        raizenProdutividadeData.getItensRaizen().add(createRaizenProdutividadeItemColaborador(rSet));
+                        raizenProdutividadeData
+                                .getItensRaizen()
+                                .add(RaizenProdutividadeConverter.createRaizenProdutividadeItemColaborador(rSet));
                     } else {
-                        raizenProdutividadeData = createRaizenProdutividadeData(rSet, produtividades);
+                        raizenProdutividadeData = RaizenProdutividadeConverter.createRaizenProdutividadeData(
+                                rSet,
+                                produtividades);
                     }
                 }
                 primeiraLinha = false;
@@ -190,7 +203,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setLong(2, codItem);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return createRaizenProdutividadeItemVisualizacao(rSet);
+                return RaizenProdutividadeConverter.createRaizenProdutividadeItemVisualizacao(rSet);
             } else {
                 throw new Throwable("Item não encontrado com código: " + codItem);
             }
@@ -217,7 +230,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             rSet = stmt.executeQuery();
             itens = new ArrayList<>();
             while (rSet.next()) {
-                itens.add(createRaizenProdutividadeItemIndividual(rSet));
+                itens.add(RaizenProdutividadeConverter.createRaizenProdutividadeItemIndividual(rSet));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -330,103 +343,5 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             closeStatement(stmt);
         }
         return true;
-    }
-
-    @NotNull
-    private RaizenProdutividadeColaborador createRaizenProdutividadeColaborador(@NotNull final ResultSet rSet,
-                                                                                @NotNull final List<RaizenProdutividade> produtividades)
-            throws Throwable {
-        final List<RaizenProdutividadeItemData> itensData = new ArrayList<>();
-        itensData.add(createRaizenProdutividadeItemData(rSet));
-        final RaizenProdutividadeColaborador raizenProdutividadeColaborador = new RaizenProdutividadeColaborador(
-                rSet.getLong("CPF_MOTORISTA"), rSet.getString("NOME_MOTORISTA"));
-        raizenProdutividadeColaborador.setItensRaizen(itensData);
-        produtividades.add(raizenProdutividadeColaborador);
-        return raizenProdutividadeColaborador;
-    }
-
-    @NotNull
-    private RaizenProdutividadeData createRaizenProdutividadeData(
-            @NotNull final ResultSet rSet,
-            @NotNull final List<RaizenProdutividade> produtividades) throws Throwable {
-        final List<RaizenProdutividadeItemColaborador> itensColaborador = new ArrayList<>();
-        itensColaborador.add(createRaizenProdutividadeItemColaborador(rSet));
-        final RaizenProdutividadeData raizenProdutividadeData = new RaizenProdutividadeData(
-                rSet.getObject("DATA_VIAGEM", LocalDate.class));
-        raizenProdutividadeData.setItensRaizen(itensColaborador);
-        produtividades.add(raizenProdutividadeData);
-        return raizenProdutividadeData;
-    }
-
-    @NotNull
-    private RaizenprodutividadeItemIndividual createRaizenProdutividadeItemIndividual(@NotNull final ResultSet rSet)
-            throws Throwable {
-        final RaizenprodutividadeItemIndividual item = new RaizenprodutividadeItemIndividual();
-        item.setDataViagem(rSet.getDate("DATA_VIAGEM"));
-        item.setValor(rSet.getBigDecimal("VALOR"));
-        item.setPlaca(rSet.getString("PLACA"));
-        item.setUsina(rSet.getString("USINA"));
-        item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
-        return item;
-    }
-
-    @NotNull
-    private RaizenProdutividadeItemColaborador createRaizenProdutividadeItemColaborador(ResultSet rSet) throws
-            Throwable {
-        final RaizenProdutividadeItemColaborador item = new RaizenProdutividadeItemColaborador(
-                rSet.getLong("CPF_MOTORISTA"),
-                rSet.getString("NOME_MOTORISTA"));
-        item.setCodigo(rSet.getLong("CODIGO"));
-        item.setPlaca(rSet.getString("PLACA"));
-        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
-        item.setValor(rSet.getBigDecimal("VALOR"));
-        item.setUsina(rSet.getString("USINA"));
-        item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
-        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
-        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
-        return item;
-    }
-
-    @NotNull
-    private RaizenProdutividadeItemData createRaizenProdutividadeItemData(ResultSet rSet) throws Throwable {
-        final RaizenProdutividadeItemData item = new RaizenProdutividadeItemData();
-        item.setCodigo(rSet.getLong("CODIGO"));
-        item.setPlaca(rSet.getString("PLACA"));
-        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
-        item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
-        item.setValor(rSet.getBigDecimal("VALOR"));
-        item.setUsina(rSet.getString("USINA"));
-        item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
-        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
-        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
-        return item;
-    }
-
-    @NotNull
-    private RaizenProdutividadeItemVisualizacao createRaizenProdutividadeItemVisualizacao(ResultSet rSet) throws Throwable {
-        final RaizenProdutividadeItemVisualizacao item = new RaizenProdutividadeItemVisualizacao();
-        item.setCodigo(rSet.getLong("CODIGO"));
-        item.setPlaca(rSet.getString("PLACA"));
-        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
-        item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
-        item.setCpfColaborador(rSet.getLong("CPF_MOTORISTA"));
-        item.setColaboradorCadastrado(rSet.getBoolean("MOTORISTA_CADASTRADO"));
-        item.setValor(rSet.getBigDecimal("VALOR"));
-        item.setUsina(rSet.getString("USINA"));
-        item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
-        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
-        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
-        return item;
     }
 }
