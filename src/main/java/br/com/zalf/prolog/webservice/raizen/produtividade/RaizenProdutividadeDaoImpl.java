@@ -112,7 +112,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_POR_COLABORADOR(?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_POR_COLABORADOR(?, ?, ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setObject(2, dataInicial);
             stmt.setObject(3, dataFinal);
@@ -162,7 +162,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_POR_DATA(?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_POR_DATA(?, ?, ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setObject(2, dataInicial);
             stmt.setObject(3, dataFinal);
@@ -288,7 +288,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         List<RaizenprodutividadeItemIndividual> itens;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_INDIVIDUAL(?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_INDIVIDUAL(?, ?, ?);");
             stmt.setLong(1, codColaborador);
             stmt.setInt(2, mes);
             stmt.setInt(3, ano);
