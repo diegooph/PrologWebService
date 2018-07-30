@@ -14,11 +14,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuService;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuAnalise;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
-import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizado;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,7 +39,7 @@ public class MovimentacaoTest extends BaseTest {
 
     private MovimentacaoService movimentacaoService;
     private PneuService pneuService;
-    private PneuComum pneuComum;
+    private Pneu pneuComum;
 
     @Override
     public void initialize() {
@@ -95,7 +94,7 @@ public class MovimentacaoTest extends BaseTest {
         Assert.assertNotNull(response.getStatus());
         Assert.assertEquals("OK", response.getStatus());
 
-        final PneuComum pneuRetorno = pneuService.getPneuByCod(COD_PNEU_TESTE, 5L);
+        final Pneu pneuRetorno = pneuService.getPneuByCod(COD_PNEU_TESTE, 5L);
 
         Assert.assertNotNull(pneuRetorno);
         Assert.assertEquals(pneuRetorno.getStatus(), StatusPneu.ESTOQUE);
@@ -103,7 +102,7 @@ public class MovimentacaoTest extends BaseTest {
 
     @Test
     public void testInsertPneuCreateSegundaVida() throws Throwable {
-        final PneuComum pneu = pneuService.getPneuByCod(COD_PNEU_TESTE, 5L);
+        final Pneu pneu = pneuService.getPneuByCod(COD_PNEU_TESTE, 5L);
         pneu.setCodigoCliente(pneu.getCodigoCliente().concat("1"));
         pneu.setDot("1310");
         pneu.setValor(new BigDecimal(2250));

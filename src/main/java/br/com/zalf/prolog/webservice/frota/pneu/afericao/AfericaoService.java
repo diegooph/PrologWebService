@@ -57,7 +57,7 @@ public class AfericaoService {
                     .getNovaAfericaoPlaca(codUnidade, placa, tipoAfericao);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar NovaAfericao para a placa: " + placa, e);
-            throw exceptionHandler.map(e, "Erro ao inicar uma nova aferição");
+            throw exceptionHandler.map(e, "Erro ao inicar uma nova aferição, tente novamente");
         }
     }
 
@@ -68,7 +68,7 @@ public class AfericaoService {
             return dao.getNovaAfericaoAvulsa(codUnidade, codPneu, TipoMedicaoColetadaAfericao.fromString(tipoAfericao));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar NovaAfericao para o pneu: " + codPneu, e);
-            throw exceptionHandler.map(e, "Erro ao inicar uma nova aferição");
+            throw exceptionHandler.map(e, "Erro ao inicar uma nova aferição, tente novamente");
         }
     }
 
@@ -83,6 +83,7 @@ public class AfericaoService {
         }
     }
 
+    @NotNull
     public CronogramaAfericao getCronogramaAfericao(final Long codUnidade, final String userToken) throws Exception {
         try {
             return RouterAfericao
@@ -91,6 +92,17 @@ public class AfericaoService {
         } catch (Exception e) {
             Log.e(TAG, "Erro ao buscar o cronograma de aferições", e);
             throw e;
+        }
+    }
+
+    @NotNull
+    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws ProLogException {
+        try {
+            return dao.getPneusAfericaoAvulsa(codUnidade);
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar os pneus disponíveis para aferição avulsa";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 

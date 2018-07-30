@@ -23,8 +23,9 @@ public final class PneuConverter {
     }
 
     @NotNull
-    public static PneuComum createPneuCompleto(@NotNull final ResultSet rSet) throws SQLException {
-        final PneuComum pneu = new PneuComum();
+    public static Pneu createPneuCompleto(@NotNull final ResultSet rSet,
+                                          @NotNull final PneuTipo pneuTipo) throws SQLException {
+        final Pneu pneu = pneuTipo.createNew();
         pneu.setCodigo(rSet.getLong("CODIGO"));
         pneu.setCodigoCliente(rSet.getString("CODIGO_CLIENTE"));
         pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
@@ -73,26 +74,7 @@ public final class PneuConverter {
     @NotNull
     public static PneuAnalise createPneuAnaliseCompleto(@NotNull final ResultSet rSet)
             throws SQLException {
-        final PneuComum pneu = createPneuCompleto(rSet);
-        final PneuAnalise pneuAnalise = new PneuAnalise();
-        pneuAnalise.setCodigo(pneu.getCodigo());
-        pneuAnalise.setCodigoCliente(pneu.getCodigoCliente());
-        pneuAnalise.setPosicao(pneu.getPosicao());
-        pneuAnalise.setDot(pneu.getDot());
-        pneuAnalise.setValor(pneu.getValor());
-        pneuAnalise.setCodUnidadeAlocado(pneu.getCodUnidadeAlocado());
-        pneuAnalise.setCodRegionalAlocado(pneu.getCodRegionalAlocado());
-        pneuAnalise.setPneuNovoNuncaRodado(pneu.isPneuNovoNuncaRodado());
-        pneuAnalise.setMarca(pneu.getMarca());
-        pneuAnalise.setModelo(pneu.getModelo());
-        pneuAnalise.setBanda(pneu.getBanda());
-        pneuAnalise.setDimensao(pneu.getDimensao());
-        pneuAnalise.setSulcosAtuais(pneu.getSulcosAtuais());
-        pneuAnalise.setPressaoCorreta(pneu.getPressaoCorreta());
-        pneuAnalise.setPressaoAtual(pneu.getPressaoAtual());
-        pneuAnalise.setStatus(pneu.getStatus());
-        pneuAnalise.setVidaAtual(pneu.getVidaAtual());
-        pneuAnalise.setVidasTotal(pneu.getVidasTotal());
+        final PneuAnalise pneuAnalise = (PneuAnalise) createPneuCompleto(rSet, PneuTipo.PNEU_ANALISE);
         // Seta informações extras do pneu que está em Análise.
         pneuAnalise.setRecapadora(createRecapadoraPneu(rSet));
         pneuAnalise.setCodigoColeta(rSet.getString("COD_COLETA"));
@@ -110,7 +92,7 @@ public final class PneuConverter {
     }
 
     @Nullable
-    private static Banda createBanda(@NotNull final PneuComum pneu, @NotNull final ResultSet rSet) throws SQLException {
+    private static Banda createBanda(@NotNull final Pneu pneu, @NotNull final ResultSet rSet) throws SQLException {
         if (rSet.getString("COD_MODELO_BANDA") != null) {
             final Banda banda = new Banda();
             banda.setModelo(createModeloBanda(rSet));
@@ -129,7 +111,8 @@ public final class PneuConverter {
             return banda;
         } else {
             // TODO: 12/01/2018 - Atualmente não podemos quebrar o servidor caso atinja esse estado porque possuimos
-            // pneus com essa inconsistência em banco. Isso será eliminado no futuro e poderemos lançar uma exceção aqui.
+            // pneus com essa inconsistência em banco. Isso será eliminado no futuro e poderemos lançar uma exceção
+            // aqui.
             Log.w(TAG, "Esse estado é uma inconsistência e não deveria acontecer! " +
                     "Algum pneu está acima da primeira vida porém não possui banda associada.");
             return null;

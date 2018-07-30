@@ -197,7 +197,7 @@ public interface PneuDao {
      * @return
      * @throws SQLException
      */
-    PneuComum getPneuByCod(Long codPneu, Long codUnidade) throws SQLException;
+    Pneu getPneuByCod(Long codPneu, Long codUnidade) throws SQLException;
 
     /**
      * Busca um modelo de pneu a partir de seu código único

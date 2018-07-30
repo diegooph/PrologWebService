@@ -67,6 +67,14 @@ public class AfericaoResource {
     }
 
     @GET
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
+    @Path("/pneus-disponiveis-afericao-avulsa/unidades/{codUnidade}")
+    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@PathParam("codUnidade") Long codUnidade)
+            throws ProLogException {
+        return service.getPneusAfericaoAvulsa(codUnidade);
+    }
+
+    @GET
     @Path("/unidades/{codUnidade}/nova-placa/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@PathParam("codUnidade") @Required Long codUnidade,

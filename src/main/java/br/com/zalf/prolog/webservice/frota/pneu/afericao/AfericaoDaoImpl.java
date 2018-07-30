@@ -6,11 +6,9 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuConverter;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -113,11 +111,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @NotNull
     @Override
-    public NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
-                                                    @NotNull final Long codPneu,
-                                                    @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable {
+    public NovaAfericaoAvulsa getNovaAfericaoAvulsa(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable {
         final NovaAfericaoAvulsa novaAfericao = new NovaAfericaoAvulsa();
         final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
+        final PneuDao pneuDao = Injection.providePneuDao();
+//        novaAfericao.setPneuParaAferir();
+        pneuDao.getPneuByCod(codPneu, codUnidade);
         novaAfericao.setRestricao(restricao);
         return novaAfericao;
     }
@@ -187,8 +189,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
+    @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(Long codUnidade) throws SQLException {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -278,6 +281,27 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
 
         return cronogramaAfericao;
+    }
+
+    @NotNull
+    @Override
+    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_PNEUS_DISPONIVEIS_AFERICAO_AVULSA(?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            final List<PneuAfericaoAvulsa> pneus = new ArrayList<>();
+            while (rSet.next()) {
+                pneus.add(createPneuAfericaoAvulsa(rSet));
+            }
+            return pneus;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @Override
@@ -468,6 +492,23 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    private PneuAfericaoAvulsa createPneuAfericaoAvulsa(@NotNull final ResultSet rSet) throws SQLException {
+        final PneuAfericaoAvulsa pneuAvulso = new PneuAfericaoAvulsa();
+        pneuAvulso.setPneu(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM));
+        pneuAvulso.setDataHoraUltimaAferica(rSet.getObject("DATA_HORA_ULTIMA_AFERICAO", LocalDateTime.class));
+        pneuAvulso.setNomeColaboradorAfericao(rSet.getString("NOME_COLABORADOR_ULTIMA_AFERICAO"));
+        final TipoMedicaoColetadaAfericao tipoMedicao = TipoMedicaoColetadaAfericao
+                .fromString(rSet.getString("TIPO_MEDICAO_COLETADA_ULTIMA_AFERICAO"));
+        pneuAvulso.setTipoMedicaoColetadaUltimaAfericao(tipoMedicao);
+        pneuAvulso.setCodigoUltimaAferica(rSet.getLong("COD_ULTIMA_AFERICAO"));
+        final TipoProcessoColetaAfericao tipoProcesso = TipoProcessoColetaAfericao
+                .fromString(rSet.getString("TIPO_PROCESSO_COLETA_ULTIMA_AFERICAO"));
+        pneuAvulso.setTipoProcessoAfericao(tipoProcesso);
+        pneuAvulso.setPlacaAplicadoQuandoAferido(rSet.getString("PLACA_VEICULO_ULTIMA_AFERICAO"));
+        return pneuAvulso;
     }
 
     private ConfiguracaoTipoVeiculoAfericao createConfiguracaoTipoAfericao(ResultSet rSet) throws SQLException {

@@ -151,7 +151,7 @@ public class PneuService {
         }
     }
 
-    public PneuComum getPneuByCod(Long codPneu, Long codUnidade) {
+    public Pneu getPneuByCod(Long codPneu, Long codUnidade) {
         try {
             return dao.getPneuByCod(codPneu, codUnidade);
         } catch (SQLException e) {

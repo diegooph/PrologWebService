@@ -47,7 +47,7 @@ public class PneuTest extends BaseTest {
 
         dao.updateSulcos(pneu.getCodigo(), pneu.getSulcosAtuais(), 14L, null /* Alterar */);
 
-        final PneuComum pneuAtualizado = dao.getPneuByCod(16304L, 14L);
+        final Pneu pneuAtualizado = dao.getPneuByCod(16304L, 14L);
         final Sulcos sulcosAtualizados = pneuAtualizado.getSulcosAtuais();
         assertEquals(sulcos.getExterno(), sulcosAtualizados.getExterno(), 0);
         assertEquals(sulcos.getCentralExterno(), sulcosAtualizados.getCentralExterno(), 0);

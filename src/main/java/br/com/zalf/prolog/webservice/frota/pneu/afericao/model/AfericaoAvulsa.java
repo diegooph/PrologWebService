@@ -13,17 +13,17 @@ import java.util.List;
  */
 public final class AfericaoAvulsa extends Afericao {
 
-    private PneuAfericaoAvulsa pneuAferido;
+    private Pneu pneuAferido;
 
     public AfericaoAvulsa() {
         super(TipoProcessoColetaAfericao.PNEU_AVULSO);
     }
 
-    public PneuAfericaoAvulsa getPneuAferido() {
+    public Pneu getPneuAferido() {
         return pneuAferido;
     }
 
-    public void setPneuAferido(final PneuAfericaoAvulsa pneuAferido) {
+    public void setPneuAferido(final Pneu pneuAferido) {
         this.pneuAferido = pneuAferido;
     }
 

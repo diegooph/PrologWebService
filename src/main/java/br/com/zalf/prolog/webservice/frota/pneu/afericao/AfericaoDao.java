@@ -94,7 +94,11 @@ public interface AfericaoDao {
      * @return              um {@link CronogramaAfericao} contendo as placas para ser aferidas
      * @throws SQLException para qualquer erro do banco
      */
-    CronogramaAfericao getCronogramaAfericao(Long codUnidade) throws SQLException;
+    @NotNull
+    CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws SQLException;
+
+    @NotNull
+    List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable;
 
     List<AfericaoPlaca> getAfericoes(Long codUnidade, String codTipoVeiculo, String placaVeiculo, long dataInicial,
                                      long dataFinal, int limit, long offset) throws SQLException;
@@ -121,4 +125,5 @@ public interface AfericaoDao {
      */
     @Deprecated
     List<AfericaoPlaca> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit, long offset) throws SQLException;
+
 }

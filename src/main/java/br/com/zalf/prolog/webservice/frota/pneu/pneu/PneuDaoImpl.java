@@ -208,7 +208,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                listPneu.add(PneuConverter.createPneuCompleto(rSet));
+                listPneu.add(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -488,7 +488,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public PneuComum getPneuByCod(Long codPneu, Long codUnidade) throws SQLException {
+    public Pneu getPneuByCod(Long codPneu, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -500,7 +500,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final PneuComum pneu = PneuConverter.createPneuCompleto(rSet);
+                final Pneu pneu = PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM);
                 pneu.setFotosCadastro(getFotosCadastroPneu(codPneu, codUnidade, conn));
                 return pneu;
             }
@@ -668,7 +668,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             rSet = stmt.executeQuery();
             final List<Pneu> pneus = new ArrayList<>();
             while (rSet.next()) {
-                pneus.add(PneuConverter.createPneuCompleto(rSet));
+                pneus.add(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM));
             }
             return pneus;
         } finally {

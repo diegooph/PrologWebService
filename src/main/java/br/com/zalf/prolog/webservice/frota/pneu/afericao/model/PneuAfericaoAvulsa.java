@@ -1,43 +1,54 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuTipo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import com.google.common.base.Preconditions;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Created on 27/07/2018
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class PneuAfericaoAvulsa extends Pneu {
-    private Date dataHoraUltimaAferica;
+public final class PneuAfericaoAvulsa {
+    private Pneu pneu;
+    private LocalDateTime dataHoraUltimaAferica;
     private String nomeColaboradorAfericao;
-    private TipoMedicaoColetadaAfericao tipoUltimaAfericao;
+    private TipoMedicaoColetadaAfericao tipoMedicaoColetadaUltimaAfericao;
     private Long codigoUltimaAferica;
     private TipoProcessoColetaAfericao tipoProcessoAfericao;
     private String placaAplicadoQuandoAferido;
 
     public PneuAfericaoAvulsa() {
-        super(PneuTipo.PNEU_AFERICAO_AVULSA);
+
     }
 
-    public Date getDataHoraUltimaAferica() {
+    public Pneu getPneu() {
+        return pneu;
+    }
+
+    public void setPneu(final Pneu pneu) {
+        Preconditions.checkArgument(
+                pneu.getStatus() == StatusPneu.ESTOQUE,
+                "Por enquanto só podemos aferir avulsamente pneus em estoque");
+        this.pneu = pneu;
+    }
+
+    public LocalDateTime getDataHoraUltimaAferica() {
         return dataHoraUltimaAferica;
     }
 
-    public void setDataHoraUltimaAferica(final Date dataHoraUltimaAferica) {
+    public void setDataHoraUltimaAferica(final LocalDateTime dataHoraUltimaAferica) {
         this.dataHoraUltimaAferica = dataHoraUltimaAferica;
     }
 
-    public TipoMedicaoColetadaAfericao getTipoUltimaAfericao() {
-        return tipoUltimaAfericao;
+    public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaUltimaAfericao() {
+        return tipoMedicaoColetadaUltimaAfericao;
     }
 
-    public void setTipoUltimaAfericao(final TipoMedicaoColetadaAfericao tipoUltimaAfericao) {
-        this.tipoUltimaAfericao = tipoUltimaAfericao;
+    public void setTipoMedicaoColetadaUltimaAfericao(final TipoMedicaoColetadaAfericao tipoMedicaoColetadaUltimaAfericao) {
+        this.tipoMedicaoColetadaUltimaAfericao = tipoMedicaoColetadaUltimaAfericao;
     }
 
     public Long getCodigoUltimaAferica() {
@@ -75,16 +86,8 @@ public final class PneuAfericaoAvulsa extends Pneu {
     public boolean isJaFoiAferido() {
         return dataHoraUltimaAferica != null
                 && nomeColaboradorAfericao != null
-                && tipoUltimaAfericao != null
+                && tipoMedicaoColetadaUltimaAfericao != null
                 && codigoUltimaAferica != null
                 && tipoProcessoAfericao != null;
-    }
-
-    @Override
-    public void setStatus(final StatusPneu status) {
-        Preconditions.checkArgument(
-                status == StatusPneu.ESTOQUE,
-                "Por enquanto só podemos aferir avulsamente pneus em estoque");
-        super.setStatus(status);
     }
 }

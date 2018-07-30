@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PneuAfericaoAvulsa;
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,13 +14,42 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum PneuTipo {
-    PNEU_COMUM("PNEU_COMUM", PneuComum.class),
-    PNEU_ANALISE("PNEU_ANALISE", PneuAnalise.class),
-    PNEU_DESCARTE("PNEU_DESCARTE", PneuDescarte.class),
-    PNEU_ESTOQUE("PNEU_ESTOQUE", PneuEstoque.class),
-    PNEU_EM_USO("PNEU_EM_USO", PneuEmUso.class),
-    PNEU_AFERICAO_AVULSA("PNEU_AFERICAO_AVULSA", PneuAfericaoAvulsa.class);
+public enum PneuTipo implements PneuFactory {
+    PNEU_COMUM("PNEU_COMUM", PneuComum.class) {
+        @NotNull
+        @Override
+        public Pneu createNew() {
+            return new PneuComum();
+        }
+    },
+    PNEU_ANALISE("PNEU_ANALISE", PneuAnalise.class) {
+        @NotNull
+        @Override
+        public Pneu createNew() {
+            return new PneuAnalise();
+        }
+    },
+    PNEU_DESCARTE("PNEU_DESCARTE", PneuDescarte.class) {
+        @NotNull
+        @Override
+        public Pneu createNew() {
+            return new PneuDescarte();
+        }
+    },
+    PNEU_ESTOQUE("PNEU_ESTOQUE", PneuEstoque.class) {
+        @NotNull
+        @Override
+        public Pneu createNew() {
+            return new PneuEstoque();
+        }
+    },
+    PNEU_EM_USO("PNEU_EM_USO", PneuEmUso.class) {
+        @NotNull
+        @Override
+        public Pneu createNew() {
+            return new PneuEmUso();
+        }
+    };
 
     @NotNull
     final String tipo;
