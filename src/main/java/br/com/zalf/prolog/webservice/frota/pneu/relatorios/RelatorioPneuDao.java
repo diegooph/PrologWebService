@@ -213,7 +213,7 @@ public interface RelatorioPneuDao {
      * @throws SQLException se ocorrer erro no banco de dados
      */
     @Deprecated
-    List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException;
+    List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws Throwable;
 
     /**
      * busca uma lista de pneus com base em uma faixa de pressão
@@ -224,7 +224,7 @@ public interface RelatorioPneuDao {
      * @throws SQLException se ocorrer erro no banco de dados
      */
     @Deprecated
-    List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException;
+    List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws Throwable;
 
     /**
      * Busca a quantidade de pneus presentes em cada {@link StatusPneu}.

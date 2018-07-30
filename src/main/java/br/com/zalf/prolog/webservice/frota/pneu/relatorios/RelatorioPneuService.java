@@ -35,7 +35,7 @@ public class RelatorioPneuService {
     public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) {
         try {
             return dao.getQtPneusByFaixaPressao(codUnidades, status);
-        } catch (SQLException e) {
+        } catch (Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de faixas de pressão", e);
             throw new RuntimeException(e);
         }
@@ -45,7 +45,7 @@ public class RelatorioPneuService {
     public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) {
         try {
             return dao.getAderenciaByUnidade(ano, mes, codUnidade);
-        } catch (SQLException e) {
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência por unidade. \n" +
                     "Unidade: %d \n" +
                     "Ano: %d \n" +

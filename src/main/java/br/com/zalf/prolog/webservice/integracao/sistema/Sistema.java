@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -15,6 +14,7 @@ import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +40,8 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Exception {
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws
+            Exception {
         return getIntegradorProLog().getVeiculosAtivosByUnidade(codUnidade, ativos);
     }
 
@@ -59,7 +60,8 @@ public abstract class Sistema implements OperacoesIntegradas {
     @NotNull
     @Override
     public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
-                                                                                    @NotNull Long codFuncao) throws Exception {
+                                                                                    @NotNull Long codFuncao) throws
+            Exception {
         return getIntegradorProLog().getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
     }
 
@@ -71,7 +73,7 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Throwable {
         return getIntegradorProLog().getCronogramaAfericao(codUnidade);
     }
 
@@ -79,7 +81,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     @Override
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
                                                   @NotNull String placaVeiculo,
-                                                  @NotNull String tipoAfericao) throws Exception {
+                                                  @NotNull String tipoAfericao) throws Throwable {
         return getIntegradorProLog().getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
     }
 
@@ -90,19 +92,19 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public AfericaoPlaca getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Exception {
+    public Afericao getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Throwable {
         return getIntegradorProLog().getAfericaoByCodigo(codUnidade, codAfericao);
     }
 
     @NotNull
     @Override
-    public List<AfericaoPlaca> getAfericoes(@NotNull Long codUnidade,
-                                            @NotNull String codTipoVeiculo,
-                                            @NotNull String placaVeiculo,
-                                            long dataInicial,
-                                            long dataFinal,
-                                            int limit,
-                                            long offset) throws Exception {
+    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
+                                       @NotNull String codTipoVeiculo,
+                                       @NotNull String placaVeiculo,
+                                       @NotNull LocalDate dataInicial,
+                                       @NotNull LocalDate dataFinal,
+                                       int limit,
+                                       long offset) throws Throwable {
         return getIntegradorProLog()
                 .getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
     }

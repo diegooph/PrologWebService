@@ -18,7 +18,7 @@ public interface InformacoesProvidas {
     Colaborador getColaboradorByToken(@NotNull final String userToken) throws Exception;
 
     @NotNull
-    Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Exception;
+    Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
     Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama) throws Exception;

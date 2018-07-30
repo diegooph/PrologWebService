@@ -305,7 +305,7 @@ public final class AvaCorpAvilanConverter {
 
     @VisibleForTesting
     public static List<Pneu> convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
-                                          @Nonnull final ArrayOfPneu arrayOfPneu) {
+                                     @Nonnull final ArrayOfPneu arrayOfPneu) {
         checkNotNull(posicaoPneuMapper, "posicaoPneuMapper não pode ser null!");
         checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
         final List<Pneu> pneus = new ArrayList<>();
@@ -505,11 +505,11 @@ public final class AvaCorpAvilanConverter {
 
     @Nonnull
     @VisibleForTesting
-    public static List<AfericaoPlaca> convertAfericoes(@NotNull final List<AfericaoFiltro> afericoesFiltro,
-                                                       @NotNull final Long codUnidadeAfericao) throws ParseException {
+    public static List<Afericao> convertAfericoes(@NotNull final List<AfericaoFiltro> afericoesFiltro,
+                                                  @NotNull final Long codUnidadeAfericao) throws ParseException {
         checkNotNull(afericoesFiltro, "afericoesFiltro não pode ser null!");
 
-        final List<AfericaoPlaca> afericoes = new ArrayList<>();
+        final List<Afericao> afericoes = new ArrayList<>();
         for (AfericaoFiltro afericaoFiltro : afericoesFiltro) {
             afericoes.add(convertAfericaoSemPneus(afericaoFiltro, codUnidadeAfericao));
         }

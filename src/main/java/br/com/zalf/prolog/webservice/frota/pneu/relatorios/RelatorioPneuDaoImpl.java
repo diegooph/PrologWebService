@@ -271,7 +271,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @Override
     @Deprecated
-    public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException {
+    public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -351,7 +351,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @Override
     @Deprecated
-    public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException {
+    public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

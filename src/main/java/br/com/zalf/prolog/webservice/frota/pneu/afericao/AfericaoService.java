@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
@@ -9,7 +10,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,15 +38,6 @@ public class AfericaoService {
         }
     }
 
-    public boolean updateKmAfericao(AfericaoPlaca afericaoPlaca) {
-        try {
-            return dao.update(afericaoPlaca);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao atualizar o KM de uma aferição", e);
-            return false;
-        }
-    }
-
     public NovaAfericaoPlaca getNovaAfericaoPlaca(Long codUnidade,
                                                   String placa,
                                                   String tipoAfericao,
@@ -72,26 +63,28 @@ public class AfericaoService {
         }
     }
 
-    public AfericaoPlaca getByCod(Long codUnidade, Long codAfericao, String userToken) {
+    public Afericao getByCod(Long codUnidade, Long codAfericao, String userToken) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
                     .getAfericaoByCodigo(codUnidade, codAfericao);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar uma aferição específica", e);
-            throw new RuntimeException(e);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar a aferição: " + codAfericao, e);
+            throw exceptionHandler.map(e, "Erro ao buscar a aferição, tente novamente");
         }
     }
 
     @NotNull
-    public CronogramaAfericao getCronogramaAfericao(final Long codUnidade, final String userToken) throws Exception {
+    public CronogramaAfericao getCronogramaAfericao(final Long codUnidade, final String userToken) throws
+            ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
                     .getCronogramaAfericao(codUnidade);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar o cronograma de aferições", e);
-            throw e;
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar o cronograma de aferições";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -106,44 +99,42 @@ public class AfericaoService {
         }
     }
 
-    public List<AfericaoPlaca> getAfericoes(Long codUnidade,
-                                            String codTipoVeiculo,
-                                            String placaVeiculo,
-                                            long dataInicial,
-                                            long dataFinal,
-                                            int limit,
-                                            long offset,
-                                            final String userToken) {
+    public List<Afericao> getAfericoes(Long codUnidade,
+                                       String codTipoVeiculo,
+                                       String placaVeiculo,
+                                       String dataInicial,
+                                       String dataFinal,
+                                       int limit,
+                                       long offset,
+                                       final String userToken) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
-                    .getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar as aferições", e);
-            throw new RuntimeException("Erro ao buscar aferições. Unidade: "
+                    .getAfericoes(
+                            codUnidade,
+                            codTipoVeiculo,
+                            placaVeiculo,
+                            ProLogDateParser.toLocalDate(dataInicial),
+                            ProLogDateParser.toLocalDate(dataFinal),
+                            limit,
+                            offset);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar aferições. Unidade: "
                     + codUnidade + " || Tipo: "
                     + codTipoVeiculo + " || Placa: "
-                    + placaVeiculo);
+                    + placaVeiculo, e);
+            throw exceptionHandler.map(e, "Erro ao buscar as aferições, tente novamente");
         }
     }
 
-    @Deprecated
-    public List<AfericaoPlaca> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit,
-                                                               long offset) {
-        try {
-            return dao.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar as aferições de uma placa", e);
-            return null;
-        }
-    }
-
-    public Restricao getRestricaoByCodUnidade(Long codUnidade) {
+    @NotNull
+    public Restricao getRestricaoByCodUnidade(Long codUnidade) throws ProLogException {
         try {
             return dao.getRestricaoByCodUnidade(codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar as restrições", e);
-            return null;
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar as restrições";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 }

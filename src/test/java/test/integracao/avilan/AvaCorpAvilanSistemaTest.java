@@ -45,14 +45,14 @@ public class AvaCorpAvilanSistemaTest {
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
-    public void testBuscarNovaAfericao() throws Exception {
+    public void testBuscarNovaAfericao() throws Throwable {
         final NovaAfericao novaAfericao = sistema.getNovaAfericaoPlaca(1L,"LRN9162", TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
         assertNotNull(novaAfericao);
         System.out.println(GsonUtils.getGson().toJson(novaAfericao));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
-    public void testBuscarAfericaoByCodigo() throws Exception {
+    public void testBuscarAfericaoByCodigo() throws Throwable {
         assertNotNull(sistema.getAfericaoByCodigo(4L, 328L));
     }
 

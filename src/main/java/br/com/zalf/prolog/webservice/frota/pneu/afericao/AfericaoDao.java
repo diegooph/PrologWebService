@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface AfericaoDao {
@@ -15,7 +16,7 @@ public interface AfericaoDao {
     /**
      * Insere uma aferição lincada com o código da unidade.
      *
-     * @param afericao uma aferição
+     * @param afericao   uma aferição
      * @param codUnidade código da unidade
      * @return valor da operação
      * @throws Throwable se ocorrer erro no banco
@@ -23,18 +24,9 @@ public interface AfericaoDao {
     boolean insert(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
 
     /**
-     * Atualiza uma aferição
-     *
-     * @param afericaoPlaca      objeto {@link AfericaoPlaca} para ser atualizado
-     * @return              verdadeiro se operação for sucesso, falso caso contrário
-     * @throws SQLException se ocorrer erro no banco
-     */
-    boolean update(AfericaoPlaca afericaoPlaca) throws SQLException;
-
-    /**
      * Busca objeto contendo informações necessárias para se iniciar uma aferição do {@link Veiculo}.
      *
-     * @param placa placa do veículo
+     * @param placa        placa do veículo
      * @param tipoAfericao tipo da aferição que será realizada
      * @return retorna o objeto da nova aferição
      * @throws SQLException se ocorrer erro na busca
@@ -42,12 +34,12 @@ public interface AfericaoDao {
     @NotNull
     NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
                                            @NotNull final String placa,
-                                           @NotNull final String tipoAfericao) throws SQLException;
+                                           @NotNull final String tipoAfericao) throws Throwable;
 
     /**
      * Busca objeto contendo informações necessárias para se iniciar uma aferição do {@link Pneu}.
      *
-     * @param codPneu placa do veículo
+     * @param codPneu                     placa do veículo
      * @param tipoMedicaoColetadaAfericao tipo da aferição que será realizada
      * @return retorna o objeto da nova aferição
      * @throws SQLException se ocorrer erro na busca
@@ -55,7 +47,8 @@ public interface AfericaoDao {
     @NotNull
     NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
                                              @NotNull final Long codPneu,
-                                             @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable;
+                                             @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao)
+            throws Throwable;
 
     /**
      * Retorna as restrições de medidas da unidade.
@@ -65,7 +58,7 @@ public interface AfericaoDao {
      * @throws SQLException se ocorrer erro no banco
      */
     @NotNull
-    Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws SQLException;
+    Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Retorna as restrições de medidas da unidade.
@@ -75,7 +68,8 @@ public interface AfericaoDao {
      * @throws SQLException se ocorrer erro no banco
      */
     @NotNull
-    Restricao getRestricaoByCodUnidade(@NotNull final Connection conn, @NotNull final Long codUnidade) throws SQLException;
+    Restricao getRestricaoByCodUnidade(@NotNull final Connection conn, @NotNull final Long codUnidade) throws
+            Throwable;
 
     /**
      * retorna as restrições de medidas da placa
@@ -84,24 +78,31 @@ public interface AfericaoDao {
      * @return a restrição da placa
      * @throws SQLException se ocorrer erro no banco
      */
-    Restricao getRestricoesByPlaca(String placa) throws SQLException;
+    @NotNull
+    Restricao getRestricoesByPlaca(String placa) throws Throwable;
 
     /**
      * retorna a lista de placas da unidade e também a meta de
      * dias em que cada placa deve ser aferido
      *
-     * @param codUnidade    código da unidade
-     * @return              um {@link CronogramaAfericao} contendo as placas para ser aferidas
+     * @param codUnidade código da unidade
+     * @return um {@link CronogramaAfericao} contendo as placas para ser aferidas
      * @throws SQLException para qualquer erro do banco
      */
     @NotNull
-    CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws SQLException;
+    CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
     List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable;
 
-    List<AfericaoPlaca> getAfericoes(Long codUnidade, String codTipoVeiculo, String placaVeiculo, long dataInicial,
-                                     long dataFinal, int limit, long offset) throws SQLException;
+    @NotNull
+    List<Afericao> getAfericoes(@NotNull final Long codUnidade,
+                                @NotNull final String codTipoVeiculo,
+                                @NotNull final String placaVeiculo,
+                                @NotNull final LocalDate dataInicial,
+                                @NotNull final LocalDate dataFinal,
+                                final int limit,
+                                final long offset) throws Throwable;
 
     /**
      * retorna uma aferição através do código dela
@@ -111,19 +112,6 @@ public interface AfericaoDao {
      * @return a aferição
      * @throws SQLException se ocorrer erro no banco
      */
-    AfericaoPlaca getByCod(Long codUnidade, Long codAfericao) throws SQLException;
-
-    /**
-     * pega a lista de aferições executadas
-     *
-     * @param codUnidades código da unidade
-     * @param placas      placa do veículo
-     * @param limit       limite de busca de dados no banco
-     * @param offset      offset de busca no banco de dados
-     * @return uma lista de aferições
-     * @throws SQLException se ocorrer erro no banco
-     */
-    @Deprecated
-    List<AfericaoPlaca> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit, long offset) throws SQLException;
-
+    @NotNull
+    Afericao getByCod(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable;
 }

@@ -48,21 +48,12 @@ public class AfericaoResource {
         }
     }
 
-    @PUT
-    @Secured
-    public Response update(AfericaoPlaca afericaoPlaca) {
-        if (service.updateKmAfericao(afericaoPlaca)) {
-            return Response.ok("Km atualizado com sucesso");
-        } else {
-            return Response.error("Erro ao atualizar o KM");
-        }
-    }
-
     @GET
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
     @Path("/cronogramas/{codUnidade}")
     public CronogramaAfericao getCronogramaAfericao(@PathParam("codUnidade") Long codUnidade,
-                                                    @HeaderParam("Authorization") String userToken) throws Exception {
+                                                    @HeaderParam("Authorization") String userToken) throws
+            ProLogException {
         return service.getCronogramaAfericao(codUnidade, userToken);
     }
 
@@ -102,15 +93,15 @@ public class AfericaoResource {
             Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    public List<AfericaoPlaca> getAfericoesByCodUnidadeByPlaca(
+    public List<Afericao> getAfericoesByCodUnidadeByPlaca(
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codTipoVeiculo") String codTipoVeiculo,
             @PathParam("placaVeiculo") String placaVeiculo,
-            @QueryParam("dataInicial") long dataInicial,
-            @QueryParam("dataFinal") long dataFinal,
+            @QueryParam("dataInicial") String dataInicial,
+            @QueryParam("dataFinal") String dataFinal,
             @QueryParam("limit") int limit,
             @QueryParam("offset") long offset,
-            @HeaderParam("Authorization") String userToken) {
+            @HeaderParam("Authorization") String userToken) throws ProLogException {
         return service.getAfericoes(
                 codUnidade,
                 codTipoVeiculo,
@@ -129,9 +120,9 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/{codUnidade}/{codAfericao}")
-    public AfericaoPlaca getByCod(@PathParam("codUnidade") Long codUnidade,
-                                  @PathParam("codAfericao") Long codAfericao,
-                                  @HeaderParam("Authorization") String userToken) {
+    public Afericao getByCod(@PathParam("codUnidade") Long codUnidade,
+                             @PathParam("codAfericao") Long codAfericao,
+                             @HeaderParam("Authorization") String userToken) throws ProLogException {
         return service.getByCod(codUnidade, codAfericao, userToken);
     }
 
@@ -142,7 +133,7 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/restricoes/{codUnidade}")
-    public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
+    public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws ProLogException {
         return service.getRestricaoByCodUnidade(codUnidade);
     }
 }

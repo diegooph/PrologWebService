@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -31,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.Response;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -246,7 +246,7 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidadeCronograma) throws Exception {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidadeCronograma) throws Throwable {
         /*
          * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
          * que não esteja presente na mesma unidade dele.
@@ -274,7 +274,7 @@ public final class AvaCorpAvilan extends Sistema {
     @Override
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
                                                   @NotNull String placaVeiculo,
-                                                  @NotNull String tipoAfericao) throws Exception {
+                                                  @NotNull String tipoAfericao) throws Throwable {
         /*
          * A Avilan não suporta afericões de Sulco e Pressão separadamente, então lançamos uma
          * exceção caso o tipo selecionado for diferentes de {@link TipoAfericao#SULCO_PRESSAO}
@@ -340,7 +340,7 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public AfericaoPlaca getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Exception {
+    public AfericaoPlaca getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Throwable {
 
         final AfericaoFiltro afericaoFiltro = requester.getAfericaoByCodigo(
                 Math.toIntExact(codAfericao),
@@ -365,13 +365,13 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public List<AfericaoPlaca> getAfericoes(@NotNull Long codUnidade,
-                                            @NotNull String codTipoVeiculo,
-                                            @NotNull String placaVeiculo,
-                                            long dataInicial,
-                                            long dataFinal,
-                                            int limit,
-                                            long offset) throws Exception {
+    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
+                                       @NotNull String codTipoVeiculo,
+                                       @NotNull String placaVeiculo,
+                                       @NotNull LocalDate dataInicial,
+                                       @NotNull LocalDate dataFinal,
+                                       int limit,
+                                       long offset) throws Throwable {
         // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
         // vazio.
         final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
@@ -388,8 +388,8 @@ public final class AvaCorpAvilan extends Sistema {
                 filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo,
                 placaVeiculo.equals(FILTRO_TODOS) ? "" : placaVeiculo,
-                AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
-                AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(dataFinal),
                 limit,
                 Math.toIntExact(offset),
                 getCpf(),

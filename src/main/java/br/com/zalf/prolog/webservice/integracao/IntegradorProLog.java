@@ -11,7 +11,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -25,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +86,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Restricao getRestricaoByCodUnidade(@NotNull Long codUnidade) throws Exception {
+    public Restricao getRestricaoByCodUnidade(@NotNull Long codUnidade) throws Throwable {
         if (afericaoDao == null) {
             afericaoDao = Injection.provideAfericaoDao();
         }
@@ -129,7 +129,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     //
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Exception {
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws
+            Exception {
         return veiculoDao.getVeiculosAtivosByUnidade(codUnidade, ativos);
     }
 
@@ -153,7 +154,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Throwable {
         return afericaoDao.getCronogramaAfericao(codUnidade);
     }
 
@@ -161,7 +162,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
                                                   @NotNull String placaVeiculo,
-                                                  @NotNull String tipoAfericao) throws Exception {
+                                                  @NotNull String tipoAfericao) throws Throwable {
         return afericaoDao.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
     }
 
@@ -172,20 +173,21 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public AfericaoPlaca getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Exception {
+    public Afericao getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Throwable {
         return afericaoDao.getByCod(codUnidade, codAfericao);
     }
 
     @NotNull
     @Override
-    public List<AfericaoPlaca> getAfericoes(@NotNull Long codUnidade,
-                                            @NotNull String codTipoVeiculo,
-                                            @NotNull String placaVeiculo,
-                                            long dataInicial,
-                                            long dataFinal,
-                                            int limit,
-                                            long offset) throws Exception {
-        return afericaoDao.getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
+    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
+                                       @NotNull String codTipoVeiculo,
+                                       @NotNull String placaVeiculo,
+                                       @NotNull LocalDate dataInicial,
+                                       @NotNull LocalDate dataFinal,
+                                       int limit,
+                                       long offset) throws Throwable {
+        return afericaoDao.getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit,
+                offset);
     }
 
     @NotNull
@@ -290,7 +292,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         }
 
         public IntegradorProLog build() {
-            return new IntegradorProLog(userToken, veiculoDao, checklistDao, afericaoDao, colaboradorDao, integracaoDao);
+            return new IntegradorProLog(userToken, veiculoDao, checklistDao, afericaoDao, colaboradorDao,
+                    integracaoDao);
         }
     }
 }
