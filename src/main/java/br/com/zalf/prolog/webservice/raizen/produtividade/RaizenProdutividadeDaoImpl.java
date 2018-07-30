@@ -137,18 +137,6 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         return produtividades;
     }
 
-    private RaizenProdutividadeColaborador createRaizenProdutividadeColaborador(@NotNull final ResultSet rSet,
-                                                                                @NotNull final List<RaizenProdutividade> produtividades)
-            throws SQLException {
-        final List<RaizenProdutividadeItemData> itensData = new ArrayList<>();
-        itensData.add(createRaizenProdutividadeItemData(rSet));
-        final RaizenProdutividadeColaborador raizenProdutividadeColaborador = new RaizenProdutividadeColaborador(
-                rSet.getLong("CPF_MOTORISTA"), rSet.getString("NOME_MOTORISTA"));
-        raizenProdutividadeColaborador.setItensRaizen(itensData);
-        produtividades.add(raizenProdutividadeColaborador);
-        return raizenProdutividadeColaborador;
-    }
-
     @NotNull
     @Override
     public List<RaizenProdutividade> getRaizenProdutividadeData(@NotNull final Long codEmpresa,
@@ -212,74 +200,6 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     }
 
     @NotNull
-    private RaizenProdutividadeData createRaizenProdutividadeData(
-            @NotNull final ResultSet rSet,
-            @NotNull final List<RaizenProdutividade> produtividades) throws SQLException {
-        final List<RaizenProdutividadeItemColaborador> itensColaborador = new ArrayList<>();
-        itensColaborador.add(createRaizenProdutividadeItemColaborador(rSet));
-        final RaizenProdutividadeData raizenProdutividadeData = new RaizenProdutividadeData(
-                rSet.getObject("DATA_VIAGEM", LocalDate.class));
-        raizenProdutividadeData.setItensRaizen(itensColaborador);
-        produtividades.add(raizenProdutividadeData);
-        return raizenProdutividadeData;
-    }
-
-    private RaizenProdutividadeItemColaborador createRaizenProdutividadeItemColaborador(ResultSet rSet) throws
-            SQLException {
-        final RaizenProdutividadeItemColaborador item = new RaizenProdutividadeItemColaborador(
-                rSet.getLong("CPF_MOTORISTA"),
-                rSet.getString("NOME_MOTORISTA"));
-        item.setCodigo(rSet.getLong("CODIGO"));
-        item.setPlaca(rSet.getString("PLACA"));
-        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
-        item.setValor(rSet.getBigDecimal("VALOR"));
-        item.setUsina(rSet.getString("USINA"));
-        item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
-        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
-        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
-        return item;
-    }
-
-    private RaizenProdutividadeItemData createRaizenProdutividadeItemData(ResultSet rSet) throws SQLException {
-        final RaizenProdutividadeItemData item = new RaizenProdutividadeItemData();
-        item.setCodigo(rSet.getLong("CODIGO"));
-        item.setPlaca(rSet.getString("PLACA"));
-        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
-        item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
-        item.setValor(rSet.getBigDecimal("VALOR"));
-        item.setUsina(rSet.getString("USINA"));
-        item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
-        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
-        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
-        return item;
-    }
-
-    private RaizenProdutividadeItemVisualizacao createRaizenProdutividadeItemVisualizacao(ResultSet rSet) throws SQLException {
-        final RaizenProdutividadeItemVisualizacao item = new RaizenProdutividadeItemVisualizacao();
-        item.setCodigo(rSet.getLong("CODIGO"));
-        item.setPlaca(rSet.getString("PLACA"));
-        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
-        item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
-        item.setCpfColaborador(rSet.getLong("CPF_MOTORISTA"));
-        item.setColaboradorCadastrado(rSet.getBoolean("MOTORISTA_CADASTRADO"));
-        item.setValor(rSet.getBigDecimal("VALOR"));
-        item.setUsina(rSet.getString("USINA"));
-        item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
-        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
-        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
-        return item;
-    }
-
-    @NotNull
     @Override
     public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@NotNull final Long codColaborador,
                                                                       final int mes,
@@ -303,20 +223,6 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             closeConnection(conn, stmt, rSet);
         }
         return new RaizenProdutividadeIndividualHolder(itens);
-    }
-
-    @NotNull
-    private RaizenprodutividadeItemIndividual createRaizenProdutividadeItemIndividual(@NotNull final ResultSet rSet)
-            throws SQLException {
-        final RaizenprodutividadeItemIndividual item = new RaizenprodutividadeItemIndividual();
-        item.setDataViagem(rSet.getDate("DATA_VIAGEM"));
-        item.setValor(rSet.getBigDecimal("VALOR"));
-        item.setPlaca(rSet.getString("PLACA"));
-        item.setUsina(rSet.getString("USINA"));
-        item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
-        return item;
     }
 
     @Override
@@ -424,5 +330,103 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             closeStatement(stmt);
         }
         return true;
+    }
+
+    @NotNull
+    private RaizenProdutividadeColaborador createRaizenProdutividadeColaborador(@NotNull final ResultSet rSet,
+                                                                                @NotNull final List<RaizenProdutividade> produtividades)
+            throws SQLException {
+        final List<RaizenProdutividadeItemData> itensData = new ArrayList<>();
+        itensData.add(createRaizenProdutividadeItemData(rSet));
+        final RaizenProdutividadeColaborador raizenProdutividadeColaborador = new RaizenProdutividadeColaborador(
+                rSet.getLong("CPF_MOTORISTA"), rSet.getString("NOME_MOTORISTA"));
+        raizenProdutividadeColaborador.setItensRaizen(itensData);
+        produtividades.add(raizenProdutividadeColaborador);
+        return raizenProdutividadeColaborador;
+    }
+
+    @NotNull
+    private RaizenProdutividadeData createRaizenProdutividadeData(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<RaizenProdutividade> produtividades) throws SQLException {
+        final List<RaizenProdutividadeItemColaborador> itensColaborador = new ArrayList<>();
+        itensColaborador.add(createRaizenProdutividadeItemColaborador(rSet));
+        final RaizenProdutividadeData raizenProdutividadeData = new RaizenProdutividadeData(
+                rSet.getObject("DATA_VIAGEM", LocalDate.class));
+        raizenProdutividadeData.setItensRaizen(itensColaborador);
+        produtividades.add(raizenProdutividadeData);
+        return raizenProdutividadeData;
+    }
+
+    @NotNull
+    private RaizenprodutividadeItemIndividual createRaizenProdutividadeItemIndividual(@NotNull final ResultSet rSet)
+            throws SQLException {
+        final RaizenprodutividadeItemIndividual item = new RaizenprodutividadeItemIndividual();
+        item.setDataViagem(rSet.getDate("DATA_VIAGEM"));
+        item.setValor(rSet.getBigDecimal("VALOR"));
+        item.setPlaca(rSet.getString("PLACA"));
+        item.setUsina(rSet.getString("USINA"));
+        item.setFazenda(rSet.getString("FAZENDA"));
+        item.setRaio(rSet.getDouble("RAIO"));
+        item.setToneladas(rSet.getDouble("TONELADAS"));
+        return item;
+    }
+
+    @NotNull
+    private RaizenProdutividadeItemColaborador createRaizenProdutividadeItemColaborador(ResultSet rSet) throws
+            SQLException {
+        final RaizenProdutividadeItemColaborador item = new RaizenProdutividadeItemColaborador(
+                rSet.getLong("CPF_MOTORISTA"),
+                rSet.getString("NOME_MOTORISTA"));
+        item.setCodigo(rSet.getLong("CODIGO"));
+        item.setPlaca(rSet.getString("PLACA"));
+        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
+        item.setValor(rSet.getBigDecimal("VALOR"));
+        item.setUsina(rSet.getString("USINA"));
+        item.setFazenda(rSet.getString("FAZENDA"));
+        item.setRaio(rSet.getDouble("RAIO"));
+        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
+        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
+        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        return item;
+    }
+
+    @NotNull
+    private RaizenProdutividadeItemData createRaizenProdutividadeItemData(ResultSet rSet) throws SQLException {
+        final RaizenProdutividadeItemData item = new RaizenProdutividadeItemData();
+        item.setCodigo(rSet.getLong("CODIGO"));
+        item.setPlaca(rSet.getString("PLACA"));
+        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
+        item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
+        item.setValor(rSet.getBigDecimal("VALOR"));
+        item.setUsina(rSet.getString("USINA"));
+        item.setFazenda(rSet.getString("FAZENDA"));
+        item.setRaio(rSet.getDouble("RAIO"));
+        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
+        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
+        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        return item;
+    }
+
+    @NotNull
+    private RaizenProdutividadeItemVisualizacao createRaizenProdutividadeItemVisualizacao(ResultSet rSet) throws SQLException {
+        final RaizenProdutividadeItemVisualizacao item = new RaizenProdutividadeItemVisualizacao();
+        item.setCodigo(rSet.getLong("CODIGO"));
+        item.setPlaca(rSet.getString("PLACA"));
+        item.setPlacaCadastrada(rSet.getBoolean("PLACA_CADASTRADA"));
+        item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
+        item.setCpfColaborador(rSet.getLong("CPF_MOTORISTA"));
+        item.setColaboradorCadastrado(rSet.getBoolean("MOTORISTA_CADASTRADO"));
+        item.setValor(rSet.getBigDecimal("VALOR"));
+        item.setUsina(rSet.getString("USINA"));
+        item.setFazenda(rSet.getString("FAZENDA"));
+        item.setRaio(rSet.getDouble("RAIO"));
+        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
+        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
+        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        return item;
     }
 }
