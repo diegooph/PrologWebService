@@ -6,9 +6,9 @@ import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
@@ -37,6 +37,47 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     private static final String TAG = RelatorioPneuDaoImpl.class.getSimpleName();
 
     public RelatorioPneuDaoImpl() {
+
+    }
+
+    @Override
+    public void getAfericoesAvulsasCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final List<Long> codUnidades,
+                                       @NotNull final LocalDate dataInicial,
+                                       @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getAfericoesAvulsasStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(outputStream)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getAfericoesAvulsasReport(@NotNull final List<Long> codUnidades,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getAfericoesAvulsasStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @Override
@@ -837,6 +878,19 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         } else {
             stmt.setString(2, status);
         }
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getAfericoesAvulsasStatement(@NotNull final Connection conn,
+                                                           @NotNull final List<Long> codUnidades,
+                                                           @NotNull final LocalDate dataInicial,
+                                                           @NotNull final LocalDate dataFinal) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS(?, ?, ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+        stmt.setObject(2, dataInicial);
+        stmt.setObject(3, dataFinal);
         return stmt;
     }
 
