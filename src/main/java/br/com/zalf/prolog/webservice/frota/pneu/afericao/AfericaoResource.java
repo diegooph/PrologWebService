@@ -66,7 +66,7 @@ public class AfericaoResource {
     }
 
     @GET
-    @Path("/unidades/{codUnidade}/nova-placa/{placaVeiculo}")
+    @Path("/unidades/{codUnidade}/nova-afericao-placa/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@PathParam("codUnidade") @Required Long codUnidade,
                                                   @PathParam("placaVeiculo") @Required String placa,
@@ -77,7 +77,7 @@ public class AfericaoResource {
     }
 
     @GET
-    @Path("/unidades/{codUnidade}/nova-avulsa/{codPneu}")
+    @Path("/unidades/{codUnidade}/nova-afericao-avulsa/{codPneu}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
     public NovaAfericaoAvulsa getNovaAfericaoAvulsa(@PathParam("codUnidade") @Required Long codUnidade,
                                                     @PathParam("codPneu") @Required Long codPneu,
