@@ -333,6 +333,7 @@ public final class Pilares {
             public static final int EDITAR = 416;
             public static final int UPLOAD = 417;
             public static final int DELETAR = 418;
+            public static final int VISUALIZAR_RELATORIOS = 419;
         }
     }
 }
