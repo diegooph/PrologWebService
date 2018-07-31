@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.colaborador.error;
 
 import br.com.zalf.prolog.webservice.colaborador.model.*;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.ValidationUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;

@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.seguranca.relato.relatorio;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import org.jetbrains.annotations.NotNull;
 

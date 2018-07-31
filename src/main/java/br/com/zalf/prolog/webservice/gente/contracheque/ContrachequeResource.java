@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.*;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;

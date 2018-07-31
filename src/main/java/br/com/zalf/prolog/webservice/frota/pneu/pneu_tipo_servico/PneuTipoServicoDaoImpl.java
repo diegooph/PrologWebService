@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.commons.OrderByClause;
-import br.com.zalf.prolog.webservice.commons.util.Now;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuTipoServico;
 import org.jetbrains.annotations.NotNull;

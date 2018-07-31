@@ -17,7 +17,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ControleIntervaloRelatorioResource {
 
-    private ControleIntervalosRelatorioService service = new ControleIntervalosRelatorioService();
+    private ControleIntervaloRelatorioService service = new ControleIntervaloRelatorioService();
 
     @GET
     @Secured
@@ -121,11 +121,12 @@ public class ControleIntervaloRelatorioResource {
     @GET
     @Secured
     @Path("/folha-ponto/{codUnidade}/{codTipoIntervalo}/{cpf}")
-    public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@PathParam("codUnidade") @Required Long codUnidade,
-                                                            @PathParam("cpf") @Required String cpf,
-                                                            @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
-                                                            @QueryParam("dataInicial") @Required String dataInicial,
-                                                            @QueryParam("dataFinal") @Required String dataFinal) {
+    public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(
+            @PathParam("codUnidade") @Required Long codUnidade,
+            @PathParam("cpf") @Required String cpf,
+            @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) throws Throwable {
         return service.getFolhaPontoRelatorio(
                 codUnidade,
                 codTipoIntervalo,
@@ -172,8 +173,8 @@ public class ControleIntervaloRelatorioResource {
     @Path("/total-tempo-por-tipo-intervalo/{codUnidade}/{codTipoIntervalo}/csv")
     public StreamingOutput getTotalTempoByTipoIntervaloCsv(@PathParam("codUnidade") @Required final Long codUnidade,
                                                            @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
-                                                           @QueryParam("dataInicial") @Required final String dataInicial,
-                                                           @QueryParam("dataFinal") @Required final String dataFinal) {
+                                                           @QueryParam("dataInicial") @Required String dataInicial,
+                                                           @QueryParam("dataFinal") @Required String dataFinal) {
         return outputStream -> service.getTotalTempoByTipoIntervaloCsv(
                 outputStream,
                 codUnidade,
@@ -185,10 +186,11 @@ public class ControleIntervaloRelatorioResource {
     @GET
     @Secured
     @Path("/total-tempo-por-tipo-intervalo/{codUnidade}/{codTipoIntervalo}/report")
-    public Report getTotalTempoByTipoIntervaloReport(@PathParam("codUnidade") @Required final Long codUnidade,
-                                                     @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
-                                                     @QueryParam("dataInicial") @Required final String dataInicial,
-                                                     @QueryParam("dataFinal") @Required final String dataFinal) {
+    public Report getTotalTempoByTipoIntervaloReport(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) throws Throwable {
         return service.getTotalTempoByTipoIntervaloReport(
                 codUnidade,
                 codTipoIntervalo,

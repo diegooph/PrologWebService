@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.seguranca.relato;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.seguranca.pdv.Pdv;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
