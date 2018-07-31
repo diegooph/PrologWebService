@@ -17,6 +17,12 @@ Change Log
 * Cria relatório com o tempo total por tipo de marcação no controle de jornada
 * Cálcula horas noturnas no relatório de folha de ponto
 
+### Features
+* Cria busca dos colaboradores por código de empresa
+
+### Refactors
+* Altera path da busca de todos os colaboradores de uma unidade
+
 <a name="v0.0.69"></a>
 ## Version [v0.0.69](https://github.com/luizfp/PrologWeb/compare/v0.0.68...v0.0.69) (2018-07-19)
 

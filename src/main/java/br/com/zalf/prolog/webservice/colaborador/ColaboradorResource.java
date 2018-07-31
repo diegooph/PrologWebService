@@ -7,6 +7,9 @@ import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
+import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -68,11 +71,27 @@ public class ColaboradorResource {
 	}
 	
 	@GET
-	@Path("/{codUnidade}/")
-	@Secured(permissions = Pilares.Gente.Colaborador.VISUALIZAR)
-	public List<Colaborador> getAll(@PathParam("codUnidade") Long codUnidade,
-									@QueryParam("apenasAtivos") boolean apenasAtivos) {
-		return service.getAll(codUnidade, apenasAtivos);
+	@Path("unidades/{codUnidade}/")
+	@Secured(permissions = {
+			Pilares.Gente.Colaborador.CADASTRAR,
+			Pilares.Gente.Colaborador.VISUALIZAR,
+			Pilares.Gente.Colaborador.EDITAR})
+	public List<Colaborador> getAllByUnidade(@PathParam("codUnidade") @Required Long codUnidade,
+											 @QueryParam("apenasAtivos") @Optional boolean apenasAtivos)
+			throws ProLogException {
+		return service.getAllByUnidade(codUnidade, apenasAtivos);
+	}
+
+	@GET
+	@Path("empresas/{codEmpresa}/")
+	@Secured(permissions = {
+			Pilares.Gente.Colaborador.CADASTRAR,
+			Pilares.Gente.Colaborador.VISUALIZAR,
+			Pilares.Gente.Colaborador.EDITAR})
+	public List<Colaborador> getAllByEmpresa(@PathParam("codEmpresa") @Required Long codEmrpesa,
+											 @QueryParam("apenasAtivos") @Optional boolean apenasAtivos)
+			throws ProLogException {
+		return service.getAllByEmpresa(codEmrpesa, apenasAtivos);
 	}
 
 	@GET
