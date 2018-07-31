@@ -178,59 +178,19 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
-        ModeloPlacasAfericao modelo = new ModeloPlacasAfericao();
-        final List<ModeloPlacasAfericao> modelos = new ArrayList<>();
-        List<ModeloPlacasAfericao.PlacaAfericao> placas = new ArrayList<>();
         try {
-            // coalesce - trabalha semenlhante ao IF, verifica se o valor é null.
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT V.placa, " +
-                    " M.nome, " +
-                    "    coalesce(INTERVALO_PRESSAO.INTERVALO, -1)::INTEGER as INTERVALO_PRESSAO, " +
-                    "    coalesce(INTERVALO_SULCO.INTERVALO, -1)::INTEGER as INTERVALO_SULCO, " +
-                    "    coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS, " +
-                    "  VCTA.STATUS_ATIVO, " +
-                    "  VCTA.PODE_AFERIR_SULCO, " +
-                    "  VCTA.PODE_AFERIR_PRESSAO, " +
-                    "  VCTA.PODE_AFERIR_SULCO_PRESSAO, " +
-                    "  VCTA.PODE_AFERIR_ESTEPE " +
-                    "FROM VEICULO V " +
-                    "  JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO " +
-                    "  JOIN VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO VCTA ON VCTA.COD_TIPO_VEICULO = V.COD_TIPO " +
-                    "LEFT JOIN " +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE" +
-                    " ?)) AS INTERVALO FROM AFERICAO " +
-                    "        WHERE tipo_afericao = ? OR tipo_afericao = ? " +
-                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V" +
-                    ".PLACA " +
-                    "LEFT JOIN " +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME " +
-                    "ZONE ?)) AS INTERVALO FROM AFERICAO " +
-                    "        WHERE tipo_afericao = ? OR tipo_afericao = ? " +
-                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA " +
-                    "LEFT JOIN " +
-                    "    (SELECT vp.placa as placa_pneus, count(vp.cod_pneu) as total " +
-                    "        FROM veiculo_pneu vp " +
-                    "        WHERE cod_unidade = ? " +
-                    "        GROUP BY 1) as numero_pneus on placa_pneus = v.placa " +
-                    "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ? " +
-                    "ORDER BY M.NOME ASC, INTERVALO_PRESSAO DESC, INTERVALO_SULCO DESC;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CRONOGRAMA_AFERICOES_PLACAS(?, ?, ?);");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-            // Seta para calcular informações de pressão.
-            stmt.setObject(1, OffsetDateTime.now(Clock.system(zoneId)));
-            stmt.setString(2, zoneId.getId());
-            stmt.setString(3, TipoMedicaoColetadaAfericao.PRESSAO.asString());
-            stmt.setString(4, TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
-
-            // Seta para calcular informações de sulco.
-            stmt.setObject(5, OffsetDateTime.now(Clock.system(zoneId)));
-            stmt.setString(6, zoneId.getId());
-            stmt.setString(7, TipoMedicaoColetadaAfericao.SULCO.asString());
-            stmt.setString(8, TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
-            stmt.setLong(9, codUnidade);
-            stmt.setLong(10, codUnidade);
+            stmt.setLong(1, codUnidade);
+            stmt.setObject(2, OffsetDateTime.now(Clock.system(zoneId)));
+            stmt.setString(3, zoneId.getId());
             rSet = stmt.executeQuery();
+
+            final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
+            ModeloPlacasAfericao modelo = new ModeloPlacasAfericao();
+            final List<ModeloPlacasAfericao> modelos = new ArrayList<>();
+            List<ModeloPlacasAfericao.PlacaAfericao> placas = new ArrayList<>();
             while (rSet.next()) {
                 if (placas.size() == 0) {
                     // Primeiro resultado do resultset.
@@ -259,11 +219,10 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             cronogramaAfericao.removerModelosSemPlacas(cronogramaAfericao);
             cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(cronogramaAfericao);
             cronogramaAfericao.calcularTotalVeiculos(cronogramaAfericao);
+            return cronogramaAfericao;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-
-        return cronogramaAfericao;
     }
 
     @NotNull
