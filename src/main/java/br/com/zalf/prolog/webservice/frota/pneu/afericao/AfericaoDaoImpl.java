@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
+import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
@@ -300,39 +301,29 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "A.KM_VEICULO, " +
-                    "A.CODIGO AS COD_AFERICAO, " +
-                    "A.COD_UNIDADE AS COD_UNIDADE, " +
-                    "A.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
-                    "A.PLACA_VEICULO, " +
-                    "A.TIPO_AFERICAO, " +
-                    "C.CPF, " +
-                    "C.NOME, " +
-                    "A.TEMPO_REALIZACAO  "
-                    + "FROM AFERICAO A "
-                    + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
-                    + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
-                    + "WHERE A.COD_UNIDADE = ? "
-                    + "AND V.COD_TIPO::TEXT LIKE ? "
-                    + "AND V.PLACA LIKE ? "
-                    + "AND (A.DATA_HORA AT TIME ZONE ?)::DATE BETWEEN ? AND ? "
-                    + "ORDER BY A.DATA_HORA DESC "
-                    + "LIMIT ? OFFSET ?;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_PLACAS_PAGINADA(?, ?, ?, ?, ?, ?, ?, ?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
-            stmt.setString(1, zoneId);
-            stmt.setLong(2, codUnidade);
-            stmt.setString(3, codTipoVeiculo);
-            stmt.setString(4, placaVeiculo);
-            stmt.setString(5, zoneId);
-            stmt.setObject(6, dataInicial);
-            stmt.setObject(7, dataFinal);
-            stmt.setInt(8, limit);
-            stmt.setLong(9, offset);
+            stmt.setLong(1, codUnidade);
+
+            if (Filtros.isFiltroTodos(codTipoVeiculo)) {
+                stmt.setNull(2, Types.BIGINT);
+            } else {
+                stmt.setString(2, codTipoVeiculo);
+            }
+            if (Filtros.isFiltroTodos(placaVeiculo)) {
+                stmt.setNull(3, Types.VARCHAR);
+            } else {
+                stmt.setString(3, placaVeiculo);
+            }
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
+            stmt.setInt(6, limit);
+            stmt.setLong(7, offset);
+            stmt.setString(8, zoneId);
             rSet = stmt.executeQuery();
             final List<AfericaoPlaca> afericoes = new ArrayList<>();
             while (rSet.next()) {
-                afericoes.add(createAfericaoResumidaPlaca(rSet));
+                afericoes.add(createAfericaoPlacaResumida(rSet));
             }
             return afericoes;
         } finally {
@@ -346,8 +337,29 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                                     @NotNull final LocalDate dataInicial,
                                                     @NotNull final LocalDate dataFinal,
                                                     final int limit,
-                                                    final long offset) {
-        return null;
+                                                    final long offset) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_AVULSAS_PAGINADA(?, ?, ?, ?, ?, ?);");
+            final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
+            stmt.setLong(1, codUnidade);
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
+            stmt.setInt(6, limit);
+            stmt.setLong(7, offset);
+            stmt.setString(8, zoneId);
+            rSet = stmt.executeQuery();
+            final List<AfericaoAvulsa> afericoes = new ArrayList<>();
+            while (rSet.next()) {
+                afericoes.add(createAfericaoAvulsaResumida(rSet));
+            }
+            return afericoes;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @NotNull
@@ -395,7 +407,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             rSet = stmt.executeQuery();
             Afericao afericao;
             if (rSet.next()) {
-                afericao = createAfericaoResumidaPlaca(rSet);
+                afericao = createAfericaoPlacaResumida(rSet);
                 if (afericao instanceof AfericaoPlaca) {
                     final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                     final List<Pneu> pneus = new ArrayList<>();
@@ -673,7 +685,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private AfericaoPlaca createAfericaoResumidaPlaca(@NotNull final ResultSet rSet) throws Throwable {
+    private AfericaoPlaca createAfericaoPlacaResumida(@NotNull final ResultSet rSet) throws Throwable {
         final AfericaoPlaca afericaoPlaca = new AfericaoPlaca();
         // Veículo no qual aferição foi realizada.
         final Veiculo veiculo = new Veiculo();
@@ -685,7 +697,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private Afericao createAfericaResumidaAvulsa(@NotNull final ResultSet rSet) throws Throwable {
+    private AfericaoAvulsa createAfericaoAvulsaResumida(@NotNull final ResultSet rSet) throws Throwable {
         final AfericaoAvulsa afericaoAvulsa = new AfericaoAvulsa();
         // TODO:
         setDadosComunsAfericaoResumida(rSet, afericaoAvulsa);

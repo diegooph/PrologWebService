@@ -120,23 +120,13 @@ public class AfericaoResource {
             Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    public List<Afericao> getAfericoesAvulsas(
+    public List<AfericaoAvulsa> getAfericoesAvulsas(
             @PathParam("codUnidade") Long codUnidade,
             @QueryParam("dataInicial") String dataInicial,
             @QueryParam("dataFinal") String dataFinal,
             @QueryParam("limit") int limit,
-            @QueryParam("offset") long offset,
-            @HeaderParam("Authorization") String userToken) throws ProLogException {
-        return null;
-//        return service.getAfericoesPlacas(
-//                codUnidade,
-//                codTipoVeiculo,
-//                placaVeiculo,
-//                dataInicial,
-//                dataFinal,
-//                limit,
-//                offset,
-//                userToken);
+            @QueryParam("offset") long offset) throws ProLogException {
+        return service.getAfericoesAvulsas(codUnidade, dataInicial, dataFinal, limit, offset);
     }
 
     @GET

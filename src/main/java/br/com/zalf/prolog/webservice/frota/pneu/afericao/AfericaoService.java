@@ -128,6 +128,25 @@ public class AfericaoService {
     }
 
     @NotNull
+    List<AfericaoAvulsa> getAfericoesAvulsas(@NotNull final Long codUnidade,
+                                             @NotNull final String dataInicial,
+                                             @NotNull final String dataFinal,
+                                             final int limit,
+                                             final long offset) throws ProLogException {
+        try {
+            return dao.getAfericoesAvulsas(
+                            codUnidade,
+                            ProLogDateParser.toLocalDate(dataInicial),
+                            ProLogDateParser.toLocalDate(dataFinal),
+                            limit,
+                            offset);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar aferições avulsas", e);
+            throw exceptionHandler.map(e, "Erro ao buscar as aferições, tente novamente");
+        }
+    }
+
+    @NotNull
     public Restricao getRestricaoByCodUnidade(Long codUnidade) throws ProLogException {
         try {
             return dao.getRestricaoByCodUnidade(codUnidade);
