@@ -136,13 +136,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM, ER" +
-                    ".TOLERANCIA_CALIBRAGEM, ER.TOLERANCIA_INSPECAO, "
-                    + "ER.PERIODO_AFERICAO_SULCO, ER.PERIODO_AFERICAO_PRESSAO "
-                    + "FROM UNIDADE U JOIN "
-                    + "EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
-                    + "JOIN PNEU_RESTRICAO_UNIDADE ER ON ER.COD_EMPRESA = E.CODIGO AND U.CODIGO = ER.COD_UNIDADE "
-                    + "WHERE U.CODIGO = ?");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_RESTRICAO_BY_UNIDADE(?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -164,19 +158,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM,ER" +
-                    ".TOLERANCIA_INSPECAO, ER.TOLERANCIA_CALIBRAGEM, "
-                    + "ER.PERIODO_AFERICAO_SULCO, ER.PERIODO_AFERICAO_PRESSAO "
-                    + "FROM VEICULO V JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE "
-                    + "JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
-                    + "JOIN PNEU_RESTRICAO_UNIDADE ER ON ER.COD_EMPRESA = E.CODIGO AND ER.cod_unidade = U.codigo "
-                    + "WHERE V.PLACA = ?");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_RESTRICAO_BY_PLACA(?);");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.isLast()) {
                 return createRestricao(rSet);
             } else {
-                throw new Throwable("Erro ao buscar os dados de restrição");
+                throw new Throwable("Dados de restrição não encontrados para a placa: " + placa);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
