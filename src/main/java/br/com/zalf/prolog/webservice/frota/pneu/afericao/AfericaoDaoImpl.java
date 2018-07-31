@@ -329,44 +329,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "A.KM_VEICULO, " +
-                    "A.CODIGO AS COD_AFERICAO, " +
-                    "A.COD_UNIDADE AS COD_UNIDADE, " +
-                    "A.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
-                    "A.PLACA_VEICULO, " +
-                    "A.KM_VEICULO, " +
-                    "A.TEMPO_REALIZACAO, " +
-                    "A.TIPO_PROCESSO_COLETA, " +
-                    "A.TIPO_MEDICAO_COLETADA, " +
-                    "C.CPF, " +
-                    "C.NOME, " +
-                    "AV.COD_AFERICAO, " +
-                    "AV.ALTURA_SULCO_CENTRAL_INTERNO, " +
-                    "AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
-                    "AV.ALTURA_SULCO_EXTERNO, " +
-                    "AV.ALTURA_SULCO_INTERNO, " +
-                    "AV.PSI::INT AS PRESSAO_PNEU, " +
-                    "AV.POSICAO AS POSICAO_PNEU, " +
-                    "P.CODIGO AS CODIGO_PNEU, " +
-                    "P.CODIGO_CLIENTE AS CODIGO_PNEU_CLIENTE, " +
-                    "P.PRESSAO_RECOMENDADA " +
-                    "FROM AFERICAO A " +
-                    "JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO " +
-                    "JOIN PNEU_ORDEM PO ON AV.POSICAO = PO.POSICAO_PROLOG " +
-                    "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU " +
-                    "JOIN MODELO_PNEU MO ON MO.CODIGO = P.COD_MODELO " +
-                    "JOIN MARCA_PNEU MP ON MP.CODIGO = MO.COD_MARCA " +
-                    "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR " +
-                    "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ? " +
-                    "ORDER BY PO.ORDEM_EXIBICAO ASC");
-            stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICAO_BY_CODIGO(?, ?, ?);");
+            stmt.setLong(1, codUnidade);
             stmt.setLong(2, codAfericao);
-            stmt.setLong(3, codUnidade);
+            stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             rSet = stmt.executeQuery();
             Afericao afericao;
             if (rSet.next()) {
                 afericao = createAfericaoPlacaResumida(rSet);
+                // TODO: Quando essa busca suportar também a busca de aferições avulsas, isso deverá ser refatorado.
                 if (afericao instanceof AfericaoPlaca) {
                     final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                     final List<Pneu> pneus = new ArrayList<>();
