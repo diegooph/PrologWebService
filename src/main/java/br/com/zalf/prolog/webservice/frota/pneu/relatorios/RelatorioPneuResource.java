@@ -34,7 +34,7 @@ public class RelatorioPneuResource {
     private final RelatorioPneuService service = new RelatorioPneuService();
 
     @GET
-    @Path("/pneus-descartados/report")
+    @Path("/afericoes-avulsas/report")
     public Report getAfericoesAvulsasReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                             @QueryParam("dataInicial") @Required final String dataInicial,
                                             @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
@@ -42,7 +42,7 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/pneus-descartados/csv")
+    @Path("/afericoes-avulsas/csv")
     public StreamingOutput getAfericoesAvulsasCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
