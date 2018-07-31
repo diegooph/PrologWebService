@@ -469,9 +469,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         try {
             conn = getConnection();
             if (porUnidade) {
-                stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADORES_GET_ALL_BY_UNIDADE(?, ?);");
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_GET_ALL_BY_UNIDADE(?, ?);");
             } else {
-                stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADORES_GET_ALL_BY_EMPRESA(?, ?);");
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_GET_ALL_BY_EMPRESA(?, ?);");
             }
             stmt.setLong(1, codigoFiltro);
             if (apenasAtivos) {
