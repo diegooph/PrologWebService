@@ -97,13 +97,24 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             @NotNull final Long codUnidade,
             @NotNull final Long codPneu,
             @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable {
-        final NovaAfericaoAvulsa novaAfericao = new NovaAfericaoAvulsa();
-        final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
-        final PneuDao pneuDao = Injection.providePneuDao();
-//        novaAfericao.setPneuParaAferir();
-        pneuDao.getPneuByCod(codPneu, codUnidade);
-        novaAfericao.setRestricao(restricao);
-        return novaAfericao;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_PNEU_PARA_AFERICAO_AVULSA(?, ?);");
+            stmt.setLong(1, codPneu);
+            stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            rSet = stmt.executeQuery();
+            final NovaAfericaoAvulsa novaAfericao = new NovaAfericaoAvulsa();
+            if (rSet.next()) {
+                novaAfericao.setRestricao(getRestricaoByCodUnidade(conn, codUnidade));
+                novaAfericao.setPneuParaAferir(createPneuAfericaoAvulsa(rSet));
+            }
+            return novaAfericao;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @NotNull
@@ -392,7 +403,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     @NotNull
     private PneuAfericaoAvulsa createPneuAfericaoAvulsa(@NotNull final ResultSet rSet) throws Throwable {
         final PneuAfericaoAvulsa pneuAvulso = new PneuAfericaoAvulsa();
-        pneuAvulso.setPneu(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM));
+        pneuAvulso.setPneu(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_ESTOQUE));
 
         // Se já foi aferido seta todas as informações da última aferição.
         final LocalDateTime dataHoraUltimaAfericao = rSet.getObject("DATA_HORA_ULTIMA_AFERICAO", LocalDateTime.class);
