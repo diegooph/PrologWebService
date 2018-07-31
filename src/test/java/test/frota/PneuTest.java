@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import test.BaseTest;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +30,7 @@ public class PneuTest extends BaseTest {
     }
 
     @Test(timeout = 10 * 1000)
-    public void updateSulcos() throws SQLException {
+    public void updateSulcos() throws Throwable {
         final PneuDao dao = Injection.providePneuDao();
 
         final PneuComum pneu = new PneuComum();

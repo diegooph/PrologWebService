@@ -151,12 +151,13 @@ public class PneuService {
         }
     }
 
-    public Pneu getPneuByCod(Long codPneu, Long codUnidade) {
+    @NotNull
+    public Pneu getPneuByCod(@NotNull final Long codPneu, @NotNull final Long codUnidade) throws ProLogException {
         try {
             return dao.getPneuByCod(codPneu, codUnidade);
-        } catch (SQLException e) {
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar pneu com código: " + codPneu + " da unidade: " + codUnidade, e);
-            return null;
+            throw exceptionHandler.map(e, "Erro ao buscar o pneu, tente novamente");
         }
     }
 

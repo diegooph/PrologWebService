@@ -190,14 +190,18 @@ public interface PneuDao {
     boolean updateModeloBanda(Modelo modelo) throws SQLException;
 
     /**
-     * Busca um pneu através de seu código
-     *
-     * @param codPneu
-     * @param codUnidade
-     * @return
-     * @throws SQLException
+     * Busca um pneu através de seu código e código da sua unidade.
      */
-    Pneu getPneuByCod(Long codPneu, Long codUnidade) throws SQLException;
+    @NotNull
+    Pneu getPneuByCod(@NotNull final Long codPneu, @NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Busca um pneu através de seu código e código da sua unidade reaproveitando uma connection já aberta.
+     */
+    @NotNull
+    Pneu getPneuByCod(@NotNull final Connection conn,
+                      @NotNull final Long codUnidade,
+                      @NotNull final Long codPneu) throws Throwable;
 
     /**
      * Busca um modelo de pneu a partir de seu código único

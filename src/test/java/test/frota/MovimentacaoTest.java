@@ -42,7 +42,7 @@ public class MovimentacaoTest extends BaseTest {
     private Pneu pneuComum;
 
     @Override
-    public void initialize() {
+    public void initialize() throws Throwable {
         movimentacaoService = new MovimentacaoService();
         pneuService = new PneuService();
         pneuComum = pneuService.getPneuByCod(COD_PNEU_TESTE, 5L);

@@ -487,13 +487,26 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         }
     }
 
+    @NotNull
     @Override
-    public Pneu getPneuByCod(Long codPneu, Long codUnidade) throws SQLException {
+    public Pneu getPneuByCod(@NotNull final Long codPneu, @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
+        try {
+            conn = getConnection();
+            return getPneuByCod(conn, codUnidade, codPneu);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Pneu getPneuByCod(@NotNull final Connection conn,
+                             @NotNull final Long codUnidade,
+                             @NotNull final Long codPneu) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement(BASE_QUERY_BUSCA_PNEU +
                     "WHERE P.CODIGO = ? AND P.cod_unidade = ?;");
             stmt.setLong(1, codPneu);
@@ -503,11 +516,13 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 final Pneu pneu = PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM);
                 pneu.setFotosCadastro(getFotosCadastroPneu(codPneu, codUnidade, conn));
                 return pneu;
+            } else {
+                throw new SQLException("Nenhum pneu encontrado com o código: " + codPneu + " e unidade: " + codUnidade);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeStatement(stmt);
+            closeResultSet(rSet);
         }
-        return null;
     }
 
     @Override

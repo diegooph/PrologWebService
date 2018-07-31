@@ -21,5 +21,5 @@ public abstract class BaseTest {
     }
 
     @Before
-    public abstract void initialize();
+    public abstract void initialize() throws Throwable;
 }
