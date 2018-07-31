@@ -463,16 +463,21 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private PneuAfericaoAvulsa createPneuAfericaoAvulsa(@NotNull final ResultSet rSet) throws Throwable {
         final PneuAfericaoAvulsa pneuAvulso = new PneuAfericaoAvulsa();
         pneuAvulso.setPneu(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM));
-        pneuAvulso.setDataHoraUltimaAferica(rSet.getObject("DATA_HORA_ULTIMA_AFERICAO", LocalDateTime.class));
-        pneuAvulso.setNomeColaboradorAfericao(rSet.getString("NOME_COLABORADOR_ULTIMA_AFERICAO"));
-        final TipoMedicaoColetadaAfericao tipoMedicao = TipoMedicaoColetadaAfericao
-                .fromString(rSet.getString("TIPO_MEDICAO_COLETADA_ULTIMA_AFERICAO"));
-        pneuAvulso.setTipoMedicaoColetadaUltimaAfericao(tipoMedicao);
-        pneuAvulso.setCodigoUltimaAferica(rSet.getLong("COD_ULTIMA_AFERICAO"));
-        final TipoProcessoColetaAfericao tipoProcesso = TipoProcessoColetaAfericao
-                .fromString(rSet.getString("TIPO_PROCESSO_COLETA_ULTIMA_AFERICAO"));
-        pneuAvulso.setTipoProcessoAfericao(tipoProcesso);
-        pneuAvulso.setPlacaAplicadoQuandoAferido(rSet.getString("PLACA_VEICULO_ULTIMA_AFERICAO"));
+
+        // Se já foi aferido seta todas as informações da última aferição.
+        final LocalDateTime dataHoraUltimaAfericao = rSet.getObject("DATA_HORA_ULTIMA_AFERICAO", LocalDateTime.class);
+        if (!rSet.wasNull()) {
+            pneuAvulso.setDataHoraUltimaAferica(dataHoraUltimaAfericao);
+            pneuAvulso.setNomeColaboradorAfericao(rSet.getString("NOME_COLABORADOR_ULTIMA_AFERICAO"));
+            final TipoMedicaoColetadaAfericao tipoMedicao = TipoMedicaoColetadaAfericao
+                    .fromString(rSet.getString("TIPO_MEDICAO_COLETADA_ULTIMA_AFERICAO"));
+            pneuAvulso.setTipoMedicaoColetadaUltimaAfericao(tipoMedicao);
+            pneuAvulso.setCodigoUltimaAferica(rSet.getLong("COD_ULTIMA_AFERICAO"));
+            final TipoProcessoColetaAfericao tipoProcesso = TipoProcessoColetaAfericao
+                    .fromString(rSet.getString("TIPO_PROCESSO_COLETA_ULTIMA_AFERICAO"));
+            pneuAvulso.setTipoProcessoAfericao(tipoProcesso);
+            pneuAvulso.setPlacaAplicadoQuandoAferido(rSet.getString("PLACA_VEICULO_ULTIMA_AFERICAO"));
+        }
         return pneuAvulso;
     }
 
