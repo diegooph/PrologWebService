@@ -346,11 +346,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_AVULSAS_PAGINADA(?, ?, ?, ?, ?, ?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt.setLong(1, codUnidade);
-            stmt.setObject(4, dataInicial);
-            stmt.setObject(5, dataFinal);
-            stmt.setInt(6, limit);
-            stmt.setLong(7, offset);
-            stmt.setString(8, zoneId);
+            stmt.setObject(2, dataInicial);
+            stmt.setObject(3, dataFinal);
+            stmt.setInt(4, limit);
+            stmt.setLong(5, offset);
+            stmt.setString(6, zoneId);
             rSet = stmt.executeQuery();
             final List<AfericaoAvulsa> afericoes = new ArrayList<>();
             while (rSet.next()) {
