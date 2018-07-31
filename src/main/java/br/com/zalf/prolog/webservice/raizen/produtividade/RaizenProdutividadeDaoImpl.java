@@ -70,7 +70,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         Connection conn = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE RAIZEN.PRODUTIDADE SET CPF_MOTORISTA = ?," +
+            stmt = conn.prepareStatement("UPDATE RAIZEN.PRODUTIVIDADE SET CPF_MOTORISTA = ?," +
                     "   DATA_VIAGEM = ?," +
                     "   PLACA = ?, " +
                     "   VALOR = ?," +
