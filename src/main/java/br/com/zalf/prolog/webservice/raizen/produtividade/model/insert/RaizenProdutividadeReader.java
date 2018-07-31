@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.model.insert;
 
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.apache.commons.io.FilenameUtils;

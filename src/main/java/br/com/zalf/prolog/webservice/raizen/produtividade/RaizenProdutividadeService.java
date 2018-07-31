@@ -3,9 +3,9 @@ package br.com.zalf.prolog.webservice.raizen.produtividade;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.raizen.produtividade.error.RaizenProdutividadeValidator;
@@ -15,7 +15,6 @@ import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutivid
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeReader;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemVisualizacao;
-import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -104,13 +103,13 @@ public class RaizenProdutividadeService {
                 case POR_COLABORADOR:
                     return dao.getRaizenProdutividadeColaborador(
                             codEmpresa,
-                            ProLogDateParser.validateAndParse(dataInicial),
-                            ProLogDateParser.validateAndParse(dataFinal));
+                            ProLogDateParser.toLocalDate(dataInicial),
+                            ProLogDateParser.toLocalDate(dataFinal));
                 case POR_DATA:
                     return dao.getRaizenProdutividadeData(
                             codEmpresa,
-                            ProLogDateParser.validateAndParse(dataInicial),
-                            ProLogDateParser.validateAndParse(dataFinal));
+                            ProLogDateParser.toLocalDate(dataInicial),
+                            ProLogDateParser.toLocalDate(dataFinal));
                 default:
                     throw new IllegalStateException();
 
