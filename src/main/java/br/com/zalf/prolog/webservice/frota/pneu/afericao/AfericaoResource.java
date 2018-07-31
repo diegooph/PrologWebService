@@ -36,7 +36,7 @@ public class AfericaoResource {
     private final AfericaoService service = new AfericaoService();
 
     @POST
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @Path("/{codUnidade}")
     public Response insert(Afericao afericao,
                            @PathParam("codUnidade") Long codUnidade,
@@ -49,7 +49,7 @@ public class AfericaoResource {
     }
 
     @GET
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @Path("/cronogramas/{codUnidade}")
     public CronogramaAfericao getCronogramaAfericao(@PathParam("codUnidade") Long codUnidade,
                                                     @HeaderParam("Authorization") String userToken) throws
@@ -58,7 +58,7 @@ public class AfericaoResource {
     }
 
     @GET
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @Path("/pneus-disponiveis-afericao-avulsa/unidades/{codUnidade}")
     public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@PathParam("codUnidade") Long codUnidade)
             throws ProLogException {
@@ -67,7 +67,7 @@ public class AfericaoResource {
 
     @GET
     @Path("/unidades/{codUnidade}/nova-afericao-placa/{placaVeiculo}")
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@PathParam("codUnidade") @Required Long codUnidade,
                                                   @PathParam("placaVeiculo") @Required String placa,
                                                   @QueryParam("tipoAfericao") @Required String tipoAfericao,
@@ -78,7 +78,7 @@ public class AfericaoResource {
 
     @GET
     @Path("/unidades/{codUnidade}/nova-afericao-avulsa/{codPneu}")
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     public NovaAfericaoAvulsa getNovaAfericaoAvulsa(@PathParam("codUnidade") @Required Long codUnidade,
                                                     @PathParam("codPneu") @Required Long codPneu,
                                                     @QueryParam("tipoAfericao") @Required String tipoAfericao) throws
@@ -89,8 +89,8 @@ public class AfericaoResource {
     @GET
     @Path("/unidades/{codUnidade}/tipos-veiculos/{codTipoVeiculo}/placas/{placaVeiculo}")
     @Secured(permissions = {
-            Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     public List<AfericaoPlaca> getAfericoesPlacas(
@@ -116,8 +116,8 @@ public class AfericaoResource {
     @GET
     @Path("/unidades/{codUnidade}/avulsas")
     @Secured(permissions = {
-            Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     public List<AfericaoAvulsa> getAfericoesAvulsas(
@@ -131,8 +131,8 @@ public class AfericaoResource {
 
     @GET
     @Secured(permissions = {
-            Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/{codAfericao}/unidades/{codUnidade}")
@@ -144,8 +144,8 @@ public class AfericaoResource {
 
     @GET
     @Secured(permissions = {
-            Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/restricoes/{codUnidade}")

@@ -108,8 +108,8 @@ public class VeiculoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
-            Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
     @Path("/byTipo/{codUnidade}/{codTipo}")
     @UsedBy(platforms = Platform.ANDROID)
@@ -128,8 +128,8 @@ public class VeiculoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
-            Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
     @Path("/{codUnidade}/tipo")
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})

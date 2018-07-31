@@ -58,8 +58,8 @@ public final class Pilares {
         public final class Afericao {
             private Afericao() {}
 
-            public static final int REALIZAR = 18;
-            public static final int VISUALIZAR = 117;
+            public static final int REALIZAR_AFERICAO_PLACA = 18;
+            public static final int VISUALIZAR_TODAS_AFERICOES = 117;
 
             public final class ConfiguracaoAfericao {
 
