@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -36,8 +38,11 @@ public class AfericaoResource {
     private final AfericaoService service = new AfericaoService();
 
     @POST
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
+    @Secured(permissions = {
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO})
     @Path("/{codUnidade}")
+    @UsedBy(platforms = Platform.ANDROID)
     public Response insert(Afericao afericao,
                            @PathParam("codUnidade") Long codUnidade,
                            @HeaderParam("Authorization") String userToken) throws ProLogException {
@@ -51,6 +56,7 @@ public class AfericaoResource {
     @GET
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @Path("/cronogramas/{codUnidade}")
+    @UsedBy(platforms = Platform.ANDROID)
     public CronogramaAfericao getCronogramaAfericao(@PathParam("codUnidade") Long codUnidade,
                                                     @HeaderParam("Authorization") String userToken) throws
             ProLogException {
@@ -58,8 +64,9 @@ public class AfericaoResource {
     }
 
     @GET
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO)
     @Path("/pneus-disponiveis-afericao-avulsa/unidades/{codUnidade}")
+    @UsedBy(platforms = Platform.ANDROID)
     public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@PathParam("codUnidade") Long codUnidade)
             throws ProLogException {
         return service.getPneusAfericaoAvulsa(codUnidade);
@@ -68,6 +75,7 @@ public class AfericaoResource {
     @GET
     @Path("/unidades/{codUnidade}/nova-afericao-placa/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
+    @UsedBy(platforms = Platform.ANDROID)
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@PathParam("codUnidade") @Required Long codUnidade,
                                                   @PathParam("placaVeiculo") @Required String placa,
                                                   @QueryParam("tipoAfericao") @Required String tipoAfericao,
@@ -78,7 +86,8 @@ public class AfericaoResource {
 
     @GET
     @Path("/unidades/{codUnidade}/nova-afericao-avulsa/{codPneu}")
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO)
+    @UsedBy(platforms = Platform.ANDROID)
     public NovaAfericaoAvulsa getNovaAfericaoAvulsa(@PathParam("codUnidade") @Required Long codUnidade,
                                                     @PathParam("codPneu") @Required Long codPneu,
                                                     @QueryParam("tipoAfericao") @Required String tipoAfericao) throws
@@ -93,6 +102,7 @@ public class AfericaoResource {
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public List<AfericaoPlaca> getAfericoesPlacas(
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codTipoVeiculo") String codTipoVeiculo,
@@ -117,9 +127,10 @@ public class AfericaoResource {
     @Path("/unidades/{codUnidade}/avulsas")
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public List<AfericaoAvulsa> getAfericoesAvulsas(
             @PathParam("codUnidade") Long codUnidade,
             @QueryParam("dataInicial") String dataInicial,
@@ -133,8 +144,10 @@ public class AfericaoResource {
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/{codAfericao}/unidades/{codUnidade}")
     public Afericao getByCod(@PathParam("codAfericao") Long codAfericao,
                              @PathParam("codUnidade") Long codUnidade,
@@ -146,9 +159,11 @@ public class AfericaoResource {
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/restricoes/{codUnidade}")
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws ProLogException {
         return service.getRestricaoByCodUnidade(codUnidade);
     }

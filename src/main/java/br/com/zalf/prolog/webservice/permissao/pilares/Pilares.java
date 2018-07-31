@@ -59,6 +59,7 @@ public final class Pilares {
             private Afericao() {}
 
             public static final int REALIZAR_AFERICAO_PLACA = 18;
+            public static final int REALIZAR_AFERICAO_PNEU_AVULSO = 140;
             public static final int VISUALIZAR_TODAS_AFERICOES = 117;
 
             public final class ConfiguracaoAfericao {
