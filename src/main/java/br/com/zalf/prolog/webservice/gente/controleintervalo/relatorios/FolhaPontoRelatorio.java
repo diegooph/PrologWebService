@@ -2,13 +2,12 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
-import br.com.zalf.prolog.webservice.commons.util.date.Durations;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Clt;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import com.google.common.base.Preconditions;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.threeten.extra.Interval;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -146,9 +145,7 @@ public final class FolhaPontoRelatorio {
             final ZonedDateTime inicioZoned = inicio.atZone(zoneId);
             final ZonedDateTime fimZoned = fim.atZone(zoneId);
             final long segundos = ChronoUnit.SECONDS.between(inicioZoned, fimZoned);
-            final long segundosNoturnos = Durations
-                    .getSumOfHoursInRangeOnDays(inicioZoned, fimZoned, Clt.RANGE_HORAS_NOTURNAS, zoneId)
-                    .getSeconds();
+            final long segundosNoturnos = calculaHorasNoturnas(inicioZoned, fimZoned, zoneId).getSeconds();
             segundosTotaisTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);
             segundosTotaisHorasNoturnas.merge(intervalo.getCodTipoIntervalo(), segundosNoturnos, (a, b) -> a + b);
         } else {
@@ -182,5 +179,43 @@ public final class FolhaPontoRelatorio {
         });
 
         return tiposIntervalosMarcados;
+    }
+
+    @NotNull
+    private Duration calculaHorasNoturnas(@NotNull final ZonedDateTime fromTz,
+                                          @NotNull final ZonedDateTime toTz,
+                                          @NotNull final ZoneId zoneId) {
+        final Interval interval = Interval.of(fromTz.toInstant(), toTz.toInstant());
+
+        final LocalDate ldStart = fromTz.toLocalDate();
+        final LocalDate ldStop = toTz.toLocalDate();
+        LocalDate localDate = ldStart;
+
+        final LocalTime timeStartMin = LocalTime.MIN;
+        final LocalTime timeStop05 = LocalTime.of(5, 0, 0);
+
+        final LocalTime timeStart22 = LocalTime.of(22, 0, 0);
+        final LocalTime timeStopMax = LocalTime.MAX;
+
+        Duration totalDuration = Duration.ZERO;
+        while (!localDate.isAfter(ldStop)) {
+            final Interval intervalMinTo05 = Interval.of(
+                    localDate.atTime(timeStartMin).atZone(zoneId).toInstant(),
+                    localDate.atTime(timeStop05).atZone(zoneId).toInstant());
+            if (interval.overlaps(intervalMinTo05)) {
+                totalDuration = totalDuration.plus(interval.intersection(intervalMinTo05).toDuration());
+            }
+
+            final Interval interval22ToMax = Interval.of(
+                    localDate.atTime(timeStart22).atZone(zoneId).toInstant(),
+                    localDate.atTime(timeStopMax).atZone(zoneId).toInstant());
+            if (interval.overlaps(interval22ToMax)) {
+                totalDuration = totalDuration.plus(interval.intersection(interval22ToMax).toDuration());
+            }
+
+            // Setup the next loop.
+            localDate = localDate.plusDays(1);
+        }
+        return totalDuration;
     }
 }
