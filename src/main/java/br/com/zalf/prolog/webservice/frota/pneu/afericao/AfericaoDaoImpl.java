@@ -355,33 +355,20 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private ConfiguracaoTipoVeiculoAfericao getConfiguracaTiposVeiculosAfericaoEstepe(final String placa)
+    private ConfiguracaoTipoVeiculoAfericao getConfiguracaTiposVeiculosAfericaoEstepe(@NotNull final String placa)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  VACTA.STATUS_ATIVO, " +
-                    "  VACTA.PODE_AFERIR_SULCO, " +
-                    "  VACTA.PODE_AFERIR_PRESSAO, " +
-                    "  VACTA.PODE_AFERIR_SULCO_PRESSAO," +
-                    "  VACTA.PODE_AFERIR_ESTEPE " +
-                    "FROM VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO AS VACTA " +
-                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE " +
-                    "                     FROM VEICULO " +
-                    "                     WHERE PLACA = ?) " +
-                    "      AND COD_TIPO_VEICULO = (SELECT COD_TIPO " +
-                    "                              FROM VEICULO " +
-                    "                              WHERE PLACA = ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIGURACOES_AFERICAO_BY_PLACA(?);");
             stmt.setString(1, placa);
-            stmt.setString(2, placa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createConfiguracaoTipoAfericao(rSet);
             } else {
-                throw new Throwable("Erro ao buscar as configurações de aferição para a placa: " + placa);
+                throw new Throwable("Dados de configurações de aferição não encontrados para a placa: " + placa);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
