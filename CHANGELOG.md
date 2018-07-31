@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.71"></a>
 ## Version [v0.0.71](https://github.com/luizfp/PrologWeb/compare/v0.0.70...v0.0.71) (release-date) [unreleased]
 
+### Features
+* Cria novo método para buscar todos os checklists completos
+
 ### Bug Fixes
 * Corrige cálculo das horas noturnas no relatório de folha de ponto do controle de jornada
 
