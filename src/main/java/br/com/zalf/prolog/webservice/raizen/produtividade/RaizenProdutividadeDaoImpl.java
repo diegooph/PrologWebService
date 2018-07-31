@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
@@ -78,11 +77,11 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   FAZENDA = ?," +
                     "   RAIO = ?," +
                     "   TONELADAS = ?," +
-                    "   COD_COLABORADOR_ALTERACAO = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA" +
-                    ".TOKEN = ?) " +
+                    "   COD_COLABORADOR_ALTERACAO = (SELECT CO.CODIGO FROM COLABORADOR CO JOIN TOKEN_AUTENTICACAO TA " +
+                    "ON CO.CPF = TA.CPF_COLABORADOR WHERE TA.TOKEN = ?) " +
                     "WHERE CODIGO = ?");
             stmt.setLong(1, item.getCpfMotorista());
-            stmt.setDate(2, DateUtils.toSqlDate(item.getDataViagem()));
+            stmt.setObject(2, item.getDataViagem());
             stmt.setString(3, item.getPlaca().toUpperCase());
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
@@ -279,12 +278,14 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "                           COD_COLABORADOR_ALTERACAO, " +
                     "                           COD_EMPRESA)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, " +
-                    "   (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?)," +
-                    "   (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?)," +
+                    "   (SELECT CO.CODIGO FROM COLABORADOR CO JOIN TOKEN_AUTENTICACAO TA ON CO.CPF = TA.CPF_COLABORADOR " +
+                    "WHERE TA.TOKEN = ?)" +
+                    "   (SELECT CO.CODIGO FROM COLABORADOR CO JOIN TOKEN_AUTENTICACAO TA ON CO.CPF = TA.CPF_COLABORADOR " +
+                    "WHERE TA.TOKEN = ?)" +
                     "   ?)");
             stmt.setLong(1, item.getCpfMotorista());
             stmt.setString(2, item.getPlaca().toUpperCase());
-            stmt.setDate(3, DateUtils.toSqlDate(item.getDataViagem()));
+            stmt.setObject(3, item.getDataViagem());
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
             stmt.setString(6, item.getFazenda());
@@ -317,14 +318,15 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   RAIO = ?," +
                     "   TONELADAS = ?, " +
                     "   COD_COLABORADOR_ALTERACAO = " +
-                    "(SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?) " +
+                    "(SELECT CO.CODIGO FROM COLABORADOR CO JOIN TOKEN_AUTENTICACAO TA ON CO.CPF = TA.CPF_COLABORADOR " +
+                    "WHERE TA.TOKEN = ?) " +
                     "WHERE CPF_MOTORISTA = ?" +
                     "AND PLACA = ?" +
                     "AND DATA_VIAGEM = ?" +
                     "AND COD_EMPRESA = ?");
             stmt.setLong(1, item.getCpfMotorista());
             stmt.setString(2, item.getPlaca());
-            stmt.setDate(3, DateUtils.toSqlDate(item.getDataViagem()));
+            stmt.setObject(3, item.getDataViagem());
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
             stmt.setString(6, item.getFazenda());
@@ -333,7 +335,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setString(9, token);
             stmt.setLong(10, item.getCpfMotorista());
             stmt.setString(11, item.getPlaca());
-            stmt.setDate(12, DateUtils.toSqlDate(item.getDataViagem()));
+            stmt.setObject(12, item.getDataViagem());
             stmt.setLong(13, codEmpresa);
             if (stmt.executeUpdate() == 0) {
                 //nenhum item atualizado
