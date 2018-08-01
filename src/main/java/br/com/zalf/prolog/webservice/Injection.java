@@ -51,12 +51,12 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuSqlExceptionTranslator;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuServicoRealizadoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuTipoServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuTipoServicoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -85,10 +85,10 @@ import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRel
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDao;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDaoImpl;
-import br.com.zalf.prolog.webservice.gente.quiz.quiz.QuizDao;
-import br.com.zalf.prolog.webservice.gente.quiz.quiz.QuizDaoImpl;
 import br.com.zalf.prolog.webservice.gente.quiz.modelo.QuizModeloDao;
 import br.com.zalf.prolog.webservice.gente.quiz.modelo.QuizModeloDaoImpl;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.QuizDao;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.QuizDaoImpl;
 import br.com.zalf.prolog.webservice.gente.quiz.relatorios.QuizRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.quiz.relatorios.QuizRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.SolicitacaoFolgaDao;
@@ -105,6 +105,8 @@ import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDao;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.raizen.produtividade.relatorios.RaizenProdutividadeRelatorioDao;
+import br.com.zalf.prolog.webservice.raizen.produtividade.relatorios.RaizenProdutividadeRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 import br.com.zalf.prolog.webservice.seguranca.relato.relatorio.RelatoRelatorioDao;
@@ -371,6 +373,11 @@ public final class Injection {
     @NotNull
     public static RaizenProdutividadeDao provideRaizenProdutividadeDao() {
         return new RaizenProdutividadeDaoImpl();
+    }
+
+    @NotNull
+    public static RaizenProdutividadeRelatorioDao provideRaizenProdutividadeRelatorioDao() {
+        return new RaizenProdutividadeRelatorioDaoImpl();
     }
 
     // ================================================
