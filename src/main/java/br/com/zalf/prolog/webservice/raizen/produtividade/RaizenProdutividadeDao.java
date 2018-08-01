@@ -28,8 +28,8 @@ public interface RaizenProdutividadeDao {
      */
     void insertOrUpdateProdutividadeRaizen(@NotNull final String token,
                                            @NotNull final Long codEmpresa,
-                                           @NotNull final List<RaizenProdutividadeItemInsert> raizenItens) throws
-            Throwable;
+                                           @NotNull final List<RaizenProdutividadeItemInsert> raizenItens)
+            throws Throwable;
 
     /**
      * Insere uma {@link RaizenProdutividadeItem} específica.

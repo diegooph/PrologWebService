@@ -29,8 +29,8 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
         throw new IllegalStateException(RaizenProdutividadeValidator.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static void validacaoAtributosRaizenProdutividade(@NotNull final RaizenProdutividadeItemInsert itemInsert)
-            throws GenericException {
+    public static void validacaoAtributosRaizenProdutividade(
+            @NotNull final RaizenProdutividadeItemInsert itemInsert) throws GenericException {
         try {
             checkNotNull(itemInsert, "Não pode ser nulo");
 
@@ -79,13 +79,13 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
         }
     }
 
-    private static boolean verificaQuantidadeNumerosPlaca(@NotNull final String string) {
-        String placaNumeros = StringUtils.getOnlyNumbers(string);
+    private static boolean verificaQuantidadeNumerosPlaca(@NotNull final String placa) {
+        final String placaNumeros = StringUtils.getOnlyNumbers(placa.trim());
         return placaNumeros.length() == QTD_NUMEROS_PLACA;
     }
 
     private static boolean verificaQuantidadeLetrasPlaca(@NotNull final String placa) {
-        String placaLetras = StringUtils.getOnlyLetters(placa.trim().toUpperCase());
+        final String placaLetras = StringUtils.getOnlyLetters(placa.trim().toUpperCase());
         return placaLetras.length() == QTD_LETRAS_PLACA;
     }
 

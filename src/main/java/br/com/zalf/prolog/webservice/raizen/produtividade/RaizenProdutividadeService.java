@@ -48,7 +48,9 @@ public class RaizenProdutividadeService {
             for (RaizenProdutividadeItemInsert item : raizenProdutividadeItens) {
                 RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(item);
             }
-            dao.insertOrUpdateProdutividadeRaizen(TokenCleaner.getOnlyToken(token), codEmpresa,
+            dao.insertOrUpdateProdutividadeRaizen(
+                    TokenCleaner.getOnlyToken(token),
+                    codEmpresa,
                     raizenProdutividadeItens);
             return Response.ok("Upload realizado com sucesso!");
         } catch (final Throwable e) {

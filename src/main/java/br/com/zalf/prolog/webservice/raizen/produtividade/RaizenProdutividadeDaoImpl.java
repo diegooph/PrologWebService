@@ -305,8 +305,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     private boolean updateRaizenProdutividadeUpload(@NotNull final Connection conn,
                                                     @NotNull final String token,
                                                     @NotNull final Long codEmpresa,
-                                                    @NotNull final RaizenProdutividadeItemInsert item) throws
-            Throwable {
+                                                    @NotNull final RaizenProdutividadeItemInsert item)
+            throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE RAIZEN.PRODUTIVIDADE SET CPF_MOTORISTA = ?," +
@@ -337,13 +337,10 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setString(11, item.getPlaca());
             stmt.setObject(12, item.getDataViagem());
             stmt.setLong(13, codEmpresa);
-            if (stmt.executeUpdate() == 0) {
-                //nenhum item atualizado
-                return false;
-            }
+            // True se o item foi atualizado.
+            return stmt.executeUpdate() != 0;
         } finally {
             closeStatement(stmt);
         }
-        return true;
     }
 }
