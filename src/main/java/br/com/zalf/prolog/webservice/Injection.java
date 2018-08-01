@@ -103,6 +103,8 @@ import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
+import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDao;
+import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 import br.com.zalf.prolog.webservice.seguranca.relato.relatorio.RelatoRelatorioDao;
@@ -364,6 +366,11 @@ public final class Injection {
     @NotNull
     public static EntreEmContatoDao provideEntreEmContatoDao() {
         return new EntreEmContatoDaoImpl();
+    }
+
+    @NotNull
+    public static RaizenProdutividadeDao provideRaizenProdutividadeDao() {
+        return new RaizenProdutividadeDaoImpl();
     }
 
     // ================================================

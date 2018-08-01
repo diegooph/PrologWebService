@@ -90,6 +90,9 @@ public class ColaboradorValidator {
     private static void validacaoNome(@NotNull final String nome) throws Exception {
         Preconditions.checkNotNull(nome, "Você precisa fornecer o nome");
 
+        if (StringUtils.isNullOrEmpty(nome.trim())) {
+            throw new GenericException("Vocẽ precisa fornecer o nome", "nome com apenas espaços em branco" + nome);
+        }
         if (!StringUtils.isAlpabetsValue(nome)) {
             throw new GenericException("Nome inválido\nO nome não pode conter números", "Nome informado: " + nome);
         }

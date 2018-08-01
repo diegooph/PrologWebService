@@ -89,7 +89,9 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
             // precisamos verificar se é diferente de null.
             final Integer coluna = tipoIntervaloIndexColuna.get(codTipoIntervalo);
             if (coluna != null) {
-                linhaAtual.set(coluna, tempoTotalMillis != 0 ? Durations.formatDuration(tempoTotalMillis, "HH:mm:ss") : ZERO_HORAS);
+                linhaAtual.set(coluna, tempoTotalMillis != 0
+                        ? Durations.formatDuration(tempoTotalMillis, Durations.Format.HH_MM_SS)
+                        : ZERO_HORAS);
             }
         } else {
             final List<String> linha = criaLinha();
@@ -100,7 +102,9 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
             final Long codTipoIntervalo = rSet.getLong("COD_TIPO_INTERVALO");
             final Integer coluna = tipoIntervaloIndexColuna.get(codTipoIntervalo);
             if (coluna != null) {
-                linha.set(coluna, tempoTotalMillis != 0 ? Durations.formatDuration(tempoTotalMillis, "HH:mm:ss") : ZERO_HORAS);
+                linha.set(coluna, tempoTotalMillis != 0
+                        ? Durations.formatDuration(tempoTotalMillis, Durations.Format.HH_MM_SS)
+                        : ZERO_HORAS);
             }
             table.put(cpfColaborador, linha);
         }

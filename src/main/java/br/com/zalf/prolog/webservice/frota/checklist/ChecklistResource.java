@@ -84,6 +84,32 @@ public class ChecklistResource {
     }
 
     @GET
+    @Path("{codUnidade}/completos")
+    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
+    public List<Checklist> getAllCompletos(
+            @PathParam("codUnidade") Long codUnidade,
+            @QueryParam("codEquipe") Long codEquipe,
+            @QueryParam("codTipoVeiculo") Long codTipoVeiculo,
+            @QueryParam("placaVeiculo") String placaVeiculo,
+            @QueryParam("dataInicial") long dataInicial,
+            @QueryParam("dataFinal") long dataFinal,
+            @QueryParam("limit") int limit,
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) {
+        return service.getAll(
+                codUnidade,
+                codEquipe,
+                codTipoVeiculo,
+                placaVeiculo,
+                dataInicial,
+                dataFinal,
+                limit,
+                offset,
+                false,
+                userToken);
+    }
+
+    @GET
     @Path("/farois/{codUnidade}")
     @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
     public FarolChecklist getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
