@@ -97,9 +97,6 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
 
     private static void validacaoValor(@NotNull final BigDecimal valor) throws ProLogException {
         checkNotNull(valor, "Você precisa fornecer o valor");
-        if (!StringUtils.isIntegerValue(String.valueOf(valor))) {
-            throw new GenericException("O valor deve conter apenas números", "Valor informado:" +valor);
-        }
         checkArgument(Double.parseDouble(String.valueOf(valor)) > 0,
                 "Valor inválido\nO valor não pode ser negativo");
     }
