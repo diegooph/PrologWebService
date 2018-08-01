@@ -10,6 +10,7 @@ Change Log
 ### Features
 * Cria novo método para buscar todos os checklists completos
 * Cria busca dos colaboradores por código de empresa
+* Cria produtividade da Raízen
 
 ### Refactors
 * Cria functions para a busca de colaboradores
