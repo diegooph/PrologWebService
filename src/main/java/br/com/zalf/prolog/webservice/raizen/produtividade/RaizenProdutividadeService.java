@@ -67,7 +67,9 @@ public class RaizenProdutividadeService {
             throws ProLogException {
         try {
             RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(raizenProdutividadeItemInsert);
-            dao.insertRaizenProdutividadeItem(TokenCleaner.getOnlyToken(token), codEmpresa,
+            dao.insertRaizenProdutividadeItem(
+                    TokenCleaner.getOnlyToken(token),
+                    codEmpresa,
                     raizenProdutividadeItemInsert);
             return Response.ok("Produtividade cadastrada com sucesso");
         } catch (Throwable e) {
@@ -79,12 +81,13 @@ public class RaizenProdutividadeService {
 
     public Response updateRaizenProdutividade(@NotNull final String token,
                                               @NotNull final Long codEmpresa,
-                                              @NotNull final RaizenProdutividadeItemInsert
-                                                      updateRaizenProdutividadeItemInsert)
+                                              @NotNull final RaizenProdutividadeItemInsert updateRaizenProdutividadeItemInsert)
             throws ProLogException {
         try {
             RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(updateRaizenProdutividadeItemInsert);
-            dao.updateRaizenProdutividadeItem(TokenCleaner.getOnlyToken(token), codEmpresa,
+            dao.updateRaizenProdutividadeItem(
+                    TokenCleaner.getOnlyToken(token),
+                    codEmpresa,
                     updateRaizenProdutividadeItemInsert);
             return Response.ok("Produtividade alterada com sucesso");
         } catch (Throwable e) {
@@ -100,8 +103,7 @@ public class RaizenProdutividadeService {
                                                             @NotNull final String dataFinal,
                                                             @NotNull final String agrupamento) throws ProLogException {
         try {
-            final RaizenProdutividadeAgrupamento tipoAgrupamento = RaizenProdutividadeAgrupamento.fromString
-                    (agrupamento);
+            final RaizenProdutividadeAgrupamento tipoAgrupamento = RaizenProdutividadeAgrupamento.fromString(agrupamento);
             switch (tipoAgrupamento) {
                 case POR_COLABORADOR:
                     return dao.getRaizenProdutividadeColaborador(

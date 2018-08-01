@@ -103,8 +103,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public List<RaizenProdutividade> getRaizenProdutividadeColaborador(@NotNull final Long codEmpresa,
                                                                        @NotNull final LocalDate dataInicial,
-                                                                       @NotNull final LocalDate dataFinal) throws
-            Throwable {
+                                                                       @NotNull final LocalDate dataFinal) throws Throwable {
         final List<RaizenProdutividade> produtividades = new ArrayList<>();
         RaizenProdutividadeColaborador raizenProdutividadeColaborador = null;
         Connection conn = null;
@@ -121,18 +120,18 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             while (rSet.next()) {
                 final Long cpfMotoristaAtual = rSet.getLong("CPF_MOTORISTA");
                 if (primeiraLinha) {
-                    raizenProdutividadeColaborador = RaizenProdutividadeConverter.createRaizenProdutividadeColaborador(
-                            rSet,
-                            produtividades);
+                    raizenProdutividadeColaborador = RaizenProdutividadeConverter
+                            .createRaizenProdutividadeColaborador(rSet);
+                    produtividades.add(raizenProdutividadeColaborador);
                 } else {
                     if (raizenProdutividadeColaborador.getCpf().equals(cpfMotoristaAtual)) {
                         raizenProdutividadeColaborador
                                 .getItensRaizen()
                                 .add(RaizenProdutividadeConverter.createRaizenProdutividadeItemData(rSet));
                     } else {
-                        raizenProdutividadeColaborador = RaizenProdutividadeConverter.createRaizenProdutividadeColaborador(
-                                rSet,
-                                produtividades);
+                        raizenProdutividadeColaborador = RaizenProdutividadeConverter
+                                .createRaizenProdutividadeColaborador(rSet);
+                        produtividades.add(raizenProdutividadeColaborador);
                     }
                 }
                 primeiraLinha = false;

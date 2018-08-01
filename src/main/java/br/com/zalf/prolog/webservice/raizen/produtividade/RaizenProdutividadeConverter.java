@@ -22,21 +22,19 @@ import java.util.List;
 class RaizenProdutividadeConverter {
 
     private RaizenProdutividadeConverter() {
-        throw new IllegalStateException(RaizenProdutividadeConverter.class.getSimpleName() + " cannot be " +
-                "instantiated!");
+        throw new IllegalStateException(RaizenProdutividadeConverter.class.getSimpleName()
+                + " cannot be instantiated!");
     }
 
     @NotNull
-    static RaizenProdutividadeColaborador createRaizenProdutividadeColaborador(@NotNull final ResultSet rSet,
-                                                                               @NotNull final
-                                                                               List<RaizenProdutividade> produtividades)
-            throws Throwable {
+    static RaizenProdutividadeColaborador createRaizenProdutividadeColaborador(
+            @NotNull final ResultSet rSet) throws Throwable {
         final List<RaizenProdutividadeItemData> itensData = new ArrayList<>();
         itensData.add(RaizenProdutividadeConverter.createRaizenProdutividadeItemData(rSet));
         final RaizenProdutividadeColaborador raizenProdutividadeColaborador = new RaizenProdutividadeColaborador(
-                rSet.getLong("CPF_MOTORISTA"), rSet.getString("NOME_MOTORISTA"));
+                rSet.getLong("CPF_MOTORISTA"),
+                rSet.getString("NOME_MOTORISTA"));
         raizenProdutividadeColaborador.setItensRaizen(itensData);
-        produtividades.add(raizenProdutividadeColaborador);
         return raizenProdutividadeColaborador;
     }
 
