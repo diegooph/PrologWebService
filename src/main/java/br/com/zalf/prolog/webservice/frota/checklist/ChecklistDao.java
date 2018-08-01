@@ -1,16 +1,16 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
 import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -82,9 +82,9 @@ public interface ChecklistDao {
 
 	@NotNull
 	FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-									 @NotNull final Date dataInicial,
-									 @NotNull final Date dataFinal,
-									 final boolean itensCriticosRetroativos) throws SQLException;
+									 @NotNull final LocalDate dataInicial,
+									 @NotNull final LocalDate dataFinal,
+									 final boolean itensCriticosRetroativos) throws Throwable;
 
 	/**
 	 * busca o status de liberação do veículo

@@ -3,25 +3,25 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
 
@@ -286,89 +286,26 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
     }
 
     @Override
-    public FarolChecklist getFarolChecklist(Long codUnidade,
-                                            Date dataInicial,
-                                            Date dataFinal,
-                                            boolean itensCriticosRetroativos) throws SQLException {
+    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal,
+                                            final boolean itensCriticosRetroativos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select dados_checklist.*, COS.nome AS \"COLABORADOR_SAIDA\", COR.NOME AS " +
-                    "\"COLABORADOR_RETORNO\" from\n" +
-                    "  (SELECT\n" +
-                    "  AD.data,\n" +
-                    "  V.PLACA,\n" +
-                    "  max(CASE WHEN C.TIPO = 'S' THEN C.codigo END) as cod_checklist_saida,\n" +
-                    "  MAX(CASE WHEN C.TIPO = 'S' THEN C.DATA_HORA END) AT TIME ZONE ? AS DATA_HORA_ULTIMO_CHECKLIST_SAIDA,\n" +
-                    "  max(CASE WHEN C.TIPO = 'R' THEN C.codigo END) as cod_checklist_retorno,\n" +
-                    "  MAX(CASE WHEN C.TIPO = 'R' THEN C.DATA_HORA END) AT TIME ZONE ? AS DATA_HORA_ULTIMO_CHECKLIST_RETORNO\n" +
-                    "FROM aux_data AD\n" +
-                    "  LEFT JOIN VEICULO V ON V.cod_unidade = ?\n" +
-                    "  LEFT JOIN CHECKLIST C ON AD.data = C.data_hora::DATE AND C.placa_veiculo = V.placa\n" +
-                    "WHERE AD.data BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?)\n" +
-                    "GROUP BY 1, 2\n" +
-                    "ORDER BY 1, 2) as dados_checklist LEFT JOIN CHECKLIST CS ON CS.CODIGO = dados_checklist" +
-                    ".cod_checklist_saida\n" +
-                    "LEFT JOIN CHECKLIST CR ON CR.CODIGO = dados_checklist.cod_checklist_retorno\n" +
-                    "LEFT JOIN COLABORADOR COS ON COS.cpf = CS.cpf_colaborador\n" +
-                    "LEFT JOIN COLABORADOR COR ON COR.cpf = CR.cpf_colaborador\n" +
-                    "ORDER BY dados_checklist.placa;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_FAROL_CHECKLIST(?, ?, ?, ?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
-            stmt.setString(1, zoneId);
-            stmt.setString(2, zoneId);
+            stmt.setObject(1, dataInicial);
+            stmt.setObject(2, dataFinal);
             stmt.setLong(3, codUnidade);
-            stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
-            stmt.setString(5, zoneId);
-            stmt.setDate(6, DateUtils.toSqlDate(dataFinal));
-            stmt.setString(7, zoneId);
+            stmt.setString(4, zoneId);
             rSet = stmt.executeQuery();
-            final List<FarolVeiculoDia> farois = new ArrayList<>();
-            final OrdemServicoDao ordemServicoDao = Injection.provideOrdemServicoDao();
-            while (rSet.next()) {
-                farois.add(createFarolVeiculoDia(rSet, dataFinal, itensCriticosRetroativos, ordemServicoDao));
-            }
-            return new FarolChecklist(farois);
+            return ChecklistConverter.createFarolChecklist(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-    }
-
-    private FarolVeiculoDia createFarolVeiculoDia(@NotNull final ResultSet rSet,
-                                                  @NotNull final Date dataFinal,
-                                                  final boolean itensCriticosRetroativos,
-                                                  @NotNull final OrdemServicoDao ordemServicoDao) throws SQLException {
-        Checklist checkSaida = null;
-        final Long codChecklistSaida = rSet.getLong("COD_CHECKLIST_SAIDA");
-        if (!rSet.wasNull()) {
-            checkSaida = new Checklist();
-            final Colaborador colaboradorSaida = new Colaborador();
-            colaboradorSaida.setNome(rSet.getString("COLABORADOR_SAIDA"));
-            checkSaida.setCodigo(codChecklistSaida);
-            checkSaida.setColaborador(colaboradorSaida);
-            checkSaida.setData(rSet.getObject("DATA_HORA_ULTIMO_CHECKLIST_SAIDA", LocalDateTime.class));
-        }
-        Checklist checkRetorno = null;
-        final Long codChecklistRetorno = rSet.getLong("COD_CHECKLIST_RETORNO");
-        if (!rSet.wasNull()) {
-            checkRetorno = new Checklist();
-            final Colaborador colaboradorRetorno = new Colaborador();
-            colaboradorRetorno.setNome(rSet.getString("COLABORADOR_RETORNO"));
-            checkRetorno.setCodigo(codChecklistRetorno);
-            checkRetorno.setColaborador(colaboradorRetorno);
-            checkRetorno.setData(rSet.getObject("DATA_HORA_ULTIMO_CHECKLIST_RETORNO", LocalDateTime.class));
-        }
-        final Veiculo veiculo = new Veiculo();
-        veiculo.setPlaca(rSet.getString("PLACA"));
-        final List<ItemOrdemServico> itensCriticos = ordemServicoDao
-                .getItensOs(
-                        veiculo.getPlaca(),
-                        dataFinal,
-                        ItemOrdemServico.Status.PENDENTE,
-                        PerguntaRespostaChecklist.CRITICA,
-                        itensCriticosRetroativos);
-        return new FarolVeiculoDia(veiculo, checkSaida, checkRetorno, itensCriticos);
     }
 
     /**
