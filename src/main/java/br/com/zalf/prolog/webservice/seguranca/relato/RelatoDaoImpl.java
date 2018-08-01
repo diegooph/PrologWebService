@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.seguranca.relato;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.seguranca.pdv.Pdv;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
@@ -128,7 +128,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 
     @Override
     public List<Relato> getAll(Long codUnidade, int limit, long offset, double latitude, double longitude, boolean
-			isOrderByDate, String status) throws SQLException {
+            isOrderByDate, String status) throws SQLException {
         final List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -157,7 +157,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 "C2.NOME AS NOME_CLASSIFICACAO, " +
                 "C3.NOME AS NOME_FECHAMENTO, " +
                 "ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as " +
-				"distancia "
+                "distancia "
                 + " FROM RELATO R JOIN "
                 + "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
                 + "RELATO_ALTERNATIVA RA ON RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE LEFT JOIN "
@@ -198,7 +198,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     @Override
     public List<Relato> getRealizadosByColaborador(Long cpf, int limit, long offset, double latitude,
                                                    double longitude, boolean isOrderByDate, String status, String
-															   campoFiltro) throws SQLException {
+                                                           campoFiltro) throws SQLException {
         final List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -266,7 +266,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 
     @Override
     public List<Relato> getAllExcetoColaborador(Long cpf, int limit, long offset, double latitude, double longitude,
-												boolean isOrderByDate, String status) throws SQLException {
+                                                boolean isOrderByDate, String status) throws SQLException {
         List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -298,11 +298,11 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 + " FROM RELATO R JOIN "
                 + "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
                 + "RELATO_ALTERNATIVA RA ON RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE  LEFT " +
-				"JOIN "
+                "JOIN "
                 + "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
                 + "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF "
                 + "WHERE R.CPF_COLABORADOR != ? AND R.STATUS LIKE ? AND R.COD_UNIDADE = (SELECT COD_UNIDADE FROM " +
-				"colaborador\n" +
+                "colaborador\n" +
                 "        WHERE CPF = ?) "
                 + "ORDER BY %s "
                 + "LIMIT ? OFFSET ? ";
@@ -378,7 +378,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                     "  LEFT JOIN COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF " +
                     "WHERE R.COD_UNIDADE = ? " +
                     "      AND R.STATUS LIKE ? " +
-                    "      AND E.NOME LIKE ? " +
+                    "      AND E.CODIGO::TEXT LIKE ? " +
                     "      AND R.DATA_HORA_DATABASE::DATE >= (? AT TIME ZONE ?) AND R.DATA_HORA_DATABASE::DATE <= (? AT TIME ZONE ?) " +
                     "ORDER BY DATA_HORA_DATABASE DESC " +
                     "LIMIT ? OFFSET ?");
@@ -398,8 +398,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             stmt.setLong(13, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Relato relato = createRelato(rSet);
-                relatos.add(relato);
+                relatos.add(createRelato(rSet));
             }
         } finally {
             closeConnection(conn, stmt, rSet);

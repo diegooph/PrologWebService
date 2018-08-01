@@ -4,9 +4,12 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -16,6 +19,11 @@ import java.util.List;
 @Path("/servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@AppVersionCodeHandler(
+		implementation = DefaultAppVersionCodeHandler.class,
+		targetVersionCode = 55,
+		versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+		actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class ServicoResource {
 
 	private final ServicoService service = new ServicoService();
@@ -87,7 +95,7 @@ public class ServicoResource {
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/fechados/{codUnidade}/pneus/{codPneu}")
 	public List<Servico> getServicosFechadosPneu(@PathParam("codUnidade") @Required Long codUnidade,
-												 @PathParam("codPneu") @Required String codPneu,
+												 @PathParam("codPneu") @Required Long codPneu,
 												 @QueryParam("dataInicial") @Required long dataInicial,
 												 @QueryParam("dataFinal") @Required long dataFinal) {
 		return service.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal);

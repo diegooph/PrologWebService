@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
 
@@ -403,7 +403,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                 }
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -414,7 +414,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setLong(1, codTreinamento);
             stmt.executeUpdate();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -433,7 +433,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                 count++;
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -506,7 +506,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setLong(1, codTreinamento);
             stmt.executeUpdate();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -517,7 +517,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setLong(1, codTreinamento);
             stmt.executeUpdate();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 }

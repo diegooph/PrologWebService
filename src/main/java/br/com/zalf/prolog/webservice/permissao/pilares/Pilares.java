@@ -7,22 +7,26 @@ public final class Pilares {
     }
 
     public static final int FROTA = 1;
+
     public static final class Frota extends Pilar {
 
         public final class FarolStatusPlacas {
-            private FarolStatusPlacas() {}
+            private FarolStatusPlacas() {
+            }
 
             public static final int VISUALIZAR = 10;
         }
 
         public final class Checklist {
-            private Checklist() {}
+            private Checklist() {
+            }
 
             public static final int REALIZAR = 11;
             public static final int VISUALIZAR_TODOS = 118;
 
             public final class Modelo {
-                private Modelo() {}
+                private Modelo() {
+                }
 
                 public static final int VISUALIZAR = 112;
                 public static final int CADASTRAR = 113;
@@ -31,7 +35,8 @@ public final class Pilares {
         }
 
         public final class Veiculo {
-            private Veiculo() {}
+            private Veiculo() {
+            }
 
             public static final int CADASTRAR = 14;
             public static final int ALTERAR = 16;
@@ -39,14 +44,17 @@ public final class Pilares {
         }
 
         public final class Pneu {
-            private Pneu() {}
+            private Pneu() {
+            }
 
             public static final int CADASTRAR = 15;
             public static final int ALTERAR = 17;
             public static final int VINCULAR_VEICULO = 111;
             public static final int VISUALIZAR = 116;
+
             public final class Movimentacao {
-                private Movimentacao() {}
+                private Movimentacao() {
+                }
 
                 public static final int MOVIMENTAR_GERAL = 120;
                 public static final int MOVIMENTAR_ANALISE_TO_DESCARTE = 125;
@@ -56,24 +64,33 @@ public final class Pilares {
         }
 
         public final class Afericao {
-            private Afericao() {}
+            private Afericao() {
+            }
 
             public static final int REALIZAR = 18;
             public static final int VISUALIZAR = 117;
+
+            public final class ConfiguracaoAfericao {
+
+                public static final int CONFIGURAR = 100;
+            }
         }
 
         public final class OrdemServico {
-            private OrdemServico() {}
+            private OrdemServico() {
+            }
 
             public final class Checklist {
-                private Checklist() {}
+                private Checklist() {
+                }
 
                 public static final int VISUALIZAR = 12;
                 public static final int CONSERTAR_ITEM = 13;
             }
 
             public final class Pneu {
-                private Pneu() {}
+                private Pneu() {
+                }
 
                 public static final int VISUALIZAR = 119;
                 public static final int CONSERTAR_ITEM = 19;
@@ -81,21 +98,41 @@ public final class Pilares {
         }
 
         public final class Relatorios {
-            private Relatorios() {}
+            private Relatorios() {
+            }
 
             public static final int PNEU = 110;
             public static final int CHECKLIST = 121;
             public static final int VEICULO = 122;
         }
+
+        public final class Recapadora {
+            private Recapadora() {
+            }
+
+            public static final int CADASTRO = 130;
+            public static final int VISUALIZACAO = 131;
+            public static final int EDICAO = 132;
+
+            public final class TipoServico {
+                private TipoServico() {}
+
+                public static final int CADASTRO = 133;
+                public static final int VISUALIZACAO = 134;
+                public static final int EDICAO = 135;
+            }
+        }
     }
 
     public static final int SEGURANCA = 2;
+
     public static final class Seguranca extends Pilar {
 
         public static final int GSD = 20;
 
         public final class Relato {
-            private Relato() {}
+            private Relato() {
+            }
 
             public static final int REALIZAR = 21;
             public static final int CLASSIFICAR = 23;
@@ -106,12 +143,14 @@ public final class Pilares {
     }
 
     public static final int GENTE = 3;
+
     public static final class Gente extends Pilar {
 
         public static final int RANKING = 33;
 
         public final class Intervalo {
-            private Intervalo() {}
+            private Intervalo() {
+            }
 
             /**
              * Quem tiver essa permissão, automaticamente está liberado para visualizar suas pŕoprias marcações.
@@ -125,7 +164,8 @@ public final class Pilares {
         }
 
         public final class ProntuarioCondutor {
-            private ProntuarioCondutor() {}
+            private ProntuarioCondutor() {
+            }
 
             public static final int UPLOAD = 333;
             public static final int VISUALIZAR_PROPRIO = 334;
@@ -133,7 +173,8 @@ public final class Pilares {
         }
 
         public final class Relatorios {
-            private Relatorios() {}
+            private Relatorios() {
+            }
 
             public static final int QUIZ = 330;
             public static final int FALE_CONOSCO = 331;
@@ -143,7 +184,8 @@ public final class Pilares {
         }
 
         public final class Treinamentos {
-            private Treinamentos() {}
+            private Treinamentos() {
+            }
 
             public static final int VISUALIZAR_PROPRIOS = 30;
             public static final int CRIAR = 323;
@@ -151,7 +193,8 @@ public final class Pilares {
         }
 
         public final class Calendario {
-            private Calendario() {}
+            private Calendario() {
+            }
 
             public static final int VISUALIZAR_PROPRIOS = 32;
             public static final int CRIAR_EVENTO = 324;
@@ -159,20 +202,23 @@ public final class Pilares {
         }
 
         public final class PreContracheque {
-            private PreContracheque() {}
+            private PreContracheque() {
+            }
 
             public static final int UPLOAD_E_EDICAO = 34;
             public static final int VISUALIZAR = 35;
         }
 
         public final class Quiz {
-            private Quiz() {}
+            private Quiz() {
+            }
 
             public static final int REALIZAR = 36;
             public static final int VISUALIZAR = 326;
 
             public final class Modelo {
-                private Modelo() {}
+                private Modelo() {
+                }
 
                 public static final int VISUALIZAR = 320;
                 public static final int CRIAR = 37;
@@ -181,7 +227,8 @@ public final class Pilares {
         }
 
         public final class SolicitacaoFolga {
-            private SolicitacaoFolga() {}
+            private SolicitacaoFolga() {
+            }
 
             public static final int REALIZAR = 38;
             public static final int FEEDBACK_SOLICITACAO = 39;
@@ -189,7 +236,8 @@ public final class Pilares {
         }
 
         public final class Colaborador {
-            private Colaborador() {}
+            private Colaborador() {
+            }
 
             public static final int CADASTRAR = 310;
             public static final int EDITAR = 325;
@@ -197,14 +245,16 @@ public final class Pilares {
         }
 
         public final class Permissao {
-            private Permissao() {}
+            private Permissao() {
+            }
 
             public static final int VISUALIZAR = 328;
             public static final int VINCULAR_CARGO = 329;
         }
 
         public final class Equipe {
-            private Equipe() {}
+            private Equipe() {
+            }
 
             public static final int CADASTRAR = 311;
             public static final int EDITAR = 313;
@@ -212,7 +262,8 @@ public final class Pilares {
         }
 
         public final class FaleConosco {
-            private FaleConosco() {}
+            private FaleConosco() {
+            }
 
             public static final int VISUALIZAR_TODOS = 322;
             public static final int REALIZAR = 314;
@@ -221,30 +272,35 @@ public final class Pilares {
     }
 
     public static final int ENTREGA = 4;
+
     public static final class Entrega extends Pilar {
 
         public final class Indicadores {
-            private Indicadores() {}
+            private Indicadores() {
+            }
 
             public static final int INDICADORES = 40;
         }
 
         public final class Relatorios {
-            private Relatorios() {}
+            private Relatorios() {
+            }
 
             public static final int INDICADORES = 41;
             public static final int PRODUTIVIDADE = 48;
         }
 
         public final class Upload {
-            private Upload() {}
+            private Upload() {
+            }
 
             public static final int MAPA_TRACKING = 42;
             public static final int VERIFICACAO_DADOS = 43;
         }
 
         public final class EscalaDiaria {
-            private EscalaDiaria() {}
+            private EscalaDiaria() {
+            }
 
             public static final int DELETAR = 410;
             public static final int UPLOAD = 411;
@@ -253,17 +309,31 @@ public final class Pilares {
         }
 
         public final class Meta {
-            private Meta() {}
+            private Meta() {
+            }
 
             public static final int EDITAR = 44;
             public static final int VISUALIZAR = 47;
         }
 
         public final class Produtividade {
-            private Produtividade() {}
+            private Produtividade() {
+            }
 
             public static final int INDIVIDUAL = 45;
             public static final int CONSOLIDADO = 46;
+        }
+
+        public final class RaizenProdutividade {
+            private RaizenProdutividade() {
+            }
+
+            public static final int VISUALIZAR_TODOS = 414;
+            public static final int VISUALIZAR_PROPRIOS = 415;
+            public static final int EDITAR = 416;
+            public static final int UPLOAD = 417;
+            public static final int DELETAR = 418;
+            public static final int VISUALIZAR_RELATORIOS = 419;
         }
     }
 }

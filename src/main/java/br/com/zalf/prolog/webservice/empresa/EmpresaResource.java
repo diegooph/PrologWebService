@@ -48,7 +48,13 @@ public class EmpresaResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Gente.Equipe.VISUALIZAR, Pilares.Gente.Equipe.EDITAR, Pilares.Gente.Equipe.CADASTRAR})
+    @Secured(permissions = {
+            Pilares.Gente.Equipe.VISUALIZAR,
+            Pilares.Gente.Equipe.CADASTRAR,
+            Pilares.Gente.Equipe.EDITAR,
+            Pilares.Gente.Colaborador.VISUALIZAR,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
     @Path("/unidades/{codUnidade}/equipes/{codEquipe}")
     public Equipe getEquipe(@PathParam("codUnidade") Long codUnidade, @PathParam("codEquipe") Long codEquipe) {
         return service.getEquipe(codUnidade, codEquipe);
@@ -82,7 +88,11 @@ public class EmpresaResource {
     }
 
     @GET
-    @Secured(permissions = Pilares.Gente.Equipe.VISUALIZAR)
+    @Secured(permissions = {
+            Pilares.Gente.Equipe.VISUALIZAR,
+            Pilares.Gente.Colaborador.VISUALIZAR,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
     @Path("/unidades/{codUnidade}/equipes")
     public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getEquipesByCodUnidade(codUnidade);
@@ -119,7 +129,7 @@ public class EmpresaResource {
     }
 
     @POST
-    @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR})
+    @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Permissao.VINCULAR_CARGO})
     @Path("/unidades/{codUnidade}/cargos/{codCargo}/visao")
     public Response alterarVisaoCargo(Visao visao,
                                       @PathParam("codUnidade") Long codUnidade,

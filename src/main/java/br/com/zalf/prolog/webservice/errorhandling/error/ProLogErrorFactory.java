@@ -11,12 +11,6 @@ public class ProLogErrorFactory {
 
 	@NotNull
 	public static ProLogError create(ProLogException ex) {
-		final ProLogError proLogError = new ProLogError();
-		proLogError.setDeveloperMessage(ex.getDeveloperMessage());
-		proLogError.setMessage(ex.getMessage());
-		proLogError.setProLogErrorCode(ex.getProLogErrorCode());
-		proLogError.setHttpStatusCode(ex.getHttpStatusCode());
-		proLogError.setMoreInfoLink(ex.getMoreInfoLink());
-		return proLogError;
+		return ProLogError.createFrom(ex);
 	}
 }

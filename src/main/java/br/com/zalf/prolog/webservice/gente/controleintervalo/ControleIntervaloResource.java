@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
@@ -80,6 +81,18 @@ public final class ControleIntervaloResource {
                                                     @QueryParam("limit") long limit,
                                                     @QueryParam("offset") long offset) {
         return service.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
+            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
+            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
+            Pilares.Gente.Relatorios.INTERVALOS})
+    @Path("/tipos/{codUnidade}/{codTipoIntervalo}")
+    public TipoIntervalo getTipoIntervalo(@PathParam("codUnidade") @Required final Long codUnidade,
+                                          @PathParam("codUnidade") @Required final Long codTipoIntervalo) {
+        return service.getTipoIntervalo(codUnidade, codTipoIntervalo);
     }
 
     @GET

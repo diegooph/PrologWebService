@@ -2,11 +2,14 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.AmazonCredentialsProvider;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorExceptionHandler;
+import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorValidator;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
@@ -16,7 +19,6 @@ import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,26 +26,29 @@ import java.util.List;
  */
 public class ColaboradorService {
 
-    private final ColaboradorDao dao = Injection.provideColaboradorDao();
     private static final String TAG = ColaboradorService.class.getSimpleName();
+    private final ColaboradorDao dao = Injection.provideColaboradorDao();
+    private final ColaboradorExceptionHandler exceptionHandler = Injection.provideColaboradorExceptionHandler();
 
-    public boolean insert(Colaborador colaborador) {
+    public void insert(Colaborador colaborador) throws ProLogException {
         try {
+            ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.insert(colaborador, Injection.provideDadosIntervaloChangedListener());
-            return true;
         } catch (Throwable e) {
-            Log.e(TAG, "Erro ao inserir o colaborador", e);
-            return false;
+            final String errorMessage = "Erro ao inserir o colaborador";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
-    public boolean update(Long cpfAntigo, Colaborador colaborador) {
+    public void update(Long cpfAntigo, Colaborador colaborador) throws ProLogException {
         try {
+            ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.update(cpfAntigo, colaborador, Injection.provideDadosIntervaloChangedListener());
-            return true;
         } catch (Throwable e) {
+            final String errorMessage = "Erro ao inserir colaborador";
             Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
-            return false;
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -85,12 +90,24 @@ public class ColaboradorService {
         }
     }
 
-    public List<Colaborador> getAll(Long codUnidade, boolean apenasAtivos) {
+    @NotNull
+    public List<Colaborador> getAllByUnidade(Long codUnidade, boolean apenasAtivos) throws ProLogException {
         try {
-            return dao.getAll(codUnidade, apenasAtivos);
-        } catch (SQLException e) {
+            return dao.getAllByUnidade(codUnidade, apenasAtivos);
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar os colaboradores";
             Log.e(TAG, String.format("Erro ao buscar todos os colaboradores da unidade %d", codUnidade), e);
-            return Collections.emptyList();
+            throw exceptionHandler.map(e, errorMessage);
+        }
+    }
+
+    public List<Colaborador> getAllByEmpresa(final Long codEmrpesa, final boolean apenasAtivos) throws ProLogException {
+        try {
+            return dao.getAllByEmpresa(codEmrpesa, apenasAtivos);
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar os colaboradores";
+            Log.e(TAG, String.format("Erro ao buscar todos os colaboradores da empresa %d", codEmrpesa), e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -117,6 +134,8 @@ public class ColaboradorService {
                         colaborador.getUnidade().getCodigo(),
                         colaborador.getSetor().getCodigo()));
             } else if (colaborador.getVisao().hasAccessToFunction(Pilares.FROTA, Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL)) {
+                loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
+            } else if (colaborador.getVisao().hasAccessToFunction(Pilares.FROTA, Pilares.Frota.Pneu.CADASTRAR)) {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             }
 

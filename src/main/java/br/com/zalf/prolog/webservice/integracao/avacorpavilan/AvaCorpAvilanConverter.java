@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
@@ -54,26 +54,31 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static List<Veiculo> convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo) {
+    public static List<Veiculo> convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo,
+                                        @NotNull final Long codUnidadeVeiculo) {
         checkNotNull(arrayOfVeiculo, "arrayOfVeiculo não pode ser null!");
+        checkNotNull(codUnidadeVeiculo, "codUnidadeVeiculo não pode ser null!");
 
         final List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo> veiculosAvilan
                 = arrayOfVeiculo.getVeiculo();
 
         final List<Veiculo> veiculos = new ArrayList<>();
-        veiculosAvilan.forEach(v -> veiculos.add(convert(v)));
+        veiculosAvilan.forEach(v -> veiculos.add(convert(v, codUnidadeVeiculo)));
 
         return veiculos;
     }
 
     @VisibleForTesting
     public static Veiculo convert(
-            @NotNull final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan) {
+            @NotNull final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan,
+            @NotNull final Long codUnidadeVeiculo) {
         checkNotNull(veiculoAvilan, "veiculoAvilan não pode ser null!");
+        checkNotNull(codUnidadeVeiculo, "codUnidadeVeiculo não pode ser null!");
 
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(veiculoAvilan.getPlaca());
-        veiculo.setKmAtual(veiculoAvilan.getMarcador());
+        veiculo.setKmAtual((long) veiculoAvilan.getMarcador());
+        veiculo.setCodUnidadeAlocado(codUnidadeVeiculo);
         return veiculo;
     }
 
@@ -113,13 +118,21 @@ public final class AvaCorpAvilanConverter {
                 final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
                 placaAfericao.setPlaca(v.getPlaca());
                 placaAfericao.setQuantidadePneus(v.getQuantidadePneu());
+                placaAfericao.setPodeAferirPressao(false);
+                placaAfericao.setPodeAferirSulco(false);
+                placaAfericao.setPodeAferirEstepe(true);
+                placaAfericao.setPodeAferirSulcoPressao(true);
                 if (Strings.isNullOrEmpty(v.getDtUltimaAfericao())) {
                     // Veículo nunca foi aferido.
-                    placaAfericao.setIntervaloUltimaAfericaoPressao(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
-                    placaAfericao.setIntervaloUltimaAfericaoSulco(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
+                    placaAfericao.setIntervaloUltimaAfericaoPressao(ModeloPlacasAfericao.PlacaAfericao
+                            .INTERVALO_INVALIDO);
+                    placaAfericao.setIntervaloUltimaAfericaoSulco(ModeloPlacasAfericao.PlacaAfericao
+                            .INTERVALO_INVALIDO);
                 } else {
-                    placaAfericao.setIntervaloUltimaAfericaoPressao(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao(), dataHoraUnidade));
-                    placaAfericao.setIntervaloUltimaAfericaoSulco(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao(), dataHoraUnidade));
+                    placaAfericao.setIntervaloUltimaAfericaoPressao(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow
+                            (v.getDtUltimaAfericao(), dataHoraUnidade));
+                    placaAfericao.setIntervaloUltimaAfericaoSulco(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v
+                            .getDtUltimaAfericao(), dataHoraUnidade));
                 }
                 placas.add(placaAfericao);
             }
@@ -154,19 +167,15 @@ public final class AvaCorpAvilanConverter {
         // seja aferida, então a placa dela será setada em .setVeiculo().
 
         final ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
-        for (final Pneu pneu : afericao.getVeiculo().getListPneus()) {
-            // Envia medidas apenas de pneus que não sejam estepes. Atualmente estepes não tem aferição permitida no
-            // ProLog.
-            if (!pneu.isEstepe()) {
-                final MedidaPneu medidaPneu = new MedidaPneu();
-                medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
-                medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
-                medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
-                medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
-                medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
-                medidaPneu.setTriangulo1QuartoSulco(pneu.getSulcosAtuais().getInterno());
-                medidas.getMedidaPneu().add(medidaPneu);
-            }
+        for (final PneuComum pneu : afericao.getVeiculo().getListPneus()) {
+            final MedidaPneu medidaPneu = new MedidaPneu();
+            medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
+            medidaPneu.setNumeroFogoPneu(pneu.getCodigoCliente());
+            medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
+            medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
+            medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
+            medidaPneu.setTriangulo1QuartoSulco(pneu.getSulcosAtuais().getInterno());
+            medidas.getMedidaPneu().add(medidaPneu);
         }
         incluirMedida2.setMedidas(medidas);
 
@@ -217,7 +226,7 @@ public final class AvaCorpAvilanConverter {
                 .filter(v -> v.getVeiculo().getPlaca().equals(placaVeiculo))
                 .collect(MoreCollectors.onlyElement());
         // Seta o km do veículo.
-        veiculo.setKmAtual(veiculoQuestao.getVeiculo().getMarcador());
+        veiculo.setKmAtual((long) veiculoQuestao.getVeiculo().getMarcador());
         novoChecklistHolder.setVeiculo(veiculo);
 
         // Cria as perguntas/respostas do checklist.
@@ -298,11 +307,11 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static List<Pneu> convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
-                                     @Nonnull final ArrayOfPneu arrayOfPneu) {
+    public static List<PneuComum> convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
+                                          @Nonnull final ArrayOfPneu arrayOfPneu) {
         checkNotNull(posicaoPneuMapper, "posicaoPneuMapper não pode ser null!");
         checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
-        final List<Pneu> pneus = new ArrayList<>();
+        final List<PneuComum> pneus = new ArrayList<>();
 
         // Modelo de Pneu e Banda serão iguais para todos os pneus. Pneus sempre terão 4 sulcos.
         final ModeloPneu modeloPneu = new ModeloPneu();
@@ -312,13 +321,15 @@ public final class AvaCorpAvilanConverter {
         final Banda banda = new Banda();
         banda.setModelo(modeloBanda);
 
-        for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
-            final Pneu pneu = new Pneu();
-            pneu.setCodigo(p.getNumeroFogo());
+        for (int i = 0; i < arrayOfPneu.getPneu().size(); i++) {
+            final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p = arrayOfPneu.getPneu().get(i);
+            final PneuComum pneu = new PneuComum();
+            pneu.setCodigo((long) i);
+            pneu.setCodigoCliente(p.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(p.getPosicao()));
             // A vida atual do pneu começa em 1 quando ele é novo, porém, o getVidaPneu() retorna, na verdade, o
             // número de recapagens desse pneu, por isso somamos 1 ao total para ter a informação correta do modo
-            // que é utilizado no ProLog
+            // que é utilizado no ProLog.
             pneu.setVidaAtual(p.getVidaPneu() + 1);
             final Sulcos sulcos = new Sulcos();
             sulcos.setExterno(p.getSulco1());
@@ -332,7 +343,7 @@ public final class AvaCorpAvilanConverter {
         }
 
         // Ordena lista pelas posições do ProLog.
-        pneus.sort(Pneu.POSICAO_PNEU_COMPARATOR);
+        pneus.sort(PneuComum.POSICAO_PNEU_COMPARATOR);
 
         return pneus;
     }
@@ -509,7 +520,6 @@ public final class AvaCorpAvilanConverter {
     }
 
 
-
     @Nonnull
     @VisibleForTesting
     public static Afericao convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
@@ -521,10 +531,13 @@ public final class AvaCorpAvilanConverter {
         final Afericao afericao = convertAfericaoSemPneus(afericaoFiltro, codUnidadeAfericao);
 
         // Pneus - Medidas.
-        final List<Pneu> pneus = new ArrayList<>();
-        for (PneuFiltro pneuFiltro : afericaoFiltro.getPneus().getPneuFiltro()) {
-            final Pneu pneu = new Pneu();
-            pneu.setCodigo(pneuFiltro.getNumeroFogo());
+        final List<PneuComum> pneus = new ArrayList<>();
+        final List<PneuFiltro> pneusAvilan = afericaoFiltro.getPneus().getPneuFiltro();
+        for (int i = 0; i < pneusAvilan.size(); i++) {
+            final PneuFiltro pneuFiltro = pneusAvilan.get(i);
+            final PneuComum pneu = new PneuComum();
+            pneu.setCodigo((long) i);
+            pneu.setCodigoCliente(pneuFiltro.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(pneuFiltro.getPosicao()));
             pneu.setPressaoAtual(pneuFiltro.getPressao());
             final Sulcos sulcos = new Sulcos();
@@ -535,7 +548,6 @@ public final class AvaCorpAvilanConverter {
             pneu.setSulcosAtuais(sulcos);
             pneus.add(pneu);
         }
-
         afericao.getVeiculo().setListPneus(pneus);
 
         return afericao;
@@ -602,7 +614,8 @@ public final class AvaCorpAvilanConverter {
     }
 
     @Nonnull
-    private static List<Checklist> convertToChecklists(@NotNull final List<Avaliacao> avaliacoes) throws ParseException {
+    private static List<Checklist> convertToChecklists(@NotNull final List<Avaliacao> avaliacoes) throws
+            ParseException {
         checkNotNull(avaliacoes, "avaliacoes não pode ser null!");
 
         final List<Checklist> checklists = new ArrayList<>();
@@ -633,7 +646,7 @@ public final class AvaCorpAvilanConverter {
             if (c.getTipo() == tipoChecklist) {
                 if (checklist == null) {
                     checklist = c;
-                } else if (c.getData().isAfter(checklist.getData())){
+                } else if (c.getData().isAfter(checklist.getData())) {
                     checklist = c;
                 }
             }

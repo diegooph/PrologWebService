@@ -3,17 +3,16 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.*;
@@ -90,12 +89,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final NovaAfericao novaAfericao = new NovaAfericao();
         final Veiculo veiculo = veiculoDao.getVeiculoByPlaca(placa, true);
-        final List<Pneu> estepes = veiculo.getEstepes();
+        final List<PneuComum> estepes = veiculo.getEstepes();
         novaAfericao.setEstepesVeiculo(estepes);
         novaAfericao.setVeiculo(veiculo);
         final Restricao restricao = getRestricoesByPlaca(placa);
         novaAfericao.setRestricao(restricao);
-        novaAfericao.setDeveAferirEstepes(!restricao.getTiposVeiculosAfericaoEstepeBloqueada().contains(veiculo.getTipo()));
+        novaAfericao.setDeveAferirEstepes(getConfiguracaTiposVeiculosAfericaoEstepe(placa).isPodeAferirEstepe());
         return novaAfericao;
     }
 
@@ -140,34 +139,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.isLast()) {
-                final Restricao restricao = createRestricao(rSet);
-                restricao.setTiposVeiculosAfericaoEstepeBloqueada(getTiposVeiculosAfericaoEstepe(conn, placa));
-                return restricao;
+                return createRestricao(rSet);
             } else {
                 throw new SQLException("Erro ao buscar os dados de restrição");
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-    }
-
-    private List<TipoVeiculo> getTiposVeiculosAfericaoEstepe(final Connection conn, final String placa) throws SQLException {
-        final List<TipoVeiculo> tiposVeiculoAfericaoEstepe = new ArrayList<>();
-        final PreparedStatement stmt = conn.prepareStatement("SELECT AETV.COD_UNIDADE AS COD_UNIDADE, " +
-                "  AETV.COD_TIPO_VEICULO AS COD_TIPO_VEICULO, " +
-                "  VT.NOME AS NOME_TIPO_VEICULO " +
-                "FROM AFERICAO_ESTEPES_TIPOS_VEICULOS_BLOQUEADOS AETV " +
-                "  JOIN VEICULO_TIPO VT ON AETV.COD_TIPO_VEICULO = VT.CODIGO AND AETV.COD_UNIDADE = VT.COD_UNIDADE " +
-                "WHERE AETV.COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE PLACA = ?);");
-        stmt.setString(1, placa);
-        final ResultSet rSet = stmt.executeQuery();
-        while (rSet.next()) {
-            final TipoVeiculo tipoVeiculo = new TipoVeiculo();
-            tipoVeiculo.setCodigo(rSet.getLong("COD_TIPO_VEICULO"));
-            tipoVeiculo.setNome(rSet.getString("NOME_TIPO_VEICULO"));
-            tiposVeiculoAfericaoEstepe.add(tipoVeiculo);
-        }
-        return tiposVeiculoAfericaoEstepe;
     }
 
     @Override
@@ -182,28 +160,34 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             // coalesce - trabalha semenlhante ao IF, verifica se o valor é null.
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT V.placa,\n" +
-                    " M.nome,\n" +
-                    "    coalesce(INTERVALO_PRESSAO.INTERVALO, -1)::INTEGER as INTERVALO_PRESSAO,\n" +
-                    "    coalesce(INTERVALO_SULCO.INTERVALO, -1)::INTEGER as INTERVALO_SULCO,\n" +
-                    "    coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS\n" +
-                    "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO\n" +
-                    "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO\n" +
-                    "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
-                    "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO\n" +
-                    "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
-                    "LEFT JOIN\n" +
-                    "    (SELECT vp.placa as placa_pneus, count(vp.cod_pneu) as total\n" +
-                    "        FROM veiculo_pneu vp\n" +
-                    "        WHERE cod_unidade = ?\n" +
-                    "        GROUP BY 1) as numero_pneus on placa_pneus = v.placa\n" +
-                    "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ?\n" +
+            stmt = conn.prepareStatement("SELECT V.placa, " +
+                    " M.nome, " +
+                    "    coalesce(INTERVALO_PRESSAO.INTERVALO, -1)::INTEGER as INTERVALO_PRESSAO, " +
+                    "    coalesce(INTERVALO_SULCO.INTERVALO, -1)::INTEGER as INTERVALO_SULCO, " +
+                    "    coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS, " +
+                    "  VCTA.STATUS_ATIVO, " +
+                    "  VCTA.PODE_AFERIR_SULCO, " +
+                    "  VCTA.PODE_AFERIR_PRESSAO, " +
+                    "  VCTA.PODE_AFERIR_SULCO_PRESSAO, " +
+                    "  VCTA.PODE_AFERIR_ESTEPE " +
+                    "FROM VEICULO V " +
+                    "  JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO " +
+                    "  JOIN VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO VCTA ON VCTA.COD_TIPO_VEICULO = V.COD_TIPO " +
+                    "LEFT JOIN " +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO " +
+                    "        WHERE tipo_afericao = ? OR tipo_afericao = ? " +
+                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA " +
+                    "LEFT JOIN " +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO " +
+                    "        WHERE tipo_afericao = ? OR tipo_afericao = ? " +
+                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA " +
+                    "LEFT JOIN " +
+                    "    (SELECT vp.placa as placa_pneus, count(vp.cod_pneu) as total " +
+                    "        FROM veiculo_pneu vp " +
+                    "        WHERE cod_unidade = ? " +
+                    "        GROUP BY 1) as numero_pneus on placa_pneus = v.placa " +
+                    "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ? " +
                     "ORDER BY M.NOME ASC, INTERVALO_PRESSAO DESC, INTERVALO_SULCO DESC;");
-
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             // Seta para calcular informações de pressão.
             stmt.setObject(1, OffsetDateTime.now(Clock.system(zoneId)));
@@ -243,6 +227,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
             cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
             cronogramaAfericao.setModelosPlacasAfericao(modelos);
+            cronogramaAfericao.removerPlacasNaoAferiveis(cronogramaAfericao);
+            cronogramaAfericao.removerModelosSemPlacas(cronogramaAfericao);
             cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(cronogramaAfericao);
             cronogramaAfericao.calcularTotalVeiculos(cronogramaAfericao);
         } finally {
@@ -279,7 +265,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "FROM AFERICAO A "
                     + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
                     + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
-                    + "WHERE V.COD_UNIDADE = ? "
+                    + "WHERE A.COD_UNIDADE = ? "
                     + "AND V.COD_TIPO::TEXT LIKE ? "
                     + "AND V.PLACA LIKE ? "
                     + "AND A.DATA_HORA::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) "
@@ -313,7 +299,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PreparedStatement stmt = null;
         Afericao afericao = null;
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        final List<Pneu> pneus = new ArrayList<>();
+        final List<PneuComum> pneus = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
@@ -335,14 +321,14 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "AV.PSI::INT AS PRESSAO_PNEU, " +
                     "AV.POSICAO AS POSICAO_PNEU, " +
                     "P.CODIGO AS CODIGO_PNEU, " +
+                    "P.CODIGO_CLIENTE AS CODIGO_PNEU_CLIENTE, " +
                     "P.PRESSAO_RECOMENDADA " +
                     "FROM AFERICAO A " +
                     "JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO " +
                     "JOIN PNEU_ORDEM PO ON AV.POSICAO = PO.POSICAO_PROLOG " +
-                    "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE " +
+                    "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU " +
                     "JOIN MODELO_PNEU MO ON MO.CODIGO = P.COD_MODELO " +
                     "JOIN MARCA_PNEU MP ON MP.CODIGO = MO.COD_MARCA " +
-                    "JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE " +
                     "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR " +
                     "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ? " +
                     "ORDER BY PO.ORDEM_EXIBICAO ASC");
@@ -366,22 +352,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             closeConnection(conn, stmt, rSet);
         }
         return afericao;
-    }
-
-    private Pneu createPneuAfericao(ResultSet rSet) throws SQLException {
-        final Pneu pneu = new Pneu();
-        pneu.setCodigo(rSet.getString("CODIGO_PNEU"));
-        pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
-        pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
-        pneu.setPressaoAtual(rSet.getDouble("PRESSAO_PNEU"));
-
-        final Sulcos sulcos = new Sulcos();
-        sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        sulcos.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        sulcos.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        sulcos.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        pneu.setSulcosAtuais(sulcos);
-        return pneu;
     }
 
     @Override
@@ -410,8 +380,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "WHERE V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND V.PLACA LIKE ANY (ARRAY[?]) "
                     + "ORDER BY A.DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?");
-            stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
-            stmt.setArray(2, PostgresUtil.ListToArray(conn, placas));
+            stmt.setArray(1, PostgresUtils.ListToArray(conn, codUnidades));
+            stmt.setArray(2, PostgresUtils.ListToArray(conn, placas));
             stmt.setInt(3, limit);
             stmt.setLong(4, offset);
             rSet = stmt.executeQuery();
@@ -424,12 +394,75 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return afericoes;
     }
 
+    private ConfiguracaoTipoVeiculoAfericao getConfiguracaTiposVeiculosAfericaoEstepe(final String placa)
+            throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT " +
+                    "  VACTA.STATUS_ATIVO, " +
+                    "  VACTA.PODE_AFERIR_SULCO, " +
+                    "  VACTA.PODE_AFERIR_PRESSAO, " +
+                    "  VACTA.PODE_AFERIR_SULCO_PRESSAO," +
+                    "  VACTA.PODE_AFERIR_ESTEPE " +
+                    "FROM VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO AS VACTA " +
+                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE " +
+                    "                     FROM VEICULO " +
+                    "                     WHERE PLACA = ?) " +
+                    "      AND COD_TIPO_VEICULO = (SELECT COD_TIPO " +
+                    "                              FROM VEICULO " +
+                    "                              WHERE PLACA = ?);");
+            stmt.setString(1, placa);
+            stmt.setString(2, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createConfiguracaoTipoAfericao(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar as configurações de aferição para a placa: " + placa);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    private ConfiguracaoTipoVeiculoAfericao createConfiguracaoTipoAfericao(ResultSet rSet) throws SQLException {
+        final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
+        config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
+        config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
+        config.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
+        config.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
+        return config;
+    }
+
+    private PneuComum createPneuAfericao(ResultSet rSet) throws SQLException {
+        final PneuComum pneu = new PneuComum();
+        pneu.setCodigo(rSet.getLong("CODIGO_PNEU"));
+        pneu.setCodigoCliente(rSet.getString("CODIGO_PNEU_CLIENTE"));
+        pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
+        pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
+        pneu.setPressaoAtual(rSet.getDouble("PRESSAO_PNEU"));
+
+        final Sulcos sulcos = new Sulcos();
+        sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        sulcos.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        sulcos.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        sulcos.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        pneu.setSulcosAtuais(sulcos);
+        return pneu;
+    }
+
     private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(ResultSet rSet) throws SQLException {
         final ModeloPlacasAfericao.PlacaAfericao placa = new ModeloPlacasAfericao.PlacaAfericao();
         placa.setPlaca(rSet.getString("PLACA"));
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
         placa.setIntervaloUltimaAfericaoPressao(rSet.getInt("INTERVALO_PRESSAO"));
         placa.setQuantidadePneus(rSet.getInt("PNEUS_APLICADOS"));
+        placa.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
+        placa.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
+        placa.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
+        placa.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
         return placa;
     }
 
@@ -440,9 +473,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 "ALTURA_SULCO_INTERNO, POSICAO, VIDA_MOMENTO_AFERICAO) VALUES "
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         final ServicoDao servicoDao = Injection.provideServicoDao();
-        for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
+        for (PneuComum pneu : afericao.getVeiculo().getListPneus()) {
             stmt.setLong(1, afericao.getCodigo());
-            stmt.setString(2, pneu.getCodigo());
+            stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
 
             // Já aproveitamos esse switch para atualizar as medições do pneu na tabela PNEU.
@@ -483,11 +516,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
-    private List<TipoServico> getServicosACadastrar(Pneu pneu, Restricao restricao, TipoAfericao tipoAfericao) {
+    private List<TipoServico> getServicosACadastrar(PneuComum pneu, Restricao restricao, TipoAfericao tipoAfericao) {
         final List<TipoServico> servicos = new ArrayList<>();
 
         // Verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão.
-        if (pneu.getProblemas() != null && pneu.getProblemas().contains(Pneu.Problema.PRESSAO_INDISPONIVEL)) {
+        if (pneu.getProblemas() != null && pneu.getProblemas().contains(PneuComum.Problema.PRESSAO_INDISPONIVEL)) {
             servicos.add(TipoServico.INSPECAO);
         }
 
@@ -546,7 +579,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return restricao;
     }
 
-    private void insertOrUpdateServicos(Pneu pneu, long codAfericao, Long codUnidade, List<TipoServico> servicosPendentes,
+    private void insertOrUpdateServicos(PneuComum pneu, long codAfericao, Long codUnidade, List<TipoServico> servicosPendentes,
                                         Connection conn, ServicoDao servicoDao) throws SQLException {
         // Se não houver nenhum serviço para inserir/atualizar podemos retornar e poupar uma consulta ao banco.
         if (servicosPendentes.isEmpty())
@@ -596,7 +629,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return afericao;
     }
 
-    private void insertInconsistencia(Long codAfericao, String placa, Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+    private void insertInconsistencia(Long codAfericao, String placa, PneuComum pneu, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU_INCONSISTENCIA(DATA_HORA, "
@@ -605,12 +638,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(2, codAfericao);
             stmt.setString(3, placa);
             stmt.setString(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão
-            stmt.setString(5, pneu.getCodigo()); // codigo que esta no bd (errado)
+            stmt.setLong(5, pneu.getCodigo()); // codigo que esta no bd (errado)
             stmt.setInt(6, pneu.getPosicao());
             stmt.setLong(7, codUnidade);
             stmt.executeQuery();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 }

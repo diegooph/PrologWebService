@@ -1,10 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.*;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
@@ -22,12 +29,9 @@ public class VeiculoResource {
     @POST
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
     @Path("/{codUnidade}")
-    public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.insert(veiculo, codUnidade)) {
-            return Response.ok("Veículo inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir o veículo");
-        }
+    public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) throws Throwable {
+        service.insert(veiculo, codUnidade);
+        return Response.ok("Veículo inserido com sucesso");
     }
 
     @PUT
@@ -163,9 +167,9 @@ public class VeiculoResource {
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/modelos/{codUnidade}/{codMarca}/{codModelo}")
     public Response updateModelo(Modelo modelo, @PathParam("codUnidade") Long codUnidade, @PathParam("codMarca") Long codMarca) {
-        if(service.updateModelo(modelo, codUnidade, codMarca)){
+        if (service.updateModelo(modelo, codUnidade, codMarca)) {
             return Response.ok("Modelo alterado com sucesso");
-        }else{
+        } else {
             return Response.error("Erro ao atualizar o modelo");
         }
     }
@@ -174,9 +178,9 @@ public class VeiculoResource {
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/modelos/{codUnidade}/{codModelo}")
     public Response deleteModelo(@PathParam("codModelo") Long codModelo, @PathParam("codUnidade") Long codUnidade) {
-        if(service.deleteModelo(codModelo, codUnidade)){
+        if (service.deleteModelo(codModelo, codUnidade)) {
             return Response.ok("Modelo deletado com sucesso");
-        }else{
+        } else {
             return Response.error("Erro ao deletar o modelo");
         }
     }
@@ -198,6 +202,11 @@ public class VeiculoResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/com-pneus/{placa}")
+    @AppVersionCodeHandler(
+            implementation = DefaultAppVersionCodeHandler.class,
+            targetVersionCode = 55,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public Veiculo getVeiculoByPlacaComPneus(@HeaderParam("Authorization") String userToken,
                                              @PathParam("placa") String placa) {
         return service.getVeiculoByPlaca(userToken, placa, true);
@@ -215,9 +224,9 @@ public class VeiculoResource {
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos/{codUnidade}/{codTipo}")
     public Response updateTipoVeiculo(TipoVeiculo tipo, @PathParam("codUnidade") Long codUnidade) {
-        if(service.updateTipoVeiculo(tipo, codUnidade)){
+        if (service.updateTipoVeiculo(tipo, codUnidade)) {
             return Response.ok("Tipo alterado com sucesso");
-        }else{
+        } else {
             return Response.error("Erro ao alterar o tipo");
         }
     }

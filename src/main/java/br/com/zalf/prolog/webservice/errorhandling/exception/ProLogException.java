@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.errorhandling.exception;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Classe para erros específicos do ProLog
@@ -32,7 +33,7 @@ public abstract class ProLogException extends Exception {
 
 	/** parent exception that are catch and mapped to a {@link ProLogException}*/
 	@Nullable
-	private Exception parentException;
+	private Throwable parentException;
 
 	public ProLogException() {
 		super();
@@ -50,7 +51,7 @@ public abstract class ProLogException extends Exception {
 	public ProLogException(int httpStatusCode,
 						   int proLogErrorCode,
 						   @NotNull String message,
-						   @NotNull String developerMessage) {
+						   @Nullable String developerMessage) {
 		super();
 		this.httpStatusCode = httpStatusCode;
 		this.proLogErrorCode = proLogErrorCode;
@@ -61,8 +62,8 @@ public abstract class ProLogException extends Exception {
 	public ProLogException(int httpStatusCode,
 						   int proLogErrorCode,
 						   @NotNull String message,
-						   @NotNull String developerMessage,
-						   @NotNull Exception parentException) {
+						   @Nullable String developerMessage,
+						   @NotNull Throwable parentException) {
 		super(parentException);
 		this.httpStatusCode = httpStatusCode;
 		this.proLogErrorCode = proLogErrorCode;
@@ -74,7 +75,7 @@ public abstract class ProLogException extends Exception {
 	public ProLogException(int httpStatusCode,
 						   int proLogErrorCode,
 						   @NotNull String message,
-						   @NotNull String developerMessage,
+						   @Nullable String developerMessage,
 						   @NotNull String moreInfoLink) {
 		super();
 		this.httpStatusCode = httpStatusCode;
@@ -125,11 +126,11 @@ public abstract class ProLogException extends Exception {
 		this.developerMessage = developerMessage;
 	}
 
-	public Exception getParentException() {
+	public Throwable getParentException() {
 		return parentException;
 	}
 
-	public void setParentException(final Exception parentException) {
+	public void setParentException(final Throwable parentException) {
 		this.parentException = parentException;
 	}
 }

@@ -1,7 +1,7 @@
 package test.routines;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 
 import java.sql.*;
 import java.util.ArrayList;

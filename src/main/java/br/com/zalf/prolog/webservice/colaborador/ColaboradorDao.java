@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -59,7 +59,19 @@ public interface ColaboradorDao {
 	 * @return uma lista de colaboradores.
 	 * @throws SQLException caso não seja possível buscar os dados.
 	 */
-	List<Colaborador> getAll(Long codUnidade, boolean apenasAtivos) throws SQLException;
+	@NotNull
+	List<Colaborador> getAllByUnidade(@NotNull final Long codUnidade, final boolean apenasAtivos) throws Throwable;
+
+	/**
+	 * Busca todos os colaboradores de uma empresa.
+	 *
+	 * @param codEmpresa código da empresa.
+	 * @param apenasAtivos indica se queremos buscar apenas os colaboradores que estão ativos.
+	 * @return uma lista de colaboradores.
+	 * @throws SQLException caso não seja possível buscar os dados.
+	 */
+	@NotNull
+	List<Colaborador> getAllByEmpresa(@NotNull final Long codEmpresa, final boolean apenasAtivos) throws Throwable;
 
 	/**
 	 * Busca apenas os motoristas e ajudantes de uma unidade

@@ -5,7 +5,7 @@ package br.com.zalf.prolog.webservice.colaborador.model;
  *
  */
 public class Equipe {
-    private long codigo;
+    private Long codigo;
     private String nome;
 
     public Equipe() {
@@ -17,11 +17,11 @@ public class Equipe {
         this.nome = nome;
     }
 
-    public long getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(long codigo) {
+    public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 

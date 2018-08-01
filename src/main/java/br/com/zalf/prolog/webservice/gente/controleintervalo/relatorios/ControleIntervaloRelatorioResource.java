@@ -17,7 +17,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ControleIntervaloRelatorioResource {
 
-    private ControleIntervalosRelatorioService service = new ControleIntervalosRelatorioService();
+    private ControleIntervaloRelatorioService service = new ControleIntervaloRelatorioService();
 
     @GET
     @Secured
@@ -121,11 +121,12 @@ public class ControleIntervaloRelatorioResource {
     @GET
     @Secured
     @Path("/folha-ponto/{codUnidade}/{codTipoIntervalo}/{cpf}")
-    public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@PathParam("codUnidade") @Required Long codUnidade,
-                                                            @PathParam("cpf") @Required String cpf,
-                                                            @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
-                                                            @QueryParam("dataInicial") @Required String dataInicial,
-                                                            @QueryParam("dataFinal") @Required String dataFinal) {
+    public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(
+            @PathParam("codUnidade") @Required Long codUnidade,
+            @PathParam("cpf") @Required String cpf,
+            @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) throws Throwable {
         return service.getFolhaPontoRelatorio(
                 codUnidade,
                 codTipoIntervalo,
@@ -138,11 +139,10 @@ public class ControleIntervaloRelatorioResource {
     @Secured
     @Produces("application/csv")
     @Path("/intervalos-comparando-escala-diaria/{codUnidade}/{codTipoIntervalo}/csv")
-    public StreamingOutput getMarcacoesComparandoEscalaDiariaCsv(
-            @PathParam("codUnidade") @Required Long codUnidade,
-            @PathParam("codTipoIntervalo") @Required Long codTipoIntervalo,
-            @QueryParam("dataInicial") @Required String dataInicial,
-            @QueryParam("dataFinal") @Required String dataFinal) {
+    public StreamingOutput getMarcacoesComparandoEscalaDiariaCsv(@PathParam("codUnidade") @Required Long codUnidade,
+                                                                 @PathParam("codTipoIntervalo") @Required Long codTipoIntervalo,
+                                                                 @QueryParam("dataInicial") @Required String dataInicial,
+                                                                 @QueryParam("dataFinal") @Required String dataFinal) {
 
         return outputStream -> service.getMarcacoesComparandoEscalaDiariaCsv(
                 outputStream,
@@ -155,13 +155,43 @@ public class ControleIntervaloRelatorioResource {
     @GET
     @Secured
     @Path("/intervalos-comparando-escala-diaria/{codUnidade}/{codTipoIntervalo}/report")
-    public Report getMarcacoesComparandoEscalaDiariaReport(
-            @PathParam("codUnidade") @Required Long codUnidade,
-            @PathParam("codTipoIntervalo") @Required Long codTipoIntervalo,
-            @QueryParam("dataInicial") @Required String dataInicial,
-            @QueryParam("dataFinal") @Required String dataFinal) {
+    public Report getMarcacoesComparandoEscalaDiariaReport(@PathParam("codUnidade") @Required Long codUnidade,
+                                                           @PathParam("codTipoIntervalo") @Required Long codTipoIntervalo,
+                                                           @QueryParam("dataInicial") @Required String dataInicial,
+                                                           @QueryParam("dataFinal") @Required String dataFinal) {
 
         return service.getMarcacoesComparandoEscalaDiariaReport(
+                codUnidade,
+                codTipoIntervalo,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Secured
+    @Produces("application/csv")
+    @Path("/total-tempo-por-tipo-intervalo/{codUnidade}/{codTipoIntervalo}/csv")
+    public StreamingOutput getTotalTempoByTipoIntervaloCsv(@PathParam("codUnidade") @Required final Long codUnidade,
+                                                           @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
+                                                           @QueryParam("dataInicial") @Required String dataInicial,
+                                                           @QueryParam("dataFinal") @Required String dataFinal) {
+        return outputStream -> service.getTotalTempoByTipoIntervaloCsv(
+                outputStream,
+                codUnidade,
+                codTipoIntervalo,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Secured
+    @Path("/total-tempo-por-tipo-intervalo/{codUnidade}/{codTipoIntervalo}/report")
+    public Report getTotalTempoByTipoIntervaloReport(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) throws Throwable {
+        return service.getTotalTempoByTipoIntervaloReport(
                 codUnidade,
                 codTipoIntervalo,
                 dataInicial,

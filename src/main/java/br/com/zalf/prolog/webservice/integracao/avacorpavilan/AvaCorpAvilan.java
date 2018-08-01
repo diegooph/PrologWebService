@@ -5,12 +5,12 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupp
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -61,7 +61,7 @@ public final class AvaCorpAvilan extends Sistema {
     @NotNull
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Exception {
-        return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(getCpf(), getDataNascimento()));
+        return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(getCpf(), getDataNascimento()), codUnidade);
     }
 
     @NotNull
@@ -264,6 +264,8 @@ public final class AvaCorpAvilan extends Sistema {
         final AfericaoVeiculosExclusionStrategy exclusionStrategy = new AfericaoVeiculosExclusionStrategy();
         final CronogramaAfericao cronograma =
                 AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao, codUnidadeCronograma);
+        cronograma.removerPlacasNaoAferiveis(cronograma);
+        cronograma.removerModelosSemPlacas(cronograma);
         cronograma.calcularQuatidadeSulcosPressaoOk(cronograma);
         cronograma.calcularTotalVeiculos(cronograma);
         return cronograma;
@@ -301,7 +303,7 @@ public final class AvaCorpAvilan extends Sistema {
 
         final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
         final String codTipoVeiculo = veiculoAvilan.getTipo().getCodigo();
-        final List<Pneu> pneus = AvaCorpAvilanConverter.convert(
+        final List<PneuComum> pneus = AvaCorpAvilanConverter.convert(
                 new PosicaoPneuMapper(dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(codTipoVeiculo)),
                 requester.getPneusVeiculo(placaVeiculo, getCpf(), getDataNascimento()));
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade);
@@ -311,7 +313,7 @@ public final class AvaCorpAvilan extends Sistema {
             throw new IllegalStateException("Erro ao buscar diagrama de código: " + codDiagrama);
         }
 
-        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan);
+        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan, codUnidade);
         veiculo.setDiagrama(optional.get());
         veiculo.setListPneus(pneus);
 
@@ -320,8 +322,7 @@ public final class AvaCorpAvilan extends Sistema {
         novaAfericao.setVeiculo(veiculo);
         novaAfericao.setRestricao(restricao);
         novaAfericao.setEstepesVeiculo(veiculo.getEstepes());
-        novaAfericao.setDeveAferirEstepes(false);
-        veiculo.removeEstepes();
+        novaAfericao.setDeveAferirEstepes(true);
         return novaAfericao;
     }
 

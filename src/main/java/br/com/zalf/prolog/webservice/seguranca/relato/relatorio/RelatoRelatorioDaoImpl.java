@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.seguranca.relato.relatorio;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
             stmt = conn.prepareStatement("SELECT COUNT(R.CODIGO) AS TOTAL FROM RELATO R " +
                     "WHERE R.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
                     "AND R.DATA_HORA_DATABASE::DATE = (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(R.COD_UNIDADE)));");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
             stmt.setObject(2, LocalDate.now(Clock.systemUTC()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {

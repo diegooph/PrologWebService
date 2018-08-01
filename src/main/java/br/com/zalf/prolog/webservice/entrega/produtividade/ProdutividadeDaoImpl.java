@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
 
@@ -18,8 +18,8 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 
     private static String TAG = ProdutividadeDaoImpl.class.getSimpleName();
 
-    public List<ItemProdutividade> getProdutividadeByPeriodo(int ano, int mes, Long cpf, boolean salvaLog) throws
-            SQLException {
+    public List<ItemProdutividade> getProdutividadeByPeriodo(int ano, int mes, Long cpf, boolean salvaLog)
+            throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

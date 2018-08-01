@@ -214,7 +214,7 @@ public class AvaCorpAvilanRequesterTest {
         // Sapucaia.
         System.out.println("Colaboradores Sapucaia:");
         final List<Colaborador> colaboradoresSapucaia = service
-                .getAll(codUnidadeSapucaia, true)
+                .getAllByUnidade(codUnidadeSapucaia, true)
                 .stream()
                 .filter(colaborador -> colaborador.getFuncao().getCodigo().equals(codMotoristaRota))
                 .collect(Collectors.toList());
@@ -223,7 +223,7 @@ public class AvaCorpAvilanRequesterTest {
         // Santa Maria.
         System.out.println("\nColaboradores Santa Maria:");
         final List<Colaborador> colaboradoresSantaMaria = service
-                .getAll(codUnidadeSantaMaria, true)
+                .getAllByUnidade(codUnidadeSantaMaria, true)
                 .stream()
                 .filter(colaborador -> colaborador.getFuncao().getCodigo().equals(codMotoristaRota))
                 .collect(Collectors.toList());
@@ -232,7 +232,7 @@ public class AvaCorpAvilanRequesterTest {
         // Santa Cruz.
         System.out.println("\nColaboradores Santa Cruz:");
         final List<Colaborador> colaboradoresSantaCruz = service
-                .getAll(codUnidadeSantaCruz, true)
+                .getAllByUnidade(codUnidadeSantaCruz, true)
                 .stream()
                 .filter(colaborador -> colaborador.getFuncao().getCodigo().equals(codMotoristaRota))
                 .collect(Collectors.toList());

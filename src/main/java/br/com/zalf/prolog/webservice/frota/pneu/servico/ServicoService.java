@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,11 +36,11 @@ public class ServicoService {
     public ServicoHolder getServicoHolder(String placa, Long codUnidade) {
         try {
             return dao.getServicoHolder(placa, codUnidade);
-        } catch (SQLException e) {
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar os serviços da placa. \n," +
                     "Unidade: %d \n" +
                     "Placa: %s", codUnidade, placa), e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -60,7 +59,7 @@ public class ServicoService {
         try {
             dao.fechaServico(servico, codUnidade);
             return true;
-        } catch (SQLException | OrigemDestinoInvalidaException e) {
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao inserir o conserto de um item. \n," +
                     "Unidade: %d \n", codUnidade), e);
             return false;
@@ -116,7 +115,7 @@ public class ServicoService {
     }
 
     public List<Servico> getServicosFechadosPneu(final Long codUnidade,
-                                                 final String codPneu,
+                                                 final Long codPneu,
                                                  final long dataInicial,
                                                  final long dataFinal) {
         try {
@@ -124,7 +123,7 @@ public class ServicoService {
         } catch (SQLException e) {
             final String message = String.format("Erro ao buscar os serviços fechados. \n," +
                     "Unidade: %d \n" +
-                    "Pneu: %s \n" +
+                    "Pneu: %d \n" +
                     "Data Inicial: %d \n" +
                     "Data Final: %d", codUnidade, codPneu, dataInicial, dataFinal);
             Log.e(TAG, message, e);

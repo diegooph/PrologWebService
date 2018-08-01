@@ -2,11 +2,11 @@ package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.Situacao;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia.*;
-import br.com.zalf.prolog.webservice.imports.ImportUtils;
+import br.com.zalf.prolog.webservice.entrega.ImportUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -34,34 +34,34 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
     private static final int COLUMN_CPF = 1;
     private static final int COLUMN_STATUS = 3;
     private static final int COLUMN_MOTIVO = 4;
-    private static final int COLUMN_PONTUACAO_CNH = 5;
-    private static final int COLUMN_VENCIMENTO_CNH = 6;
-    private static final int COLUMN_DOCUMENTOS_RS = 7;
-    private static final int COLUMN_DOCUMENTOS_EC = 8;
-    private static final int COLUMN_DOCUMENTOS_IT = 9;
-    private static final int COLUMN_PONTUACAO_PONDERADA = 10;
-    private static final int COLUMN_ACIDENTES_TRABALHO_FAI = 12;
-    private static final int COLUMN_ACIDENTES_TRABALHO_LTI = 13;
-    private static final int COLUMN_ACIDENTES_TRABALHO_MDI = 14;
-    private static final int COLUMN_ACIDENTES_TRABALHO_MTI = 15;
-    private static final int COLUMN_ACIDENTES_TRANSITO_CAPOTAMENTOS = 16;
-    private static final int COLUMN_ACIDENTES_TRANSITO_COLISOES = 17;
-    private static final int COLUMN_ACIDENTES_TRANSITO_TOMBAMENTOS = 18;
-    private static final int COLUMN_MULTAS_GRAVE = 19;
-    private static final int COLUMN_MULTAS_GRAVISSIMA = 20;
-    private static final int COLUMN_MULTAS_LEVE = 21;
-    private static final int COLUMN_MULTAS_MEDIA = 22;
-    private static final int COLUMN_SAC_IMPERICIA = 23;
-    private static final int COLUMN_SAC_IMPRUDENCIA = 24;
-    private static final int COLUMN_INDISCIPLINA_ADVERTENCIAS = 25;
-    private static final int COLUMN_INDISCIPLINA_SUSPENSOES = 26;
-    private static final int COLUMN_SAV_IMPERICIA = 27;
-    private static final int COLUMN_SAV_IMPRUDENCIA = 28;
-    private static final int COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_1 = 29;
-    private static final int COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_2 = 30;
-    private static final int COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_3 = 31;
-    private static final int COLUMN_TELEMETRIA_FORCA_G = 32;
-    private static final int COLUMN_TELEMETRIA_FRENAGEM_BRUSCA = 33;
+    private static final int COLUMN_PONTUACAO_CNH = 6;
+    private static final int COLUMN_VENCIMENTO_CNH = 7;
+    private static final int COLUMN_DOCUMENTOS_RS = 8;
+    private static final int COLUMN_DOCUMENTOS_EC = 9;
+    private static final int COLUMN_DOCUMENTOS_IT = 10;
+    private static final int COLUMN_PONTUACAO_PONDERADA = 11;
+    private static final int COLUMN_ACIDENTES_TRABALHO_FAI = 13;
+    private static final int COLUMN_ACIDENTES_TRABALHO_LTI = 14;
+    private static final int COLUMN_ACIDENTES_TRABALHO_MDI = 15;
+    private static final int COLUMN_ACIDENTES_TRABALHO_MTI = 16;
+    private static final int COLUMN_ACIDENTES_TRANSITO_CAPOTAMENTOS = 17;
+    private static final int COLUMN_ACIDENTES_TRANSITO_COLISOES = 18;
+    private static final int COLUMN_ACIDENTES_TRANSITO_TOMBAMENTOS = 19;
+    private static final int COLUMN_MULTAS_GRAVE = 20;
+    private static final int COLUMN_MULTAS_GRAVISSIMA = 21;
+    private static final int COLUMN_MULTAS_LEVE = 22;
+    private static final int COLUMN_MULTAS_MEDIA = 23;
+    private static final int COLUMN_SAC_IMPERICIA = 24;
+    private static final int COLUMN_SAC_IMPRUDENCIA = 25;
+    private static final int COLUMN_INDISCIPLINA_ADVERTENCIAS = 26;
+    private static final int COLUMN_INDISCIPLINA_SUSPENSOES = 27;
+    private static final int COLUMN_SAV_IMPERICIA = 28;
+    private static final int COLUMN_SAV_IMPRUDENCIA = 29;
+    private static final int COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_1 = 30;
+    private static final int COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_2 = 31;
+    private static final int COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_3 = 32;
+    private static final int COLUMN_TELEMETRIA_FORCA_G = 33;
+    private static final int COLUMN_TELEMETRIA_FRENAGEM_BRUSCA = 34;
     private List<Integer> indices;
 
     public ProntuarioCondutorDaoImpl() {
@@ -139,7 +139,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                     "pc.STATUS, pc.MOTIVO, pc.PONTUACAO, pc.VENCIMENTO_CNH " +
                     "FROM prontuario_condutor_consolidado pc JOIN colaborador c on c.cpf = pc.CPF_COLABORADOR " +
                     "JOIN equipe e ON e.codigo = c.cod_equipe AND e.cod_unidade = c.cod_unidade " +
-                    "WHERE c.cod_unidade = ? and e.codigo::text like ? " +
+                    "WHERE c.cod_unidade = ? and e.codigo::text like ? and c.status_ativo = true " +
                     "ORDER BY pc.PONTUACAO_PONDERADA desc, initcap(c.nome) asc");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, codEquipe);
@@ -295,7 +295,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                         .getCpf());
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }
@@ -375,7 +375,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                 return false;
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }

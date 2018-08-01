@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
@@ -382,7 +382,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 throw new SQLException("Erro ao inserir o serviço");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -426,7 +426,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 throw new SQLException("Erro ao incrementar a quantidade de apontamentos");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -472,6 +472,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         try {
             while (rSet.next()) {
                 item = new ItemOrdemServico();
+                item.setCodigo(rSet.getLong("codigo"));
                 item.setCodOs(rSet.getLong("cod_os"));
                 pergunta = createPergunta(rSet);
                 alternativa = createAlternativa(rSet);
@@ -593,7 +594,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(7, ItemOrdemServico.Status.PENDENTE.asString());
             stmt.execute();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 

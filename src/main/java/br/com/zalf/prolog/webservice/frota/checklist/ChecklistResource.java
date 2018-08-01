@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -80,6 +80,32 @@ public class ChecklistResource {
                 limit,
                 offset,
                 true,
+                userToken);
+    }
+
+    @GET
+    @Path("{codUnidade}/completos")
+    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
+    public List<Checklist> getAllCompletos(
+            @PathParam("codUnidade") Long codUnidade,
+            @QueryParam("codEquipe") Long codEquipe,
+            @QueryParam("codTipoVeiculo") Long codTipoVeiculo,
+            @QueryParam("placaVeiculo") String placaVeiculo,
+            @QueryParam("dataInicial") long dataInicial,
+            @QueryParam("dataFinal") long dataFinal,
+            @QueryParam("limit") int limit,
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) {
+        return service.getAll(
+                codUnidade,
+                codEquipe,
+                codTipoVeiculo,
+                placaVeiculo,
+                dataInicial,
+                dataFinal,
+                limit,
+                offset,
+                false,
                 userToken);
     }
 

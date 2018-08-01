@@ -1,8 +1,8 @@
 package test;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.imports.escala_diaria.EscalaDiaria;
-import br.com.zalf.prolog.webservice.imports.escala_diaria.EscalaDiariaDao;
+import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiaria;
+import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDao;
 import org.junit.Assert;
 import org.junit.Test;
 

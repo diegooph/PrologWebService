@@ -84,6 +84,11 @@ public class ItemOrdemServico {
      */
     private int qtdApontamentos;
 
+    /**
+     * Código sequencial do item.
+     */
+    private Long codigo;
+
     public ItemOrdemServico() {
     }
 
@@ -191,6 +196,14 @@ public class ItemOrdemServico {
         this.tempoRealizacaoConserto = tempoRealizacaoConserto;
     }
 
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(final Long codigo) {
+        this.codigo = codigo;
+    }
+
     @Override
     public String toString() {
         return "ItemOrdemServico{" +
@@ -200,13 +213,14 @@ public class ItemOrdemServico {
                 ", mecanico=" + mecanico +
                 ", dataApontamento=" + dataApontamento +
                 ", dataHoraConserto=" + dataHoraConserto +
-                ", tempoRealizacaoConserto=" + tempoRealizacaoConserto +
                 ", kmVeiculoFechamento=" + kmVeiculoFechamento +
                 ", status=" + status +
+                ", tempoRealizacaoConserto=" + tempoRealizacaoConserto +
                 ", tempoLimiteResolucao=" + tempoLimiteResolucao +
                 ", tempoRestante=" + tempoRestante +
                 ", feedbackResolucao='" + feedbackResolucao + '\'' +
                 ", qtdApontamentos=" + qtdApontamentos +
+                ", codigo=" + codigo +
                 '}';
     }
 }

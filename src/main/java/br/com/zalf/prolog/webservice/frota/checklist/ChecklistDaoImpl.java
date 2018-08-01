@@ -3,12 +3,12 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.Now;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -247,24 +247,26 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                             ".COD_UNIDADE = CM.COD_UNIDADE "
                             + "JOIN VEICULO_TIPO VT ON VT.CODIGO = CMVT.COD_TIPO_VEICULO "
                             + "JOIN VEICULO V ON V.COD_TIPO = VT.CODIGO "
-                            + "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? "
-                            + "ORDER BY CM.NOME, V.PLACA",
+                            + "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? AND CM.STATUS_ATIVO = TRUE AND V.STATUS_ATIVO = TRUE "
+                            + "ORDER BY CM.CODIGO, V.PLACA;",
                     ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codFuncao);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                // primeira liha do Rset, cria o modelo, add a primeira placa
+                // Primeira linha do Rset, cria o modelo, add a primeira placa.
                 if (modelo == null) {
                     modelo = new ModeloChecklist();
                     modelo.setCodigo(rSet.getLong("CODIGO"));
                     modelo.setNome(rSet.getString("NOME"));
                     placas.add(rSet.getString("PLACA"));
-                } else {// verificar se o prox modelo é igual ao ja criado
-                    if (rSet.getLong("CODIGO") == modelo.getCodigo()) {
+                } else {
+                    // Verificar se o prox modelo é igual ao ja criado.
+                    if (modelo.getCodigo().equals(rSet.getLong("CODIGO"))) {
                         placas.add(rSet.getString("PLACA"));
-                    } else {// modelo diferente, deve setar adicionar tudo ao map e zerar os valores.
+                    } else {
+                        // Modelo diferente, deve setar adicionar tudo ao map e zerar os valores.
                         modeloPlaca.put(modelo, placas);
                         modelo = new ModeloChecklist();
                         placas = new ArrayList<>();
@@ -515,7 +517,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                 }
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 

@@ -40,6 +40,7 @@ final class ServicoQueryBinder {
             + "A.CODIGO AS COD_AFERICAO, "
             + "A.CODIGO AS COD_AFERICAO, "
             + "AV.COD_PNEU AS COD_PNEU_PROBLEMA, "
+            + "P.CODIGO_CLIENTE AS COD_PNEU_PROBLEMA_CLIENTE, "
             + "AV.ALTURA_SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_PROBLEMA, "
             + "AV.ALTURA_SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, "
             + "AV.ALTURA_SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, "
@@ -51,7 +52,7 @@ final class ServicoQueryBinder {
             + "P.PRESSAO_RECOMENDADA "
             + "FROM AFERICAO_MANUTENCAO AM "
             + "LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF "
-            + "JOIN PNEU P ON AM.COD_UNIDADE = P.COD_UNIDADE AND AM.COD_PNEU = P.CODIGO "
+            + "JOIN PNEU P ON AM.COD_PNEU = P.CODIGO "
             + "JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO "
             + "JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU "
             + "JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE ";
@@ -66,8 +67,11 @@ final class ServicoQueryBinder {
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
-                "FROM AFERICAO_MANUTENCAO AM " +
-                "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
+                "FROM AFERICAO_MANUTENCAO AS AM " +
+                "  JOIN AFERICAO AS A " +
+                "    ON A.CODIGO = AM.COD_AFERICAO " +
+                "  JOIN VEICULO_PNEU AS VP " +
+                "    ON AM.COD_PNEU = VP.COD_PNEU AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
                 "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
                 "GROUP BY A.PLACA_VEICULO " +
@@ -98,15 +102,17 @@ final class ServicoQueryBinder {
                                                                Connection connection) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  AM.COD_PNEU, " +
+                "  P.CODIGO_CLIENTE AS CODIGO_PNEU_CLIENTE, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
                 "FROM AFERICAO_MANUTENCAO AM " +
                 "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
-                "WHERE AM.COD_UNIDADE = ?" +
+                "  JOIN PNEU P ON AM.COD_PNEU = P.CODIGO " +
+                "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
                 "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) " +
-                "GROUP BY AM.COD_PNEU "+
+                "GROUP BY P.CODIGO_CLIENTE, AM.COD_PNEU "+
                 "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection).getId();
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
@@ -165,6 +171,7 @@ final class ServicoQueryBinder {
                 "   AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
                 "   AAMI.ALTERNATIVA AS DESCRICAO_ALTERNATIVA_SELECIONADA, " +
                 "   M.COD_PNEU AS COD_PNEU_NOVO, " +
+                "   PNEU_NOVO.CODIGO_CLIENTE AS COD_PNEU_NOVO_CLIENTE, " +
                 "   M.SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_NOVO, " +
                 "   M.SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_NOVO, " +
                 "   M.SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_NOVO, " +
@@ -175,6 +182,7 @@ final class ServicoQueryBinder {
                 "   A.CODIGO AS COD_AFERICAO, " +
                 "   C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, " +
                 "   AV.COD_PNEU AS COD_PNEU_PROBLEMA, " +
+                "   PNEU_PROBLEMA.CODIGO_CLIENTE AS COD_PNEU_PROBLEMA_CLIENTE, " +
                 "   AV.ALTURA_SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_PROBLEMA, " +
                 "   AV.ALTURA_SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, " +
                 "   AV.ALTURA_SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, " +
@@ -182,14 +190,15 @@ final class ServicoQueryBinder {
                 "   AV.PSI AS PRESSAO_PNEU_PROBLEMA, " +
                 "   AV.POSICAO AS POSICAO_PNEU_PROBLEMA, " +
                 "   AV.VIDA_MOMENTO_AFERICAO AS VIDA_PNEU_PROBLEMA, " +
-                "   P.PRESSAO_RECOMENDADA " +
+                "   PNEU_PROBLEMA.PRESSAO_RECOMENDADA " +
                 "   FROM AFERICAO_MANUTENCAO AM " +
                 "   JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
                 "   JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU " +
                 "   JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE " +
-                "   JOIN PNEU P ON AM.COD_UNIDADE = P.COD_UNIDADE AND AM.COD_PNEU = P.CODIGO " +
+                "   JOIN PNEU PNEU_PROBLEMA ON AM.COD_PNEU = PNEU_PROBLEMA.CODIGO " +
                 "   LEFT JOIN MOVIMENTACAO M ON M.COD_MOVIMENTACAO_PROCESSO = AM.COD_PROCESSO_MOVIMENTACAO " +
                 "   AND M.COD_PNEU = AM.COD_PNEU_INSERIDO " +
+                "   LEFT JOIN PNEU PNEU_NOVO ON AM.COD_PNEU_INSERIDO = PNEU_NOVO.CODIGO " +
                 "   LEFT JOIN AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO AAMI ON AAMI.CODIGO = AM.COD_ALTERNATIVA " +
                 "   LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF " +
                 "   WHERE AM.COD_UNIDADE = ? AND AM.CODIGO = ?;");
@@ -221,7 +230,7 @@ final class ServicoQueryBinder {
 
 
     static PreparedStatement getServicosFechadosPneu(final Long codUnidade,
-                                                     final String codPneu,
+                                                     final Long codPneu,
                                                      final long dataInicial,
                                                      final long dataFinal,
                                                      Connection connection) throws SQLException {
@@ -233,7 +242,7 @@ final class ServicoQueryBinder {
                 + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
         final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection).getId();
         stmt.setLong(1, codUnidade);
-        stmt.setString(2, codPneu);
+        stmt.setLong(2, codPneu);
         stmt.setDate(3, new Date(dataInicial));
         stmt.setString(4, zoneId);
         stmt.setDate(5, new Date(dataFinal));
@@ -268,7 +277,8 @@ final class ServicoQueryBinder {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  A.PLACA_VEICULO, " +
                 "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
-                "  AV.COD_PNEU, " +
+                "  AV.COD_PNEU AS COD_PNEU, " +
+                "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +
                 "  AV.ALTURA_SULCO_EXTERNO, " +
                 "  AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
                 "  AV.ALTURA_SULCO_CENTRAL_INTERNO, " +
@@ -285,6 +295,8 @@ final class ServicoQueryBinder {
                 "       AND A.CODIGO = AV.COD_AFERICAO " +
                 "  JOIN VEICULO V " +
                 "    ON V.PLACA = A.PLACA_VEICULO " +
+                "  JOIN PNEU P " +
+                "    ON P.CODIGO = AV.COD_PNEU " +
                 "WHERE AM.CODIGO = ? " +
                 "      AND A.PLACA_VEICULO = ?;");
         stmt.setLong(1, codServico);
@@ -359,24 +371,24 @@ final class ServicoQueryBinder {
         // Salva também o PSI após o conserto, já que os sulcos são salvos na tabela de movimentaçao.
         stmt.setDouble(5, servico.getPressaoColetadaFechamento());
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setString(7, servico.getPneuNovo().getCodigo());
+        stmt.setLong(7, servico.getPneuNovo().getCodigo());
         stmt.setLong(8, servico.getCodigo());
         stmt.setString(9, servico.getTipoServico().asString());
         return stmt;
     }
 
-    static PreparedStatement getQuantidadeServicosEmAbertoPneu(Long codUnidade, String codPneu, Connection conn)
+    static PreparedStatement getQuantidadeServicosEmAbertoPneu(Long codUnidade, Long codPneu, Connection conn)
             throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(CODIGO) AS QTD_SERVICOS_ABERTOS FROM " +
                 "AFERICAO_MANUTENCAO AM " +
                 "WHERE AM.COD_UNIDADE = ? AND AM.COD_PNEU = ? AND DATA_HORA_RESOLUCAO IS NULL;");
         stmt.setLong(1, codUnidade);
-        stmt.setString(2, codPneu);
+        stmt.setLong(2, codPneu);
         return stmt;
     }
 
     static PreparedStatement fecharAutomaticamenteServicosPneu(@NotNull final Long codUnidade,
-                                                               @NotNull final String codPneu,
+                                                               @NotNull final Long codPneu,
                                                                @NotNull final Long codProcessoMovimentacao,
                                                                final long kmColetadoVeiculo,
                                                                @NotNull final Connection conn) throws SQLException {
@@ -392,7 +404,7 @@ final class ServicoQueryBinder {
         stmt.setLong(2, codProcessoMovimentacao);
         stmt.setLong(3, kmColetadoVeiculo);
         stmt.setLong(4, codUnidade);
-        stmt.setString(5, codPneu);
+        stmt.setLong(5, codPneu);
         return stmt;
     }
 }

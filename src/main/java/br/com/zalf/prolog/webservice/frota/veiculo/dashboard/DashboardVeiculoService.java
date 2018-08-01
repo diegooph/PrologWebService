@@ -20,14 +20,14 @@ public class DashboardVeiculoService {
     private final DashboardDao dashDao = Injection.provideDashboardDao();
     private final RelatorioVeiculoDao relatorioDao = Injection.provideRelatorioVeiculoDao();
 
-    public QuantidadeItemComponent getQtdVeiculosAtivosComPneuAplicado(@NotNull final List<Long> codUnidades,
-                                                                       @NotNull final Integer codComponente) {
+    public QuantidadeItemComponent getQtdVeiculosAtivosComPneuAplicado(@NotNull final Integer codComponente,
+                                                                       @NotNull final List<Long> codUnidades) {
         try {
-            return DashboardVeiculoComponentsCreator.createQtdVeiculosAtivosComPneuAplicado(
+            return DashboardVeiculoComponentsCreator.createQtdVeiculosAtivos(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getQtdVeiculosAtivosComPneuAplicado(codUnidades));
+                    relatorioDao.getQtdVeiculosAtivos(codUnidades));
         } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar a qtd de veículos ativos com pneus aplicados. \n" +
+            Log.e(TAG, String.format("Erro ao buscar a qtd de veículos ativos. \n" +
                     "unidades: %s", codUnidades.toString()), e);
             throw new RuntimeException(e);
         }

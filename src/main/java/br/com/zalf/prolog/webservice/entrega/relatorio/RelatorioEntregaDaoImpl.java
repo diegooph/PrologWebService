@@ -2,10 +2,10 @@ package br.com.zalf.prolog.webservice.entrega.relatorio;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
@@ -31,7 +31,7 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
     private static final String TAG = RelatorioEntregaDaoImpl.class.getSimpleName();
 
     private static final String BUSCA_ACUMULADO_INDICADORES = "select\n" +
-             IndicadorDaoImpl.COLUNAS_ACUMULADOS +
+            IndicadorDaoImpl.COLUNAS_ACUMULADOS +
             " from mapa m join unidade_metas um on um.cod_unidade = m.cod_unidade\n" +
             "LEFT JOIN (SELECT t.mapa as tracking_mapa,\n" +
             "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1\n" +
@@ -82,8 +82,8 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
             "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +
             "um.meta_tempo_largada_mapas,um.meta_dev_nf\n" +
             "ORDER BY 1 %s;";
-    
-    private  static final String FRAGMENTO_BUSCA_EXTRATO_DIA = IndicadorDaoImpl.COLUNAS_EXTRATO +
+
+    private static final String FRAGMENTO_BUSCA_EXTRATO_DIA = IndicadorDaoImpl.COLUNAS_EXTRATO +
             " FROM MAPA M \n" +
             "JOIN UNIDADE_FUNCAO_PRODUTIVIDADE UFP ON UFP.COD_UNIDADE = M.COD_UNIDADE \n" +
             "JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
@@ -93,11 +93,11 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
             "JOIN regional R ON R.codigo = U.cod_regional\n" +
             "JOIN unidade_metas um on um.cod_unidade = u.codigo\n" +
             "JOIN equipe E ON E.cod_unidade = U.codigo AND C1.cod_equipe = E.codigo AND C1.cod_unidade = E.cod_unidade\n" +
-            "LEFT JOIN (SELECT t.mapa as tracking_mapa, \n"+
-            "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1 \n"+
-            "else 0 end) as apontamentos_ok, \n"+
-            "count(t.disp_apont_cadastrado) as total_apontamentos \n"+
-            "from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora \n"+
+            "LEFT JOIN (SELECT t.mapa as tracking_mapa, \n" +
+            "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1 \n" +
+            "else 0 end) as apontamentos_ok, \n" +
+            "count(t.disp_apont_cadastrado) as total_apontamentos \n" +
+            "from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora \n" +
             "group by 1) as tracking ON TRACKING_MAPA = M.MAPA \n" +
             "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade and c2.cod_funcao = ufp.cod_funcao_ajudante\n" +
             "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade and c3.cod_funcao = ufp.cod_funcao_ajudante ";
@@ -339,7 +339,7 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
 
     @Override
     public void getConsolidadoMapasIndicadorCsv(Long codEmpresa, String codRegional, String codUnidade, String cpf,
-                                            Date dataInicial, Date dataFinal, String equipe, OutputStream out) throws SQLException, IOException {
+                                                Date dataInicial, Date dataFinal, String equipe, OutputStream out) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -355,7 +355,7 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
 
     @Override
     public Report getConsolidadoMapasIndicadorReport(Long codEmpresa, String codRegional, String codUnidade, String cpf,
-                                                 Date dataInicial, Date dataFinal, String equipe) throws SQLException {
+                                                     Date dataInicial, Date dataFinal, String equipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

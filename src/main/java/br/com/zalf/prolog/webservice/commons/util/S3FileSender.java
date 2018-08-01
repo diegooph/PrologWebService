@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
@@ -21,8 +22,8 @@ public class S3FileSender {
     private AmazonS3 amazonS3Client;
 
     public static class S3FileSenderException extends Exception {
-        S3FileSenderException() {
-            super("Erro ao enviar arquivo para o S3");
+        S3FileSenderException(@NotNull final Exception e) {
+            super("Erro ao enviar arquivo para o S3", e);
         }
     }
 
@@ -43,8 +44,8 @@ public class S3FileSender {
         try {
             putObject(put);
         } catch (Exception e) {
-            // Erro ao enviar arquivo, subimos o erro
-            throw new S3FileSenderException();
+            // Erro ao enviar arquivo, subimos o erro.
+            throw new S3FileSenderException(e);
         }
     }
 

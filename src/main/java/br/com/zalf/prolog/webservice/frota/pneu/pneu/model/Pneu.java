@@ -1,31 +1,37 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
+import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.google.common.math.DoubleMath;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.commons.util.ProLogPosicaoPneuOrdemMapper.fromPosicao;
 
 /**
- * Created by jean on 04/04/16.
+ * Created on 31/05/2018
+ *
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class Pneu {
-
-    public static final String ESTOQUE = "ESTOQUE";
-    public static final String EM_USO = "EM_USO";
-    public static final String DESCARTE = "DESCARTE";
-    public static final String ANALISE = "ANALISE";
-
-    public enum Problema{
+public abstract class Pneu {
+    public enum Problema {
         NUMERO_INCORRETO, PRESSAO_INDISPONIVEL
     }
+
+    private static final String TAG = Pneu.class.getSimpleName();
+    public static final int DOT_LENGTH = 4;
 
     @Nullable
     private List<Problema> problemas;
@@ -33,7 +39,18 @@ public class Pneu {
     // é diferente do que esta no sistema), enviar o codigo do pneu correto (que está
     // instalado atualmente).
     private String codPneuProblema;
-    private String codigo;
+
+    /**
+     * O código único do pneu a nível de {@link Empresa} que o cliente escolhe ao cadastrar um pneu.
+     * Esse código é equivalente ao número de fogo do pneu.
+     */
+    private String codigoCliente;
+
+    /**
+     * O código único (autoincrement) do pneu no sistema.
+     */
+    private Long codigo;
+
     private Marca marca;
     private ModeloPneu modelo;
     private BigDecimal valor;
@@ -48,6 +65,10 @@ public class Pneu {
     private Sulcos sulcosAtuais;
     private int vidaAtual;
     private int vidasTotal;
+
+    /**
+     * O status do pneu define onde ele se encontra no momento.
+     */
     private StatusPneu status;
 
     /**
@@ -68,16 +89,16 @@ public class Pneu {
 
     /**
      * Usaremos um int com 3 digitos para mapear a posição de um pneu.
-     *
+     * <p>
      * Ex.: 121
      * O primeiro digito se refere ao eixo, contando a partir da dianteira, iniciando em 1, no exemplo esse seria o
      * primeiro eixo, o que controla a direção do veículo, no caso.
      * O segundo dígito indica o lado, esquerdo(1) ou direito(2), assumindo que estamos olhando o veículo na direção
      * carroceria -> cabine (sentado no bando do motorista).
      * O terceiro dígito indica se é um pneu interno(2) ou externo(1).
-     *
+     * <p>
      * Em resumo, o único dígito que pode passar de 2 é o primeiro, o segundo e terceiro serão sempre 1 ou 2.
-     *
+     * <p>
      * Obs.: Estepes serão representados sempre começando com número 9, o segundo número continua informando o lado e
      * o terceiro (interno ou externo) é ignorado.
      */
@@ -94,8 +115,40 @@ public class Pneu {
     @Nullable
     private List<PneuFotoCadastro> fotosCadastro;
 
-    public Pneu() {
+    @Exclude
+    @NotNull
+    private PneuTipo tipo;
 
+    Pneu(@NotNull final PneuTipo pneuTipo) {
+        this.tipo = pneuTipo;
+    }
+
+    public static RuntimeTypeAdapterFactory<Pneu> provideTypeAdapterFactory() {
+        final RuntimeTypeAdapterFactory<Pneu> factory = RuntimeTypeAdapterFactory
+                .of(Pneu.class, "tipo");
+        final PneuTipo[] values = PneuTipo.values();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < values.length; i++) {
+            factory.registerSubtype(values[i].getClazz(), values[i].asString());
+        }
+        return factory;
+    }
+
+    @NotNull
+    public PneuTipo getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(@NotNull final PneuTipo tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getCodigoCliente() {
+        return codigoCliente;
+    }
+
+    public void setCodigoCliente(final String codigoCliente) {
+        this.codigoCliente = codigoCliente;
     }
 
     public List<PneuFotoCadastro> getFotosCadastro() {
@@ -149,11 +202,11 @@ public class Pneu {
         this.pressaoAtual = pressaoAtual;
     }
 
-    public String getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
+    public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
@@ -310,14 +363,23 @@ public class Pneu {
         return getQuantidadeSulcos() % 2 != 0;
     }
 
-    public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
+    public void incrementaVida() {
+        pneuNovoNuncaRodado = false;
+        vidaAtual++;
+        if (vidaAtual > vidasTotal) {
+            vidasTotal = vidaAtual;
+        }
+    }
+
+    public static final Comparator<PneuComum> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
 
     @Override
     public String toString() {
         return "Pneu{" +
                 "problemas=" + problemas +
                 ", codPneuProblema='" + codPneuProblema + '\'' +
-                ", codigo='" + codigo + '\'' +
+                ", codigoCliente='" + codigoCliente + '\'' +
+                ", codigo=" + codigo +
                 ", marca=" + marca +
                 ", modelo=" + modelo +
                 ", valor=" + valor +
@@ -328,9 +390,13 @@ public class Pneu {
                 ", sulcosAtuais=" + sulcosAtuais +
                 ", vidaAtual=" + vidaAtual +
                 ", vidasTotal=" + vidasTotal +
-                ", status='" + status + '\'' +
+                ", status=" + status +
+                ", codRegionalAlocado=" + codRegionalAlocado +
+                ", codUnidadeAlocado=" + codUnidadeAlocado +
                 ", dot='" + dot + '\'' +
                 ", posicao=" + posicao +
+                ", pneuNovoNuncaRodado=" + pneuNovoNuncaRodado +
+                ", fotosCadastro=" + fotosCadastro +
                 '}';
     }
 
@@ -353,5 +419,36 @@ public class Pneu {
                     ", aro=" + aro +
                     '}';
         }
+    }
+
+    public static boolean isDotValid(@NotNull final String dot) {
+        //noinspection ConstantConditions
+        if (dot == null || dot.length() != DOT_LENGTH || !StringUtils.isIntegerValuePositive(dot)) {
+            return false;
+        }
+
+        try {
+            final int semanaAno = Integer.parseInt(dot.substring(0, 2));
+
+            // Consideramos apenas os DOTs de pneus fabricados após o ano 2000. Esses possuem 2
+            // caracteres para o ano.
+            final int ano = Integer.parseInt(dot.substring(2, 4)) + 2000;
+
+            Log.d(TAG, "Semana ano: " + semanaAno);
+            Log.d(TAG, "Ano: " + ano);
+
+            final Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, ano);
+            final int maxWeeksInYear = calendar.getActualMaximum(Calendar.WEEK_OF_YEAR);
+            Log.d(TAG, "Semanas no ano " + ano + ": " + maxWeeksInYear);
+
+            if (semanaAno <= maxWeeksInYear) {
+                return true;
+            }
+
+        } catch (Exception ex) {
+            Log.e(TAG, "Erro ao validar o DOT: " + dot, ex);
+        }
+        return false;
     }
 }
