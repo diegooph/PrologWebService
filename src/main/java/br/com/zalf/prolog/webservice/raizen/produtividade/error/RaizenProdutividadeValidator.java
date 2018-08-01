@@ -43,6 +43,7 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
             validacaoRaio(itemInsert.getRaio());
             validacaoToneladas(itemInsert.getToneladas());
         } catch (final GenericException e) {
+            e.setMessage(e.getMessage().concat(itemInsert.getLinhaOrEmpty(itemInsert.getLinha())));
             throw e;
         } catch (final Throwable t) {
             throw new GenericException("Erro ao validar os parâmetros da produtividade, tente enviar novamente" +
@@ -54,7 +55,7 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
         checkNotNull(cpfMotorista, "Você precisa fornecer o CPF");
 
         if (!ValidationUtils.isValidCpf(String.format("%011d", cpfMotorista))) {
-            throw new GenericException("CPF inválido", "CPF informado: " + cpfMotorista);
+            throw new GenericException("CPF inválido\n", "CPF informado: " + cpfMotorista);
         }
     }
 
@@ -62,19 +63,19 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
         checkNotNull(placa, "Vocẽ precisa fornecer a placa");
 
         if (placa.length() != MAX_LENGTH_PLACA) {
-            throw new GenericException("Placa inválida\nA placa deve conter sete caracteres", "Placa informada: " + placa);
+            throw new GenericException("Placa inválida\nA placa deve conter sete caracteres\n", "Placa informada: " + placa);
         }
         if (!verificaQuantidadeLetrasPlaca(placa)) {
-            throw new GenericException("Placa inválida\nA placa deve conter três letras", "Placa informada: " + placa);
+            throw new GenericException("Placa inválida\nA placa deve conter três letras\n", "Placa informada: " + placa);
         }
         if (!verificaQuantidadeNumerosPlaca(placa)) {
-            throw new GenericException("Placa inválida\nA placa deve conter quatro números", "Placa informada: " + placa);
+            throw new GenericException("Placa inválida\nA placa deve conter quatro números\n", "Placa informada: " + placa);
         }
         if (!(StringUtils.stripCharactersWithAccents(placa)).equals(placa)) {
-            throw new GenericException("Placa inválida\nA placa não deve conter acentos", "Placa informada: " + placa);
+            throw new GenericException("Placa inválida\nA placa não deve conter acentos\n", "Placa informada: " + placa);
         }
         if (!(StringUtils.stripCharactersSpecials(placa)).equals(placa)) {
-            throw new GenericException("Placa inválida\nA placa não deve conter caracteres especiais", "Placa informada: " + placa);
+            throw new GenericException("Placa inválida\nA placa não deve conter caracteres especiais\n", "Placa informada: " + placa);
         }
     }
 
@@ -91,21 +92,21 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
     private static void validacaoDataViagem(@NotNull final LocalDate dataViagem) throws ProLogException {
         checkNotNull(dataViagem, "Você precisa fornecer a data da viagem");
         if (DateUtils.verificaAno(dataViagem, ANO_MAXIMO_PERMITIDO, ANO_MINIMO_PERMITIDO)) {
-            throw new GenericException("Ano de viagem inválido", "Data de viagem informada: " + dataViagem);
+            throw new GenericException("Ano de viagem inválido\n", "Data de viagem informada: " + dataViagem);
         }
     }
 
     private static void validacaoValor(@NotNull final BigDecimal valor) throws ProLogException {
         checkNotNull(valor, "Você precisa fornecer o valor");
         checkArgument(Double.parseDouble(String.valueOf(valor)) > 0,
-                "Valor inválido\nO valor não pode ser negativo");
+                "Valor inválido\nO valor não pode ser negativo\n");
     }
 
     private static void validacaoUsina(@NotNull final String usina) throws ProLogException {
         checkNotNull(usina, "Você precisa fornecer uma usina");
 
         if (StringUtils.isNullOrEmpty(usina.trim())) {
-            throw new GenericException("Vocẽ precisa fornecer uma usina", "fazenda com apenas espaços em branco" + usina);
+            throw new GenericException("Vocẽ precisa fornecer uma usina\n", "fazenda com apenas espaços em branco" + usina);
         }
     }
 
@@ -113,19 +114,19 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
         checkNotNull(fazenda, "Você precisa fornecer uma fazenda");
 
         if (StringUtils.isNullOrEmpty(fazenda.trim())) {
-            throw new GenericException("Vocẽ precisa fornecer uma fazenda", "fazenda com apenas espaços em branco" + fazenda);
+            throw new GenericException("Vocẽ precisa fornecer uma fazenda\n", "fazenda com apenas espaços em branco" + fazenda);
         }
     }
 
     private static void validacaoRaio(final double raio) throws ProLogException {
         checkNotNull(raio, "Você precisa fornecer o raio");
         checkArgument(Double.parseDouble(String.valueOf(raio)) > 0,
-                "Valor inválido\nO raio não pode ser negativo");
+                "Valor inválido\nO raio não pode ser negativo\n");
     }
 
     private static void validacaoToneladas(final double toneladas) throws ProLogException {
         checkNotNull(toneladas, "Você precisa fornecer a tonelada");
         checkArgument(Double.parseDouble(String.valueOf(toneladas)) > 0,
-                "Valor inválido\nA tonelada não pode ser negativa");
+                "Valor inválido\nA tonelada não pode ser negativa\n");
     }
 }

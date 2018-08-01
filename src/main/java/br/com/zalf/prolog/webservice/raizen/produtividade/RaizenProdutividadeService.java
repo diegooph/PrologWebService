@@ -46,6 +46,9 @@ public class RaizenProdutividadeService {
             final File file = createFileFromImport(codEmpresa, fileInputStream, fileDetail);
             final List<RaizenProdutividadeItemInsert> raizenProdutividadeItens = RaizenProdutividadeReader
                     .readListFromCsvFilePath(file);
+            for (RaizenProdutividadeItemInsert item : raizenProdutividadeItens) {
+                RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(item);
+            }
             dao.insertOrUpdateProdutividadeRaizen(TokenCleaner.getOnlyToken(token), codEmpresa,
                     raizenProdutividadeItens);
             return Response.ok("Upload realizado com sucesso!");

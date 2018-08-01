@@ -44,9 +44,11 @@ public class RaizenProdutividadeReader {
         final List<String[]> rows = parser.parseAll(file);
 
         final List<RaizenProdutividadeItemInsert> raizenItensItens = new ArrayList<>();
-        for (final String[] row : rows) {
-            final RaizenProdutividadeItemInsert item = read(row);
+        for (int i = 0; i < rows.size(); i++) {
+            final RaizenProdutividadeItemInsert item = read(rows.get(i));
             if (item != null) {
+                //soma para ignorar o header da planilha e o índice que começa em 0.
+                item.setLinha(i+2);
                 raizenItensItens.add(item);
             }
         }

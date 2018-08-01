@@ -19,6 +19,7 @@ public class RaizenProdutividadeItemInsert {
     private Long codEmpresa;
     private Long cpfMotorista;
     private LocalDate dataViagem;
+    private int linha = -1;
 
     public RaizenProdutividadeItemInsert() {
 
@@ -102,5 +103,20 @@ public class RaizenProdutividadeItemInsert {
 
     public void setDataViagem(final LocalDate dataViagem) {
         this.dataViagem = dataViagem;
+    }
+
+    public int getLinha() {
+        return linha;
+    }
+
+    public void setLinha(int linha) {
+        this.linha = linha;
+    }
+
+    public String getLinhaOrEmpty(int linha) {
+        if (linha > -1) {
+            return "(linha da planilha: " + linha + ")";
+        }
+        return null;
     }
 }
