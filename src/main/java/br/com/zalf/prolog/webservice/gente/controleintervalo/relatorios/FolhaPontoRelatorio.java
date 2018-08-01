@@ -2,17 +2,14 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
-import br.com.zalf.prolog.webservice.commons.util.date.Durations;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Clt;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import com.google.common.base.Preconditions;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.threeten.extra.Interval;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -59,7 +56,8 @@ public final class FolhaPontoRelatorio {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     public void calculaTempoEmCadaTipoIntervalo(@NotNull final LocalDate dataInicial,
                                                 @NotNull final LocalDate dataFinal,
-                                                @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade) {
+                                                @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade,
+                                                @NotNull final ZoneId zoneId) {
         //noinspection ConstantConditions
         Preconditions.checkState(marcacoesDias != null);
 
@@ -78,8 +76,8 @@ public final class FolhaPontoRelatorio {
             final List<FolhaPontoIntervalo> intervalosDia = marcacoesDias.get(i).getIntervalosDia();
             for (int j = 0; j < intervalosDia.size(); j++) {
                 final FolhaPontoIntervalo intervalo = intervalosDia.get(j);
-                final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicioUtc();
-                final LocalDateTime dataHoraFim = intervalo.getDataHoraFimUtc();
+                final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
+                final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
                 somaTempoDecorrido(
                         segundosTotaisTipoIntervalo,
                         segundosTotaisHorasNoturnas,
@@ -87,9 +85,10 @@ public final class FolhaPontoRelatorio {
                         dataHoraInicio,
                         dataHoraFim,
                         filtroInicio,
-                        // Sem o filtro de fim for maior que o horário atual do sistema, precisamos garantir que os
+                        // Se o filtro de fim for maior que o horário atual do sistema, precisamos garantir que os
                         // cálculos utilizem o horário atual e não o filtro de fim.
-                        filtroFim.isBefore(dataHoraGeracaoRelatorioUtc) ? filtroFim : dataHoraGeracaoRelatorioUtc);
+                        filtroFim.isBefore(dataHoraGeracaoRelatorioZoned) ? filtroFim : dataHoraGeracaoRelatorioZoned,
+                        zoneId);
             }
         }
 
@@ -105,7 +104,8 @@ public final class FolhaPontoRelatorio {
                                     @Nullable final LocalDateTime dataHoraInicio,
                                     @Nullable final LocalDateTime dataHoraFim,
                                     @NotNull final LocalDateTime filtroInicio,
-                                    @NotNull final LocalDateTime filtroFim) {
+                                    @NotNull final LocalDateTime filtroFim,
+                                    @NotNull final ZoneId zoneId) {
         // Calcula a diferença de tempo entre início e fim, se ambos existirem.
         if (dataHoraInicio != null && dataHoraFim != null) {
             // Precisamos cobrir 4 diferentes casos:
@@ -142,10 +142,10 @@ public final class FolhaPontoRelatorio {
             } else {
                 throw new IllegalStateException("Condição não mapeada! :(");
             }
-            final long segundos = ChronoUnit.SECONDS.between(inicio, fim);
-            final long segundosNoturnos = Durations
-                    .getSumOfMinutesInRangeOnDays(inicio, fim, Clt.RANGE_HORAS_NOTURNAS)
-                    .toMinutes() * 60;
+            final ZonedDateTime inicioZoned = inicio.atZone(zoneId);
+            final ZonedDateTime fimZoned = fim.atZone(zoneId);
+            final long segundos = ChronoUnit.SECONDS.between(inicioZoned, fimZoned);
+            final long segundosNoturnos = calculaHorasNoturnas(inicioZoned, fimZoned, zoneId).getSeconds();
             segundosTotaisTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);
             segundosTotaisHorasNoturnas.merge(intervalo.getCodTipoIntervalo(), segundosNoturnos, (a, b) -> a + b);
         } else {
@@ -179,5 +179,43 @@ public final class FolhaPontoRelatorio {
         });
 
         return tiposIntervalosMarcados;
+    }
+
+    @NotNull
+    private Duration calculaHorasNoturnas(@NotNull final ZonedDateTime fromTz,
+                                          @NotNull final ZonedDateTime toTz,
+                                          @NotNull final ZoneId zoneId) {
+        final Interval interval = Interval.of(fromTz.toInstant(), toTz.toInstant());
+
+        final LocalDate ldStart = fromTz.toLocalDate();
+        final LocalDate ldStop = toTz.toLocalDate();
+        LocalDate localDate = ldStart;
+
+        final LocalTime timeStartMin = LocalTime.MIN;
+        final LocalTime timeStop05 = LocalTime.of(5, 0, 0);
+
+        final LocalTime timeStart22 = LocalTime.of(22, 0, 0);
+        final LocalTime timeStopMax = LocalTime.MAX;
+
+        Duration totalDuration = Duration.ZERO;
+        while (!localDate.isAfter(ldStop)) {
+            final Interval intervalMinTo05 = Interval.of(
+                    localDate.atTime(timeStartMin).atZone(zoneId).toInstant(),
+                    localDate.atTime(timeStop05).atZone(zoneId).toInstant());
+            if (interval.overlaps(intervalMinTo05)) {
+                totalDuration = totalDuration.plus(interval.intersection(intervalMinTo05).toDuration());
+            }
+
+            final Interval interval22ToMax = Interval.of(
+                    localDate.atTime(timeStart22).atZone(zoneId).toInstant(),
+                    localDate.atTime(timeStopMax).atZone(zoneId).toInstant());
+            if (interval.overlaps(interval22ToMax)) {
+                totalDuration = totalDuration.plus(interval.intersection(interval22ToMax).toDuration());
+            }
+
+            // Setup the next loop.
+            localDate = localDate.plusDays(1);
+        }
+        return totalDuration;
     }
 }

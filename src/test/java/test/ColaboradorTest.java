@@ -2,6 +2,7 @@ package test;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -15,7 +16,12 @@ public class ColaboradorTest extends TestCase {
 
 	@Test
 	public void testGetAll() {
-		List<Colaborador> colaboradores = service.getAll(COD_UNIDADE, false);
+		List<Colaborador> colaboradores = null;
+		try {
+			colaboradores = service.getAllByUnidade(COD_UNIDADE, false);
+		} catch (ProLogException e) {
+			e.printStackTrace();
+		}
 		assertNotNull(colaboradores);
 		// Valida se encontrou algo
 		assertTrue(colaboradores.size() > 0);

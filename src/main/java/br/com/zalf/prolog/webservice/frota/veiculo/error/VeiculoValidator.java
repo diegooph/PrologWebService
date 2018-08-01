@@ -29,7 +29,7 @@ public class VeiculoValidator {
         }
     }
 
-    public static void validacaoPlaca(String placa) throws Exception {
+    private static void validacaoPlaca(String placa) throws Exception {
         Preconditions.checkNotNull(placa, "Você deve fornecer a placa");
 
         if (placa.length() != MAX_LENGTH_PLACA) {

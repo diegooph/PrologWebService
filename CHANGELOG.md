@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+<a name="v0.0.71"></a>
+## Version [v0.0.71](https://github.com/luizfp/PrologWeb/compare/v0.0.70...v0.0.71) (2018-07-31)
+
+### Features
+* Cria novo método para buscar todos os checklists completos
+* Cria busca dos colaboradores por código de empresa
+
+### Refactors
+* Cria functions para a busca de colaboradores
+* Altera path da busca de todos os colaboradores de uma unidade
+
+### Bug Fixes
+* Corrige cálculo das horas noturnas no relatório de folha de ponto do controle de jornada
+
 <a name="v0.0.70"></a>
 ## Version [v0.0.70](https://github.com/luizfp/PrologWeb/compare/v0.0.69...v0.0.70) (2018-07-29)
 

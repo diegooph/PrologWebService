@@ -11,7 +11,8 @@ public final class FolhaPontoDia {
     @NotNull
     private final List<FolhaPontoIntervalo> intervalosDia;
 
-    public FolhaPontoDia(@NotNull LocalDate diaReferencia, @NotNull List<FolhaPontoIntervalo> intervalosDia) {
+    public FolhaPontoDia(@NotNull final LocalDate diaReferencia,
+                         @NotNull final List<FolhaPontoIntervalo> intervalosDia) {
         this.diaReferencia = diaReferencia;
         this.intervalosDia = intervalosDia;
     }

@@ -136,7 +136,20 @@ public class DateUtils {
      */
     public static boolean verificaAno(Date data, int anoMaximoPermitido, int anoMinimoPermitido) {
         SimpleDateFormat ano = new SimpleDateFormat("yyyy");
-        final int anoDataNascimento = Integer.parseInt(ano.format(data));
-        return anoDataNascimento >= anoMaximoPermitido || anoDataNascimento <= anoMinimoPermitido;
+        final int anoData = Integer.parseInt(ano.format(data));
+        return anoData >= anoMaximoPermitido || anoData <= anoMinimoPermitido;
+    }
+
+    /**
+     * Método que verifica se um ano está dentro do limite estabelecido.
+     *
+     * @param data               - data a ser analisada.
+     * @param anoMaximoPermitido - ano máximo permitido.
+     * @param anoMinimoPermitido - ano mínimo permitido.
+     * @return true caso o ano esteja fora do limite estabelecido.
+     */
+    public static boolean verificaAno(LocalDate data, int anoMaximoPermitido, int anoMinimoPermitido) {
+        final int anoData = data.getYear();
+        return anoData >= anoMaximoPermitido || anoData <= anoMinimoPermitido;
     }
 }
