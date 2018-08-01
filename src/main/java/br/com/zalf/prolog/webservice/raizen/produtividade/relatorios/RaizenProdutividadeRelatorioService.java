@@ -20,13 +20,13 @@ public class RaizenProdutividadeRelatorioService {
     private RaizenProdutividadeRelatorioDao dao = Injection.provideRaizenProdutividadeRelatorioDao();
 
     public void getDadosGeraisProdutividadeCsv(@NotNull final OutputStream out,
-                                               @NotNull final Long codEmprsa,
+                                               @NotNull final Long codEmpresa,
                                                @NotNull final String dataInicial,
                                                @NotNull final String dataFinal) {
         try {
             dao.getDadosGeraisProdutividadeCsv(
                     out,
-                    codEmprsa,
+                    codEmpresa,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
@@ -36,12 +36,12 @@ public class RaizenProdutividadeRelatorioService {
     }
 
     @NotNull
-    public Report getDadosGeraisProdutividadeReport(@NotNull final Long codEmprsa,
+    public Report getDadosGeraisProdutividadeReport(@NotNull final Long codEmpresa,
                                                     @NotNull final String dataInicial,
                                                     @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getDadosGeraisProdutividadeReport(
-                    codEmprsa,
+                    codEmpresa,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {

@@ -25,7 +25,7 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
     private static final int ANO_MINIMO_PERMITIDO = 1900;
     private static final int ANO_MAXIMO_PERMITIDO = 2050;
 
-    private RaizenProdutividadeValidator () {
+    private RaizenProdutividadeValidator() {
         throw new IllegalStateException(RaizenProdutividadeValidator.class.getSimpleName() + " cannot be instantiated!");
     }
 
