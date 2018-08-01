@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenPro
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemVisualizacao;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -30,6 +31,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RaizenProdutividadeResource {
 
+    @NotNull
     private final RaizenProdutividadeService service = new RaizenProdutividadeService();
 
     @POST
@@ -40,8 +42,8 @@ public class RaizenProdutividadeResource {
     public Response uploadRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
                                               @FormDataParam("file") InputStream fileInputStream,
-                                              @FormDataParam("file") FormDataContentDisposition fileDetail) throws
-            ProLogException {
+                                              @FormDataParam("file") FormDataContentDisposition fileDetail)
+            throws ProLogException {
         return service.uploadRaizenProdutividade(token, codEmpresa, fileInputStream, fileDetail);
     }
 
@@ -51,8 +53,8 @@ public class RaizenProdutividadeResource {
     @Path("/{codEmpresa}")
     public Response insertRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
-                                              RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws
-            ProLogException {
+                                              RaizenProdutividadeItemInsert raizenProdutividadeItemInsert)
+            throws ProLogException {
         return service.insertRaizenProdutividade(token, codEmpresa, raizenProdutividadeItemInsert);
     }
 
@@ -62,8 +64,8 @@ public class RaizenProdutividadeResource {
     @Path("/{codEmpresa}")
     public Response updateRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
-                                              RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws
-            ProLogException {
+                                              RaizenProdutividadeItemInsert raizenProdutividadeItemInsert)
+            throws ProLogException {
         return service.updateRaizenProdutividade(token, codEmpresa, raizenProdutividadeItemInsert);
     }
 
@@ -103,11 +105,11 @@ public class RaizenProdutividadeResource {
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS,
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS})
     @Path("/colaboradores/{codColaborador}")
-    public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
-                                                                      @QueryParam("mes") int mes,
-                                                                      @QueryParam("ano") int ano)
-            throws ProLogException {
-        return service.getRaizenProdutividade(codColaborador, mes, ano);
+    public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(
+            @PathParam("codColaborador") Long codColaborador,
+            @QueryParam("mes") int mes,
+            @QueryParam("ano") int ano) throws ProLogException {
+        return service.getRaizenProdutividadeIndividual(codColaborador, mes, ano);
     }
 
     @DELETE

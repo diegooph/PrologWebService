@@ -90,7 +90,7 @@ public interface RaizenProdutividadeDao {
     @NotNull
     RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(@NotNull final Long codEmpresa,
                                                                                @NotNull final Long codItem)
-    throws Throwable;
+            throws Throwable;
 
     /**
      * Busca as produtividades de um colaborador individualmente.
@@ -102,9 +102,9 @@ public interface RaizenProdutividadeDao {
      * @throws Throwable - Erro na execução da busca dos dados no Banco.
      */
     @NotNull
-    RaizenProdutividadeIndividualHolder getRaizenProdutividade(@NotNull final Long codColaborador,
-                                                               final int mes,
-                                                               final int ano) throws Throwable;
+    RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codColaborador,
+                                                                         final int mes,
+                                                                         final int ano) throws Throwable;
 
     /**
      * Deleta uma {@link List<RaizenProdutividadeItem>}.

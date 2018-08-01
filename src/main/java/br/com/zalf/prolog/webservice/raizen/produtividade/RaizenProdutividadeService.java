@@ -40,8 +40,7 @@ public class RaizenProdutividadeService {
     public Response uploadRaizenProdutividade(@NotNull final String token,
                                               @NotNull final Long codEmpresa,
                                               @NotNull final InputStream fileInputStream,
-                                              @NotNull final FormDataContentDisposition fileDetail)
-            throws ProLogException {
+                                              @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
             final File file = createFileFromImport(codEmpresa, fileInputStream, fileDetail);
             final List<RaizenProdutividadeItemInsert> raizenProdutividadeItens = RaizenProdutividadeReader
@@ -97,8 +96,7 @@ public class RaizenProdutividadeService {
     public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
                                                             @NotNull final String dataInicial,
                                                             @NotNull final String dataFinal,
-                                                            @NotNull final String agrupamento)
-            throws ProLogException {
+                                                            @NotNull final String agrupamento) throws ProLogException {
         try {
             final RaizenProdutividadeAgrupamento tipoAgrupamento = RaizenProdutividadeAgrupamento.fromString
                     (agrupamento);
@@ -137,12 +135,11 @@ public class RaizenProdutividadeService {
         }
     }
 
-    public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@NotNull final Long codColaborador,
-                                                                      final int mes,
-                                                                      final int ano)
-            throws ProLogException {
+    public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codColaborador,
+                                                                                final int mes,
+                                                                                final int ano) throws ProLogException {
         try {
-            return dao.getRaizenProdutividade(
+            return dao.getRaizenProdutividadeIndividual(
                     codColaborador,
                     mes,
                     ano);
@@ -154,8 +151,7 @@ public class RaizenProdutividadeService {
     }
 
     public Response deleteRaizenProdutividade(@NotNull final Long codEmpresa,
-                                              @NotNull final List<Long> codRaizenProdutividades)
-            throws ProLogException {
+                                              @NotNull final List<Long> codRaizenProdutividades) throws ProLogException {
         try {
             dao.deleteRaizenProdutividadeItens(codEmpresa, codRaizenProdutividades);
             return Response.ok("Produtividades deletadas com sucesso!");
@@ -166,15 +162,15 @@ public class RaizenProdutividadeService {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     private File createFileFromImport(@NotNull final Long codEmpresa,
                                       @NotNull final InputStream fileInputStream,
-                                      @NotNull final FormDataContentDisposition fileDetail)
-            throws Throwable {
+                                      @NotNull final FormDataContentDisposition fileDetail) throws Throwable {
         final String fileName = String.valueOf(Now.utcMillis()) + "_" + codEmpresa
                 + "_" + fileDetail.getFileName().replace(" ", "_");
         // Pasta temporária
-        final File tmpDIr = Files.createTempDir();
-        final File file = new File(tmpDIr, fileName);
+        final File tmpDir = Files.createTempDir();
+        final File file = new File(tmpDir, fileName);
         final FileOutputStream out = new FileOutputStream(file);
         IOUtils.copy(fileInputStream, out);
         IOUtils.closeQuietly(out);

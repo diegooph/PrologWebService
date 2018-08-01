@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeColaborador;
@@ -214,9 +213,9 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @NotNull
     @Override
-    public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@NotNull final Long codColaborador,
-                                                                      final int mes,
-                                                                      final int ano) throws Throwable {
+    public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codColaborador,
+                                                                                final int mes,
+                                                                                final int ano) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
