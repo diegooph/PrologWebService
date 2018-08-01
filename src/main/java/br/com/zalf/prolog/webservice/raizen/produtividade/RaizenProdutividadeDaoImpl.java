@@ -282,7 +282,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   (SELECT CO.CODIGO FROM COLABORADOR CO JOIN TOKEN_AUTENTICACAO TA ON CO.CPF = TA.CPF_COLABORADOR " +
                     "WHERE TA.TOKEN = ?)," +
                     "   (SELECT CO.CODIGO FROM COLABORADOR CO JOIN TOKEN_AUTENTICACAO TA ON CO.CPF = TA.CPF_COLABORADOR " +
-                    "WHERE TA.TOKEN = ?)" +
+                    "WHERE TA.TOKEN = ?)," +
                     "   ?)");
             stmt.setLong(1, item.getCpfMotorista());
             stmt.setString(2, item.getPlaca().toUpperCase());
