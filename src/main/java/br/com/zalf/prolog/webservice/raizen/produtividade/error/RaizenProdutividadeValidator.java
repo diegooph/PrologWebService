@@ -118,13 +118,13 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
         }
     }
 
-    private static void validacaoRaio(final double raio) throws ProLogException {
+    private static void validacaoRaio(final BigDecimal raio) throws ProLogException {
         checkNotNull(raio, "Você precisa fornecer o raio");
         checkArgument(Double.parseDouble(String.valueOf(raio)) > 0,
                 "Valor inválido\nO raio não pode ser negativo\n");
     }
 
-    private static void validacaoToneladas(final double toneladas) throws ProLogException {
+    private static void validacaoToneladas(final BigDecimal toneladas) throws ProLogException {
         checkNotNull(toneladas, "Você precisa fornecer a tonelada");
         checkArgument(Double.parseDouble(String.valueOf(toneladas)) > 0,
                 "Valor inválido\nA tonelada não pode ser negativa\n");

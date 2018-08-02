@@ -56,8 +56,8 @@ class RaizenProdutividadeConverter {
         item.setPlaca(rSet.getString("PLACA"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setRaio(rSet.getBigDecimal("RAIO"));
+        item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         return item;
     }
 
@@ -73,8 +73,8 @@ class RaizenProdutividadeConverter {
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setRaio(rSet.getBigDecimal("RAIO"));
+        item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
         item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
@@ -92,8 +92,8 @@ class RaizenProdutividadeConverter {
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setRaio(rSet.getBigDecimal("RAIO"));
+        item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
         item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
@@ -113,8 +113,8 @@ class RaizenProdutividadeConverter {
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setRaio(rSet.getBigDecimal("RAIO"));
+        item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
         item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));

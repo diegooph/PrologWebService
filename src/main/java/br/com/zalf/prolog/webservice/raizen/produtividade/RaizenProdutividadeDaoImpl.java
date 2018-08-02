@@ -87,8 +87,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
             stmt.setString(6, item.getFazenda());
-            stmt.setDouble(7, item.getRaio());
-            stmt.setDouble(8, item.getToneladas());
+            stmt.setBigDecimal(7, item.getRaio());
+            stmt.setBigDecimal(8, item.getToneladas());
             stmt.setString(9, token);
             stmt.setLong(10, item.getCodigo());
             if (stmt.executeUpdate() == 0) {
@@ -287,8 +287,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
             stmt.setString(6, item.getFazenda());
-            stmt.setDouble(7, item.getRaio());
-            stmt.setDouble(8, item.getToneladas());
+            stmt.setBigDecimal(7, item.getRaio());
+            stmt.setBigDecimal(8, item.getToneladas());
             stmt.setString(9, token);
             stmt.setString(10, token);
             stmt.setLong(11, codEmpresa);
@@ -327,8 +327,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
             stmt.setString(6, item.getFazenda());
-            stmt.setDouble(7, item.getRaio());
-            stmt.setDouble(8, item.getToneladas());
+            stmt.setBigDecimal(7, item.getRaio());
+            stmt.setBigDecimal(8, item.getToneladas());
             stmt.setString(9, token);
             stmt.setLong(10, item.getCpfMotorista());
             stmt.setString(11, item.getPlaca());

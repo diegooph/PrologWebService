@@ -18,8 +18,8 @@ public abstract class RaizenProdutividadeItem {
     private BigDecimal valor;
     private String usina;
     private String fazenda;
-    private double raio;
-    private double toneladas;
+    private BigDecimal raio;
+    private BigDecimal toneladas;
     private Long codColaboradorCadastro;
     private Long codColaboradorAlteracao;
     private Long codEmpresa;
@@ -79,19 +79,19 @@ public abstract class RaizenProdutividadeItem {
         this.fazenda = fazenda;
     }
 
-    public double getRaio() {
+    public BigDecimal getRaio() {
         return raio;
     }
 
-    public void setRaio(double raio) {
+    public void setRaio(BigDecimal raio) {
         this.raio = raio;
     }
 
-    public double getToneladas() {
+    public BigDecimal getToneladas() {
         return toneladas;
     }
 
-    public void setToneladas(double toneladas) {
+    public void setToneladas(BigDecimal toneladas) {
         this.toneladas = toneladas;
     }
 

@@ -89,11 +89,11 @@ public class RaizenProdutividadeReader {
         }
         // RAIO
         if (!linha[6].trim().isEmpty()) {
-            item.setRaio(Double.parseDouble(linha[6].trim().replaceAll(",", ".")));
+            item.setRaio(new BigDecimal(linha[6].trim().replaceAll(",", ".")));
         }
         // TONELADA
         if (!linha[7].trim().isEmpty()) {
-            item.setToneladas(Double.parseDouble(linha[7].trim().replaceAll(",", ".")));
+            item.setToneladas(new BigDecimal(linha[7].trim().replaceAll(",", ".")));
         }
         return item;
     }
