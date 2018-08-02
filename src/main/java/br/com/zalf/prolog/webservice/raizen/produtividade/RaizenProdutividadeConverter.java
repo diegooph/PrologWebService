@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeColaborador;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeData;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemColaborador;
@@ -39,22 +38,18 @@ class RaizenProdutividadeConverter {
     }
 
     @NotNull
-    static RaizenProdutividadeData createRaizenProdutividadeData(
-            @NotNull final ResultSet rSet,
-            @NotNull final List<RaizenProdutividade> produtividades) throws Throwable {
+    static RaizenProdutividadeData createRaizenProdutividadeData(@NotNull final ResultSet rSet) throws Throwable {
         final List<RaizenProdutividadeItemColaborador> itensColaborador = new ArrayList<>();
         itensColaborador.add(RaizenProdutividadeConverter.createRaizenProdutividadeItemColaborador(rSet));
         final RaizenProdutividadeData raizenProdutividadeData = new RaizenProdutividadeData(
                 rSet.getObject("DATA_VIAGEM", LocalDate.class));
         raizenProdutividadeData.setItensRaizen(itensColaborador);
-        produtividades.add(raizenProdutividadeData);
         return raizenProdutividadeData;
     }
 
     @NotNull
     static RaizenprodutividadeItemIndividual createRaizenProdutividadeItemIndividual(
-            @NotNull final ResultSet rSet)
-            throws Throwable {
+            @NotNull final ResultSet rSet) throws Throwable {
         final RaizenprodutividadeItemIndividual item = new RaizenprodutividadeItemIndividual();
         item.setDataViagem(rSet.getDate("DATA_VIAGEM"));
         item.setValor(rSet.getBigDecimal("VALOR"));

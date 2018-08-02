@@ -146,8 +146,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public List<RaizenProdutividade> getRaizenProdutividadeData(@NotNull final Long codEmpresa,
                                                                 @NotNull final LocalDate dataInicial,
-                                                                @NotNull final LocalDate dataFinal) throws
-            Throwable {
+                                                                @NotNull final LocalDate dataFinal) throws Throwable {
         final List<RaizenProdutividade> produtividades = new ArrayList<>();
         RaizenProdutividadeData raizenProdutividadeData = null;
         Connection conn = null;
@@ -164,18 +163,16 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             while (rSet.next()) {
                 final LocalDate dataAtual = rSet.getObject("DATA_VIAGEM", LocalDate.class);
                 if (primeiraLinha) {
-                    raizenProdutividadeData = RaizenProdutividadeConverter.createRaizenProdutividadeData(
-                            rSet,
-                            produtividades);
+                    raizenProdutividadeData = RaizenProdutividadeConverter.createRaizenProdutividadeData(rSet);
+                    produtividades.add(raizenProdutividadeData);
                 } else {
                     if (raizenProdutividadeData.getData().equals(dataAtual)) {
                         raizenProdutividadeData
                                 .getItensRaizen()
                                 .add(RaizenProdutividadeConverter.createRaizenProdutividadeItemColaborador(rSet));
                     } else {
-                        raizenProdutividadeData = RaizenProdutividadeConverter.createRaizenProdutividadeData(
-                                rSet,
-                                produtividades);
+                        raizenProdutividadeData = RaizenProdutividadeConverter.createRaizenProdutividadeData(rSet);
+                        produtividades.add(raizenProdutividadeData);
                     }
                 }
                 primeiraLinha = false;
