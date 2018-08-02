@@ -117,6 +117,6 @@ public class RaizenProdutividadeItemInsert {
         if (linha > -1) {
             return "(linha da planilha: " + linha + ")";
         }
-        return null;
+        return "";
     }
 }
