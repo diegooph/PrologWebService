@@ -32,10 +32,10 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     }
 
     @Override
-    public void insertOrUpdateProdutividadeRaizen(@NotNull final String token,
-                                                  @NotNull final Long codEmpresa,
-                                                  @NotNull final List<RaizenProdutividadeItemInsert> raizenItens)
-            throws Throwable {
+    public void insertOrUpdateProdutividadeRaizen(
+            @NotNull final String token,
+            @NotNull final Long codEmpresa,
+            @NotNull final List<RaizenProdutividadeItemInsert> raizenItens) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -102,9 +102,10 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @NotNull
     @Override
-    public List<RaizenProdutividade> getRaizenProdutividadeColaborador(@NotNull final Long codEmpresa,
-                                                                       @NotNull final LocalDate dataInicial,
-                                                                       @NotNull final LocalDate dataFinal) throws Throwable {
+    public List<RaizenProdutividade> getRaizenProdutividadeColaborador(
+            @NotNull final Long codEmpresa,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable {
         final List<RaizenProdutividade> produtividades = new ArrayList<>();
         RaizenProdutividadeColaborador raizenProdutividadeColaborador = null;
         Connection conn = null;
@@ -256,11 +257,11 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         }
     }
 
-    private void internalInsertRaizenProdutividadeItem(@NotNull final Connection conn,
-                                                       @NotNull final String token,
-                                                       @NotNull final Long codEmpresa,
-                                                       @NotNull final RaizenProdutividadeItemInsert item)
-            throws Throwable {
+    private void internalInsertRaizenProdutividadeItem(
+            @NotNull final Connection conn,
+            @NotNull final String token,
+            @NotNull final Long codEmpresa,
+            @NotNull final RaizenProdutividadeItemInsert item) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO RAIZEN.PRODUTIVIDADE (CPF_MOTORISTA," +
@@ -302,8 +303,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     private boolean updateRaizenProdutividadeUpload(@NotNull final Connection conn,
                                                     @NotNull final String token,
                                                     @NotNull final Long codEmpresa,
-                                                    @NotNull final RaizenProdutividadeItemInsert item)
-            throws Throwable {
+                                                    @NotNull final RaizenProdutividadeItemInsert item) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE RAIZEN.PRODUTIVIDADE SET CPF_MOTORISTA = ?," +

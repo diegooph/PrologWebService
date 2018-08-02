@@ -26,10 +26,10 @@ public interface RaizenProdutividadeDao {
      * @param raizenItens -
      * @throws Throwable - Erro ao executar consulta no Banco de Dados.
      */
-    void insertOrUpdateProdutividadeRaizen(@NotNull final String token,
-                                           @NotNull final Long codEmpresa,
-                                           @NotNull final List<RaizenProdutividadeItemInsert> raizenItens)
-            throws Throwable;
+    void insertOrUpdateProdutividadeRaizen(
+            @NotNull final String token,
+            @NotNull final Long codEmpresa,
+            @NotNull final List<RaizenProdutividadeItemInsert> raizenItens) throws Throwable;
 
     /**
      * Insere uma {@link RaizenProdutividadeItem} específica.

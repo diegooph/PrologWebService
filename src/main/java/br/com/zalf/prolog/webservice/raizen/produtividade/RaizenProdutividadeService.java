@@ -38,10 +38,11 @@ public class RaizenProdutividadeService {
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @NotNull
-    public Response uploadRaizenProdutividade(@NotNull final String token,
-                                              @NotNull final Long codEmpresa,
-                                              @NotNull final InputStream fileInputStream,
-                                              @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
+    public Response uploadRaizenProdutividade(
+            @NotNull final String token,
+            @NotNull final Long codEmpresa,
+            @NotNull final InputStream fileInputStream,
+            @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
             final File file = createFileFromImport(codEmpresa, fileInputStream, fileDetail);
             final List<RaizenProdutividadeItemInsert> raizenProdutividadeItens = RaizenProdutividadeReader
@@ -105,7 +106,8 @@ public class RaizenProdutividadeService {
                                                             @NotNull final String dataFinal,
                                                             @NotNull final String agrupamento) throws ProLogException {
         try {
-            final RaizenProdutividadeAgrupamento tipoAgrupamento = RaizenProdutividadeAgrupamento.fromString(agrupamento);
+            final RaizenProdutividadeAgrupamento tipoAgrupamento =
+                    RaizenProdutividadeAgrupamento.fromString(agrupamento);
             switch (tipoAgrupamento) {
                 case POR_COLABORADOR:
                     return dao.getRaizenProdutividadeColaborador(
@@ -158,8 +160,9 @@ public class RaizenProdutividadeService {
     }
 
     @NotNull
-    public Response deleteRaizenProdutividade(@NotNull final Long codEmpresa,
-                                              @NotNull final List<Long> codRaizenProdutividades) throws ProLogException {
+    public Response deleteRaizenProdutividade(
+            @NotNull final Long codEmpresa,
+            @NotNull final List<Long> codRaizenProdutividades) throws ProLogException {
         try {
             dao.deleteRaizenProdutividadeItens(codEmpresa, codRaizenProdutividades);
             return Response.ok("Produtividades deletadas com sucesso!");
