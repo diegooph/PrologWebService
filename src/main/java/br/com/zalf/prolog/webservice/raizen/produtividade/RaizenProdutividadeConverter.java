@@ -56,7 +56,7 @@ class RaizenProdutividadeConverter {
         item.setPlaca(rSet.getString("PLACA"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getBigDecimal("RAIO"));
+        item.setRaioKm(rSet.getBigDecimal("RAIO_KM"));
         item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         return item;
     }
@@ -73,7 +73,7 @@ class RaizenProdutividadeConverter {
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getBigDecimal("RAIO"));
+        item.setRaioKm(rSet.getBigDecimal("RAIO_KM"));
         item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
@@ -92,7 +92,7 @@ class RaizenProdutividadeConverter {
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getBigDecimal("RAIO"));
+        item.setRaioKm(rSet.getBigDecimal("RAIO_KM"));
         item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
@@ -113,7 +113,7 @@ class RaizenProdutividadeConverter {
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getBigDecimal("RAIO"));
+        item.setRaioKm(rSet.getBigDecimal("RAIO_KM"));
         item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));

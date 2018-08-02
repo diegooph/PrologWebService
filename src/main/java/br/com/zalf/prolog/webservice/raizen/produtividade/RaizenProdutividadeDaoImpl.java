@@ -76,7 +76,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   VALOR = ?," +
                     "   USINA = ?," +
                     "   FAZENDA = ?," +
-                    "   RAIO = ?," +
+                    "   RAIO_KM = ?," +
                     "   TONELADAS = ?," +
                     "   COD_COLABORADOR_ALTERACAO = (SELECT CO.CODIGO FROM COLABORADOR CO JOIN TOKEN_AUTENTICACAO TA " +
                     "ON CO.CPF = TA.CPF_COLABORADOR WHERE TA.TOKEN = ?) " +
@@ -87,7 +87,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
             stmt.setString(6, item.getFazenda());
-            stmt.setBigDecimal(7, item.getRaio());
+            stmt.setBigDecimal(7, item.getRaioKm());
             stmt.setBigDecimal(8, item.getToneladas());
             stmt.setString(9, token);
             stmt.setLong(10, item.getCodigo());
@@ -270,7 +270,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "                           VALOR," +
                     "                           USINA," +
                     "                           FAZENDA," +
-                    "                           RAIO," +
+                    "                           RAIO_KM," +
                     "                           TONELADAS, " +
                     "                           COD_COLABORADOR_CADASTRO, " +
                     "                           COD_COLABORADOR_ALTERACAO, " +
@@ -287,7 +287,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
             stmt.setString(6, item.getFazenda());
-            stmt.setBigDecimal(7, item.getRaio());
+            stmt.setBigDecimal(7, item.getRaioKm());
             stmt.setBigDecimal(8, item.getToneladas());
             stmt.setString(9, token);
             stmt.setString(10, token);
@@ -312,7 +312,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   VALOR = ?," +
                     "   USINA = ?," +
                     "   FAZENDA = ?," +
-                    "   RAIO = ?," +
+                    "   RAIO_KM = ?," +
                     "   TONELADAS = ?, " +
                     "   COD_COLABORADOR_ALTERACAO = " +
                     "(SELECT CO.CODIGO FROM COLABORADOR CO JOIN TOKEN_AUTENTICACAO TA ON CO.CPF = TA.CPF_COLABORADOR " +
@@ -327,7 +327,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
             stmt.setString(6, item.getFazenda());
-            stmt.setBigDecimal(7, item.getRaio());
+            stmt.setBigDecimal(7, item.getRaioKm());
             stmt.setBigDecimal(8, item.getToneladas());
             stmt.setString(9, token);
             stmt.setLong(10, item.getCpfMotorista());

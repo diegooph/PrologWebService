@@ -40,7 +40,7 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
             validacaoValor(itemInsert.getValor());
             validacaoUsina(itemInsert.getUsina());
             validacaoFazenda(itemInsert.getFazenda());
-            validacaoRaio(itemInsert.getRaio());
+            validacaoRaio(itemInsert.getRaioKm());
             validacaoToneladas(itemInsert.getToneladas());
         } catch (final GenericException e) {
             e.setMessage(e.getMessage().concat(itemInsert.getLinhaOrEmpty(itemInsert.getLinha())));

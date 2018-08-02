@@ -89,7 +89,7 @@ public class RaizenProdutividadeReader {
         }
         // RAIO
         if (!linha[6].trim().isEmpty()) {
-            item.setRaio(new BigDecimal(linha[6].trim().replaceAll(",", ".")));
+            item.setRaioKm(new BigDecimal(linha[6].trim().replaceAll(",", ".")));
         }
         // TONELADA
         if (!linha[7].trim().isEmpty()) {
