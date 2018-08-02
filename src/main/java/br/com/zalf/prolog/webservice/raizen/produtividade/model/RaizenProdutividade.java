@@ -32,10 +32,9 @@ public abstract class RaizenProdutividade {
 
     public void setItensRaizen(List<? extends RaizenProdutividadeItem> itensRaizen) {
         this.itensRaizen = itensRaizen;
-        calculaItensNaoCadastrados();
     }
 
-    protected abstract void calculaItensNaoCadastrados();
+    public abstract void calculaItensNaoCadastrados();
 
     @NotNull
     public static RuntimeTypeAdapterFactory<RaizenProdutividade> provideTypeAdapterFactory() {

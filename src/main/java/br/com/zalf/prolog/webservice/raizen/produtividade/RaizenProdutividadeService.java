@@ -108,21 +108,25 @@ public class RaizenProdutividadeService {
         try {
             final RaizenProdutividadeAgrupamento tipoAgrupamento =
                     RaizenProdutividadeAgrupamento.fromString(agrupamento);
+            final List<RaizenProdutividade> itens;
             switch (tipoAgrupamento) {
                 case POR_COLABORADOR:
-                    return dao.getRaizenProdutividadeColaborador(
+                    itens = dao.getRaizenProdutividadeColaborador(
                             codEmpresa,
                             ProLogDateParser.toLocalDate(dataInicial),
                             ProLogDateParser.toLocalDate(dataFinal));
+                    break;
                 case POR_DATA:
-                    return dao.getRaizenProdutividadeData(
+                    itens = dao.getRaizenProdutividadeData(
                             codEmpresa,
                             ProLogDateParser.toLocalDate(dataInicial),
                             ProLogDateParser.toLocalDate(dataFinal));
+                    break;
                 default:
                     throw new IllegalStateException();
-
             }
+            itens.forEach(RaizenProdutividade::calculaItensNaoCadastrados);
+            return itens;
         } catch (final Throwable e) {
             final String errorMessage = "Não foi possível buscar a produtividade, tente novamente";
             Log.e(TAG, errorMessage, e);
