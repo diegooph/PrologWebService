@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
@@ -308,94 +307,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         }
     }
 
-    /**
-     * Busca uma lista de todas as placas da unidade, separando em 3 status:
-     * PENDENTE: não tem checklist realizado no dia atual e não tem itens críticos a serem arrumados
-     * NÃO LIBERADO: placa tem itens críticos que necessitam de conserto imediato, não sendo permitida a liberação do
-     * veículo
-     * LIBERADO: checklist foi realizado e não tem problemas críticos a serem resolvidos
-     *
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
-    @Override
-    @Deprecated
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws SQLException {
-        List<VeiculoLiberacao> listVeiculos = new ArrayList<>();
-        List<PerguntaRespostaChecklist> listProblemas = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        VeiculoLiberacao veiculo = null;
-        PerguntaRespostaChecklist pergunta = null;
-        boolean hasCheck = false;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO, CHECK_HOJE" +
-                    ".PLACA_CHECK FROM \n" +
-                    "(SELECT DISTINCT PLACA_VEICULO AS PLACA_CHECK FROM CHECKLIST C \n" +
-                    "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO WHERE DATA_HORA::DATE = ?\n" +
-                    "AND V.cod_unidade = ?) AS CHECK_HOJE RIGHT JOIN VEICULO V ON V.PLACA = PLACA_CHECK\n" +
-                    "LEFT JOIN (SELECT e.placa_veiculo as PLACA_MANUTENCAO, e.pergunta AS ITEM_MANUTENCAO\n" +
-                    "FROM estratificacao_os e\n" +
-                    "where e.cod_unidade = ? and e.status_item like 'P' and e.prioridade like 'CRITICA' and e" +
-                    ".cpf_mecanico is null\n" +
-                    "order by e.placa_veiculo) AS PLACAS_MANUTENCAO ON PLACA_MANUTENCAO = V.PLACA\n" +
-                    "WHERE V.COD_UNIDADE = ?\n" +
-                    "ORDER BY V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO;");
-            stmt.setDate(1, new java.sql.Date(Now.utcMillis()));
-            stmt.setLong(2, codUnidade);
-            stmt.setLong(3, codUnidade);
-            stmt.setLong(4, codUnidade);
-            rSet = stmt.executeQuery();
-
-            while (rSet.next()) {
-                if (veiculo == null) {//primeira linha do rSet
-                    veiculo = new VeiculoLiberacao();
-                    veiculo.setPlaca(rSet.getString("PLACA"));
-                    if (rSet.getString("item_manutencao") != null) {
-                        pergunta = new PerguntaRespostaChecklist();
-                        pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
-                        listProblemas.add(pergunta);
-                    }
-                    if (veiculo.getPlaca().equals(rSet.getString("PLACA_CHECK"))) {
-                        hasCheck = true;
-                    } else {
-                        hasCheck = false;
-                    }
-                } else {//a partir da segunda linha do Rset
-                    if (veiculo.getPlaca().equals(rSet.getString("placa"))) {
-                        if (rSet.getString("item_manutencao") != null) {
-                            pergunta = new PerguntaRespostaChecklist();
-                            pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
-                            listProblemas.add(pergunta);
-                        }
-                    } else {
-                        verificaInsereListaLiberacao(hasCheck, listProblemas, listVeiculos, veiculo);
-                        veiculo = new VeiculoLiberacao();
-                        veiculo.setPlaca(rSet.getString("placa"));
-                        if (veiculo.getPlaca().equals(rSet.getString("PLACA_CHECK"))) {
-                            hasCheck = true;
-                        } else {
-                            hasCheck = false;
-                        }
-                        listProblemas = new ArrayList<>();
-                        if (rSet.getString("item_manutencao") != null) {
-                            pergunta = new PerguntaRespostaChecklist();
-                            pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
-                            listProblemas.add(pergunta);
-                        }
-                    }
-                }
-            }
-            verificaInsereListaLiberacao(hasCheck, listProblemas, listVeiculos, veiculo);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return listVeiculos;
-    }
-
     private PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException {
         final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
         pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
@@ -583,38 +494,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             alternativa.selected = true;
             alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
             alternativa.respostaOutros = rSet.getString("RESPOSTA");
-        }
-    }
-
-    /**
-     * Verifica se o veiculo tem problema e se tem check, setando o status e adicionando na lista
-     *
-     * @param hasCheck      boolean indicando se o veiculo possui checklist realizado no dia corrente
-     * @param listProblemas lista de problemas que o veículo possui
-     * @param listVeiculos  lista final com os veiculos {@link VeiculoLiberacao}
-     * @param veiculo       um veiculo {@link VeiculoLiberacao}
-     */
-    @Deprecated
-    private void verificaInsereListaLiberacao(boolean hasCheck, List<PerguntaRespostaChecklist> listProblemas,
-                                              List<VeiculoLiberacao> listVeiculos, VeiculoLiberacao veiculo) {
-        if (listProblemas.size() > 0) {
-            VeiculoLiberacao v = new VeiculoLiberacao();
-            v.setItensCriticos(listProblemas);
-            v.setPlaca(veiculo.getPlaca());
-            v.setStatus(VeiculoLiberacao.STATUS_NAO_LIBERADO);
-            listVeiculos.add(v);
-            if (!hasCheck) {
-                veiculo.setStatus(VeiculoLiberacao.STATUS_PENDENTE);
-                listVeiculos.add(veiculo);
-            }
-        } else {
-            if (hasCheck) {
-                veiculo.setStatus(VeiculoLiberacao.STATUS_LIBERADO);
-                listVeiculos.add(veiculo);
-            } else {
-                veiculo.setStatus(VeiculoLiberacao.STATUS_PENDENTE);
-                listVeiculos.add(veiculo);
-            }
         }
     }
 }

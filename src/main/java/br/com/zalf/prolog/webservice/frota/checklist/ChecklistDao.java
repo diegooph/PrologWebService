@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
 import com.sun.istack.internal.NotNull;
 
@@ -85,13 +84,4 @@ public interface ChecklistDao {
 									 @NotNull final LocalDate dataInicial,
 									 @NotNull final LocalDate dataFinal,
 									 final boolean itensCriticosRetroativos) throws Throwable;
-
-	/**
-	 * busca o status de liberação do veículo
-	 * @param codUnidade código da unidade
-	 * @return lista de veiculos com liberação
-	 * @throws SQLException caso ocorrer erro no banco
-	 */
-	@Deprecated
-	List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws SQLException;
 }

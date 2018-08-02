@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 import org.jetbrains.annotations.NotNull;
@@ -150,16 +149,6 @@ public class ChecklistService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao gerar o farol do checklist, tente novamente");
-        }
-    }
-
-    @Deprecated
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) {
-        try {
-            return dao.getStatusLiberacaoVeiculos(codUnidade);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar o farol de realização dos checklists (@Deprecated)", e);
-            throw new RuntimeException("Erro ao buscar farol do checklist");
         }
     }
 }
