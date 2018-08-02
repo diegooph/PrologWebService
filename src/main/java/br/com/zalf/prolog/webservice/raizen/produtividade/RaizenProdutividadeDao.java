@@ -88,9 +88,9 @@ public interface RaizenProdutividadeDao {
                                                          @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
-    RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(@NotNull final Long codEmpresa,
-                                                                               @NotNull final Long codItem)
-            throws Throwable;
+    RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(
+            @NotNull final Long codEmpresa,
+            @NotNull final Long codItem) throws Throwable;
 
     /**
      * Busca as produtividades de um colaborador individualmente.

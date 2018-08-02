@@ -37,6 +37,7 @@ public class RaizenProdutividadeService {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
+    @NotNull
     public Response uploadRaizenProdutividade(@NotNull final String token,
                                               @NotNull final Long codEmpresa,
                                               @NotNull final InputStream fileInputStream,
@@ -60,11 +61,11 @@ public class RaizenProdutividadeService {
         }
     }
 
-    public Response insertRaizenProdutividade(@NotNull final String token,
-                                              @NotNull final Long codEmpresa,
-                                              @NotNull final RaizenProdutividadeItemInsert
-                                                      raizenProdutividadeItemInsert)
-            throws ProLogException {
+    @NotNull
+    public Response insertRaizenProdutividade(
+            @NotNull final String token,
+            @NotNull final Long codEmpresa,
+            @NotNull final RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws ProLogException {
         try {
             RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(raizenProdutividadeItemInsert);
             dao.insertRaizenProdutividadeItem(
@@ -79,10 +80,11 @@ public class RaizenProdutividadeService {
         }
     }
 
-    public Response updateRaizenProdutividade(@NotNull final String token,
-                                              @NotNull final Long codEmpresa,
-                                              @NotNull final RaizenProdutividadeItemInsert updateRaizenProdutividadeItemInsert)
-            throws ProLogException {
+    @NotNull
+    public Response updateRaizenProdutividade(
+            @NotNull final String token,
+            @NotNull final Long codEmpresa,
+            @NotNull final RaizenProdutividadeItemInsert updateRaizenProdutividadeItemInsert) throws ProLogException {
         try {
             RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(updateRaizenProdutividadeItemInsert);
             dao.updateRaizenProdutividadeItem(
@@ -127,9 +129,9 @@ public class RaizenProdutividadeService {
     }
 
     @NotNull
-    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(@NotNull final Long codEmpresa,
-                                                                          @NotNull final Long codItem)
-            throws ProLogException {
+    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(
+            @NotNull final Long codEmpresa,
+            @NotNull final Long codItem) throws ProLogException {
         try {
             return dao.getRaizenProdutividadeItemVisualizacao(codEmpresa, codItem);
         } catch (final Throwable e) {
@@ -139,6 +141,7 @@ public class RaizenProdutividadeService {
         }
     }
 
+    @NotNull
     public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codColaborador,
                                                                                 final int mes,
                                                                                 final int ano) throws ProLogException {
@@ -154,6 +157,7 @@ public class RaizenProdutividadeService {
         }
     }
 
+    @NotNull
     public Response deleteRaizenProdutividade(@NotNull final Long codEmpresa,
                                               @NotNull final List<Long> codRaizenProdutividades) throws ProLogException {
         try {
@@ -166,6 +170,7 @@ public class RaizenProdutividadeService {
         }
     }
 
+    @NotNull
     @SuppressWarnings("Duplicates")
     private File createFileFromImport(@NotNull final Long codEmpresa,
                                       @NotNull final InputStream fileInputStream,

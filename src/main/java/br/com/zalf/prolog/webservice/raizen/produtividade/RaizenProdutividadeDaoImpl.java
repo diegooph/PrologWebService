@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeColaborador;
@@ -185,9 +186,9 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @NotNull
     @Override
-    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(@NotNull final Long codEmpresa,
-                                                                                      @NotNull final Long codItem)
-            throws Throwable {
+    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(
+            @NotNull final Long codEmpresa,
+            @NotNull final Long codItem) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -246,7 +247,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt = conn.prepareStatement("DELETE FROM RAIZEN.PRODUTIVIDADE " +
                     "WHERE COD_EMPRESA = ? AND CODIGO::TEXT LIKE ANY (ARRAY[?])");
             stmt.setLong(1, codEmpresa);
-            stmt.setArray(2, PostgresUtils.ListLongToArray(conn, codRaizenProdutividade));
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, codRaizenProdutividade));
             if (stmt.executeUpdate() == 0) {
                 throw new Throwable("Erro ao deletar produtividade");
             }
