@@ -66,7 +66,7 @@ public class RaizenProdutividadeRelatorioDaoImpl extends DatabaseConnection impl
                                                               @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt =
                 conn.prepareStatement("SELECT * FROM " +
-                        "FUNC_RAIZEN_PRODUTIVIDADE_RELATORIO_DADOS_GERAIS_PRODUTIVIDADE(?, ?, ?);");
+                        "RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_RELATORIO_DADOS_GERAIS_PRODUTIVIDADE(?, ?, ?);");
         stmt.setLong(1, codEmpresa);
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
