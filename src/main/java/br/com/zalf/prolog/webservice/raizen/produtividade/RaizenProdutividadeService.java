@@ -40,11 +40,11 @@ public class RaizenProdutividadeService {
     @NotNull
     public Response uploadRaizenProdutividade(
             @NotNull final String token,
-            @NotNull final Long codEmpresa,
+            @NotNull final Long codUnidade,
             @NotNull final InputStream fileInputStream,
             @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
-            final File file = createFileFromImport(codEmpresa, fileInputStream, fileDetail);
+            final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
             final List<RaizenProdutividadeItemInsert> raizenProdutividadeItens = RaizenProdutividadeReader
                     .readListFromCsvFilePath(file);
             for (RaizenProdutividadeItemInsert item : raizenProdutividadeItens) {
@@ -52,7 +52,7 @@ public class RaizenProdutividadeService {
             }
             dao.insertOrUpdateProdutividadeRaizen(
                     TokenCleaner.getOnlyToken(token),
-                    codEmpresa,
+                    codUnidade,
                     raizenProdutividadeItens);
             return Response.ok("Upload realizado com sucesso!");
         } catch (final Throwable e) {
@@ -65,13 +65,13 @@ public class RaizenProdutividadeService {
     @NotNull
     public Response insertRaizenProdutividade(
             @NotNull final String token,
-            @NotNull final Long codEmpresa,
+            @NotNull final Long codUnidade,
             @NotNull final RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws ProLogException {
         try {
             RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(raizenProdutividadeItemInsert);
             dao.insertRaizenProdutividadeItem(
                     TokenCleaner.getOnlyToken(token),
-                    codEmpresa,
+                    codUnidade,
                     raizenProdutividadeItemInsert);
             return Response.ok("Produtividade cadastrada com sucesso");
         } catch (Throwable e) {
@@ -84,13 +84,13 @@ public class RaizenProdutividadeService {
     @NotNull
     public Response updateRaizenProdutividade(
             @NotNull final String token,
-            @NotNull final Long codEmpresa,
+            @NotNull final Long codUnidade,
             @NotNull final RaizenProdutividadeItemInsert updateRaizenProdutividadeItemInsert) throws ProLogException {
         try {
             RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(updateRaizenProdutividadeItemInsert);
             dao.updateRaizenProdutividadeItem(
                     TokenCleaner.getOnlyToken(token),
-                    codEmpresa,
+                    codUnidade,
                     updateRaizenProdutividadeItemInsert);
             return Response.ok("Produtividade alterada com sucesso");
         } catch (Throwable e) {
@@ -101,7 +101,7 @@ public class RaizenProdutividadeService {
     }
 
     @NotNull
-    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
+    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codUnidade,
                                                             @NotNull final String dataInicial,
                                                             @NotNull final String dataFinal,
                                                             @NotNull final String agrupamento) throws ProLogException {
@@ -112,13 +112,13 @@ public class RaizenProdutividadeService {
             switch (tipoAgrupamento) {
                 case POR_COLABORADOR:
                     itens = dao.getRaizenProdutividadeColaborador(
-                            codEmpresa,
+                            codUnidade,
                             ProLogDateParser.toLocalDate(dataInicial),
                             ProLogDateParser.toLocalDate(dataFinal));
                     break;
                 case POR_DATA:
                     itens = dao.getRaizenProdutividadeData(
-                            codEmpresa,
+                            codUnidade,
                             ProLogDateParser.toLocalDate(dataInicial),
                             ProLogDateParser.toLocalDate(dataFinal));
                     break;
@@ -136,10 +136,10 @@ public class RaizenProdutividadeService {
 
     @NotNull
     public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(
-            @NotNull final Long codEmpresa,
+            @NotNull final Long codUnidade,
             @NotNull final Long codItem) throws ProLogException {
         try {
-            return dao.getRaizenProdutividadeItemVisualizacao(codEmpresa, codItem);
+            return dao.getRaizenProdutividadeItemVisualizacao(codUnidade, codItem);
         } catch (final Throwable e) {
             final String errorMessage = "Não foi possível buscar o item, tente novamente";
             Log.e(TAG, errorMessage, e);
@@ -165,10 +165,10 @@ public class RaizenProdutividadeService {
 
     @NotNull
     public Response deleteRaizenProdutividade(
-            @NotNull final Long codEmpresa,
+            @NotNull final Long codUnidade,
             @NotNull final List<Long> codRaizenProdutividades) throws ProLogException {
         try {
-            dao.deleteRaizenProdutividadeItens(codEmpresa, codRaizenProdutividades);
+            dao.deleteRaizenProdutividadeItens(codUnidade, codRaizenProdutividades);
             return Response.ok("Produtividades deletadas com sucesso!");
         } catch (Throwable e) {
             final String errorMessage = "Não foi possível deletar estes itens, tente novamente";
@@ -179,10 +179,10 @@ public class RaizenProdutividadeService {
 
     @NotNull
     @SuppressWarnings("Duplicates")
-    private File createFileFromImport(@NotNull final Long codEmpresa,
+    private File createFileFromImport(@NotNull final Long codUnidade,
                                       @NotNull final InputStream fileInputStream,
                                       @NotNull final FormDataContentDisposition fileDetail) throws Throwable {
-        final String fileName = String.valueOf(Now.utcMillis()) + "_" + codEmpresa
+        final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade
                 + "_" + fileDetail.getFileName().replace(" ", "_");
         // Pasta temporária
         final File tmpDir = Files.createTempDir();
