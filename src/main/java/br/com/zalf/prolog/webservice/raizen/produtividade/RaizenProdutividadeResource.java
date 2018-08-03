@@ -112,9 +112,10 @@ public class RaizenProdutividadeResource {
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS})
     @Path("/unidades/{codUnidade}/colaboradores/{codColaborador}")
     public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(
+            @PathParam("codUnidade") final Long codUnidade,
             @PathParam("codColaborador") final Long codColaborador,
             @QueryParam("mes") final int mes,
             @QueryParam("ano") final int ano) throws ProLogException {
-        return service.getRaizenProdutividadeIndividual(codColaborador, mes, ano);
+        return service.getRaizenProdutividadeIndividual(codUnidade, codColaborador, mes, ano);
     }
 }

@@ -90,6 +90,7 @@ public interface RaizenProdutividadeDao {
     /**
      * Busca as produtividades de um colaborador individualmente.
      *
+     * @param codUnidade - Código da unidade do colaborador.
      * @param codColaborador - Código do colaborador.
      * @param mes            - mes para a busca.
      * @param ano            - ano para a busca.
@@ -97,7 +98,8 @@ public interface RaizenProdutividadeDao {
      * @throws Throwable - Erro na execução da busca dos dados no Banco.
      */
     @NotNull
-    RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codColaborador,
+    RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codUnidade,
+                                                                         @NotNull final Long codColaborador,
                                                                          final int mes,
                                                                          final int ano) throws Throwable;
 

@@ -146,11 +146,13 @@ public class RaizenProdutividadeService {
     }
 
     @NotNull
-    public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codColaborador,
+    public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codUnidade,
+                                                                                @NotNull final Long codColaborador,
                                                                                 final int mes,
                                                                                 final int ano) throws ProLogException {
         try {
             return dao.getRaizenProdutividadeIndividual(
+                    codUnidade,
                     codColaborador,
                     mes,
                     ano);

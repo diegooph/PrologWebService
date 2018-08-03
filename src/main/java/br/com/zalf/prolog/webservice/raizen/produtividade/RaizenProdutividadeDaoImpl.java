@@ -209,7 +209,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @NotNull
     @Override
-    public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codColaborador,
+    public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codUnidade,
+                                                                                @NotNull final Long codColaborador,
                                                                                 final int mes,
                                                                                 final int ano) throws Throwable {
         Connection conn = null;
@@ -218,10 +219,11 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         List<RaizenprodutividadeItemIndividual> itens;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_INDIVIDUAL(?, ?, ?);");
-            stmt.setLong(1, codColaborador);
-            stmt.setInt(2, mes);
-            stmt.setInt(3, ano);
+            stmt = conn.prepareStatement("SELECT * FROM RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_INDIVIDUAL(?, ?, ?, ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codColaborador);
+            stmt.setInt(3, mes);
+            stmt.setInt(4, ano);
             rSet = stmt.executeQuery();
             itens = new ArrayList<>();
             while (rSet.next()) {
