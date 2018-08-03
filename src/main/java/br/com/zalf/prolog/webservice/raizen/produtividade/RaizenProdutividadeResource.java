@@ -37,36 +37,56 @@ public class RaizenProdutividadeResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.UPLOAD)
-    @Path("/upload/{codEmpresa}")
+    @Path("/unidades/{codUnidade}/upload")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response uploadRaizenProdutividade(
             @HeaderParam("Authorization") final String token,
-            @PathParam("codEmpresa") final Long codEmpresa,
+            @PathParam("codUnidade") final Long codUnidade,
             @FormDataParam("file") final InputStream fileInputStream,
             @FormDataParam("file") final FormDataContentDisposition fileDetail) throws ProLogException {
-        return service.uploadRaizenProdutividade(token, codEmpresa, fileInputStream, fileDetail);
+        return service.uploadRaizenProdutividade(token, codUnidade, fileInputStream, fileDetail);
     }
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.EDITAR)
-    @Path("/{codEmpresa}")
+    @Path("/itens")
     public Response insertRaizenProdutividade(
             @HeaderParam("Authorization") final String token,
-            @PathParam("codEmpresa") final Long codEmpresa,
             final RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws ProLogException {
-        return service.insertRaizenProdutividade(token, codEmpresa, raizenProdutividadeItemInsert);
+        return service.insertRaizenProdutividade(token, raizenProdutividadeItemInsert);
     }
 
     @PUT
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.EDITAR)
-    @Path("/{codEmpresa}")
+    @Path("/itens/{codItem}")
     public Response updateRaizenProdutividade(
             @HeaderParam("Authorization") final String token,
-            @PathParam("codEmpresa") final Long codEmpresa,
+            @PathParam("codItem") final Long codItem,
             final RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws ProLogException {
-        return service.updateRaizenProdutividade(token, codEmpresa, raizenProdutividadeItemInsert);
+        return service.updateRaizenProdutividade(token, codItem, raizenProdutividadeItemInsert);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = {
+            Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS,
+            Pilares.Entrega.RaizenProdutividade.EDITAR,
+            Pilares.Entrega.RaizenProdutividade.UPLOAD,
+            Pilares.Entrega.RaizenProdutividade.DELETAR})
+    @Path("/itens/{codItem}")
+    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(
+            @PathParam("codItem") final Long codItem) throws ProLogException {
+        return service.getRaizenProdutividadeItem(codItem);
+    }
+
+    @DELETE
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.DELETAR)
+    @Path("itens")
+    public Response deleteRaizenProdutividadeItens(final List<Long> codRaizenProdutividades) throws ProLogException {
+        return service.deleteRaizenProdutividade(codRaizenProdutividades);
     }
 
     @GET
@@ -76,27 +96,13 @@ public class RaizenProdutividadeResource {
             Pilares.Entrega.RaizenProdutividade.EDITAR,
             Pilares.Entrega.RaizenProdutividade.UPLOAD,
             Pilares.Entrega.RaizenProdutividade.DELETAR})
-    @Path("/{codEmpresa}")
+    @Path("/unidades/{codUnidade}")
     public List<RaizenProdutividade> getRaizenProdutividade(
-            @PathParam("codEmpresa") final Long codEmpresa,
+            @PathParam("codUnidade") final Long codUnidade,
             @QueryParam("dataInicial") final String dataIncial,
             @QueryParam("dataFinal") final String dataFinal,
             @QueryParam("tipoAgrupamento") final String agrupamento) throws ProLogException {
-        return service.getRaizenProdutividade(codEmpresa, dataIncial, dataFinal, agrupamento);
-    }
-
-    @GET
-    @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = {
-            Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS,
-            Pilares.Entrega.RaizenProdutividade.EDITAR,
-            Pilares.Entrega.RaizenProdutividade.UPLOAD,
-            Pilares.Entrega.RaizenProdutividade.DELETAR})
-    @Path("/{codEmpresa}/itens/{codItem}")
-    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(
-            @PathParam("codEmpresa") final Long codEmpresa,
-            @PathParam("codItem") final Long codItem) throws ProLogException {
-        return service.getRaizenProdutividadeItem(codEmpresa, codItem);
+        return service.getRaizenProdutividade(codUnidade, dataIncial, dataFinal, agrupamento);
     }
 
     @GET
@@ -104,20 +110,12 @@ public class RaizenProdutividadeResource {
     @Secured(permissions = {
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS,
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS})
-    @Path("/colaboradores/{codColaborador}")
+    @Path("/unidades/{codUnidade}/colaboradores/{codColaborador}")
     public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(
+            @PathParam("codUnidade") final Long codUnidade,
             @PathParam("codColaborador") final Long codColaborador,
             @QueryParam("mes") final int mes,
             @QueryParam("ano") final int ano) throws ProLogException {
-        return service.getRaizenProdutividadeIndividual(codColaborador, mes, ano);
-    }
-
-    @DELETE
-    @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.DELETAR)
-    @Path("/{codEmpresa}")
-    public Response deleteRaizenProdutividadeItens(@PathParam("codEmpresa") final Long codEmpresa,
-                                                   final List<Long> codRaizenProdutividades) throws ProLogException {
-        return service.deleteRaizenProdutividade(codEmpresa, codRaizenProdutividades);
+        return service.getRaizenProdutividadeIndividual(codUnidade, codColaborador, mes, ano);
     }
 }

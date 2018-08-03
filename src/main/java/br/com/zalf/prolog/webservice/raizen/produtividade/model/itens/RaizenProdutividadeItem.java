@@ -22,7 +22,7 @@ public abstract class RaizenProdutividadeItem {
     private BigDecimal toneladas;
     private Long codColaboradorCadastro;
     private Long codColaboradorAlteracao;
-    private Long codEmpresa;
+    private Long codUnidade;
 
     @Exclude
     private final RaizenProdutividadeItemTipo tipo;
@@ -111,12 +111,12 @@ public abstract class RaizenProdutividadeItem {
         this.codColaboradorAlteracao = codColaboradorAlteracao;
     }
 
-    public Long getCodEmpresa() {
-        return codEmpresa;
+    public Long getCodUnidade() {
+        return codUnidade;
     }
 
-    public void setCodEmpresa(Long codEmpresa) {
-        this.codEmpresa = codEmpresa;
+    public void setCodUnidade(Long codUnidade) {
+        this.codUnidade = codUnidade;
     }
 
     @Override

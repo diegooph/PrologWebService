@@ -19,10 +19,19 @@ public class RaizenProdutividadeItemInsert {
     private Long codEmpresa;
     private Long cpfMotorista;
     private LocalDate dataViagem;
+    private Long codUnidade;
     private int linha = -1;
 
     public RaizenProdutividadeItemInsert() {
 
+    }
+
+    public Long getCodUnidade() {
+        return codUnidade;
+    }
+
+    public void setCodUnidade(final Long codUnidade) {
+        this.codUnidade = codUnidade;
     }
 
     public Long getCodigo() {

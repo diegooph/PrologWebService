@@ -22,13 +22,11 @@ public interface RaizenProdutividadeDao {
      *
      * @param token       - Token recebido no request.
      *                    Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
-     * @param codEmpresa  - Código da empresa do colaborador.
      * @param raizenItens -
      * @throws Throwable - Erro ao executar consulta no Banco de Dados.
      */
     void insertOrUpdateProdutividadeRaizen(
             @NotNull final String token,
-            @NotNull final Long codEmpresa,
             @NotNull final List<RaizenProdutividadeItemInsert> raizenItens) throws Throwable;
 
     /**
@@ -36,12 +34,10 @@ public interface RaizenProdutividadeDao {
      *
      * @param token      - Token recebido no request.
      *                   Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
-     * @param codEmpresa - Código da empresa do colaborador.
      * @param item       - Item que será inserido.
      * @throws Throwable - Erro na execução do insert.
      */
     void insertRaizenProdutividadeItem(@NotNull final String token,
-                                       @NotNull final Long codEmpresa,
                                        @NotNull final RaizenProdutividadeItemInsert item) throws Throwable;
 
     /**
@@ -49,18 +45,18 @@ public interface RaizenProdutividadeDao {
      *
      * @param token      - Token recebido no request.
      *                   Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
-     * @param codEmpresa - Código da empresa do colaborador.
+     * @param codItem    - Código único do item.
      * @param item       - Item que será inserido.
      * @throws Throwable - Erro na execução do insert.
      */
     void updateRaizenProdutividadeItem(@NotNull final String token,
-                                       @NotNull final Long codEmpresa,
+                                       @NotNull final Long codItem,
                                        @NotNull final RaizenProdutividadeItemInsert item) throws Throwable;
 
     /**
      * Busca as produtividades de um colaborador por um período de tempo.
      *
-     * @param codEmpresa  - Código da empresa do colaborador.
+     * @param codUnidade  - Código da unidade do colaborador.
      * @param dataInicial - Data inicial do filtro de busca.
      * @param dataFinal   - Data final do filtro de busca.
      * @return - Um {@link List<RaizenProdutividade>} contendo a
@@ -68,14 +64,14 @@ public interface RaizenProdutividadeDao {
      * @throws Throwable - Erro na execução da busca dos dados no Banco.
      */
     @NotNull
-    List<RaizenProdutividade> getRaizenProdutividadeColaborador(@NotNull final Long codEmpresa,
+    List<RaizenProdutividade> getRaizenProdutividadeColaborador(@NotNull final Long codUnidade,
                                                                 @NotNull final LocalDate dataInicial,
                                                                 @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Busca as produtividades de um colaborador por um período de tempo.
      *
-     * @param codEmpresa  - Código da empresa do colaborador.
+     * @param codUnidade  - Código da unidade do colaborador.
      * @param dataInicial - Data inicial do filtro de busca.
      * @param dataFinal   - Data final do filtro de busca.
      * @return - Um {@link List<RaizenProdutividade>} contendo a
@@ -83,18 +79,18 @@ public interface RaizenProdutividadeDao {
      * @throws Throwable - Erro na execução da busca dos dados no Banco.
      */
     @NotNull
-    List<RaizenProdutividade> getRaizenProdutividadeData(@NotNull final Long codEmpresa,
+    List<RaizenProdutividade> getRaizenProdutividadeData(@NotNull final Long codUnidade,
                                                          @NotNull final LocalDate dataInicial,
                                                          @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
-    RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(
-            @NotNull final Long codEmpresa,
-            @NotNull final Long codItem) throws Throwable;
+    RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(@NotNull final Long codItem)
+            throws Throwable;
 
     /**
      * Busca as produtividades de um colaborador individualmente.
      *
+     * @param codUnidade - Código da unidade do colaborador.
      * @param codColaborador - Código do colaborador.
      * @param mes            - mes para a busca.
      * @param ano            - ano para a busca.
@@ -102,7 +98,8 @@ public interface RaizenProdutividadeDao {
      * @throws Throwable - Erro na execução da busca dos dados no Banco.
      */
     @NotNull
-    RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codColaborador,
+    RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(@NotNull final Long codUnidade,
+                                                                         @NotNull final Long codColaborador,
                                                                          final int mes,
                                                                          final int ano) throws Throwable;
 
@@ -112,6 +109,5 @@ public interface RaizenProdutividadeDao {
      * @param codRaizenProdutividades - {@link List<Long>} contendo os códigos produtividades que deverão ser deletadas.
      * @throws Throwable - Erro na execução do delete.
      */
-    void deleteRaizenProdutividadeItens(@NotNull final Long codEmpresa,
-                                        @NotNull final List<Long> codRaizenProdutividades) throws Throwable;
+    void deleteRaizenProdutividadeItens(@NotNull final List<Long> codRaizenProdutividades) throws Throwable;
 }
