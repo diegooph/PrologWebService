@@ -77,7 +77,7 @@ class RaizenProdutividadeConverter {
         item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        item.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         return item;
     }
 
@@ -96,7 +96,7 @@ class RaizenProdutividadeConverter {
         item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        item.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         return item;
     }
 
@@ -117,7 +117,7 @@ class RaizenProdutividadeConverter {
         item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        item.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         return item;
     }
 }
