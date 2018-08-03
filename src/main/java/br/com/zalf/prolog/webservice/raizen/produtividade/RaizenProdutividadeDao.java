@@ -22,13 +22,11 @@ public interface RaizenProdutividadeDao {
      *
      * @param token       - Token recebido no request.
      *                    Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
-     * @param codUnidade  - Código da unidade do colaborador.
      * @param raizenItens -
      * @throws Throwable - Erro ao executar consulta no Banco de Dados.
      */
     void insertOrUpdateProdutividadeRaizen(
             @NotNull final String token,
-            @NotNull final Long codUnidade,
             @NotNull final List<RaizenProdutividadeItemInsert> raizenItens) throws Throwable;
 
     /**
@@ -36,12 +34,10 @@ public interface RaizenProdutividadeDao {
      *
      * @param token      - Token recebido no request.
      *                   Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
-     * @param codUnidade - Código da unidade do colaborador.
      * @param item       - Item que será inserido.
      * @throws Throwable - Erro na execução do insert.
      */
     void insertRaizenProdutividadeItem(@NotNull final String token,
-                                       @NotNull final Long codUnidade,
                                        @NotNull final RaizenProdutividadeItemInsert item) throws Throwable;
 
     /**
@@ -49,12 +45,12 @@ public interface RaizenProdutividadeDao {
      *
      * @param token      - Token recebido no request.
      *                   Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
-     * @param codUnidade - Código da unidade do colaborador.
+     * @param codItem    - Código único do item.
      * @param item       - Item que será inserido.
      * @throws Throwable - Erro na execução do insert.
      */
     void updateRaizenProdutividadeItem(@NotNull final String token,
-                                       @NotNull final Long codUnidade,
+                                       @NotNull final Long codItem,
                                        @NotNull final RaizenProdutividadeItemInsert item) throws Throwable;
 
     /**
@@ -88,9 +84,8 @@ public interface RaizenProdutividadeDao {
                                                          @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
-    RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codItem) throws Throwable;
+    RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(@NotNull final Long codItem)
+            throws Throwable;
 
     /**
      * Busca as produtividades de um colaborador individualmente.

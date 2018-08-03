@@ -50,23 +50,22 @@ public class RaizenProdutividadeResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.EDITAR)
-    @Path("/{codUnidade}")
+    @Path("/itens")
     public Response insertRaizenProdutividade(
             @HeaderParam("Authorization") final String token,
-            @PathParam("codUnidade") final Long codUnidade,
             final RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws ProLogException {
-        return service.insertRaizenProdutividade(token, codUnidade, raizenProdutividadeItemInsert);
+        return service.insertRaizenProdutividade(token, raizenProdutividadeItemInsert);
     }
 
     @PUT
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.EDITAR)
-    @Path("/{codUnidade}")
+    @Path("/itens/{codItem}")
     public Response updateRaizenProdutividade(
             @HeaderParam("Authorization") final String token,
-            @PathParam("codUnidade") final Long codUnidade,
+            @PathParam("codItem") final Long codItem,
             final RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws ProLogException {
-        return service.updateRaizenProdutividade(token, codUnidade, raizenProdutividadeItemInsert);
+        return service.updateRaizenProdutividade(token, codItem, raizenProdutividadeItemInsert);
     }
 
     @GET
@@ -92,11 +91,10 @@ public class RaizenProdutividadeResource {
             Pilares.Entrega.RaizenProdutividade.EDITAR,
             Pilares.Entrega.RaizenProdutividade.UPLOAD,
             Pilares.Entrega.RaizenProdutividade.DELETAR})
-    @Path("/{codUnidade}/itens/{codItem}")
+    @Path("/itens/{codItem}")
     public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(
-            @PathParam("codUnidade") final Long codUnidade,
             @PathParam("codItem") final Long codItem) throws ProLogException {
-        return service.getRaizenProdutividadeItem(codUnidade, codItem);
+        return service.getRaizenProdutividadeItem(codItem);
     }
 
     @GET

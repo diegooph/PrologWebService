@@ -49,10 +49,11 @@ public class RaizenProdutividadeService {
                     .readListFromCsvFilePath(file);
             for (RaizenProdutividadeItemInsert item : raizenProdutividadeItens) {
                 RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(item);
+                // O código da unidade vem no path pois os itens são importados através de arquivo.
+                item.setCodUnidade(codUnidade);
             }
             dao.insertOrUpdateProdutividadeRaizen(
                     TokenCleaner.getOnlyToken(token),
-                    codUnidade,
                     raizenProdutividadeItens);
             return Response.ok("Upload realizado com sucesso!");
         } catch (final Throwable e) {
@@ -65,13 +66,11 @@ public class RaizenProdutividadeService {
     @NotNull
     public Response insertRaizenProdutividade(
             @NotNull final String token,
-            @NotNull final Long codUnidade,
             @NotNull final RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws ProLogException {
         try {
             RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(raizenProdutividadeItemInsert);
             dao.insertRaizenProdutividadeItem(
                     TokenCleaner.getOnlyToken(token),
-                    codUnidade,
                     raizenProdutividadeItemInsert);
             return Response.ok("Produtividade cadastrada com sucesso");
         } catch (Throwable e) {
@@ -84,13 +83,13 @@ public class RaizenProdutividadeService {
     @NotNull
     public Response updateRaizenProdutividade(
             @NotNull final String token,
-            @NotNull final Long codUnidade,
+            @NotNull final Long codItem,
             @NotNull final RaizenProdutividadeItemInsert updateRaizenProdutividadeItemInsert) throws ProLogException {
         try {
             RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(updateRaizenProdutividadeItemInsert);
             dao.updateRaizenProdutividadeItem(
                     TokenCleaner.getOnlyToken(token),
-                    codUnidade,
+                    codItem,
                     updateRaizenProdutividadeItemInsert);
             return Response.ok("Produtividade alterada com sucesso");
         } catch (Throwable e) {
@@ -135,11 +134,10 @@ public class RaizenProdutividadeService {
     }
 
     @NotNull
-    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codItem) throws ProLogException {
+    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(@NotNull final Long codItem)
+            throws ProLogException {
         try {
-            return dao.getRaizenProdutividadeItemVisualizacao(codUnidade, codItem);
+            return dao.getRaizenProdutividadeItemVisualizacao(codItem);
         } catch (final Throwable e) {
             final String errorMessage = "Não foi possível buscar o item, tente novamente";
             Log.e(TAG, errorMessage, e);

@@ -34,14 +34,13 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public void insertOrUpdateProdutividadeRaizen(
             @NotNull final String token,
-            @NotNull final Long codUnidade,
             @NotNull final List<RaizenProdutividadeItemInsert> raizenItens) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             for (final RaizenProdutividadeItemInsert item : raizenItens) {
-                if (!updateRaizenProdutividadeUpload(conn, token, codUnidade, item)) {
-                    internalInsertRaizenProdutividadeItem(conn, token, codUnidade, item);
+                if (!updateRaizenProdutividadeUpload(conn, token, item)) {
+                    internalInsertRaizenProdutividadeItem(conn, token, item);
                 }
             }
         } finally {
@@ -51,12 +50,11 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @Override
     public void insertRaizenProdutividadeItem(@NotNull final String token,
-                                              @NotNull final Long codUnidade,
                                               @NotNull final RaizenProdutividadeItemInsert item) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
-            internalInsertRaizenProdutividadeItem(conn, token, codUnidade, item);
+            internalInsertRaizenProdutividadeItem(conn, token, item);
         } finally {
             closeConnection(conn);
         }
@@ -64,7 +62,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @Override
     public void updateRaizenProdutividadeItem(@NotNull final String token,
-                                              @NotNull final Long codUnidade,
+                                              @NotNull final Long codItem,
                                               @NotNull final RaizenProdutividadeItemInsert item) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -78,6 +76,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   FAZENDA = ?," +
                     "   RAIO_KM = ?," +
                     "   TONELADAS = ?," +
+                    "   UNIDADE = ?," +
                     "   COD_COLABORADOR_ALTERACAO = (SELECT CO.CODIGO FROM COLABORADOR CO JOIN TOKEN_AUTENTICACAO TA " +
                     "ON CO.CPF = TA.CPF_COLABORADOR WHERE TA.TOKEN = ?) " +
                     "WHERE CODIGO = ?");
@@ -89,8 +88,9 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setString(6, item.getFazenda());
             stmt.setBigDecimal(7, item.getRaioKm());
             stmt.setBigDecimal(8, item.getToneladas());
-            stmt.setString(9, token);
-            stmt.setLong(10, item.getCodigo());
+            stmt.setLong(9, item.getCodUnidade());
+            stmt.setString(10, token);
+            stmt.setLong(11, item.getCodigo());
             if (stmt.executeUpdate() == 0) {
                 // nenhum para item atualizado
                 throw new SQLDataException("Não foi possível atualizar o item de código: " + item.getCodigo());
@@ -187,16 +187,14 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @NotNull
     @Override
-    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codItem) throws Throwable {
+    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(@NotNull final Long codItem)
+            throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_GET_ITEM_POR_CODIGO(?, ?);");
-            stmt.setLong(1, codUnidade);
+            stmt = conn.prepareStatement("SELECT * FROM RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_GET_ITEM_POR_CODIGO(?);");
             stmt.setLong(2, codItem);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -260,7 +258,6 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     private void internalInsertRaizenProdutividadeItem(
             @NotNull final Connection conn,
             @NotNull final String token,
-            @NotNull final Long codUnidade,
             @NotNull final RaizenProdutividadeItemInsert item) throws Throwable {
         PreparedStatement stmt = null;
         try {
@@ -291,7 +288,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setBigDecimal(8, item.getToneladas());
             stmt.setString(9, token);
             stmt.setString(10, token);
-            stmt.setLong(11, codUnidade);
+            stmt.setLong(11, item.getCodUnidade());
             if (stmt.executeUpdate() == 0) {
                 throw new Throwable("Erro ao inserir item na tabela produtividade");
             }
@@ -302,7 +299,6 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     private boolean updateRaizenProdutividadeUpload(@NotNull final Connection conn,
                                                     @NotNull final String token,
-                                                    @NotNull final Long codUnidade,
                                                     @NotNull final RaizenProdutividadeItemInsert item) throws Throwable {
         PreparedStatement stmt = null;
         try {
@@ -333,7 +329,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setLong(10, item.getCpfMotorista());
             stmt.setString(11, item.getPlaca());
             stmt.setObject(12, item.getDataViagem());
-            stmt.setLong(13, codUnidade);
+            stmt.setLong(13, item.getCodUnidade());
             // True se o item foi atualizado.
             return stmt.executeUpdate() != 0;
         } finally {
