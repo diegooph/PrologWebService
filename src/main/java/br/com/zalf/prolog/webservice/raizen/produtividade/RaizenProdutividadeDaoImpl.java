@@ -76,7 +76,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   FAZENDA = ?," +
                     "   RAIO_KM = ?," +
                     "   TONELADAS = ?," +
-                    "   UNIDADE = ?," +
+                    "   COD_UNIDADE = ?," +
                     "   COD_COLABORADOR_ALTERACAO = (SELECT CO.CODIGO FROM COLABORADOR CO JOIN TOKEN_AUTENTICACAO TA " +
                     "ON CO.CPF = TA.CPF_COLABORADOR WHERE TA.TOKEN = ?) " +
                     "WHERE CODIGO = ?");
