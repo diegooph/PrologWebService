@@ -28,19 +28,19 @@ public class RaizenProdutividadeRelatorioResource {
 
     @GET
     @Produces("application/csv")
-    @Path("/dados-gerais-produtividades/{codEmpresa}/csv")
-    public StreamingOutput getDadosGeraisProdutividadeCsv(@PathParam("codEmpresa") @Required final Long codEmpresa,
+    @Path("/dados-gerais-produtividades/{codUnidade}/csv")
+    public StreamingOutput getDadosGeraisProdutividadeCsv(@PathParam("codUnidade") @Required final Long codUnidade,
                                                           @QueryParam("dataInicial") @Required final String dataInicial,
                                                           @QueryParam("dataFinal") @Required final String dataFinal) {
-        return outputStream -> service.getDadosGeraisProdutividadeCsv(outputStream, codEmpresa, dataInicial, dataFinal);
+        return outputStream -> service.getDadosGeraisProdutividadeCsv(outputStream, codUnidade, dataInicial, dataFinal);
     }
 
     @GET
-    @Path("/dados-gerais-produtividades/{codEmpresa}/csv")
-    public Report getDadosGeraisProdutividadeReport(@PathParam("codEmpresa") @Required final Long codEmpresa,
+    @Path("/dados-gerais-produtividades/{codUnidade}/csv")
+    public Report getDadosGeraisProdutividadeReport(@PathParam("codUnidade") @Required final Long codUnidade,
                                                     @QueryParam("dataInicial") @Required final String dataInicial,
                                                     @QueryParam("dataFinal") @Required final String dataFinal)
             throws ProLogException {
-        return service.getDadosGeraisProdutividadeReport(codEmpresa, dataInicial, dataFinal);
+        return service.getDadosGeraisProdutividadeReport(codUnidade, dataInicial, dataFinal);
     }
 }

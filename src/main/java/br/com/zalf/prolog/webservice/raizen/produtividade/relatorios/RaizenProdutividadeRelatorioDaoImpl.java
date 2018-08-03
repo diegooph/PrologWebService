@@ -21,7 +21,7 @@ public class RaizenProdutividadeRelatorioDaoImpl extends DatabaseConnection impl
 
     @Override
     public void getDadosGeraisProdutividadeCsv(@NotNull final OutputStream out,
-                                               @NotNull final Long codEmpresa,
+                                               @NotNull final Long codUnidade,
                                                @NotNull final LocalDate dataInicial,
                                                @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -29,7 +29,7 @@ public class RaizenProdutividadeRelatorioDaoImpl extends DatabaseConnection impl
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisProdutividadeStmt(conn, codEmpresa, dataInicial, dataFinal);
+            stmt = getDadosGeraisProdutividadeStmt(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(out)
@@ -43,7 +43,7 @@ public class RaizenProdutividadeRelatorioDaoImpl extends DatabaseConnection impl
 
     @NotNull
     @Override
-    public Report getDadosGeraisProdutividadeReport(@NotNull final Long codEmpresa,
+    public Report getDadosGeraisProdutividadeReport(@NotNull final Long codUnidade,
                                                     @NotNull final LocalDate dataInicial,
                                                     @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -51,7 +51,7 @@ public class RaizenProdutividadeRelatorioDaoImpl extends DatabaseConnection impl
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisProdutividadeStmt(conn, codEmpresa, dataInicial, dataFinal);
+            stmt = getDadosGeraisProdutividadeStmt(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -61,13 +61,13 @@ public class RaizenProdutividadeRelatorioDaoImpl extends DatabaseConnection impl
 
     @NotNull
     private PreparedStatement getDadosGeraisProdutividadeStmt(@NotNull final Connection conn,
-                                                              @NotNull final Long codEmpresa,
+                                                              @NotNull final Long codUnidade,
                                                               @NotNull final LocalDate dataInicial,
                                                               @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt =
                 conn.prepareStatement("SELECT * FROM " +
                         "RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_RELATORIO_DADOS_GERAIS_PRODUTIVIDADE(?, ?, ?);");
-        stmt.setLong(1, codEmpresa);
+        stmt.setLong(1, codUnidade);
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
         return stmt;
