@@ -36,7 +36,7 @@ public class RaizenProdutividadeRelatorioResource {
     }
 
     @GET
-    @Path("/dados-gerais-produtividades/{codUnidade}/csv")
+    @Path("/dados-gerais-produtividades/{codUnidade}/report")
     public Report getDadosGeraisProdutividadeReport(@PathParam("codUnidade") @Required final Long codUnidade,
                                                     @QueryParam("dataInicial") @Required final String dataInicial,
                                                     @QueryParam("dataFinal") @Required final String dataFinal)
