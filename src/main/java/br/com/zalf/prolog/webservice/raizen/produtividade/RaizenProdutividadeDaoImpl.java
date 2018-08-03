@@ -195,7 +195,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM RAIZEN.FUNC_RAIZEN_PRODUTIVIDADE_GET_ITEM_POR_CODIGO(?);");
-            stmt.setLong(2, codItem);
+            stmt.setLong(1, codItem);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return RaizenProdutividadeConverter.createRaizenProdutividadeItemVisualizacao(rSet);
