@@ -37,7 +37,7 @@ public class RaizenProdutividadeResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.UPLOAD)
-    @Path("/upload/{codUnidade}")
+    @Path("/unidades/{codUnidade}/upload")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response uploadRaizenProdutividade(
             @HeaderParam("Authorization") final String token,
@@ -96,7 +96,7 @@ public class RaizenProdutividadeResource {
             Pilares.Entrega.RaizenProdutividade.EDITAR,
             Pilares.Entrega.RaizenProdutividade.UPLOAD,
             Pilares.Entrega.RaizenProdutividade.DELETAR})
-    @Path("/{codUnidade}")
+    @Path("/unidades/{codUnidade}")
     public List<RaizenProdutividade> getRaizenProdutividade(
             @PathParam("codUnidade") final Long codUnidade,
             @QueryParam("dataInicial") final String dataIncial,
@@ -110,7 +110,7 @@ public class RaizenProdutividadeResource {
     @Secured(permissions = {
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS,
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS})
-    @Path("/colaboradores/{codColaborador}")
+    @Path("/unidades/{codUnidade}/colaboradores/{codColaborador}")
     public RaizenProdutividadeIndividualHolder getRaizenProdutividadeIndividual(
             @PathParam("codColaborador") final Long codColaborador,
             @QueryParam("mes") final int mes,
