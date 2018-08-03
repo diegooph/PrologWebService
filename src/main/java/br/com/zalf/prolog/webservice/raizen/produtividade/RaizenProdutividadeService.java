@@ -162,11 +162,9 @@ public class RaizenProdutividadeService {
     }
 
     @NotNull
-    public Response deleteRaizenProdutividade(
-            @NotNull final Long codUnidade,
-            @NotNull final List<Long> codRaizenProdutividades) throws ProLogException {
+    public Response deleteRaizenProdutividade(@NotNull final List<Long> codRaizenProdutividades) throws ProLogException {
         try {
-            dao.deleteRaizenProdutividadeItens(codUnidade, codRaizenProdutividades);
+            dao.deleteRaizenProdutividadeItens(codRaizenProdutividades);
             return Response.ok("Produtividades deletadas com sucesso!");
         } catch (Throwable e) {
             final String errorMessage = "Não foi possível deletar estes itens, tente novamente";

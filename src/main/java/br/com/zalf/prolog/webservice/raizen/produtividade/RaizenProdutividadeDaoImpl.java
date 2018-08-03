@@ -234,8 +234,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     }
 
     @Override
-    public void deleteRaizenProdutividadeItens(@NotNull final Long codUnidade,
-                                               @NotNull final List<Long> codRaizenProdutividade) throws Throwable {
+    public void deleteRaizenProdutividadeItens(@NotNull final List<Long> codRaizenProdutividade) throws Throwable {
         if (codRaizenProdutividade.isEmpty())
             return;
 
@@ -243,10 +242,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM RAIZEN.PRODUTIVIDADE " +
-                    "WHERE COD_UNIDADE = ? AND CODIGO::TEXT LIKE ANY (ARRAY[?])");
-            stmt.setLong(1, codUnidade);
-            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, codRaizenProdutividade));
+            stmt = conn.prepareStatement("DELETE FROM RAIZEN.PRODUTIVIDADE WHERE CODIGO::TEXT LIKE ANY (ARRAY[?]);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codRaizenProdutividade));
             if (stmt.executeUpdate() == 0) {
                 throw new Throwable("Erro ao deletar produtividade");
             }

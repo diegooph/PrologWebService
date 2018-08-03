@@ -107,6 +107,5 @@ public interface RaizenProdutividadeDao {
      * @param codRaizenProdutividades - {@link List<Long>} contendo os códigos produtividades que deverão ser deletadas.
      * @throws Throwable - Erro na execução do delete.
      */
-    void deleteRaizenProdutividadeItens(@NotNull final Long codUnidade,
-                                        @NotNull final List<Long> codRaizenProdutividades) throws Throwable;
+    void deleteRaizenProdutividadeItens(@NotNull final List<Long> codRaizenProdutividades) throws Throwable;
 }

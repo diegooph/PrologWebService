@@ -69,6 +69,27 @@ public class RaizenProdutividadeResource {
     }
 
     @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = {
+            Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS,
+            Pilares.Entrega.RaizenProdutividade.EDITAR,
+            Pilares.Entrega.RaizenProdutividade.UPLOAD,
+            Pilares.Entrega.RaizenProdutividade.DELETAR})
+    @Path("/itens/{codItem}")
+    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(
+            @PathParam("codItem") final Long codItem) throws ProLogException {
+        return service.getRaizenProdutividadeItem(codItem);
+    }
+
+    @DELETE
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.DELETAR)
+    @Path("itens")
+    public Response deleteRaizenProdutividadeItens(final List<Long> codRaizenProdutividades) throws ProLogException {
+        return service.deleteRaizenProdutividade(codRaizenProdutividades);
+    }
+
+    @GET
     @UsedBy(platforms = {Platform.WEBSITE})
     @Secured(permissions = {
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS,
@@ -85,19 +106,6 @@ public class RaizenProdutividadeResource {
     }
 
     @GET
-    @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = {
-            Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS,
-            Pilares.Entrega.RaizenProdutividade.EDITAR,
-            Pilares.Entrega.RaizenProdutividade.UPLOAD,
-            Pilares.Entrega.RaizenProdutividade.DELETAR})
-    @Path("/itens/{codItem}")
-    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(
-            @PathParam("codItem") final Long codItem) throws ProLogException {
-        return service.getRaizenProdutividadeItem(codItem);
-    }
-
-    @GET
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(permissions = {
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS,
@@ -108,14 +116,5 @@ public class RaizenProdutividadeResource {
             @QueryParam("mes") final int mes,
             @QueryParam("ano") final int ano) throws ProLogException {
         return service.getRaizenProdutividadeIndividual(codColaborador, mes, ano);
-    }
-
-    @DELETE
-    @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.DELETAR)
-    @Path("/{codUnidade}")
-    public Response deleteRaizenProdutividadeItens(@PathParam("codUnidade") final Long codUnidade,
-                                                   final List<Long> codRaizenProdutividades) throws ProLogException {
-        return service.deleteRaizenProdutividade(codUnidade, codRaizenProdutividades);
     }
 }
