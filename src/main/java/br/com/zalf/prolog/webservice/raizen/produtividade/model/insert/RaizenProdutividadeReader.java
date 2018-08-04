@@ -77,7 +77,7 @@ public class RaizenProdutividadeReader {
         }
         // VALOR
         if (!linha[3].trim().isEmpty()) {
-            item.setValor(new BigDecimal(linha[3].trim().replaceAll(",", ".")));
+            item.setValor(new BigDecimal(linha[3].trim().replaceAll("[^0-9 .,]|(?<!\\d)[.,]|[.,](?!\\d)", "")));
         }
         // USINA
         if (!linha[4].trim().isEmpty()) {
