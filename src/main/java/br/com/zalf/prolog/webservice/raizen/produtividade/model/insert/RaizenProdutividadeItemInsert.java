@@ -14,14 +14,24 @@ public class RaizenProdutividadeItemInsert {
     private BigDecimal valor;
     private String usina;
     private String fazenda;
-    private double raio;
-    private double toneladas;
+    private BigDecimal raioKm;
+    private BigDecimal toneladas;
     private Long codEmpresa;
     private Long cpfMotorista;
     private LocalDate dataViagem;
+    private Long codUnidade;
+    private int linha = -1;
 
     public RaizenProdutividadeItemInsert() {
 
+    }
+
+    public Long getCodUnidade() {
+        return codUnidade;
+    }
+
+    public void setCodUnidade(final Long codUnidade) {
+        this.codUnidade = codUnidade;
     }
 
     public Long getCodigo() {
@@ -64,19 +74,19 @@ public class RaizenProdutividadeItemInsert {
         this.fazenda = fazenda;
     }
 
-    public double getRaio() {
-        return raio;
+    public BigDecimal getRaioKm() {
+        return raioKm;
     }
 
-    public void setRaio(final double raio) {
-        this.raio = raio;
+    public void setRaioKm(final BigDecimal raioKm) {
+        this.raioKm = raioKm;
     }
 
-    public double getToneladas() {
+    public BigDecimal getToneladas() {
         return toneladas;
     }
 
-    public void setToneladas(final double toneladas) {
+    public void setToneladas(final BigDecimal toneladas) {
         this.toneladas = toneladas;
     }
 
@@ -102,5 +112,20 @@ public class RaizenProdutividadeItemInsert {
 
     public void setDataViagem(final LocalDate dataViagem) {
         this.dataViagem = dataViagem;
+    }
+
+    public int getLinha() {
+        return linha;
+    }
+
+    public void setLinha(int linha) {
+        this.linha = linha;
+    }
+
+    public String getLinhaOrEmpty(int linha) {
+        if (linha > -1) {
+            return "(linha da planilha: " + linha + ")";
+        }
+        return "";
     }
 }

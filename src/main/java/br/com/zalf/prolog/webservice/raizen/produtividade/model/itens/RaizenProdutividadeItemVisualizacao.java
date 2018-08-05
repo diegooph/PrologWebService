@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.model.itens;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+
 import java.time.LocalDate;
 
 /**
@@ -9,6 +11,7 @@ import java.time.LocalDate;
  */
 public class RaizenProdutividadeItemVisualizacao extends RaizenProdutividadeItem {
     private Long cpfColaborador;
+    private String cpfExibicaoColaborador;
     private boolean colaboradorCadastrado;
     private LocalDate dataViagem;
 
@@ -24,13 +27,13 @@ public class RaizenProdutividadeItemVisualizacao extends RaizenProdutividadeItem
         this.dataViagem = dataViagem;
     }
 
-
     public Long getCpfColaborador() {
         return cpfColaborador;
     }
 
     public void setCpfColaborador(final Long cpfColaborador) {
         this.cpfColaborador = cpfColaborador;
+        this.cpfExibicaoColaborador = Colaborador.formatCpf(cpfColaborador);
     }
 
     public boolean isColaboradorCadastrado() {

@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeColaborador;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeData;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemColaborador;
@@ -22,49 +21,43 @@ import java.util.List;
 class RaizenProdutividadeConverter {
 
     private RaizenProdutividadeConverter() {
-        throw new IllegalStateException(RaizenProdutividadeConverter.class.getSimpleName() + " cannot be " +
-                "instantiated!");
+        throw new IllegalStateException(RaizenProdutividadeConverter.class.getSimpleName()
+                + " cannot be instantiated!");
     }
 
     @NotNull
-    static RaizenProdutividadeColaborador createRaizenProdutividadeColaborador(@NotNull final ResultSet rSet,
-                                                                               @NotNull final
-                                                                               List<RaizenProdutividade> produtividades)
-            throws Throwable {
+    static RaizenProdutividadeColaborador createRaizenProdutividadeColaborador(
+            @NotNull final ResultSet rSet) throws Throwable {
         final List<RaizenProdutividadeItemData> itensData = new ArrayList<>();
         itensData.add(RaizenProdutividadeConverter.createRaizenProdutividadeItemData(rSet));
         final RaizenProdutividadeColaborador raizenProdutividadeColaborador = new RaizenProdutividadeColaborador(
-                rSet.getLong("CPF_MOTORISTA"), rSet.getString("NOME_MOTORISTA"));
+                rSet.getLong("CPF_MOTORISTA"),
+                rSet.getString("NOME_MOTORISTA"));
         raizenProdutividadeColaborador.setItensRaizen(itensData);
-        produtividades.add(raizenProdutividadeColaborador);
         return raizenProdutividadeColaborador;
     }
 
     @NotNull
-    static RaizenProdutividadeData createRaizenProdutividadeData(
-            @NotNull final ResultSet rSet,
-            @NotNull final List<RaizenProdutividade> produtividades) throws Throwable {
+    static RaizenProdutividadeData createRaizenProdutividadeData(@NotNull final ResultSet rSet) throws Throwable {
         final List<RaizenProdutividadeItemColaborador> itensColaborador = new ArrayList<>();
         itensColaborador.add(RaizenProdutividadeConverter.createRaizenProdutividadeItemColaborador(rSet));
         final RaizenProdutividadeData raizenProdutividadeData = new RaizenProdutividadeData(
                 rSet.getObject("DATA_VIAGEM", LocalDate.class));
         raizenProdutividadeData.setItensRaizen(itensColaborador);
-        produtividades.add(raizenProdutividadeData);
         return raizenProdutividadeData;
     }
 
     @NotNull
     static RaizenprodutividadeItemIndividual createRaizenProdutividadeItemIndividual(
-            @NotNull final ResultSet rSet)
-            throws Throwable {
+            @NotNull final ResultSet rSet) throws Throwable {
         final RaizenprodutividadeItemIndividual item = new RaizenprodutividadeItemIndividual();
         item.setDataViagem(rSet.getDate("DATA_VIAGEM"));
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setPlaca(rSet.getString("PLACA"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setRaioKm(rSet.getBigDecimal("RAIO_KM"));
+        item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         return item;
     }
 
@@ -80,11 +73,11 @@ class RaizenProdutividadeConverter {
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setRaioKm(rSet.getBigDecimal("RAIO_KM"));
+        item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        item.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         return item;
     }
 
@@ -99,11 +92,11 @@ class RaizenProdutividadeConverter {
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setRaioKm(rSet.getBigDecimal("RAIO_KM"));
+        item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        item.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         return item;
     }
 
@@ -120,11 +113,11 @@ class RaizenProdutividadeConverter {
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
-        item.setRaio(rSet.getDouble("RAIO"));
-        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setRaioKm(rSet.getBigDecimal("RAIO_KM"));
+        item.setToneladas(rSet.getBigDecimal("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
-        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        item.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         return item;
     }
 }

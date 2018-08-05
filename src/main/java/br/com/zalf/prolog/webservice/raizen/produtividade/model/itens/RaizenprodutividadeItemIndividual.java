@@ -14,8 +14,8 @@ public final class RaizenprodutividadeItemIndividual {
     private String placa;
     private String usina;
     private String fazenda;
-    private double raio;
-    private double toneladas;
+    private BigDecimal raioKm;
+    private BigDecimal toneladas;
 
     public Date getDataViagem() {
         return dataViagem;
@@ -57,19 +57,19 @@ public final class RaizenprodutividadeItemIndividual {
         this.fazenda = fazenda;
     }
 
-    public double getRaio() {
-        return raio;
+    public BigDecimal getRaioKm() {
+        return raioKm;
     }
 
-    public void setRaio(final double raio) {
-        this.raio = raio;
+    public void setRaioKm(final BigDecimal raioKm) {
+        this.raioKm = raioKm;
     }
 
-    public double getToneladas() {
+    public BigDecimal getToneladas() {
         return toneladas;
     }
 
-    public void setToneladas(final double toneladas) {
+    public void setToneladas(final BigDecimal toneladas) {
         this.toneladas = toneladas;
     }
 

@@ -18,11 +18,11 @@ public abstract class RaizenProdutividadeItem {
     private BigDecimal valor;
     private String usina;
     private String fazenda;
-    private double raio;
-    private double toneladas;
+    private BigDecimal raioKm;
+    private BigDecimal toneladas;
     private Long codColaboradorCadastro;
     private Long codColaboradorAlteracao;
-    private Long codEmpresa;
+    private Long codUnidade;
 
     @Exclude
     private final RaizenProdutividadeItemTipo tipo;
@@ -79,19 +79,19 @@ public abstract class RaizenProdutividadeItem {
         this.fazenda = fazenda;
     }
 
-    public double getRaio() {
-        return raio;
+    public BigDecimal getRaioKm() {
+        return raioKm;
     }
 
-    public void setRaio(double raio) {
-        this.raio = raio;
+    public void setRaioKm(BigDecimal raioKm) {
+        this.raioKm = raioKm;
     }
 
-    public double getToneladas() {
+    public BigDecimal getToneladas() {
         return toneladas;
     }
 
-    public void setToneladas(double toneladas) {
+    public void setToneladas(BigDecimal toneladas) {
         this.toneladas = toneladas;
     }
 
@@ -111,12 +111,12 @@ public abstract class RaizenProdutividadeItem {
         this.codColaboradorAlteracao = codColaboradorAlteracao;
     }
 
-    public Long getCodEmpresa() {
-        return codEmpresa;
+    public Long getCodUnidade() {
+        return codUnidade;
     }
 
-    public void setCodEmpresa(Long codEmpresa) {
-        this.codEmpresa = codEmpresa;
+    public void setCodUnidade(Long codUnidade) {
+        this.codUnidade = codUnidade;
     }
 
     @Override
@@ -127,7 +127,7 @@ public abstract class RaizenProdutividadeItem {
                 ", valor=" + valor +
                 ", usina=" + usina +
                 ", fazenda=" + fazenda +
-                ", raio=" + raio +
+                ", raioKm=" + raioKm +
                 ", toneladas=" + toneladas +
                 "}";
     }

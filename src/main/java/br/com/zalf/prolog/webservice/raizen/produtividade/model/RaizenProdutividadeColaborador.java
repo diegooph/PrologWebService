@@ -48,7 +48,7 @@ public class RaizenProdutividadeColaborador extends RaizenProdutividade {
     }
 
     @Override
-    protected void calculaItensNaoCadastrados() {
+    public void calculaItensNaoCadastrados() {
         Preconditions.checkState(getItensRaizen() != null, "itensRaizen não pode ser null!");
         for (final RaizenProdutividadeItem item : getItensRaizen()) {
             if (!item.isPlacaCadastrada()) {

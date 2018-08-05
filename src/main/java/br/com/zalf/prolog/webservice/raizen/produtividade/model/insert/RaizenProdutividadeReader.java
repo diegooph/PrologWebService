@@ -6,6 +6,7 @@ import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class RaizenProdutividadeReader {
         throw new IllegalStateException(RaizenProdutividadeReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
+    @NotNull
     public static List<RaizenProdutividadeItemInsert> readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
         if (extension.equalsIgnoreCase("xlsx")) {
@@ -44,15 +46,18 @@ public class RaizenProdutividadeReader {
         final List<String[]> rows = parser.parseAll(file);
 
         final List<RaizenProdutividadeItemInsert> raizenItensItens = new ArrayList<>();
-        for (final String[] row : rows) {
-            final RaizenProdutividadeItemInsert item = read(row);
+        for (int i = 0; i < rows.size(); i++) {
+            final RaizenProdutividadeItemInsert item = read(rows.get(i));
             if (item != null) {
+                //soma para ignorar o header da planilha e o índice que começa em 0.
+                item.setLinha(i + 2);
                 raizenItensItens.add(item);
             }
         }
         return raizenItensItens;
     }
 
+    @Nullable
     private static RaizenProdutividadeItemInsert read(@NotNull final String[] linha) {
         if (linha[0].isEmpty()) {
             return null;
@@ -72,23 +77,23 @@ public class RaizenProdutividadeReader {
         }
         // VALOR
         if (!linha[3].trim().isEmpty()) {
-            item.setValor(new BigDecimal(linha[3].trim().replaceAll(",", ".")));
+            item.setValor(new BigDecimal(linha[3].trim().replaceAll("[^0-9 .,]|(?<!\\d)[.,]|[.,](?!\\d)", "")));
         }
-        //USINA
+        // USINA
         if (!linha[4].trim().isEmpty()) {
             item.setUsina(linha[4]);
         }
-        //FAZENDA
+        // FAZENDA
         if (!linha[5].trim().isEmpty()) {
             item.setFazenda(linha[5]);
         }
-        //RAIO
+        // RAIO
         if (!linha[6].trim().isEmpty()) {
-            item.setRaio(Double.parseDouble(linha[6].trim().replaceAll(",", ".")));
+            item.setRaioKm(new BigDecimal(linha[6].trim().replaceAll(",", ".")));
         }
-        //TONELADA
+        // TONELADA
         if (!linha[7].trim().isEmpty()) {
-            item.setToneladas(Double.parseDouble(linha[7].trim().replaceAll(",", ".")));
+            item.setToneladas(new BigDecimal(linha[7].trim().replaceAll(",", ".")));
         }
         return item;
     }
