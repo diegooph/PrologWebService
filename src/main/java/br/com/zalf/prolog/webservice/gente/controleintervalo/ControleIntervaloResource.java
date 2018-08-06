@@ -91,7 +91,7 @@ public final class ControleIntervaloResource {
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/{codTipoIntervalo}")
     public TipoIntervalo getTipoIntervalo(@PathParam("codUnidade") @Required final Long codUnidade,
-                                          @PathParam("codUnidade") @Required final Long codTipoIntervalo) {
+                                          @PathParam("codTipoIntervalo") @Required final Long codTipoIntervalo) {
         return service.getTipoIntervalo(codUnidade, codTipoIntervalo);
     }
 
