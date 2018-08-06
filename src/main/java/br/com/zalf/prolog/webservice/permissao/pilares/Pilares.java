@@ -328,10 +328,10 @@ public final class Pilares {
             private RaizenProdutividade() {
             }
 
+            public static final int INSERIR_REGISTROS = 417;
             public static final int VISUALIZAR_TODOS = 414;
             public static final int VISUALIZAR_PROPRIOS = 415;
             public static final int EDITAR = 416;
-            public static final int UPLOAD = 417;
             public static final int DELETAR = 418;
             public static final int VISUALIZAR_RELATORIOS = 419;
         }
