@@ -18,16 +18,16 @@ public final class FarolVeiculoDia {
     @Nullable
     private final ChecklistFarol checklistRetornoDia;
     @Nullable
-    private final List<FarolPerguntaCritica> perguntaCriticasEmAberto;
+    private final List<FarolPerguntaCritica> perguntasCriticasEmAberto;
 
     public FarolVeiculoDia(@NotNull final String placaVeiculo,
                            @Nullable final ChecklistFarol checklistSaidaDia,
                            @Nullable final ChecklistFarol checklistRetornoDia,
-                           @Nullable final List<FarolPerguntaCritica> perguntaCriticasEmAberto) {
+                           @Nullable final List<FarolPerguntaCritica> perguntasCriticasEmAberto) {
         this.placaVeiculo = placaVeiculo;
         this.checklistSaidaDia = checklistSaidaDia;
         this.checklistRetornoDia = checklistRetornoDia;
-        this.perguntaCriticasEmAberto = perguntaCriticasEmAberto;
+        this.perguntasCriticasEmAberto = perguntasCriticasEmAberto;
     }
 
     @NotNull
@@ -46,7 +46,7 @@ public final class FarolVeiculoDia {
     }
 
     @Nullable
-    public List<FarolPerguntaCritica> getPerguntaCriticasEmAberto() {
-        return perguntaCriticasEmAberto;
+    public List<FarolPerguntaCritica> getPerguntasCriticasEmAberto() {
+        return perguntasCriticasEmAberto;
     }
 }
