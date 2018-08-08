@@ -67,6 +67,7 @@ public final class OrdemServicoConverter {
             item.setPlaca(rSet.getString("placa_veiculo"));
             item.setDataApontamento(rSet.getObject("data_hora", LocalDateTime.class));
             item.setTempoLimiteResolucao(Duration.ofHours(rSet.getLong("PRAZO")));
+            // TODO: O tempo restante precisa ser setado para itens já fechados?
             setTempoRestante(item, rSet.getInt("prazo"), ZoneId.of(rSet.getString("TIME_ZONE_UNIDADE")));
             item.setQtdApontamentos(rSet.getInt("qt_apontamentos"));
             item.setStatus(ItemOrdemServico.Status.fromString(rSet.getString("status_item")));

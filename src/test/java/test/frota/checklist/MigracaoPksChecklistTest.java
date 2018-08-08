@@ -50,6 +50,9 @@ import static org.junit.Assert.assertNotNull;
  * Por isso, implementamos esse teste que compara todos os objetos pertinentes numa base antes da migração com os mesmos
  * objetos em uma base após a migração, para garantir que tudo continua sendo criado do modo certo.
  * <p>
+ * Nós removemos a unidade de código 2 (Sapucaia do Sul) de todas as buscas pois os checklists dessa unidade e OSs foram
+ * removidos no migration e por consequência ocasionariam uma falha no teste (já esperada).
+ * <p>
  * Created on 06/08/2018
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -97,7 +100,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
             assertNotNull(depois);
             assertEquals(antes.size(), depois.size());
 
-            System.out.println("Processando Checklist: " + offset + " ==> " + (offset + antes.size()));
+            System.out.println("Processando Checklist: " + offset + " =======> " + (offset + antes.size()));
 
             for (int i = 0; i < antes.size(); i++) {
                 final Checklist pre = antes.get(i);
@@ -162,9 +165,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
                         assertEquals(a1.isSelected(), a2.isSelected());
                     }
                 }
-
             }
-
+            System.out.println("=======> Checklists Processados: " + (offset + antes.size()) + " <=======");
             offset += LIMIT;
         }
     }
@@ -183,7 +185,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
             assertNotNull(depois);
             assertEquals(antes.size(), depois.size());
 
-            System.out.println("Processando Ordens de Serviço: " + offset + " ==> " + (offset + antes.size()));
+            System.out.println("Processando Ordens de Serviço: " + offset + " =======> " + (offset + antes.size()));
 
             for (int i = 0; i < antes.size(); i++) {
                 final OrdemServico o1 = antes.get(i);
@@ -212,6 +214,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     assertNotNull(i1);
                     assertNotNull(i2);
 
+                    System.out.println("Código do item: " + i1.getCodigo());
                     assertEquals(i1.getCodOs(), i2.getCodOs());
                     assertEquals(i1.getKmVeiculoFechamento(), i2.getKmVeiculoFechamento());
                     assertEquals(i1.getDataApontamento(), i2.getDataApontamento());
@@ -268,7 +271,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     }
                 }
             }
-
+            System.out.println("=======> Ordens de Serviço Processadas: " + (offset + antes.size()) + " <=======");
             offset += LIMIT;
         }
     }
@@ -446,12 +449,18 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     "AND E.COD_UNIDADE::TEXT LIKE ? " +
                     "AND E.PLACA_VEICULO LIKE ? " +
                     "AND E.COD_UNIDADE != 2 " +
-                    "ORDER BY E.PLACA_VEICULO, E.PRAZO ASC;");
+                    "ORDER BY CODIGO;");
             stmt.setString(1, String.valueOf(codOs));
             stmt.setString(2, String.valueOf(codUnidade));
             stmt.setString(3, placa);
             rSet = stmt.executeQuery();
-            return OrdemServicoConverter.createItensOrdemServico(rSet);
+            final List<ItemOrdemServico> itensOrdemServico = OrdemServicoConverter.createItensOrdemServico(rSet);
+            // Como as buscas são feitas em tempos diferentes, a comparação desse atributo nunca estava batendo,
+            // por isso vamos setar para null.
+            for (final ItemOrdemServico item : itensOrdemServico) {
+                item.setTempoRestante(null);
+            }
+            return itensOrdemServico;
         } finally {
             DatabaseConnection.closeConnection(null, stmt, rSet);
         }
