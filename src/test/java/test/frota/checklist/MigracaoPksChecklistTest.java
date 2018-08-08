@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServico;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -54,6 +55,7 @@ import static org.junit.Assert.assertNotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@SuppressWarnings("Duplicates")
 public class MigracaoPksChecklistTest extends BaseTest {
     private static final String TAG = MigracaoPksChecklistTest.class.getSimpleName();
     private static final String DRIVER = "org.postgresql.Driver";
@@ -162,13 +164,93 @@ public class MigracaoPksChecklistTest extends BaseTest {
 
         long offset = 0;
         while (offset <= totalOrdensServicoPos) {
-            final List<OrdemServico> pre = getTodasOrdensServicosCompletas(preMigration, LIMIT, offset);
-            final List<OrdemServico> pos = getTodasOrdensServicosCompletas(posMigration, LIMIT, offset);
-            assertNotNull(pre);
-            assertNotNull(pos);
-            assertEquals(pre.size(), pos.size());
+            final List<OrdemServico> antes = getTodasOrdensServicosCompletas(preMigration, LIMIT, offset);
+            final List<OrdemServico> depois = getTodasOrdensServicosCompletas(posMigration, LIMIT, offset);
+            assertNotNull(antes);
+            assertNotNull(depois);
+            assertEquals(antes.size(), depois.size());
 
-            // TODO: Comparar listagem de objetos.
+            for (int i = 0; i < antes.size(); i++) {
+                final OrdemServico o1 = antes.get(i);
+                final OrdemServico o2 = depois.get(i);
+                assertNotNull(o1);
+                assertNotNull(o2);
+
+                // Compara atributos da Ordem de Serviço.
+                assertEquals(o1.getCodigo(), o2.getCodigo());
+                assertEquals(o1.getCodChecklist(), o2.getCodChecklist());
+                assertEquals(o1.getDataAbertura(), o2.getDataAbertura());
+                assertEquals(o1.getDataFechamento(), o2.getDataFechamento());
+                assertEquals(o1.getStatus(), o2.getStatus());
+                assertEquals(o1.getVeiculo().getPlaca(), o2.getVeiculo().getPlaca());
+
+                // Compara os itens da OS.
+                final List<ItemOrdemServico> itens1 = o1.getItens();
+                final List<ItemOrdemServico> itens2 = o2.getItens();
+                assertNotNull(itens1);
+                assertNotNull(itens2);
+                assertEquals(itens1.size(), itens2.size());
+
+                for (int j = 0; j < itens1.size(); j++) {
+                    final ItemOrdemServico i1 = itens1.get(j);
+                    final ItemOrdemServico i2 = itens2.get(j);
+                    assertNotNull(i1);
+                    assertNotNull(i2);
+
+                    assertEquals(i1.getCodOs(), i2.getCodOs());
+                    assertEquals(i1.getKmVeiculoFechamento(), i2.getKmVeiculoFechamento());
+                    assertEquals(i1.getDataApontamento(), i2.getDataApontamento());
+                    assertEquals(i1.getDataHoraConserto(), i2.getDataHoraConserto());
+                    assertEquals(i1.getFeedbackResolucao(), i2.getFeedbackResolucao());
+                    assertEquals(i1.getCodigo(), i2.getCodigo());
+                    assertEquals(i1.getStatus(), i2.getStatus());
+                    assertEquals(i1.getPlaca(), i2.getPlaca());
+                    assertEquals(i1.getQtdApontamentos(), i2.getQtdApontamentos());
+                    assertEquals(i1.getTempoRestante(), i2.getTempoRestante());
+                    assertEquals(i1.getTempoLimiteResolucao(), i2.getTempoLimiteResolucao());
+                    assertEquals(i1.getTempoRealizacaoConserto(), i2.getTempoRealizacaoConserto());
+                    if (i1.getMecanico() != null) {
+                        assertEquals(i1.getMecanico().getCpf(), i2.getMecanico().getCpf());
+                    } else {
+                        assertEquals(i1.getMecanico(), i2.getMecanico());
+                    }
+
+                    // Compara a pergunta.
+                    final PerguntaRespostaChecklist p1 = i1.getPergunta();
+                    final PerguntaRespostaChecklist p2 = i2.getPergunta();
+                    assertNotNull(p1);
+                    assertNotNull(p2);
+
+                    assertEquals(p1.getCodigo(), p2.getCodigo());
+                    assertEquals(p1.getPergunta(), p2.getPergunta());
+                    assertEquals(p1.getPrioridade(), p2.getPrioridade());
+                    assertEquals(p1.getCodImagem(), p2.getCodImagem());
+                    assertEquals(p1.getUrl(), p2.getUrl());
+                    assertEquals(p1.getOrdemExibicao(), p2.getOrdemExibicao());
+
+                    // Alternativas.
+                    final List<AlternativaChecklist> listA1 = p1.getAlternativasResposta();
+                    final List<AlternativaChecklist> listA2 = p2.getAlternativasResposta();
+                    assertNotNull(listA1);
+                    assertNotNull(listA2);
+                    assertEquals(listA1.size(), listA2.size());
+
+                    for (int k = 0; k < listA1.size(); k++) {
+                        final AlternativaChecklist a1 = listA1.get(k);
+                        final AlternativaChecklist a2 = listA2.get(k);
+                        assertNotNull(a1);
+                        assertNotNull(a2);
+
+                        // Atributos da Alternativa.
+                        assertEquals(a1.getCodigo(), a2.getCodigo());
+                        assertEquals(a1.getAlternativa(), a2.getAlternativa());
+                        assertEquals(a1.getTipo(), a2.getTipo());
+                        assertEquals(a1.getOrdemExibicao(), a2.getOrdemExibicao());
+                        assertEquals(a1.getRespostaOutros(), a2.getRespostaOutros());
+                        assertEquals(a1.isSelected(), a2.isSelected());
+                    }
+                }
+            }
 
             offset += LIMIT;
         }
