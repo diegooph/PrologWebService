@@ -139,8 +139,8 @@ public final class ChecklistConverter {
                 final List<AlternativaChecklist> alternativas = new ArrayList<>();
                 final AlternativaChecklist alternativa = new AlternativaChecklist();
                 if (itemCritico.isRespostaTipoOutros()) {
-                    alternativa.setRespostaOutros(itemCritico.getDescricaoRespostaTipoOutros());
-                    alternativa.setAlternativa(null);
+                    alternativa.setAlternativa(itemCritico.getDescricaoRespostaTipoOutros());
+                    alternativa.setRespostaOutros(null);
                     alternativa.setTipo(Alternativa.TIPO_OUTROS);
                 } else {
                     alternativa.setAlternativa(itemCritico.getRespostaSelecionada());
