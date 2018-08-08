@@ -1,14 +1,16 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.farol.ChecklistFarol;
-import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolVeiculoDia;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.*;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,22 +28,6 @@ public final class ChecklistConverter {
 
     private ChecklistConverter() {
         throw new IllegalStateException(ChecklistConverter.class.getSimpleName() + " cannot be instantiated!");
-    }
-
-    @NotNull
-    static FarolChecklist createFarolChecklist(@NotNull final ResultSet rSet) throws SQLException {
-        final List<FarolVeiculoDia> farolVeiculoDias = new ArrayList<>();
-        String placaAntiga = null, placaAtual = null;
-        while (rSet.next()) {
-            if (rSet.getLong("CODIGO_PERGUNTA") == 0) {
-                // Verificamos se existem perguntas. Se não, podemos instanciar apenas as informações do Checklist
-                farolVeiculoDias.add(createFarolVeiculoDiaSemItensCriticos(rSet));
-            } else {
-                // TODO - Tratar lógica de troca de placas aqui
-            }
-
-        }
-        return new FarolChecklist(farolVeiculoDias);
     }
 
     @VisibleForTesting
@@ -96,6 +82,152 @@ public final class ChecklistConverter {
     }
 
     @NotNull
+    static DeprecatedFarolChecklist createFarolChecklist(@NotNull final ResultSet rSet) throws SQLException {
+        final List<FarolVeiculoDia> farolVeiculoDias = new ArrayList<>();
+        String placaAntiga = null, placaAtual = null;
+        while (rSet.next()) {
+            if (rSet.getLong("CODIGO_PERGUNTA") == 0) {
+                // Verificamos se existem perguntas. Se não, podemos instanciar apenas as informações do Checklist
+                farolVeiculoDias.add(createFarolVeiculoDiaSemItensCriticos(rSet));
+            } else {
+                placaAtual = rSet.getString("PLACA");
+                if (placaAtual.equals(placaAntiga)) {
+                    createAndAddPerguntaCritica(rSet, farolVeiculoDias, placaAtual);
+                } else {
+                    farolVeiculoDias.add(createFarolVeiculoDiaComItensCriticos(rSet));
+                }
+                // Após processar a placa, mudamos a variável dela
+                placaAntiga = placaAtual;
+            }
+
+        }
+        return parseToDeprecatedFarolChecklist(new FarolChecklist(farolVeiculoDias));
+    }
+
+    @NotNull
+    private static DeprecatedFarolChecklist parseToDeprecatedFarolChecklist(
+            @NotNull final FarolChecklist farolChecklist) {
+        final List<DeprecatedFarolVeiculoDia> veiculoDias = new ArrayList<>();
+        for (final FarolVeiculoDia veiculoDia : farolChecklist.getFarolVeiculos()) {
+            final Veiculo veiculo = new Veiculo();
+            veiculo.setPlaca(veiculoDia.getPlacaVeiculo());
+            final Checklist checklistSaida = parseToChecklist(veiculoDia.getChecklistSaidaDia());
+            final Checklist checklistRetorno = parseToChecklist(veiculoDia.getChecklistRetornoDia());
+            List<ItemOrdemServico> itensCriticos = null;
+            if (veiculoDia.getPerguntasCriticasEmAberto() != null) {
+                itensCriticos = parseToItemOrdemServico(veiculoDia.getPerguntasCriticasEmAberto());
+            }
+            final DeprecatedFarolVeiculoDia deprecatedVeiculoDia =
+                    new DeprecatedFarolVeiculoDia(veiculo, checklistSaida, checklistRetorno, itensCriticos);
+            veiculoDias.add(deprecatedVeiculoDia);
+        }
+        return new DeprecatedFarolChecklist(veiculoDias);
+    }
+
+    @NotNull
+    private static List<ItemOrdemServico> parseToItemOrdemServico(
+            @NotNull final List<FarolPerguntaCritica> perguntasCriticas) {
+        final List<ItemOrdemServico> itens = new ArrayList<>();
+
+        for (final FarolPerguntaCritica perguntasCritica : perguntasCriticas) {
+            for (final FarolItemCritico itemCritico : perguntasCritica.getItensCriticosEmAberto()) {
+                final ItemOrdemServico servico = new ItemOrdemServico();
+                final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
+                pergunta.setCodigo(perguntasCritica.getCodigoPergunta());
+                pergunta.setPergunta(perguntasCritica.getDescricaoPergunta());
+
+                final List<AlternativaChecklist> alternativas = new ArrayList<>();
+                final AlternativaChecklist alternativa = new AlternativaChecklist();
+                alternativa.setCodigo(itemCritico.getCodigoItemCritico());
+                if (itemCritico.isRespostaTipoOutros()) {
+                    alternativa.setRespostaOutros(itemCritico.getDescricaoRespostaTipoOutros());
+                    alternativa.setAlternativa(null);
+                    alternativa.setTipo(Alternativa.TIPO_OUTROS);
+                } else {
+                    alternativa.setAlternativa(itemCritico.getRespostaSelecionada());
+                    alternativa.setRespostaOutros(null);
+                }
+                alternativas.add(alternativa);
+                pergunta.setAlternativasResposta(alternativas);
+                servico.setPergunta(pergunta);
+                itens.add(servico);
+            }
+        }
+
+        return itens;
+    }
+
+    @Nullable
+    private static Checklist parseToChecklist(@Nullable final ChecklistFarol checklistSaidaDia) {
+        if (checklistSaidaDia == null) {
+            return null;
+        }
+
+        final Checklist checklist = new Checklist();
+        checklist.setCodigo(checklistSaidaDia.getCodigoChecklist());
+        final Colaborador colaborador = new Colaborador();
+        colaborador.setNome(checklistSaidaDia.getNomeColaboradorRealizacao());
+        checklist.setColaborador(colaborador);
+        checklist.setData(checklistSaidaDia.getDataHoraRealizacao());
+        checklist.setTipo(checklistSaidaDia.getTipoChecklist());
+        return checklist;
+    }
+
+    private static void createAndAddPerguntaCritica(@NotNull final ResultSet rSet,
+                                                    @NotNull final List<FarolVeiculoDia> farolVeiculoDias,
+                                                    @NotNull final String placaAtual) throws SQLException {
+        boolean itemCriticoAdicionado = false;
+        for (final FarolVeiculoDia farolVeiculoDia : farolVeiculoDias) {
+            if (farolVeiculoDia.getPlacaVeiculo().equals(placaAtual)) {
+                final List<FarolPerguntaCritica> perguntasCriticas = farolVeiculoDia.getPerguntasCriticasEmAberto();
+                if (perguntasCriticas != null && !perguntasCriticas.isEmpty()) {
+                    for (final FarolPerguntaCritica perguntaCritica : perguntasCriticas) {
+                        if (perguntaCritica.getCodigoPergunta().equals(rSet.getLong("CODIGO_PERGUNTA"))) {
+                            perguntaCritica.getItensCriticosEmAberto().add(createItemCritico(rSet));
+                            itemCriticoAdicionado = true;
+                        }
+                    }
+                    if (!itemCriticoAdicionado) {
+                        perguntasCriticas.add(createAndAddPerguntaCritica(rSet));
+                    }
+                } else {
+                    // TODO - O que deveremos fazer aqui?
+                    throw new IllegalStateException("Lista de perguntas críticas é nulla para a placa: " + placaAtual);
+                }
+            }
+        }
+    }
+
+    @NotNull
+    private static FarolVeiculoDia createFarolVeiculoDiaComItensCriticos(@NotNull final ResultSet rSet)
+            throws SQLException {
+        final FarolVeiculoDia farolVeiculoDia = createFarolVeiculoDiaSemItensCriticos(rSet);
+        final List<FarolPerguntaCritica> perguntasCriticas = farolVeiculoDia.getPerguntasCriticasEmAberto();
+        if (perguntasCriticas != null) {
+            perguntasCriticas.add(createAndAddPerguntaCritica(rSet));
+        }
+        return farolVeiculoDia;
+    }
+
+    @NotNull
+    private static FarolPerguntaCritica createAndAddPerguntaCritica(@NotNull final ResultSet rSet) throws SQLException {
+        final List<FarolItemCritico> itensCriticos = new ArrayList<>();
+        itensCriticos.add(createItemCritico(rSet));
+        return new FarolPerguntaCritica(
+                rSet.getLong("CODIGO_PERGUNTA"),
+                rSet.getString("DESCRICAO_PERGUNTA"),
+                itensCriticos);
+    }
+
+    @NotNull
+    private static FarolItemCritico createItemCritico(@NotNull final ResultSet rSet) throws SQLException {
+        return new FarolItemCritico(
+                rSet.getLong("CODIGO_ITEM_CRITICO"),
+                rSet.getString("DESCRICAO_ALTERNATIVA"),
+                rSet.getString("DESCRICAO_ALTERNATIVA_TIPO_OUTROS"));
+    }
+
+    @NotNull
     private static FarolVeiculoDia createFarolVeiculoDiaSemItensCriticos(@NotNull final ResultSet rSet)
             throws SQLException {
         final String placa = rSet.getString("PLACA");
@@ -105,7 +237,7 @@ public final class ChecklistConverter {
         if (!rSet.wasNull()) {
             checkSaida = new ChecklistFarol(
                     codChecklistSaida,
-                    rSet.getString("COLABORADOR_SAIDA"),
+                    rSet.getString("NOME_COLABORADOR_CHECKLIST_SAIDA"),
                     rSet.getObject("DATA_HORA_ULTIMO_CHECKLIST_SAIDA", LocalDateTime.class),
                     Checklist.TIPO_SAIDA);
         }
@@ -114,7 +246,7 @@ public final class ChecklistConverter {
         if (!rSet.wasNull()) {
             checkRetorno = new ChecklistFarol(
                     codChecklistRetorno,
-                    rSet.getString("COLABORADOR_RETORNO"),
+                    rSet.getString("NOME_COLABORADOR_CHECKLIST_RETORNO"),
                     rSet.getObject("DATA_HORA_ULTIMO_CHECKLIST_RETORNO", LocalDateTime.class),
                     Checklist.TIPO_RETORNO);
         }

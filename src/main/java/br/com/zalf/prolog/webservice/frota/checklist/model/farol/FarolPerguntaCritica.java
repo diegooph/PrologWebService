@@ -11,14 +11,23 @@ import java.util.List;
  */
 public final class FarolPerguntaCritica {
     @NotNull
+    private final Long codigoPergunta;
+    @NotNull
     private final String descricaoPergunta;
     @NotNull
     private final List<FarolItemCritico> itensCriticosEmAberto;
 
-    public FarolPerguntaCritica(@NotNull final String descricaoPergunta,
+    public FarolPerguntaCritica(@NotNull final Long codigoPergunta,
+                                @NotNull final String descricaoPergunta,
                                 @NotNull final List<FarolItemCritico> itensCriticosEmAberto) {
+        this.codigoPergunta = codigoPergunta;
         this.descricaoPergunta = descricaoPergunta;
         this.itensCriticosEmAberto = itensCriticosEmAberto;
+    }
+
+    @NotNull
+    public Long getCodigoPergunta() {
+        return codigoPergunta;
     }
 
     @NotNull

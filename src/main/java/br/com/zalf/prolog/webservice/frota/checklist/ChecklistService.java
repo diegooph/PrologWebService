@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 import org.jetbrains.annotations.NotNull;
 
@@ -109,7 +109,7 @@ public class ChecklistService {
     }
 
     @NotNull
-    public FarolChecklist getFarolChecklist(Long codUnidade,
+    public DeprecatedFarolChecklist getFarolChecklist(Long codUnidade,
                                             String dataInicial,
                                             String dataFinal,
                                             boolean itensCriticosRetroativos,
@@ -123,7 +123,7 @@ public class ChecklistService {
     }
 
     @NotNull
-    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+    public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
                                             final boolean itensCriticosRetroativos,
                                             @NotNull final String userToken) throws ProLogException {
         final LocalDate hoje = Now.localDate();
@@ -131,11 +131,11 @@ public class ChecklistService {
     }
 
     @NotNull
-    private FarolChecklist internalGetFarolChecklist(@NotNull final Long codUnidade,
-                                                     @NotNull final LocalDate dataInicial,
-                                                     @NotNull final LocalDate dataFinal,
-                                                     final boolean itensCriticosRetroativos,
-                                                     @NotNull final String userToken) throws ProLogException {
+    private DeprecatedFarolChecklist internalGetFarolChecklist(@NotNull final Long codUnidade,
+                                                               @NotNull final LocalDate dataInicial,
+                                                               @NotNull final LocalDate dataFinal,
+                                                               final boolean itensCriticosRetroativos,
+                                                               @NotNull final String userToken) throws ProLogException {
         try {
             return RouterChecklists
                     .create(dao, userToken)
