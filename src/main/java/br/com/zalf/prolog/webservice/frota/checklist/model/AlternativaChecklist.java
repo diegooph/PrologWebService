@@ -18,6 +18,23 @@ public class AlternativaChecklist extends Alternativa {
     public boolean selected;
 
     public AlternativaChecklist() {
+
+    }
+
+    public AcaoEdicaoAlternativa getAcaoEdicao() {
+        return acaoEdicao;
+    }
+
+    public void setAcaoEdicao(final AcaoEdicaoAlternativa acaoEdicao) {
+        this.acaoEdicao = acaoEdicao;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(final boolean selected) {
+        this.selected = selected;
     }
 
     @Override
