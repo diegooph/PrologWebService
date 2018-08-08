@@ -47,7 +47,7 @@ public final class OrdemServicoConverter {
 
     @VisibleForTesting
     @NotNull
-    public static List<ItemOrdemServico> createItensOs(@NotNull final ResultSet rSet) throws SQLException {
+    public static List<ItemOrdemServico> createItensOrdemServico(@NotNull final ResultSet rSet) throws SQLException {
         final List<ItemOrdemServico> itens = new ArrayList<>();
         ItemOrdemServico item = null;
         PerguntaRespostaChecklist pergunta = null;

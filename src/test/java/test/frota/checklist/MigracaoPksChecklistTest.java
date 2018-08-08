@@ -13,10 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import test.BaseTest;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +90,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
             assertNotNull(antes);
             assertNotNull(depois);
             assertEquals(antes.size(), depois.size());
+
+            System.out.println("Processando Checklist: " + offset + " ==> " + (offset + antes.size()));
 
             for (int i = 0; i < antes.size(); i++) {
                 final Checklist pre = antes.get(i);
@@ -172,6 +171,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
             assertNotNull(antes);
             assertNotNull(depois);
             assertEquals(antes.size(), depois.size());
+
+            System.out.println("Processando Ordens de Serviço: " + offset + " ==> " + (offset + antes.size()));
 
             for (int i = 0; i < antes.size(); i++) {
                 final OrdemServico o1 = antes.get(i);
@@ -337,7 +338,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     "COS.STATUS, " +
                     "C.PLACA_VEICULO, " +
                     "V.KM, " +
-                    "C.DATA_HORA AT TIME ZONE ? AS DATA_HORA " +
+                    "C.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
+                    "COS.COD_UNIDADE AS COD_UNIDADE " +
                     "FROM CHECKLIST_ORDEM_SERVICO COS JOIN CHECKLIST C ON COS.COD_CHECKLIST = C.CODIGO " +
                     "AND C.COD_UNIDADE = COS.COD_UNIDADE " +
                     "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO " +
@@ -349,17 +351,42 @@ public class MigracaoPksChecklistTest extends BaseTest {
             stmt.setInt(3, LIMIT);
             stmt.setLong(4, offset);
             rSet = stmt.executeQuery();
-            final List<OrdemServico> checklists = new ArrayList<>();
+            final List<OrdemServico> ordens = new ArrayList<>();
             if (rSet.next()) {
                 do {
-                    checklists.add(OrdemServicoConverter.createOrdemServicoSemItens(rSet));
+                    final OrdemServico os = OrdemServicoConverter.createOrdemServicoSemItens(rSet);
+                    os.setItens(getItensOs(conn, os.getVeiculo().getPlaca(), os.getCodigo(), rSet.getLong("COD_UNIDADE")));
+                    ordens.add(os);
                 } while (rSet.next());
             } else {
                 throw new IllegalStateException();
             }
-            return checklists;
+            return ordens;
         } finally {
             DatabaseConnection.closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private List<ItemOrdemServico> getItensOs(@NotNull final Connection conn,
+                                              @NotNull final String placa,
+                                              @NotNull final Long codOs,
+                                              @NotNull final Long codUnidade) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM ESTRATIFICACAO_OS E " +
+                    "WHERE  E.COD_OS::TEXT LIKE ? " +
+                    "AND E.COD_UNIDADE::TEXT LIKE ? " +
+                    "AND E.PLACA_VEICULO LIKE ? " +
+                    "ORDER BY E.PLACA_VEICULO, E.PRAZO ASC;");
+            stmt.setString(1, String.valueOf(codOs));
+            stmt.setString(2, String.valueOf(codUnidade));
+            stmt.setString(3, placa);
+            rSet = stmt.executeQuery();
+            return OrdemServicoConverter.createItensOrdemServico(rSet);
+        } finally {
+            DatabaseConnection.closeConnection(null, stmt, rSet);
         }
     }
 

@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -19,7 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -132,7 +130,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setInt(4, limit);
             stmt.setLong(5, offset);
             rSet = stmt.executeQuery();
-            return OrdemServicoConverter.createItensOs(rSet);
+            return OrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -166,7 +164,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(3, placa);
             stmt.setDate(4, DateUtils.toSqlDate(untilDate));
             rSet = stmt.executeQuery();
-            return OrdemServicoConverter.createItensOs(rSet);
+            return OrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -450,7 +448,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(3, placa);
             stmt.setString(4, status);
             rSet = stmt.executeQuery();
-            return OrdemServicoConverter.createItensOs(rSet);
+            return OrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
             closeConnection(null, stmt, rSet);
         }
