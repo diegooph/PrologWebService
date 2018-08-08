@@ -1,9 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.ChecklistFarol;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolVeiculoDia;
+import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -17,7 +19,8 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-final class ChecklistConverter {
+@VisibleForTesting
+public final class ChecklistConverter {
 
     private ChecklistConverter() {
         throw new IllegalStateException(ChecklistConverter.class.getSimpleName() + " cannot be instantiated!");
@@ -37,6 +40,20 @@ final class ChecklistConverter {
 
         }
         return new FarolChecklist(farolVeiculoDias);
+    }
+
+    @VisibleForTesting
+    @NotNull
+    public static Checklist createChecklist(@NotNull final ResultSet rSet) throws Throwable {
+        // TODO:
+        return null;
+    }
+
+    @VisibleForTesting
+    @NotNull
+    public static PerguntaRespostaChecklist createPerguntaRespostaChecklist(@NotNull final ResultSet rSet) throws Throwable {
+        // TODO:
+        return null;
     }
 
     @NotNull

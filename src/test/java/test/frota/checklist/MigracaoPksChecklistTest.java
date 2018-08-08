@@ -2,11 +2,13 @@ package test.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.ChecklistConverter;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoConverter;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import test.BaseTest;
@@ -15,7 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -59,6 +61,7 @@ import static org.junit.Assert.assertNotNull;
 public class MigracaoPksChecklistTest extends BaseTest {
     private static final String TAG = MigracaoPksChecklistTest.class.getSimpleName();
     private static final String DRIVER = "org.postgresql.Driver";
+    private static final String TIMEZONE_DEFAULT = "America/Sao_Paulo";
     private static final String TESTE_URL_PRE = "jdbc:postgresql://localhost:5432/prolog_farol_1";
     private static final String TESTE_USUARIO_PRE = "postgres";
     private static final String TESTE_SENHA_PRE = "postgres";
@@ -85,8 +88,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
 
         long offset = 0;
         while (offset <= totalChecklistPos) {
-            final List<Checklist> antes = getTodosChecklistCompletos(preMigration, LIMIT, offset);
-            final List<Checklist> depois = getTodosChecklistCompletos(posMigration, LIMIT, offset);
+            final List<Checklist> antes = getTodosChecklistCompletos(preMigration, offset);
+            final List<Checklist> depois = getTodosChecklistCompletos(posMigration, offset);
             assertNotNull(antes);
             assertNotNull(depois);
             assertEquals(antes.size(), depois.size());
@@ -164,8 +167,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
 
         long offset = 0;
         while (offset <= totalOrdensServicoPos) {
-            final List<OrdemServico> antes = getTodasOrdensServicosCompletas(preMigration, LIMIT, offset);
-            final List<OrdemServico> depois = getTodasOrdensServicosCompletas(posMigration, LIMIT, offset);
+            final List<OrdemServico> antes = getTodasOrdensServicosCompletas(preMigration, offset);
+            final List<OrdemServico> depois = getTodasOrdensServicosCompletas(posMigration, offset);
             assertNotNull(antes);
             assertNotNull(depois);
             assertEquals(antes.size(), depois.size());
@@ -290,16 +293,74 @@ public class MigracaoPksChecklistTest extends BaseTest {
 
     @NotNull
     private List<Checklist> getTodosChecklistCompletos(@NotNull final Connection conn,
-                                                       final int limit,
                                                        final long offset) throws Throwable {
-        return Collections.emptyList();
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA AT TIME ZONE ? AS DATA_HORA, "
+                    + "C.cod_checklist_modelo, C.KM_VEICULO, "
+                    + "C.TEMPO_REALIZACAO,C.CPF_COLABORADOR, C.PLACA_VEICULO, "
+                    + "C.TIPO, CO.NOME FROM CHECKLIST C "
+                    + "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
+                    + "JOIN EQUIPE E ON E.CODIGO = CO.COD_EQUIPE "
+                    + "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO "
+                    + "ORDER BY DATA_HORA DESC "
+                    + "LIMIT ? OFFSET ?");
+            stmt.setString(1, TIMEZONE_DEFAULT);
+            stmt.setInt(2, LIMIT);
+            stmt.setLong(3, offset);
+            rSet = stmt.executeQuery();
+            final List<Checklist> checklists = new ArrayList<>();
+            if (rSet.next()) {
+                do {
+                    checklists.add(ChecklistConverter.createChecklist(rSet));
+                } while (rSet.next());
+            } else {
+                throw new IllegalStateException();
+            }
+            return checklists;
+        } finally {
+            DatabaseConnection.closeConnection(conn, stmt, rSet);
+        }
     }
 
     @NotNull
     private List<OrdemServico> getTodasOrdensServicosCompletas(@NotNull final Connection conn,
-                                                               final int limit,
                                                                final long offset) throws Throwable {
-        return Collections.emptyList();
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT " +
+                    "COS.CODIGO AS COD_OS, " +
+                    "COS.COD_CHECKLIST, " +
+                    "COS.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
+                    "COS.STATUS, " +
+                    "C.PLACA_VEICULO, " +
+                    "V.KM, " +
+                    "C.DATA_HORA AT TIME ZONE ? AS DATA_HORA " +
+                    "FROM CHECKLIST_ORDEM_SERVICO COS JOIN CHECKLIST C ON COS.COD_CHECKLIST = C.CODIGO " +
+                    "AND C.COD_UNIDADE = COS.COD_UNIDADE " +
+                    "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO " +
+                    "JOIN VEICULO_TIPO VT ON VT.COD_UNIDADE = C.COD_UNIDADE AND V.COD_TIPO = VT.CODIGO " +
+                    "ORDER BY COS.CODIGO DESC " +
+                    "LIMIT ? OFFSET ?;");
+            stmt.setString(1, TIMEZONE_DEFAULT);
+            stmt.setString(2, TIMEZONE_DEFAULT);
+            stmt.setInt(3, LIMIT);
+            stmt.setLong(4, offset);
+            rSet = stmt.executeQuery();
+            final List<OrdemServico> checklists = new ArrayList<>();
+            if (rSet.next()) {
+                do {
+                    checklists.add(OrdemServicoConverter.createOrdemServico(rSet));
+                } while (rSet.next());
+            } else {
+                throw new IllegalStateException();
+            }
+            return checklists;
+        } finally {
+            DatabaseConnection.closeConnection(conn, stmt, rSet);
+        }
     }
 
     @NotNull
