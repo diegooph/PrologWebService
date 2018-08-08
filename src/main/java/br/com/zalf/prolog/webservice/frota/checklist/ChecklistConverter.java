@@ -164,7 +164,7 @@ public final class ChecklistConverter {
         alternativa.setAlternativa(rSet.getString("ALTERNATIVA"));
         if (alternativa.getAlternativa().equals("Outros")) {
             alternativa.setTipo(AlternativaChecklist.TIPO_OUTROS);
-            alternativa.setRespostaOutros(rSet.getString("resposta"));
+            alternativa.setRespostaOutros(rSet.getString("RESPOSTA"));
         }
         return alternativa;
     }

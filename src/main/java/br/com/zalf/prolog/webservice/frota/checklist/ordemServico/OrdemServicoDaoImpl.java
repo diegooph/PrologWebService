@@ -94,7 +94,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(6, tipoVeiculo);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                final OrdemServico os = createOrdemServico(rSet);
+                final OrdemServico os = OrdemServicoConverter.createOrdemServicoSemItens(rSet);
                 os.setItens(getItensOs(os.getVeiculo().getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                 oss.add(os);
             }
@@ -132,7 +132,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setInt(4, limit);
             stmt.setLong(5, offset);
             rSet = stmt.executeQuery();
-            return createItensOs(rSet);
+            return OrdemServicoConverter.createItensOs(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -166,7 +166,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(3, placa);
             stmt.setDate(4, DateUtils.toSqlDate(untilDate));
             rSet = stmt.executeQuery();
-            return createItensOs(rSet);
+            return OrdemServicoConverter.createItensOs(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -450,111 +450,10 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(3, placa);
             stmt.setString(4, status);
             rSet = stmt.executeQuery();
-            return createItensOs(rSet);
+            return OrdemServicoConverter.createItensOs(rSet);
         } finally {
             closeConnection(null, stmt, rSet);
         }
-    }
-
-    /**
-     * Método genérico para criar os itens de uma OS.
-     * @param rSet um ResultSet
-     * @return uma lista de ItemOrdemServico
-     * @throws SQLException caso não seja possivel acessar algum item do rSet
-     */
-    private List<ItemOrdemServico> createItensOs(ResultSet rSet) throws SQLException {
-        final List<ItemOrdemServico> itens = new ArrayList<>();
-        ItemOrdemServico item = null;
-        PerguntaRespostaChecklist pergunta = null;
-        AlternativaChecklist alternativa = null;
-        List<AlternativaChecklist> alternativas = null;
-        Colaborador mecanico = null;
-        try {
-            while (rSet.next()) {
-                item = new ItemOrdemServico();
-                item.setCodigo(rSet.getLong("codigo"));
-                item.setCodOs(rSet.getLong("cod_os"));
-                pergunta = createPergunta(rSet);
-                alternativa = createAlternativa(rSet);
-                alternativas = new ArrayList<>();
-                alternativas.add(alternativa);
-                pergunta.setAlternativasResposta(alternativas);
-                item.setPergunta(pergunta);
-                item.setPlaca(rSet.getString("placa_veiculo"));
-                item.setDataApontamento(rSet.getObject("data_hora", LocalDateTime.class));
-                item.setTempoLimiteResolucao(Duration.ofHours(rSet.getLong("PRAZO")));
-                setTempoRestante(item, rSet.getInt("prazo"), ZoneId.of(rSet.getString("TIME_ZONE_UNIDADE")));
-                item.setQtdApontamentos(rSet.getInt("qt_apontamentos"));
-                item.setStatus(ItemOrdemServico.Status.fromString(rSet.getString("status_item")));
-                if (rSet.getString("nome_mecanico")!= null) {
-                    mecanico = new Colaborador();
-                    mecanico.setCpf(rSet.getLong("cpf_mecanico"));
-                    mecanico.setNome(rSet.getString("nome_mecanico"));
-                    item.setMecanico(mecanico);
-                    item.setTempoRealizacaoConserto(Duration.ofMillis(rSet.getLong("tempo_realizacao")));
-                    item.setKmVeiculoFechamento(rSet.getLong("km_fechamento"));
-                    item.setDataHoraConserto(rSet.getObject("data_hora_conserto", LocalDateTime.class));
-                    item.setFeedbackResolucao(rSet.getString("feedback_conserto"));
-                }
-                itens.add(item);
-            }
-        } finally {
-            closeConnection(null, null, rSet);
-        }
-        return itens;
-    }
-
-    /**
-     * Atribui o tempo restante para conserto de um item
-     * @param itemManutencao um ItemManutencao
-     * @param prazoHoras prazo do item, em horas
-     */
-    private void setTempoRestante(ItemOrdemServico itemManutencao, int prazoHoras, @NotNull final ZoneId unidadeZone) {
-        final LocalDateTime dataMaxima = itemManutencao.getDataApontamento().plus(prazoHoras, ChronoUnit.HOURS);
-        final LocalDateTime dataAtualUnidade = LocalDateTime.now(unidadeZone);
-        itemManutencao.setTempoRestante(Duration.ofMillis(ChronoUnit.MILLIS.between(dataAtualUnidade, dataMaxima)));
-    }
-
-    /**
-     * Cria a ordem de serviço
-     * @param rSet um ResultSet contendo os dados da OS
-     * @return uma OrdemServico com os atributos setados
-     * @throws SQLException caso não seja possível realizar as consultas no rSet
-     */
-    private OrdemServico createOrdemServico(ResultSet rSet) throws SQLException {
-        final OrdemServico os = new OrdemServico();
-        os.setCodChecklist(rSet.getLong("cod_checklist"));
-        os.setCodigo(rSet.getLong("cod_os"));
-        os.setStatus(OrdemServico.Status.fromString(rSet.getString("status")));
-        final Veiculo v = new Veiculo();
-        v.setKmAtual(rSet.getLong("km"));
-        v.setPlaca(rSet.getString("placa_veiculo"));
-        v.setAtivo(true);
-        os.setVeiculo(v);
-        os.setDataAbertura(rSet.getObject("data_hora", LocalDateTime.class));
-        os.setDataFechamento(rSet.getObject("data_hora_fechamento", LocalDateTime.class));
-        return os;
-    }
-
-    private PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException {
-        final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
-        pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
-        pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
-        pergunta.setPergunta(rSet.getString("PERGUNTA"));
-        pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
-        pergunta.setPrioridade(rSet.getString("PRIORIDADE"));
-        return pergunta;
-    }
-
-    private AlternativaChecklist createAlternativa(ResultSet rSet) throws SQLException{
-        final AlternativaChecklist alternativa = new AlternativaChecklist();
-        alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
-        alternativa.alternativa = rSet.getString("ALTERNATIVA");
-        if(alternativa.alternativa.equals("Outros")){
-            alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
-            alternativa.respostaOutros = rSet.getString("resposta");
-        }
-        return alternativa;
     }
 
     /**

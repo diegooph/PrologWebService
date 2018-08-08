@@ -352,7 +352,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
             final List<OrdemServico> checklists = new ArrayList<>();
             if (rSet.next()) {
                 do {
-                    checklists.add(OrdemServicoConverter.createOrdemServico(rSet));
+                    checklists.add(OrdemServicoConverter.createOrdemServicoSemItens(rSet));
                 } while (rSet.next());
             } else {
                 throw new IllegalStateException();
