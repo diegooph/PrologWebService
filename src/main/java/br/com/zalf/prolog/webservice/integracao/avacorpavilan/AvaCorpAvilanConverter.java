@@ -4,9 +4,8 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
-import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolVeiculoDia;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolVeiculoDia;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
@@ -350,12 +349,12 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static FarolChecklist convert(ArrayOfFarolDia farolDia) throws ParseException {
+    public static DeprecatedFarolChecklist convert(ArrayOfFarolDia farolDia) throws ParseException {
         checkNotNull(farolDia, "farolDia não pode ser null!");
         checkArgument(farolDia.getFarolDia().size() == 1, "farolDia não pode vir com mais de um elemento " +
                 "pois estamos filtrando apenas por um único dia!");
 
-        final List<FarolVeiculoDia> farolVeiculos = new ArrayList<>();
+        final List<DeprecatedFarolVeiculoDia> farolVeiculos = new ArrayList<>();
         final List<VeiculoChecklist> veiculosFarol = farolDia
                 .getFarolDia()
                 .get(0)
@@ -404,11 +403,10 @@ public final class AvaCorpAvilanConverter {
                 }
             }
 
-            // TODO:
-//            farolVeiculos.add(new FarolVeiculoDia(veiculo, checklistSaidaDia, checklistRetornoDia, itensCriticos));
+            farolVeiculos.add(new DeprecatedFarolVeiculoDia(veiculo, checklistSaidaDia, checklistRetornoDia, itensCriticos));
         }
 
-        return new FarolChecklist(farolVeiculos);
+        return new DeprecatedFarolChecklist(farolVeiculos);
     }
 
     @NotNull

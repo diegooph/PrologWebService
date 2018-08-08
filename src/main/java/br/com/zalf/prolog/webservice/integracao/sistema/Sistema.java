@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.sistema;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
@@ -153,10 +153,10 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                            @NotNull final LocalDate dataInicial,
-                                            @NotNull final LocalDate dataFinal,
-                                            final boolean itensCriticosRetroativos) throws Throwable {
+    public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                                      @NotNull final LocalDate dataInicial,
+                                                      @NotNull final LocalDate dataFinal,
+                                                      final boolean itensCriticosRetroativos) throws Throwable {
         return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 

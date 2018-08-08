@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
-import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -294,10 +294,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
     }
 
     @Override
-    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                            @NotNull final LocalDate dataInicial,
-                                            @NotNull final LocalDate dataFinal,
-                                            final boolean itensCriticosRetroativos) throws Throwable {
+    public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                                      @NotNull final LocalDate dataInicial,
+                                                      @NotNull final LocalDate dataFinal,
+                                                      final boolean itensCriticosRetroativos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

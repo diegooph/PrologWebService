@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.farol.FarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import com.sun.istack.internal.NotNull;
 
 import javax.annotation.Nonnull;
@@ -80,8 +80,8 @@ public interface ChecklistDao {
 
 
 	@NotNull
-	FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-									 @NotNull final LocalDate dataInicial,
-									 @NotNull final LocalDate dataFinal,
-									 final boolean itensCriticosRetroativos) throws Throwable;
+	DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+											   @NotNull final LocalDate dataInicial,
+											   @NotNull final LocalDate dataFinal,
+											   final boolean itensCriticosRetroativos) throws Throwable;
 }
