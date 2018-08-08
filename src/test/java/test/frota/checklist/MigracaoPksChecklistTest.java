@@ -59,7 +59,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
     private static final String TAG = MigracaoPksChecklistTest.class.getSimpleName();
     private static final String DRIVER = "org.postgresql.Driver";
     private static final String TIMEZONE_DEFAULT = "America/Sao_Paulo";
-    private static final String TESTE_URL_PRE = "jdbc:postgresql://localhost:5432/prolog_farol_1";
+    private static final String TESTE_URL_PRE = "jdbc:postgresql://localhost:5432/prolog_farol_2";
     private static final String TESTE_USUARIO_PRE = "postgres";
     private static final String TESTE_SENHA_PRE = "postgres";
 
@@ -77,10 +77,16 @@ public class MigracaoPksChecklistTest extends BaseTest {
         posMigration = createConnection(TESTE_URL_POS, TESTE_USUARIO_POS, TESTE_SENHA_POS);
     }
 
+    @Override
+    public void destroy() {
+        DatabaseConnection.closeConnection(preMigration);
+        DatabaseConnection.closeConnection(posMigration);
+    }
+
     @Test
     public void testTodosChecklistsIguais() throws Throwable {
         final long totalChecklistsPre = getNumeroTotalChecklist(preMigration);
-        final long totalChecklistPos = getNumeroTotalOrdensServico(posMigration);
+        final long totalChecklistPos = getNumeroTotalChecklist(posMigration);
         assertEquals(totalChecklistsPre, totalChecklistPos);
 
         long offset = 0;
@@ -101,6 +107,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
 
                 // Compara atributos simples.
                 assertEquals(pre.getCodigo(), pos.getCodigo());
+                System.out.println("Comparando checklist de código: " + pre.getCodigo());
                 assertEquals(pre.getPlacaVeiculo(), pos.getPlacaVeiculo());
                 assertEquals(pre.getData(), pos.getData());
                 assertEquals(pre.getCodModelo(), pos.getCodModelo());
@@ -114,6 +121,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
                 // Compara respostas.
                 final List<PerguntaRespostaChecklist> rPre = pre.getListRespostas();
                 final List<PerguntaRespostaChecklist> rPos = pos.getListRespostas();
+                assertNotNull(rPre);
+                assertNotNull(rPos);
                 assertEquals(rPre.size(), rPos.size());
                 for (int j = 0; j < rPre.size(); j++) {
                     final PerguntaRespostaChecklist p1 = rPre.get(j);
@@ -122,7 +131,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     assertNotNull(p2);
 
                     // Compara atributos da pergunta.
-                    assertEquals(p1.getCodigo(), p2.getCodigo());
+                    // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
+//                    assertEquals(p1.getCodigo(), p2.getCodigo());
                     assertEquals(p1.getPergunta(), p2.getPergunta());
                     assertEquals(p1.getPrioridade(), p2.getPrioridade());
                     assertEquals(p1.getCodImagem(), p2.getCodImagem());
@@ -143,7 +153,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
                         assertNotNull(a2);
 
                         // Atributos da Alternativa.
-                        assertEquals(a1.getCodigo(), a2.getCodigo());
+                        // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
+//                        assertEquals(a1.getCodigo(), a2.getCodigo());
                         assertEquals(a1.getAlternativa(), a2.getAlternativa());
                         assertEquals(a1.getTipo(), a2.getTipo());
                         assertEquals(a1.getOrdemExibicao(), a2.getOrdemExibicao());
@@ -225,7 +236,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     assertNotNull(p1);
                     assertNotNull(p2);
 
-                    assertEquals(p1.getCodigo(), p2.getCodigo());
+                    // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
+//                    assertEquals(p1.getCodigo(), p2.getCodigo());
                     assertEquals(p1.getPergunta(), p2.getPergunta());
                     assertEquals(p1.getPrioridade(), p2.getPrioridade());
                     assertEquals(p1.getCodImagem(), p2.getCodImagem());
@@ -246,7 +258,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
                         assertNotNull(a2);
 
                         // Atributos da Alternativa.
-                        assertEquals(a1.getCodigo(), a2.getCodigo());
+                        // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
+//                        assertEquals(a1.getCodigo(), a2.getCodigo());
                         assertEquals(a1.getAlternativa(), a2.getAlternativa());
                         assertEquals(a1.getTipo(), a2.getTipo());
                         assertEquals(a1.getOrdemExibicao(), a2.getOrdemExibicao());
@@ -264,7 +277,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT COUNT(CODIGO) AS TOTAL FROM CHECKLIST;");
+            stmt = conn.prepareStatement("SELECT COUNT(CODIGO) AS TOTAL FROM CHECKLIST WHERE COD_UNIDADE != 2;");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("TOTAL");
@@ -272,7 +285,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
                 throw new IllegalStateException();
             }
         } finally {
-            DatabaseConnection.closeConnection(conn, stmt, rSet);
+            DatabaseConnection.closeConnection(null, stmt, rSet);
         }
     }
 
@@ -280,7 +293,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT COUNT(CODIGO) AS TOTAL FROM CHECKLIST_ORDEM_SERVICO;");
+            stmt = conn.prepareStatement("SELECT COUNT(CODIGO) AS TOTAL FROM CHECKLIST_ORDEM_SERVICO " +
+                    "WHERE COD_UNIDADE != 2;");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("TOTAL");
@@ -288,7 +302,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
                 throw new IllegalStateException();
             }
         } finally {
-            DatabaseConnection.closeConnection(conn, stmt, rSet);
+            DatabaseConnection.closeConnection(null, stmt, rSet);
         }
     }
 
@@ -305,6 +319,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     + "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
                     + "JOIN EQUIPE E ON E.CODIGO = CO.COD_EQUIPE "
                     + "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO "
+                    + "WHERE C.COD_UNIDADE != 2 "
                     + "ORDER BY DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?");
             stmt.setString(1, TIMEZONE_DEFAULT);
@@ -314,14 +329,16 @@ public class MigracaoPksChecklistTest extends BaseTest {
             final List<Checklist> checklists = new ArrayList<>();
             if (rSet.next()) {
                 do {
-                    checklists.add(ChecklistConverter.createChecklist(rSet));
+                    final Checklist checklist = ChecklistConverter.createChecklist(rSet);
+                    checklist.setListRespostas(getPerguntasRespostas(conn, checklist));
+                    checklists.add(checklist);
                 } while (rSet.next());
             } else {
                 throw new IllegalStateException();
             }
             return checklists;
         } finally {
-            DatabaseConnection.closeConnection(conn, stmt, rSet);
+            DatabaseConnection.closeConnection(null, stmt, rSet);
         }
     }
 
@@ -344,6 +361,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     "AND C.COD_UNIDADE = COS.COD_UNIDADE " +
                     "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO " +
                     "JOIN VEICULO_TIPO VT ON VT.COD_UNIDADE = C.COD_UNIDADE AND V.COD_TIPO = VT.CODIGO " +
+                    "WHERE C.COD_UNIDADE != 2 " +
                     "ORDER BY COS.CODIGO DESC " +
                     "LIMIT ? OFFSET ?;");
             stmt.setString(1, TIMEZONE_DEFAULT);
@@ -363,7 +381,55 @@ public class MigracaoPksChecklistTest extends BaseTest {
             }
             return ordens;
         } finally {
-            DatabaseConnection.closeConnection(conn, stmt, rSet);
+            DatabaseConnection.closeConnection(null, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private List<PerguntaRespostaChecklist> getPerguntasRespostas(@NotNull final Connection conn,
+                                                                  @NotNull final Checklist checklist)
+            throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, " +
+                            "       CP.ORDEM AS ORDEM_PERGUNTA, " +
+                            "  CP.PERGUNTA, " +
+                            "  CP.SINGLE_CHOICE, " +
+                            "       CAP.CODIGO AS COD_ALTERNATIVA, " +
+                            "  CP.PRIORIDADE, " +
+                            "  CAP.ORDEM, " +
+                            "  CGI.COD_IMAGEM, " +
+                            "  CGI.URL_IMAGEM, " +
+                            "  CAP.ALTERNATIVA, " +
+                            "  CR.RESPOSTA " +
+                            "FROM CHECKLIST C " +
+                            "  JOIN CHECKLIST_RESPOSTAS CR " +
+                            "    ON C.CODIGO = CR.COD_CHECKLIST " +
+                            "       AND CR.COD_CHECKLIST_MODELO = C.COD_CHECKLIST_MODELO " +
+                            "       AND C.COD_UNIDADE = CR.COD_UNIDADE " +
+                            "  JOIN CHECKLIST_PERGUNTAS CP " +
+                            "    ON CP.CODIGO = CR.COD_PERGUNTA " +
+                            "       AND CP.COD_UNIDADE = CR.COD_UNIDADE " +
+                            "       AND CP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO " +
+                            "       AND CP.CODIGO = CR.COD_PERGUNTA " +
+                            "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP " +
+                            "    ON CAP.CODIGO = CR.COD_ALTERNATIVA " +
+                            "       AND CAP.COD_UNIDADE = CR.COD_UNIDADE " +
+                            "       AND CAP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO " +
+                            "       AND CAP.COD_PERGUNTA = CR.COD_PERGUNTA " +
+                            "  LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
+                            "WHERE C.CODIGO = ? AND C.CPF_COLABORADOR = ? " +
+                            "AND C.COD_UNIDADE != 2 " +
+                            "ORDER BY CP.PERGUNTA, CAP.ALTERNATIVA, CR.RESPOSTA;",
+                    ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            stmt.setLong(1, checklist.getCodigo());
+            stmt.setLong(2, checklist.getColaborador().getCpf());
+            rSet = stmt.executeQuery();
+            return ChecklistConverter.createPerguntasRespostasChecklist(rSet);
+        } finally {
+            DatabaseConnection.closeConnection(null, stmt, rSet);
         }
     }
 
@@ -379,6 +445,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     "WHERE  E.COD_OS::TEXT LIKE ? " +
                     "AND E.COD_UNIDADE::TEXT LIKE ? " +
                     "AND E.PLACA_VEICULO LIKE ? " +
+                    "AND E.COD_UNIDADE != 2 " +
                     "ORDER BY E.PLACA_VEICULO, E.PRAZO ASC;");
             stmt.setString(1, String.valueOf(codOs));
             stmt.setString(2, String.valueOf(codUnidade));
