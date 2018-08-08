@@ -149,7 +149,7 @@ public final class ChecklistConverter {
                 alternativas.add(alternativa);
                 pergunta.setAlternativasResposta(alternativas);
                 servico.setPergunta(pergunta);
-//                servico.setDataApontamento();
+                servico.setDataApontamento(itemCritico.getDataHoraApontamentoItemCritico());
                 servico.setCodigo(itemCritico.getCodigoItemCritico());
                 itens.add(servico);
             }
@@ -224,6 +224,7 @@ public final class ChecklistConverter {
     private static FarolItemCritico createItemCritico(@NotNull final ResultSet rSet) throws SQLException {
         return new FarolItemCritico(
                 rSet.getLong("CODIGO_ITEM_CRITICO"),
+                rSet.getObject("DATA_HORA_APONTAMENTO_ITEM_CRITICO", LocalDateTime.class),
                 rSet.getString("DESCRICAO_ALTERNATIVA"),
                 rSet.getString("DESCRICAO_ALTERNATIVA_TIPO_OUTROS"));
     }
