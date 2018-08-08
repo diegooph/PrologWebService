@@ -43,7 +43,7 @@ public final class ChecklistConverter {
         checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO"));
         checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("TEMPO_REALIZACAO"));
         // TODO: Esse método atualmente não está funcionando, precisamos talvez adicionar esse retorno na query.
-        setQtdOkOrNok(checklist);
+//        setQtdOkOrNok(checklist);
         return checklist;
     }
 
@@ -260,21 +260,6 @@ public final class ChecklistConverter {
         colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
         colaborador.setNome(rSet.getString("NOME"));
         return colaborador;
-    }
-
-    private static void setQtdOkOrNok(Checklist checklist) throws SQLException {
-//        final List<PerguntaRespostaChecklist> respostas = getPerguntasRespostas(checklist);
-//        int qtdNok = 0;
-//        for (PerguntaRespostaChecklist resposta : respostas) {
-//            for (AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
-//                if (alternativa.selected) {
-//                    qtdNok++;
-//                    break;
-//                }
-//            }
-//        }
-//        checklist.setQtdItensNok(qtdNok);
-//        checklist.setQtdItensOk(respostas.size() - qtdNok);
     }
 
     @NotNull

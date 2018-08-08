@@ -85,11 +85,13 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             if (rSet.next()) {
                 final Checklist checklist = ChecklistConverter.createChecklist(rSet);
                 checklist.setListRespostas(getPerguntasRespostas(checklist));
+                return checklist;
+            } else {
+                throw new IllegalStateException("Checklist com o código: " + codChecklist + " não encontrado!");
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return null;
     }
 
     @Nonnull
