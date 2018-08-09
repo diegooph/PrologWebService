@@ -1,4 +1,4 @@
-package test.frota.checklist;
+package test.frota;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
