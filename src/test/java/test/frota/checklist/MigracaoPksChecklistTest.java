@@ -26,20 +26,20 @@ import static org.junit.Assert.assertNotNull;
  * dia, isso significa um aumento de quase 100k de linhas na tabela CHECKLIST_RESPOSTAS por dia. As buscas para criação
  * da tela de farol e também para a tela de OS se baseiam no uso da mesma VIEW: ESTRATIFICACAO_OS. Essa VIEW faz join
  * com praticamente todas as tabelas de checklists, para poder ser flexível o suficiente e ser utilizada tanto para
- * construção do farol quanto para listagem de OS ou relatórios.
+ * construção do farol quanto para listagem de Ordens de Serviços ou relatórios.
  * <p>
  * Como a maioria das tabelas do checklist não possuem chaves primárias únicas (um AUTOINCREMENT ou BIGSERIAL) os joins
- * ou buscas se tornam lerdos, pois não temos índeces. Quase todas as tabelas possuem chaves compostas que por sua vez
+ * ou buscas se tornam lentos, pois não temos índeces. Quase todas as tabelas possuem chaves compostas que por sua vez
  * são até mesmo compostas por uma coluna BIGSERIAL, o que não faz o menor sentido. Além disso, algumas tabelas também
  * setam o valor dessa coluna BIGSERIAL na mão, fazendo com que tenhamos valores repeditos que não causam problemas pois
  * a PK é composta.
  * <p>
- * Todos esses problemas levaram à funcionalidade de farol do checklist a parar de funcionar, pois além das queries e
+ * Todos esses problemas levaram a funcionalidade do farol do checklist a parar de funcionar, pois além das queries e
  * tabelas estarem mau otimizadas, a própria busca no servidor também estava, fazendo uma consulta com nova connection
  * ao BD para cada placa da unidade e essa busca por sua vez utilizando a ESTRATIFICAO_OS, que faz joins, como já dito,
  * com quase todas as tabelas de checklist.
  * <p>
- * Para resolver esse problema toda a estrutura de chaves das tabelas de checklist foram alteradas, onde possível, as
+ * Para resolver esses problemas toda a estrutura de chaves das tabelas de checklist foram alteradas, onde possível, as
  * tabelas passaram a ter uma PK única (BIGSERIAL) e onde necessário uma tabela de vínculo, como é o caso da
  * CHECKLIST_RESPOSTAS, o menor número de colunas possível foi utilizado na construção da PK composta.
  * Mesmo com todas essas otimizações a nível de banco, a busca do farol também foi alterada no servidor para utilizar
