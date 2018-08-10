@@ -43,6 +43,7 @@ public class OperacoesNaoPermitidasViewsTest extends BaseTest {
         for (final String viewName : viewNames) {
             walk(TARGET_REPO, viewName);
         }
+        DatabaseConnection.closeConnection(connection);
     }
 
     private void walk(@NotNull final String path, @NotNull final String viewName) throws IOException {
