@@ -100,9 +100,10 @@ public class RaizenProdutividadeReader {
 
     @NotNull
     private static BigDecimal createBigDecimal(@NotNull final String s) {
-        return new BigDecimal(s.trim()
+        return new BigDecimal(s
                 .replaceAll("[^0-9 .,]|(?<!\\d)[.,]|[.,](?!\\d)", "")
                 .replace(".", "")
-                .replace(",", "."));
+                .replace(",", ".")
+                .trim());
     }
 }
