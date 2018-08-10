@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServi
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoConverter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 import test.BaseTest;
 
@@ -128,44 +129,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
                 assertNotNull(rPos);
                 assertEquals(rPre.size(), rPos.size());
                 for (int j = 0; j < rPre.size(); j++) {
-                    final PerguntaRespostaChecklist p1 = rPre.get(j);
-                    final PerguntaRespostaChecklist p2 = rPos.get(j);
-                    assertNotNull(p1);
-                    assertNotNull(p2);
-
-                    // Compara atributos da pergunta.
-                    // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
-//                    assertEquals(p1.getCodigo(), p2.getCodigo());
-                    assertEquals(p1.getPergunta(), p2.getPergunta());
-                    assertEquals(p1.getPrioridade(), p2.getPrioridade());
-                    assertEquals(p1.getCodImagem(), p2.getCodImagem());
-                    assertEquals(p1.getUrl(), p2.getUrl());
-                    assertEquals(p1.getOrdemExibicao(), p2.getOrdemExibicao());
-                    assertEquals(p1.isSingleChoice(), p2.isSingleChoice());
-                    assertEquals(p1.getTipo(), p2.getTipo());
-
-                    // Alternativas.
-                    final List<AlternativaChecklist> listA1 = p1.getAlternativasResposta();
-                    final List<AlternativaChecklist> listA2 = p2.getAlternativasResposta();
-                    assertNotNull(listA1);
-                    assertNotNull(listA2);
-                    assertEquals(listA1.size(), listA2.size());
-
-                    for (int k = 0; k < listA1.size(); k++) {
-                        final AlternativaChecklist a1 = listA1.get(k);
-                        final AlternativaChecklist a2 = listA2.get(k);
-                        assertNotNull(a1);
-                        assertNotNull(a2);
-
-                        // Atributos da Alternativa.
-                        // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
-//                        assertEquals(a1.getCodigo(), a2.getCodigo());
-                        assertEquals(a1.getAlternativa(), a2.getAlternativa());
-                        assertEquals(a1.getTipo(), a2.getTipo());
-                        assertEquals(a1.getOrdemExibicao(), a2.getOrdemExibicao());
-                        assertEquals(a1.getRespostaOutros(), a2.getRespostaOutros());
-                        assertEquals(a1.isSelected(), a2.isSelected());
-                    }
+                    validatePerguntaRespostaChecklist(rPre.get(j), rPos.get(j));
                 }
             }
             System.out.println("=======> Checklists Processados: " + (offset + antes.size()) + " <=======");
@@ -236,48 +200,54 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     }
 
                     // Compara a pergunta.
-                    final PerguntaRespostaChecklist p1 = i1.getPergunta();
-                    final PerguntaRespostaChecklist p2 = i2.getPergunta();
-                    assertNotNull(p1);
-                    assertNotNull(p2);
-
-                    // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
-//                    assertEquals(p1.getCodigo(), p2.getCodigo());
-                    assertEquals(p1.getPergunta(), p2.getPergunta());
-                    assertEquals(p1.getPrioridade(), p2.getPrioridade());
-                    assertEquals(p1.getCodImagem(), p2.getCodImagem());
-                    assertEquals(p1.getUrl(), p2.getUrl());
-                    assertEquals(p1.getOrdemExibicao(), p2.getOrdemExibicao());
-                    assertEquals(p1.isSingleChoice(), p2.isSingleChoice());
-                    assertEquals(p1.getTipo(), p2.getTipo());
-
-                    // Alternativas.
-                    final List<AlternativaChecklist> listA1 = p1.getAlternativasResposta();
-                    final List<AlternativaChecklist> listA2 = p2.getAlternativasResposta();
-                    assertNotNull(listA1);
-                    assertNotNull(listA2);
-                    assertEquals(listA1.size(), listA2.size());
-
-                    for (int k = 0; k < listA1.size(); k++) {
-                        final AlternativaChecklist a1 = listA1.get(k);
-                        final AlternativaChecklist a2 = listA2.get(k);
-                        assertNotNull(a1);
-                        assertNotNull(a2);
-
-                        // Atributos da Alternativa.
-                        // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
-//                        assertEquals(a1.getCodigo(), a2.getCodigo());
-                        assertEquals(a1.getAlternativa(), a2.getAlternativa());
-                        assertEquals(a1.getTipo(), a2.getTipo());
-                        assertEquals(a1.getOrdemExibicao(), a2.getOrdemExibicao());
-                        assertEquals(a1.getRespostaOutros(), a2.getRespostaOutros());
-                        assertEquals(a1.isSelected(), a2.isSelected());
-                    }
+                    validatePerguntaRespostaChecklist(i1.getPergunta(), i2.getPergunta());
                 }
             }
             System.out.println("=======> Ordens de Serviço Processadas: " + (offset + antes.size()) + " <=======");
             offset += LIMIT;
         }
+    }
+
+    private void validatePerguntaRespostaChecklist(@Nullable final PerguntaRespostaChecklist p1,
+                                                   @Nullable final PerguntaRespostaChecklist p2) {
+        assertNotNull(p1);
+        assertNotNull(p2);
+
+        // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
+//        assertEquals(p1.getCodigo(), p2.getCodigo());
+        assertEquals(p1.getPergunta(), p2.getPergunta());
+        assertEquals(p1.getPrioridade(), p2.getPrioridade());
+        assertEquals(p1.getCodImagem(), p2.getCodImagem());
+        assertEquals(p1.getUrl(), p2.getUrl());
+        assertEquals(p1.getOrdemExibicao(), p2.getOrdemExibicao());
+        assertEquals(p1.isSingleChoice(), p2.isSingleChoice());
+        assertEquals(p1.getTipo(), p2.getTipo());
+
+        // Alternativas.
+        final List<AlternativaChecklist> listA1 = p1.getAlternativasResposta();
+        final List<AlternativaChecklist> listA2 = p2.getAlternativasResposta();
+        assertNotNull(listA1);
+        assertNotNull(listA2);
+        assertEquals(listA1.size(), listA2.size());
+
+        for (int k = 0; k < listA1.size(); k++) {
+            validateAlternativaChecklist(listA1.get(k), listA2.get(k));
+        }
+    }
+
+    private void validateAlternativaChecklist(@Nullable final AlternativaChecklist a1,
+                                              @Nullable final AlternativaChecklist a2) {
+        assertNotNull(a1);
+        assertNotNull(a2);
+
+        // Atributos da Alternativa.
+        // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
+//        assertEquals(a1.getCodigo(), a2.getCodigo());
+        assertEquals(a1.getAlternativa(), a2.getAlternativa());
+        assertEquals(a1.getTipo(), a2.getTipo());
+        assertEquals(a1.getOrdemExibicao(), a2.getOrdemExibicao());
+        assertEquals(a1.getRespostaOutros(), a2.getRespostaOutros());
+        assertEquals(a1.isSelected(), a2.isSelected());
     }
 
     private long getNumeroTotalChecklist(@NotNull final Connection conn) throws Throwable {
