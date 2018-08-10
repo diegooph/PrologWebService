@@ -248,6 +248,8 @@ public class MigracaoPksChecklistTest extends BaseTest {
                     assertEquals(p1.getCodImagem(), p2.getCodImagem());
                     assertEquals(p1.getUrl(), p2.getUrl());
                     assertEquals(p1.getOrdemExibicao(), p2.getOrdemExibicao());
+                    assertEquals(p1.isSingleChoice(), p2.isSingleChoice());
+                    assertEquals(p1.getTipo(), p2.getTipo());
 
                     // Alternativas.
                     final List<AlternativaChecklist> listA1 = p1.getAlternativasResposta();
