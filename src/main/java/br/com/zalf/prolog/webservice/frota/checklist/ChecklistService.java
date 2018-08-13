@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
@@ -12,9 +11,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarol
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Clock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.List;
 import java.util.Map;
 
@@ -126,7 +123,8 @@ public class ChecklistService {
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
                                             final boolean itensCriticosRetroativos,
                                             @NotNull final String userToken) throws ProLogException {
-        final LocalDate hoje = Now.localDate();
+        // TODO: Precisamos aplicar o tz do cliente
+        final LocalDate hoje = ZonedDateTime.now(Clock.systemUTC()).withZoneSameInstant(ZoneId.of("America/Sao_Paulo")).toLocalDate();
         return internalGetFarolChecklist(codUnidade, hoje, hoje, itensCriticosRetroativos, userToken);
     }
 
