@@ -103,15 +103,15 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
     @Nonnull
     @Override
-    public List<Checklist> getAll(@Nonnull Long codUnidade,
-                                  @Nullable Long codEquipe,
-                                  @Nullable Long codTipoVeiculo,
-                                  @Nullable String placaVeiculo,
-                                  long dataInicial,
-                                  long dataFinal,
-                                  int limit,
-                                  long offset,
-                                  boolean resumido) throws SQLException {
+    public List<Checklist> getAll(@Nonnull final Long codUnidade,
+                                  @Nullable final Long codEquipe,
+                                  @Nullable final Long codTipoVeiculo,
+                                  @Nullable final String placaVeiculo,
+                                  final long dataInicial,
+                                  final long dataFinal,
+                                  final int limit,
+                                  final long offset,
+                                  final boolean resumido) throws SQLException {
         final List<Checklist> checklists = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -156,60 +156,37 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
     }
 
     @Override
-    public List<Checklist> getByColaborador(Long cpf, @Nullable Long dataInicial, @Nullable Long dataFinal, int limit,
-                                            long offset, boolean resumido) throws SQLException {
+    public List<Checklist> getByColaborador(@NotNull final Long cpf,
+                                            @Nullable final Long dataInicial,
+                                            @Nullable final Long dataFinal,
+                                            final int limit,
+                                            final long offset,
+                                            final boolean resumido) throws SQLException {
         List<Checklist> checklists = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  C.CODIGO, " +
-                    "  C.COD_CHECKLIST_MODELO, " +
-                    "  C.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
-                    "  C.CPF_COLABORADOR, " +
-                    "  C.PLACA_VEICULO, " +
-                    "  C.KM_VEICULO, " +
-                    "  C.TIPO, " +
-                    "  C.TEMPO_REALIZACAO, " +
-                    "  CO.NOME " +
-                    "FROM CHECKLIST C " +
-                    "  JOIN COLABORADOR CO " +
-                    "    ON CO.CPF = C.CPF_COLABORADOR " +
-                    "WHERE C.CPF_COLABORADOR = ? " +
-                    "      AND (? = 1 OR C.DATA_HORA::DATE >= (? AT TIME ZONE ?)) " +
-                    "      AND (? = 1 OR C.DATA_HORA::DATE <= (? AT TIME ZONE ?)) " +
-                    "ORDER BY C.DATA_HORA DESC " +
-                    "LIMIT ? OFFSET ?");
-            final String zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn).getId();
-            stmt.setString(1, zoneId);
-            stmt.setLong(2, cpf);
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_CHECKLIST_GET_REALIZADOS_BY_COLABORADOR(?, ?, ?, ?, ?, ?);");
+            stmt.setLong(1, cpf);
             if (dataInicial == null || dataFinal == null) {
-                stmt.setInt(3, 1);
-                stmt.setNull(4, Types.DATE);
-                stmt.setNull(5, Types.CHAR);
-                stmt.setInt(6, 1);
-                stmt.setNull(7, Types.DATE);
-                stmt.setNull(8, Types.CHAR);
+                stmt.setNull(2, Types.DATE);
+                stmt.setNull(3, Types.DATE);
             } else {
-                stmt.setInt(3, 0);
-                stmt.setDate(4, new java.sql.Date(dataInicial));
-                stmt.setString(5, zoneId);
-                stmt.setInt(6, 0);
-                stmt.setDate(7, new java.sql.Date(dataFinal));
-                stmt.setString(8, zoneId);
+                stmt.setDate(2, new java.sql.Date(dataInicial));
+                stmt.setDate(3, new java.sql.Date(dataFinal));
             }
-            stmt.setInt(9, limit);
-            stmt.setLong(10, offset);
+            stmt.setString(4, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
+            stmt.setInt(5, limit);
+            stmt.setLong(6, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final Checklist checklist = ChecklistConverter.createChecklist(rSet);
-                // TODO: Deve setar apenas se não for resumido, por enquanto está assim para podermos também setar
-                // o total de OK e NOK.
-//                if (!resumido) {
+                if (!resumido) {
                     checklist.setListRespostas(getPerguntasRespostas(checklist));
-//                }
+                }
                 checklists.add(checklist);
             }
         } finally {
