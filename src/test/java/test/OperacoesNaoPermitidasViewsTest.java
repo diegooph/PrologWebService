@@ -37,13 +37,17 @@ public class OperacoesNaoPermitidasViewsTest extends BaseTest {
         connection = createConnection();
     }
 
+    @Override
+    public void destroy() {
+        DatabaseConnection.closeConnection(connection);
+    }
+
     @Test
     public void testSqlViewValidation() throws SQLException, IOException {
         viewNames = getViewNames();
         for (final String viewName : viewNames) {
             walk(TARGET_REPO, viewName);
         }
-        DatabaseConnection.closeConnection(connection);
     }
 
     private void walk(@NotNull final String path, @NotNull final String viewName) throws IOException {
