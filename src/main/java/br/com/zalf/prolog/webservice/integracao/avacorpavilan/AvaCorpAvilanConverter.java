@@ -384,8 +384,12 @@ public final class AvaCorpAvilanConverter {
                 for (ItemCritico itemCritico : itensAvilan) {
                     final ItemOrdemServico itemOrdemServico = new ItemOrdemServico();
                     itemOrdemServico.setStatus(ItemOrdemServico.Status.PENDENTE);
-//                    itemOrdemServico.setDataApontamento(
-//                            AvaCorpAvilanUtils.createDateTimePattern(itemCritico.getData()));
+                    // TODO: Está com um bug onde retorna também os millis, por isso nós removemos caso venha.
+                    if (itemCritico.getData().contains(".")) {
+                        itemCritico.setData(itemCritico.getData().substring(0, itemCritico.getData().indexOf(".")));
+                    }
+                    itemOrdemServico.setDataApontamento(
+                            AvaCorpAvilanUtils.createLocalDateTimePattern(itemCritico.getData()));
 
                     // Seta o nome do item com problema.
                     // Alternativa.
