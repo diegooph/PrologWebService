@@ -32,7 +32,8 @@ public final class ChecklistConverter {
 
     @VisibleForTesting
     @NotNull
-    public static Checklist createChecklist(@NotNull final ResultSet rSet) throws SQLException {
+    public static Checklist createChecklist(@NotNull final ResultSet rSet,
+                                            final boolean setTotalItensOkNok) throws SQLException {
         final Checklist checklist = new Checklist();
         checklist.setCodigo(rSet.getLong("CODIGO"));
         checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
@@ -42,8 +43,10 @@ public final class ChecklistConverter {
         checklist.setTipo(rSet.getString("TIPO").charAt(0));
         checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO"));
         checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("TEMPO_REALIZACAO"));
-        checklist.setQtdItensOk(rSet.getInt("TOTAL_ITENS_OK"));
-        checklist.setQtdItensNok(rSet.getInt("TOTAL_ITENS_NOK"));
+        if (setTotalItensOkNok) {
+            checklist.setQtdItensOk(rSet.getInt("TOTAL_ITENS_OK"));
+            checklist.setQtdItensNok(rSet.getInt("TOTAL_ITENS_NOK"));
+        }
         return checklist;
     }
 

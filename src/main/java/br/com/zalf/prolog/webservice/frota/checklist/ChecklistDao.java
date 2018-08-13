@@ -5,10 +5,9 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -46,16 +45,16 @@ public interface ChecklistDao {
      * @return uma {@link List<Checklist> lista de checklists}.
      * @throws SQLException caso não seja possível realizar a busca.
      */
-    @Nonnull
-    List<Checklist> getAll(@Nonnull final Long codUnidade,
+    @NotNull
+    List<Checklist> getAll(@NotNull final Long codUnidade,
                            @Nullable final Long codEquipe,
                            @Nullable final Long codTipoVeiculo,
                            @Nullable final String placaVeiculo,
-                           long dataInicial,
-                           long dataFinal,
-                           int limit,
-                           long offset,
-                           boolean resumido) throws SQLException;
+                           final long dataInicial,
+                           final long dataFinal,
+                           final int limit,
+                           final long offset,
+                           final boolean resumido) throws SQLException;
 
     /**
      * Busca os checklists realizados por um colaborador.
@@ -63,8 +62,12 @@ public interface ChecklistDao {
      * @return uma {@link List<Checklist> lista de checklists}.
      * @throws SQLException caso não seja possível realizar a busca.
      */
-    List<Checklist> getByColaborador(Long cpf, @Nullable Long dataInicial, @Nullable Long dataFinal, int limit, long offset,
-                                     boolean resumido) throws SQLException;
+    List<Checklist> getByColaborador(@NotNull final Long cpf,
+                                     @NotNull final Long dataInicial,
+                                     @NotNull final Long dataFinal,
+                                     final int limit,
+                                     final long offset,
+                                     final boolean resumido) throws SQLException;
 
     /**
      * busca um novo checklist de perguntas

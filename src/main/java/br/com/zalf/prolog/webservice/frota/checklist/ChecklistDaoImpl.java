@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -10,7 +11,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDa
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.*;
 import java.time.LocalDate;
@@ -20,12 +20,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
 
     public ChecklistDaoImpl() {
 
     }
 
+    @NotNull
     @Override
     public Long insert(Checklist checklist) throws SQLException {
         Connection conn = null;
@@ -90,7 +93,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             stmt.setLong(2, codChecklist);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Checklist checklist = ChecklistConverter.createChecklist(rSet);
+                final Checklist checklist = ChecklistConverter.createChecklist(rSet, false);
                 checklist.setListRespostas(getPerguntasRespostas(checklist));
                 return checklist;
             } else {
@@ -101,9 +104,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public List<Checklist> getAll(@Nonnull final Long codUnidade,
+    public List<Checklist> getAll(@NotNull final Long codUnidade,
                                   @Nullable final Long codEquipe,
                                   @Nullable final Long codTipoVeiculo,
                                   @Nullable final String placaVeiculo,
@@ -112,7 +115,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                                   final int limit,
                                   final long offset,
                                   final boolean resumido) throws SQLException {
-        final List<Checklist> checklists = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -121,48 +123,32 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS(?, ?, ?, ?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, codUnidade);
-            if (codEquipe == null) {
-                stmt.setNull(2, Types.BIGINT);
-            } else {
-                stmt.setLong(2, codEquipe);
-            }
-            if (codTipoVeiculo == null) {
-                stmt.setNull(3, Types.BIGINT);
-            } else {
-                stmt.setLong(3, codTipoVeiculo);
-            }
-            if (placaVeiculo == null) {
-                stmt.setNull(4, Types.VARCHAR);
-            } else {
-                stmt.setString(4, placaVeiculo);
-            }
+            bindValueOrNull(stmt, 2, codEquipe, SqlType.BIGINT);
+            bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
+            bindValueOrNull(stmt, 4, placaVeiculo, SqlType.VARCHAR);
             stmt.setDate(5, new java.sql.Date(dataInicial));
             stmt.setDate(6, new java.sql.Date(dataFinal));
             stmt.setString(7, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             stmt.setInt(8, limit);
-            stmt.setLong(9, offset);
+            stmt.setInt(9, (int) offset);
             rSet = stmt.executeQuery();
+            final List<Checklist> checklists = new ArrayList<>();
             while (rSet.next()) {
-                final Checklist checklist = ChecklistConverter.createChecklist(rSet);
-                if (!resumido) {
-                    checklist.setListRespostas(getPerguntasRespostas(checklist));
-                }
-                checklists.add(checklist);
+                checklists.add(createChecklist(rSet, resumido));
             }
+            return checklists;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return checklists;
     }
 
     @Override
     public List<Checklist> getByColaborador(@NotNull final Long cpf,
-                                            @Nullable final Long dataInicial,
-                                            @Nullable final Long dataFinal,
+                                            @NotNull final Long dataInicial,
+                                            @NotNull final Long dataFinal,
                                             final int limit,
                                             final long offset,
                                             final boolean resumido) throws SQLException {
-        List<Checklist> checklists = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -171,28 +157,20 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_CHECKLIST_GET_REALIZADOS_BY_COLABORADOR(?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, cpf);
-            if (dataInicial == null || dataFinal == null) {
-                stmt.setNull(2, Types.DATE);
-                stmt.setNull(3, Types.DATE);
-            } else {
-                stmt.setDate(2, new java.sql.Date(dataInicial));
-                stmt.setDate(3, new java.sql.Date(dataFinal));
-            }
+            stmt.setDate(2, new java.sql.Date(dataInicial));
+            stmt.setDate(3, new java.sql.Date(dataFinal));
             stmt.setString(4, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
             stmt.setInt(5, limit);
-            stmt.setLong(6, offset);
+            stmt.setInt(6, (int) offset);
             rSet = stmt.executeQuery();
+            final List<Checklist> checklists = new ArrayList<>();
             while (rSet.next()) {
-                final Checklist checklist = ChecklistConverter.createChecklist(rSet);
-                if (!resumido) {
-                    checklist.setListRespostas(getPerguntasRespostas(checklist));
-                }
-                checklists.add(checklist);
+                checklists.add(createChecklist(rSet, resumido));
             }
+            return checklists;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return checklists;
     }
 
     @Override
@@ -328,8 +306,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
     }
 
     @NotNull
-    private List<PerguntaRespostaChecklist> getPerguntasRespostas(
-            @NotNull final Checklist checklist) throws SQLException {
+    private List<PerguntaRespostaChecklist> getPerguntasRespostas(@NotNull final Checklist checklist)
+            throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -375,5 +353,14 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    private Checklist createChecklist(final ResultSet rSet, final boolean resumido) throws SQLException {
+        final Checklist checklist = ChecklistConverter.createChecklist(rSet, true);
+        if (!resumido) {
+            checklist.setListRespostas(getPerguntasRespostas(checklist));
+        }
+        return checklist;
     }
 }

@@ -11,7 +11,8 @@ import java.sql.Types;
  */
 public enum SqlType {
     BIGINT("bigint", Types.BIGINT),
-    TEXT("text", Types.VARCHAR);
+    TEXT("text", Types.VARCHAR),
+    VARCHAR("varchar", Types.VARCHAR);
 
     @NotNull
     private final String typeString;

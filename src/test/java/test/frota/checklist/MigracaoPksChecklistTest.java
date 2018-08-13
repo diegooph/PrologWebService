@@ -306,7 +306,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
             final List<Checklist> checklists = new ArrayList<>();
             if (rSet.next()) {
                 do {
-                    final Checklist checklist = ChecklistConverter.createChecklist(rSet);
+                    final Checklist checklist = ChecklistConverter.createChecklist(rSet, false);
                     checklist.setListRespostas(getPerguntasRespostas(conn, checklist));
                     checklists.add(checklist);
                 } while (rSet.next());
