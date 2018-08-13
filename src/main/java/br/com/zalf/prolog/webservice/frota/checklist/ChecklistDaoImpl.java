@@ -130,7 +130,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             stmt.setDate(6, new java.sql.Date(dataFinal));
             stmt.setString(7, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             stmt.setInt(8, limit);
-            stmt.setInt(9, (int) offset);
+            stmt.setLong(9, offset);
             rSet = stmt.executeQuery();
             final List<Checklist> checklists = new ArrayList<>();
             while (rSet.next()) {
@@ -161,7 +161,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             stmt.setDate(3, new java.sql.Date(dataFinal));
             stmt.setString(4, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
             stmt.setInt(5, limit);
-            stmt.setInt(6, (int) offset);
+            stmt.setLong(6, offset);
             rSet = stmt.executeQuery();
             final List<Checklist> checklists = new ArrayList<>();
             while (rSet.next()) {
