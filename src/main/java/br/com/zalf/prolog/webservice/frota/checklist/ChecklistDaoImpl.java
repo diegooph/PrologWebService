@@ -161,9 +161,11 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final Checklist checklist = ChecklistConverter.createChecklist(rSet);
-                if (!resumido) {
+                // TODO: Deve setar apenas se não for resumido, por enquanto está assim para podermos também setar
+                // o total de OK e NOK.
+//                if (!resumido) {
                     checklist.setListRespostas(getPerguntasRespostas(checklist));
-                }
+//                }
                 checklists.add(checklist);
             }
         } finally {
@@ -213,10 +215,12 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             stmt.setLong(10, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Checklist checklist = ChecklistConverter.createChecklist(rSet);
-                if (!resumido) {
+                final Checklist checklist = ChecklistConverter.createChecklist(rSet);
+                // TODO: Deve setar apenas se não for resumido, por enquanto está assim para podermos também setar
+                // o total de OK e NOK.
+//                if (!resumido) {
                     checklist.setListRespostas(getPerguntasRespostas(checklist));
-                }
+//                }
                 checklists.add(checklist);
             }
         } finally {
