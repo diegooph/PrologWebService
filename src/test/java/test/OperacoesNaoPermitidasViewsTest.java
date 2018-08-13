@@ -15,6 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Esse teste surgiu por conta de um fail wall onde nós estávamos realizando o UPDATE em uma view, que não é possível.
+ * Link da tarefa no Jira: https://prologapp.atlassian.net/browse/PL-994
+ *
+ * O que esse teste faz é percorrer todas as DaoImpl do projeto e garantir que não exista nenhum UPDATE nem INSERT em
+ * nenhuma view. Os nomes das views para comparação são obtidos do banco de dados configurado nesta classe para conexão.
+ *
  * Created on 09/08/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
@@ -30,20 +36,23 @@ public class OperacoesNaoPermitidasViewsTest extends BaseTest {
     private static final int LINES_AHEAD_TO_SEARCH = 3;
 
     private Connection connection;
-    private List<String> viewNames;
 
     @Override
     public void initialize() {
         connection = createConnection();
     }
 
+    @Override
+    public void destroy() {
+        DatabaseConnection.closeConnection(connection);
+    }
+
     @Test
     public void testSqlViewValidation() throws SQLException, IOException {
-        viewNames = getViewNames();
+        final List<String> viewNames = getViewNames();
         for (final String viewName : viewNames) {
             walk(TARGET_REPO, viewName);
         }
-        DatabaseConnection.closeConnection(connection);
     }
 
     private void walk(@NotNull final String path, @NotNull final String viewName) throws IOException {
@@ -54,7 +63,7 @@ public class OperacoesNaoPermitidasViewsTest extends BaseTest {
             return;
         }
 
-        for (File file : list) {
+        for (final File file : list) {
             if (file.isDirectory()) {
                 walk(file.getAbsolutePath(), viewName);
             } else {
@@ -68,8 +77,11 @@ public class OperacoesNaoPermitidasViewsTest extends BaseTest {
     private void readAllLines(@NotNull final File file, @NotNull final String viewName) throws IOException {
         final List<String> lines = Files.readAllLines(Paths.get(file.toURI()));
         for (int i = 0; i < lines.size(); i++) {
+            // Se não for comentário e contiver o nome da view.
             if (!lines.get(i).startsWith("//") && lines.get(i).contains(viewName)) {
-                for (int j = 0; j < lines.size(); j++) {
+                // Se encontramos o nome de uma view em alguma linha, reprocessamos o arquivo até essa linha para
+                // garantir que essa view não estejamos atualizando nem inserindo nessa view.
+                for (int j = 0; j <= i; j++) {
                     if (lines.get(j).toUpperCase().contains("UPDATE") || lines.get(j).toUpperCase().contains("INSERT")) {
                         Assert.assertFalse(
                                 "Erro encontrado no arquivo '" + file.getName() + "' na linha: " + (j + 1) + ""
@@ -101,6 +113,7 @@ public class OperacoesNaoPermitidasViewsTest extends BaseTest {
         return viewNames;
     }
 
+    @SuppressWarnings("Duplicates")
     @NotNull
     private Connection createConnection() {
         try {
