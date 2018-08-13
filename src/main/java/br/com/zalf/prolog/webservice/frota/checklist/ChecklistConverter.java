@@ -49,8 +49,8 @@ public final class ChecklistConverter {
 
     @VisibleForTesting
     @NotNull
-    public static List<PerguntaRespostaChecklist> createPerguntasRespostasChecklist(@NotNull final ResultSet rSet)
-            throws SQLException {
+    public static List<PerguntaRespostaChecklist> createPerguntasRespostasChecklist(
+            @NotNull final ResultSet rSet) throws SQLException {
         final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
         List<AlternativaChecklist> alternativas = new ArrayList<>();
         PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
