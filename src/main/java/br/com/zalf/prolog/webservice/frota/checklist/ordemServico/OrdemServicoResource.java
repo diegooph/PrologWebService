@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -62,15 +65,17 @@ public class OrdemServicoResource {
 
     @GET
     @UsedBy(platforms = Platform.ANDROID)
-    @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
-    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+    @Path("/manutencao/{codUnidade}")
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
-    public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("codUnidade") Long codUnidade,
-                                                            @PathParam("tipoVeiculo") String codTipo,
-                                                            @PathParam("placa") String placa,
-                                                            @PathParam("status") String status,
-                                                            @QueryParam("limit") int limit,
-                                                            @QueryParam("offset") long offset) {
-        return service.getResumoManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
+    public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("codUnidade") @Required Long codUnidade,
+                                                            @QueryParam("codTipoVeiculo") @Optional Long codTipoVeiculo,
+                                                            @QueryParam("placaVeiculo") @Optional String placaVeiculo,
+                                                            @QueryParam("itensEmAberto") @Required Boolean itensEmAberto,
+                                                            @QueryParam("limit") @Required int limit,
+                                                            @QueryParam("offset") @Required int offset)
+            throws ProLogException {
+        return service.getResumoManutencaoHolder(codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit, offset);
     }
 }
