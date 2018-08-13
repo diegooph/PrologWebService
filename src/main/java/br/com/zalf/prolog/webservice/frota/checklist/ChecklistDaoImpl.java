@@ -118,61 +118,35 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA AT TIME ZONE ? AS DATA_HORA, "
-                    + "C.cod_checklist_modelo, C.KM_VEICULO, "
-                    + "C.TEMPO_REALIZACAO,C.CPF_COLABORADOR, C.PLACA_VEICULO, "
-                    + "C.TIPO, CO.NOME FROM CHECKLIST C "
-                    + "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
-                    + "JOIN EQUIPE E ON E.CODIGO = CO.COD_EQUIPE "
-                    + "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO "
-                    + "WHERE (C.DATA_HORA AT TIME ZONE ?)::DATE >= ? "
-                    + "AND (C.DATA_HORA AT TIME ZONE ?)::DATE <= ? "
-                    + "AND C.COD_UNIDADE = ? "
-                    + "AND (? = 1 OR E.CODIGO = ?) "
-                    + "AND (? = 1 OR V.COD_TIPO = ?) "
-                    + "AND (? = 1 OR C.PLACA_VEICULO = ?)"
-                    + "ORDER BY DATA_HORA DESC "
-                    + "LIMIT ? OFFSET ?");
-            final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
-            stmt.setString(1, zoneId);
-            stmt.setString(2, zoneId);
-            stmt.setDate(3, new java.sql.Date(dataInicial));
-            stmt.setString(4, zoneId);
-            stmt.setDate(5, new java.sql.Date(dataFinal));
-            stmt.setLong(6, codUnidade);
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            stmt.setLong(1, codUnidade);
             if (codEquipe == null) {
-                stmt.setInt(7, 1);
-                stmt.setInt(8, 1);
+                stmt.setNull(2, Types.BIGINT);
             } else {
-                stmt.setInt(7, 0);
-                stmt.setLong(8, codEquipe);
+                stmt.setLong(2, codEquipe);
             }
-
             if (codTipoVeiculo == null) {
-                stmt.setInt(9, 1);
-                stmt.setInt(10, 1);
+                stmt.setNull(3, Types.BIGINT);
             } else {
-                stmt.setInt(9, 0);
-                stmt.setLong(10, codTipoVeiculo);
+                stmt.setLong(3, codTipoVeiculo);
             }
-
             if (placaVeiculo == null) {
-                stmt.setInt(11, 1);
-                stmt.setString(12, "");
+                stmt.setNull(4, Types.VARCHAR);
             } else {
-                stmt.setInt(11, 0);
-                stmt.setString(12, placaVeiculo);
+                stmt.setString(4, placaVeiculo);
             }
-            stmt.setInt(13, limit);
-            stmt.setLong(14, offset);
+            stmt.setDate(5, new java.sql.Date(dataInicial));
+            stmt.setDate(6, new java.sql.Date(dataFinal));
+            stmt.setString(7, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            stmt.setInt(8, limit);
+            stmt.setLong(9, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final Checklist checklist = ChecklistConverter.createChecklist(rSet);
-                // TODO: Deve setar apenas se não for resumido, por enquanto está assim para podermos também setar
-                // o total de OK e NOK.
-//                if (!resumido) {
+                if (!resumido) {
                     checklist.setListRespostas(getPerguntasRespostas(checklist));
-//                }
+                }
                 checklists.add(checklist);
             }
         } finally {

@@ -42,8 +42,8 @@ public final class ChecklistConverter {
         checklist.setTipo(rSet.getString("TIPO").charAt(0));
         checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO"));
         checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("TEMPO_REALIZACAO"));
-        // TODO: Esse método atualmente não está funcionando, precisamos talvez adicionar esse retorno na query.
-//        setQtdOkOrNok(checklist);
+        checklist.setQtdItensOk(rSet.getInt("TOTAL_ITENS_OK"));
+        checklist.setQtdItensNok(rSet.getInt("TOTAL_ITENS_NOK"));
         return checklist;
     }
 
