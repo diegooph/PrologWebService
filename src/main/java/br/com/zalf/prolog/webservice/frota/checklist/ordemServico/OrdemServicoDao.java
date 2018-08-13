@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -45,8 +46,16 @@ public interface OrdemServicoDao {
 	 */
 	void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException;
 
-	List<ManutencaoHolder> getResumoManutencaoHolder(String placa, String codTipo, Long codUnidade, int limit,
-													 long offset, String status) throws SQLException;
+	/**
+	 * Busca a lista de itens agrupadas por placa e criticidade (tela das bolinhas).
+	 */
+	@NotNull
+	List<ManutencaoHolder> getResumoManutencaoHolder(@NotNull final Long codUnidade,
+													 @Nullable final Long codTipoVeiculo,
+													 @Nullable final String placaVeiculo,
+													 final boolean itensEmAberto,
+													 final int limit,
+													 final int offset) throws Throwable;
 
 	/**
 	 * marca um item como consertado

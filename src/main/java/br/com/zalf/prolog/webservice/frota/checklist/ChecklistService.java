@@ -2,17 +2,16 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
+import org.jetbrains.annotations.NotNull;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.*;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +20,7 @@ import java.util.Map;
  */
 public class ChecklistService {
     private static final String TAG = ChecklistService.class.getSimpleName();
+    @NotNull
     private final ChecklistDao dao = Injection.provideChecklistDao();
 
     public Long insert(Checklist checklist, String userToken) {
@@ -105,33 +105,48 @@ public class ChecklistService {
         }
     }
 
-    public FarolChecklist getFarolChecklist(Long codUnidade,
-                                            long dataInicial,
-                                            long dataFinal,
+    @NotNull
+    public DeprecatedFarolChecklist getFarolChecklist(Long codUnidade,
+                                            String dataInicial,
+                                            String dataFinal,
                                             boolean itensCriticosRetroativos,
-                                            String userToken) {
+                                            String userToken) throws ProLogException {
+        return internalGetFarolChecklist(
+                codUnidade,
+                ProLogDateParser.toLocalDate(dataInicial),
+                ProLogDateParser.toLocalDate(dataFinal),
+                itensCriticosRetroativos,
+                userToken);
+    }
+
+    @NotNull
+    public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                            final boolean itensCriticosRetroativos,
+                                            @NotNull final String userToken) throws ProLogException {
+        // TODO: Precisamos aplicar o tz do cliente
+        final LocalDate hoje = ZonedDateTime.now(Clock.systemUTC()).withZoneSameInstant(ZoneId.of("America/Sao_Paulo")).toLocalDate();
+        return internalGetFarolChecklist(codUnidade, hoje, hoje, itensCriticosRetroativos, userToken);
+    }
+
+    @NotNull
+    private DeprecatedFarolChecklist internalGetFarolChecklist(@NotNull final Long codUnidade,
+                                                               @NotNull final LocalDate dataInicial,
+                                                               @NotNull final LocalDate dataFinal,
+                                                               final boolean itensCriticosRetroativos,
+                                                               @NotNull final String userToken) throws ProLogException {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .getFarolChecklist(codUnidade, new Date(dataInicial), new Date(dataFinal), itensCriticosRetroativos);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar o farol de realização dos checklists", e);
-            throw new RuntimeException("Erro ao buscar farol do checklist");
-        }
-    }
-
-    public FarolChecklist getFarolChecklist(Long codUnidade, boolean itensCriticosRetroativos, String userToken) {
-        final long hoje = Now.utcMillis();
-        return getFarolChecklist(codUnidade, hoje, hoje, itensCriticosRetroativos, userToken);
-    }
-
-    @Deprecated
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) {
-        try {
-            return dao.getStatusLiberacaoVeiculos(codUnidade);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar o farol de realização dos checklists (@Deprecated)", e);
-            throw new RuntimeException("Erro ao buscar farol do checklist");
+                    .getFarolChecklist(
+                            codUnidade,
+                            dataInicial,
+                            dataFinal,
+                            itensCriticosRetroativos);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o farol de realização dos checklists", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar o farol do checklist, tente novamente");
         }
     }
 }

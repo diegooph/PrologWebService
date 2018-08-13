@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
@@ -48,14 +47,6 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
 											   @PathParam("codFuncao") Long codFuncao){
 		return new ChecklistModeloService().getUrlImagensPerguntas(codUnidade, codFuncao);
-	}
-
-	@GET
-	@Path("/liberacao/{codUnidade}")
-	@Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
-	@Deprecated
-	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade) {
-		return service.getStatusLiberacaoVeiculos(codUnidade);
 	}
 
 	@GET

@@ -41,6 +41,11 @@ public class AvaCorpAvilanUtils {
         return AVILAN_DATE_FORMAT.format(date);
     }
 
+    @NotNull
+    public static String createDatePattern(@NotNull final LocalDate localDate) {
+        return localDate.format(AVILAN_LOCAL_DATE_FORMAT);
+    }
+
     /**
      * Converte uma representação em texto no padrão utilizado no web service de integração da Avilan para um
      * {@link Date date}.

@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -13,24 +14,22 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaCheck
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created by jean on 10/08/16.
  */
 @SuppressWarnings("Duplicates")
 public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServicoDao {
-    private static final String PRIORIDADE_CRITICA = "CRITICA";
-    private static final String PRIORIDADE_ALTA = "ALTA";
-    private static final String PRIORIDADE_BAIXA = "BAIXA";
-
     /**
      * Busca os itens de uma ou mais OS, respeitando os parâmetros de filtro,
      * codigo da os / código da unidade / placa / status da OS
@@ -94,7 +93,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(6, tipoVeiculo);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                final OrdemServico os = createOrdemServico(rSet);
+                final OrdemServico os = OrdemServicoConverter.createOrdemServicoSemItens(rSet);
                 os.setItens(getItensOs(os.getVeiculo().getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                 oss.add(os);
             }
@@ -132,7 +131,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setInt(4, limit);
             stmt.setLong(5, offset);
             rSet = stmt.executeQuery();
-            return createItensOs(rSet);
+            return OrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -166,7 +165,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(3, placa);
             stmt.setDate(4, DateUtils.toSqlDate(untilDate));
             rSet = stmt.executeQuery();
-            return createItensOs(rSet);
+            return OrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -210,18 +209,14 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         }
     }
 
-    /**
-     * Busca a lista de itens agrupadas por placa e criticidade (tela das bolinhas)
-     * @param codUnidade Código da unidade
-     * @param limit Quantidade de placas
-     * @param offset um offset
-     * @param status status
-     * @return lista de ManutencaoHolder
-     * @throws SQLException caso não seja possível realizar a busca
-     */
+    @NotNull
     @Override
-    public List<ManutencaoHolder> getResumoManutencaoHolder(String placa, String codTipo, Long codUnidade, int limit,
-                                                            long offset, String status) throws SQLException {
+    public List<ManutencaoHolder> getResumoManutencaoHolder(@NotNull final Long codUnidade,
+                                                            @Nullable final Long codTipoVeiculo,
+                                                            @Nullable final String placaVeiculo,
+                                                            final boolean itensEmAberto,
+                                                            final int limit,
+                                                            final int offset) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -230,61 +225,28 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         Veiculo v;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT V.placa, v.km,TOTAL, COALESCE(CRITICA.CRITICAS, CRITICA.CRITICAS, 0) as criticas, coalesce(ALTAS.ALTAS, ALTAS.ALTAS, 0) as altas,\n" +
-                    "  coalesce(BAIXAS.BAIXAS, BAIXAS.BAIXAS, 0) as baixas FROM VEICULO V\n" +
-                    "  JOIN\n" +
-                    "  (SELECT es.placa_veiculo AS PLACA_TOTAL, COUNT(COD_unidade) as TOTAL FROM estratificacao_os es\n" +
-                    "where es.status_item like ? and\n" +
-                    "      es.prioridade like ?\n" +
-                    "group by es.placa_veiculo) AS TOTAL ON PLACA_TOTAL = V.placa\n" +
-                    "  LEFT JOIN\n" +
-                    "  (SELECT es.placa_veiculo AS PLACA_CRITICA, COUNT(COD_unidade) as CRITICAS FROM estratificacao_os es\n" +
-                    "where es.status_item like ? and\n" +
-                    "      es.prioridade like ?\n" +
-                    "group by es.placa_veiculo) AS CRITICA ON PLACA_CRITICA = V.placa\n" +
-                    "LEFT join\n" +
-                    "  (SELECT es.placa_veiculo as PLACA_ALTA, COUNT(COD_unidade) as ALTAS FROM estratificacao_os es\n" +
-                    "where es.status_item like ? and\n" +
-                    "      es.prioridade like ?\n" +
-                    "group by es.placa_veiculo) AS ALTAS ON PLACA_ALTA = V.placa\n" +
-                    "LEFT join\n" +
-                    "  (SELECT es.placa_veiculo as PLACA_BAIXA, COUNT(COD_unidade) as BAIXAS FROM estratificacao_os es\n" +
-                    "where es.status_item like ? and\n" +
-                    "      es.prioridade like ?\n" +
-                    "group by es.placa_veiculo) AS BAIXAS ON PLACA_BAIXA = V.placa\n" +
-                    "  JOIN\n" +
-                    "  veiculo_tipo vt on vt.cod_unidade = v.cod_unidade and vt.codigo = v.cod_tipo\n" +
-                    "  WHERE V.cod_unidade = ? and v.placa like ? and v.cod_tipo::text like ?\n" +
-                    "  ORDER BY criticas desc, altas desc, baixas desc, V.placa\n" +
-                    "  LIMIT ? OFFSET ?");
-            stmt.setString(1, status);
-            stmt.setString(2, "%");
-            stmt.setString(3, status);
-            stmt.setString(4, PRIORIDADE_CRITICA);
-            stmt.setString(5, status);
-            stmt.setString(6, PRIORIDADE_ALTA);
-            stmt.setString(7, status);
-            stmt.setString(8, PRIORIDADE_BAIXA);
-            stmt.setLong(9, codUnidade);
-            stmt.setString(10, placa);
-            stmt.setString(11, codTipo);
-            stmt.setInt(12, limit);
-            stmt.setLong(13, offset);
+            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CHECKLIST_GET_QTD_ITENS_OS(?, ?, ?, ?, ?, ?)");
+            stmt.setLong(1, codUnidade);
+            bindValueOrNull(stmt, 2, codTipoVeiculo, SqlType.BIGINT);
+            bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
+            stmt.setBoolean(4, itensEmAberto);
+            stmt.setInt(5, limit);
+            stmt.setInt(6, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 holder = new ManutencaoHolder();
                 v = new Veiculo();
-                v.setPlaca(rSet.getString("PLACA"));
-                v.setKmAtual(rSet.getLong("km"));
+                v.setPlaca(rSet.getString("PLACA_VEICULO"));
+                v.setKmAtual(rSet.getLong("KM_ATUAL_VEICULO"));
                 v.setAtivo(true);
                 holder.setVeiculo(v);
-                holder.setQtdCritica(rSet.getInt("CRITICAS"));
-                holder.setQtdAlta(rSet.getInt("ALTAS"));
-                holder.setQtdBaixa(rSet.getInt("BAIXAS"));
+                holder.setQtdCritica(rSet.getInt("ITENS_PRIORIDADE_CRITICA_ABERTOS"));
+                holder.setQtdAlta(rSet.getInt("ITENS_PRIORIDADE_ALTA_ABERTOS"));
+                holder.setQtdBaixa(rSet.getInt("ITENS_PRIORIDADE_BAIXA_ABERTOS"));
                 placas.add(holder);
             }
         } finally {
-            closeConnection(conn,stmt,rSet);
+            closeConnection(conn, stmt, rSet);
         }
         return placas;
     }
@@ -450,111 +412,10 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(3, placa);
             stmt.setString(4, status);
             rSet = stmt.executeQuery();
-            return createItensOs(rSet);
+            return OrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
             closeConnection(null, stmt, rSet);
         }
-    }
-
-    /**
-     * Método genérico para criar os itens de uma OS.
-     * @param rSet um ResultSet
-     * @return uma lista de ItemOrdemServico
-     * @throws SQLException caso não seja possivel acessar algum item do rSet
-     */
-    private List<ItemOrdemServico> createItensOs(ResultSet rSet) throws SQLException {
-        final List<ItemOrdemServico> itens = new ArrayList<>();
-        ItemOrdemServico item = null;
-        PerguntaRespostaChecklist pergunta = null;
-        AlternativaChecklist alternativa = null;
-        List<AlternativaChecklist> alternativas = null;
-        Colaborador mecanico = null;
-        try {
-            while (rSet.next()) {
-                item = new ItemOrdemServico();
-                item.setCodigo(rSet.getLong("codigo"));
-                item.setCodOs(rSet.getLong("cod_os"));
-                pergunta = createPergunta(rSet);
-                alternativa = createAlternativa(rSet);
-                alternativas = new ArrayList<>();
-                alternativas.add(alternativa);
-                pergunta.setAlternativasResposta(alternativas);
-                item.setPergunta(pergunta);
-                item.setPlaca(rSet.getString("placa_veiculo"));
-                item.setDataApontamento(rSet.getObject("data_hora", LocalDateTime.class));
-                item.setTempoLimiteResolucao(Duration.ofHours(rSet.getLong("PRAZO")));
-                setTempoRestante(item, rSet.getInt("prazo"), ZoneId.of(rSet.getString("TIME_ZONE_UNIDADE")));
-                item.setQtdApontamentos(rSet.getInt("qt_apontamentos"));
-                item.setStatus(ItemOrdemServico.Status.fromString(rSet.getString("status_item")));
-                if (rSet.getString("nome_mecanico")!= null) {
-                    mecanico = new Colaborador();
-                    mecanico.setCpf(rSet.getLong("cpf_mecanico"));
-                    mecanico.setNome(rSet.getString("nome_mecanico"));
-                    item.setMecanico(mecanico);
-                    item.setTempoRealizacaoConserto(Duration.ofMillis(rSet.getLong("tempo_realizacao")));
-                    item.setKmVeiculoFechamento(rSet.getLong("km_fechamento"));
-                    item.setDataHoraConserto(rSet.getObject("data_hora_conserto", LocalDateTime.class));
-                    item.setFeedbackResolucao(rSet.getString("feedback_conserto"));
-                }
-                itens.add(item);
-            }
-        } finally {
-            closeConnection(null, null, rSet);
-        }
-        return itens;
-    }
-
-    /**
-     * Atribui o tempo restante para conserto de um item
-     * @param itemManutencao um ItemManutencao
-     * @param prazoHoras prazo do item, em horas
-     */
-    private void setTempoRestante(ItemOrdemServico itemManutencao, int prazoHoras, @NotNull final ZoneId unidadeZone) {
-        final LocalDateTime dataMaxima = itemManutencao.getDataApontamento().plus(prazoHoras, ChronoUnit.HOURS);
-        final LocalDateTime dataAtualUnidade = LocalDateTime.now(unidadeZone);
-        itemManutencao.setTempoRestante(Duration.ofMillis(ChronoUnit.MILLIS.between(dataAtualUnidade, dataMaxima)));
-    }
-
-    /**
-     * Cria a ordem de serviço
-     * @param rSet um ResultSet contendo os dados da OS
-     * @return uma OrdemServico com os atributos setados
-     * @throws SQLException caso não seja possível realizar as consultas no rSet
-     */
-    private OrdemServico createOrdemServico(ResultSet rSet) throws SQLException {
-        final OrdemServico os = new OrdemServico();
-        os.setCodChecklist(rSet.getLong("cod_checklist"));
-        os.setCodigo(rSet.getLong("cod_os"));
-        os.setStatus(OrdemServico.Status.fromString(rSet.getString("status")));
-        final Veiculo v = new Veiculo();
-        v.setKmAtual(rSet.getLong("km"));
-        v.setPlaca(rSet.getString("placa_veiculo"));
-        v.setAtivo(true);
-        os.setVeiculo(v);
-        os.setDataAbertura(rSet.getObject("data_hora", LocalDateTime.class));
-        os.setDataFechamento(rSet.getObject("data_hora_fechamento", LocalDateTime.class));
-        return os;
-    }
-
-    private PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException {
-        final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
-        pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
-        pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
-        pergunta.setPergunta(rSet.getString("PERGUNTA"));
-        pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
-        pergunta.setPrioridade(rSet.getString("PRIORIDADE"));
-        return pergunta;
-    }
-
-    private AlternativaChecklist createAlternativa(ResultSet rSet) throws SQLException{
-        final AlternativaChecklist alternativa = new AlternativaChecklist();
-        alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
-        alternativa.alternativa = rSet.getString("ALTERNATIVA");
-        if(alternativa.alternativa.equals("Outros")){
-            alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
-            alternativa.respostaOutros = rSet.getString("resposta");
-        }
-        return alternativa;
     }
 
     /**

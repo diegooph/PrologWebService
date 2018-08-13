@@ -4,8 +4,8 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
-import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolVeiculoDia;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
@@ -349,12 +349,12 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static FarolChecklist convert(ArrayOfFarolDia farolDia) throws ParseException {
+    public static DeprecatedFarolChecklist convert(ArrayOfFarolDia farolDia) throws ParseException {
         checkNotNull(farolDia, "farolDia não pode ser null!");
         checkArgument(farolDia.getFarolDia().size() == 1, "farolDia não pode vir com mais de um elemento " +
                 "pois estamos filtrando apenas por um único dia!");
 
-        final List<FarolVeiculoDia> farolVeiculos = new ArrayList<>();
+        final List<DeprecatedFarolVeiculoDia> farolVeiculos = new ArrayList<>();
         final List<VeiculoChecklist> veiculosFarol = farolDia
                 .getFarolDia()
                 .get(0)
@@ -384,8 +384,12 @@ public final class AvaCorpAvilanConverter {
                 for (ItemCritico itemCritico : itensAvilan) {
                     final ItemOrdemServico itemOrdemServico = new ItemOrdemServico();
                     itemOrdemServico.setStatus(ItemOrdemServico.Status.PENDENTE);
-//                    itemOrdemServico.setDataApontamento(
-//                            AvaCorpAvilanUtils.createDateTimePattern(itemCritico.getData()));
+                    // TODO: Está com um bug onde retorna também os millis, por isso nós removemos caso venha.
+                    if (itemCritico.getData().contains(".")) {
+                        itemCritico.setData(itemCritico.getData().substring(0, itemCritico.getData().indexOf(".")));
+                    }
+                    itemOrdemServico.setDataApontamento(
+                            AvaCorpAvilanUtils.createLocalDateTimePattern(itemCritico.getData()));
 
                     // Seta o nome do item com problema.
                     // Alternativa.
@@ -403,10 +407,10 @@ public final class AvaCorpAvilanConverter {
                 }
             }
 
-            farolVeiculos.add(new FarolVeiculoDia(veiculo, checklistSaidaDia, checklistRetornoDia, itensCriticos));
+            farolVeiculos.add(new DeprecatedFarolVeiculoDia(veiculo, checklistSaidaDia, checklistRetornoDia, itensCriticos));
         }
 
-        return new FarolChecklist(farolVeiculos);
+        return new DeprecatedFarolChecklist(farolVeiculos);
     }
 
     @NotNull

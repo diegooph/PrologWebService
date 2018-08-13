@@ -42,7 +42,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                             "  CP.SINGLE_CHOICE, " +
                             "  CAP.CODIGO AS COD_ALTERNATIVA, " +
                             "  CAP.ALTERNATIVA, " +
-                            "  CAP.ORDEM AS ORDEM_ALTERNATIVA " +
+                            "  CAP.ORDEM AS ORDEM_ALTERNATIVA, " +
+                            "  CAP.ALTERNATIVA_TIPO_OUTROS AS ALTERNATIVA_TIPO_OUTROS " +
                             "FROM CHECKLIST_PERGUNTAS CP " +
                             "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP " +
                             "    ON CP.CODIGO = CAP.COD_PERGUNTA " +
@@ -647,7 +648,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                     "  CAPP.ALTERNATIVA AS ALTERNATIVA, " +
                     "  CAPP.ORDEM AS ORDEM_ALTERNATIVA, " +
                     "  CGI.URL_IMAGEM AS URL_IMAGEM, " +
-                    "  CGI.COD_IMAGEM AS COD_IMAGEM " +
+                    "  CGI.COD_IMAGEM AS COD_IMAGEM, " +
+                    "  CAPP.ALTERNATIVA_TIPO_OUTROS AS ALTERNATIVA_TIPO_OUTROS " +
                     "FROM CHECKLIST_PERGUNTAS_PROLOG CPP " +
                     "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA_PROLOG CAPP " +
                     "    ON CPP.CODIGO = CAPP.COD_PERGUNTA_PROLOG " +
@@ -801,7 +803,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         final AlternativaChecklist alternativa = new AlternativaChecklist();
         alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
         alternativa.alternativa = rSet.getString("ALTERNATIVA");
-        if (alternativa.alternativa.equals("Outros")) {
+        if (rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS")) {
             alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
         }
         return alternativa;

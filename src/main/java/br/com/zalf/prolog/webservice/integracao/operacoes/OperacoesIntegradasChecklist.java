@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -51,8 +51,8 @@ interface OperacoesIntegradasChecklist {
                                        final boolean resumido) throws Exception;
 
     @NotNull
-    FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                     @NotNull final Date dataInicial,
-                                     @NotNull final Date dataFinal,
-                                     final boolean itensCriticosRetroativos) throws Exception;
+    DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal,
+                                               final boolean itensCriticosRetroativos) throws Throwable;
 }

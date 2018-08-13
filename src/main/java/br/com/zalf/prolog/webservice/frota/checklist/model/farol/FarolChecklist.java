@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.model;
+package br.com.zalf.prolog.webservice.frota.checklist.model.farol;
 
 import com.sun.istack.internal.NotNull;
 
