@@ -2,6 +2,9 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -41,19 +44,26 @@ public class OrdemServicoService {
         }
     }
 
-    public List<ManutencaoHolder> getResumoManutencaoHolder(String placa, String codTipo, Long codUnidade, int limit,
-                                                            long offset, String status){
-        try{
-            return dao.getResumoManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
-        }catch (SQLException e){
-            Log.e(TAG, String.format("Erro ao buscar o resumo das manutenções pendentes por placa. \n" +
-                    "Placa: %s \n" +
-                    "codTipo: %s \n" +
-                    "codUnidade: %s \n" +
-                    "limit: %d \n" +
-                    "offset: %d \n" +
-                    "status: %s", placa, codTipo, codUnidade, limit, offset, status), e);
-            return null;
+    @NotNull
+    public List<ManutencaoHolder> getResumoManutencaoHolder(@NotNull final Long codUnidade,
+                                                            @Nullable final Long codTipoVeiculo,
+                                                            @Nullable final String placaVeiculo,
+                                                            final boolean itensEmAberto,
+                                                            final int limit,
+                                                            final int offset) throws ProLogException {
+        try {
+            return dao.getResumoManutencaoHolder(codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit, offset);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao a quantidade de itens de OS do checklist.\n" +
+                    "codUnidade: %d\n" +
+                    "codTipoVeiculo: %d\n" +
+                    "Placa: %s\n" +
+                    "Itens em aberto: %b\n" +
+                    "limit: %d\n" +
+                    "offset: %d\n", codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit, offset), throwable);
+            throw Injection.provideProLogExceptionHandler().map(
+                    throwable,
+                    "Erro ao buscar os itens de ordem de serviço, tente novamente");
         }
     }
 
