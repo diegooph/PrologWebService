@@ -68,12 +68,13 @@ public final class ChecklistConverter {
                 alternativas.add(alternativa);
             } else {
                 pergunta.setAlternativasResposta(alternativas);
+                perguntas.add(pergunta);
                 alternativas = new ArrayList<>();
+
                 pergunta = createPergunta(rSet);
                 alternativa = createAlternativa(rSet);
                 setRespostaAlternativa(alternativa, rSet);
                 alternativas.add(alternativa);
-                perguntas.add(pergunta);
             }
         }
         pergunta.setAlternativasResposta(alternativas);
