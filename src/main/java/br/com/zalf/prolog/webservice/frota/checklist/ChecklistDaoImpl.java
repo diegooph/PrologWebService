@@ -73,12 +73,19 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CODIGO, C.COD_CHECKLIST_MODELO, C.DATA_HORA AT TIME ZONE ? AS " +
-                    "DATA_HORA, C" +
-                    ".KM_VEICULO, "
-                    + "C.TEMPO_REALIZACAO,C.CPF_COLABORADOR, C.PLACA_VEICULO, "
-                    + "C.TIPO, CO.NOME FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
-                    + "WHERE C.CODIGO =  ? ");
+            stmt = conn.prepareStatement("SELECT " +
+                    "  C.CODIGO, " +
+                    "  C.COD_CHECKLIST_MODELO, " +
+                    "  C.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
+                    "  C.KM_VEICULO, " +
+                    "  C.TEMPO_REALIZACAO, " +
+                    "  C.CPF_COLABORADOR, " +
+                    "  C.PLACA_VEICULO, " +
+                    "  C.TIPO, CO.NOME " +
+                    "FROM CHECKLIST C " +
+                    "  JOIN COLABORADOR CO " +
+                    "    ON CO.CPF = C.CPF_COLABORADOR " +
+                    "WHERE C.CODIGO = ?;");
             stmt.setString(1, TimeZoneManager.getZoneIdForToken(userToken, conn).getId());
             stmt.setLong(2, codChecklist);
             rSet = stmt.executeQuery();
@@ -183,16 +190,24 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CODIGO, C.COD_CHECKLIST_MODELO, C.DATA_HORA AT TIME ZONE ? AS " +
-                    "DATA_HORA, "
-                    + "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.KM_VEICULO, C.TIPO , C.TEMPO_REALIZACAO, CO.NOME FROM " +
-                    "CHECKLIST C "
-                    + "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
-                    + "WHERE C.CPF_COLABORADOR = ? "
-                    + "AND (? = 1 OR C.DATA_HORA::DATE >= (? AT TIME ZONE ?)) "
-                    + "AND (? = 1 OR C.DATA_HORA::DATE <= (? AT TIME ZONE ?)) "
-                    + "ORDER BY C.DATA_HORA DESC "
-                    + "LIMIT ? OFFSET ?");
+            stmt = conn.prepareStatement("SELECT " +
+                    "  C.CODIGO, " +
+                    "  C.COD_CHECKLIST_MODELO, " +
+                    "  C.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
+                    "  C.CPF_COLABORADOR, " +
+                    "  C.PLACA_VEICULO, " +
+                    "  C.KM_VEICULO, " +
+                    "  C.TIPO, " +
+                    "  C.TEMPO_REALIZACAO, " +
+                    "  CO.NOME " +
+                    "FROM CHECKLIST C " +
+                    "  JOIN COLABORADOR CO " +
+                    "    ON CO.CPF = C.CPF_COLABORADOR " +
+                    "WHERE C.CPF_COLABORADOR = ? " +
+                    "      AND (? = 1 OR C.DATA_HORA::DATE >= (? AT TIME ZONE ?)) " +
+                    "      AND (? = 1 OR C.DATA_HORA::DATE <= (? AT TIME ZONE ?)) " +
+                    "ORDER BY C.DATA_HORA DESC " +
+                    "LIMIT ? OFFSET ?");
             final String zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn).getId();
             stmt.setString(1, zoneId);
             stmt.setLong(2, cpf);
@@ -362,18 +377,19 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
     }
 
     @NotNull
-    private List<PerguntaRespostaChecklist> getPerguntasRespostas(@NotNull final Checklist checklist)
-            throws SQLException {
+    private List<PerguntaRespostaChecklist> getPerguntasRespostas(
+            @NotNull final Checklist checklist) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, " +
-                            "       CP.ORDEM AS ORDEM_PERGUNTA, " +
+            stmt = conn.prepareStatement("SELECT " +
+                            "  CP.CODIGO AS COD_PERGUNTA, " +
+                            "  CP.ORDEM AS ORDEM_PERGUNTA, " +
                             "  CP.PERGUNTA, " +
                             "  CP.SINGLE_CHOICE, " +
-                            "       CAP.CODIGO AS COD_ALTERNATIVA, " +
+                            "  CAP.CODIGO AS COD_ALTERNATIVA, " +
                             "  CP.PRIORIDADE, " +
                             "  CAP.ORDEM, " +
                             "  CGI.COD_IMAGEM, " +
@@ -395,7 +411,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                             "       AND CAP.COD_UNIDADE = CR.COD_UNIDADE " +
                             "       AND CAP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO " +
                             "       AND CAP.COD_PERGUNTA = CR.COD_PERGUNTA " +
-                            "  LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
+                            "  LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
+                            "    ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
                             "WHERE C.CODIGO = ? AND C.CPF_COLABORADOR = ? " +
                             "ORDER BY CP.ORDEM, CAP.ORDEM;",
                     ResultSet.TYPE_SCROLL_SENSITIVE,
