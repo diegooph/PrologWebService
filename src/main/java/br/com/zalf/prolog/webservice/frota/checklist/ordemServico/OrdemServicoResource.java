@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -77,5 +78,25 @@ public class OrdemServicoResource {
                                                             @QueryParam("offset") @Required int offset)
             throws ProLogException {
         return service.getResumoManutencaoHolder(codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit, offset);
+    }
+
+
+    /**
+     * @deprecated at 2018-08-13. Use {@link #getResumoManutencaoHolder(Long, Long, String, Boolean, int, int)} instead.
+     */
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+    @Deprecated
+    public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("codUnidade") Long codUnidade,
+                                                            @PathParam("tipoVeiculo") String codTipo,
+                                                            @PathParam("placa") String placa,
+                                                            @PathParam("status") String status,
+                                                            @QueryParam("limit") int limit,
+                                                            @QueryParam("offset") long offset) throws ProLogException{
+        throw new GenericException("Atualize o aplicativo para utilizar esta funcionalidade");
     }
 }
