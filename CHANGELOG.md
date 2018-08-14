@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.73"></a>
-## Version [v0.0.73](https://github.com/luizfp/PrologWeb/compare/v0.0.72...v0.0.73) (release-date) [unreleased]
+## Version [v0.0.73](https://github.com/luizfp/PrologWeb/compare/v0.0.72...v0.0.73) (2018-08-13)
 
 ### Features
 * Cria novo método no Resource para busca dos itens de OS do checklist
