@@ -4,6 +4,16 @@ Change Log
 <a name="v0.0.73"></a>
 ## Version [v0.0.73](https://github.com/luizfp/PrologWeb/compare/v0.0.72...v0.0.73) (release-date) [unreleased]
 
+### Features
+* Cria novo método no Resource para busca dos itens de OS do checklist
+* Cria teste para validar a migração dos dados realizada nas tabelas de checklist (troca das PKs)
+* Cria teste para garantir que não haja INSERT/UPDATE em views no servidor
+
+### Refactors
+* Otimiza busca do farol do checklist fazendo apenas uma function para buscar tudo
+* Otimiza busca dos itens de OS do checklist (tela das bolinhas de prioridade no App)
+* Otimiza busca dos checklists fazendo apenas uma consulta para quando se está buscando os checklists resummidos
+
 ### Bug Fixes
 * Corrige parse do BigDecimal no import da produtividade da Raízen
 
