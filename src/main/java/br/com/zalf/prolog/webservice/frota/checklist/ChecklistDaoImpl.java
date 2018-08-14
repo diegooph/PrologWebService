@@ -253,12 +253,13 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_FAROL_CHECKLIST(?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_FAROL_CHECKLIST(?, ?, ?, ?, ?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
-            stmt.setObject(1, dataInicial);
-            stmt.setObject(2, dataFinal);
-            stmt.setLong(3, codUnidade);
-            stmt.setString(4, zoneId);
+            stmt.setLong(1, codUnidade);
+            stmt.setObject(2, dataInicial);
+            stmt.setObject(3, dataFinal);
+            stmt.setBoolean(4, itensCriticosRetroativos);
+            stmt.setString(5, zoneId);
             rSet = stmt.executeQuery();
             return ChecklistConverter.createFarolChecklist(rSet);
         } finally {
