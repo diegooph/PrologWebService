@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
+import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -96,7 +96,10 @@ public class OrdemServicoResource {
                                                             @PathParam("placa") String placa,
                                                             @PathParam("status") String status,
                                                             @QueryParam("limit") int limit,
-                                                            @QueryParam("offset") long offset) throws ProLogException{
-        throw new GenericException("Atualize o aplicativo para utilizar esta funcionalidade");
+                                                            @QueryParam("offset") int offset) throws ProLogException {
+        final Long codTipoVeiculo = Filtros.isFiltroTodos(codTipo) ? null : Long.parseLong(codTipo);
+        final String placaVeiculo = Filtros.isFiltroTodos(placa) ? null : placa;
+        final boolean itensEmAberto = status.equals(ItemOrdemServico.Status.PENDENTE.asString());
+        return service.getResumoManutencaoHolder(codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit, offset);
     }
 }
