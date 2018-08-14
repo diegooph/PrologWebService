@@ -3,12 +3,13 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -112,20 +113,20 @@ public class ChecklistResource {
     @GET
     @Path("/farois/{codUnidade}")
     @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
-    public FarolChecklist getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
-                                            @QueryParam("dataInicial") long dataInicial,
-                                            @QueryParam("dataFinal") long dataFinal,
-                                            @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
-                                            @HeaderParam("Authorization") String userToken) {
+    public DeprecatedFarolChecklist getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
+                                                      @QueryParam("dataInicial") String dataInicial,
+                                                      @QueryParam("dataFinal") String dataFinal,
+                                                      @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
+                                                      @HeaderParam("Authorization") String userToken) throws ProLogException {
         return service.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos, userToken);
     }
 
     @GET
     @Path("/farois/{codUnidade}/hoje")
     @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
-    public FarolChecklist getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
-                                            @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
-                                            @HeaderParam("Authorization") String userToken) {
+    public DeprecatedFarolChecklist getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
+                                                      @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
+                                                      @HeaderParam("Authorization") String userToken) throws ProLogException {
         return service.getFarolChecklist(codUnidade, itensCriticosRetroativos, userToken);
     }
 

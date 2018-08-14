@@ -107,6 +107,7 @@ public class Checklist {
 
 	public void setListRespostas(List<PerguntaRespostaChecklist> listRespostas) {
 		this.listRespostas = listRespostas;
+		calculaQtdOkOrNok();
 	}
 
 	public char getTipo() {
@@ -139,6 +140,20 @@ public class Checklist {
 
 	public void setQtdItensNok(int qtdItensNok) {
 		this.qtdItensNok = qtdItensNok;
+	}
+
+	private void calculaQtdOkOrNok() {
+        int qtdNok = 0;
+        for (PerguntaRespostaChecklist resposta : listRespostas) {
+            for (AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
+                if (alternativa.selected) {
+                    qtdNok++;
+                    break;
+                }
+            }
+        }
+        setQtdItensNok(qtdNok);
+        setQtdItensOk(listRespostas.size() - qtdNok);
 	}
 
 	@Override

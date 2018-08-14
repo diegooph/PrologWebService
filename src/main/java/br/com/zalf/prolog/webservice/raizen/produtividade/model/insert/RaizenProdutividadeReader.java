@@ -77,7 +77,7 @@ public class RaizenProdutividadeReader {
         }
         // VALOR
         if (!linha[3].trim().isEmpty()) {
-            item.setValor(new BigDecimal(linha[3].trim().replaceAll("[^0-9 .,]|(?<!\\d)[.,]|[.,](?!\\d)", "")));
+            item.setValor(createBigDecimal(linha[3]));
         }
         // USINA
         if (!linha[4].trim().isEmpty()) {
@@ -89,12 +89,21 @@ public class RaizenProdutividadeReader {
         }
         // RAIO
         if (!linha[6].trim().isEmpty()) {
-            item.setRaioKm(new BigDecimal(linha[6].trim().replaceAll(",", ".")));
+            item.setRaioKm(createBigDecimal(linha[6]));
         }
         // TONELADA
         if (!linha[7].trim().isEmpty()) {
-            item.setToneladas(new BigDecimal(linha[7].trim().replaceAll(",", ".")));
+            item.setToneladas(createBigDecimal(linha[7]));
         }
         return item;
+    }
+
+    @NotNull
+    private static BigDecimal createBigDecimal(@NotNull final String s) {
+        return new BigDecimal(s
+                .replaceAll("[^0-9 .,]|(?<!\\d)[.,]|[.,](?!\\d)", "")
+                .replace(".", "")
+                .replace(",", ".")
+                .trim());
     }
 }

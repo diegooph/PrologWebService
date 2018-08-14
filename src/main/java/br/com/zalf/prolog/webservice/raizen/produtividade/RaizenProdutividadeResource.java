@@ -36,7 +36,7 @@ public class RaizenProdutividadeResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.UPLOAD)
+    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.INSERIR_REGISTROS)
     @Path("/unidades/{codUnidade}/upload")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response uploadRaizenProdutividade(
@@ -73,7 +73,7 @@ public class RaizenProdutividadeResource {
     @Secured(permissions = {
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS,
             Pilares.Entrega.RaizenProdutividade.EDITAR,
-            Pilares.Entrega.RaizenProdutividade.UPLOAD,
+            Pilares.Entrega.RaizenProdutividade.INSERIR_REGISTROS,
             Pilares.Entrega.RaizenProdutividade.DELETAR})
     @Path("/itens/{codItem}")
     public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(
@@ -94,7 +94,7 @@ public class RaizenProdutividadeResource {
     @Secured(permissions = {
             Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS,
             Pilares.Entrega.RaizenProdutividade.EDITAR,
-            Pilares.Entrega.RaizenProdutividade.UPLOAD,
+            Pilares.Entrega.RaizenProdutividade.INSERIR_REGISTROS,
             Pilares.Entrega.RaizenProdutividade.DELETAR})
     @Path("/unidades/{codUnidade}")
     public List<RaizenProdutividade> getRaizenProdutividade(

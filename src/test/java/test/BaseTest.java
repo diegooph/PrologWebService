@@ -1,8 +1,15 @@
 package test;
 
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
+import org.jetbrains.annotations.NotNull;
+import org.junit.After;
 import org.junit.Before;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 /**
@@ -11,8 +18,7 @@ import java.time.LocalDate;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public abstract class BaseTest {
-
-    protected static long COD_UNIDADE = 5;
+    protected static Long COD_UNIDADE = 5L;
     protected static LocalDate DATA_INICIAL = LocalDate.parse("2018-03-18");
     protected static LocalDate DATA_FINAL = LocalDate.parse("2018-04-19");
 
@@ -21,5 +27,35 @@ public abstract class BaseTest {
     }
 
     @Before
-    public abstract void initialize();
+    public void initialize() throws Throwable {
+        // Do nothing.
+    }
+
+    @After
+    public void destroy() {
+        // Do nothing.
+    }
+
+    @NotNull
+    protected String getValidToken(@NotNull final String cpf) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            stmt = conn.prepareStatement("SELECT TOKEN FROM TOKEN_AUTENTICACAO " +
+                    "WHERE CPF_COLABORADOR = ? " +
+                    "ORDER BY DATA_HORA DESC " +
+                    "LIMIT 1;");
+            stmt.setLong(1, Long.parseLong(cpf));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getString("TOKEN");
+            } else {
+                throw new SQLException("Nenhum token encontrado para o cpf: " + cpf);
+            }
+        } finally {
+            DatabaseConnection.closeConnection(conn, stmt, rSet);
+        }
+    }
 }

@@ -1,97 +1,107 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
-import com.sun.istack.internal.NotNull;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Contém os métodos para manipular os checklists no banco de dados 
+ * Contém os métodos para manipular os checklists no banco de dados
  */
 public interface ChecklistDao {
 
-	/**
-	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
-	 * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS.
-	 *
-	 * @param checklist um checklist
-	 * @return código do checklist recém inserido
-	 * @throws SQLException caso não seja possível inserir o checklist no banco de dados
-	 */
-	@NotNull
-	Long insert(Checklist checklist) throws SQLException;
+    /**
+     * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
+     * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS.
+     *
+     * @param checklist um checklist
+     * @return código do checklist recém inserido
+     * @throws SQLException caso não seja possível inserir o checklist no banco de dados
+     */
+    @NotNull
+    Long insert(Checklist checklist) throws SQLException;
 
-	/**
-	 * Busca um checklist pelo seu código único
-	 * @param codChecklist codigo do checklist a ser buscado
-	 * @param userToken token do usuário que está realizando a busca
-	 * @return um checklist
-	 * @throws SQLException caso não consiga buscar o checklist no banco de dados
-	 */
-	Checklist getByCod(Long codChecklist, String userToken) throws SQLException;
+    /**
+     * Busca um checklist pelo seu código único
+     *
+     * @param codChecklist codigo do checklist a ser buscado
+     * @param userToken    token do usuário que está realizando a busca
+     * @return um checklist
+     * @throws SQLException caso não consiga buscar o checklist no banco de dados
+     */
+    Checklist getByCod(Long codChecklist, String userToken) throws SQLException;
 
-	/**
-	 * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
-	 *
-	 * @return uma {@link List<Checklist> lista de checklists}.
-	 * @throws SQLException caso não seja possível realizar a busca.
-	 */
-	@Nonnull
-	List<Checklist> getAll(@Nonnull final Long codUnidade,
-						   @Nullable final Long codEquipe,
-						   @Nullable final Long codTipoVeiculo,
-						   @Nullable final String placaVeiculo,
-						   long dataInicial,
-						   long dataFinal,
-						   int limit,
-						   long offset,
-						   boolean resumido) throws SQLException;
+    /**
+     * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
+     *
+     * @return uma {@link List<Checklist> lista de checklists}.
+     * @throws SQLException caso não seja possível realizar a busca.
+     */
+    @NotNull
+    List<Checklist> getAll(@NotNull final Long codUnidade,
+                           @Nullable final Long codEquipe,
+                           @Nullable final Long codTipoVeiculo,
+                           @Nullable final String placaVeiculo,
+                           final long dataInicial,
+                           final long dataFinal,
+                           final int limit,
+                           final long offset,
+                           final boolean resumido) throws SQLException;
 
-	/**
-	 * Busca os checklists realizados por um colaborador.
-	 *
-	 * @return uma {@link List<Checklist> lista de checklists}.
-	 * @throws SQLException caso não seja possível realizar a busca.
-	 */
-	List<Checklist> getByColaborador(Long cpf, @Nullable Long dataInicial, @Nullable Long dataFinal, int limit, long offset,
-									 boolean resumido) throws SQLException;
+    /**
+     * Busca os checklists realizados por um colaborador.
+     *
+     * @return uma {@link List<Checklist> lista de checklists}.
+     * @throws SQLException caso não seja possível realizar a busca.
+     */
+    List<Checklist> getByColaborador(@NotNull final Long cpf,
+                                     @NotNull final Long dataInicial,
+                                     @NotNull final Long dataFinal,
+                                     final int limit,
+                                     final long offset,
+                                     final boolean resumido) throws SQLException;
 
-	/**
-	 * busca um novo checklist de perguntas
-	 * @param codUnidade código da unidade
-	 * @param codModelo código do modelo
-	 * @param placa placa do veículo
-	 * @param tipoChecklist o tipo do {@link Checklist checklist} sendo realizado
-	 * @return retorno um novo checklist
-	 * @throws SQLException caso ocorrer erro no banco
-	 */
-	NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklist) throws SQLException;
+    /**
+     * busca um novo checklist de perguntas
+     *
+     * @param codUnidade    código da unidade
+     * @param codModelo     código do modelo
+     * @param placa         placa do veículo
+     * @param tipoChecklist o tipo do {@link Checklist checklist} sendo realizado
+     * @return retorno um novo checklist
+     * @throws SQLException caso ocorrer erro no banco
+     */
+    NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklist) throws SQLException;
 
-	//TODO - adicionar comentário javadoc
-	Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao) throws SQLException;
+    //TODO - adicionar comentário javadoc
+    Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao) throws SQLException;
 
 
-	@NotNull
-	FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-									 @NotNull final Date dataInicial,
-									 @NotNull final Date dataFinal,
-									 final boolean itensCriticosRetroativos) throws SQLException;
-
-	/**
-	 * busca o status de liberação do veículo
-	 * @param codUnidade código da unidade
-	 * @return lista de veiculos com liberação
-	 * @throws SQLException caso ocorrer erro no banco
-	 */
-	@Deprecated
-	List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws SQLException;
+    /**
+     * Método utilizado para buscar o {@link DeprecatedFarolChecklist} contendo todas as placas e as informações
+     * de liberação. Caso a propriedade {@code itensCriticosRetroativos} seja marcada, o farol irá exibir as
+     * informações de itens apontados nos checklists que não foram resolvidos ainda. Caso contrário, o farol exibirá
+     * apenas as informações apontadas no checklist realizados no dia.
+     *
+     * @param codUnidade               - Código da {@link Unidade} que os dados serão buscados.
+     * @param dataInicial              - Data inicial do período de filtro.
+     * @param dataFinal                - Data final do período de filtro.
+     * @param itensCriticosRetroativos - Valor booleano para indicar se deve-se buscar
+     *                                 os itens abertos noutros checklists.
+     * @return - Um objeto {@link DeprecatedFarolChecklist} contendo as placas e informações de liberação.
+     * @throws Throwable - Caso algum erro acontecer na busca dos dados.
+     */
+    @NotNull
+    DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal,
+                                               final boolean itensCriticosRetroativos) throws Throwable;
 }
