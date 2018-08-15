@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
  */
 public final class PneuAfericaoAvulsa {
     private Pneu pneu;
-    private LocalDateTime dataHoraUltimaAferica;
+    private LocalDateTime dataHoraUltimaAfericao;
     private String nomeColaboradorAfericao;
     private TipoMedicaoColetadaAfericao tipoMedicaoColetadaUltimaAfericao;
-    private Long codigoUltimaAferica;
+    private Long codigoUltimaAfericao;
     private TipoProcessoColetaAfericao tipoProcessoAfericao;
     private String placaAplicadoQuandoAferido;
 
@@ -35,12 +35,12 @@ public final class PneuAfericaoAvulsa {
         this.pneu = pneu;
     }
 
-    public LocalDateTime getDataHoraUltimaAferica() {
-        return dataHoraUltimaAferica;
+    public LocalDateTime getDataHoraUltimaAfericao() {
+        return dataHoraUltimaAfericao;
     }
 
-    public void setDataHoraUltimaAferica(final LocalDateTime dataHoraUltimaAferica) {
-        this.dataHoraUltimaAferica = dataHoraUltimaAferica;
+    public void setDataHoraUltimaAfericao(final LocalDateTime dataHoraUltimaAfericao) {
+        this.dataHoraUltimaAfericao = dataHoraUltimaAfericao;
     }
 
     public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaUltimaAfericao() {
@@ -51,12 +51,12 @@ public final class PneuAfericaoAvulsa {
         this.tipoMedicaoColetadaUltimaAfericao = tipoMedicaoColetadaUltimaAfericao;
     }
 
-    public Long getCodigoUltimaAferica() {
-        return codigoUltimaAferica;
+    public Long getCodigoUltimaAfericao() {
+        return codigoUltimaAfericao;
     }
 
-    public void setCodigoUltimaAferica(final Long codigoUltimaAferica) {
-        this.codigoUltimaAferica = codigoUltimaAferica;
+    public void setCodigoUltimaAfericao(final Long codigoUltimaAfericao) {
+        this.codigoUltimaAfericao = codigoUltimaAfericao;
     }
 
     public String getNomeColaboradorAfericao() {
@@ -84,10 +84,10 @@ public final class PneuAfericaoAvulsa {
     }
 
     public boolean isJaFoiAferido() {
-        return dataHoraUltimaAferica != null
+        return dataHoraUltimaAfericao != null
                 && nomeColaboradorAfericao != null
                 && tipoMedicaoColetadaUltimaAfericao != null
-                && codigoUltimaAferica != null
+                && codigoUltimaAfericao != null
                 && tipoProcessoAfericao != null;
     }
 }
