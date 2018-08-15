@@ -11,7 +11,6 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
@@ -532,53 +531,20 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT SUM(CASE " +
-                    "           WHEN (DADOS.INTERVALO_PRESSAO > DADOS.PERIODO_AFERICAO_PRESSAO OR DADOS.INTERVALO_PRESSAO < 0) AND " +
-                    "                (DADOS.INTERVALO_SULCO > DADOS.PERIODO_AFERICAO_SULCO OR DADOS.INTERVALO_SULCO < 0) " +
-                    "             THEN 1 " +
-                    "           ELSE 0 END) AS TOTAL_VENCIDAS, " +
-                    "       COUNT(DADOS.PLACA) AS TOTAL_PLACAS " +
-                    "FROM (SELECT " +
-                    "        V.PLACA, " +
-                    "        COALESCE(INTERVALO_PRESSAO.INTERVALO, -1)::INTEGER AS INTERVALO_PRESSAO, " +
-                    "        COALESCE(INTERVALO_SULCO.INTERVALO, -1)::INTEGER   AS INTERVALO_SULCO, " +
-                    "        ERP.PERIODO_AFERICAO_PRESSAO, " +
-                    "        ERP.PERIODO_AFERICAO_SULCO " +
-                    "      FROM VEICULO V" +
-                    "        JOIN PNEU_RESTRICAO_UNIDADE ERP ON ERP.COD_UNIDADE = V.COD_UNIDADE " +
-                    "        LEFT JOIN (SELECT " +
-                    "                     PLACA_VEICULO                             AS PLACA_INTERVALO, " +
-                    "                     EXTRACT(DAYS FROM ((?) - MAX((DATA_HORA)))) AS INTERVALO " +
-                    "                   FROM AFERICAO AF " +
-                    "                   WHERE TIPO_AFERICAO = ? OR TIPO_AFERICAO = ? " +
-                    "                   GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_PRESSAO " +
-                    "          ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA " +
-                    "        LEFT JOIN (SELECT " +
-                    "                     PLACA_VEICULO                             AS PLACA_INTERVALO, " +
-                    "                     EXTRACT(DAYS FROM ((?) - MAX((DATA_HORA)))) AS INTERVALO " +
-                    "                   FROM AFERICAO AF " +
-                    "                   WHERE TIPO_AFERICAO = ? OR TIPO_AFERICAO = ? " +
-                    "                   GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_SULCO " +
-                    "          ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA " +
-                    "      WHERE V.STATUS_ATIVO = TRUE " +
-                    "            AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS DADOS;");
-            stmt.setDate(1, new Date(Now.utcMillis()));
-            stmt.setString(2, TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(3, TipoMedicaoColetadaAfericao.PRESSAO.asString());
-            stmt.setDate(4, new Date(Now.utcMillis()));
-            stmt.setString(5, TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(6, TipoMedicaoColetadaAfericao.SULCO.asString());
-            stmt.setArray(7, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_PNEU_RELATORIO_STATUS_PLACAS_AFERICAO(?, ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setObject(2, Now.localDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
                         rSet.getInt("TOTAL_VENCIDAS"),
                         rSet.getInt("TOTAL_PLACAS") - rSet.getInt("TOTAL_VENCIDAS"));
+            } else {
+                throw new SQLException("Erro ao buscar o status das placas");
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return null;
     }
 
     @Override
