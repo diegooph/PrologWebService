@@ -473,58 +473,28 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<QuantidadeAfericao> qtdAfericoes = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  DATA, " +
-                    "  DADOS.DATA_FORMATADA, " +
-                    "  SUM(DADOS.QT_AFERICAO_PRESSAO) AS QT_AFERICAO_PRESSAO, " +
-                    "  SUM(DADOS.QT_AFERICAO_SULCO) AS QT_AFERICAO_SULCO, " +
-                    "  SUM(DADOS.QT_AFERICAO_SULCO_PRESSAO) AS QT_AFERICAO_SULCO_PRESSAO " +
-                    "FROM (SELECT " +
-                    "        (A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE))::DATE AS DATA, " +
-                    "        TO_CHAR((A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE)), 'DD/MM') AS DATA_FORMATADA, " +
-                    "        SUM(CASE " +
-                    "            WHEN A.TIPO_AFERICAO = ? " +
-                    "              THEN 1 " +
-                    "            ELSE 0 END) AS QT_AFERICAO_PRESSAO, " +
-                    "        SUM(CASE " +
-                    "            WHEN A.TIPO_AFERICAO = ? " +
-                    "              THEN 1 " +
-                    "            ELSE 0 END) AS QT_AFERICAO_SULCO, " +
-                    "        SUM(CASE " +
-                    "            WHEN A.TIPO_AFERICAO = ? " +
-                    "              THEN 1 " +
-                    "            ELSE 0 END) AS QT_AFERICAO_SULCO_PRESSAO " +
-                    "      FROM AFERICAO A " +
-                    "      WHERE A.COD_UNIDADE::TEXT LIKE ANY(ARRAY[?]) " +
-                    "            AND (A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE))::DATE >= ? " +
-                    "            AND (A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE))::DATE <= ? " +
-                    "      GROUP BY A.DATA_HORA, DATA_FORMATADA, A.COD_UNIDADE " +
-                    "      ORDER BY A.DATA_HORA::DATE ASC) AS DADOS " +
-                    "GROUP BY DATA, DADOS.DATA_FORMATADA " +
-                    "ORDER BY DATA ASC;");
-            stmt.setString(1, TipoMedicaoColetadaAfericao.PRESSAO.asString());
-            stmt.setString(2, TipoMedicaoColetadaAfericao.SULCO.asString());
-            stmt.setString(3, TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
-            stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "PUBLIC.FUNC_PNEU_RELATORIO_QUANTIDADE_AFERICOES_POR_TIPO_MEDICAO_COLETADA(?, ?, ?);");
+            stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setDate(5, dataInicial);
             stmt.setDate(6, dataFinal);
             rSet = stmt.executeQuery();
+            final List<QuantidadeAfericao> qtdAfericoes = new ArrayList<>();
             while (rSet.next()) {
                 qtdAfericoes.add(
                         new QuantidadeAfericao(
-                                rSet.getDate("DATA"),
-                                rSet.getString("DATA_FORMATADA"),
-                                rSet.getInt("QT_AFERICAO_PRESSAO"),
-                                rSet.getInt("QT_AFERICAO_SULCO"),
-                                rSet.getInt("QT_AFERICAO_SULCO_PRESSAO")));
+                                rSet.getDate("DATA_REFERENCIA"),
+                                rSet.getString("DATA_REFERENCIA_FORMATADA"),
+                                rSet.getInt("QTD_AFERICAO_PRESSAO"),
+                                rSet.getInt("QTD_AFERICAO_SULCO"),
+                                rSet.getInt("QTD_AFERICAO_SULCO_PRESSAO")));
             }
+            return qtdAfericoes;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return qtdAfericoes;
     }
 
     @Override
