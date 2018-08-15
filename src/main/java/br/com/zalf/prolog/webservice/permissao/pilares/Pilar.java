@@ -10,6 +10,30 @@ public class Pilar {
     public String nome;
     public List<FuncaoProLog> funcoes;
 
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(final int codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(final String nome) {
+        this.nome = nome;
+    }
+
+    public List<FuncaoProLog> getFuncoes() {
+        return funcoes;
+    }
+
+    public void setFuncoes(final List<FuncaoProLog> funcoes) {
+        this.funcoes = funcoes;
+    }
+
     @Override
     public String toString() {
         return "Pilar{" +
