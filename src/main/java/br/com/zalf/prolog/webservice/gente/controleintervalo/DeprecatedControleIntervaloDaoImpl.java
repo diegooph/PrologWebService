@@ -122,7 +122,7 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
     @Override
     public void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
                                       @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        new ControleIntervaloDaoImpl().inativarTipoIntervalo(codUnidade, codTipoIntervalo, listener);
+        new ControleIntervaloDaoImpl().inativarTipoIntervalo(codUnidade, codTipoIntervalo, null, listener);
     }
 
     @Override
