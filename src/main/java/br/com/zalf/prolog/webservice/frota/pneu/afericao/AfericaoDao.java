@@ -21,7 +21,7 @@ public interface AfericaoDao {
      * @return valor da operação
      * @throws Throwable se ocorrer erro no banco
      */
-    boolean insert(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
+    Long insert(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Busca objeto contendo informações necessárias para se iniciar uma aferição do {@link Veiculo}.

@@ -27,12 +27,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public boolean insert(@NotNull final Afericao afericao,
+    public Long insert(@NotNull final Afericao afericao,
                           @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+        Long codAfericao = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
@@ -50,15 +51,18 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                 stmt.setString(7, afericaoPlaca.getVeiculo().getPlaca());
                 stmt.setLong(8, afericaoPlaca.getKmMomentoAfericao());
-                veiculoDao.updateKmByPlaca(afericaoPlaca.getVeiculo().getPlaca(), afericaoPlaca.getKmMomentoAfericao
-                        (), conn);
+                veiculoDao.updateKmByPlaca(
+                        afericaoPlaca.getVeiculo().getPlaca(),
+                        afericaoPlaca.getKmMomentoAfericao(),
+                        conn);
             } else {
                 stmt.setNull(7, Types.VARCHAR);
                 stmt.setNull(8, Types.BIGINT);
             }
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                afericao.setCodigo(rSet.getLong("CODIGO"));
+                codAfericao = rSet.getLong("CODIGO");
+                afericao.setCodigo(codAfericao);
                 insertValores(afericao, codUnidade, conn);
             }
             conn.commit();
@@ -71,7 +75,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             closeConnection(conn, stmt, rSet);
         }
 
-        return true;
+        if (codAfericao != null) {
+            return codAfericao;
+        } else {
+            throw new IllegalStateException("Não foi possível retornar o código da aferição realizada");
+        }
     }
 
     @NotNull
