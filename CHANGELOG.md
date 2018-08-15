@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Cria DummyResource para retornar o JSON padrão do objeto Cargo
 
+### Bug Fixes
+* Corrige verificação de permissão para insert de itens da produtividade da Raízen
+
 <a name="v0.0.73"></a>
 ## Version [v0.0.73](https://github.com/luizfp/PrologWeb/compare/v0.0.72...v0.0.73) (2018-08-13)
 
