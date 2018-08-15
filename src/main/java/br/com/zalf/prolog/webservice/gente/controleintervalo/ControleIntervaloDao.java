@@ -48,7 +48,9 @@ public interface ControleIntervaloDao {
     TipoIntervalo getTipoIntervalo(@NotNull final Long codUnidade,
                                    @NotNull final Long codTipoIntervalo) throws SQLException;
 
-    void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
+    void inativarTipoIntervalo(@NotNull final Long codUnidade,
+                               @NotNull final Long codTipoIntervalo,
+                               @NotNull final TipoIntervalo tipoIntervalo,
                                @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
     @NotNull

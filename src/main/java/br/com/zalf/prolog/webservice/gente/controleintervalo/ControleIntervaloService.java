@@ -111,9 +111,15 @@ public class ControleIntervaloService {
         }
     }
 
-    public boolean inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo) {
+    public boolean updateStatusAtivo(@NotNull final Long codUnidade,
+                                     @NotNull final Long codTipoIntervalo,
+                                     @NotNull final TipoIntervalo tipoIntervalo) {
         try {
-            dao.inativarTipoIntervalo(codUnidade, codTipoIntervalo, Injection.provideDadosIntervaloChangedListener());
+            dao.inativarTipoIntervalo(
+                    codUnidade,
+                    codTipoIntervalo,
+                    tipoIntervalo,
+                    Injection.provideDadosIntervaloChangedListener());
             return true;
         } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao inativar o tipo de intervalo. \n" +

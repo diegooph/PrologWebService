@@ -292,7 +292,9 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     }
 
     @Override
-    public void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
+    public void inativarTipoIntervalo(@NotNull final Long codUnidade,
+                                      @NotNull final Long codTipoIntervalo,
+                                      @NotNull final TipoIntervalo tipoIntervalo,
                                       @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -300,10 +302,11 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
-                    "SET STATUS = FALSE WHERE COD_UNIDADE = ? AND CODIGO = ?");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codTipoIntervalo);
-            int count = stmt.executeUpdate();
+                    "SET ATIVO = ? WHERE COD_UNIDADE = ? AND CODIGO = ?;");
+            stmt.setBoolean(1, tipoIntervalo.isAtivo());
+            stmt.setLong(2, codUnidade);
+            stmt.setLong(3, codTipoIntervalo);
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inativar o Tipo de Intervalo de código: " + codTipoIntervalo);
             }
@@ -313,7 +316,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
             // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
             conn.commit();
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             // Pegamos apenas para fazer o rollback, depois subimos o erro.
             if (conn != null) {
                 conn.rollback();

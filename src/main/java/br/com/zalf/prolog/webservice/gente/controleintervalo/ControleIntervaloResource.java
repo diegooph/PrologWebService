@@ -134,13 +134,14 @@ public final class ControleIntervaloResource {
     }
 
     @PUT
-    @Path("/tipos/inativar/{codUnidade}/{codTipoIntervalo}")
-    public Response inativarTipoIntervalo(@PathParam("codUnidade") Long codUnidade,
-                                          @PathParam("codTipoIntervalo") Long codTipoIntervalo) {
-        if(service.inativarTipoIntervalo(codUnidade, codTipoIntervalo)) {
-            return Response.ok("Tipo de intervalo inativado com sucesso");
+    @Path("/tipos/{codUnidade}/{codTipoIntervalo}/status-ativo")
+    public Response inativarTipoIntervalo(@Required @PathParam("codUnidade") Long codUnidade,
+                                          @Required @PathParam("codTipoIntervalo") Long codTipoIntervalo,
+                                          @Required final TipoIntervalo tipoIntervalo) {
+        if (service.updateStatusAtivo(codUnidade, codTipoIntervalo, tipoIntervalo)) {
+            return Response.ok("Tipo de marcação inativado com sucesso");
         } else {
-            return Response.error("Erro ao inativar o tipo de intervalo");
+            return Response.error("Erro ao inativar o tipo de marcação");
         }
     }
 }

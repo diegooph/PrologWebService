@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Cria DummyResource para retornar o JSON padrão do objeto Cargo
 
+### Refactors
+* Altera método de inativação de tipo de intervalo para permitir ativar/inativar
+
 ### Bug Fixes
 * Corrige verificação de permissão para insert de itens da produtividade da Raízen
 
