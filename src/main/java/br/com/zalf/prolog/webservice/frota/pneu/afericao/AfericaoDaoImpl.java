@@ -189,8 +189,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CRONOGRAMA_AFERICOES_PLACAS(?, ?, ?);");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            final LocalDateTime dataHoraTzCliente = ZonedDateTime
+                    .now(Clock.systemUTC())
+                    .withZoneSameInstant(zoneId)
+                    .toLocalDateTime();
             stmt.setLong(1, codUnidade);
-            stmt.setObject(2, OffsetDateTime.now(Clock.system(zoneId)));
+            stmt.setObject(2, dataHoraTzCliente);
             stmt.setString(3, zoneId.getId());
             rSet = stmt.executeQuery();
 
