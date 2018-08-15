@@ -580,37 +580,22 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final Map<String, Integer> resultados = new LinkedHashMap<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM (SELECT " +
-                    "        A.PLACA_VEICULO, " +
-                    "        SUM(AM.KM_MOMENTO_CONSERTO - A.KM_VEICULO)::INT AS TOTAL_KM " +
-                    "      FROM AFERICAO_MANUTENCAO AM " +
-                    "        JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
-                    "        JOIN VEICULO_PNEU VP ON VP.PLACA = A.PLACA_VEICULO " +
-                    "                                AND AM.COD_PNEU = VP.COD_PNEU " +
-                    "                                AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
-                    "      WHERE AM.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
-                    "            AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
-                    "            AND (AM.TIPO_SERVICO LIKE ? " +
-                    "                 OR AM.TIPO_SERVICO LIKE ?) " +
-                    "      GROUP BY A.PLACA_VEICULO " +
-                    "      ORDER BY 2 DESC) AS PLACAS_TOTAL_KM WHERE TOTAL_KM > 0;");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
-            stmt.setString(2, TipoServico.CALIBRAGEM.asString());
-            stmt.setString(3, TipoServico.INSPECAO.asString());
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "PUBLIC.FUNC_PNEU_RELATORIO_QUANTIDADE_KMS_RODADOS_COM_SERVICOS_ABERTOS(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
+            final Map<String, Integer> resultados = new LinkedHashMap<>();
             while (rSet.next()) {
                 resultados.put(
                         rSet.getString("PLACA_VEICULO"),
                         rSet.getInt("TOTAL_KM"));
             }
+            return resultados;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return resultados;
     }
 
     @Override
