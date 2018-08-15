@@ -24,7 +24,7 @@ public class AfericaoService {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
-    public boolean insert(@NotNull final Afericao afericao,
+    public Long insert(@NotNull final Afericao afericao,
                           @NotNull final Long codUnidade,
                           @NotNull final String userToken) throws ProLogException {
         try {

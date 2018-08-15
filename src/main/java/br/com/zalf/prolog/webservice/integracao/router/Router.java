@@ -125,7 +125,7 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public boolean insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Throwable {
+    public Long insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Throwable {
         if (getSistema() != null) {
             return getSistema().insertAfericao(afericao, codUnidade);
         } else {

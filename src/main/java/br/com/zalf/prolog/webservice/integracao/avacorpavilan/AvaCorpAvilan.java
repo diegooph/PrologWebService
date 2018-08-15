@@ -326,11 +326,15 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
-    public boolean insertAfericao(@NotNull Afericao afericao,
+    public Long insertAfericao(@NotNull Afericao afericao,
                                   @NotNull Long codUnidade) throws Throwable {
         if (afericao instanceof AfericaoPlaca) {
             final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
-            return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericaoPlaca), getCpf(), getDataNascimento());
+            if (requester.insertAfericao(AvaCorpAvilanConverter.convert(afericaoPlaca), getCpf(), getDataNascimento())) {
+                return null;
+            } else {
+                throw new IllegalStateException("Falha na integração");
+            }
         } else {
             throw new IntegracaoException(
                     Response.Status.BAD_REQUEST.getStatusCode(),

@@ -168,7 +168,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public boolean insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Throwable {
+    public Long insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Throwable {
         return afericaoDao.insert(afericao, codUnidade);
     }
 

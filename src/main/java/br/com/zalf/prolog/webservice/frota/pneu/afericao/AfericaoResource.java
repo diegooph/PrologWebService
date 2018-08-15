@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -43,11 +45,12 @@ public class AfericaoResource {
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO})
     @Path("/{codUnidade}")
     @UsedBy(platforms = Platform.ANDROID)
-    public Response insert(Afericao afericao,
-                           @PathParam("codUnidade") Long codUnidade,
-                           @HeaderParam("Authorization") String userToken) throws ProLogException {
-        if (service.insert(afericao, codUnidade, userToken)) {
-            return Response.ok("Aferição inserida com sucesso");
+    public AbstractResponse insert(Afericao afericao,
+                                   @PathParam("codUnidade") Long codUnidade,
+                                   @HeaderParam("Authorization") String userToken) throws ProLogException {
+        final Long codAfericao = service.insert(afericao, codUnidade, userToken);
+        if (codAfericao != null) {
+            return ResponseWithCod.ok("Aferição inserida com sucesso", codAfericao);
         } else {
             return Response.error("Erro ao inserir aferição");
         }

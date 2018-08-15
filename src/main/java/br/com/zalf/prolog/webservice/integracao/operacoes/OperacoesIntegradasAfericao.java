@@ -21,7 +21,7 @@ interface OperacoesIntegradasAfericao {
                                            @NotNull final String placaVeiculo,
                                            @NotNull final String tipoAfericao) throws Throwable;
 
-    boolean insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
+    Long insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
     Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable;
