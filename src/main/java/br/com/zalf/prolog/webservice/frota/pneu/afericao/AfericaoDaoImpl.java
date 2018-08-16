@@ -355,7 +355,10 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     do {
                         pneus.add(createPneuAfericao(rSet));
                     } while (rSet.next());
-                    afericaoPlaca.getVeiculo().setListPneus(pneus);
+                    final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+                    final Veiculo veiculo = afericaoPlaca.getVeiculo();
+                    veiculo.setListPneus(pneus);
+                    veiculoDao.getDiagramaVeiculoByPlaca(conn, veiculo.getPlaca()).ifPresent(veiculo::setDiagrama);
                 }
             } else {
                 throw new SQLException("Erro ao buscar aferição de código: " + codAfericao);
