@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
@@ -18,6 +20,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 08/03/2018
@@ -222,7 +226,9 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     @Override
-    public List<TipoIntervalo> getTiposIntervalosByUnidade(@NotNull final Long codUnidade, final boolean withCargos)
+    public List<TipoIntervalo> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
+                                                           final Boolean apenasAtivos,
+                                                           final boolean withCargos)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -230,21 +236,9 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         final List<TipoIntervalo> tipos = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT " +
-                    "IT.CODIGO AS CODIGO_TIPO_INTERVALO, " +
-                    "IT.CODIGO_TIPO_INTERVALO_POR_UNIDADE AS CODIGO_TIPO_INTERVALO_POR_UNIDADE, " +
-                    "IT.NOME AS " +
-                    "NOME_TIPO_INTERVALO, " +
-                    "IT.COD_UNIDADE, " +
-                    "IT.ATIVO, " +
-                    "IT.HORARIO_SUGERIDO, " +
-                    "IT.ICONE, " +
-                    "IT.TEMPO_ESTOURO_MINUTOS, " +
-                    "IT.TEMPO_RECOMENDADO_MINUTOS " +
-                    "FROM INTERVALO_TIPO_CARGO ITC JOIN VIEW_INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC" +
-                    ".COD_TIPO_INTERVALO = IT.CODIGO " +
-                    " WHERE IT.COD_UNIDADE = ? AND IT.ATIVO IS TRUE");
+            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALO_UNIDADE(?, ?);");
             stmt.setLong(1, codUnidade);
+            bindValueOrNull(stmt, 2, apenasAtivos, SqlType.BOOLEAN);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 tipos.add(createTipoInvervalo(rSet, withCargos, conn));

@@ -26,7 +26,7 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
 
     @Override
     public List<TipoIntervalo> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
-        return new ControleIntervaloDaoImpl().getTiposIntervalosByUnidade(codUnidade, withCargos);
+        return new ControleIntervaloDaoImpl().getTiposIntervalosByUnidade(codUnidade, Boolean.TRUE, withCargos);
     }
 
     @Override

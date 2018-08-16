@@ -23,9 +23,9 @@ public class ControleIntervaloService {
     private static final String TAG = ControleIntervaloService.class.getSimpleName();
     private ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
 
-    public List<TipoIntervalo> getTiposIntervalos(Long codUnidade, boolean withCargos) {
+    public List<TipoIntervalo> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
         try {
-            return dao.getTiposIntervalosByUnidade(codUnidade, withCargos);
+            return dao.getTiposIntervalosByUnidade(codUnidade, apenasAtivos, withCargos);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os tipos de intervalos. \n" +
                     "codUnidade: %d \n" +
@@ -138,7 +138,7 @@ public class ControleIntervaloService {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO,
                     codUnidade);
-            final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade, true);
+            final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
             final Optional<Long> versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 

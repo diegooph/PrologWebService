@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -102,8 +103,10 @@ public final class ControleIntervaloResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/resumidos")
-    public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, false);
+    public List<TipoIntervalo> getTiposIntervalosResumidos(@Required @PathParam("codUnidade") Long codUnidade,
+                                                           @Optional @QueryParam("apenasAtivos")
+                                                           @DefaultValue("true") Boolean apenasAtivos) {
+        return service.getTiposIntervalos(codUnidade, apenasAtivos, false);
     }
 
     @GET
@@ -113,8 +116,10 @@ public final class ControleIntervaloResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/completos")
-    public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, true);
+    public List<TipoIntervalo> getTiposIntervalosCompletos(@Required @PathParam("codUnidade") Long codUnidade,
+                                                           @Optional @QueryParam("apenasAtivos")
+                                                           @DefaultValue("true") Boolean apenasAtivos) {
+        return service.getTiposIntervalos(codUnidade, apenasAtivos, true);
     }
 
     @POST
