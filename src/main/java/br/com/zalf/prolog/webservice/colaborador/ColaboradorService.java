@@ -186,7 +186,7 @@ public class ColaboradorService {
                 final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
                 final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(
                         colaborador.getUnidade().getCodigo(),
-                        Boolean.TRUE,
+                        true,
                         true);
                 loginHolder.setTiposIntervalos(tiposIntervalo);
             }

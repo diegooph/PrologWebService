@@ -104,7 +104,7 @@ public class DeprecatedControleIntervaloResource {
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/completos")
     public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, Boolean.TRUE,true);
+        return service.getTiposIntervalos(codUnidade, true,true);
     }
 
     @POST
@@ -141,7 +141,7 @@ public class DeprecatedControleIntervaloResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
     @Path("/tipos/{codUnidade}/resumidos")
     public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, Boolean.TRUE,false);
+        return service.getTiposIntervalos(codUnidade, true,false);
     }
 
     /**

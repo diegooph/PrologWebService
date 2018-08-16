@@ -105,7 +105,7 @@ public final class ControleIntervaloResource {
     @Path("/tipos/{codUnidade}/resumidos")
     public List<TipoIntervalo> getTiposIntervalosResumidos(@Required @PathParam("codUnidade") Long codUnidade,
                                                            @Optional @QueryParam("apenasAtivos")
-                                                           @DefaultValue("true") Boolean apenasAtivos) {
+                                                           @DefaultValue("true") boolean apenasAtivos) {
         return service.getTiposIntervalos(codUnidade, apenasAtivos, false);
     }
 
@@ -118,7 +118,7 @@ public final class ControleIntervaloResource {
     @Path("/tipos/{codUnidade}/completos")
     public List<TipoIntervalo> getTiposIntervalosCompletos(@Required @PathParam("codUnidade") Long codUnidade,
                                                            @Optional @QueryParam("apenasAtivos")
-                                                           @DefaultValue("true") Boolean apenasAtivos) {
+                                                           @DefaultValue("true") boolean apenasAtivos) {
         return service.getTiposIntervalos(codUnidade, apenasAtivos, true);
     }
 
