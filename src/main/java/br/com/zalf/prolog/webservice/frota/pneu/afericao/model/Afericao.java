@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,7 @@ public abstract class Afericao {
 
     private TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao;
 
+    @Exclude
     @NotNull
     private final TipoProcessoColetaAfericao tipoProcessoColetaAfericao;
 
