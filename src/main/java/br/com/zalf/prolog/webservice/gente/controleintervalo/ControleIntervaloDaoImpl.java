@@ -4,8 +4,6 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
@@ -20,8 +18,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 08/03/2018
@@ -227,7 +223,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     @NotNull
     @Override
     public List<TipoIntervalo> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
-                                                           final Boolean apenasAtivos,
+                                                           final boolean apenasAtivos,
                                                            final boolean withCargos)
             throws SQLException {
         Connection conn = null;
@@ -236,9 +232,9 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         final List<TipoIntervalo> tipos = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALO_UNIDADE(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALOS_UNIDADE(?, ?);");
             stmt.setLong(1, codUnidade);
-            bindValueOrNull(stmt, 2, apenasAtivos, SqlType.BOOLEAN);
+            stmt.setBoolean(2, apenasAtivos);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 tipos.add(createTipoInvervalo(rSet, withCargos, conn));

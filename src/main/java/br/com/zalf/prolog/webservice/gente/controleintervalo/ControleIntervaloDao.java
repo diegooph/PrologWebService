@@ -42,7 +42,7 @@ public interface ControleIntervaloDao {
 
     @NotNull
     List<TipoIntervalo> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
-                                                    final Boolean apenasAtivos,
+                                                    final boolean apenasAtivos,
                                                     final boolean withCargos) throws SQLException;
 
     @NotNull
