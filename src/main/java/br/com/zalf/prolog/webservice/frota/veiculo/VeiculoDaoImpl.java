@@ -565,10 +565,26 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     @Override
     public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException {
         Connection conn = null;
+        try {
+            conn = getConnection();
+            return internalGetDiagramaVeiculoByPlaca(conn, placa);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    @Override
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final Connection conn,
+                                                               @NotNull final String placa) throws SQLException {
+        return internalGetDiagramaVeiculoByPlaca(conn, placa);
+    }
+
+    @NotNull
+    private Optional<DiagramaVeiculo> internalGetDiagramaVeiculoByPlaca(@NotNull final Connection conn,
+                                                                        @NotNull final String placa) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement("SELECT vd.*\n" +
                     "FROM veiculo v JOIN veiculo_tipo vt on v.cod_tipo = vt.codigo and v.cod_unidade = vt.cod_unidade\n" +
                     "JOIN veiculo_diagrama vd on vd.codigo = vt.cod_diagrama\n" +
@@ -579,7 +595,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 return createDiagramaVeiculo(rSet, conn);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeStatement(stmt);
+            closeResultSet(rSet);
         }
         return Optional.empty();
     }
