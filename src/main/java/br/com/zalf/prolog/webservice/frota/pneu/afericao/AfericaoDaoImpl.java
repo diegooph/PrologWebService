@@ -644,7 +644,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         afericao.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         afericao.setDataHora(rSet.getObject("DATA_HORA", LocalDateTime.class));
         afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.fromString(rSet.getString
-                ("TIPO_AFERICAO")));
+                ("TIPO_MEDICAO_COLETADA")));
         afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
 
         // Colaborador que realizou a aferição.
