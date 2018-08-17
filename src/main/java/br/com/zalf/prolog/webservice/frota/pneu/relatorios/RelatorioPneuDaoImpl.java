@@ -81,7 +81,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @NotNull
     @Override
-    public Report getAfericoesAvulsasReportByColaborador(@NotNull final Long cpfColaborador,
+    public Report getAfericoesAvulsasReportByColaborador(@NotNull final Long codColaborador,
                                                          @NotNull final Long codUnidade,
                                                          @NotNull final LocalDate dataInicial,
                                                          @NotNull final LocalDate dataFinal) throws Throwable {
@@ -92,7 +92,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS_BY_COLABORADOR(?, ?, ?, ?);");
-            stmt.setLong(1, cpfColaborador);
+            stmt.setLong(1, codColaborador);
             stmt.setLong(2, codUnidade);
             stmt.setObject(3, dataInicial);
             stmt.setObject(4, dataFinal);

@@ -53,11 +53,11 @@ public class RelatorioPneuResource {
     @GET
     @Path("afericoes-avulsas-by-colaborador/report")
     public Report getAfericoesAvulsasReportByColaborador(
-            @QueryParam("cpfColaborador") @Required final Long cpfColaborador,
+            @QueryParam("codColaborador") @Required final Long codColaborador,
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
-        return service.getAfericoesAvulsasReportByColaborador(cpfColaborador, codUnidade, dataInicial, dataFinal);
+        return service.getAfericoesAvulsasReportByColaborador(codColaborador, codUnidade, dataInicial, dataFinal);
     }
 
     @GET

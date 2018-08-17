@@ -60,13 +60,13 @@ public class RelatorioPneuService {
     }
 
     @NotNull
-    public Report getAfericoesAvulsasReportByColaborador(@NotNull final Long cpfColaborador,
+    public Report getAfericoesAvulsasReportByColaborador(@NotNull final Long codColaborador,
                                                          @NotNull final Long codUnidade,
                                                          @NotNull final String dataInicial,
                                                          @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getAfericoesAvulsasReportByColaborador(
-                    cpfColaborador,
+                    codColaborador,
                     codUnidade,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
