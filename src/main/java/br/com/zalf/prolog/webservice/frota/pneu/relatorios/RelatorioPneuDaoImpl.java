@@ -79,6 +79,30 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         }
     }
 
+    @NotNull
+    @Override
+    public Report getAfericoesAvulsasReportByColaborador(@NotNull final Long cpfColaborador,
+                                                         @NotNull final Long codUnidade,
+                                                         @NotNull final LocalDate dataInicial,
+                                                         @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS_BY_COLABORADOR(?, ?, ?, ?);");
+            stmt.setLong(1, cpfColaborador);
+            stmt.setLong(2, codUnidade);
+            stmt.setObject(3, dataInicial);
+            stmt.setObject(4, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
     @Override
     public List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<Long> codUnidades,
                                                @NotNull final List<String> status) throws SQLException {

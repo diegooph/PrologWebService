@@ -59,6 +59,25 @@ public class RelatorioPneuService {
         }
     }
 
+    @NotNull
+    public Report getAfericoesAvulsasReportByColaborador(@NotNull final Long cpfColaborador,
+                                                         @NotNull final Long codUnidade,
+                                                         @NotNull final String dataInicial,
+                                                         @NotNull final String dataFinal) throws ProLogException {
+        try {
+            return dao.getAfericoesAvulsasReportByColaborador(
+                    cpfColaborador,
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas por colaborador (REPORT)", throwable);
+            throw exceptionHandler.map(
+                    throwable,
+                    "Erro ao gerar relatório das aferições avulsas, tente novamente");
+        }
+    }
+
     public List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<Long> codUnidades,
                                                @NotNull final List<String> status) {
         try {

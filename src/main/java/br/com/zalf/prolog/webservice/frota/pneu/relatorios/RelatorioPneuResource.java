@@ -34,6 +34,15 @@ public class RelatorioPneuResource {
     private final RelatorioPneuService service = new RelatorioPneuService();
 
     @GET
+    @Path("/afericoes-avulsas/csv")
+    public StreamingOutput getAfericoesAvulsasCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> service.getAfericoesAvulsasCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
     @Path("/afericoes-avulsas/report")
     public Report getAfericoesAvulsasReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                             @QueryParam("dataInicial") @Required final String dataInicial,
@@ -42,12 +51,13 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/afericoes-avulsas/csv")
-    public StreamingOutput getAfericoesAvulsasCsv(
-            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+    @Path("afericoes-avulsas-by-colaborador/report")
+    public Report getAfericoesAvulsasReportByColaborador(
+            @QueryParam("cpfColaborador") @Required final Long cpfColaborador,
+            @QueryParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal) {
-        return outputStream -> service.getAfericoesAvulsasCsv(outputStream, codUnidades, dataInicial, dataFinal);
+            @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
+        return service.getAfericoesAvulsasReportByColaborador(cpfColaborador, codUnidade, dataInicial, dataFinal);
     }
 
     @GET

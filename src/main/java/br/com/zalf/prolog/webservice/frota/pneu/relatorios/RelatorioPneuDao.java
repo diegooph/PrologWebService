@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
@@ -25,15 +26,14 @@ import java.util.Map;
 public interface RelatorioPneuDao {
 
     /**
-     * Método para gerar o relatório de previsão de troca de um pneu, com dados baseados no histórico de aferições.
+     * Método para gerar um relatório contendo todas as aferições avulsas realizadas durante o período filtrado.
      * Para fins de exportação em CSV.
      *
      * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
      * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
      * @param dataInicial  - Data inicial do período de filtro.
      * @param dataFinal    - Data final do período de filtro.
-     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
-     * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
+     * @throws Throwable - Se algum erro na busca dos dados ocorrer.
      */
     void getAfericoesAvulsasCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades,
@@ -41,19 +41,36 @@ public interface RelatorioPneuDao {
                                 @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
-     * Método para gerar o relatório de previsão de troca de um pneu, com dados baseados no histórico de aferições.
-     * Para fins de visualização na aplicação.
+     * Método para gerar um relatório contendo todas as aferições avulsas realizadas durante o período filtrado.
+     * Para fins de exibição na aplicação.
      *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @param dataInicial - Data inicial do período de filtro.
      * @param dataFinal   - Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     * @throws Throwable - Se algum erro na busca dos dados ocorrer.
      */
     @NotNull
     Report getAfericoesAvulsasReport(@NotNull final List<Long> codUnidades,
                                      @NotNull final LocalDate dataInicial,
                                      @NotNull final LocalDate dataFinal) throws Throwable;
+
+    /**
+     * Método para gerar um relatório contendo as aferições avulsas realizadas pelo colaborador
+     * especificado pelo {@code cpfColaborador}.
+     *
+     * @param cpfColaborador - {@link Colaborador#cpf} para filtrar os dados da busca.
+     * @param codUnidade     - Código da {@link Unidade} que os dados serão buscados.
+     * @param dataInicial    - Data inicial do período de filtro.
+     * @param dataFinal      - Data final do período de filtro.
+     * @return - Um objeto {@link Report} com os dados filtrados.
+     * @throws Throwable - Se algum erro na busca dos dados ocorrer.
+     */
+    @NotNull
+    Report getAfericoesAvulsasReportByColaborador(@NotNull final Long cpfColaborador,
+                                                  @NotNull final Long codUnidade,
+                                                  @NotNull final LocalDate dataInicial,
+                                                  @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método utilizado para listar os pneus com base na faixa de Sulco em que se encontram.
