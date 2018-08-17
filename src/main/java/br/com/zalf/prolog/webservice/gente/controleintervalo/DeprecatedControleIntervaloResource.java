@@ -123,17 +123,6 @@ public class DeprecatedControleIntervaloResource {
         }
     }
 
-    @PUT
-    @Path("/tipos/inativar/{codUnidade}/{codTipoIntervalo}")
-    public Response inativarTipoIntervalo(@PathParam("codUnidade") Long codUnidade,
-                                          @PathParam("codTipoIntervalo") Long codTipoIntervalo) {
-        if (service.updateStatusAtivo(codUnidade, codTipoIntervalo, null)) {
-            return Response.ok("Tipo de intervalo inativado com sucesso");
-        } else {
-            return Response.error("Erro ao inativar o tipo de intervalo");
-        }
-    }
-
     @GET
     @Secured(permissions = {
             Pilares.Gente.Intervalo.MARCAR_INTERVALO,

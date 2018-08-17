@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -145,11 +146,12 @@ public final class ControleIntervaloResource {
     @Secured(permissions = Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO)
     public Response inativarTipoIntervalo(@Required @PathParam("codUnidade") Long codUnidade,
                                           @Required @PathParam("codTipoIntervalo") Long codTipoIntervalo,
-                                          @Required final TipoIntervalo tipoIntervalo) {
-        if (service.updateStatusAtivo(codUnidade, codTipoIntervalo, tipoIntervalo)) {
-            return Response.ok("Tipo de marcação inativado com sucesso");
+                                          @Required final TipoIntervalo tipoIntervalo) throws ProLogException {
+        service.updateStatusAtivo(codUnidade, codTipoIntervalo, tipoIntervalo);
+        if (tipoIntervalo.isAtivo()) {
+            return Response.ok("Tipo de marcação ativada com sucesso");
         } else {
-            return Response.error("Erro ao inativar o tipo de marcação");
+            return Response.ok("Tipo de marcação inativada com sucesso");
         }
     }
 }

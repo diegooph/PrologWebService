@@ -282,10 +282,10 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     }
 
     @Override
-    public void inativarTipoIntervalo(@NotNull final Long codUnidade,
-                                      @NotNull final Long codTipoIntervalo,
-                                      @NotNull final TipoIntervalo tipoIntervalo,
-                                      @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
+    public void updateStatusAtivoTipoIntervalo(@NotNull final Long codUnidade,
+                                               @NotNull final Long codTipoIntervalo,
+                                               @NotNull final TipoIntervalo tipoIntervalo,
+                                               @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
