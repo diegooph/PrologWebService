@@ -160,6 +160,7 @@ public final class Pilares {
             public static final int EDITAR_MARCACAO = 338;
             public static final int VALIDAR_INVALIDAR_MARCACAO = 339;
             public static final int CRIAR_TIPO_INTERVALO = 340;
+            public static final int ALTERAR_TIPO_INTERVALO = 344;
             public static final int ATIVAR_INATIVAR_TIPO_INTERVALO = 341;
         }
 

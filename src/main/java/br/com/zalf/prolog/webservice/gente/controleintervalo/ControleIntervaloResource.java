@@ -124,12 +124,14 @@ public final class ControleIntervaloResource {
 
     @POST
     @Path("/tipos")
+    @Secured(permissions = Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO)
     public AbstractResponse insertTipoIntervalo(TipoIntervalo tipoIntervalo) {
         return service.insertTipoIntervalo(tipoIntervalo);
     }
 
     @PUT
     @Path("/tipos")
+    @Secured(permissions = Pilares.Gente.Intervalo.ALTERAR_TIPO_INTERVALO)
     public Response updateTipoInvervalo(TipoIntervalo tipoIntervalo) {
         if(service.updateTipoIntervalo(tipoIntervalo)) {
             return Response.ok("Tipo de intervalo editado com sucesso");
@@ -140,6 +142,7 @@ public final class ControleIntervaloResource {
 
     @PUT
     @Path("/tipos/{codUnidade}/{codTipoIntervalo}/status-ativo")
+    @Secured(permissions = Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO)
     public Response inativarTipoIntervalo(@Required @PathParam("codUnidade") Long codUnidade,
                                           @Required @PathParam("codTipoIntervalo") Long codTipoIntervalo,
                                           @Required final TipoIntervalo tipoIntervalo) {

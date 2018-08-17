@@ -7,9 +7,11 @@ Change Log
 ### Features
 * Cria DummyResource para retornar o JSON padrão do objeto Cargo
 * Permite filtrar por tipos de intervalo ativos/inativos ao realizar a buscas dos tipos de uma unidade
+* Cria permissão para permitir alterar tipos de intervalo
 
 ### Refactors
 * Altera método de inativação de tipo de intervalo para permitir ativar/inativar
+* Adiciona verificação de permissões nos métodos de gestão de tipos de intervalo
 
 ### Bug Fixes
 * Corrige verificação de permissão para insert de itens da produtividade da Raízen
