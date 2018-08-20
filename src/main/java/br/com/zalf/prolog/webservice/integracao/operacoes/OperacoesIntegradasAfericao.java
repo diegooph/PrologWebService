@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -20,6 +17,9 @@ interface OperacoesIntegradasAfericao {
     NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
                                            @NotNull final String placaVeiculo,
                                            @NotNull final String tipoAfericao) throws Throwable;
+
+    @NotNull
+    List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable;
 
     Long insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
 

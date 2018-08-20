@@ -325,9 +325,17 @@ public final class AvaCorpAvilan extends Sistema {
         return novaAfericao;
     }
 
+    @NotNull
+    @Override
+    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable {
+        throw new IntegracaoException(
+                Response.Status.BAD_REQUEST.getStatusCode(),
+                "A Avilan só suporta aferição de uma placa e não de pneu avulso");
+    }
+
     @Override
     public Long insertAfericao(@NotNull Afericao afericao,
-                                  @NotNull Long codUnidade) throws Throwable {
+                               @NotNull Long codUnidade) throws Throwable {
         if (afericao instanceof AfericaoPlaca) {
             final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
             if (requester.insertAfericao(AvaCorpAvilanConverter.convert(afericaoPlaca), getCpf(), getDataNascimento())) {

@@ -71,9 +71,10 @@ public class AfericaoResource {
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO)
     @Path("/pneus-disponiveis-afericao-avulsa/unidades/{codUnidade}")
     @UsedBy(platforms = Platform.ANDROID)
-    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@PathParam("codUnidade") Long codUnidade)
+    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@HeaderParam("Authorization") @Required String userToken,
+                                                           @PathParam("codUnidade") Long codUnidade)
             throws ProLogException {
-        return service.getPneusAfericaoAvulsa(codUnidade);
+        return service.getPneusAfericaoAvulsa(userToken, codUnidade);
     }
 
     @GET

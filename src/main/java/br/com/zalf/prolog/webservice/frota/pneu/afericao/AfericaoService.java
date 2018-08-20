@@ -90,9 +90,12 @@ public class AfericaoService {
     }
 
     @NotNull
-    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws ProLogException {
+    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final String userToken,
+                                                           @NotNull final Long codUnidade) throws ProLogException {
         try {
-            return dao.getPneusAfericaoAvulsa(codUnidade);
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getPneusAfericaoAvulsa(codUnidade);
         } catch (final Throwable e) {
             final String errorMessage = "Erro ao buscar os pneus disponíveis para aferição avulsa";
             Log.e(TAG, errorMessage, e);
