@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.IntegracaoException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
@@ -253,8 +254,7 @@ public final class AvaCorpAvilan extends Sistema {
          */
         final Long codUnidadeColaborador = getCodUnidade();
         if (!codUnidadeCronograma.equals(codUnidadeColaborador)) {
-            throw new AvaCorpAvilanException(
-                    "Você só pode aferir veículos da sua unidade",
+            throw new BloqueadoIntegracaoException("Você só pode aferir veículos da sua unidade",
                     String.format("Unidade cronograma: %s -- Unidade colaborador: %d", codUnidadeCronograma, codUnidadeColaborador));
         }
 
@@ -328,9 +328,7 @@ public final class AvaCorpAvilan extends Sistema {
     @NotNull
     @Override
     public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable {
-        throw new IntegracaoException(
-                Response.Status.BAD_REQUEST.getStatusCode(),
-                "A Avilan só suporta aferição de uma placa e não de pneu avulso");
+        throw new BloqueadoIntegracaoException("A Avilan só suporta aferição de uma placa e não de pneu avulso");
     }
 
     @Override
