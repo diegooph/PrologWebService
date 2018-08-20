@@ -17,11 +17,11 @@ import javax.ws.rs.core.Response;
 public final class BloqueadoIntegracaoException extends ProLogException {
 
     public BloqueadoIntegracaoException(@NotNull String message) {
-        super(Response.Status.METHOD_NOT_ALLOWED.getStatusCode(), ProLogErrorCodes.INTEGRACAO.errorCode(), message, null);
+        super(Response.Status.METHOD_NOT_ALLOWED.getStatusCode(), ProLogErrorCodes.BLOQUEADO_INTEGRACAO.errorCode(), message, null);
     }
 
     public BloqueadoIntegracaoException(@NotNull String message, @Nullable String developerMessage) {
         super(Response.Status.METHOD_NOT_ALLOWED.getStatusCode(),
-                ProLogErrorCodes.INTEGRACAO.errorCode(), message, developerMessage);
+                ProLogErrorCodes.BLOQUEADO_INTEGRACAO.errorCode(), message, developerMessage);
     }
 }
