@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,10 +20,10 @@ public interface AfericaoDao {
     /**
      * Insere uma aferição lincada com o código da unidade.
      *
-     * @param afericao   uma aferição
-     * @param codUnidade código da unidade
-     * @return valor da operação
-     * @throws Throwable se ocorrer erro no banco
+     * @param afericao   uma aferição.
+     * @param codUnidade código da unidade.
+     * @return código da aferição inserida.
+     * @throws Throwable se ocorrer erro no banco.
      */
     Long insert(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
 
@@ -45,7 +46,7 @@ public interface AfericaoDao {
      * @param codPneu                     placa do veículo
      * @param tipoMedicaoColetadaAfericao tipo da aferição que será realizada
      * @return retorna o objeto da nova aferição
-     * @throws SQLException se ocorrer erro na busca
+     * @throws Throwable se ocorrer erro na busca
      */
     @NotNull
     NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
@@ -58,7 +59,7 @@ public interface AfericaoDao {
      *
      * @param codUnidade código da unidade
      * @return a restrição da unidade
-     * @throws SQLException se ocorrer erro no banco
+     * @throws Throwable se ocorrer erro no banco
      */
     @NotNull
     Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Throwable;
@@ -68,36 +69,58 @@ public interface AfericaoDao {
      *
      * @param codUnidade código da unidade
      * @return a restrição da unidade
-     * @throws SQLException se ocorrer erro no banco
+     * @throws Throwable se ocorrer erro no banco
      */
     @NotNull
-    Restricao getRestricaoByCodUnidade(@NotNull final Connection conn, @NotNull final Long codUnidade) throws
-            Throwable;
+    Restricao getRestricaoByCodUnidade(@NotNull final Connection conn, @NotNull final Long codUnidade)
+            throws Throwable;
 
     /**
      * retorna as restrições de medidas da placa
      *
      * @param placa placa do veículo
      * @return a restrição da placa
-     * @throws SQLException se ocorrer erro no banco
+     * @throws Throwable se ocorrer erro no banco
      */
     @NotNull
     Restricao getRestricoesByPlaca(String placa) throws Throwable;
 
     /**
-     * retorna a lista de placas da unidade e também a meta de
-     * dias em que cada placa deve ser aferido
+     * Retorna a lista de placas da unidade e também a meta de dias em que cada placa deve ser aferido.
      *
-     * @param codUnidade código da unidade
-     * @return um {@link CronogramaAfericao} contendo as placas para ser aferidas
-     * @throws SQLException para qualquer erro do banco
+     * @param codUnidade Código da unidade.
+     * @return Um {@link CronogramaAfericao} contendo as placas para ser aferidas.
+     * @throws Throwable Para qualquer erro do banco.
      */
     @NotNull
     CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable;
 
+    /**
+     * Método para buscar uma lista de pneus para serem aferidos seguindo o
+     * {@link TipoProcessoColetaAfericao#PNEU_AVULSO}. Esse método retorna apenas pneus que estão
+     * em {@link StatusPneu#ESTOQUE}.
+     *
+     * @param codUnidade Código da unidade aplicado na busca.
+     * @return Uma lista de pneus para serem aferidos.
+     * @throws Throwable Se algum erro ocorrer.
+     */
     @NotNull
     List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable;
 
+    /**
+     * Método para buscar a lista de aferições realizadas seguindo o {@link TipoProcessoColetaAfericao#PLACA}.
+     * Esta busca é páginada e utiliza o {@code limit} e {@code offset} como parametros para a busca dos dados.
+     *
+     * @param codUnidade     Código da unidade aplicado na busca.
+     * @param codTipoVeiculo Tipo de veículo filtrado na busca.
+     * @param placaVeiculo   Placa do veículo a ser buscado.
+     * @param dataInicial    Data inicial do período de filtro.
+     * @param dataFinal      Data final do período de filtro.
+     * @param limit          Quantidade de itens a serem buscados.
+     * @param offset         Ponto inicial da busca.
+     * @return Uma lista contendo as {@link AfericaoPlaca}s realizadas.
+     * @throws Throwable Se qualquer erro na busca ocorrer.
+     */
     @NotNull
     List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
                                            @NotNull final String codTipoVeiculo,
@@ -107,6 +130,18 @@ public interface AfericaoDao {
                                            final int limit,
                                            final long offset) throws Throwable;
 
+    /**
+     * Método para buscar a lista de aferições realizadas seguindo o {@link TipoProcessoColetaAfericao#PNEU_AVULSO}.
+     * Esta busca é páginada e utiliza o {@code limit} e {@code offset} como parametros para a busca dos dados.
+     *
+     * @param codUnidade  Código da {@link Unidade} que os dados serão buscados.
+     * @param dataInicial Data inicial do período de filtro.
+     * @param dataFinal   Data final do período de filtro.
+     * @param limit       Quantidade de itens a serem buscados.
+     * @param offset      Ponto inicial da busca.
+     * @return Uma lista contendo as {@link AfericaoAvulsa}s realizadas.
+     * @throws Throwable Se qualquer erro na busca ocorrer.
+     */
     @NotNull
     List<AfericaoAvulsa> getAfericoesAvulsas(@NotNull final Long codUnidade,
                                              @NotNull final LocalDate dataInicial,
@@ -118,10 +153,10 @@ public interface AfericaoDao {
      * Método para gerar um relatório contendo as aferições avulsas realizadas pelo colaborador
      * especificado pelo {@code codColaborador}.
      *
-     * @param codColaborador - {@link Colaborador#codigo} para filtrar os dados da busca.
-     * @param codUnidade     - Código da {@link Unidade} que os dados serão buscados.
-     * @param dataInicial    - Data inicial do período de filtro.
-     * @param dataFinal      - Data final do período de filtro.
+     * @param codColaborador {@link Colaborador#codigo} para filtrar os dados da busca.
+     * @param codUnidade     Código da {@link Unidade} que os dados serão buscados.
+     * @param dataInicial    Data inicial do período de filtro.
+     * @param dataFinal      Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
      * @throws Throwable - Se algum erro na busca dos dados ocorrer.
      */
@@ -137,7 +172,7 @@ public interface AfericaoDao {
      * @param codUnidade  código da unidade
      * @param codAfericao código da aferição
      * @return a aferição
-     * @throws SQLException se ocorrer erro no banco
+     * @throws Throwable se ocorrer erro no banco
      */
     @NotNull
     Afericao getByCod(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable;
