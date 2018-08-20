@@ -51,16 +51,6 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("afericoes-avulsas-by-colaborador/report")
-    public Report getAfericoesAvulsasReportByColaborador(
-            @QueryParam("codColaborador") @Required final Long codColaborador,
-            @QueryParam("codUnidade") @Required final Long codUnidade,
-            @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
-        return service.getAfericoesAvulsasReportByColaborador(codColaborador, codUnidade, dataInicial, dataFinal);
-    }
-
-    @GET
     @Path("/pneus-faixa-sulco")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public List<Faixa> getQtdPneusByFaixaSulco(@QueryParam("codUnidades") @Required final List<Long> codUnidades,

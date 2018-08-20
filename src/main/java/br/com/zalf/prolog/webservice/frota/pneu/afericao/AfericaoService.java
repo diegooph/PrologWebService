@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -25,8 +26,8 @@ public class AfericaoService {
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     public Long insert(@NotNull final Afericao afericao,
-                          @NotNull final Long codUnidade,
-                          @NotNull final String userToken) throws ProLogException {
+                       @NotNull final Long codUnidade,
+                       @NotNull final String userToken) throws ProLogException {
         try {
             afericao.setDataHora(LocalDateTime.now(Clock.systemUTC()));
             return RouterAfericao
@@ -135,14 +136,33 @@ public class AfericaoService {
                                              final long offset) throws ProLogException {
         try {
             return dao.getAfericoesAvulsas(
-                            codUnidade,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal),
-                            limit,
-                            offset);
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal),
+                    limit,
+                    offset);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar aferições avulsas", e);
             throw exceptionHandler.map(e, "Erro ao buscar as aferições, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Report getAfericoesAvulsasByColaborador(@NotNull final Long codColaborador,
+                                                   @NotNull final Long codUnidade,
+                                                   @NotNull final String dataInicial,
+                                                   @NotNull final String dataFinal) throws ProLogException {
+        try {
+            return dao.getAfericoesAvulsasByColaborador(
+                    codColaborador,
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas por colaborador (REPORT)", throwable);
+            throw exceptionHandler.map(
+                    throwable,
+                    "Erro ao gerar relatório das aferições avulsas, tente novamente");
         }
     }
 

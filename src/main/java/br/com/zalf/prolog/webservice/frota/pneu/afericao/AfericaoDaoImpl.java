@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuConverter;
@@ -28,7 +30,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @Override
     public Long insert(@NotNull final Afericao afericao,
-                          @NotNull final Long codUnidade) throws Throwable {
+                       @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -327,6 +329,30 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 afericoes.add(createAfericaoAvulsaResumida(rSet));
             }
             return afericoes;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getAfericoesAvulsasByColaborador(@NotNull final Long codColaborador,
+                                                   @NotNull final Long codUnidade,
+                                                   @NotNull final LocalDate dataInicial,
+                                                   @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS_BY_COLABORADOR(?, ?, ?, ?);");
+            stmt.setLong(1, codColaborador);
+            stmt.setLong(2, codUnidade);
+            stmt.setObject(3, dataInicial);
+            stmt.setObject(4, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
