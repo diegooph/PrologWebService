@@ -500,7 +500,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     private void fechaCalibragem(ServicoCalibragem servico, Long codUnidade, PneuDao pneuDao, Connection conn)
-            throws SQLException {
+            throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = ServicoQueryBinder.fechaCalibragem(servico, conn);
@@ -509,10 +509,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 throw new SQLException("Erro ao inserir o item consertado");
             }
             pneuDao.updatePressao(
-                    servico.getPneuComProblema().getCodigo(),
-                    servico.getPressaoColetadaFechamento(),
+                    conn,
                     codUnidade,
-                    conn);
+                    servico.getPneuComProblema().getCodigo(),
+                    servico.getPressaoColetadaFechamento());
         } finally {
             closeStatement(stmt);
         }
@@ -520,7 +520,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     private void fechaInspecao(ServicoInspecao servico, Long codUnidade, PneuDao pneuDao, Connection conn)
-            throws SQLException {
+            throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = ServicoQueryBinder.fechaInspecao(servico, conn);
@@ -529,10 +529,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 throw new SQLException("Erro ao inserir o item consertado");
             }
             pneuDao.updatePressao(
-                    servico.getPneuComProblema().getCodigo(),
-                    servico.getPressaoColetadaFechamento(),
+                    conn,
                     codUnidade,
-                    conn);
+                    servico.getPneuComProblema().getCodigo(),
+                    servico.getPressaoColetadaFechamento());
         } finally {
             closeStatement(stmt);
         }
@@ -540,7 +540,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     private void fechaMovimentacao(ServicoMovimentacao servico, Long codUnidade, PneuDao pneuDao, Connection conn)
-            throws SQLException {
+            throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = ServicoQueryBinder.fechaMovimentacao(servico, conn);
@@ -551,15 +551,15 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
             // No caso da movimentação precisamos atualizar do Pneu Novo.
             pneuDao.updatePressao(
-                    servico.getPneuNovo().getCodigo(),
-                    servico.getPressaoColetadaFechamento(),
+                    conn,
                     codUnidade,
-                    conn);
+                    servico.getPneuNovo().getCodigo(),
+                    servico.getPressaoColetadaFechamento());
             pneuDao.updateSulcos(
-                    servico.getPneuNovo().getCodigo(),
-                    servico.getSulcosColetadosFechamento(),
+                    conn,
                     codUnidade,
-                    conn);
+                    servico.getPneuNovo().getCodigo(),
+                    servico.getSulcosColetadosFechamento());
         } finally {
             closeStatement(stmt);
         }
