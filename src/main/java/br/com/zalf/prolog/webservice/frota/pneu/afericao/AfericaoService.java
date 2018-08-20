@@ -39,10 +39,10 @@ public class AfericaoService {
         }
     }
 
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(Long codUnidade,
-                                                  String placa,
-                                                  String tipoAfericao,
-                                                  String userToken) throws ProLogException {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
+                                                  @NotNull final String placa,
+                                                  @NotNull final String tipoAfericao,
+                                                  @NotNull final String userToken) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
@@ -53,9 +53,9 @@ public class AfericaoService {
         }
     }
 
-    public NovaAfericaoAvulsa getNovaAfericaoAvulsa(Long codUnidade,
-                                                    Long codPneu,
-                                                    String tipoAfericao) throws ProLogException {
+    public NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
+                                                    @NotNull final Long codPneu,
+                                                    @NotNull final String tipoAfericao) throws ProLogException {
         try {
             return dao.getNovaAfericaoAvulsa(codUnidade, codPneu, TipoMedicaoColetadaAfericao.fromString(tipoAfericao));
         } catch (final Throwable e) {
