@@ -49,6 +49,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setString(5, afericao.getTipoMedicaoColetadaAfericao().asString());
             stmt.setString(6, afericao.getTipoProcessoColetaAfericao().asString());
 
+            // Só devemos abrir serviços com base nas medidas coletadas, se for uma AfericaPlaca.
+            // Caso contrário iremos apenas inserir os valores coletados.
+            boolean deveAbrirServicos = false;
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                 stmt.setString(7, afericaoPlaca.getVeiculo().getPlaca());
@@ -57,6 +60,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                         afericaoPlaca.getVeiculo().getPlaca(),
                         afericaoPlaca.getKmMomentoAfericao(),
                         conn);
+                deveAbrirServicos = true;
             } else {
                 stmt.setNull(7, Types.VARCHAR);
                 stmt.setNull(8, Types.BIGINT);
@@ -65,7 +69,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             if (rSet.next()) {
                 codAfericao = rSet.getLong("CODIGO");
                 afericao.setCodigo(codAfericao);
-                insertValores(conn, codUnidade, afericao);
+                insertValores(conn, codUnidade, afericao, deveAbrirServicos);
             }
             conn.commit();
         } catch (final Throwable e) {
@@ -482,7 +486,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     private void insertValores(@NotNull final Connection conn,
                                @NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao) throws Throwable {
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServicos) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final ServicoDao servicoDao = Injection.provideServicoDao();
         final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
@@ -533,7 +538,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             stmt.setInt(9, pneu.getPosicao());
             stmt.setInt(10, pneu.getVidaAtual());
-            stmt.executeUpdate();
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível atualizar as medidas para o pneu: " + pneu.getCodigo());
+            }
+
+            if (!deveAbrirServicos) {
+                return;
+            }
 
             // Insere/atualiza os serviços que os pneus aferidos possam ter gerado.
             final List<TipoServico> listServicosACadastrar = getServicosACadastrar(
@@ -551,8 +562,10 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private List<TipoServico> getServicosACadastrar(Pneu pneu, Restricao restricao, TipoMedicaoColetadaAfericao
-            tipoMedicaoColetadaAfericao) {
+    private List<TipoServico> getServicosACadastrar(
+            @NotNull final Pneu pneu,
+            @NotNull final Restricao restricao,
+            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) {
         final List<TipoServico> servicos = new ArrayList<>();
 
         // Verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão.
@@ -566,8 +579,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
 
         // Caso não entre em inspeção, verifica se é uma calibragem.
-        else if (pneu.getPressaoAtual() <= (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaCalibragem())) ||
-                pneu.getPressaoAtual() >= (pneu.getPressaoCorreta() * (1 + restricao.getToleranciaCalibragem()))) {
+        else if (pneu.getPressaoAtual() <= (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaCalibragem()))
+                || pneu.getPressaoAtual() >= (pneu.getPressaoCorreta() * (1 + restricao.getToleranciaCalibragem()))) {
             servicos.add(TipoServico.CALIBRAGEM);
         }
 
@@ -600,7 +613,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     break;
             }
         }
-
         return servicos;
     }
 
