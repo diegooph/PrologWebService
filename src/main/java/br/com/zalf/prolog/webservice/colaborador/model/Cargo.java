@@ -73,7 +73,7 @@ public class Cargo {
 		// Cria função de realizar aferição.
 		final List<FuncaoProLog> funcoesFrota = new ArrayList<>();
 		final FuncaoProLog realizarAfericao = new FuncaoProLog();
-		realizarAfericao.setCodigo(Pilares.Frota.Afericao.REALIZAR);
+		realizarAfericao.setCodigo(Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA);
 		funcoesFrota.add(realizarAfericao);
 
 		frota.setFuncoes(funcoesFrota);
