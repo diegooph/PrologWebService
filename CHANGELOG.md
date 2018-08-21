@@ -5,7 +5,10 @@ Change Log
 ## Version [v0.0.74](https://github.com/luizfp/PrologWeb/compare/v0.0.73...v0.0.74) (release-date) [unreleased]
 
 ### Features
-* Cria DummyResource para retornar o JSON padrão do objeto Cargo
+* Cria funcionalidade para permitir a aferição avulsa de pneus em estoque
+* Cria relatório de aferições avulsas
+* Cria listagem de aferições avulsas (por enquanto através de um Report)
+* Cria DummyResource para retornar o JSON padrão do objeto Cargo e Visao
 * Permite filtrar por tipos de intervalo ativos/inativos ao realizar a buscas dos tipos de uma unidade
 * Cria permissão para permitir alterar tipos de intervalo
 
