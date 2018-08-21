@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
@@ -9,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -141,18 +141,19 @@ public interface AfericaoDao {
      * Método para gerar um relatório contendo as aferições avulsas realizadas pelo colaborador
      * especificado pelo {@code codColaborador}.
      *
-     * @param codColaborador {@link Colaborador#codigo} para filtrar os dados da busca.
-     * @param codUnidade     Código da {@link Unidade} que os dados serão buscados.
-     * @param dataInicial    Data inicial do período de filtro.
-     * @param dataFinal      Data final do período de filtro.
+     * @param codUnidade     - Código da {@link Unidade} que os dados serão buscados.
+     * @param codColaborador - O código do colaborador que realizou a aferição, pelo qual as buscas serão filtradas.
+     *                       É opcional.
+     * @param dataInicial    - Data inicial do período de filtro.
+     * @param dataFinal      - Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
      * @throws Throwable - Se algum erro na busca dos dados ocorrer.
      */
     @NotNull
-    Report getAfericoesAvulsasByColaborador(@NotNull final Long codColaborador,
-                                            @NotNull final Long codUnidade,
-                                            @NotNull final LocalDate dataInicial,
-                                            @NotNull final LocalDate dataFinal) throws Throwable;
+    Report getAfericoesAvulsas(@NotNull final Long codUnidade,
+                               @Nullable final Long codColaborador,
+                               @NotNull final LocalDate dataInicial,
+                               @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * retorna uma aferição através do código dela

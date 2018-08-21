@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.IntegracaoException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
@@ -331,6 +331,15 @@ public final class AvaCorpAvilan extends Sistema {
         throw new BloqueadoIntegracaoException("A Avilan só suporta aferição de uma placa e não de pneu avulso");
     }
 
+    @NotNull
+    @Override
+    public Report getAfericoesAvulsas(@NotNull final Long codUnidade,
+                                      @Nullable final Long codColaborador,
+                                      @NotNull final LocalDate dataInicial,
+                                      @NotNull final LocalDate dataFinal) throws Throwable {
+        throw new BloqueadoIntegracaoException("A Avilan só suporta aferição de uma placa e não de pneu avulso");
+    }
+
     @Override
     public Long insertAfericao(@NotNull Afericao afericao,
                                @NotNull Long codUnidade) throws Throwable {
@@ -339,12 +348,10 @@ public final class AvaCorpAvilan extends Sistema {
             if (requester.insertAfericao(AvaCorpAvilanConverter.convert(afericaoPlaca), getCpf(), getDataNascimento())) {
                 return null;
             } else {
-                throw new IllegalStateException("Falha na integração");
+                throw new AvaCorpAvilanException("Falha na integração", "Erro ao inserir aferição para a unidade: " + codUnidade);
             }
         } else {
-            throw new IntegracaoException(
-                    Response.Status.BAD_REQUEST.getStatusCode(),
-                    "A Avilan só suporta aferição de uma placa e não de pneu avulso");
+            throw new BloqueadoIntegracaoException("A Avilan só suporta aferição de uma placa e não de pneu avulso");
         }
     }
 

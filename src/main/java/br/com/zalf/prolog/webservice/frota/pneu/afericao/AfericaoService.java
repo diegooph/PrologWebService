@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -151,16 +152,19 @@ public class AfericaoService {
     }
 
     @NotNull
-    public Report getAfericoesAvulsasByColaborador(@NotNull final Long codColaborador,
-                                                   @NotNull final Long codUnidade,
-                                                   @NotNull final String dataInicial,
-                                                   @NotNull final String dataFinal) throws ProLogException {
+    public Report getAfericoesAvulsas(@NotNull final String userToken,
+                                      @NotNull final Long codUnidade,
+                                      @Nullable final Long codColaborador,
+                                      @NotNull final String dataInicial,
+                                      @NotNull final String dataFinal) throws ProLogException {
         try {
-            return dao.getAfericoesAvulsasByColaborador(
-                    codColaborador,
-                    codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getAfericoesAvulsas(
+                            codUnidade,
+                            codColaborador,
+                            ProLogDateParser.toLocalDate(dataInicial),
+                            ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas por colaborador (REPORT)", throwable);
             throw exceptionHandler.map(
