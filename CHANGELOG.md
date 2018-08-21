@@ -24,6 +24,7 @@ pela implementação da aferição avulsa
 ### Bug Fixes
 * Corrige verificação de permissão para insert de itens da produtividade da Raízen
 * Corrige alguns problemas de permissões não sendo verificadas
+* Corrige dateFormat utilizado na produtividade da Raízen
 
 <a name="v0.0.73"></a>
 ## Version [v0.0.73](https://github.com/luizfp/PrologWeb/compare/v0.0.72...v0.0.73) (2018-08-13)

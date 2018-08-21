@@ -22,7 +22,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class RaizenProdutividadeReader {
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyy");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private RaizenProdutividadeReader() {
         throw new IllegalStateException(RaizenProdutividadeReader.class.getSimpleName() + " cannot be instantiated!");
