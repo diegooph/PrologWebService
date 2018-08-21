@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.error.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -187,5 +188,29 @@ public class AfericaoResource {
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws ProLogException {
         return service.getRestricaoByCodUnidade(codUnidade);
+    }
+
+
+    /**
+     * @deprecated at 2018-08-21. Ainda mantemos aqui para poder lançar uma exception personalizada avisando para
+     * atualizar o App.
+     */
+    @GET
+    @Path("/{codUnidade}/{codTipoVeiculo}/{placaVeiculo}")
+    @Secured(permissions = {
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    public List<Afericao> DEPRECATED_GET_AFERICOES(
+            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("codTipoVeiculo") String codTipoVeiculo,
+            @PathParam("placaVeiculo") String placaVeiculo,
+            @QueryParam("dataInicial") long dataInicial,
+            @QueryParam("dataFinal") long dataFinal,
+            @QueryParam("limit") int limit,
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) throws ProLogException {
+        throw new VersaoAppBloqueadaException("Atualize o aplicativo para poder buscar as aferições realizadas");
     }
 }
