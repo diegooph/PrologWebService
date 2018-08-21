@@ -191,7 +191,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
                     "SET NOME = ?, ICONE = ?, TEMPO_RECOMENDADO_MINUTOS = ?, TEMPO_ESTOURO_MINUTOS = ?, " +
-                    "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ?");
+                    "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ? AND ATIVO = TRUE;");
             stmt.setString(1, tipoIntervalo.getNome());
             stmt.setString(2, tipoIntervalo.getIcone().getNomeIcone());
             stmt.setLong(3, tipoIntervalo.getTempoRecomendado().toMinutes());

@@ -17,6 +17,7 @@ Change Log
 pela implementação da aferição avulsa
 * Altera método de inativação de tipo de intervalo para permitir ativar/inativar
 * Adiciona verificação de permissões nos métodos de gestão de tipos de intervalo
+* Permite apenas que tipos de intervalo ativos sejam editados
 
 ### Bug Fixes
 * Corrige verificação de permissão para insert de itens da produtividade da Raízen
