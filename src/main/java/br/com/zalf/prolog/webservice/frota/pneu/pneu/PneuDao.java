@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -34,7 +35,16 @@ public interface PneuDao {
 
     /**
      * Atualiza medições do pneu no banco.
+     *
+     * @param conn        Instância da conexão com o banco de dados.
+     * @param codUnidade  Código da {@link Unidade} do Pneu.
+     * @param codPneu     Código do {@link Pneu} que será atualizado.
+     * @param novosSulcos Valores de {@link Sulcos} a serem inseridos.
+     * @param novaPressao Valor da pressão coletada.
+     * @return Valor booleano indicando se a operação foi sucesso ou não.
+     * @throws Throwable Se algum erro ocorrer na atualização.
      */
+    @SuppressWarnings("UnusedReturnValue")
     @CanIgnoreReturnValue
     boolean updateMedicoes(@NotNull final Connection conn,
                            @NotNull final Long codUnidade,
@@ -55,9 +65,34 @@ public interface PneuDao {
 
     /**
      * Atualiza a pressão do pneu.
+     *
+     * @param conn       Instância da conexão com o banco de dados.
+     * @param codUnidade Código da {@link Unidade} do Pneu.
+     * @param codPneu    Código do {@link Pneu} que será atualizado.
+     * @param pressao    Nova pressão a ser inserida no pneu.
+     * @return Valor booleano indicando se a operação foi sucesso ou não.
+     * @throws Throwable Se algum erro ocorrer na atualização.
      */
+    @SuppressWarnings("UnusedReturnValue")
     @CanIgnoreReturnValue
-    boolean updatePressao(Long codPneu, double pressao, Long codUnidade, Connection conn) throws SQLException;
+    boolean updatePressao(@NotNull final Connection conn,
+                          @NotNull final Long codUnidade,
+                          @NotNull final Long codPneu,
+                          final double pressao) throws Throwable;
+
+    /**
+     * Atualiza a pressão do pneu.
+     *
+     * @param conn        Instância da conexão com o banco de dados.
+     * @param codUnidade  Código da {@link Unidade} do Pneu.
+     * @param codPneu     Código do {@link Pneu} que será atualizado.
+     * @param novosSulcos Novos {@link Sulcos} a serem inseridos no pneu.
+     * @throws Throwable Se algum erro ocorrer na atualização.
+     */
+    void updateSulcos(@NotNull final Connection conn,
+                      @NotNull final Long codUnidade,
+                      @NotNull final Long codPneu,
+                      @NotNull final Sulcos novosSulcos) throws Throwable;
 
     /**
      * atualiza status do pneu
@@ -82,8 +117,6 @@ public interface PneuDao {
     void incrementaVidaPneu(@NotNull final Connection conn,
                             @NotNull final Long codPneu,
                             @NotNull final Long codModeloBanda) throws Throwable;
-
-    void updateSulcos(Long codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * busca uma lista de pneus com base no código e status

@@ -268,7 +268,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean updatePressao(Long codPneu, double pressao, Long codUnidade, Connection conn) throws SQLException {
+    public boolean updatePressao(@NotNull final Connection conn,
+                                 @NotNull final Long codUnidade,
+                                 @NotNull final Long codPneu,
+                                 final double pressao) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("UPDATE PNEU SET "
                 + "PRESSAO_ATUAL = ? "
                 + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
@@ -279,6 +282,31 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             throw new SQLException("Erro ao atualizar pressão do pneu: " + codPneu);
         }
         return true;
+    }
+
+    @Override
+    public void updateSulcos(@NotNull final Connection conn,
+                             @NotNull final Long codUnidade,
+                             @NotNull final Long codPneu,
+                             @NotNull final Sulcos novosSulcos) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE PNEU SET ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, "
+                    + "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? "
+                    + "WHERE CODIGO = ? AND COD_UNIDADE = ?;");
+            stmt.setDouble(1, novosSulcos.getInterno());
+            stmt.setDouble(2, novosSulcos.getExterno());
+            stmt.setDouble(3, novosSulcos.getCentralInterno());
+            stmt.setDouble(4, novosSulcos.getCentralExterno());
+            stmt.setLong(5, codPneu);
+            stmt.setLong(6, codUnidade);
+            final int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao atualizar os dados do Pneu");
+            }
+        } finally {
+            closeStatement(stmt);
+        }
     }
 
     @Override
@@ -463,28 +491,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             closeConnection(conn, stmt, rSet);
         }
         return true;
-    }
-
-    @Override
-    public void updateSulcos(Long codPneu, Sulcos sulcosNovos, Long codUnidade, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("UPDATE PNEU SET ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, "
-                    + "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? "
-                    + "WHERE CODIGO = ? AND COD_UNIDADE = ?;");
-            stmt.setDouble(1, sulcosNovos.getInterno());
-            stmt.setDouble(2, sulcosNovos.getExterno());
-            stmt.setDouble(3, sulcosNovos.getCentralInterno());
-            stmt.setDouble(4, sulcosNovos.getCentralExterno());
-            stmt.setLong(5, codPneu);
-            stmt.setLong(6, codUnidade);
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao atualizar os dados do Pneu");
-            }
-        } finally {
-            closeStatement(stmt);
-        }
     }
 
     @NotNull
