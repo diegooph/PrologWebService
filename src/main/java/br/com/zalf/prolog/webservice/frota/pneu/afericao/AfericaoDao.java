@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -63,17 +62,6 @@ public interface AfericaoDao {
      */
     @NotNull
     Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Throwable;
-
-    /**
-     * Retorna as restrições de medidas da unidade.
-     *
-     * @param codUnidade código da unidade
-     * @return a restrição da unidade
-     * @throws Throwable se ocorrer erro no banco
-     */
-    @NotNull
-    Restricao getRestricaoByCodUnidade(@NotNull final Connection conn, @NotNull final Long codUnidade)
-            throws Throwable;
 
     /**
      * retorna as restrições de medidas da placa

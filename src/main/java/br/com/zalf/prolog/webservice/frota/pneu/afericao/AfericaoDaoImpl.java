@@ -81,7 +81,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             closeConnection(conn, stmt, rSet);
         }
 
-        if (codAfericao != null) {
+        if (codAfericao != null && codAfericao != 0) {
             return codAfericao;
         } else {
             throw new IllegalStateException("Não foi possível retornar o código da aferição realizada");
@@ -140,27 +140,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             return getRestricaoByCodUnidade(conn, codUnidade);
         } finally {
             closeConnection(conn);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Restricao getRestricaoByCodUnidade(@NotNull final Connection conn, @NotNull final Long codUnidade)
-            throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_RESTRICAO_BY_UNIDADE(?);");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return createRestricao(rSet);
-            } else {
-                throw new Throwable("Dados de restrição não encontrados para a unidade: " + codUnidade);
-            }
-        } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
         }
     }
 
@@ -228,7 +207,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             modelos.add(modelo);
 
             // Finaliza criação do Cronograma.
-            final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
+            final Restricao restricao = getRestricaoByCodUnidade(conn, codUnidade);
             cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
             cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
             cronogramaAfericao.setModelosPlacasAfericao(modelos);
@@ -400,6 +379,26 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
+    private Restricao getRestricaoByCodUnidade(@NotNull final Connection conn,
+                                               @NotNull final Long codUnidade) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_RESTRICAO_BY_UNIDADE(?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createRestricao(rSet);
+            } else {
+                throw new Throwable("Dados de restrição não encontrados para a unidade: " + codUnidade);
+            }
+        } finally {
+            closeStatement(stmt);
+            closeResultSet(rSet);
+        }
+    }
+
+    @NotNull
     private ConfiguracaoTipoVeiculoAfericao getConfiguracaTiposVeiculosAfericaoEstepe(@NotNull final String placa)
             throws Throwable {
         Connection conn = null;
@@ -490,7 +489,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                final boolean deveAbrirServicos) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final ServicoDao servicoDao = Injection.provideServicoDao();
-        final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
+        final Restricao restricao = getRestricaoByCodUnidade(conn, codUnidade);
 
         final PreparedStatement stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
                 + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, " +
@@ -542,12 +541,14 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 throw new SQLException("Não foi possível atualizar as medidas para o pneu: " + pneu.getCodigo());
             }
 
+            // Se não devemos abrir serviços para as medições coletadas,
+            // então podemos encerrar o processo aqui.
             if (!deveAbrirServicos) {
                 return;
             }
 
             // Insere/atualiza os serviços que os pneus aferidos possam ter gerado.
-            final List<TipoServico> listServicosACadastrar = getServicosACadastrar(
+            final List<TipoServico> servicosACadastrar = getServicosACadastrar(
                     pneu,
                     restricao,
                     afericao.getTipoMedicaoColetadaAfericao());
@@ -557,7 +558,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     codUnidade,
                     pneu.getCodigo(),
                     afericao.getCodigo(),
-                    listServicosACadastrar);
+                    servicosACadastrar);
         }
     }
 
@@ -569,7 +570,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         final List<TipoServico> servicos = new ArrayList<>();
 
         // Verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão.
-        if (pneu.getProblemas() != null && pneu.getProblemas().contains(PneuComum.Problema.PRESSAO_INDISPONIVEL)) {
+        if (pneu.getProblemas() != null && pneu.getProblemas().contains(Pneu.Problema.PRESSAO_INDISPONIVEL)) {
             servicos.add(TipoServico.INSPECAO);
         }
 
@@ -586,8 +587,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
         // Verifica se precisamos abrir serviço de movimentação.
         if (pneu.getVidaAtual() == pneu.getVidasTotal()) {
-            // Se o pneu esta na ultima vida, então ele irá para descarte, por isso devemos considerar o sulco mínimo
-            // para esse caso.
+            // Se o pneu esta na última vida, então ele irá para descarte,
+            // por isso devemos considerar o sulco mínimo para esse caso.
             if (pneu.getValorMenorSulcoAtual() <= restricao.getSulcoMinimoDescarte()) {
                 servicos.add(TipoServico.MOVIMENTACAO);
             }
@@ -610,6 +611,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     break;
                 case PRESSAO:
                     servicos.removeIf(s -> s.equals(TipoServico.MOVIMENTACAO));
+                    break;
+                case SULCO_PRESSAO:
+                    // Não precisamos remover nenhum serviço criado aqui.
                     break;
             }
         }
@@ -638,17 +642,17 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         if (servicosPendentes.isEmpty())
             return;
 
-        final List<TipoServico> servicosCadastrados = servicoDao.getServicosCadastradosByPneu(codPneu, codUnidade);
+        final List<TipoServico> servicosCadastrados = servicoDao.getServicosCadastradosByPneu(codUnidade, codPneu);
 
         for (TipoServico servicoPendente : servicosPendentes) {
-            // Se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente, convertemos a antiga
-            // calibragem para uma inspeção.
+            // Se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente,
+            // convertemos a antiga calibragem para uma inspeção.
             if (servicoPendente.equals(TipoServico.INSPECAO)
                     && servicosCadastrados.contains(TipoServico.CALIBRAGEM)) {
-                servicoDao.calibragemToInspecao(codPneu, codUnidade, conn);
+                servicoDao.calibragemToInspecao(conn, codUnidade, codPneu);
             } else {
                 if (servicosCadastrados.contains(servicoPendente)) {
-                    servicoDao.incrementaQtdApontamentosServico(codPneu, codUnidade, servicoPendente, conn);
+                    servicoDao.incrementaQtdApontamentosServico(conn, codUnidade, codPneu, servicoPendente);
 
                     // Não podemos criar um serviço de calibragem caso já exista um de inspeção aberto.
                     // Já que calibragens (se existirem) são convertidas para inspeções quando um serviço de inspeção
@@ -656,7 +660,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     // com duas inspeções abertas para o mesmo pneu. :s
                 } else if (!(servicosCadastrados.contains(TipoServico.INSPECAO)
                         && servicoPendente.equals(TipoServico.CALIBRAGEM))) {
-                    servicoDao.criaServico(codPneu, codAfericao, servicoPendente, codUnidade, conn);
+                    servicoDao.criaServico(conn, codUnidade, codPneu, codAfericao, servicoPendente);
                 }
             }
         }

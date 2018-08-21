@@ -36,26 +36,38 @@ import java.util.Optional;
 public final class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     private static final String TAG = ServicoDaoImpl.class.getSimpleName();
 
+    @NotNull
     @Override
-    public Long criaServico(Long codPneu, Long codAfericao, TipoServico tipoServico, Long codUnidade, Connection conn)
-            throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("INSERT INTO AFERICAO_MANUTENCAO(COD_AFERICAO, COD_PNEU, " +
-                "COD_UNIDADE, TIPO_SERVICO) VALUES(?, ?, ?, ?) RETURNING CODIGO;");
-        stmt.setLong(1, codAfericao);
-        stmt.setLong(2, codPneu);
-        stmt.setLong(3, codUnidade);
-        stmt.setString(4, tipoServico.asString());
-        final ResultSet rSet = stmt.executeQuery();
-        if (rSet.next()) {
-            return rSet.getLong("CODIGO");
-        } else {
-            throw new SQLException("Erro ao criar serviço");
+    public Long criaServico(@NotNull final Connection conn,
+                            @NotNull final Long codUnidade,
+                            @NotNull final Long codPneu,
+                            @NotNull final Long codAfericao,
+                            @NotNull final TipoServico tipoServico) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO AFERICAO_MANUTENCAO(COD_AFERICAO, COD_PNEU, " +
+                    "COD_UNIDADE, TIPO_SERVICO) VALUES(?, ?, ?, ?) RETURNING CODIGO;");
+            stmt.setLong(1, codAfericao);
+            stmt.setLong(2, codPneu);
+            stmt.setLong(3, codUnidade);
+            stmt.setString(4, tipoServico.asString());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Erro ao criar serviço");
+            }
+        } finally {
+            closeConnection(null, stmt, rSet);
         }
     }
 
     @Override
-    public void incrementaQtdApontamentosServico(Long codPneu, Long codUnidade, TipoServico tipoServico, Connection conn)
-            throws SQLException {
+    public void incrementaQtdApontamentosServico(@NotNull final Connection conn,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final Long codPneu,
+                                                 @NotNull final TipoServico tipoServico) throws SQLException {
         Log.d(TAG, "Atualizando quantidade de apontamos do pneu: " + codPneu + " da unidade: " + codUnidade);
         PreparedStatement stmt = null;
         try {
@@ -76,7 +88,9 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public void calibragemToInspecao(Long codPneu, Long codUnidade, Connection conn) throws SQLException {
+    public void calibragemToInspecao(@NotNull final Connection conn,
+                                     @NotNull final Long codUnidade,
+                                     @NotNull final Long codPneu) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
@@ -96,12 +110,14 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         }
     }
 
+    @NotNull
     @Override
-    public List<TipoServico> getServicosCadastradosByPneu(Long codPneu, Long codUnidade) throws SQLException {
+    public List<TipoServico> getServicosCadastradosByPneu(@NotNull final Long codUnidade,
+                                                          @NotNull final Long codPneu) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<TipoServico> listServico = new ArrayList<>();
+        final List<TipoServico> servicos = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT TIPO_SERVICO, COUNT(TIPO_SERVICO) "
@@ -112,13 +128,12 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                listServico.add(TipoServico.fromString(rSet.getString("TIPO_SERVICO")));
+                servicos.add(TipoServico.fromString(rSet.getString("TIPO_SERVICO")));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-
-        return listServico;
+        return servicos;
     }
 
     @Override
