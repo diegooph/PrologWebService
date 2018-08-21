@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +22,12 @@ interface OperacoesIntegradasAfericao {
 
     @NotNull
     List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable;
+
+    @NotNull
+    Report getAfericoesAvulsas(@NotNull final Long codUnidade,
+                               @Nullable final Long codColaborador,
+                               @NotNull final LocalDate dataInicial,
+                               @NotNull final LocalDate dataFinal) throws Throwable;
 
     Long insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
 

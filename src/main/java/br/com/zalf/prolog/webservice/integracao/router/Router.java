@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.router;
 
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
@@ -128,6 +129,19 @@ public abstract class Router implements OperacoesIntegradas {
             return getSistema().getPneusAfericaoAvulsa(codUnidade);
         } else {
             return integradorProLog.getPneusAfericaoAvulsa(codUnidade);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getAfericoesAvulsas(@NotNull final Long codUnidade,
+                                      @Nullable final Long codColaborador,
+                                      @NotNull final LocalDate dataInicial,
+                                      @NotNull final LocalDate dataFinal) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
+        } else {
+            return integradorProLog.getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
         }
     }
 

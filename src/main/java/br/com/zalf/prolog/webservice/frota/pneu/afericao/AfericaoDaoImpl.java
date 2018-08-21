@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuConverter;
@@ -16,6 +18,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.time.*;
@@ -336,21 +339,31 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @NotNull
     @Override
-    public Report getAfericoesAvulsasByColaborador(@NotNull final Long codColaborador,
-                                                   @NotNull final Long codUnidade,
-                                                   @NotNull final LocalDate dataInicial,
-                                                   @NotNull final LocalDate dataFinal) throws Throwable {
+    public Report getAfericoesAvulsas(@NotNull final Long codUnidade,
+                                      @Nullable final Long codColaborador,
+                                      @NotNull final LocalDate dataInicial,
+                                      @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS_BY_COLABORADOR(?, ?, ?, ?);");
-            stmt.setLong(1, codColaborador);
-            stmt.setLong(2, codUnidade);
-            stmt.setObject(3, dataInicial);
-            stmt.setObject(4, dataFinal);
+            if (codColaborador != null) {
+                stmt = conn.prepareStatement(
+                        "SELECT * FROM FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS_BY_COLABORADOR(?, ?, ?, ?);");
+                stmt.setLong(1, codUnidade);
+                stmt.setLong(2, codColaborador);
+                stmt.setObject(3, dataInicial);
+                stmt.setObject(4, dataFinal);
+            } else {
+                stmt = conn.prepareStatement(
+                        "SELECT * FROM FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS(?, ?, ?);");
+                final List<Long> codUnidades = new ArrayList<>();
+                codUnidades.add(codUnidade);
+                stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+                stmt.setObject(2, dataInicial);
+                stmt.setObject(3, dataFinal);
+            }
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {

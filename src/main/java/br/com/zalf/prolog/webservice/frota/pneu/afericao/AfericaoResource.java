@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -146,15 +147,16 @@ public class AfericaoResource {
     }
 
     @GET
-    @Path("/unidades/{codUnidade}/colaboradores/{codColaborador}/avulsas")
+    @Path("/unidades/{codUnidade}/avulsas-report")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO)
     @UsedBy(platforms = Platform.ANDROID)
-    public Report getAfericoesAvulsasByColaborador(
-            @PathParam("codColaborador") @Required final Long codColaborador,
+    public Report getAfericoesAvulsas(
             @PathParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("codColaborador") @Optional final Long codColaborador,
             @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
-        return service.getAfericoesAvulsasByColaborador(codColaborador, codUnidade, dataInicial, dataFinal);
+            @QueryParam("dataFinal") @Required final String dataFinal,
+            @HeaderParam("Authorization") String userToken) throws ProLogException {
+        return service.getAfericoesAvulsas(userToken, codUnidade, codColaborador, dataInicial, dataFinal);
     }
 
     @GET
