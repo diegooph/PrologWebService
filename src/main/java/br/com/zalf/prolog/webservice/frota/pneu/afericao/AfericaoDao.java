@@ -56,22 +56,22 @@ public interface AfericaoDao {
     /**
      * Retorna as restrições de medidas da unidade.
      *
-     * @param codUnidade código da unidade
-     * @return a restrição da unidade
-     * @throws Throwable se ocorrer erro no banco
+     * @param codUnidade Código da {@link Unidade}.
+     * @return A {@link Restricao} da unidade
+     * @throws Throwable Se ocorrer erro no banco.
      */
     @NotNull
     Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Throwable;
 
     /**
-     * retorna as restrições de medidas da placa
+     * Retorna as restrições de medidas da placa.
      *
-     * @param placa placa do veículo
-     * @return a restrição da placa
-     * @throws Throwable se ocorrer erro no banco
+     * @param placa Placa do {@link Veiculo}.
+     * @return A {@link Restricao} da placa.
+     * @throws Throwable Se ocorrer erro no banco.
      */
     @NotNull
-    Restricao getRestricoesByPlaca(String placa) throws Throwable;
+    Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable;
 
     /**
      * Retorna a lista de placas da unidade e também a meta de dias em que cada placa deve ser aferido.

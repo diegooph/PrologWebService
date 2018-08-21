@@ -218,8 +218,9 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return veiculos;
     }
 
+    @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(String placa, boolean withPneus) throws SQLException {
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

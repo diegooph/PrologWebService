@@ -85,8 +85,8 @@ public class AfericaoResource {
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@PathParam("codUnidade") @Required Long codUnidade,
                                                   @PathParam("placaVeiculo") @Required String placa,
                                                   @QueryParam("tipoAfericao") @Required String tipoAfericao,
-                                                  @HeaderParam("Authorization") @Required String userToken) throws
-            ProLogException {
+                                                  @HeaderParam("Authorization") @Required String userToken)
+            throws ProLogException {
         return service.getNovaAfericaoPlaca(codUnidade, placa, tipoAfericao, userToken);
     }
 

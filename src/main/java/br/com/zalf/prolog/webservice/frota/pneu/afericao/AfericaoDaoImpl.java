@@ -148,7 +148,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @NotNull
     @Override
-    public Restricao getRestricoesByPlaca(String placa) throws Throwable {
+    public Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -634,7 +634,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private Restricao createRestricao(ResultSet rSet) throws Throwable {
+    private Restricao createRestricao(@NotNull final ResultSet rSet) throws Throwable {
         final Restricao restricao = new Restricao();
         restricao.setSulcoMinimoDescarte(rSet.getDouble("SULCO_MINIMO_DESCARTE"));
         restricao.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));

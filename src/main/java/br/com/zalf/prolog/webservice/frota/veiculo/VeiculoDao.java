@@ -70,14 +70,15 @@ public interface VeiculoDao {
             throws SQLException;
 
     /**
-     * busca um veiculo atraves da placa
+     * Método para buscar um {@link Veiculo} através da {@code placa}.
      *
-     * @param placa     placa do veículo
-     * @param withPneus retornar o objeto veículo com seus pneus lincados
-     * @return um veículo
-     * @throws SQLException caso aconteça algum erro no banco
+     * @param placa     Placa do {@link Veiculo}.
+     * @param withPneus Retornar o {@link Veiculo} com seus pneus.
+     * @return O {@link Veiculo} contendo as informações.
+     * @throws SQLException Caso aconteça algum erro no banco.
      */
-    Veiculo getVeiculoByPlaca(String placa, boolean withPneus) throws SQLException;
+    @NotNull
+    Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws SQLException;
 
     /**
      * busca o tipo de veículo pela unidade
