@@ -13,6 +13,8 @@ Change Log
 * Cria permissão para permitir alterar tipos de intervalo
 
 ### Refactors
+* Bloqueia funcionalidade de aferição nos apps antigos (versionCode menor ou igual a 57) por conta das alterações geradas
+pela implementação da aferição avulsa
 * Altera método de inativação de tipo de intervalo para permitir ativar/inativar
 * Adiciona verificação de permissões nos métodos de gestão de tipos de intervalo
 
