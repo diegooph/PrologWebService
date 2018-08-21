@@ -148,7 +148,9 @@ public class AfericaoResource {
 
     @GET
     @Path("/unidades/{codUnidade}/avulsas-report")
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO)
+    @Secured(permissions = {
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES})
     @UsedBy(platforms = Platform.ANDROID)
     public Report getAfericoesAvulsas(
             @PathParam("codUnidade") @Required final Long codUnidade,
