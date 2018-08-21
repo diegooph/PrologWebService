@@ -2,7 +2,10 @@ package br.com.zalf.prolog.webservice.permissao;
 
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -46,5 +49,26 @@ public class Visao {
         return "Visao{" +
                 "pilares=" + pilares +
                 '}';
+    }
+
+    @NotNull
+    public static Visao createDummy() {
+        final Visao visao = new Visao();
+        // Cria pilar frota.
+        final List<Pilar> pilares = new ArrayList<>();
+        final Pilar frota = new Pilar();
+        frota.setCodigo(Pilares.FROTA);
+        frota.setNome("Frota");
+
+        // Cria função de realizar aferição.
+        final List<FuncaoProLog> funcoesFrota = new ArrayList<>();
+        final FuncaoProLog realizarAfericao = new FuncaoProLog();
+        realizarAfericao.setCodigo(Pilares.Frota.Afericao.REALIZAR);
+        funcoesFrota.add(realizarAfericao);
+
+        frota.setFuncoes(funcoesFrota);
+        pilares.add(frota);
+        visao.setPilares(pilares);
+        return visao;
     }
 }

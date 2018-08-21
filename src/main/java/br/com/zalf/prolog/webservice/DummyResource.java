@@ -4,9 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.permissao.Visao;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -31,25 +29,26 @@ public class DummyResource {
     @Path("/cargo")
     @Secured
     public Cargo getCargo() {
-        final Cargo cargo = new Cargo();
-        cargo.setNome("Cargo Teste");
-        cargo.setCodigo(1L);
+        return Cargo.createDummy();
+    }
 
-        // Cria pilar frota.
-        final List<Pilar> pilares = new ArrayList<>();
-        final Pilar frota = new Pilar();
-        frota.setCodigo(Pilares.FROTA);
-        frota.setNome("Frota");
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/cargos")
+    @Secured
+    public List<Cargo> getCargos() {
+        final List<Cargo> cargos = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            cargos.add(Cargo.createDummy());
+        }
+        return cargos;
+    }
 
-        // Cria função de realizar aferição.
-        final List<FuncaoProLog> funcoesFrota = new ArrayList<>();
-        final FuncaoProLog realizarAfericao = new FuncaoProLog();
-        realizarAfericao.setCodigo(Pilares.Frota.Afericao.REALIZAR);
-        funcoesFrota.add(realizarAfericao);
-
-        frota.setFuncoes(funcoesFrota);
-        pilares.add(frota);
-        cargo.setPermissoes(pilares);
-        return cargo;
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/visao")
+    @Secured
+    public Visao getVisao() {
+        return Visao.createDummy();
     }
 }
