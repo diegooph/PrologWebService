@@ -159,6 +159,14 @@ public interface VeiculoDao {
 
     Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException;
 
+    /**
+     * Método utilizado para buscar o {@link DiagramaVeiculo} com base na {@code placa}.
+     *
+     * @param conn {@link Connection} que será utilizada para realizar a operação.
+     * @param placa Placa do {@link Veiculo}.
+     * @return Caso exista, retornará o {@link DiagramaVeiculo} caso contrário NULL.
+     * @throws SQLException Se qualquer erro ocorrer na busca.
+     */
     Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final Connection conn,
                                                         @NotNull final String placa) throws SQLException;
 

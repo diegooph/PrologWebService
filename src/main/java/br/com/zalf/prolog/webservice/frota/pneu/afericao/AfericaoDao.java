@@ -141,13 +141,13 @@ public interface AfericaoDao {
      * Método para gerar um relatório contendo as aferições avulsas realizadas pelo colaborador
      * especificado pelo {@code codColaborador}.
      *
-     * @param codUnidade     - Código da {@link Unidade} que os dados serão buscados.
-     * @param codColaborador - O código do colaborador que realizou a aferição, pelo qual as buscas serão filtradas.
+     * @param codUnidade     Código da {@link Unidade} que os dados serão buscados.
+     * @param codColaborador O código do colaborador que realizou a aferição, pelo qual as buscas serão filtradas.
      *                       É opcional.
-     * @param dataInicial    - Data inicial do período de filtro.
-     * @param dataFinal      - Data final do período de filtro.
-     * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws Throwable - Se algum erro na busca dos dados ocorrer.
+     * @param dataInicial    Data inicial do período de filtro.
+     * @param dataFinal      Data final do período de filtro.
+     * @return Um objeto {@link Report} com os dados filtrados.
+     * @throws Throwable Se algum erro na busca dos dados ocorrer.
      */
     @NotNull
     Report getAfericoesAvulsas(@NotNull final Long codUnidade,

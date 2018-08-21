@@ -455,7 +455,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private ConfiguracaoTipoVeiculoAfericao createConfiguracaoTipoAfericao(ResultSet rSet) throws Throwable {
+    private ConfiguracaoTipoVeiculoAfericao createConfiguracaoTipoAfericao(
+            @NotNull final ResultSet rSet) throws Throwable {
         final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
         config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
         config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
@@ -465,7 +466,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private PneuComum createPneuAfericao(ResultSet rSet) throws Throwable {
+    private PneuComum createPneuAfericao(@NotNull final ResultSet rSet) throws Throwable {
         final PneuComum pneu = new PneuComum();
         pneu.setCodigo(rSet.getLong("CODIGO_PNEU"));
         pneu.setCodigoCliente(rSet.getString("CODIGO_PNEU_CLIENTE"));
@@ -483,7 +484,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(ResultSet rSet) throws Throwable {
+    private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(@NotNull final ResultSet rSet) throws Throwable {
         final ModeloPlacasAfericao.PlacaAfericao placa = new ModeloPlacasAfericao.PlacaAfericao();
         placa.setPlaca(rSet.getString("PLACA"));
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
@@ -694,7 +695,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     @NotNull
     private AfericaoAvulsa createAfericaoAvulsaResumida(@NotNull final ResultSet rSet) throws Throwable {
         final AfericaoAvulsa afericaoAvulsa = new AfericaoAvulsa();
-        // TODO:
+        // TODO - É necessário setar as informações da aferição avulsa aqui.
         setDadosComunsAfericaoResumida(rSet, afericaoAvulsa);
         return afericaoAvulsa;
     }

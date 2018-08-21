@@ -96,26 +96,15 @@ public class AfericaoService {
         }
     }
 
-    public Afericao getByCod(Long codUnidade, Long codAfericao, String userToken) throws ProLogException {
-        try {
-            return RouterAfericao
-                    .create(dao, userToken)
-                    .getAfericaoByCodigo(codUnidade, codAfericao);
-        } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao buscar a aferição: " + codAfericao, e);
-            throw exceptionHandler.map(e, "Erro ao buscar a aferição, tente novamente");
-        }
-    }
-
     @NotNull
-    public List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
-                                                  @NotNull final String codTipoVeiculo,
-                                                  @NotNull final String placaVeiculo,
-                                                  @NotNull final String dataInicial,
-                                                  @NotNull final String dataFinal,
-                                                  final int limit,
-                                                  final long offset,
-                                                  final String userToken) throws ProLogException {
+    List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
+                                           @NotNull final String codTipoVeiculo,
+                                           @NotNull final String placaVeiculo,
+                                           @NotNull final String dataInicial,
+                                           @NotNull final String dataFinal,
+                                           final int limit,
+                                           final long offset,
+                                           final String userToken) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
@@ -156,11 +145,11 @@ public class AfericaoService {
     }
 
     @NotNull
-    public Report getAfericoesAvulsas(@NotNull final String userToken,
-                                      @NotNull final Long codUnidade,
-                                      @Nullable final Long codColaborador,
-                                      @NotNull final String dataInicial,
-                                      @NotNull final String dataFinal) throws ProLogException {
+    Report getAfericoesAvulsas(@NotNull final String userToken,
+                               @NotNull final Long codUnidade,
+                               @Nullable final Long codColaborador,
+                               @NotNull final String dataInicial,
+                               @NotNull final String dataFinal) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
@@ -174,6 +163,20 @@ public class AfericaoService {
             throw exceptionHandler.map(
                     throwable,
                     "Erro ao gerar relatório das aferições avulsas, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Afericao getByCod(@NotNull final Long codUnidade,
+                             @NotNull final Long codAfericao,
+                             @NotNull final String userToken) throws ProLogException {
+        try {
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getAfericaoByCodigo(codUnidade, codAfericao);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar a aferição: " + codAfericao, e);
+            throw exceptionHandler.map(e, "Erro ao buscar a aferição, tente novamente");
         }
     }
 
