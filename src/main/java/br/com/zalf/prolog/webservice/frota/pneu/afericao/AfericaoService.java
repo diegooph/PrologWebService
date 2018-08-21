@@ -55,6 +55,21 @@ public class AfericaoService {
         }
     }
 
+    @NotNull
+    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final String userToken,
+                                                           @NotNull final Long codUnidade) throws ProLogException {
+        try {
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getPneusAfericaoAvulsa(codUnidade);
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar os pneus disponíveis para aferição avulsa";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
+        }
+    }
+
+    @NotNull
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
                                                   @NotNull final String placa,
                                                   @NotNull final String tipoAfericao,
@@ -69,6 +84,7 @@ public class AfericaoService {
         }
     }
 
+    @NotNull
     public NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
                                                     @NotNull final Long codPneu,
                                                     @NotNull final String tipoAfericao) throws ProLogException {
@@ -92,26 +108,13 @@ public class AfericaoService {
     }
 
     @NotNull
-    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final String userToken,
-                                                           @NotNull final Long codUnidade) throws ProLogException {
-        try {
-            return RouterAfericao
-                    .create(dao, userToken)
-                    .getPneusAfericaoAvulsa(codUnidade);
-        } catch (final Throwable e) {
-            final String errorMessage = "Erro ao buscar os pneus disponíveis para aferição avulsa";
-            Log.e(TAG, errorMessage, e);
-            throw exceptionHandler.map(e, errorMessage);
-        }
-    }
-
-    public List<AfericaoPlaca> getAfericoesPlacas(Long codUnidade,
-                                                  String codTipoVeiculo,
-                                                  String placaVeiculo,
-                                                  String dataInicial,
-                                                  String dataFinal,
-                                                  int limit,
-                                                  long offset,
+    public List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
+                                                  @NotNull final String codTipoVeiculo,
+                                                  @NotNull final String placaVeiculo,
+                                                  @NotNull final String dataInicial,
+                                                  @NotNull final String dataFinal,
+                                                  final int limit,
+                                                  final long offset,
                                                   final String userToken) throws ProLogException {
         try {
             return RouterAfericao

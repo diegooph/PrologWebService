@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,10 +18,10 @@ public interface AfericaoDao {
     /**
      * Insere uma aferição lincada com o código da unidade.
      *
-     * @param afericao   uma aferição.
-     * @param codUnidade código da unidade.
-     * @return código da aferição inserida.
-     * @throws Throwable se ocorrer erro no banco.
+     * @param afericao   A {@link Afericao} contendo os dados da realização.
+     * @param codUnidade Código da {@link Unidade}.
+     * @return Código da aferição inserida.
+     * @throws Throwable Se ocorrer erro no banco.
      */
     Long insert(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
 
@@ -32,7 +31,7 @@ public interface AfericaoDao {
      * @param placa        placa do veículo
      * @param tipoAfericao tipo da aferição que será realizada
      * @return retorna o objeto da nova aferição
-     * @throws SQLException se ocorrer erro na busca
+     * @throws Throwable Se ocorrer erro no banco.
      */
     @NotNull
     NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
@@ -40,18 +39,19 @@ public interface AfericaoDao {
                                            @NotNull final String tipoAfericao) throws Throwable;
 
     /**
-     * Busca objeto contendo informações necessárias para se iniciar uma aferição do {@link Pneu}.
+     * Busca objeto contendo informações necessárias para se iniciar uma aferição avulsa do {@link Pneu}.
      *
-     * @param codPneu                     placa do veículo
-     * @param tipoMedicaoColetadaAfericao tipo da aferição que será realizada
-     * @return retorna o objeto da nova aferição
-     * @throws Throwable se ocorrer erro na busca
+     * @param codUnidade Código da {@link Unidade}.
+     * @param codPneu Código do {@link Pneu} que será aferido.
+     * @param tipoMedicaoColetadaAfericao Tipo da medição que será realizada.
+     * @return Obejto {@link NovaAfericaoAvulsa} contendo as informações para a Afericão.
+     * @throws Throwable Se ocorrer erro no banco.
      */
     @NotNull
-    NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
-                                             @NotNull final Long codPneu,
-                                             @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao)
-            throws Throwable;
+    NovaAfericaoAvulsa getNovaAfericaoAvulsa(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable;
 
     /**
      * Retorna as restrições de medidas da unidade.

@@ -96,8 +96,8 @@ public class AfericaoResource {
     @UsedBy(platforms = Platform.ANDROID)
     public NovaAfericaoAvulsa getNovaAfericaoAvulsa(@PathParam("codUnidade") @Required Long codUnidade,
                                                     @PathParam("codPneu") @Required Long codPneu,
-                                                    @QueryParam("tipoAfericao") @Required String tipoAfericao) throws
-            ProLogException {
+                                                    @QueryParam("tipoAfericao") @Required String tipoAfericao)
+            throws ProLogException {
         return service.getNovaAfericaoAvulsa(codUnidade, codPneu, tipoAfericao);
     }
 
