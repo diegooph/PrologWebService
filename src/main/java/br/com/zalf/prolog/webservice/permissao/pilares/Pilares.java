@@ -305,7 +305,7 @@ public final class Pilares {
             }
 
             public static final int DELETAR = 410;
-            public static final int UPLOAD = 411;
+            public static final int INSERIR_REGISTRO = 411;
             public static final int VISUALIZAR = 412;
             public static final int EDITAR = 413;
         }

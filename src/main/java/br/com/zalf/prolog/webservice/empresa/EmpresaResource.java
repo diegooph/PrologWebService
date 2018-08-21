@@ -93,7 +93,9 @@ public class EmpresaResource {
             Pilares.Gente.Colaborador.VISUALIZAR,
             Pilares.Gente.Colaborador.CADASTRAR,
             Pilares.Gente.Colaborador.EDITAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS})
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Seguranca.Relato.VISUALIZAR,
+            Pilares.Seguranca.Relato.RELATORIOS})
     @Path("/unidades/{codUnidade}/equipes")
     public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getEquipesByCodUnidade(codUnidade);

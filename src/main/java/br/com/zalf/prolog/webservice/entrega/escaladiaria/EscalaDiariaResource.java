@@ -30,7 +30,7 @@ public class EscalaDiariaResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Entrega.EscalaDiaria.UPLOAD)
+    @Secured(permissions = Pilares.Entrega.EscalaDiaria.INSERIR_REGISTRO)
     @Path("/upload/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response uploadEscala(@HeaderParam("Authorization") String token,
