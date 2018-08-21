@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +21,43 @@ import java.util.List;
  */
 public class RelatorioPneuService {
     private static final String TAG = RelatorioPneuService.class.getSimpleName();
+    @NotNull
     private final RelatorioPneuDao dao = Injection.provideRelatorioPneuDao();
+    @NotNull
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
+
+    public void getAfericoesAvulsasCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final List<Long> codUnidades,
+                                       @NotNull final String dataInicial,
+                                       @NotNull final String dataFinal) {
+        try {
+            dao.getAfericoesAvulsasCsv(
+                    outputStream,
+                    codUnidades,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas (CSV)", throwable);
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    @NotNull
+    public Report getAfericoesAvulsasReport(@NotNull final List<Long> codUnidades,
+                                            @NotNull final String dataInicial,
+                                            @NotNull final String dataFinal) throws ProLogException {
+        try {
+            return dao.getAfericoesAvulsasReport(
+                    codUnidades,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas (REPORT)", throwable);
+            throw exceptionHandler.map(
+                    throwable,
+                    "Erro ao gerar relatório das aferições avulsas, tente novamente");
+        }
+    }
 
     public List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<Long> codUnidades,
                                                @NotNull final List<String> status) {
@@ -35,7 +73,7 @@ public class RelatorioPneuService {
     public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) {
         try {
             return dao.getQtPneusByFaixaPressao(codUnidades, status);
-        } catch (SQLException e) {
+        } catch (Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de faixas de pressão", e);
             throw new RuntimeException(e);
         }
@@ -45,7 +83,7 @@ public class RelatorioPneuService {
     public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) {
         try {
             return dao.getAderenciaByUnidade(ano, mes, codUnidade);
-        } catch (SQLException e) {
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência por unidade. \n" +
                     "Unidade: %d \n" +
                     "Ano: %d \n" +

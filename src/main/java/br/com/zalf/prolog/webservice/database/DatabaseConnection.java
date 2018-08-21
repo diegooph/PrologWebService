@@ -63,4 +63,8 @@ public class DatabaseConnection {
     public void closeStatement(@Nullable final PreparedStatement stmt) {
         closeConnection(null, stmt, null);
     }
+
+    public void closeResultSet(@Nullable final ResultSet rSet) {
+        closeConnection(null, null, rSet);
+    }
 }

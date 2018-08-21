@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import test.BaseTest;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +30,7 @@ public class PneuTest extends BaseTest {
     }
 
     @Test(timeout = 10 * 1000)
-    public void updateSulcos() throws SQLException {
+    public void updateSulcos() throws Throwable {
         final PneuDao dao = Injection.providePneuDao();
 
         final PneuComum pneu = new PneuComum();
@@ -45,9 +44,9 @@ public class PneuTest extends BaseTest {
 
         pneu.setSulcosAtuais(sulcos);
 
-        dao.updateSulcos(pneu.getCodigo(), pneu.getSulcosAtuais(), 14L, null /* Alterar */);
+        dao.updateSulcos(null /* Alterar */, 14L, pneu.getCodigo(), pneu.getSulcosAtuais());
 
-        final PneuComum pneuAtualizado = dao.getPneuByCod(16304L, 14L);
+        final Pneu pneuAtualizado = dao.getPneuByCod(16304L, 14L);
         final Sulcos sulcosAtualizados = pneuAtualizado.getSulcosAtuais();
         assertEquals(sulcos.getExterno(), sulcosAtualizados.getExterno(), 0);
         assertEquals(sulcos.getCentralExterno(), sulcosAtualizados.getCentralExterno(), 0);

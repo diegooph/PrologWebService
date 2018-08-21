@@ -14,12 +14,42 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum PneuTipo {
-    PNEU_COMUM("PNEU_COMUM", PneuComum.class),
-    PNEU_ANALISE("PNEU_ANALISE", PneuAnalise.class),
-    PNEU_DESCARTE("PNEU_DESCARTE", PneuDescarte.class),
-    PNEU_ESTOQUE("PNEU_ESTOQUE", PneuEstoque.class),
-    PNEU_EM_USO("PNEU_EM_USO", PneuEmUso.class);
+public enum PneuTipo implements PneuFactory {
+    PNEU_COMUM("PNEU_COMUM", PneuComum.class) {
+        @NotNull
+        @Override
+        public Pneu createNew() {
+            return new PneuComum();
+        }
+    },
+    PNEU_ANALISE("PNEU_ANALISE", PneuAnalise.class) {
+        @NotNull
+        @Override
+        public Pneu createNew() {
+            return new PneuAnalise();
+        }
+    },
+    PNEU_DESCARTE("PNEU_DESCARTE", PneuDescarte.class) {
+        @NotNull
+        @Override
+        public Pneu createNew() {
+            return new PneuDescarte();
+        }
+    },
+    PNEU_ESTOQUE("PNEU_ESTOQUE", PneuEstoque.class) {
+        @NotNull
+        @Override
+        public Pneu createNew() {
+            return new PneuEstoque();
+        }
+    },
+    PNEU_EM_USO("PNEU_EM_USO", PneuEmUso.class) {
+        @NotNull
+        @Override
+        public Pneu createNew() {
+            return new PneuEmUso();
+        }
+    };
 
     @NotNull
     final String tipo;

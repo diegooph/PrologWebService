@@ -8,6 +8,8 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ResponseImagemChecklist;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
@@ -19,7 +21,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.QuantidadeServicos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -112,6 +114,8 @@ public final class GsonUtils {
         builder.registerTypeAdapterFactory(QuantidadeServicos.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(PneuServicoRealizado.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(RaizenProdutividade.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(NovaAfericao.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(Afericao.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(RaizenProdutividadeItem.provideTypeAdapterFactory());
 
         sGson = builder.create();

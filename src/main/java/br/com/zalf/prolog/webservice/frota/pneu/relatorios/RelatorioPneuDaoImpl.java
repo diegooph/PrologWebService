@@ -6,12 +6,11 @@ import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
@@ -37,6 +36,47 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     private static final String TAG = RelatorioPneuDaoImpl.class.getSimpleName();
 
     public RelatorioPneuDaoImpl() {
+
+    }
+
+    @Override
+    public void getAfericoesAvulsasCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final List<Long> codUnidades,
+                                       @NotNull final LocalDate dataInicial,
+                                       @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getAfericoesAvulsasStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(outputStream)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getAfericoesAvulsasReport(@NotNull final List<Long> codUnidades,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getAfericoesAvulsasStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @Override
@@ -271,7 +311,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @Override
     @Deprecated
-    public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException {
+    public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -351,7 +391,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @Override
     @Deprecated
-    public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException {
+    public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -432,58 +472,28 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<QuantidadeAfericao> qtdAfericoes = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  DATA, " +
-                    "  DADOS.DATA_FORMATADA, " +
-                    "  SUM(DADOS.QT_AFERICAO_PRESSAO) AS QT_AFERICAO_PRESSAO, " +
-                    "  SUM(DADOS.QT_AFERICAO_SULCO) AS QT_AFERICAO_SULCO, " +
-                    "  SUM(DADOS.QT_AFERICAO_SULCO_PRESSAO) AS QT_AFERICAO_SULCO_PRESSAO " +
-                    "FROM (SELECT " +
-                    "        (A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE))::DATE AS DATA, " +
-                    "        TO_CHAR((A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE)), 'DD/MM') AS DATA_FORMATADA, " +
-                    "        SUM(CASE " +
-                    "            WHEN A.TIPO_AFERICAO = ? " +
-                    "              THEN 1 " +
-                    "            ELSE 0 END) AS QT_AFERICAO_PRESSAO, " +
-                    "        SUM(CASE " +
-                    "            WHEN A.TIPO_AFERICAO = ? " +
-                    "              THEN 1 " +
-                    "            ELSE 0 END) AS QT_AFERICAO_SULCO, " +
-                    "        SUM(CASE " +
-                    "            WHEN A.TIPO_AFERICAO = ? " +
-                    "              THEN 1 " +
-                    "            ELSE 0 END) AS QT_AFERICAO_SULCO_PRESSAO " +
-                    "      FROM AFERICAO A " +
-                    "      WHERE A.COD_UNIDADE::TEXT LIKE ANY(ARRAY[?]) " +
-                    "            AND (A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE))::DATE >= ? " +
-                    "            AND (A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE))::DATE <= ? " +
-                    "      GROUP BY A.DATA_HORA, DATA_FORMATADA, A.COD_UNIDADE " +
-                    "      ORDER BY A.DATA_HORA::DATE ASC) AS DADOS " +
-                    "GROUP BY DATA, DADOS.DATA_FORMATADA " +
-                    "ORDER BY DATA ASC;");
-            stmt.setString(1, TipoAfericao.PRESSAO.asString());
-            stmt.setString(2, TipoAfericao.SULCO.asString());
-            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
-            stmt.setDate(5, dataInicial);
-            stmt.setDate(6, dataFinal);
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "PUBLIC.FUNC_PNEU_RELATORIO_QUANTIDADE_AFERICOES_POR_TIPO_MEDICAO_COLETADA(?, ?, ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setDate(2, dataInicial);
+            stmt.setDate(3, dataFinal);
             rSet = stmt.executeQuery();
+            final List<QuantidadeAfericao> qtdAfericoes = new ArrayList<>();
             while (rSet.next()) {
                 qtdAfericoes.add(
                         new QuantidadeAfericao(
-                                rSet.getDate("DATA"),
-                                rSet.getString("DATA_FORMATADA"),
-                                rSet.getInt("QT_AFERICAO_PRESSAO"),
-                                rSet.getInt("QT_AFERICAO_SULCO"),
-                                rSet.getInt("QT_AFERICAO_SULCO_PRESSAO")));
+                                rSet.getDate("DATA_REFERENCIA"),
+                                rSet.getString("DATA_REFERENCIA_FORMATADA"),
+                                rSet.getInt("QTD_AFERICAO_PRESSAO"),
+                                rSet.getInt("QTD_AFERICAO_SULCO"),
+                                rSet.getInt("QTD_AFERICAO_SULCO_PRESSAO")));
             }
+            return qtdAfericoes;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return qtdAfericoes;
     }
 
     @Override
@@ -521,53 +531,20 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT SUM(CASE " +
-                    "           WHEN (DADOS.INTERVALO_PRESSAO > DADOS.PERIODO_AFERICAO_PRESSAO OR DADOS.INTERVALO_PRESSAO < 0) AND " +
-                    "                (DADOS.INTERVALO_SULCO > DADOS.PERIODO_AFERICAO_SULCO OR DADOS.INTERVALO_SULCO < 0) " +
-                    "             THEN 1 " +
-                    "           ELSE 0 END) AS TOTAL_VENCIDAS, " +
-                    "       COUNT(DADOS.PLACA) AS TOTAL_PLACAS " +
-                    "FROM (SELECT " +
-                    "        V.PLACA, " +
-                    "        COALESCE(INTERVALO_PRESSAO.INTERVALO, -1)::INTEGER AS INTERVALO_PRESSAO, " +
-                    "        COALESCE(INTERVALO_SULCO.INTERVALO, -1)::INTEGER   AS INTERVALO_SULCO, " +
-                    "        ERP.PERIODO_AFERICAO_PRESSAO, " +
-                    "        ERP.PERIODO_AFERICAO_SULCO " +
-                    "      FROM VEICULO V" +
-                    "        JOIN PNEU_RESTRICAO_UNIDADE ERP ON ERP.COD_UNIDADE = V.COD_UNIDADE " +
-                    "        LEFT JOIN (SELECT " +
-                    "                     PLACA_VEICULO                             AS PLACA_INTERVALO, " +
-                    "                     EXTRACT(DAYS FROM ((?) - MAX((DATA_HORA)))) AS INTERVALO " +
-                    "                   FROM AFERICAO AF " +
-                    "                   WHERE TIPO_AFERICAO = ? OR TIPO_AFERICAO = ? " +
-                    "                   GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_PRESSAO " +
-                    "          ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA " +
-                    "        LEFT JOIN (SELECT " +
-                    "                     PLACA_VEICULO                             AS PLACA_INTERVALO, " +
-                    "                     EXTRACT(DAYS FROM ((?) - MAX((DATA_HORA)))) AS INTERVALO " +
-                    "                   FROM AFERICAO AF " +
-                    "                   WHERE TIPO_AFERICAO = ? OR TIPO_AFERICAO = ? " +
-                    "                   GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_SULCO " +
-                    "          ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA " +
-                    "      WHERE V.STATUS_ATIVO = TRUE " +
-                    "            AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS DADOS;");
-            stmt.setDate(1, new Date(Now.utcMillis()));
-            stmt.setString(2, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(3, TipoAfericao.PRESSAO.asString());
-            stmt.setDate(4, new Date(Now.utcMillis()));
-            stmt.setString(5, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(6, TipoAfericao.SULCO.asString());
-            stmt.setArray(7, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_PNEU_RELATORIO_STATUS_PLACAS_AFERICAO(?, ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setObject(2, Now.localDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
                         rSet.getInt("TOTAL_VENCIDAS"),
                         rSet.getInt("TOTAL_PLACAS") - rSet.getInt("TOTAL_VENCIDAS"));
+            } else {
+                throw new SQLException("Erro ao buscar o status das placas");
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return null;
     }
 
     @Override
@@ -603,37 +580,22 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final Map<String, Integer> resultados = new LinkedHashMap<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM (SELECT " +
-                    "        A.PLACA_VEICULO, " +
-                    "        SUM(AM.KM_MOMENTO_CONSERTO - A.KM_VEICULO)::INT AS TOTAL_KM " +
-                    "      FROM AFERICAO_MANUTENCAO AM " +
-                    "        JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
-                    "        JOIN VEICULO_PNEU VP ON VP.PLACA = A.PLACA_VEICULO " +
-                    "                                AND AM.COD_PNEU = VP.COD_PNEU " +
-                    "                                AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
-                    "      WHERE AM.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
-                    "            AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
-                    "            AND (AM.TIPO_SERVICO LIKE ? " +
-                    "                 OR AM.TIPO_SERVICO LIKE ?) " +
-                    "      GROUP BY A.PLACA_VEICULO " +
-                    "      ORDER BY 2 DESC) AS PLACAS_TOTAL_KM WHERE TOTAL_KM > 0;");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
-            stmt.setString(2, TipoServico.CALIBRAGEM.asString());
-            stmt.setString(3, TipoServico.INSPECAO.asString());
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "PUBLIC.FUNC_PNEU_RELATORIO_QUANTIDADE_KMS_RODADOS_COM_SERVICOS_ABERTOS(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
+            final Map<String, Integer> resultados = new LinkedHashMap<>();
             while (rSet.next()) {
                 resultados.put(
                         rSet.getString("PLACA_VEICULO"),
                         rSet.getInt("TOTAL_KM"));
             }
+            return resultados;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return resultados;
     }
 
     @Override
@@ -837,6 +799,19 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         } else {
             stmt.setString(2, status);
         }
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getAfericoesAvulsasStatement(@NotNull final Connection conn,
+                                                           @NotNull final List<Long> codUnidades,
+                                                           @NotNull final LocalDate dataInicial,
+                                                           @NotNull final LocalDate dataFinal) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS(?, ?, ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        stmt.setObject(2, dataInicial);
+        stmt.setObject(3, dataFinal);
         return stmt;
     }
 

@@ -19,7 +19,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.Scatter
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterGroup;
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.StatusPlacasAfericao;
@@ -96,14 +96,14 @@ final class DashboardPneuComponentsCreator {
         });
 
         final List<String> legendas = new ArrayList<>(3);
-        legendas.add(TipoAfericao.SULCO.getLegibleString());
-        legendas.add(TipoAfericao.PRESSAO.getLegibleString());
-        legendas.add(TipoAfericao.SULCO_PRESSAO.getLegibleString());
+        legendas.add(TipoMedicaoColetadaAfericao.SULCO.getLegibleString());
+        legendas.add(TipoMedicaoColetadaAfericao.PRESSAO.getLegibleString());
+        legendas.add(TipoMedicaoColetadaAfericao.SULCO_PRESSAO.getLegibleString());
 
         final List<Color> colors = new ArrayList<>(3);
-        colors.add(TipoAfericao.SULCO.getColor());
-        colors.add(TipoAfericao.PRESSAO.getColor());
-        colors.add(TipoAfericao.SULCO_PRESSAO.getColor());
+        colors.add(TipoMedicaoColetadaAfericao.SULCO.getColor());
+        colors.add(TipoMedicaoColetadaAfericao.PRESSAO.getColor());
+        colors.add(TipoMedicaoColetadaAfericao.SULCO_PRESSAO.getColor());
 
         final ComboData comboData = new ComboData(groups);
         return new VerticalComboChartComponent.Builder()

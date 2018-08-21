@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppV
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -29,7 +30,25 @@ import java.util.List;
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class RelatorioPneuResource {
+    @NotNull
     private final RelatorioPneuService service = new RelatorioPneuService();
+
+    @GET
+    @Path("/afericoes-avulsas/csv")
+    public StreamingOutput getAfericoesAvulsasCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> service.getAfericoesAvulsasCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/afericoes-avulsas/report")
+    public Report getAfericoesAvulsasReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                            @QueryParam("dataInicial") @Required final String dataInicial,
+                                            @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
+        return service.getAfericoesAvulsasReport(codUnidades, dataInicial, dataFinal);
+    }
 
     @GET
     @Path("/pneus-faixa-sulco")

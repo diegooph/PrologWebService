@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import com.google.gson.Gson;
@@ -18,7 +18,7 @@ public abstract class Servico {
     private Long codigo;
 
     /**
-     * O código da {@link Afericao} que originou esse serviço.
+     * O código da {@link AfericaoPlaca} que originou esse serviço.
      */
     private Long codAfericao;
     /**

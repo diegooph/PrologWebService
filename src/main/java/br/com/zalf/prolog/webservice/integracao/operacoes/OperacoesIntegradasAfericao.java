@@ -1,10 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -12,23 +13,33 @@ import java.util.List;
  */
 interface OperacoesIntegradasAfericao {
     @NotNull
-    CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Exception;
+    CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
-    NovaAfericao getNovaAfericao(@NotNull final String placaVeiculo,
-                                 @NotNull final String tipoAfericao) throws Exception;
-
-    boolean insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Exception;
-
-    @NotNull
-    Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Exception;
+    NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
+                                           @NotNull final String placaVeiculo,
+                                           @NotNull final String tipoAfericao) throws Throwable;
 
     @NotNull
-    List<Afericao> getAfericoes(@NotNull final Long codUnidade,
-                                @NotNull final String codTipoVeiculo,
-                                @NotNull final String placaVeiculo,
-                                final long dataInicial,
-                                final long dataFinal,
-                                final int limit,
-                                final long offset) throws Exception;
+    List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable;
+
+    @NotNull
+    Report getAfericoesAvulsas(@NotNull final Long codUnidade,
+                               @Nullable final Long codColaborador,
+                               @NotNull final LocalDate dataInicial,
+                               @NotNull final LocalDate dataFinal) throws Throwable;
+
+    Long insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Throwable;
+
+    @NotNull
+    Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable;
+
+    @NotNull
+    List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
+                                           @NotNull final String codTipoVeiculo,
+                                           @NotNull final String placaVeiculo,
+                                           @NotNull final LocalDate dataInicial,
+                                           @NotNull final LocalDate dataFinal,
+                                           final int limit,
+                                           final long offset) throws Throwable;
 }

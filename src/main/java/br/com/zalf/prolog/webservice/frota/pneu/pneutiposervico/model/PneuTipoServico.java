@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model;
+package br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model;
 
 /**
  * Created on 24/05/18.
