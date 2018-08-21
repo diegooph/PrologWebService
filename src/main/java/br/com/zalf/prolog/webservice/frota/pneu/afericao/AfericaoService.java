@@ -27,7 +27,7 @@ public class AfericaoService {
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @Nullable
-    public Long insert(@NotNull final Afericao afericao,
+    Long insert(@NotNull final Afericao afericao,
                        @NotNull final Long codUnidade,
                        @NotNull final String userToken) throws ProLogException {
         try {
@@ -42,8 +42,8 @@ public class AfericaoService {
     }
 
     @NotNull
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade,
-                                                    @NotNull final String userToken) throws ProLogException {
+    CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade,
+                                             @NotNull final String userToken) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
@@ -56,8 +56,8 @@ public class AfericaoService {
     }
 
     @NotNull
-    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final String userToken,
-                                                           @NotNull final Long codUnidade) throws ProLogException {
+    List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final String userToken,
+                                                    @NotNull final Long codUnidade) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
@@ -70,7 +70,7 @@ public class AfericaoService {
     }
 
     @NotNull
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
+    NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
                                                   @NotNull final String placa,
                                                   @NotNull final String tipoAfericao,
                                                   @NotNull final String userToken) throws ProLogException {
@@ -85,7 +85,7 @@ public class AfericaoService {
     }
 
     @NotNull
-    public NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
+    NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
                                                     @NotNull final Long codPneu,
                                                     @NotNull final String tipoAfericao) throws ProLogException {
         try {
@@ -167,7 +167,7 @@ public class AfericaoService {
     }
 
     @NotNull
-    public Afericao getByCod(@NotNull final Long codUnidade,
+    Afericao getByCod(@NotNull final Long codUnidade,
                              @NotNull final Long codAfericao,
                              @NotNull final String userToken) throws ProLogException {
         try {
@@ -181,7 +181,7 @@ public class AfericaoService {
     }
 
     @NotNull
-    public Restricao getRestricaoByCodUnidade(Long codUnidade) throws ProLogException {
+    Restricao getRestricaoByCodUnidade(Long codUnidade) throws ProLogException {
         try {
             return dao.getRestricaoByCodUnidade(codUnidade);
         } catch (final Throwable e) {
