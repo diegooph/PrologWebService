@@ -63,8 +63,8 @@ public class AfericaoResource {
     @Path("/cronogramas/{codUnidade}")
     @UsedBy(platforms = Platform.ANDROID)
     public CronogramaAfericao getCronogramaAfericao(@PathParam("codUnidade") Long codUnidade,
-                                                    @HeaderParam("Authorization") String userToken) throws
-            ProLogException {
+                                                    @HeaderParam("Authorization") String userToken)
+            throws ProLogException {
         return service.getCronogramaAfericao(codUnidade, userToken);
     }
 

@@ -345,8 +345,12 @@ public final class AvaCorpAvilan extends Sistema {
                                @NotNull Long codUnidade) throws Throwable {
         if (afericao instanceof AfericaoPlaca) {
             final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
-            if (requester.insertAfericao(AvaCorpAvilanConverter.convert(afericaoPlaca), getCpf(), getDataNascimento())) {
-                return null;
+            final Long codAfericao = requester.insertAfericao(
+                    AvaCorpAvilanConverter.convert(afericaoPlaca),
+                    getCpf(),
+                    getDataNascimento());
+            if (codAfericao != null && codAfericao != 0) {
+                return codAfericao;
             } else {
                 throw new AvaCorpAvilanException("Falha na integração", "Erro ao inserir aferição para a unidade: " + codUnidade);
             }

@@ -42,9 +42,9 @@ public interface AvaCorpAvilanRequester extends Requester {
                                              @NotNull final String cpf,
                                              @NotNull final String dataNascimento) throws Exception;
 
-    boolean insertAfericao(@NotNull final IncluirMedida2 medidas,
-                           @NotNull final String cpf,
-                           @NotNull final String dataNascimento) throws Exception;
+    Long insertAfericao(@NotNull final IncluirMedida2 medidas,
+                        @NotNull final String cpf,
+                        @NotNull final String dataNascimento) throws Exception;
 
     AfericaoFiltro getAfericaoByCodigo(final int codigoAfericao,
                                        @NotNull final String cpf,

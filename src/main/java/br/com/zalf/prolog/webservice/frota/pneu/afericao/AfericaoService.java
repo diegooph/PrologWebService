@@ -26,6 +26,7 @@ public class AfericaoService {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
+    @Nullable
     public Long insert(@NotNull final Afericao afericao,
                        @NotNull final Long codUnidade,
                        @NotNull final String userToken) throws ProLogException {
@@ -37,6 +38,20 @@ public class AfericaoService {
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao inserir aferição", e);
             throw exceptionHandler.map(e, "Erro ao inserir aferição, tente novamente");
+        }
+    }
+
+    @NotNull
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade,
+                                                    @NotNull final String userToken) throws ProLogException {
+        try {
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getCronogramaAfericao(codUnidade);
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar o cronograma de aferições";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -73,20 +88,6 @@ public class AfericaoService {
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar a aferição: " + codAfericao, e);
             throw exceptionHandler.map(e, "Erro ao buscar a aferição, tente novamente");
-        }
-    }
-
-    @NotNull
-    public CronogramaAfericao getCronogramaAfericao(final Long codUnidade, final String userToken) throws
-            ProLogException {
-        try {
-            return RouterAfericao
-                    .create(dao, userToken)
-                    .getCronogramaAfericao(codUnidade);
-        } catch (final Throwable e) {
-            final String errorMessage = "Erro ao buscar o cronograma de aferições";
-            Log.e(TAG, errorMessage, e);
-            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
