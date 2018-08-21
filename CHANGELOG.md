@@ -8,7 +8,9 @@ Change Log
 * Cria funcionalidade para permitir a aferição avulsa de pneus em estoque
 * Cria relatório de aferições avulsas
 * Cria listagem de aferições avulsas (por enquanto através de um Report)
-* Cria DummyResource para retornar o JSON padrão do objeto Cargo e Visao
+* Cria DummyResource para retornar um JSON dummy de alguns objetos
+* Cria retorno de JSON padrão do objeto Cargo e Visao no DummyResource
+* Cria retorno de JSON padrão do objeto TipoIntervalo no DummyResource
 * Permite filtrar por tipos de intervalo ativos/inativos ao realizar a buscas dos tipos de uma unidade
 * Cria permissão para permitir alterar tipos de intervalo
 
