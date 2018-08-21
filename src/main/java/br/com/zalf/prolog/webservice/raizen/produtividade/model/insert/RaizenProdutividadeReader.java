@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.model.insert;
 
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import com.univocity.parsers.csv.CsvParser;
@@ -22,7 +23,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class RaizenProdutividadeReader {
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("ddMMyyyy");
 
     private RaizenProdutividadeReader() {
         throw new IllegalStateException(RaizenProdutividadeReader.class.getSimpleName() + " cannot be instantiated!");
@@ -33,7 +34,7 @@ public class RaizenProdutividadeReader {
         final String extension = FilenameUtils.getExtension(file.getName());
         if (extension.equalsIgnoreCase("xlsx")) {
             try {
-                new XlsxConverter().convertFileToCsv(file, 0, new SimpleDateFormat("dd/MM/yyyy"));
+                new XlsxConverter().convertFileToCsv(file, 0, new SimpleDateFormat("ddMMyyyy"));
             } catch (final IOException ex) {
                 throw new RuntimeException("Erro ao converter de XLSX para CSV", ex);
             }
@@ -73,7 +74,7 @@ public class RaizenProdutividadeReader {
         }
         // DATA DA VIAGEM
         if (!linha[2].trim().isEmpty()) {
-            item.setDataViagem(DateUtils.validateAndParse(linha[2].trim(), DATE_FORMAT));
+            item.setDataViagem(DateUtils.validateAndParse(StringUtils.getOnlyNumbers(linha[2].trim()), DATE_FORMAT));
         }
         // VALOR
         if (!linha[3].trim().isEmpty()) {
