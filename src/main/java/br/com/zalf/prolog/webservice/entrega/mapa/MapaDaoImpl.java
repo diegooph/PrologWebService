@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.mapa;
 
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -22,6 +23,7 @@ import static br.com.zalf.prolog.webservice.entrega.ImportUtils.toTimestamp;
 public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
     private static final String TAG = MapaDaoImpl.class.getSimpleName();
     private static final Time EMPTY_TIME = new Time(0L);
+    private static final int MATRICULA_DEFAULT = 0;
 
     public MapaDaoImpl() {
 
@@ -552,9 +554,9 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.tempoDeslocamento = toTime(linha.get(53));
         mapa.sitMultiCDD = Double.parseDouble(linha.get(54).replace(",", "."));
         mapa.unbOrigem = Integer.parseInt(linha.get(55));
-        mapa.matricMotorista = Integer.parseInt(linha.get(56));
-        mapa.matricAjud1 = Integer.parseInt(linha.get(57));
-        mapa.matricAjud2 = Integer.parseInt(linha.get(58));
+        mapa.matricMotorista = StringUtils.isNullOrEmpty(linha.get(56)) ? MATRICULA_DEFAULT : Integer.parseInt(linha.get(56));
+        mapa.matricAjud1 = StringUtils.isNullOrEmpty(linha.get(57)) ? MATRICULA_DEFAULT : Integer.parseInt(linha.get(57));
+        mapa.matricAjud2 = StringUtils.isNullOrEmpty(linha.get(58)) ? MATRICULA_DEFAULT : Integer.parseInt(linha.get(58));
         mapa.valorCTEDifere = linha.get(59).replace(" ", "");
         mapa.qtNfCarregadas = Integer.parseInt(linha.get(60));
         mapa.qtNfEntregues = Integer.parseInt(linha.get(61));
