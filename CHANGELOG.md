@@ -22,6 +22,9 @@ pela implementação da aferição avulsa
 * Permite apenas que tipos de intervalo ativos sejam editados
 * Remove código da unidade dos métodos utilizados na PneuDao para atualizar algum atributo do pneu
 * Cria novo método para marcar uma foto do cadastro do pneu como sincronizada sem utilizar o código da unidade
+* Bloqueia PneuResource e MovimentacaoResoruce nos apps antigos (versionCode menor ou igual a 57) por conta de
+alterações realizadas na parte de pneus (principalmente ligadas a sincronia de fotos do cadastro)
+
 
 ### Bug Fixes
 * Corrige verificação de permissão para insert de itens da produtividade da Raízen
