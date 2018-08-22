@@ -41,8 +41,8 @@ public class RaizenProdutividadeReader {
         }
 
         final CsvParserSettings settings = new CsvParserSettings();
-        settings.setDelimiterDetectionEnabled(true);
         settings.setHeaderExtractionEnabled(true);
+        settings.setDelimiterDetectionEnabled(true, ',', ';');
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
 
