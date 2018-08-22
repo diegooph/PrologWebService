@@ -206,7 +206,10 @@ public class VeiculoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
     @Path("/com-pneus/{placa}")
     @AppVersionCodeHandler(
             implementation = DefaultAppVersionCodeHandler.class,
