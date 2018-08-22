@@ -20,6 +20,8 @@ pela implementação da aferição avulsa
 * Altera método de inativação de tipo de intervalo para permitir ativar/inativar
 * Adiciona verificação de permissões nos métodos de gestão de tipos de intervalo
 * Permite apenas que tipos de intervalo ativos sejam editados
+* Remove código da unidade dos métodos utilizados na PneuDao para atualizar algum atributo do pneu
+* Cria novo método para marcar uma foto do cadastro do pneu como sincronizada sem utilizar o código da unidade
 
 ### Bug Fixes
 * Corrige verificação de permissão para insert de itens da produtividade da Raízen

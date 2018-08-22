@@ -217,7 +217,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     }
 
                     // Atualiza o status do pneu.
-                    pneuDao.updateStatus(pneu, codUnidade, mov.getDestino().getTipo().toStatusPneu(), conn);
+                    pneuDao.updateStatus(conn, pneu, mov.getDestino().getTipo().toStatusPneu());
                 }
             }
         } finally {

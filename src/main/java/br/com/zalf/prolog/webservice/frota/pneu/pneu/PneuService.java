@@ -170,11 +170,10 @@ public class PneuService {
         }
     }
 
-    public void marcarFotoComoSincronizada(@NotNull final Long codUnidade,
-                                           @NotNull final Long codPneu,
+    public void marcarFotoComoSincronizada(@NotNull final Long codPneu,
                                            @NotNull final String urlFotoPneu) {
         try {
-            dao.marcarFotoComoSincronizada(codUnidade, codPneu, urlFotoPneu);
+            dao.marcarFotoComoSincronizada(codPneu, urlFotoPneu);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu, e);
             throw new RuntimeException(e);

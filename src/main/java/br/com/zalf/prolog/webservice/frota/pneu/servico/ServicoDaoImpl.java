@@ -202,10 +202,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             final PneuDao pneuDao = Injection.providePneuDao();
             switch (servico.getTipoServico()) {
                 case CALIBRAGEM:
-                    fechaCalibragem((ServicoCalibragem) servico, codUnidade, pneuDao, conn);
+                    fechaCalibragem((ServicoCalibragem) servico, pneuDao, conn);
                     break;
                 case INSPECAO:
-                    fechaInspecao((ServicoInspecao) servico, codUnidade, pneuDao, conn);
+                    fechaInspecao((ServicoInspecao) servico, pneuDao, conn);
                     break;
                 case MOVIMENTACAO:
                     final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
@@ -226,7 +226,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     // nós agora fechamos o de movimentação como sendo fechado pelo usuário e depois os demais que
                     // ficarem pendentes do mesmo pneu. Essa ordem de execução dos métodos é necessária e não deve
                     // ser alterada!
-                    fechaMovimentacao(movimentacao, codUnidade, pneuDao, conn);
+                    fechaMovimentacao(movimentacao, pneuDao, conn);
                     final Long codPneu = servico.getPneuComProblema().getCodigo();
                     final int qtdServicosEmAbertoPneu = getQuantidadeServicosEmAbertoPneu(
                             codUnidade,
@@ -514,7 +514,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         return listAlternativas;
     }
 
-    private void fechaCalibragem(ServicoCalibragem servico, Long codUnidade, PneuDao pneuDao, Connection conn)
+    private void fechaCalibragem(ServicoCalibragem servico, PneuDao pneuDao, Connection conn)
             throws Throwable {
         PreparedStatement stmt = null;
         try {
@@ -525,7 +525,6 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             }
             pneuDao.updatePressao(
                     conn,
-                    codUnidade,
                     servico.getPneuComProblema().getCodigo(),
                     servico.getPressaoColetadaFechamento());
         } finally {
@@ -534,7 +533,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     }
 
-    private void fechaInspecao(ServicoInspecao servico, Long codUnidade, PneuDao pneuDao, Connection conn)
+    private void fechaInspecao(ServicoInspecao servico, PneuDao pneuDao, Connection conn)
             throws Throwable {
         PreparedStatement stmt = null;
         try {
@@ -545,7 +544,6 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             }
             pneuDao.updatePressao(
                     conn,
-                    codUnidade,
                     servico.getPneuComProblema().getCodigo(),
                     servico.getPressaoColetadaFechamento());
         } finally {
@@ -554,7 +552,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     }
 
-    private void fechaMovimentacao(ServicoMovimentacao servico, Long codUnidade, PneuDao pneuDao, Connection conn)
+    private void fechaMovimentacao(ServicoMovimentacao servico, PneuDao pneuDao, Connection conn)
             throws Throwable {
         PreparedStatement stmt = null;
         try {
@@ -567,12 +565,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             // No caso da movimentação precisamos atualizar do Pneu Novo.
             pneuDao.updatePressao(
                     conn,
-                    codUnidade,
                     servico.getPneuNovo().getCodigo(),
                     servico.getPressaoColetadaFechamento());
             pneuDao.updateSulcos(
                     conn,
-                    codUnidade,
                     servico.getPneuNovo().getCodigo(),
                     servico.getSulcosColetadosFechamento());
         } finally {

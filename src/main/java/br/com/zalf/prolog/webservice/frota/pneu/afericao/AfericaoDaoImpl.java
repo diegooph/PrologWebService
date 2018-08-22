@@ -522,7 +522,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 case SULCO_PRESSAO:
                     pneuDao.updateMedicoes(
                             conn,
-                            codUnidade,
                             pneu.getCodigo(),
                             pneu.getSulcosAtuais(),
                             pneu.getPressaoAtual());
@@ -533,7 +532,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
                     break;
                 case SULCO:
-                    pneuDao.updateSulcos(conn, codUnidade, pneu.getCodigo(), pneu.getSulcosAtuais());
+                    pneuDao.updateSulcos(conn, pneu.getCodigo(), pneu.getSulcosAtuais());
                     stmt.setNull(4, Types.REAL);
                     stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
                     stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
@@ -541,7 +540,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
                     break;
                 case PRESSAO:
-                    pneuDao.updatePressao(conn, codUnidade, pneu.getCodigo(), pneu.getPressaoAtual());
+                    pneuDao.updatePressao(conn, pneu.getCodigo(), pneu.getPressaoAtual());
                     stmt.setDouble(4, pneu.getPressaoAtual());
                     stmt.setNull(5, Types.REAL);
                     stmt.setNull(6, Types.REAL);

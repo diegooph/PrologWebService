@@ -410,6 +410,38 @@ public abstract class Pneu {
 
         }
 
+        public long getCodigo() {
+            return codigo;
+        }
+
+        public void setCodigo(final long codigo) {
+            this.codigo = codigo;
+        }
+
+        public int getAltura() {
+            return altura;
+        }
+
+        public void setAltura(final int altura) {
+            this.altura = altura;
+        }
+
+        public int getLargura() {
+            return largura;
+        }
+
+        public void setLargura(final int largura) {
+            this.largura = largura;
+        }
+
+        public double getAro() {
+            return aro;
+        }
+
+        public void setAro(final double aro) {
+            this.aro = aro;
+        }
+
         @Override
         public String toString() {
             return "Dimensao{" +

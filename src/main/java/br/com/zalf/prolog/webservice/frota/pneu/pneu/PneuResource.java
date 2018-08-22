@@ -168,11 +168,10 @@ public class PneuResource {
 
     @PUT
     @Secured
-    @Path("/unidades/{codUnidade}/{codPneu}/fotos-cadastro/sincronizada")
-    public Response marcarFotoComoSincronizada(@PathParam("codUnidade") @Required final Long codUnidade,
-                                               @PathParam("codPneu") @Required final Long codPneu,
+    @Path("/{codPneu}/fotos-cadastro/sincronizada")
+    public Response marcarFotoComoSincronizada(@PathParam("codPneu") @Required final Long codPneu,
                                                @QueryParam("urlFotoPneu") @Required final String urlFotoPneu) {
-        service.marcarFotoComoSincronizada(codUnidade, codPneu, urlFotoPneu);
+        service.marcarFotoComoSincronizada(codPneu, urlFotoPneu);
         return Response.ok("Foto marcada como sincronizada com sucesso");
     }
 
@@ -189,5 +188,15 @@ public class PneuResource {
     @Deprecated
     public List<Marca> DEPRECATED_GET_MARCA_MODELO_BANDA(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMarcaModeloBanda(codEmpresa);
+    }
+
+    @PUT
+    @Secured
+    @Path("/unidades/{codUnidade}/{codPneu}/fotos-cadastro/sincronizada")
+    public Response DEPRECATED_MARCAR_FOTO_COMO_SINCRONIZADA(@PathParam("codUnidade") @Required final Long codUnidade,
+                                                             @PathParam("codPneu") @Required final Long codPneu,
+                                                             @QueryParam("urlFotoPneu") @Required final String urlFotoPneu) {
+        service.marcarFotoComoSincronizada(codPneu, urlFotoPneu);
+        return Response.ok("Foto marcada como sincronizada com sucesso");
     }
 }
