@@ -371,7 +371,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final Marca marca = createMarcaPneu(rSet);
-                marca.setModelos(getModelosPneu(codEmpresa, marca.getCodigo(), conn));
+                marca.setModelos(getModelosPneu(conn, codEmpresa, marca.getCodigo()));
                 marcas.add(marca);
             }
         } finally {
@@ -401,6 +401,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         }
     }
 
+    @NotNull
     @Override
     public List<Dimensao> getDimensoes() throws SQLException {
         Connection conn = null;
@@ -542,7 +543,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 final Marca marca = new Marca();
                 marca.setCodigo(rSet.getLong("CODIGO"));
                 marca.setNome(rSet.getString("NOME"));
-                marca.setModelos(getModelosBanda(codEmpresa, marca.getCodigo(), conn));
+                marca.setModelos(getModelosBanda(conn, codEmpresa, marca.getCodigo()));
                 marcas.add(marca);
             }
         } finally {
@@ -632,7 +633,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean updateModeloBanda(@NotNull Modelo modelo) throws SQLException {
+    public boolean updateModeloBanda(@NotNull final Modelo modelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -670,8 +671,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @NotNull
-    private List<Pneu> internalGetPneus(@NotNull final Long codUnidade, @NotNull final String statusString)
-            throws SQLException {
+    private List<Pneu> internalGetPneus(@NotNull final Long codUnidade,
+                                        @NotNull final String statusString) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -691,11 +692,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         }
     }
 
-    @Nullable
-    private List<PneuFotoCadastro> insertFotosCadastroPneu(@NotNull final Long codPneu,
-                                                           @NotNull final List<PneuFotoCadastro> fotosCadastro,
-                                                           @NotNull final Connection connection)
-            throws SQLException {
+    private void insertFotosCadastroPneu(@NotNull final Long codPneu,
+                                         @NotNull final List<PneuFotoCadastro> fotosCadastro,
+                                         @NotNull final Connection connection) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = connection.prepareStatement("INSERT INTO PNEU_FOTO_CADASTRO(COD_PNEU, URL_FOTO) VALUES (?, ?);");
@@ -709,7 +708,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         } finally {
             closeStatement(stmt);
         }
-        return null;
     }
 
     @Nullable
@@ -759,7 +757,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                                                        @NotNull final Pneu pneu) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            final PneuServicoRealizadoIncrementaVida servicoRecapagem = createServicoRealizadoIncrementaVidaCadastro(conn, codUnidade, pneu);
+            final PneuServicoRealizadoIncrementaVida servicoRecapagem =
+                    createServicoRealizadoIncrementaVidaCadastro(conn, codUnidade, pneu);
             final Long codServicoRealizado = Injection
                     .providePneuServicoRealizadoDao()
                     .insertServicoByPneuCadastro(conn, codUnidade, pneu.getCodigo(), servicoRecapagem);
@@ -778,9 +777,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @NotNull
-    private PneuServicoRealizadoIncrementaVida createServicoRealizadoIncrementaVidaCadastro(@NotNull final Connection conn,
-                                                                                            @NotNull final Long codUnidade,
-                                                                                            @NotNull final Pneu pneu) throws SQLException {
+    private PneuServicoRealizadoIncrementaVida createServicoRealizadoIncrementaVidaCadastro(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Pneu pneu) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -809,7 +809,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @NotNull
-    private Marca createMarcaPneu(ResultSet rSet) throws SQLException {
+    private Marca createMarcaPneu(@NotNull final ResultSet rSet) throws SQLException {
         final Marca marca = new Marca();
         marca.setCodigo(rSet.getLong("COD_MARCA_PNEU"));
         marca.setNome(rSet.getString("NOME_MARCA_PNEU"));
@@ -817,13 +817,15 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @NotNull
-    private List<Modelo> getModelosPneu(Long codEmpresa, Long codMarcaPneu, Connection conn) throws SQLException {
+    private List<Modelo> getModelosPneu(@NotNull final Connection conn,
+                                        @NotNull final Long codEmpresa,
+                                        @NotNull final Long codMarcaPneu) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<Modelo> modelos = new ArrayList<>();
         try {
             stmt = conn.prepareStatement("SELECT * FROM MODELO_PNEU WHERE COD_EMPRESA = ? " +
-                    "AND COD_MARCA = ? ORDER BY NOME ASC");
+                    "AND COD_MARCA = ? ORDER BY NOME ASC;");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codMarcaPneu);
             rSet = stmt.executeQuery();
@@ -837,7 +839,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @NotNull
-    private Modelo createModeloPneu(ResultSet rSet) throws SQLException {
+    private Modelo createModeloPneu(@NotNull final ResultSet rSet) throws SQLException {
         final ModeloPneu modelo = new ModeloPneu();
         modelo.setCodigo(rSet.getLong("CODIGO"));
         modelo.setNome(rSet.getString("NOME"));
@@ -846,7 +848,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         return modelo;
     }
 
-    @NotNull
     private void updateBandaPneu(@NotNull final Connection conn,
                                  @NotNull final Long codPneu,
                                  @NotNull final Long codModeloBanda,
@@ -872,13 +873,15 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @NotNull
-    private List<Modelo> getModelosBanda(Long codEmpresa, Long codMarcaBanda, Connection conn) throws SQLException {
+    private List<Modelo> getModelosBanda(@NotNull final Connection conn,
+                                         @NotNull final Long codEmpresa,
+                                         @NotNull final Long codMarcaBanda) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<Modelo> modelos = new ArrayList<>();
         try {
             stmt = conn.prepareStatement("SELECT * FROM modelo_banda WHERE cod_marca = ? and cod_empresa = ? ORDER BY" +
-                    " nome ASC");
+                    " nome ASC;");
             stmt.setLong(1, codMarcaBanda);
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
