@@ -101,8 +101,16 @@ public class RaizenProdutividadeReader {
 
     @NotNull
     private static BigDecimal createBigDecimal(@NotNull final String s) {
+        final String regex = "[^0-9 .,]|(?<!\\d)[.,]|[.,](?!\\d)";
+        // Se não tiver nenhuma vírgula, assumimos que já está formatado corretamente.
+        if (!s.contains(",")) {
+            return new BigDecimal(s
+                    .replaceAll(regex, "")
+                    .trim());
+        }
+
         return new BigDecimal(s
-                .replaceAll("[^0-9 .,]|(?<!\\d)[.,]|[.,](?!\\d)", "")
+                .replaceAll(regex, "")
                 .replace(".", "")
                 .replace(",", ".")
                 .trim());
