@@ -32,6 +32,7 @@ alterações realizadas na parte de pneus (principalmente ligadas a sincronia de
 * Corrige dateFormat utilizado na produtividade da Raízen
 * Altera DateFormat utilizado no upload da produtividade Raízen para previnir linhas de quebrarem por conta de uma /
 * Previne crash causado no import de mapa caso matrícula não esteja presente
+* Corrige parse do BigDecimal no import da produtividade da Raízen para diferentes tipos de arquivo importados (XLSX ou CSV)
 
 <a name="v0.0.73"></a>
 ## Version [v0.0.73](https://github.com/luizfp/PrologWeb/compare/v0.0.72...v0.0.73) (2018-08-13)
