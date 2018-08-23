@@ -1,11 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoCalibragem;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoInspecao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -13,7 +19,7 @@ import java.time.ZoneId;
 /**
  * Essa classe mantém todas as queries utilizadas na {@link ServicoDaoImpl} e faz o bind na query dos atributos
  * necessários. Isso deixa a classe {@link ServicoDaoImpl} menor e mais concisa.
- *
+ * <p>
  * Created on 12/6/17
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -61,7 +67,9 @@ final class ServicoQueryBinder {
         throw new IllegalStateException(ServicoQueryBinder.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static PreparedStatement getQuantidadeServicosAbertosVeiculo(Long codUnidade, Connection connection) throws SQLException {
+    @NotNull
+    static PreparedStatement getQuantidadeServicosAbertosVeiculo(@NotNull final Connection connection,
+                                                                 @NotNull final Long codUnidade) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  A.PLACA_VEICULO, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
@@ -83,9 +91,10 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement getServicosAbertosByPlaca(@NotNull String placa,
-                                                       @Nullable TipoServico tipoServico,
-                                                       @NotNull Connection connection) throws SQLException {
+    @NotNull
+    static PreparedStatement getServicosAbertosByPlaca(@NotNull final Connection connection,
+                                                       @NotNull final String placa,
+                                                       @Nullable final TipoServico tipoServico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
                 + "WHERE A.PLACA_VEICULO = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NULL "
@@ -96,10 +105,11 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement getQuantidadeServicosFechadosPneu(Long codUnidade,
-                                                               long dataInicial,
-                                                               long dataFinal,
-                                                               Connection connection) throws SQLException {
+    @NotNull
+    static PreparedStatement getQuantidadeServicosFechadosPneu(@NotNull final Connection connection,
+                                                               @NotNull final Long codUnidade,
+                                                               final long dataInicial,
+                                                               final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  AM.COD_PNEU, " +
                 "  P.CODIGO_CLIENTE AS CODIGO_PNEU_CLIENTE, " +
@@ -112,7 +122,7 @@ final class ServicoQueryBinder {
                 "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
                 "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) " +
-                "GROUP BY P.CODIGO_CLIENTE, AM.COD_PNEU "+
+                "GROUP BY P.CODIGO_CLIENTE, AM.COD_PNEU " +
                 "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection).getId();
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
@@ -126,10 +136,11 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement getQuantidadeServicosFechadosVeiculo(Long codUnidade,
-                                                                  long dataInicial,
-                                                                  long dataFinal,
-                                                                  Connection connection) throws SQLException {
+    @NotNull
+    static PreparedStatement getQuantidadeServicosFechadosVeiculo(@NotNull final Connection connection,
+                                                                  @NotNull final Long codUnidade,
+                                                                  final long dataInicial,
+                                                                  final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  A.PLACA_VEICULO, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
@@ -154,9 +165,10 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement getServicoByCod(final Long codUnidade,
-                                             final Long codServico,
-                                             Connection connection) throws SQLException {
+    @NotNull
+    static PreparedStatement getServicoByCod(@NotNull final Connection connection,
+                                             @NotNull final Long codUnidade,
+                                             @NotNull final Long codServico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "   AM.CODIGO AS CODIGO_SERVICO, " +
                 "   AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, " +
@@ -210,10 +222,11 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement getServicosFechados(final Long codUnidade,
+    @NotNull
+    static PreparedStatement getServicosFechados(@NotNull final Connection connection,
+                                                 @NotNull final Long codUnidade,
                                                  final long dataInicial,
-                                                 final long dataFinal,
-                                                 final Connection connection) throws SQLException {
+                                                 final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
                 + "WHERE AM.COD_UNIDADE = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
@@ -228,12 +241,12 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-
-    static PreparedStatement getServicosFechadosPneu(final Long codUnidade,
-                                                     final Long codPneu,
+    @NotNull
+    static PreparedStatement getServicosFechadosPneu(@NotNull final Connection connection,
+                                                     @NotNull final Long codUnidade,
+                                                     @NotNull final Long codPneu,
                                                      final long dataInicial,
-                                                     final long dataFinal,
-                                                     Connection connection) throws SQLException {
+                                                     final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
                 + "WHERE AM.COD_UNIDADE = ? "
                 + "AND AM.COD_PNEU = ? "
@@ -250,11 +263,12 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement getServicosFechadosVeiculo(final Long codUnidade,
-                                                        final String placaVeiculo,
+    @NotNull
+    static PreparedStatement getServicosFechadosVeiculo(@NotNull final Connection connection,
+                                                        @NotNull final Long codUnidade,
+                                                        @NotNull final String placaVeiculo,
                                                         final long dataInicial,
-                                                        final long dataFinal,
-                                                        Connection connection) throws SQLException {
+                                                        final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
                 + "WHERE AM.COD_UNIDADE = ? "
                 + "AND A.PLACA_VEICULO = ? "
@@ -271,9 +285,10 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement getVeiculoAberturaServico(@NotNull final Long codServico,
-                                                       @NotNull final String placaVeiculo,
-                                                       @NotNull final  Connection connection) throws SQLException {
+    @NotNull
+    static PreparedStatement getVeiculoAberturaServico(@NotNull final Connection connection,
+                                                       @NotNull final Long codServico,
+                                                       @NotNull final String placaVeiculo) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  A.PLACA_VEICULO, " +
                 "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
@@ -304,12 +319,15 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement getAlternativasInspecao(Connection connection) throws SQLException {
+    @NotNull
+    static PreparedStatement getAlternativasInspecao(@NotNull final Connection connection) throws SQLException {
         return connection.prepareStatement("SELECT * FROM AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO A "
                 + "WHERE A.STATUS_ATIVO = TRUE");
     }
 
-    static PreparedStatement fechaCalibragem(ServicoCalibragem servico, Connection connection) throws SQLException {
+    @NotNull
+    static PreparedStatement fechaCalibragem(@NotNull final Connection connection,
+                                             @NotNull final ServicoCalibragem servico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
                 + "CPF_MECANICO = ?, "
@@ -329,8 +347,9 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement fechaInspecao(ServicoInspecao servico, Connection connection)
-            throws SQLException {
+    @NotNull
+    static PreparedStatement fechaInspecao(@NotNull final Connection connection,
+                                           @NotNull final ServicoInspecao servico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
                 + "CPF_MECANICO = ?, "
@@ -352,7 +371,9 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement fechaMovimentacao(ServicoMovimentacao servico, Connection connection) throws SQLException {
+    @NotNull
+    static PreparedStatement fechaMovimentacao(@NotNull final Connection connection,
+                                               @NotNull final ServicoMovimentacao servico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
                 + "CPF_MECANICO = ?, "
@@ -377,8 +398,10 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement getQuantidadeServicosEmAbertoPneu(Long codUnidade, Long codPneu, Connection conn)
-            throws SQLException {
+    @NotNull
+    static PreparedStatement getQuantidadeServicosEmAbertoPneu(@NotNull final Connection conn,
+                                                               @NotNull final Long codUnidade,
+                                                               @NotNull final Long codPneu) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(CODIGO) AS QTD_SERVICOS_ABERTOS FROM " +
                 "AFERICAO_MANUTENCAO AM " +
                 "WHERE AM.COD_UNIDADE = ? AND AM.COD_PNEU = ? AND DATA_HORA_RESOLUCAO IS NULL;");
@@ -387,11 +410,12 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement fecharAutomaticamenteServicosPneu(@NotNull final Long codUnidade,
-                                                               @NotNull final Long codPneu,
+    @NotNull
+    static PreparedStatement fecharAutomaticamenteServicosPneu(@NotNull final Connection conn,
+                                                               @NotNull final Long codUnidade,
                                                                @NotNull final Long codProcessoMovimentacao,
-                                                               final long kmColetadoVeiculo,
-                                                               @NotNull final Connection conn) throws SQLException {
+                                                               @NotNull final Long codPneu,
+                                                               final long kmColetadoVeiculo) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
                 + "COD_PROCESSO_MOVIMENTACAO = ?, "

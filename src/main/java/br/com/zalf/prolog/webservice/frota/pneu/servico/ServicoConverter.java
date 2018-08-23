@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,8 +25,8 @@ final class ServicoConverter {
         throw new IllegalStateException(ServicoConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
-
-    static List<Servico> createServicos(final ResultSet rSet) throws SQLException {
+    @NotNull
+    static List<Servico> createServicos(@NotNull final ResultSet rSet) throws SQLException {
         final List<Servico> servicos = new ArrayList<>();
         while (rSet.next()) {
             servicos.add(createServico(rSet, false));
@@ -33,7 +34,8 @@ final class ServicoConverter {
         return servicos;
     }
 
-    static Servico createServico(final ResultSet resultSet,
+    @NotNull
+    static Servico createServico(@NotNull final ResultSet resultSet,
                                  final boolean incluirAtributosEspecificos) throws SQLException {
         final TipoServico tipo = TipoServico.fromString(resultSet.getString("TIPO_SERVICO"));
         Servico servico;
@@ -45,23 +47,24 @@ final class ServicoConverter {
             case MOVIMENTACAO:
                 servico = new ServicoMovimentacao();
                 if (incluirAtributosEspecificos) {
-                    setAtributosMovimentacao((ServicoMovimentacao) servico, resultSet);
+                    setAtributosMovimentacao(resultSet, (ServicoMovimentacao) servico);
                 }
                 break;
             case INSPECAO:
                 servico = new ServicoInspecao();
                 if (incluirAtributosEspecificos) {
-                    setAtributosInspecao((ServicoInspecao) servico, resultSet);
+                    setAtributosInspecao(resultSet, (ServicoInspecao) servico);
                 }
                 break;
             default:
                 throw new IllegalStateException("Tipo de serviço desconhecido: " + tipo);
         }
-        setAtributosComunsServico(servico, resultSet);
+        setAtributosComunsServico(resultSet, servico);
         return servico;
     }
 
-    static ServicosAbertosHolder createServicosAbertosHolder(ResultSet resultSet) throws SQLException {
+    @NotNull
+    static ServicosAbertosHolder createServicosAbertosHolder(@NotNull final ResultSet resultSet) throws SQLException {
         final ServicosAbertosHolder holder = new ServicosAbertosHolder();
         final List<QuantidadeServicos> servicos = new ArrayList<>();
         int totalCalibragens = 0, totalInspecoes = 0, totalMovimentacoes = 0;
@@ -79,7 +82,8 @@ final class ServicoConverter {
         return holder;
     }
 
-    static QuantidadeServicosVeiculo createQtdServicosVeiculo(ResultSet resultSet) throws SQLException {
+    @NotNull
+    static QuantidadeServicosVeiculo createQtdServicosVeiculo(@NotNull final ResultSet resultSet) throws SQLException {
         final QuantidadeServicosVeiculo qtdServicosFechados = new QuantidadeServicosVeiculo();
         qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         qtdServicosFechados.setQtdServicosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
@@ -88,7 +92,8 @@ final class ServicoConverter {
         return qtdServicosFechados;
     }
 
-    static QuantidadeServicosPneu createQtdServicosPneu(ResultSet resultSet) throws SQLException {
+    @NotNull
+    static QuantidadeServicosPneu createQtdServicosPneu(@NotNull final ResultSet resultSet) throws SQLException {
         final QuantidadeServicosPneu qtdServicosFechados = new QuantidadeServicosPneu();
         qtdServicosFechados.setCodigoPneu(resultSet.getLong("COD_PNEU"));
         qtdServicosFechados.setCodigoPneuCliente(resultSet.getString("CODIGO_PNEU_CLIENTE"));
@@ -98,7 +103,8 @@ final class ServicoConverter {
         return qtdServicosFechados;
     }
 
-    static VeiculoServico createVeiculoAberturaServico(ResultSet resultSet) throws SQLException {
+    @NotNull
+    static VeiculoServico createVeiculoAberturaServico(@NotNull final ResultSet resultSet) throws SQLException {
         final VeiculoServico veiculo = new VeiculoServico();
         veiculo.setPlaca(resultSet.getString("PLACA_VEICULO"));
         veiculo.setKmAtual(resultSet.getLong("KM_ATUAL_VEICULO"));
@@ -129,15 +135,16 @@ final class ServicoConverter {
         return veiculo;
     }
 
-    private static void setAtributosInspecao(final ServicoInspecao inspecao, final ResultSet rSet) throws SQLException {
+    private static void setAtributosInspecao(@NotNull final ResultSet rSet,
+                                             @NotNull final ServicoInspecao inspecao) throws SQLException {
         final Alternativa alternativa = new Alternativa();
         alternativa.setCodigo(rSet.getLong("COD_ALTERNATIVA_SELECIONADA"));
         alternativa.setAlternativa(rSet.getString("DESCRICAO_ALTERNATIVA_SELECIONADA"));
         inspecao.setAlternativaSelecionada(alternativa);
     }
 
-    private static void setAtributosMovimentacao(final ServicoMovimentacao movimentacao, final ResultSet rSet)
-            throws SQLException {
+    private static void setAtributosMovimentacao(@NotNull final ResultSet rSet,
+                                                 @NotNull final ServicoMovimentacao movimentacao) throws SQLException {
         final Sulcos sulcos = new Sulcos();
         sulcos.setExterno(rSet.getDouble("SULCO_EXTERNO_PNEU_NOVO"));
         sulcos.setCentralExterno(rSet.getDouble("SULCO_CENTRAL_EXTERNO_PNEU_NOVO"));
@@ -157,8 +164,8 @@ final class ServicoConverter {
         movimentacao.setPneuNovo(pneuNovo);
     }
 
-    private static void setAtributosComunsServico(final Servico servico, final ResultSet resultSet)
-            throws SQLException {
+    private static void setAtributosComunsServico(@NotNull final ResultSet resultSet,
+                                                  @NotNull final Servico servico) throws SQLException {
         servico.setCodigo(resultSet.getLong("CODIGO_SERVICO"));
         servico.setCodUnidade(resultSet.getLong("COD_UNIDADE"));
         final Colaborador colaborador = new Colaborador();
@@ -194,7 +201,7 @@ final class ServicoConverter {
         servico.setPressaoColetadaFechamento(resultSet.getDouble("PRESSAO_COLETADA_FECHAMENTO"));
     }
 
-    static int getQuantidadeServicosEmAbertoPneu(ResultSet rSet) throws SQLException {
+    static int getQuantidadeServicosEmAbertoPneu(@NotNull final ResultSet rSet) throws SQLException {
         return rSet.getInt("QTD_SERVICOS_ABERTOS");
     }
 }
