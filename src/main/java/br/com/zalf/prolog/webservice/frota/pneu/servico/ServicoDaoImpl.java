@@ -427,9 +427,9 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 final VeiculoServico veiculo = ServicoConverter.createVeiculoAberturaServico(rSet);
                 final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                 final Optional<DiagramaVeiculo> diagrama = veiculoDao.getDiagramaVeiculoByPlaca(veiculo.getPlaca());
-                // Fazemos direto um get() no Optional pois se não existir diagrama é melhor da crash aqui do que no
+                // Fazemos direto um get() no Optional pois se não existir diagrama é melhor dar crash aqui do que no
                 // aplicativo, por exemplo.
-                //noinspection OptionalGetWithoutIsPresent
+                //noinspection OptionalGetWithoutIsPresent,ConstantConditions
                 veiculo.setDiagrama(diagrama.get());
                 return veiculo;
             } else {
@@ -567,7 +567,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 throw new SQLException("Erro ao inserir o item consertado");
             }
 
-            // No caso da movimentação precisamos atualizar do Pneu Novo.
+            // No caso da movimentação precisamos atualizar o Pneu Novo.
             pneuDao.updatePressao(
                     conn,
                     servico.getPneuNovo().getCodigo(),
