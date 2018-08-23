@@ -64,6 +64,7 @@ public class Visao {
         final List<FuncaoProLog> funcoesFrota = new ArrayList<>();
         final FuncaoProLog realizarAfericao = new FuncaoProLog();
         realizarAfericao.setCodigo(Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA);
+        realizarAfericao.setDescricao("Permite realizar a aferição");
         funcoesFrota.add(realizarAfericao);
 
         frota.setFuncoes(funcoesFrota);
