@@ -24,6 +24,7 @@ pela implementação da aferição avulsa
 * Cria novo método para marcar uma foto do cadastro do pneu como sincronizada sem utilizar o código da unidade
 * Bloqueia PneuResource e MovimentacaoResoruce nos apps antigos (versionCode menor ou igual a 57) por conta de
 alterações realizadas na parte de pneus (principalmente ligadas a sincronia de fotos do cadastro)
+* Altera integração com a Avilan para incluir pressao recomendada nas buscas dos pneus
 
 
 ### Bug Fixes
