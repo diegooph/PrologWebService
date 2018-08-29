@@ -324,6 +324,7 @@ public final class AvaCorpAvilanConverter {
             pneu.setCodigo((long) i);
             pneu.setCodigoCliente(p.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(p.getPosicao()));
+            pneu.setPressaoCorreta(p.getPressaoRecomendada());
             // A vida atual do pneu começa em 1 quando ele é novo, porém, o getVidaPneu() retorna, na verdade, o
             // número de recapagens desse pneu, por isso somamos 1 ao total para ter a informação correta do modo
             // que é utilizado no ProLog.
@@ -541,6 +542,7 @@ public final class AvaCorpAvilanConverter {
             pneu.setCodigoCliente(pneuFiltro.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(pneuFiltro.getPosicao()));
             pneu.setPressaoAtual(pneuFiltro.getPressao());
+            pneu.setPressaoCorreta(pneuFiltro.getPressaoRecomendada());
             final Sulcos sulcos = new Sulcos();
             sulcos.setExterno(pneuFiltro.getTrianguloPrimeiroSulco());
             sulcos.setCentralExterno(pneuFiltro.getTrianguloSegundoSulco());
