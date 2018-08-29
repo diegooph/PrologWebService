@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="trianguloSegundoSulco" type="{http://www.w3.org/2001/XMLSchema}double"/>
  *         &lt;element name="trianguloTerceiroSulco" type="{http://www.w3.org/2001/XMLSchema}double"/>
  *         &lt;element name="trianguloQuartoSulco" type="{http://www.w3.org/2001/XMLSchema}double"/>
+ *         &lt;element name="pressaoRecomendada" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -39,7 +40,8 @@ import javax.xml.bind.annotation.XmlType;
     "trianguloPrimeiroSulco",
     "trianguloSegundoSulco",
     "trianguloTerceiroSulco",
-    "trianguloQuartoSulco"
+    "trianguloQuartoSulco",
+    "pressaoRecomendada"
 })
 public class PneuFiltro {
 
@@ -50,6 +52,7 @@ public class PneuFiltro {
     protected double trianguloSegundoSulco;
     protected double trianguloTerceiroSulco;
     protected double trianguloQuartoSulco;
+    protected int pressaoRecomendada;
 
     /**
      * Gets the value of the numeroFogo property.
@@ -179,4 +182,19 @@ public class PneuFiltro {
         this.trianguloQuartoSulco = value;
     }
 
+    /**
+     * Gets the value of the pressaoRecomendada property.
+     *
+     */
+    public int getPressaoRecomendada() {
+        return pressaoRecomendada;
+    }
+
+    /**
+     * Sets the value of the pressaoRecomendada property.
+     *
+     */
+    public void setPressaoRecomendada(final int pressaoRecomendada) {
+        this.pressaoRecomendada = pressaoRecomendada;
+    }
 }

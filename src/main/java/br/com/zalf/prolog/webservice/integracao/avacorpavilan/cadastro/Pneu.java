@@ -52,7 +52,7 @@ public class Pneu {
     protected double sulco3;
     protected double sulco4;
     protected int vidaPneu;
-    public int pressaoRecomendada;
+    protected int pressaoRecomendada;
 
     /**
      * Gets the value of the numeroFogo property.
