@@ -145,7 +145,7 @@ public class TipoIntervalo {
         tipoIntervalo.setNome("Alimentação");
         tipoIntervalo.setAtivo(true);
         tipoIntervalo.setCodigoPorUnidade(2L);
-        tipoIntervalo.setHorarioSugerido(Time.valueOf("10:00:00 AM"));
+        tipoIntervalo.setHorarioSugerido(Time.valueOf("10:00:00"));
         tipoIntervalo.setIcone(Icone.ALIMENTACAO);
         tipoIntervalo.setTempoLimiteEstouro(Duration.ofSeconds(10));
         tipoIntervalo.setTempoRecomendado(Duration.ofSeconds(100));
