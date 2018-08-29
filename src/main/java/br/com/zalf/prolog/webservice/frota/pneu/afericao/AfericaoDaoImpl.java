@@ -266,7 +266,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             if (Filtros.isFiltroTodos(codTipoVeiculo)) {
                 stmt.setNull(2, Types.BIGINT);
             } else {
-                stmt.setString(2, codTipoVeiculo);
+                stmt.setLong(2, Long.valueOf(codTipoVeiculo));
             }
             if (Filtros.isFiltroTodos(placaVeiculo)) {
                 stmt.setNull(3, Types.VARCHAR);
