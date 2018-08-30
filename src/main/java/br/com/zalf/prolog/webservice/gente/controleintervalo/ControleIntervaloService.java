@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
@@ -23,9 +24,9 @@ public class ControleIntervaloService {
     private static final String TAG = ControleIntervaloService.class.getSimpleName();
     private ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
 
-    public List<TipoIntervalo> getTiposIntervalos(Long codUnidade, boolean withCargos) {
+    public List<TipoIntervalo> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
         try {
-            return dao.getTiposIntervalosByUnidade(codUnidade, withCargos);
+            return dao.getTiposIntervalosByUnidade(codUnidade, apenasAtivos, withCargos);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os tipos de intervalos. \n" +
                     "codUnidade: %d \n" +
@@ -111,15 +112,26 @@ public class ControleIntervaloService {
         }
     }
 
-    public boolean inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo) {
+    public void updateStatusAtivo(@NotNull final Long codUnidade,
+                                  @NotNull final Long codTipoIntervalo,
+                                  @NotNull final TipoIntervalo tipoIntervalo) throws ProLogException {
         try {
-            dao.inativarTipoIntervalo(codUnidade, codTipoIntervalo, Injection.provideDadosIntervaloChangedListener());
-            return true;
-        } catch (Throwable e) {
+            dao.updateStatusAtivoTipoIntervalo(
+                    codUnidade,
+                    codTipoIntervalo,
+                    tipoIntervalo,
+                    Injection.provideDadosIntervaloChangedListener());
+        } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao inativar o tipo de intervalo. \n" +
                     "codUnidade: %d \n" +
                     "codTipoIntervalo: %d", codUnidade, codTipoIntervalo), e);
-            return false;
+            final String errorMessage;
+            if (tipoIntervalo.isAtivo()) {
+                errorMessage = "Erro ao ativar tipo de marcação, tente novamente";
+            } else {
+                errorMessage = "Erro ao inativar tipo de marcação, tente novamente";
+            }
+            throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
         }
     }
 
@@ -132,7 +144,7 @@ public class ControleIntervaloService {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO,
                     codUnidade);
-            final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade, true);
+            final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
             final Optional<Long> versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 

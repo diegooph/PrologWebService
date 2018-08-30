@@ -114,8 +114,8 @@ public class VeiculoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
-            Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
     @Path("/byTipo/{codUnidade}/{codTipo}")
     @UsedBy(platforms = Platform.ANDROID)
@@ -134,8 +134,8 @@ public class VeiculoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
-            Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
     @Path("/{codUnidade}/tipo")
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
@@ -206,7 +206,10 @@ public class VeiculoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
     @Path("/com-pneus/{placa}")
     @AppVersionCodeHandler(
             implementation = DefaultAppVersionCodeHandler.class,

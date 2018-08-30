@@ -75,7 +75,15 @@ public class ColaboradorResource {
 	@Secured(permissions = {
 			Pilares.Gente.Colaborador.CADASTRAR,
 			Pilares.Gente.Colaborador.VISUALIZAR,
-			Pilares.Gente.Colaborador.EDITAR})
+			Pilares.Gente.Colaborador.EDITAR,
+			Pilares.Gente.Relatorios.INTERVALOS,
+			Pilares.Entrega.EscalaDiaria.INSERIR_REGISTRO,
+			Pilares.Entrega.EscalaDiaria.EDITAR,
+			Pilares.Entrega.Produtividade.CONSOLIDADO,
+			Pilares.Entrega.Relatorios.PRODUTIVIDADE,
+			Pilares.Entrega.Relatorios.INDICADORES,
+			Pilares.Entrega.RaizenProdutividade.INSERIR_REGISTROS,
+			Pilares.Entrega.RaizenProdutividade.EDITAR})
 	public List<Colaborador> getAllByUnidade(@PathParam("codUnidade") @Required Long codUnidade,
 											 @QueryParam("apenasAtivos") @Optional boolean apenasAtivos)
 			throws ProLogException {

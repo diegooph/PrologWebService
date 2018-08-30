@@ -1,7 +1,11 @@
 package br.com.zalf.prolog.webservice.colaborador.model;
 
+import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,5 +56,29 @@ public class Cargo {
 				", nome='" + nome + '\'' +
 				", permissões=" + permissoes +
 				'}';
+	}
+
+	@NotNull
+	public static Cargo createDummy() {
+		final Cargo cargo = new Cargo();
+		cargo.setNome("Cargo Teste");
+		cargo.setCodigo(1L);
+
+		// Cria pilar frota.
+		final List<Pilar> pilares = new ArrayList<>();
+		final Pilar frota = new Pilar();
+		frota.setCodigo(Pilares.FROTA);
+		frota.setNome("Frota");
+
+		// Cria função de realizar aferição.
+		final List<FuncaoProLog> funcoesFrota = new ArrayList<>();
+		final FuncaoProLog realizarAfericao = new FuncaoProLog();
+		realizarAfericao.setCodigo(Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA);
+		funcoesFrota.add(realizarAfericao);
+
+		frota.setFuncoes(funcoesFrota);
+		pilares.add(frota);
+		cargo.setPermissoes(pilares);
+		return cargo;
 	}
 }

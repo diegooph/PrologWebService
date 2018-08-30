@@ -191,7 +191,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
                     "SET NOME = ?, ICONE = ?, TEMPO_RECOMENDADO_MINUTOS = ?, TEMPO_ESTOURO_MINUTOS = ?, " +
-                    "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ?");
+                    "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ? AND ATIVO = TRUE;");
             stmt.setString(1, tipoIntervalo.getNome());
             stmt.setString(2, tipoIntervalo.getIcone().getNomeIcone());
             stmt.setLong(3, tipoIntervalo.getTempoRecomendado().toMinutes());
@@ -222,7 +222,9 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     @Override
-    public List<TipoIntervalo> getTiposIntervalosByUnidade(@NotNull final Long codUnidade, final boolean withCargos)
+    public List<TipoIntervalo> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
+                                                           final boolean apenasAtivos,
+                                                           final boolean withCargos)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -230,21 +232,9 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         final List<TipoIntervalo> tipos = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT " +
-                    "IT.CODIGO AS CODIGO_TIPO_INTERVALO, " +
-                    "IT.CODIGO_TIPO_INTERVALO_POR_UNIDADE AS CODIGO_TIPO_INTERVALO_POR_UNIDADE, " +
-                    "IT.NOME AS " +
-                    "NOME_TIPO_INTERVALO, " +
-                    "IT.COD_UNIDADE, " +
-                    "IT.ATIVO, " +
-                    "IT.HORARIO_SUGERIDO, " +
-                    "IT.ICONE, " +
-                    "IT.TEMPO_ESTOURO_MINUTOS, " +
-                    "IT.TEMPO_RECOMENDADO_MINUTOS " +
-                    "FROM INTERVALO_TIPO_CARGO ITC JOIN VIEW_INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC" +
-                    ".COD_TIPO_INTERVALO = IT.CODIGO " +
-                    " WHERE IT.COD_UNIDADE = ? AND IT.ATIVO IS TRUE");
+            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALOS_UNIDADE(?, ?);");
             stmt.setLong(1, codUnidade);
+            stmt.setBoolean(2, apenasAtivos);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 tipos.add(createTipoInvervalo(rSet, withCargos, conn));
@@ -292,18 +282,21 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     }
 
     @Override
-    public void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
-                                      @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
+    public void updateStatusAtivoTipoIntervalo(@NotNull final Long codUnidade,
+                                               @NotNull final Long codTipoIntervalo,
+                                               @NotNull final TipoIntervalo tipoIntervalo,
+                                               @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
-                    "SET STATUS = FALSE WHERE COD_UNIDADE = ? AND CODIGO = ?");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codTipoIntervalo);
-            int count = stmt.executeUpdate();
+                    "SET ATIVO = ? WHERE COD_UNIDADE = ? AND CODIGO = ?;");
+            stmt.setBoolean(1, tipoIntervalo.isAtivo());
+            stmt.setLong(2, codUnidade);
+            stmt.setLong(3, codTipoIntervalo);
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inativar o Tipo de Intervalo de código: " + codTipoIntervalo);
             }
@@ -313,7 +306,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
             // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
             conn.commit();
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             // Pegamos apenas para fazer o rollback, depois subimos o erro.
             if (conn != null) {
                 conn.rollback();

@@ -67,8 +67,9 @@ public final class Pilares {
             private Afericao() {
             }
 
-            public static final int REALIZAR = 18;
-            public static final int VISUALIZAR = 117;
+            public static final int REALIZAR_AFERICAO_PLACA = 18;
+            public static final int REALIZAR_AFERICAO_PNEU_AVULSO = 140;
+            public static final int VISUALIZAR_TODAS_AFERICOES = 117;
 
             public final class ConfiguracaoAfericao {
 
@@ -160,6 +161,7 @@ public final class Pilares {
             public static final int EDITAR_MARCACAO = 338;
             public static final int VALIDAR_INVALIDAR_MARCACAO = 339;
             public static final int CRIAR_TIPO_INTERVALO = 340;
+            public static final int ALTERAR_TIPO_INTERVALO = 344;
             public static final int ATIVAR_INATIVAR_TIPO_INTERVALO = 341;
         }
 
@@ -303,7 +305,7 @@ public final class Pilares {
             }
 
             public static final int DELETAR = 410;
-            public static final int UPLOAD = 411;
+            public static final int INSERIR_REGISTRO = 411;
             public static final int VISUALIZAR = 412;
             public static final int EDITAR = 413;
         }

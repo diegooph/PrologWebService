@@ -1,6 +1,40 @@
 Change Log
 ==========
 
+<a name="v0.0.74"></a>
+## Version [v0.0.74](https://github.com/luizfp/PrologWeb/compare/v0.0.73...v0.0.74) (2018-08-30)
+
+### Features
+* Cria funcionalidade para permitir a aferição avulsa de pneus em estoque
+* Cria relatório de aferições avulsas
+* Cria listagem de aferições avulsas (por enquanto através de um Report)
+* Cria DummyResource para retornar um JSON dummy de alguns objetos
+* Cria retorno de JSON padrão do objeto Cargo e Visao no DummyResource
+* Cria retorno de JSON padrão do objeto TipoIntervalo no DummyResource
+* Permite filtrar por tipos de intervalo ativos/inativos ao realizar a buscas dos tipos de uma unidade
+* Cria permissão para permitir alterar tipos de intervalo
+
+### Refactors
+* Bloqueia funcionalidade de aferição nos apps antigos (versionCode menor ou igual a 57) por conta das alterações geradas
+pela implementação da aferição avulsa
+* Altera método de inativação de tipo de intervalo para permitir ativar/inativar
+* Adiciona verificação de permissões nos métodos de gestão de tipos de intervalo
+* Permite apenas que tipos de intervalo ativos sejam editados
+* Remove código da unidade dos métodos utilizados na PneuDao para atualizar algum atributo do pneu
+* Cria novo método para marcar uma foto do cadastro do pneu como sincronizada sem utilizar o código da unidade
+* Bloqueia PneuResource e MovimentacaoResoruce nos apps antigos (versionCode menor ou igual a 57) por conta de
+alterações realizadas na parte de pneus (principalmente ligadas a sincronia de fotos do cadastro)
+* Altera integração com a Avilan para incluir pressao recomendada nas buscas dos pneus
+
+
+### Bug Fixes
+* Corrige verificação de permissão para insert de itens da produtividade da Raízen
+* Corrige alguns problemas de permissões não sendo verificadas
+* Corrige dateFormat utilizado na produtividade da Raízen
+* Altera DateFormat utilizado no upload da produtividade Raízen para previnir linhas de quebrarem por conta de uma /
+* Previne crash causado no import de mapa caso matrícula não esteja presente
+* Corrige parse do BigDecimal no import da produtividade da Raízen para diferentes tipos de arquivo importados (XLSX ou CSV)
+
 <a name="v0.0.73"></a>
 ## Version [v0.0.73](https://github.com/luizfp/PrologWeb/compare/v0.0.72...v0.0.73) (2018-08-13)
 

@@ -26,7 +26,7 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
 
     @Override
     public List<TipoIntervalo> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
-        return new ControleIntervaloDaoImpl().getTiposIntervalosByUnidade(codUnidade, withCargos);
+        return new ControleIntervaloDaoImpl().getTiposIntervalosByUnidade(codUnidade, true, withCargos);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
     @Override
     public void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
                                       @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        new ControleIntervaloDaoImpl().inativarTipoIntervalo(codUnidade, codTipoIntervalo, listener);
+        new ControleIntervaloDaoImpl().updateStatusAtivoTipoIntervalo(codUnidade, codTipoIntervalo, null, listener);
     }
 
     @Override

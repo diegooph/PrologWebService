@@ -212,7 +212,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
             return ControleIntervaloRelatorioConverter.createFolhaPontoRelatorio(
                     rSet,
-                    dao.getTiposIntervalosByUnidade(codUnidade, false),
+                    dao.getTiposIntervalosByUnidade(codUnidade, true, false),
                     dataInicial,
                     dataFinal,
                     zoneId);
@@ -277,7 +277,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                     .Builder(out)
                     .withCsvReport(new RelatorioTotaisPorTipoIntervalo(
                             rSet,
-                            dao.getTiposIntervalosByUnidade(codUnidade, false),
+                            dao.getTiposIntervalosByUnidade(codUnidade, true,false),
                             codTipoIntervalo.equals("%") ? null : Long.parseLong(codTipoIntervalo)))
                     .build()
                     .write();

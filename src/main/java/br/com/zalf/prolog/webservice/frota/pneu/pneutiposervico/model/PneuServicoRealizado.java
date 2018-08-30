@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model;
+package br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model;
 
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;

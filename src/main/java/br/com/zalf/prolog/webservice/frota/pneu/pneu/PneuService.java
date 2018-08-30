@@ -151,12 +151,13 @@ public class PneuService {
         }
     }
 
-    public PneuComum getPneuByCod(Long codPneu, Long codUnidade) {
+    @NotNull
+    public Pneu getPneuByCod(@NotNull final Long codPneu, @NotNull final Long codUnidade) throws ProLogException {
         try {
             return dao.getPneuByCod(codPneu, codUnidade);
-        } catch (SQLException e) {
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar pneu com código: " + codPneu + " da unidade: " + codUnidade, e);
-            return null;
+            throw exceptionHandler.map(e, "Erro ao buscar o pneu, tente novamente");
         }
     }
 
@@ -169,11 +170,10 @@ public class PneuService {
         }
     }
 
-    public void marcarFotoComoSincronizada(@NotNull final Long codUnidade,
-                                           @NotNull final Long codPneu,
+    public void marcarFotoComoSincronizada(@NotNull final Long codPneu,
                                            @NotNull final String urlFotoPneu) {
         try {
-            dao.marcarFotoComoSincronizada(codUnidade, codPneu, urlFotoPneu);
+            dao.marcarFotoComoSincronizada(codPneu, urlFotoPneu);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu, e);
             throw new RuntimeException(e);

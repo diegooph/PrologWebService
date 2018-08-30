@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +28,7 @@ public class Veiculo {
     private Eixos eixos;
     private Long kmAtual;
     private boolean ativo;
-    private List<PneuComum> listPneus;
+    private List<Pneu> listPneus;
     private DiagramaVeiculo diagrama;
 
     /**
@@ -61,11 +61,11 @@ public class Veiculo {
         this.modelo = modelo;
     }
 
-    public List<PneuComum> getListPneus() {
+    public List<Pneu> getListPneus() {
         return listPneus;
     }
 
-    public void setListPneus(List<PneuComum> listPneus) {
+    public void setListPneus(List<Pneu> listPneus) {
         this.listPneus = listPneus;
     }
 
@@ -148,12 +148,12 @@ public class Veiculo {
     }
 
     @NotNull
-    public List<PneuComum> getEstepes() {
-        final List<PneuComum> estepes = new ArrayList<>();
+    public List<Pneu> getEstepes() {
+        final List<Pneu> estepes = new ArrayList<>();
 
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < listPneus.size(); i++) {
-            final PneuComum pneu = listPneus.get(i);
+            final Pneu pneu = listPneus.get(i);
             if (pneu.isEstepe())
                 estepes.add(pneu);
         }
@@ -162,7 +162,7 @@ public class Veiculo {
     }
 
     public void removeEstepes() {
-        listPneus.removeIf(PneuComum::isEstepe);
+        listPneus.removeIf(Pneu::isEstepe);
     }
 
     @Override

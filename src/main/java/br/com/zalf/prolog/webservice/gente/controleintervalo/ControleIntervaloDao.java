@@ -42,14 +42,17 @@ public interface ControleIntervaloDao {
 
     @NotNull
     List<TipoIntervalo> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
+                                                    final boolean apenasAtivos,
                                                     final boolean withCargos) throws SQLException;
 
     @NotNull
     TipoIntervalo getTipoIntervalo(@NotNull final Long codUnidade,
                                    @NotNull final Long codTipoIntervalo) throws SQLException;
 
-    void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
-                               @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
+    void updateStatusAtivoTipoIntervalo(@NotNull final Long codUnidade,
+                                        @NotNull final Long codTipoIntervalo,
+                                        @NotNull final TipoIntervalo tipoIntervalo,
+                                        @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
     @NotNull
     Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;

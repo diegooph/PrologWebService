@@ -3,9 +3,11 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -102,8 +104,10 @@ public final class ControleIntervaloResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/resumidos")
-    public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, false);
+    public List<TipoIntervalo> getTiposIntervalosResumidos(@Required @PathParam("codUnidade") Long codUnidade,
+                                                           @Optional @QueryParam("apenasAtivos")
+                                                           @DefaultValue("true") boolean apenasAtivos) {
+        return service.getTiposIntervalos(codUnidade, apenasAtivos, false);
     }
 
     @GET
@@ -113,18 +117,22 @@ public final class ControleIntervaloResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/completos")
-    public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, true);
+    public List<TipoIntervalo> getTiposIntervalosCompletos(@Required @PathParam("codUnidade") Long codUnidade,
+                                                           @Optional @QueryParam("apenasAtivos")
+                                                           @DefaultValue("true") boolean apenasAtivos) {
+        return service.getTiposIntervalos(codUnidade, apenasAtivos, true);
     }
 
     @POST
     @Path("/tipos")
+    @Secured(permissions = Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO)
     public AbstractResponse insertTipoIntervalo(TipoIntervalo tipoIntervalo) {
         return service.insertTipoIntervalo(tipoIntervalo);
     }
 
     @PUT
     @Path("/tipos")
+    @Secured(permissions = Pilares.Gente.Intervalo.ALTERAR_TIPO_INTERVALO)
     public Response updateTipoInvervalo(TipoIntervalo tipoIntervalo) {
         if(service.updateTipoIntervalo(tipoIntervalo)) {
             return Response.ok("Tipo de intervalo editado com sucesso");
@@ -134,13 +142,16 @@ public final class ControleIntervaloResource {
     }
 
     @PUT
-    @Path("/tipos/inativar/{codUnidade}/{codTipoIntervalo}")
-    public Response inativarTipoIntervalo(@PathParam("codUnidade") Long codUnidade,
-                                          @PathParam("codTipoIntervalo") Long codTipoIntervalo) {
-        if(service.inativarTipoIntervalo(codUnidade, codTipoIntervalo)) {
-            return Response.ok("Tipo de intervalo inativado com sucesso");
+    @Path("/tipos/{codUnidade}/{codTipoIntervalo}/status-ativo")
+    @Secured(permissions = Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO)
+    public Response inativarTipoIntervalo(@Required @PathParam("codUnidade") Long codUnidade,
+                                          @Required @PathParam("codTipoIntervalo") Long codTipoIntervalo,
+                                          @Required final TipoIntervalo tipoIntervalo) throws ProLogException {
+        service.updateStatusAtivo(codUnidade, codTipoIntervalo, tipoIntervalo);
+        if (tipoIntervalo.isAtivo()) {
+            return Response.ok("Tipo de marcação ativada com sucesso");
         } else {
-            return Response.error("Erro ao inativar o tipo de intervalo");
+            return Response.ok("Tipo de marcação inativada com sucesso");
         }
     }
 }

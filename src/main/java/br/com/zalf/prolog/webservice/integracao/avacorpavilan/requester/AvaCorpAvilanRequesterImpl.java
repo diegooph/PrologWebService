@@ -142,13 +142,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public boolean insertAfericao(@NotNull IncluirMedida2 medidas,
-                                  @NotNull String cpf,
-                                  @NotNull String dataNascimento) throws Exception {
+    public Long insertAfericao(@NotNull IncluirMedida2 medidas,
+                               @NotNull String cpf,
+                               @NotNull String dataNascimento) throws Exception {
         final IncluirRegistroVeiculo request = getAfericaoSoap(cpf, dataNascimento).incluirMedida(medidas);
 
         if (request != null && request.isSucesso()) {
-            return true;
+            return (long) request.getSequenciaRegistro();
         }
 
         throw new Exception(request != null ? request.getMensagem() : "");

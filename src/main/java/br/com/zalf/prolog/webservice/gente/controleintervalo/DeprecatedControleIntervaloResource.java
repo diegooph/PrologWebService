@@ -104,7 +104,7 @@ public class DeprecatedControleIntervaloResource {
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/completos")
     public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, true);
+        return service.getTiposIntervalos(codUnidade, true,true);
     }
 
     @POST
@@ -123,17 +123,6 @@ public class DeprecatedControleIntervaloResource {
         }
     }
 
-    @PUT
-    @Path("/tipos/inativar/{codUnidade}/{codTipoIntervalo}")
-    public Response inativarTipoIntervalo(@PathParam("codUnidade") Long codUnidade,
-                                          @PathParam("codTipoIntervalo") Long codTipoIntervalo) {
-        if (service.inativarTipoIntervalo(codUnidade, codTipoIntervalo)) {
-            return Response.ok("Tipo de intervalo inativado com sucesso");
-        } else {
-            return Response.error("Erro ao inativar o tipo de intervalo");
-        }
-    }
-
     @GET
     @Secured(permissions = {
             Pilares.Gente.Intervalo.MARCAR_INTERVALO,
@@ -141,7 +130,7 @@ public class DeprecatedControleIntervaloResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
     @Path("/tipos/{codUnidade}/resumidos")
     public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, false);
+        return service.getTiposIntervalos(codUnidade, true,false);
     }
 
     /**

@@ -5,16 +5,14 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarColor;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-
 /**
  * Created on 10/11/17.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public enum TipoAfericao implements BarColor {
+public enum TipoMedicaoColetadaAfericao implements BarColor {
     SULCO("SULCO") {
-        @Nonnull
+        @NotNull
         @Override
         public String getLegibleString() {
             return "Sulco";
@@ -27,7 +25,7 @@ public enum TipoAfericao implements BarColor {
         }
     },
     PRESSAO("PRESSAO") {
-        @Nonnull
+        @NotNull
         @Override
         public String getLegibleString() {
             return "Pressão";
@@ -40,7 +38,7 @@ public enum TipoAfericao implements BarColor {
         }
     },
     SULCO_PRESSAO("SULCO_PRESSAO") {
-        @Nonnull
+        @NotNull
         @Override
         public String getLegibleString() {
             return "Sulco e Pressão";
@@ -53,27 +51,27 @@ public enum TipoAfericao implements BarColor {
         }
     };
 
-    @Nonnull
+    @NotNull
     private final String stringRepresentation;
 
-    TipoAfericao(@Nonnull final String stringRepresentation) {
+    TipoMedicaoColetadaAfericao(@NotNull final String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 
-    @Nonnull
+    @NotNull
     public abstract String getLegibleString();
 
-    @Nonnull
+    @NotNull
     public String asString() {
         return stringRepresentation;
     }
 
-    public static TipoAfericao fromString(@Nonnull final String string) {
+    public static TipoMedicaoColetadaAfericao fromString(@NotNull final String string) {
         Preconditions.checkNotNull(string, "string cannot be null!");
 
-        for (final TipoAfericao tipoAfericao : TipoAfericao.values()) {
-            if (string.equals(tipoAfericao.stringRepresentation)) {
-                return tipoAfericao;
+        for (final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao : TipoMedicaoColetadaAfericao.values()) {
+            if (string.equals(tipoMedicaoColetadaAfericao.stringRepresentation)) {
+                return tipoMedicaoColetadaAfericao;
             }
         }
 

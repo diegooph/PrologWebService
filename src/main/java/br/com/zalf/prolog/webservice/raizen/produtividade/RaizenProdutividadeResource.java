@@ -49,7 +49,9 @@ public class RaizenProdutividadeResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.EDITAR)
+    @Secured(permissions = {
+            Pilares.Entrega.RaizenProdutividade.INSERIR_REGISTROS,
+            Pilares.Entrega.RaizenProdutividade.EDITAR})
     @Path("/itens")
     public Response insertRaizenProdutividade(
             @HeaderParam("Authorization") final String token,

@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="sulco3" type="{http://www.w3.org/2001/XMLSchema}double"/>
  *         &lt;element name="sulco4" type="{http://www.w3.org/2001/XMLSchema}double"/>
  *         &lt;element name="vidaPneu" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="pressaoRecomendada" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -39,7 +40,8 @@ import javax.xml.bind.annotation.XmlType;
     "sulco2",
     "sulco3",
     "sulco4",
-    "vidaPneu"
+    "vidaPneu",
+    "pressaoRecomendada"
 })
 public class Pneu {
 
@@ -50,6 +52,7 @@ public class Pneu {
     protected double sulco3;
     protected double sulco4;
     protected int vidaPneu;
+    protected int pressaoRecomendada;
 
     /**
      * Gets the value of the numeroFogo property.
@@ -179,4 +182,19 @@ public class Pneu {
         this.vidaPneu = value;
     }
 
+    /**
+     * Gets the value of the pressaoRecomendada property.
+     *
+     */
+    public int getPressaoRecomendada() {
+        return pressaoRecomendada;
+    }
+
+    /**
+     * Sets the value of the pressaoRecomendada property.
+     *
+     */
+    public void setPressaoRecomendada(final int pressaoRecomendada) {
+        this.pressaoRecomendada = pressaoRecomendada;
+    }
 }

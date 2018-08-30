@@ -119,7 +119,7 @@ public abstract class Pneu {
     @NotNull
     private PneuTipo tipo;
 
-    Pneu(@NotNull final PneuTipo pneuTipo) {
+    public Pneu(@NotNull final PneuTipo pneuTipo) {
         this.tipo = pneuTipo;
     }
 
@@ -371,7 +371,7 @@ public abstract class Pneu {
         }
     }
 
-    public static final Comparator<PneuComum> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
+    public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
 
     @Override
     public String toString() {
@@ -408,6 +408,38 @@ public abstract class Pneu {
 
         public Dimensao() {
 
+        }
+
+        public long getCodigo() {
+            return codigo;
+        }
+
+        public void setCodigo(final long codigo) {
+            this.codigo = codigo;
+        }
+
+        public int getAltura() {
+            return altura;
+        }
+
+        public void setAltura(final int altura) {
+            this.altura = altura;
+        }
+
+        public int getLargura() {
+            return largura;
+        }
+
+        public void setLargura(final int largura) {
+            this.largura = largura;
+        }
+
+        public double getAro() {
+            return aro;
+        }
+
+        public void setAro(final double aro) {
+            this.aro = aro;
         }
 
         @Override

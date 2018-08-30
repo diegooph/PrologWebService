@@ -63,7 +63,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         final ControleIntervaloService intervaloService = new ControleIntervaloService();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
-        final List<TipoIntervalo> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, false);
+        final List<TipoIntervalo> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
         assertNotNull(tiposIntervalos);
         assertFalse(tiposIntervalos.isEmpty());
         final TipoIntervalo tipoIntervalo = tiposIntervalos.get(0);
@@ -126,7 +126,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         final ControleIntervaloService intervaloService = new ControleIntervaloService();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
-        final List<TipoIntervalo> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, false);
+        final List<TipoIntervalo> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
         assertNotNull(tiposIntervalos);
         assertFalse(tiposIntervalos.isEmpty());
         final TipoIntervalo tipoIntervalo = tiposIntervalos.get(0);

@@ -3,16 +3,16 @@ package br.com.zalf.prolog.webservice.integracao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -85,7 +86,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Restricao getRestricaoByCodUnidade(@NotNull Long codUnidade) throws Exception {
+    public Restricao getRestricaoByCodUnidade(@NotNull Long codUnidade) throws Throwable {
         if (afericaoDao == null) {
             afericaoDao = Injection.provideAfericaoDao();
         }
@@ -128,7 +129,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     //
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Exception {
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws
+            Exception {
         return veiculoDao.getVeiculosAtivosByUnidade(codUnidade, ativos);
     }
 
@@ -152,38 +154,55 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Throwable {
         return afericaoDao.getCronogramaAfericao(codUnidade);
     }
 
     @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
-                                        @NotNull String tipoAfericao) throws Exception {
-        return afericaoDao.getNovaAfericao(placaVeiculo, tipoAfericao);
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull String tipoAfericao) throws Throwable {
+        return afericaoDao.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
+    }
+
+    @NotNull
+    @Override
+    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable {
+        return afericaoDao.getPneusAfericaoAvulsa(codUnidade);
+    }
+
+    @NotNull
+    @Override
+    public Report getAfericoesAvulsas(@NotNull final Long codUnidade,
+                                      @Nullable final Long codColaborador,
+                                      @NotNull final LocalDate dataInicial,
+                                      @NotNull final LocalDate dataFinal) throws Throwable {
+        return afericaoDao.getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
     }
 
     @Override
-    public boolean insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Exception {
+    public Long insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Throwable {
         return afericaoDao.insert(afericao, codUnidade);
     }
 
     @NotNull
     @Override
-    public Afericao getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Exception {
+    public Afericao getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Throwable {
         return afericaoDao.getByCod(codUnidade, codAfericao);
     }
 
     @NotNull
     @Override
-    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
-                                       @NotNull String codTipoVeiculo,
-                                       @NotNull String placaVeiculo,
-                                       long dataInicial,
-                                       long dataFinal,
-                                       int limit,
-                                       long offset) throws Exception {
-        return afericaoDao.getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
+    public List<AfericaoPlaca> getAfericoesPlacas(@NotNull Long codUnidade,
+                                                  @NotNull String codTipoVeiculo,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull LocalDate dataInicial,
+                                                  @NotNull LocalDate dataFinal,
+                                                  int limit,
+                                                  long offset) throws Throwable {
+        return afericaoDao.getAfericoesPlacas(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit,
+                offset);
     }
 
     @NotNull
@@ -288,7 +307,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         }
 
         public IntegradorProLog build() {
-            return new IntegradorProLog(userToken, veiculoDao, checklistDao, afericaoDao, colaboradorDao, integracaoDao);
+            return new IntegradorProLog(userToken, veiculoDao, checklistDao, afericaoDao, colaboradorDao,
+                    integracaoDao);
         }
     }
 }

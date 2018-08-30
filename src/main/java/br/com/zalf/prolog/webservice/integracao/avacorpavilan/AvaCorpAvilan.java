@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
@@ -8,9 +10,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -248,15 +249,14 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidadeCronograma) throws Exception {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidadeCronograma) throws Throwable {
         /*
          * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
          * que não esteja presente na mesma unidade dele.
          */
         final Long codUnidadeColaborador = getCodUnidade();
         if (!codUnidadeCronograma.equals(codUnidadeColaborador)) {
-            throw new AvaCorpAvilanException(
-                    "Você só pode aferir veículos da sua unidade",
+            throw new BloqueadoIntegracaoException("Você só pode aferir veículos da sua unidade",
                     String.format("Unidade cronograma: %s -- Unidade colaborador: %d", codUnidadeCronograma, codUnidadeColaborador));
         }
 
@@ -274,16 +274,17 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
-                                        @NotNull String tipoAfericao) throws Exception {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull String tipoAfericao) throws Throwable {
         /*
          * A Avilan não suporta afericões de Sulco e Pressão separadamente, então lançamos uma
          * exceção caso o tipo selecionado for diferentes de {@link TipoAfericao#SULCO_PRESSAO}
          */
-        if (!tipoAfericao.equals(TipoAfericao.SULCO_PRESSAO.asString())) {
+        if (!tipoAfericao.equals(TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString())) {
             throw new TipoAfericaoNotSupported(
                     Response.Status.BAD_REQUEST.getStatusCode(),
-                    "Avilan só aceita aferição de " + TipoAfericao.SULCO_PRESSAO.getLegibleString(),
+                    "Avilan só aceita aferição de " + TipoMedicaoColetadaAfericao.SULCO_PRESSAO.getLegibleString(),
                     "Usuários da Avilan não podem realizar aferições de Sulco ou Pressão separadamente.");
         }
 
@@ -291,7 +292,6 @@ public final class AvaCorpAvilan extends Sistema {
          * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
          * que não esteja presente na mesma unidade dele.
          */
-        final Long codUnidade = getCodUnidade();
         final List<String> placas = getPlacasVeiculosByTipo(codUnidade, FILTRO_TODOS);
         if (!placas.contains(placaVeiculo)) {
             throw new AvaCorpAvilanException(
@@ -304,7 +304,7 @@ public final class AvaCorpAvilan extends Sistema {
 
         final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
         final String codTipoVeiculo = veiculoAvilan.getTipo().getCodigo();
-        final List<PneuComum> pneus = AvaCorpAvilanConverter.convert(
+        final List<Pneu> pneus = AvaCorpAvilanConverter.convert(
                 new PosicaoPneuMapper(dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(codTipoVeiculo)),
                 requester.getPneusVeiculo(placaVeiculo, getCpf(), getDataNascimento()));
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade);
@@ -319,7 +319,7 @@ public final class AvaCorpAvilan extends Sistema {
         veiculo.setListPneus(pneus);
 
         // Cria NovaAfericao.
-        final NovaAfericao novaAfericao = new NovaAfericao();
+        final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
         novaAfericao.setVeiculo(veiculo);
         novaAfericao.setRestricao(restricao);
         novaAfericao.setEstepesVeiculo(veiculo.getEstepes());
@@ -327,15 +327,43 @@ public final class AvaCorpAvilan extends Sistema {
         return novaAfericao;
     }
 
+    @NotNull
     @Override
-    public boolean insertAfericao(@NotNull Afericao afericao,
-                                  @NotNull Long codUnidade) throws Exception {
-        return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericao), getCpf(), getDataNascimento());
+    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable {
+        throw new BloqueadoIntegracaoException("A Avilan só suporta aferição de uma placa e não de pneu avulso");
     }
 
     @NotNull
     @Override
-    public Afericao getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Exception {
+    public Report getAfericoesAvulsas(@NotNull final Long codUnidade,
+                                      @Nullable final Long codColaborador,
+                                      @NotNull final LocalDate dataInicial,
+                                      @NotNull final LocalDate dataFinal) throws Throwable {
+        throw new BloqueadoIntegracaoException("A Avilan só suporta aferição de uma placa e não de pneu avulso");
+    }
+
+    @Override
+    public Long insertAfericao(@NotNull Afericao afericao,
+                               @NotNull Long codUnidade) throws Throwable {
+        if (afericao instanceof AfericaoPlaca) {
+            final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
+            final Long codAfericao = requester.insertAfericao(
+                    AvaCorpAvilanConverter.convert(afericaoPlaca),
+                    getCpf(),
+                    getDataNascimento());
+            if (codAfericao != null && codAfericao != 0) {
+                return codAfericao;
+            } else {
+                throw new AvaCorpAvilanException("Falha na integração", "Erro ao inserir aferição para a unidade: " + codUnidade);
+            }
+        } else {
+            throw new BloqueadoIntegracaoException("A Avilan só suporta aferição de uma placa e não de pneu avulso");
+        }
+    }
+
+    @NotNull
+    @Override
+    public AfericaoPlaca getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Throwable {
 
         final AfericaoFiltro afericaoFiltro = requester.getAfericaoByCodigo(
                 Math.toIntExact(codAfericao),
@@ -347,26 +375,26 @@ public final class AvaCorpAvilan extends Sistema {
         final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
                 dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(codTipoVeiculoAvilan));
 
-        final Afericao afericao = AvaCorpAvilanConverter.convert(posicaoPneuMapper, afericaoFiltro, codUnidade);
+        final AfericaoPlaca afericaoPlaca = AvaCorpAvilanConverter.convert(posicaoPneuMapper, afericaoFiltro, codUnidade);
 
         final Short codDiagrama = dao.getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(codTipoVeiculoAvilan);
         final Optional<DiagramaVeiculo> optional = getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(codDiagrama);
         if (!optional.isPresent()) {
             throw new IllegalStateException("Erro ao buscar diagrama de código: " + codDiagrama);
         }
-        afericao.getVeiculo().setDiagrama(optional.get());
-        return afericao;
+        afericaoPlaca.getVeiculo().setDiagrama(optional.get());
+        return afericaoPlaca;
     }
 
     @NotNull
     @Override
-    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
-                                       @NotNull String codTipoVeiculo,
-                                       @NotNull String placaVeiculo,
-                                       long dataInicial,
-                                       long dataFinal,
-                                       int limit,
-                                       long offset) throws Exception {
+    public List<AfericaoPlaca> getAfericoesPlacas(@NotNull Long codUnidade,
+                                                  @NotNull String codTipoVeiculo,
+                                                  @NotNull String placaVeiculo,
+                                                  @NotNull LocalDate dataInicial,
+                                                  @NotNull LocalDate dataFinal,
+                                                  int limit,
+                                                  long offset) throws Throwable {
         // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
         // vazio.
         final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
@@ -383,8 +411,8 @@ public final class AvaCorpAvilan extends Sistema {
                 filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo,
                 placaVeiculo.equals(FILTRO_TODOS) ? "" : placaVeiculo,
-                AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
-                AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(dataFinal),
                 limit,
                 Math.toIntExact(offset),
                 getCpf(),

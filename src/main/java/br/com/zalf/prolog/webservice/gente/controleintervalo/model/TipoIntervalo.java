@@ -3,9 +3,11 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Time;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -134,5 +136,29 @@ public class TipoIntervalo {
     @Override
     public int hashCode() {
         return Objects.hashCode(codigo);
+    }
+
+    @NotNull
+    public static TipoIntervalo createDummy() {
+        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        tipoIntervalo.setCodigo(10L);
+        tipoIntervalo.setNome("Alimentação");
+        tipoIntervalo.setAtivo(true);
+        tipoIntervalo.setCodigoPorUnidade(2L);
+        tipoIntervalo.setHorarioSugerido(Time.valueOf("10:00:00"));
+        tipoIntervalo.setIcone(Icone.ALIMENTACAO);
+        tipoIntervalo.setTempoLimiteEstouro(Duration.ofSeconds(10));
+        tipoIntervalo.setTempoRecomendado(Duration.ofSeconds(100));
+
+        final Unidade unidade = new Unidade();
+        unidade.setNome("Nome Unidade");
+        unidade.setCodigo(1L);
+        tipoIntervalo.setUnidade(unidade);
+
+        final List<Cargo> cargos = new ArrayList<>();
+        cargos.add(Cargo.createDummy());
+        cargos.add(Cargo.createDummy());
+        tipoIntervalo.setCargos(cargos);
+        return tipoIntervalo;
     }
 }

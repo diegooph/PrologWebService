@@ -3,9 +3,9 @@ package test.integracao.avilan;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -45,20 +45,20 @@ public class AvaCorpAvilanSistemaTest {
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
-    public void testBuscarNovaAfericao() throws Exception {
-        final NovaAfericao novaAfericao = sistema.getNovaAfericao("LRN9162", TipoAfericao.SULCO_PRESSAO.asString());
+    public void testBuscarNovaAfericao() throws Throwable {
+        final NovaAfericao novaAfericao = sistema.getNovaAfericaoPlaca(1L,"LRN9162", TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
         assertNotNull(novaAfericao);
         System.out.println(GsonUtils.getGson().toJson(novaAfericao));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
-    public void testBuscarAfericaoByCodigo() throws Exception {
+    public void testBuscarAfericaoByCodigo() throws Throwable {
         assertNotNull(sistema.getAfericaoByCodigo(4L, 328L));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Exception.class)
-    public void testInsertAfericao() throws Exception {
-        sistema.insertAfericao(new Afericao(), 0L);
+    public void testInsertAfericao() throws Throwable {
+        sistema.insertAfericao(new AfericaoPlaca(), 0L);
     }
 
     @Test
