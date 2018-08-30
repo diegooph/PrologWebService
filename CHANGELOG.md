@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.74"></a>
-## Version [v0.0.74](https://github.com/luizfp/PrologWeb/compare/v0.0.73...v0.0.74) (release-date) [unreleased]
+## Version [v0.0.74](https://github.com/luizfp/PrologWeb/compare/v0.0.73...v0.0.74) (2018-08-30)
 
 ### Features
 * Cria funcionalidade para permitir a aferição avulsa de pneus em estoque
