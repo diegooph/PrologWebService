@@ -1,64 +1,67 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.Date;
-import java.sql.SQLException;
+import java.time.LocalDate;
 
 /**
  * Created by luiz on 25/04/17.
  */
 public interface ChecklistRelatorioDao {
 
-    void getChecklistsRealizadosDiaCsv(@NotNull OutputStream outputStream,
-                                       @NotNull Long codUnidade,
-                                       @NotNull Date dataInicial,
-                                       @NotNull Date dataFinal) throws SQLException, IOException;
+    void getChecklistsRealizadosDiaCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final Long codUnidade,
+                                       @NotNull final LocalDate dataInicial,
+                                       @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
-    Report getChecklistsRealizadosDiaReport(@NotNull Long codUnidade,
-                                            @NotNull Date dataInicial,
-                                            @NotNull Date dataFinal) throws SQLException;
+    Report getChecklistsRealizadosDiaReport(@NotNull final Long codUnidade,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal) throws Throwable;
 
-    void getExtratoChecklistsRealizadosDiaCsv(@NotNull OutputStream outputStream,
-                                              @NotNull Long codUnidade,
-                                              @NotNull Date dataInicial,
-                                              @NotNull Date dataFinal) throws SQLException, IOException;
-
-    @NotNull
-    Report getExtratoChecklistsRealizadosDiaReport(@NotNull Long codUnidade,
-                                                   @NotNull Date dataInicial,
-                                                   @NotNull Date dataFinal) throws SQLException;
-
-    void getTempoRealizacaoChecklistMotoristaCsv(@NotNull OutputStream outputStream,
-                                                 @NotNull Long codUnidade,
-                                                 @NotNull Date dataInicial,
-                                                 @NotNull Date dataFinal) throws SQLException, IOException;
+    void getExtratoChecklistsRealizadosDiaCsv(@NotNull final OutputStream outputStream,
+                                              @NotNull final Long codUnidade,
+                                              @NotNull final LocalDate dataInicial,
+                                              @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
-    Report getTempoRealizacaoChecklistMotoristaReport(@NotNull Long codUnidade,
-                                                      @NotNull Date dataInicial,
-                                                      @NotNull Date dataFinal) throws SQLException;
+    Report getExtratoChecklistsRealizadosDiaReport(@NotNull final Long codUnidade,
+                                                   @NotNull final LocalDate dataInicial,
+                                                   @NotNull final LocalDate dataFinal) throws Throwable;
 
-    void getResumoChecklistCsv(@NotNull OutputStream outputStream,
-                               @NotNull Long codUnidade,
-                               @NotNull Date dataInicial,
-                               @NotNull Date dataFinal,
-                               @NotNull String placa) throws SQLException, IOException;
-
-    @NotNull
-    Report getResumoChecklistReport(@NotNull Long codUnidade,
-                                    @NotNull Date dataInicial,
-                                    @NotNull Date dataFinal,
-                                    @NotNull String placa) throws SQLException;
-
-    void getEstratificacaoRespostasNokChecklistCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull String placa,
-                                                   @NotNull Date dataInicial, @NotNull Date dataFinal) throws SQLException, IOException;
+    void getTempoRealizacaoChecklistMotoristaCsv(@NotNull final OutputStream outputStream,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final LocalDate dataInicial,
+                                                 @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
-    Report getEstratificacaoRespostasNokChecklistReport(@NotNull Long codUnidade, @NotNull String placa,
-                                                        @NotNull Date dataInicial, @NotNull Date dataFinal) throws SQLException;
+    Report getTempoRealizacaoChecklistMotoristaReport(@NotNull final Long codUnidade,
+                                                      @NotNull final LocalDate dataInicial,
+                                                      @NotNull final LocalDate dataFinal) throws Throwable;
+
+    void getResumoChecklistCsv(@NotNull final OutputStream outputStream,
+                               @NotNull final Long codUnidade,
+                               @NotNull final String placa,
+                               @NotNull final LocalDate dataInicial,
+                               @NotNull final LocalDate dataFinal) throws Throwable;
+
+    @NotNull
+    Report getResumoChecklistReport(@NotNull final Long codUnidade,
+                                    @NotNull final String placa,
+                                    @NotNull final LocalDate dataInicial,
+                                    @NotNull final LocalDate dataFinal) throws Throwable;
+
+    void getEstratificacaoRespostasNokChecklistCsv(@NotNull final OutputStream outputStream,
+                                                   @NotNull final Long codUnidade,
+                                                   @NotNull final String placa,
+                                                   @NotNull final LocalDate dataInicial,
+                                                   @NotNull final LocalDate dataFinal) throws Throwable;
+
+    @NotNull
+    Report getEstratificacaoRespostasNokChecklistReport(@NotNull final Long codUnidade,
+                                                        @NotNull final String placa,
+                                                        @NotNull final LocalDate dataInicial,
+                                                        @NotNull final LocalDate dataFinal) throws Throwable;
 }

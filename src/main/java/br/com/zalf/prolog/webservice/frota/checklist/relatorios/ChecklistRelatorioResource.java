@@ -25,16 +25,16 @@ public class ChecklistRelatorioResource {
     @Produces("application/csv")
     @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getChecklistsRealizadosDiaCsv(@PathParam("codUnidade") Long codUnidade,
-                                                         @QueryParam("dataInicial") long dataInicial,
-                                                         @QueryParam("dataFinal") long dataFinal) {
+                                                         @QueryParam("dataInicial") String dataInicial,
+                                                         @QueryParam("dataFinal") String dataFinal) {
         return outputStream -> service.getChecklistsRealizadosDiaCsv(outputStream, codUnidade, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/{codUnidade}/report")
     public Report getChecklistsRealizadosDiaReport(@PathParam("codUnidade") Long codUnidade,
-                                                   @QueryParam("dataInicial") long dataInicial,
-                                                   @QueryParam("dataFinal") long dataFinal) {
+                                                   @QueryParam("dataInicial") String dataInicial,
+                                                   @QueryParam("dataFinal") String dataFinal) {
         return service.getChecklistsRealizadosDiaReport(codUnidade, dataInicial, dataFinal);
     }
 
@@ -43,16 +43,16 @@ public class ChecklistRelatorioResource {
     @Produces("application/csv")
     @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getExtratoChecklistsRealizadosDiaCsv(@PathParam("codUnidade") Long codUnidade,
-                                                                @QueryParam("dataInicial") long dataInicial,
-                                                                @QueryParam("dataFinal") long dataFinal) {
+                                                                @QueryParam("dataInicial") String dataInicial,
+                                                                @QueryParam("dataFinal") String dataFinal) {
         return outputStream -> service.getExtratoChecklistsRealizadosDiaCsv(outputStream, codUnidade, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/extrato/{codUnidade}/report")
     public Report getExtratoChecklistsRealizadosDiaReport(@PathParam("codUnidade") Long codUnidade,
-                                                          @QueryParam("dataInicial") long dataInicial,
-                                                          @QueryParam("dataFinal") long dataFinal) {
+                                                          @QueryParam("dataInicial") String dataInicial,
+                                                          @QueryParam("dataFinal") String dataFinal) {
         return service.getExtratoChecklistsRealizadosDiaReport(codUnidade, dataInicial, dataFinal);
     }
 
@@ -61,16 +61,16 @@ public class ChecklistRelatorioResource {
     @Produces("application/csv")
     @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getTempoRealizacaoChecklistMotoristaCsv(@PathParam("codUnidade") Long codUnidade,
-                                                                   @QueryParam("dataInicial") long dataInicial,
-                                                                   @QueryParam("dataFinal") long dataFinal) {
+                                                                   @QueryParam("dataInicial") String dataInicial,
+                                                                   @QueryParam("dataFinal") String dataFinal) {
         return outputStream -> service.getTempoRealizacaoChecklistMotoristaCsv(outputStream, codUnidade, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/tempos-motoristas/{codUnidade}/report")
     public Report getTempoRealizacaoChecklistMotoristaReport(@PathParam("codUnidade") Long codUnidade,
-                                                             @QueryParam("dataInicial") long dataInicial,
-                                                             @QueryParam("dataFinal") long dataFinal) {
+                                                             @QueryParam("dataInicial") String dataInicial,
+                                                             @QueryParam("dataFinal") String dataFinal) {
         return service.getTempoRealizacaoChecklistMotoristaReport(codUnidade, dataInicial, dataFinal);
     }
 
@@ -78,27 +78,27 @@ public class ChecklistRelatorioResource {
     @Path("/resumos/{codUnidade}/{placa}/csv")
     @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getResumoChecklistCsv(@PathParam("codUnidade") Long codUnidade,
-                                                 @QueryParam("dataInicial") Long dataInicial,
-                                                 @QueryParam("dataFinal") Long dataFinal,
-                                                 @PathParam("placa") String placa) {
-        return outputStream -> service.getResumoChecklistCsv(outputStream, codUnidade, dataInicial, dataFinal, placa);
+                                                 @PathParam("placa") String placa,
+                                                 @QueryParam("dataInicial") String dataInicial,
+                                                 @QueryParam("dataFinal") String dataFinal) {
+        return outputStream -> service.getResumoChecklistCsv(outputStream, codUnidade, placa, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/resumos/{codUnidade}/{placa}/report")
     public Report getResumoChecklistReport(@PathParam("codUnidade") Long codUnidade,
-                                           @QueryParam("dataInicial") Long dataInicial,
-                                           @QueryParam("dataFinal") Long dataFinal,
-                                           @PathParam("placa") String placa) {
-        return service.getResumoChecklistReport(codUnidade, dataInicial, dataFinal, placa);
+                                           @PathParam("placa") String placa,
+                                           @QueryParam("dataInicial") String dataInicial,
+                                           @QueryParam("dataFinal") String dataFinal) {
+        return service.getResumoChecklistReport(codUnidade, placa, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/estratificacoes/{codUnidade}/{placa}/report")
     public Report getEstratificacaoRespostasNokReport(@PathParam("codUnidade") Long codUnidade,
                                                       @PathParam("placa") String placa,
-                                                      @QueryParam("dataInicial") Long dataInicial,
-                                                      @QueryParam("dataFinal") Long dataFinal) {
+                                                      @QueryParam("dataInicial") String dataInicial,
+                                                      @QueryParam("dataFinal") String dataFinal) {
         return service.getEstratificacaoRespostasNokChecklistReport(codUnidade, placa, dataInicial, dataFinal);
     }
 
@@ -107,8 +107,8 @@ public class ChecklistRelatorioResource {
     @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getEstratificacaoRespostasNokCsv(@PathParam("codUnidade") Long codUnidade,
                                                             @PathParam("placa") String placa,
-                                                            @QueryParam("dataInicial") Long dataInicial,
-                                                            @QueryParam("dataFinal") Long dataFinal) {
+                                                            @QueryParam("dataInicial") String dataInicial,
+                                                            @QueryParam("dataFinal") String dataFinal) {
         return outputStream -> service.getEstratificacaoRespostasNokChecklistCsv(outputStream, codUnidade, placa, dataInicial, dataFinal);
     }
 }

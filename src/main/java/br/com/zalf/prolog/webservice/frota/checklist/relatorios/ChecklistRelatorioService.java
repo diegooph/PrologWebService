@@ -3,132 +3,173 @@ package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.Date;
-import java.sql.SQLException;
 
 /**
  * Created by luiz on 25/04/17.
  */
-
-
 class ChecklistRelatorioService {
     private static final String TAG = ChecklistRelatorioService.class.getSimpleName();
+    @NotNull
     private final ChecklistRelatorioDao dao = Injection.provideChecklistRelatorioDao();
 
-    void getChecklistsRealizadosDiaCsv(@NotNull OutputStream outputStream,
-                                       @NotNull Long codUnidade,
-                                       @NotNull long dataInicial,
-                                       @NotNull long dataFinal) {
+    void getChecklistsRealizadosDiaCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final Long codUnidade,
+                                       @NotNull final String dataInicial,
+                                       @NotNull final String dataFinal) {
         try {
-            dao.getChecklistsRealizadosDiaCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException | IOException e) {
+            dao.getChecklistsRealizadosDiaCsv(
+                    outputStream,
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com os checklists realizados por dia (CSV)", e);
         }
     }
 
     @NotNull
-    Report getChecklistsRealizadosDiaReport(@NotNull Long codUnidade,
-                                            @NotNull long dataInicial,
-                                            @NotNull long dataFinal) {
+    Report getChecklistsRealizadosDiaReport(@NotNull final Long codUnidade,
+                                            @NotNull final String dataInicial,
+                                            @NotNull final String dataFinal) {
         try {
-            return dao.getChecklistsRealizadosDiaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException e) {
+            return dao.getChecklistsRealizadosDiaReport(
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com os checklists realizados por dia (REPORT)", e);
             return null;
         }
     }
 
-    void getExtratoChecklistsRealizadosDiaCsv(@NotNull OutputStream outputStream,
-                                              @NotNull Long codUnidade,
-                                              @NotNull long dataInicial,
-                                              @NotNull long dataFinal) {
+    void getExtratoChecklistsRealizadosDiaCsv(@NotNull final OutputStream outputStream,
+                                              @NotNull final Long codUnidade,
+                                              @NotNull final String dataInicial,
+                                              @NotNull final String dataFinal) {
         try {
-            dao.getExtratoChecklistsRealizadosDiaCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException | IOException e) {
+            dao.getExtratoChecklistsRealizadosDiaCsv(
+                    outputStream,
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o extrato dos checklists realizados por dia (CSV)", e);
         }
     }
 
     @NotNull
-    Report getExtratoChecklistsRealizadosDiaReport(@NotNull Long codUnidade,
-                                                   @NotNull long dataInicial,
-                                                   @NotNull long dataFinal) {
+    Report getExtratoChecklistsRealizadosDiaReport(@NotNull final Long codUnidade,
+                                                   @NotNull final String dataInicial,
+                                                   @NotNull final String dataFinal) {
         try {
-            return dao.getExtratoChecklistsRealizadosDiaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException e) {
+            return dao.getExtratoChecklistsRealizadosDiaReport(
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o extrato dos checklists realizados por dia (CSV)", e);
             return null;
         }
     }
 
-    void getTempoRealizacaoChecklistMotoristaCsv(@NotNull OutputStream outputStream,
-                                                 @NotNull Long codUnidade,
-                                                 @NotNull long dataInicial,
-                                                 @NotNull long dataFinal) {
+    void getTempoRealizacaoChecklistMotoristaCsv(@NotNull final OutputStream outputStream,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final String dataInicial,
+                                                 @NotNull final String dataFinal) {
         try {
-            dao.getTempoRealizacaoChecklistMotoristaCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException | IOException e) {
+            dao.getTempoRealizacaoChecklistMotoristaCsv(
+                    outputStream,
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o tempo de realização por motorista (CSV)", e);
         }
     }
 
     @NotNull
-    Report getTempoRealizacaoChecklistMotoristaReport(@NotNull Long codUnidade,
-                                                      @NotNull long dataInicial,
-                                                      @NotNull long dataFinal) {
+    Report getTempoRealizacaoChecklistMotoristaReport(@NotNull final Long codUnidade,
+                                                      @NotNull final String dataInicial,
+                                                      @NotNull final String dataFinal) {
         try {
-            return dao.getTempoRealizacaoChecklistMotoristaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException e) {
+            return dao.getTempoRealizacaoChecklistMotoristaReport(
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o tempo de realização por motorista (REPORT)", e);
             return null;
         }
     }
 
-    void getResumoChecklistCsv(@NotNull OutputStream outputStream,
-                               @NotNull Long codUnidade,
-                               @NotNull Long dataInicial,
-                               @NotNull Long dataFinal,
-                               @NotNull String placa) {
+    void getResumoChecklistCsv(@NotNull final OutputStream outputStream,
+                               @NotNull final Long codUnidade,
+                               @NotNull final String placa,
+                               @NotNull final String dataInicial,
+                               @NotNull final String dataFinal) {
         try {
-            dao.getResumoChecklistCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal), placa);
-        } catch (SQLException | IOException e) {
+            dao.getResumoChecklistCsv(
+                    outputStream,
+                    codUnidade,
+                    placa,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o resumo dos checklist (CSV)", e);
         }
     }
 
     @NotNull
-    Report getResumoChecklistReport(@NotNull Long codUnidade,
-                                    @NotNull Long dataInicial,
-                                    @NotNull Long dataFinal,
-                                    @NotNull String placa) {
+    Report getResumoChecklistReport(@NotNull final Long codUnidade,
+                                    @NotNull final String placa,
+                                    @NotNull final String dataInicial,
+                                    @NotNull final String dataFinal) {
         try {
-            return dao.getResumoChecklistReport(codUnidade, new Date(dataInicial), new Date(dataFinal), placa);
-        } catch (SQLException e) {
+            return dao.getResumoChecklistReport(
+                    codUnidade,
+                    placa,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o resumo dos checklist (REPORT)", e);
             return null;
         }
     }
 
     @NotNull
-    public Report getEstratificacaoRespostasNokChecklistReport(@NotNull Long codUnidade, @NotNull String placa,
-                                                               @NotNull Long dataInicial, @NotNull Long dataFinal) {
+    Report getEstratificacaoRespostasNokChecklistReport(@NotNull final Long codUnidade,
+                                                        @NotNull final String placa,
+                                                        @NotNull final String dataInicial,
+                                                        @NotNull final String dataFinal) {
         try {
-            return dao.getEstratificacaoRespostasNokChecklistReport(codUnidade, placa, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException e) {
+            return dao.getEstratificacaoRespostasNokChecklistReport(
+                    codUnidade,
+                    placa,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com a estratificação das respostas NOK dos checklists (REPORT)", e);
             return null;
         }
     }
 
-    public void getEstratificacaoRespostasNokChecklistCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull String placa,
-                                                          @NotNull Long dataInicial, @NotNull Long dataFinal) {
+    void getEstratificacaoRespostasNokChecklistCsv(@NotNull final OutputStream outputStream,
+                                                   @NotNull final Long codUnidade,
+                                                   @NotNull final String placa,
+                                                   @NotNull final String dataInicial,
+                                                   @NotNull final String dataFinal) {
         try {
-            dao.getEstratificacaoRespostasNokChecklistCsv(outputStream, codUnidade, placa, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException | IOException e) {
+            dao.getEstratificacaoRespostasNokChecklistCsv(
+                    outputStream,
+                    codUnidade,
+                    placa,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com a estratificação das respostas NOK dos checklists (CSV)", e);
         }
     }
