@@ -70,7 +70,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getExtratoChecklistRealizadosDia(conn, codUnidades, dataInicial, dataFinal);
+            stmt = getExtratoChecklistsRealizadosDia(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
@@ -88,7 +88,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getExtratoChecklistRealizadosDia(conn, codUnidades, dataInicial, dataFinal);
+            stmt = getExtratoChecklistsRealizadosDia(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -208,33 +208,16 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     }
 
     @NotNull
-    private PreparedStatement getExtratoChecklistRealizadosDia(@NotNull final Connection conn,
-                                                               @NotNull final List<Long> codUnidades,
-                                                               @NotNull final LocalDate dataInicial,
-                                                               @NotNull final LocalDate dataFinal)
+    private PreparedStatement getExtratoChecklistsRealizadosDia(@NotNull final Connection conn,
+                                                                @NotNull final List<Long> codUnidades,
+                                                                @NotNull final LocalDate dataInicial,
+                                                                @NotNull final LocalDate dataFinal)
             throws Throwable {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT to_char((c.data_hora AT TIME ZONE ?)::LocalDate, 'DD/MM/YYYY') as \"DATA\", " +
-                "c.placa_veiculo AS \"PLACA\"," +
-                "sum(case when c.tipo = 'S' then 1 else 0 end) as \"CHECKS SAÍDA\", " +
-                "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\" " +
-                "FROM checklist c " +
-                "LEFT JOIN " +
-                "(SELECT m.data as data_mapa, m.mapa, m.placa " +
-                "FROM mapa m " +
-                "JOIN veiculo v on v.placa = m.placa " +
-                "WHERE m.cod_unidade = ? and m.data BETWEEN ? and ? " +
-                "ORDER BY m.data asc) as dia_mapas ON dia_mapas.data_mapa = c.data_hora::LocalDate and dia_mapas.placa = c.placa_veiculo " +
-                "WHERE c.cod_unidade = ? and c.data_hora::LocalDate BETWEEN ? and ? " +
-                "GROUP BY c.data_hora, 2 " +
-                "ORDER BY c.data_hora::LocalDate;");
-        // TODO:
-//        stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidades, conn).getId());
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
+                "FUNC_CHECKLIST_RELATORIO_EXTRATO_CHECKLISTS_REALIZADOS_DIA(?, ?, ?);");
         stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(3, dataInicial);
         stmt.setObject(4, dataFinal);
-        stmt.setArray(5, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-        stmt.setObject(6, dataInicial);
-        stmt.setObject(7, dataFinal);
         return stmt;
     }
 
