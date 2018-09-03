@@ -200,7 +200,7 @@ public class OrdemServicoRelatorioDaoImpl extends DatabaseConnection implements 
                 "FUNC_CHECKLIST_OS_RELATORIO_PRODUTIVIDADE_MECANICOS(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
-        stmt.setObject(4, dataFinal);
+        stmt.setObject(3, dataFinal);
         return stmt;
     }
 
@@ -213,7 +213,7 @@ public class OrdemServicoRelatorioDaoImpl extends DatabaseConnection implements 
                 "FUNC_CHECKLIST_OS_RELATORIO_MEDIA_TEMPO_CONSERTO_ITEM(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
-        stmt.setObject(4, dataFinal);
+        stmt.setObject(3, dataFinal);
         return stmt;
     }
 
@@ -226,7 +226,7 @@ public class OrdemServicoRelatorioDaoImpl extends DatabaseConnection implements 
                 "FUNC_CHECKLIST_OS_RELATORIO_ITENS_MAIOR_QUANTIDADE_NOK(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
-        stmt.setObject(4, dataFinal);
+        stmt.setObject(3, dataFinal);
         return stmt;
     }
 }

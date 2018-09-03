@@ -215,9 +215,9 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
             throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_RELATORIO_AMBEV_EXTRATO_REALIZADOS_DIA(?, ?, ?);");
-        stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-        stmt.setObject(3, dataInicial);
-        stmt.setObject(4, dataFinal);
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        stmt.setObject(2, dataInicial);
+        stmt.setObject(3, dataFinal);
         return stmt;
     }
 
@@ -228,9 +228,9 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                                                              @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_RELATORIO_AMBEV_REALIZADOS_DIA(?, ?, ?);");
-        stmt.setObject(1, dataInicial);
-        stmt.setObject(2, dataFinal);
-        stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        stmt.setObject(2, dataInicial);
+        stmt.setObject(3, dataFinal);
         return stmt;
     }
 
@@ -256,9 +256,9 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_RELATORIO_RESUMO_REALIZADOS(?, ?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-        stmt.setObject(2, dataInicial);
-        stmt.setObject(3, dataFinal);
-        stmt.setString(4, placa);
+        stmt.setString(2, placa);
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
         return stmt;
     }
 
@@ -271,9 +271,9 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_RELATORIO_ESTRATIFICACAO_RESPOSTAS_NOK(?, ?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-        stmt.setObject(2, dataInicial);
-        stmt.setObject(3, dataFinal);
-        stmt.setString(4, placa);
+        stmt.setString(2, placa);
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
         return stmt;
     }
 }
