@@ -25,16 +25,16 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     }
 
     @Override
-    public void getChecklistsRealizadosDiaCsv(@NotNull final OutputStream outputStream,
-                                              @NotNull final List<Long> codUnidades,
-                                              @NotNull final LocalDate dataInicial,
-                                              @NotNull final LocalDate dataFinal) throws Throwable {
+    public void getChecklistsRealizadosDiaAmbevCsv(@NotNull final OutputStream outputStream,
+                                                   @NotNull final List<Long> codUnidades,
+                                                   @NotNull final LocalDate dataInicial,
+                                                   @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getChecklistRealizadosDia(conn, codUnidades, dataInicial, dataFinal);
+            stmt = getChecklistRealizadosDiaAmbev(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
@@ -44,15 +44,15 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
 
     @NotNull
     @Override
-    public Report getChecklistsRealizadosDiaReport(@NotNull final List<Long> codUnidades,
-                                                   @NotNull final LocalDate dataInicial,
-                                                   @NotNull final LocalDate dataFinal) throws Throwable {
+    public Report getChecklistsRealizadosDiaAmbevReport(@NotNull final List<Long> codUnidades,
+                                                        @NotNull final LocalDate dataInicial,
+                                                        @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getChecklistRealizadosDia(conn, codUnidades, dataInicial, dataFinal);
+            stmt = getChecklistRealizadosDiaAmbev(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -61,16 +61,16 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     }
 
     @Override
-    public void getExtratoChecklistsRealizadosDiaCsv(@NotNull final OutputStream outputStream,
-                                                     @NotNull final List<Long> codUnidades,
-                                                     @NotNull final LocalDate dataInicial,
-                                                     @NotNull final LocalDate dataFinal) throws Throwable {
+    public void getExtratoChecklistsRealizadosDiaAmbevCsv(@NotNull final OutputStream outputStream,
+                                                          @NotNull final List<Long> codUnidades,
+                                                          @NotNull final LocalDate dataInicial,
+                                                          @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getExtratoChecklistsRealizadosDia(conn, codUnidades, dataInicial, dataFinal);
+            stmt = getExtratoChecklistsRealizadosDiaAmbev(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
@@ -80,15 +80,15 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
 
     @NotNull
     @Override
-    public Report getExtratoChecklistsRealizadosDiaReport(@NotNull final List<Long> codUnidades,
-                                                          @NotNull final LocalDate dataInicial,
-                                                          @NotNull final LocalDate dataFinal) throws Throwable {
+    public Report getExtratoChecklistsRealizadosDiaAmbevReport(@NotNull final List<Long> codUnidades,
+                                                               @NotNull final LocalDate dataInicial,
+                                                               @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getExtratoChecklistsRealizadosDia(conn, codUnidades, dataInicial, dataFinal);
+            stmt = getExtratoChecklistsRealizadosDiaAmbev(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -208,13 +208,13 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     }
 
     @NotNull
-    private PreparedStatement getExtratoChecklistsRealizadosDia(@NotNull final Connection conn,
-                                                                @NotNull final List<Long> codUnidades,
-                                                                @NotNull final LocalDate dataInicial,
-                                                                @NotNull final LocalDate dataFinal)
+    private PreparedStatement getExtratoChecklistsRealizadosDiaAmbev(@NotNull final Connection conn,
+                                                                     @NotNull final List<Long> codUnidades,
+                                                                     @NotNull final LocalDate dataInicial,
+                                                                     @NotNull final LocalDate dataFinal)
             throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "FUNC_CHECKLIST_RELATORIO_EXTRATO_CHECKLISTS_REALIZADOS_DIA(?, ?, ?);");
+                "FUNC_CHECKLIST_RELATORIO_AMBEV_EXTRATO_CHECKLISTS_REALIZADOS_DIA(?, ?, ?);");
         stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(3, dataInicial);
         stmt.setObject(4, dataFinal);
@@ -222,12 +222,12 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     }
 
     @NotNull
-    private PreparedStatement getChecklistRealizadosDia(@NotNull final Connection conn,
-                                                        @NotNull final List<Long> codUnidades,
-                                                        @NotNull final LocalDate dataInicial,
-                                                        @NotNull final LocalDate dataFinal) throws Throwable {
+    private PreparedStatement getChecklistRealizadosDiaAmbev(@NotNull final Connection conn,
+                                                             @NotNull final List<Long> codUnidades,
+                                                             @NotNull final LocalDate dataInicial,
+                                                             @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "FUNC_CHECKLIST_RELATORIO_CHECKLISTS_REALIZADOS_DIA(?, ?, ?);");
+                "FUNC_CHECKLIST_RELATORIO_AMBEV_CHECKLISTS_REALIZADOS_DIA(?, ?, ?);");
         stmt.setObject(1, dataInicial);
         stmt.setObject(2, dataFinal);
         stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));

@@ -17,12 +17,12 @@ class ChecklistRelatorioService {
     @NotNull
     private final ChecklistRelatorioDao dao = Injection.provideChecklistRelatorioDao();
 
-    void getChecklistsRealizadosDiaCsv(@NotNull final OutputStream outputStream,
-                                       @NotNull final List<Long> codUnidade,
-                                       @NotNull final String dataInicial,
-                                       @NotNull final String dataFinal) {
+    void getChecklistsRealizadosDiaAmbevCsv(@NotNull final OutputStream outputStream,
+                                            @NotNull final List<Long> codUnidade,
+                                            @NotNull final String dataInicial,
+                                            @NotNull final String dataFinal) {
         try {
-            dao.getChecklistsRealizadosDiaCsv(
+            dao.getChecklistsRealizadosDiaAmbevCsv(
                     outputStream,
                     codUnidade,
                     ProLogDateParser.toLocalDate(dataInicial),
@@ -33,11 +33,11 @@ class ChecklistRelatorioService {
     }
 
     @NotNull
-    Report getChecklistsRealizadosDiaReport(@NotNull final List<Long> codUnidade,
-                                            @NotNull final String dataInicial,
-                                            @NotNull final String dataFinal) {
+    Report getChecklistsRealizadosDiaAmbevReport(@NotNull final List<Long> codUnidade,
+                                                 @NotNull final String dataInicial,
+                                                 @NotNull final String dataFinal) {
         try {
-            return dao.getChecklistsRealizadosDiaReport(
+            return dao.getChecklistsRealizadosDiaAmbevReport(
                     codUnidade,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
@@ -47,12 +47,12 @@ class ChecklistRelatorioService {
         }
     }
 
-    void getExtratoChecklistsRealizadosDiaCsv(@NotNull final OutputStream outputStream,
-                                              @NotNull final List<Long> codUnidade,
-                                              @NotNull final String dataInicial,
-                                              @NotNull final String dataFinal) {
+    void getExtratoChecklistsRealizadosDiaAmbevCsv(@NotNull final OutputStream outputStream,
+                                                   @NotNull final List<Long> codUnidade,
+                                                   @NotNull final String dataInicial,
+                                                   @NotNull final String dataFinal) {
         try {
-            dao.getExtratoChecklistsRealizadosDiaCsv(
+            dao.getExtratoChecklistsRealizadosDiaAmbevCsv(
                     outputStream,
                     codUnidade,
                     ProLogDateParser.toLocalDate(dataInicial),
@@ -63,11 +63,11 @@ class ChecklistRelatorioService {
     }
 
     @NotNull
-    Report getExtratoChecklistsRealizadosDiaReport(@NotNull final List<Long> codUnidade,
-                                                   @NotNull final String dataInicial,
-                                                   @NotNull final String dataFinal) {
+    Report getExtratoChecklistsRealizadosDiaAmbevReport(@NotNull final List<Long> codUnidade,
+                                                        @NotNull final String dataInicial,
+                                                        @NotNull final String dataFinal) {
         try {
-            return dao.getExtratoChecklistsRealizadosDiaReport(
+            return dao.getExtratoChecklistsRealizadosDiaAmbevReport(
                     codUnidade,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));

@@ -12,25 +12,25 @@ import java.util.List;
  */
 public interface ChecklistRelatorioDao {
 
-    void getChecklistsRealizadosDiaCsv(@NotNull final OutputStream outputStream,
-                                       @NotNull final List<Long> codUnidade,
-                                       @NotNull final LocalDate dataInicial,
-                                       @NotNull final LocalDate dataFinal) throws Throwable;
-
-    @NotNull
-    Report getChecklistsRealizadosDiaReport(@NotNull final List<Long> codUnidade,
+    void getChecklistsRealizadosDiaAmbevCsv(@NotNull final OutputStream outputStream,
+                                            @NotNull final List<Long> codUnidade,
                                             @NotNull final LocalDate dataInicial,
                                             @NotNull final LocalDate dataFinal) throws Throwable;
 
-    void getExtratoChecklistsRealizadosDiaCsv(@NotNull final OutputStream outputStream,
-                                              @NotNull final List<Long> codUnidade,
-                                              @NotNull final LocalDate dataInicial,
-                                              @NotNull final LocalDate dataFinal) throws Throwable;
-
     @NotNull
-    Report getExtratoChecklistsRealizadosDiaReport(@NotNull final List<Long> codUnidade,
+    Report getChecklistsRealizadosDiaAmbevReport(@NotNull final List<Long> codUnidade,
+                                                 @NotNull final LocalDate dataInicial,
+                                                 @NotNull final LocalDate dataFinal) throws Throwable;
+
+    void getExtratoChecklistsRealizadosDiaAmbevCsv(@NotNull final OutputStream outputStream,
+                                                   @NotNull final List<Long> codUnidade,
                                                    @NotNull final LocalDate dataInicial,
                                                    @NotNull final LocalDate dataFinal) throws Throwable;
+
+    @NotNull
+    Report getExtratoChecklistsRealizadosDiaAmbevReport(@NotNull final List<Long> codUnidade,
+                                                        @NotNull final LocalDate dataInicial,
+                                                        @NotNull final LocalDate dataFinal) throws Throwable;
 
     void getTempoRealizacaoChecklistsMotoristaCsv(@NotNull final OutputStream outputStream,
                                                   @NotNull final List<Long> codUnidade,

@@ -22,39 +22,39 @@ public class ChecklistRelatorioResource {
     private final ChecklistRelatorioService service = new ChecklistRelatorioService();
 
     @GET
-    @Path("/checklists-realizados-dia/csv")
+    @Path("/ambev-checklists-realizados-dia/csv")
     @Produces("application/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getChecklistsRealizadosDiaCsv(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                         @QueryParam("dataInicial") String dataInicial,
-                                                         @QueryParam("dataFinal") String dataFinal) {
-        return outputStream -> service.getChecklistsRealizadosDiaCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    public StreamingOutput getChecklistsRealizadosDiaAmbevCsv(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                              @QueryParam("dataInicial") String dataInicial,
+                                                              @QueryParam("dataFinal") String dataFinal) {
+        return outputStream -> service.getChecklistsRealizadosDiaAmbevCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
-    @Path("/checklists-realizados-dia/report")
-    public Report getChecklistsRealizadosDiaReport(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                   @QueryParam("dataInicial") String dataInicial,
-                                                   @QueryParam("dataFinal") String dataFinal) {
-        return service.getChecklistsRealizadosDiaReport(codUnidades, dataInicial, dataFinal);
+    @Path("/ambev-checklists-realizados-dia/report")
+    public Report getChecklistsRealizadosDiaAmbevReport(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                        @QueryParam("dataInicial") String dataInicial,
+                                                        @QueryParam("dataFinal") String dataFinal) {
+        return service.getChecklistsRealizadosDiaAmbevReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
-    @Path("/extrato-checklists-realizados-dia/csv")
+    @Path("/ambev-extrato-checklists-realizados-dia/csv")
     @Produces("application/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getExtratoChecklistsRealizadosDiaCsv(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                                @QueryParam("dataInicial") String dataInicial,
-                                                                @QueryParam("dataFinal") String dataFinal) {
-        return outputStream -> service.getExtratoChecklistsRealizadosDiaCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    public StreamingOutput getExtratoChecklistsRealizadosDiaAmbevCsv(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                                     @QueryParam("dataInicial") String dataInicial,
+                                                                     @QueryParam("dataFinal") String dataFinal) {
+        return outputStream -> service.getExtratoChecklistsRealizadosDiaAmbevCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
-    @Path("/extrato-checklists-realizados-dia/report")
-    public Report getExtratoChecklistsRealizadosDiaReport(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                          @QueryParam("dataInicial") String dataInicial,
-                                                          @QueryParam("dataFinal") String dataFinal) {
-        return service.getExtratoChecklistsRealizadosDiaReport(codUnidades, dataInicial, dataFinal);
+    @Path("/ambev-extrato-checklists-realizados-dia/report")
+    public Report getExtratoChecklistsRealizadosDiaAmbevReport(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                               @QueryParam("dataInicial") String dataInicial,
+                                                               @QueryParam("dataFinal") String dataFinal) {
+        return service.getExtratoChecklistsRealizadosDiaAmbevReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
