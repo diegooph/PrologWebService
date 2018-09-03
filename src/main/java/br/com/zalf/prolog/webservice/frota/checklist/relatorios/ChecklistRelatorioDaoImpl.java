@@ -97,10 +97,10 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     }
 
     @Override
-    public void getTempoRealizacaoChecklistsMotoristaCsv(@NotNull final OutputStream outputStream,
-                                                         @NotNull final List<Long> codUnidades,
-                                                         @NotNull final LocalDate dataInicial,
-                                                         @NotNull final LocalDate dataFinal) throws Throwable {
+    public void getTempoRealizacaoChecklistsMotoristasCsv(@NotNull final OutputStream outputStream,
+                                                          @NotNull final List<Long> codUnidades,
+                                                          @NotNull final LocalDate dataInicial,
+                                                          @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -116,9 +116,9 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
 
     @NotNull
     @Override
-    public Report getTempoRealizacaoChecklistsMotoristaReport(@NotNull final List<Long> codUnidades,
-                                                              @NotNull final LocalDate dataInicial,
-                                                              @NotNull final LocalDate dataFinal) throws Throwable {
+    public Report getTempoRealizacaoChecklistsMotoristasReport(@NotNull final List<Long> codUnidades,
+                                                               @NotNull final LocalDate dataInicial,
+                                                               @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

@@ -32,15 +32,15 @@ public interface ChecklistRelatorioDao {
                                                         @NotNull final LocalDate dataInicial,
                                                         @NotNull final LocalDate dataFinal) throws Throwable;
 
-    void getTempoRealizacaoChecklistsMotoristaCsv(@NotNull final OutputStream outputStream,
-                                                  @NotNull final List<Long> codUnidade,
-                                                  @NotNull final LocalDate dataInicial,
-                                                  @NotNull final LocalDate dataFinal) throws Throwable;
+    void getTempoRealizacaoChecklistsMotoristasCsv(@NotNull final OutputStream outputStream,
+                                                   @NotNull final List<Long> codUnidade,
+                                                   @NotNull final LocalDate dataInicial,
+                                                   @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
-    Report getTempoRealizacaoChecklistsMotoristaReport(@NotNull final List<Long> codUnidade,
-                                                       @NotNull final LocalDate dataInicial,
-                                                       @NotNull final LocalDate dataFinal) throws Throwable;
+    Report getTempoRealizacaoChecklistsMotoristasReport(@NotNull final List<Long> codUnidade,
+                                                        @NotNull final LocalDate dataInicial,
+                                                        @NotNull final LocalDate dataFinal) throws Throwable;
 
     void getResumoChecklistsCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidade,

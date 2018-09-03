@@ -58,21 +58,21 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/tempo-realizacao-checklists-motorista/csv")
+    @Path("/tempo-realizacao-checklists-motoristas/csv")
     @Produces("application/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getTempoRealizacaoChecklistsMotoristaCsv(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                                    @QueryParam("dataInicial") String dataInicial,
-                                                                    @QueryParam("dataFinal") String dataFinal) {
-        return outputStream -> service.getTempoRealizacaoChecklistsMotoristaCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    public StreamingOutput getTempoRealizacaoChecklistsMotoristasCsv(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                                     @QueryParam("dataInicial") String dataInicial,
+                                                                     @QueryParam("dataFinal") String dataFinal) {
+        return outputStream -> service.getTempoRealizacaoChecklistsMotoristasCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
-    @Path("/tempo-realizacao-checklists-motorista/report")
-    public Report getTempoRealizacaoChecklistsMotoristaReport(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                              @QueryParam("dataInicial") String dataInicial,
-                                                              @QueryParam("dataFinal") String dataFinal) {
-        return service.getTempoRealizacaoChecklistsMotoristaReport(codUnidades, dataInicial, dataFinal);
+    @Path("/tempo-realizacao-checklists-motoristas/report")
+    public Report getTempoRealizacaoChecklistsMotoristasReport(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                               @QueryParam("dataInicial") String dataInicial,
+                                                               @QueryParam("dataFinal") String dataFinal) {
+        return service.getTempoRealizacaoChecklistsMotoristasReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET

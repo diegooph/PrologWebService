@@ -77,12 +77,12 @@ class ChecklistRelatorioService {
         }
     }
 
-    void getTempoRealizacaoChecklistsMotoristaCsv(@NotNull final OutputStream outputStream,
-                                                  @NotNull final List<Long> codUnidade,
-                                                  @NotNull final String dataInicial,
-                                                  @NotNull final String dataFinal) {
+    void getTempoRealizacaoChecklistsMotoristasCsv(@NotNull final OutputStream outputStream,
+                                                   @NotNull final List<Long> codUnidade,
+                                                   @NotNull final String dataInicial,
+                                                   @NotNull final String dataFinal) {
         try {
-            dao.getTempoRealizacaoChecklistsMotoristaCsv(
+            dao.getTempoRealizacaoChecklistsMotoristasCsv(
                     outputStream,
                     codUnidade,
                     ProLogDateParser.toLocalDate(dataInicial),
@@ -93,11 +93,11 @@ class ChecklistRelatorioService {
     }
 
     @NotNull
-    Report getTempoRealizacaoChecklistsMotoristaReport(@NotNull final List<Long> codUnidade,
-                                                       @NotNull final String dataInicial,
-                                                       @NotNull final String dataFinal) {
+    Report getTempoRealizacaoChecklistsMotoristasReport(@NotNull final List<Long> codUnidade,
+                                                        @NotNull final String dataInicial,
+                                                        @NotNull final String dataFinal) {
         try {
-            return dao.getTempoRealizacaoChecklistsMotoristaReport(
+            return dao.getTempoRealizacaoChecklistsMotoristasReport(
                     codUnidade,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
