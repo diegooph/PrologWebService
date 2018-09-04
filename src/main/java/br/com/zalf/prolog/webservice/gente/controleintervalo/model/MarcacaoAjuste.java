@@ -7,10 +7,62 @@ import java.time.LocalDateTime;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class MarcacaoAjuste {
+public abstract class MarcacaoAjuste {
 
     private MarcacaoJustificativaAjuste justificativaAjuste;
     private String observacaoAjuste;
     private LocalDateTime dataHoraAjuste;
+    private Long codColaboradorAjuste;
     private String nomeColaboradorAjuste;
+
+    public MarcacaoJustificativaAjuste getJustificativaAjuste() {
+        return justificativaAjuste;
+    }
+
+    public void setJustificativaAjuste(final MarcacaoJustificativaAjuste justificativaAjuste) {
+        this.justificativaAjuste = justificativaAjuste;
+    }
+
+    public String getObservacaoAjuste() {
+        return observacaoAjuste;
+    }
+
+    public void setObservacaoAjuste(final String observacaoAjuste) {
+        this.observacaoAjuste = observacaoAjuste;
+    }
+
+    public LocalDateTime getDataHoraAjuste() {
+        return dataHoraAjuste;
+    }
+
+    public void setDataHoraAjuste(final LocalDateTime dataHoraAjuste) {
+        this.dataHoraAjuste = dataHoraAjuste;
+    }
+
+    public Long getCodColaboradorAjuste() {
+        return codColaboradorAjuste;
+    }
+
+    public void setCodColaboradorAjuste(final Long codColaboradorAjuste) {
+        this.codColaboradorAjuste = codColaboradorAjuste;
+    }
+
+    public String getNomeColaboradorAjuste() {
+        return nomeColaboradorAjuste;
+    }
+
+    public void setNomeColaboradorAjuste(final String nomeColaboradorAjuste) {
+        this.nomeColaboradorAjuste = nomeColaboradorAjuste;
+    }
+
+    @Override
+    public String toString() {
+        return "MarcacaoAjuste{" +
+                "justificativaAjuste=" + justificativaAjuste +
+                ", observacaoAjuste='" + observacaoAjuste + '\'' +
+                ", dataHoraAjuste=" + dataHoraAjuste +
+                ", codColaboradorAjuste=" + codColaboradorAjuste +
+                ", nomeColaboradorAjuste='" + nomeColaboradorAjuste + '\'' +
+                '}';
+    }
 }

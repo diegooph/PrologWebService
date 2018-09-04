@@ -5,5 +5,25 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class MarcacaoAjusteAtivacaoInativacao {
+public class MarcacaoAjusteAtivacaoInativacao extends MarcacaoAjuste {
+
+    private boolean isAtivo;
+
+    public MarcacaoAjusteAtivacaoInativacao() {
+    }
+
+    public boolean isAtivo() {
+        return isAtivo;
+    }
+
+    public void setAtivo(final boolean ativo) {
+        isAtivo = ativo;
+    }
+
+    @Override
+    public String toString() {
+        return "MarcacaoAjusteAtivacaoInativacao{" +
+                "isAtivo=" + isAtivo +
+                '}';
+    }
 }
