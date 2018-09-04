@@ -23,7 +23,7 @@ public class MarcacaoConsolidadaDiaColaborador {
         consolidadaDiaColaborador.setCodColaborador(2272L);
         consolidadaDiaColaborador.setNomeColaborador("Zalf Sistemas");
         consolidadaDiaColaborador.setQtdMarcacoesDia(10);
-        consolidadaDiaColaborador.setQtdMarcacoesDia(5);
+        consolidadaDiaColaborador.setQtdInconsistenciasDia(5);
         return consolidadaDiaColaborador;
     }
 
