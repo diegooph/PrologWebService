@@ -21,6 +21,7 @@ public class ControleJornadaAjustesDaoImpl implements ControleJornadaAjustesDao 
             @NotNull final Long codUnidade,
             @NotNull final String codColaborador,
             @NotNull final String codTipoIntervalo,
+            @NotNull final String token,
             @NotNull final MarcacaoAjusteAdicaoInicioFim ajusteAdicaoInicio) throws Throwable {
 
     }
@@ -57,7 +58,9 @@ public class ControleJornadaAjustesDaoImpl implements ControleJornadaAjustesDao 
     }
 
     @Override
-    public void ajustaMarcacao(@NotNull final Long codMarcacao,
+    public void ajustaMarcacao(@NotNull final Long codUnidade,
+                               @NotNull final Long codMarcacao,
+                               @NotNull final String token,
                                @NotNull final MarcacaoAjuste marcacaoAjuste) throws Throwable {
 
     }
