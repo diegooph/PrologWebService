@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.error.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios.AfericaoRelatorioService;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -19,9 +20,11 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppV
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.StreamingOutput;
 import java.util.List;
 
 /**
@@ -40,7 +43,11 @@ import java.util.List;
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class AfericaoResource {
 
+    @NotNull
     private final AfericaoService service = new AfericaoService();
+
+    @NotNull
+    private final AfericaoRelatorioService relatorioService = new AfericaoRelatorioService();
 
     @POST
     @Secured(permissions = {
@@ -212,5 +219,24 @@ public class AfericaoResource {
             @QueryParam("offset") long offset,
             @HeaderParam("Authorization") String userToken) throws ProLogException {
         throw new VersaoAppBloqueadaException("Atualize o aplicativo para poder buscar as aferições realizadas");
+    }
+
+    @GET
+    @Produces("application/csv")
+    @Path("/unidades/{codUnidade}/csv")
+    public StreamingOutput getDadosGeraisAfericao(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> relatorioService.getDadosGeraisAfericaoCsv(outputStream, codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/unidades/{codUnidade}/report")
+    public Report getDadosGeraisProdutividadeReport(@PathParam("codUnidade") @Required final Long codUnidade,
+                                                    @QueryParam("dataInicial") @Required final String dataInicial,
+                                                    @QueryParam("dataFinal") @Required final String dataFinal)
+            throws ProLogException {
+        return relatorioService.getDadosGeraisAfericaoReport(codUnidade, dataInicial, dataFinal);
     }
 }

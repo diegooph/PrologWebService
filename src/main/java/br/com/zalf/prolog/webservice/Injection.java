@@ -49,6 +49,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios.AfericaoRela
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios.AfericaoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
@@ -185,6 +187,11 @@ public final class Injection {
     @NotNull
     public static MovimentacaoDao provideMovimentacaoDao() {
         return new MovimentacaoDaoImpl();
+    }
+
+    @NotNull
+    public static MovimentacaoRelatorioDao provideMovimentacaoRelatorioDao() {
+        return new MovimentacaoRelatorioDaoImpl();
     }
 
     @NotNull
