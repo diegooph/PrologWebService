@@ -37,7 +37,7 @@ class EscalaDiariaReader {
         }
 
         final CsvParserSettings settings = new CsvParserSettings();
-        settings.setDelimiterDetectionEnabled(true);
+        settings.setDelimiterDetectionEnabled(true, ',', ';');
         settings.setHeaderExtractionEnabled(true);
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);

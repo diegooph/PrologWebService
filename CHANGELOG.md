@@ -5,6 +5,8 @@ Change Log
 ## Version [v0.0.75](https://github.com/luizfp/PrologWeb/compare/v0.0.74...v0.0.75) (release-date) [unreleased]
 
 ### Bug Fixes
+* Fixa delimitadores aceitos na escala diária (isso melhora e ajuda a biblioteca de parse a identificar o delimitador
+utilizado no arquivo)
 * Corrige criação das alternativas 'tipo outros' do modelo de checklist
 
 <a name="v0.0.74"></a>
