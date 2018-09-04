@@ -51,12 +51,12 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuSqlExceptionTranslator;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuTipoServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuTipoServicoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -77,6 +77,8 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDa
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjustesDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjustesDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatoriosDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
@@ -243,6 +245,11 @@ public final class Injection {
     @NotNull
     public static ControleIntervaloDao provideControleIntervaloDao() {
         return new ControleIntervaloDaoImpl();
+    }
+
+    @NotNull
+    public static ControleJornadaAjustesDao provideControleJornadaAjustesDao() {
+        return new ControleJornadaAjustesDaoImpl();
     }
 
     @NotNull
