@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.MarcacaoAjusteAdicaoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoConsolidada;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -90,6 +91,15 @@ public class DummyResource {
             marcacoesConsolidadas.add(MarcacaoConsolidada.createDummy());
         }
         return marcacoesConsolidadas;
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/marcacao-ajuste-adicao-inicio-fim")
+    @Secured
+    public MarcacaoAjusteAdicaoInicioFim getMarcacaoAjusteAdicaoInicioFim() {
+        ensureDebugEnvironment();
+        return MarcacaoAjusteAdicaoInicioFim.createDummy();
     }
 
     private void ensureDebugEnvironment() {
