@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+<a name="v0.0.75"></a>
+## Version [v0.0.75](https://github.com/luizfp/PrologWeb/compare/v0.0.74...v0.0.75) (2018-09-04)
+
+### Features
+* Cria nova function e novos métodos para gerar relatório geral de aferição
+
+### Bug Fixes
+* Fixa delimitadores aceitos na escala diária (isso melhora e ajuda a biblioteca de parse a identificar o delimitador
+utilizado no arquivo)
+* Previne quebra da aplicação ao importar escala diária sem CPF de ajudante
+* Corrige parse do código da rota na escala diária
+* Corrige criação das alternativas 'tipo outros' do modelo de checklist
+
 <a name="v0.0.74"></a>
 ## Version [v0.0.74](https://github.com/luizfp/PrologWeb/compare/v0.0.73...v0.0.74) (2018-08-30)
 
