@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacaoAjuste;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -12,14 +13,13 @@ import java.util.Calendar;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
-
     private Long codColaboradorMarcacao;
     private Long codTipoIntervalo;
     private LocalDateTime dataHoraInicio;
     private LocalDateTime dataHoraFim;
 
     public MarcacaoAjusteAdicaoInicioFim() {
-        super(MarcacaoAjuste.MARCACAO_AJUSTE_ADICAO_INICIO_FIM);
+        super(TipoMarcacaoAjuste.ADICAO_INICIO_FIM);
     }
 
     public static MarcacaoAjusteAdicaoInicioFim createDummy() {

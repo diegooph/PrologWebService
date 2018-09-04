@@ -8,12 +8,11 @@ import java.time.LocalDateTime;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class MarcacaoAjusteEdicao extends MarcacaoAjuste {
-
     private LocalDateTime dataHoraOriginal;
     private LocalDateTime dataHoraNova;
 
     public MarcacaoAjusteEdicao() {
-        super(MarcacaoAjuste.MARCACAO_AJUSTE_EDICAO);
+        super(TipoMarcacaoAjuste.EDICAO);
     }
 
     public LocalDateTime getDataHoraOriginal() {

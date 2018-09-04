@@ -8,14 +8,13 @@ import java.time.LocalDateTime;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class MarcacaoAjusteAdicao extends MarcacaoAjuste {
-
     private Long codMarcacaoVinculo;
     private Long codColaborador;
     private Long codTipoIntervaloMarcado;
     private LocalDateTime dataHoraInserida;
 
     public MarcacaoAjusteAdicao() {
-        super(MarcacaoAjuste.MARCACAO_AJUSTE_ADICAO);
+        super(TipoMarcacaoAjuste.ADICAO);
     }
 
     public Long getCodMarcacaoVinculo() {
