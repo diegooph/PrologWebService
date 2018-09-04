@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
  */
 public class MarcacaoAjusteAdicao extends MarcacaoAjuste {
 
+    private Long codMarcacaoVinculo;
+    private Long codColaborador;
+    private Long codTipoIntervaloMarcado;
     private LocalDateTime dataHoraInserida;
 
     public MarcacaoAjusteAdicao(final LocalDateTime dataHoraInserida) {

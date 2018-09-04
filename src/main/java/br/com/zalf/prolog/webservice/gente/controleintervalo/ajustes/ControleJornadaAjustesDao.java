@@ -16,6 +16,7 @@ public interface ControleJornadaAjustesDao {
     void insereMarcacaoCompletaNoDia(@NotNull final Long codUnidade,
                                      @NotNull final String codColaborador,
                                      @NotNull final String codTipoIntervalo,
+                                     @NotNull final String token,
                                      @NotNull final MarcacaoAjusteAdicaoInicioFim ajusteAdicaoInicio) throws Throwable;
 
     @NotNull
@@ -36,6 +37,8 @@ public interface ControleJornadaAjustesDao {
     @NotNull
     List<MarcacaoInconsistencia> getMarcacoesInconsistentes(@NotNull final Long codMarcacao) throws Throwable;
 
-    void ajustaMarcacao(@NotNull final Long codMarcacao,
+    void ajustaMarcacao(@NotNull final Long codUnidade,
+                        @NotNull final Long codMarcacao,
+                        @NotNull final String token,
                         @NotNull final MarcacaoAjuste marcacaoAjuste) throws Throwable;
 }
