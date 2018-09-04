@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoConsolidada;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.Visao;
@@ -30,7 +31,7 @@ public class DummyResource {
     @Path("/cargo")
     @Secured
     public Cargo getCargo() {
-        ensureDebugEnviroment();
+        ensureDebugEnvironment();
         return Cargo.createDummy();
     }
 
@@ -39,7 +40,7 @@ public class DummyResource {
     @Path("/cargo-list")
     @Secured
     public List<Cargo> getCargoList() {
-        ensureDebugEnviroment();
+        ensureDebugEnvironment();
         final List<Cargo> cargos = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             cargos.add(Cargo.createDummy());
@@ -52,7 +53,7 @@ public class DummyResource {
     @Path("/visao")
     @Secured
     public Visao getVisao() {
-        ensureDebugEnviroment();
+        ensureDebugEnvironment();
         return Visao.createDummy();
     }
 
@@ -61,7 +62,7 @@ public class DummyResource {
     @Path("/tipo-intervalo")
     @Secured
     public TipoIntervalo getTipoIntervalo() {
-        ensureDebugEnviroment();
+        ensureDebugEnvironment();
         return TipoIntervalo.createDummy();
     }
 
@@ -70,7 +71,7 @@ public class DummyResource {
     @Path("/tipo-intervalo-list")
     @Secured
     public List<TipoIntervalo> getTipoIntervaloList() {
-        ensureDebugEnviroment();
+        ensureDebugEnvironment();
         final List<TipoIntervalo> tipos = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             tipos.add(TipoIntervalo.createDummy());
@@ -78,7 +79,20 @@ public class DummyResource {
         return tipos;
     }
 
-    private void ensureDebugEnviroment() {
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/marcacoes-consolidadas-list")
+    @Secured
+    public List<MarcacaoConsolidada> getMarcacoesConsolidadas() {
+        ensureDebugEnvironment();
+        final List<MarcacaoConsolidada> marcacoesConsolidadas = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            marcacoesConsolidadas.add(MarcacaoConsolidada.createDummy());
+        }
+        return marcacoesConsolidadas;
+    }
+
+    private void ensureDebugEnvironment() {
         if (!BuildConfig.DEBUG) {
             throw new IllegalStateException("Esse resource só pode ser utilizado em ambientes de testes");
         }

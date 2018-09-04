@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +20,20 @@ public class MarcacaoConsolidada {
     private List<MarcacaoConsolidadaDiaColaborador> consolidadaColaboradores;
 
     public MarcacaoConsolidada() {
+    }
+
+    @NotNull
+    public static MarcacaoConsolidada createDummy() {
+        final MarcacaoConsolidada consolidada = new MarcacaoConsolidada();
+        consolidada.setData(ProLogDateParser.toLocalDate("2018-09-04"));
+        consolidada.setTotalMarcacoesDia(10);
+        consolidada.setTotalInconsistenciasDia(5);
+        final List<MarcacaoConsolidadaDiaColaborador> consolidadaColaboradores = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            consolidadaColaboradores.add(MarcacaoConsolidadaDiaColaborador.createDummy());
+        }
+        consolidada.setConsolidadaColaboradores(consolidadaColaboradores);
+        return consolidada;
     }
 
     public LocalDate getData() {

@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 04/09/18.
  *
@@ -13,6 +15,16 @@ public class MarcacaoConsolidadaDiaColaborador {
     private int qtdInconsistenciasDia;
 
     public MarcacaoConsolidadaDiaColaborador() {
+    }
+
+    @NotNull
+    public static MarcacaoConsolidadaDiaColaborador createDummy() {
+        final MarcacaoConsolidadaDiaColaborador consolidadaDiaColaborador = new MarcacaoConsolidadaDiaColaborador();
+        consolidadaDiaColaborador.setCodColaborador(2272L);
+        consolidadaDiaColaborador.setNomeColaborador("Zalf Sistemas");
+        consolidadaDiaColaborador.setQtdMarcacoesDia(10);
+        consolidadaDiaColaborador.setQtdMarcacoesDia(5);
+        return consolidadaDiaColaborador;
     }
 
     public Long getCodColaborador() {
