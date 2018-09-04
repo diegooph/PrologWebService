@@ -10,6 +10,7 @@ public class MarcacaoAjusteAtivacaoInativacao extends MarcacaoAjuste {
     private boolean isAtivo;
 
     public MarcacaoAjusteAtivacaoInativacao() {
+        super(MarcacaoAjuste.MARCACAO_AJUSTE_ATIVACAO_INATIVACAO);
     }
 
     public boolean isAtivo() {

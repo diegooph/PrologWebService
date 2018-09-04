@@ -19,6 +19,7 @@ public class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
     private LocalDateTime dataHoraFim;
 
     public MarcacaoAjusteAdicaoInicioFim() {
+        super(MarcacaoAjuste.MARCACAO_AJUSTE_ADICAO_INICIO_FIM);
     }
 
     public static MarcacaoAjusteAdicaoInicioFim createDummy() {
