@@ -9,18 +9,18 @@ import java.time.LocalDateTime;
  */
 public abstract class MarcacaoAjuste {
 
-    private MarcacaoJustificativaAjuste justificativaAjuste;
-    private String observacaoAjuste;
-    private LocalDateTime dataHoraAjuste;
+    private Long codJustificativaAjuste;
     private Long codColaboradorAjuste;
     private String nomeColaboradorAjuste;
+    private String observacaoAjuste;
+    private LocalDateTime dataHoraAjuste;
 
-    public MarcacaoJustificativaAjuste getJustificativaAjuste() {
-        return justificativaAjuste;
+    public Long getCodJustificativaAjuste() {
+        return codJustificativaAjuste;
     }
 
-    public void setJustificativaAjuste(final MarcacaoJustificativaAjuste justificativaAjuste) {
-        this.justificativaAjuste = justificativaAjuste;
+    public void setCodJustificativaAjuste(final Long codJustificativaAjuste) {
+        this.codJustificativaAjuste = codJustificativaAjuste;
     }
 
     public String getObservacaoAjuste() {
@@ -58,7 +58,7 @@ public abstract class MarcacaoAjuste {
     @Override
     public String toString() {
         return "MarcacaoAjuste{" +
-                "justificativaAjuste=" + justificativaAjuste +
+                "codJustificativaAjuste=" + codJustificativaAjuste +
                 ", observacaoAjuste='" + observacaoAjuste + '\'' +
                 ", dataHoraAjuste=" + dataHoraAjuste +
                 ", codColaboradorAjuste=" + codColaboradorAjuste +

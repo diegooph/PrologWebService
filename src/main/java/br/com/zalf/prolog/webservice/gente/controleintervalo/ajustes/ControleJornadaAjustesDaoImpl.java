@@ -19,8 +19,6 @@ public class ControleJornadaAjustesDaoImpl implements ControleJornadaAjustesDao 
     @Override
     public void insereMarcacaoCompletaNoDia(
             @NotNull final Long codUnidade,
-            @NotNull final String codColaborador,
-            @NotNull final String codTipoIntervalo,
             @NotNull final String token,
             @NotNull final MarcacaoAjusteAdicaoInicioFim ajusteAdicaoInicio) throws Throwable {
 

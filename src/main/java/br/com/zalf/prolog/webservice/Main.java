@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice;
 
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.MarcacaoAjusteAdicaoInicioFim;
+
 public class Main {
 
     public static void main(String[] args) {
-        String teste = "teste PL nos commits mas no subject";
+        System.out.println(GsonUtils.getGson().toJson(MarcacaoAjusteAdicaoInicioFim.createDummy()));
     }
 }

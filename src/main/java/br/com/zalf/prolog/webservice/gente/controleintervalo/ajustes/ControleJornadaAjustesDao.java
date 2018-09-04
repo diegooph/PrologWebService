@@ -14,8 +14,6 @@ import java.util.List;
 public interface ControleJornadaAjustesDao {
 
     void insereMarcacaoCompletaNoDia(@NotNull final Long codUnidade,
-                                     @NotNull final String codColaborador,
-                                     @NotNull final String codTipoIntervalo,
                                      @NotNull final String token,
                                      @NotNull final MarcacaoAjusteAdicaoInicioFim ajusteAdicaoInicio) throws Throwable;
 
