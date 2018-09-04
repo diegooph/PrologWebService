@@ -57,6 +57,10 @@ public class Alternativa {
         this.ordemExibicao = ordemExibicao;
     }
 
+    public boolean isTipoOutros() {
+        return this.tipo == TIPO_OUTROS;
+    }
+
     @Override
     public String toString() {
         return "AlternativaChecklist{" +

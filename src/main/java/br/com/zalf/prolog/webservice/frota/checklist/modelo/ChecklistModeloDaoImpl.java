@@ -416,13 +416,14 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         try {
             stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
                     + "COD_CHECKLIST_MODELO, COD_UNIDADE, COD_PERGUNTA, ALTERNATIVA, ORDEM, "
-                    + "STATUS_ATIVO) VALUES (?,?,?,?,?,?);");
+                    + "STATUS_ATIVO, ALTERNATIVA_TIPO_OUTROS) VALUES (?, ?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, codModelo);
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codPergunta);
             stmt.setString(4, alternativa.alternativa);
             stmt.setInt(5, alternativa.ordemExibicao);
             stmt.setBoolean(6, true);
+            stmt.setBoolean(7, alternativa.isTipoOutros());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inserir a alternativa da pergunta de código: " + codPergunta);
             }
@@ -560,18 +561,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 // Adiciona a alternativa TIPO_OUTROS.
                 pergunta.getAlternativasResposta().add(createAlternativaTipoOutros(pergunta));
                 for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
-                    stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
-                            + "COD_CHECKLIST_MODELO, COD_UNIDADE, COD_PERGUNTA, ALTERNATIVA, ORDEM, "
-                            + "STATUS_ATIVO) VALUES (?,?,?,?,?,?);");
-                    stmt.setLong(1, codModelo);
-                    stmt.setLong(2, codUnidade);
-                    stmt.setLong(3, pergunta.getCodigo());
-                    stmt.setString(4, alternativa.alternativa);
-                    stmt.setInt(5, alternativa.ordemExibicao);
-                    stmt.setBoolean(6, true);
-                    if (stmt.executeUpdate() == 0) {
-                        throw new SQLException("Erro ao inserir a alternativar do checklist");
-                    }
+                    insertAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
                 }
             } else {
                 throw new SQLException("Erro ao inserir a pergunta do checklist");
@@ -756,8 +746,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private List<PerguntaRespostaChecklist> createPerguntasAlternativas(@NotNull final ResultSet rSet) throws
-            SQLException {
+    private List<PerguntaRespostaChecklist> createPerguntasAlternativas(
+            @NotNull final ResultSet rSet) throws SQLException {
         final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
         List<AlternativaChecklist> alternativas = new ArrayList<>();
         PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
