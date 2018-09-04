@@ -11,6 +11,7 @@ Change Log
 * Fixa delimitadores aceitos na escala diária (isso melhora e ajuda a biblioteca de parse a identificar o delimitador
 utilizado no arquivo)
 * Previne quebra da aplicação ao importar escala diária sem CPF de ajudante
+* Corrige parse do código da rota na escala diária
 * Corrige criação das alternativas 'tipo outros' do modelo de checklist
 
 <a name="v0.0.74"></a>

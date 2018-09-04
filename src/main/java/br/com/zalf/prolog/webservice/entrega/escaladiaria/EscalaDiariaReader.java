@@ -67,7 +67,7 @@ class EscalaDiariaReader {
             item.setPlaca(linha[1].trim().replaceAll(" ", "").toUpperCase());
         }
         // CODIGO DO MAPA
-        if (linha[2] != null && linha[2].trim().isEmpty()) {
+        if (linha[2] != null && !linha[2].trim().isEmpty()) {
             item.setCodMapa(Long.parseLong(linha[2].trim()));
         }
         // CPF MOTORISTA
