@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoAjusteAdicaoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoColaboradorAjuste;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoConsolidada;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -91,6 +92,19 @@ public class DummyResource {
             marcacoesConsolidadas.add(MarcacaoConsolidada.createDummy());
         }
         return marcacoesConsolidadas;
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/marcacoes-estratificadas-colaborador-list")
+    @Secured
+    public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste() {
+        ensureDebugEnvironment();
+        final List<MarcacaoColaboradorAjuste> marcacoesColaborador = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            marcacoesColaborador.add(MarcacaoColaboradorAjuste.createDummy());
+        }
+        return marcacoesColaborador;
     }
 
     @GET

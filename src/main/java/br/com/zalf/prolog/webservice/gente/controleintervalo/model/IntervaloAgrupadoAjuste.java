@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 09/03/2018
  *
@@ -11,6 +13,14 @@ public class IntervaloAgrupadoAjuste {
     private IntervaloAjuste intervaloFinal;
 
     public IntervaloAgrupadoAjuste() {
+    }
+
+    @NotNull
+    public static IntervaloAgrupadoAjuste createDummy() {
+        final IntervaloAgrupadoAjuste intervaloAjuste = new IntervaloAgrupadoAjuste();
+        intervaloAjuste.setIntervaloIncial(IntervaloAjuste.createDummy());
+        intervaloAjuste.setIntervaloFinal(IntervaloAjuste.createDummy());
+        return intervaloAjuste;
     }
 
     public IntervaloAjuste getIntervaloIncial() {

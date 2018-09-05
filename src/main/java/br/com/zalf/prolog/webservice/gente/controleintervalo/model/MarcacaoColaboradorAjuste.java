@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 04/09/18.
  *
@@ -14,6 +16,17 @@ public class MarcacaoColaboradorAjuste {
     private boolean temEdicao;
 
     public MarcacaoColaboradorAjuste() {
+    }
+
+    @NotNull
+    public static MarcacaoColaboradorAjuste createDummy() {
+        final MarcacaoColaboradorAjuste colaboradorAjuste = new MarcacaoColaboradorAjuste();
+        colaboradorAjuste.setCodTipoIntervaloMarcado(10L);
+        colaboradorAjuste.setNomeTipoIntervaloMarcado("Refeição");
+        colaboradorAjuste.setTemInconsistencia(true);
+        colaboradorAjuste.setTemEdicao(true);
+        colaboradorAjuste.setIntervaloAgrupadoAjuste(IntervaloAgrupadoAjuste.createDummy());
+        return colaboradorAjuste;
     }
 
     public IntervaloAgrupadoAjuste getIntervaloAgrupadoAjuste() {

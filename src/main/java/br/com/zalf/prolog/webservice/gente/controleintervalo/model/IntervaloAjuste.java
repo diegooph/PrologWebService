@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDateTime;
+import java.util.Calendar;
 
 /**
  * Created on 04/09/18.
@@ -16,6 +20,17 @@ public class IntervaloAjuste {
     private boolean isAtiva;
 
     public IntervaloAjuste() {
+    }
+
+    @NotNull
+    public static IntervaloAjuste createDummy() {
+        final IntervaloAjuste intervalo = new IntervaloAjuste();
+        intervalo.setCodIntervalo(10101L);
+        intervalo.setCodTipoIntervaloMarcado(10L);
+        intervalo.setNomeTipoIntervaloMarcado("Refeição");
+        intervalo.setAtiva(true);
+        intervalo.setDataHoraMarcacao(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
+        return intervalo;
     }
 
     public Long getCodIntervalo() {
