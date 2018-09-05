@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
  */
 public abstract class MarcacaoAjuste {
     private Long codJustificativaAjuste;
-    private Long codColaboradorAjuste;
-    private String nomeColaboradorAjuste;
     private String observacaoAjuste;
     private LocalDateTime dataHoraAjuste;
     @Exclude
@@ -59,20 +57,9 @@ public abstract class MarcacaoAjuste {
         this.dataHoraAjuste = dataHoraAjuste;
     }
 
-    public Long getCodColaboradorAjuste() {
-        return codColaboradorAjuste;
-    }
-
-    public void setCodColaboradorAjuste(final Long codColaboradorAjuste) {
-        this.codColaboradorAjuste = codColaboradorAjuste;
-    }
-
-    public String getNomeColaboradorAjuste() {
-        return nomeColaboradorAjuste;
-    }
-
-    public void setNomeColaboradorAjuste(final String nomeColaboradorAjuste) {
-        this.nomeColaboradorAjuste = nomeColaboradorAjuste;
+    @NotNull
+    public TipoMarcacaoAjuste getTipoMarcacaoAjuste() {
+        return tipoMarcacaoAjuste;
     }
 
     @Override
@@ -81,8 +68,7 @@ public abstract class MarcacaoAjuste {
                 "codJustificativaAjuste=" + codJustificativaAjuste +
                 ", observacaoAjuste='" + observacaoAjuste + '\'' +
                 ", dataHoraAjuste=" + dataHoraAjuste +
-                ", codColaboradorAjuste=" + codColaboradorAjuste +
-                ", nomeColaboradorAjuste='" + nomeColaboradorAjuste + '\'' +
+                ", tipoMarcacaoAjuste=" + tipoMarcacaoAjuste +
                 '}';
     }
 }

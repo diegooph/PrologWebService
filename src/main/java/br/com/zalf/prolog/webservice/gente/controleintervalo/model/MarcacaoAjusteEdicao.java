@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  */
 public class MarcacaoAjusteEdicao extends MarcacaoAjuste {
     private LocalDateTime dataHoraOriginal;
-    private LocalDateTime dataHoraNova;
+    private LocalDateTime dataHoraNovaInserida;
 
     public MarcacaoAjusteEdicao() {
         super(TipoMarcacaoAjuste.EDICAO);
@@ -23,19 +23,19 @@ public class MarcacaoAjusteEdicao extends MarcacaoAjuste {
         this.dataHoraOriginal = dataHoraOriginal;
     }
 
-    public LocalDateTime getDataHoraNova() {
-        return dataHoraNova;
+    public LocalDateTime getDataHoraNovaInserida() {
+        return dataHoraNovaInserida;
     }
 
-    public void setDataHoraNova(final LocalDateTime dataHoraNova) {
-        this.dataHoraNova = dataHoraNova;
+    public void setDataHoraNovaInserida(final LocalDateTime dataHoraNovaInserida) {
+        this.dataHoraNovaInserida = dataHoraNovaInserida;
     }
 
     @Override
     public String toString() {
         return "MarcacaoAjusteEdicao{" +
                 "dataHoraOriginal=" + dataHoraOriginal +
-                ", dataHoraNova=" + dataHoraNova +
+                ", dataHoraNovaInserida=" + dataHoraNovaInserida +
                 '}';
     }
 }

@@ -13,25 +13,57 @@ import java.util.List;
  */
 public class ControleJornadaAjustesDaoImpl implements ControleJornadaAjustesDao {
     @Override
-    public void insereMarcacaoCompletaNoDia(@NotNull final Long codUnidade, @NotNull final String token, @NotNull final MarcacaoAjusteAdicaoInicioFim ajusteAdicaoInicio) throws Throwable {
+    public void ajustaMarcacaoAdicao(@NotNull final Long codUnidade,
+                                     @NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
+                                     @NotNull final String token) throws Throwable {
+
+    }
+
+    @Override
+    public void ajustaMarcacaoAdicaoInicioFim(@NotNull final Long codUnidade,
+                                              @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
+                                              @NotNull final String token) throws Throwable {
+
+    }
+
+    @Override
+    public void ajustaMarcacaoAtivacaoInativacao(@NotNull final Long codUnidade,
+                                                 @NotNull final Long codMarcacao,
+                                                 @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste,
+                                                 @NotNull final String token) throws Throwable {
+
+    }
+
+    @Override
+    public void ajustaMarcacaoEdicao(@NotNull final Long codUnidade,
+                                     @NotNull final Long codMarcacao,
+                                     @NotNull final MarcacaoAjusteEdicao marcacaoAjuste,
+                                     @NotNull final String token) throws Throwable {
 
     }
 
     @NotNull
     @Override
-    public List<MarcacaoConsolidada> getMarcacoesConsolidadas(@NotNull final Long codUnidade, @NotNull final String codColaborador, @NotNull final String codTipoIntervalo, @NotNull final LocalDate dataInicial, @NotNull final LocalDate dataFinal) throws Throwable {
+    public List<MarcacaoConsolidada> getMarcacoesConsolidadas(@NotNull final Long codUnidade,
+                                                              @NotNull final String codColaborador,
+                                                              @NotNull final String codTipoIntervalo,
+                                                              @NotNull final LocalDate dataInicial,
+                                                              @NotNull final LocalDate dataFinal) throws Throwable {
         return null;
     }
 
     @NotNull
     @Override
-    public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(@NotNull final Long codUnidade, @NotNull final String codColaborador, @NotNull final LocalDate dataInicial) throws Throwable {
+    public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
+            @NotNull final Long codUnidade,
+            @NotNull final String codColaborador,
+            @NotNull final LocalDate dataInicial) throws Throwable {
         return null;
     }
 
     @NotNull
     @Override
-    public List<MarcacaoAjuste> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable {
+    public List<MarcacaoAjusteHistorico> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable {
         return null;
     }
 
@@ -39,10 +71,5 @@ public class ControleJornadaAjustesDaoImpl implements ControleJornadaAjustesDao 
     @Override
     public List<MarcacaoInconsistencia> getMarcacoesInconsistentes(@NotNull final Long codMarcacao) throws Throwable {
         return null;
-    }
-
-    @Override
-    public void ajustaMarcacao(@NotNull final Long codUnidade, @NotNull final Long codMarcacao, @NotNull final String token, @NotNull final MarcacaoAjuste marcacaoAjuste) throws Throwable {
-
     }
 }

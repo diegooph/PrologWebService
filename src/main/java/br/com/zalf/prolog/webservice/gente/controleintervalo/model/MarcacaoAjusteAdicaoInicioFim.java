@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -12,7 +13,7 @@ import java.util.Calendar;
  */
 public class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
     private Long codColaboradorMarcacao;
-    private Long codTipoIntervalo;
+    private Long codTipoIntervaloMarcado;
     private LocalDateTime dataHoraInicio;
     private LocalDateTime dataHoraFim;
 
@@ -20,15 +21,14 @@ public class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
         super(TipoMarcacaoAjuste.ADICAO_INICIO_FIM);
     }
 
+    @NotNull
     public static MarcacaoAjusteAdicaoInicioFim createDummy() {
         final MarcacaoAjusteAdicaoInicioFim adicaoInicioFim = new MarcacaoAjusteAdicaoInicioFim();
         adicaoInicioFim.setCodColaboradorMarcacao(2272L);
-        adicaoInicioFim.setCodTipoIntervalo(10L);
+        adicaoInicioFim.setCodTipoIntervaloMarcado(10L);
         adicaoInicioFim.setDataHoraInicio(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
         adicaoInicioFim.setDataHoraFim(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
         adicaoInicioFim.setCodJustificativaAjuste(5L);
-        adicaoInicioFim.setCodColaboradorAjuste(2272L);
-        adicaoInicioFim.setNomeColaboradorAjuste("Zalf Sistemas");
         adicaoInicioFim.setObservacaoAjuste("Dummy Data");
         adicaoInicioFim.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
         return adicaoInicioFim;
@@ -42,12 +42,12 @@ public class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
         this.codColaboradorMarcacao = codColaboradorMarcacao;
     }
 
-    public Long getCodTipoIntervalo() {
-        return codTipoIntervalo;
+    public Long getCodTipoIntervaloMarcado() {
+        return codTipoIntervaloMarcado;
     }
 
-    public void setCodTipoIntervalo(final Long codTipoIntervalo) {
-        this.codTipoIntervalo = codTipoIntervalo;
+    public void setCodTipoIntervaloMarcado(final Long codTipoIntervaloMarcado) {
+        this.codTipoIntervaloMarcado = codTipoIntervaloMarcado;
     }
 
     public LocalDateTime getDataHoraInicio() {
@@ -70,7 +70,7 @@ public class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
     public String toString() {
         return "MarcacaoAjusteAdicaoInicioFim{" +
                 "codColaboradorMarcacao='" + codColaboradorMarcacao + '\'' +
-                ", codTipoIntervalo=" + codTipoIntervalo +
+                ", codTipoIntervaloMarcado=" + codTipoIntervaloMarcado +
                 ", dataHoraInicio=" + dataHoraInicio +
                 ", dataHoraFim=" + dataHoraFim +
                 '}';

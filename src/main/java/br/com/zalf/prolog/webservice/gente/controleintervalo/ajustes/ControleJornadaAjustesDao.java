@@ -13,9 +13,23 @@ import java.util.List;
  */
 public interface ControleJornadaAjustesDao {
 
-    void insereMarcacaoCompletaNoDia(@NotNull final Long codUnidade,
-                                     @NotNull final String token,
-                                     @NotNull final MarcacaoAjusteAdicaoInicioFim ajusteAdicaoInicio) throws Throwable;
+    void ajustaMarcacaoAdicao(@NotNull final Long codUnidade,
+                              @NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
+                              @NotNull final String token) throws Throwable;
+
+    void ajustaMarcacaoAdicaoInicioFim(@NotNull final Long codUnidade,
+                                       @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
+                                       @NotNull final String token) throws Throwable;
+
+    void ajustaMarcacaoAtivacaoInativacao(@NotNull final Long codUnidade,
+                                          @NotNull final Long codMarcacao,
+                                          @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste,
+                                          @NotNull final String token) throws Throwable;
+
+    void ajustaMarcacaoEdicao(@NotNull final Long codUnidade,
+                              @NotNull final Long codMarcacao,
+                              @NotNull final MarcacaoAjusteEdicao marcacaoAjuste,
+                              @NotNull final String token) throws Throwable;
 
     @NotNull
     List<MarcacaoConsolidada> getMarcacoesConsolidadas(@NotNull final Long codUnidade,
@@ -25,18 +39,14 @@ public interface ControleJornadaAjustesDao {
                                                        @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
-    List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(@NotNull final Long codUnidade,
-                                                                      @NotNull final String codColaborador,
-                                                                      @NotNull final LocalDate dataInicial) throws Throwable;
+    List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
+            @NotNull final Long codUnidade,
+            @NotNull final String codColaborador,
+            @NotNull final LocalDate dataInicial) throws Throwable;
 
     @NotNull
-    List<MarcacaoAjuste> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable;
+    List<MarcacaoAjusteHistorico> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable;
 
     @NotNull
     List<MarcacaoInconsistencia> getMarcacoesInconsistentes(@NotNull final Long codMarcacao) throws Throwable;
-
-    void ajustaMarcacao(@NotNull final Long codUnidade,
-                        @NotNull final Long codMarcacao,
-                        @NotNull final String token,
-                        @NotNull final MarcacaoAjuste marcacaoAjuste) throws Throwable;
 }
