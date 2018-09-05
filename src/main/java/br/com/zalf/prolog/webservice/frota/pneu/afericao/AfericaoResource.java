@@ -223,20 +223,20 @@ public class AfericaoResource {
 
     @GET
     @Produces("application/csv")
-    @Path("/unidades/{codUnidade}/csv")
+    @Path("/unidades/{codUnidades}/csv")
     public StreamingOutput getDadosGeraisAfericao(
-            @PathParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) {
-        return outputStream -> relatorioService.getDadosGeraisAfericaoCsv(outputStream, codUnidade, dataInicial, dataFinal);
+        return outputStream -> relatorioService.getDadosGeraisAfericaoCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
-    @Path("/unidades/{codUnidade}/report")
-    public Report getDadosGeraisProdutividadeReport(@PathParam("codUnidade") @Required final Long codUnidade,
+    @Path("/unidades/{codUnidades}/report")
+    public Report getDadosGeraisProdutividadeReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                     @QueryParam("dataInicial") @Required final String dataInicial,
                                                     @QueryParam("dataFinal") @Required final String dataFinal)
             throws ProLogException {
-        return relatorioService.getDadosGeraisAfericaoReport(codUnidade, dataInicial, dataFinal);
+        return relatorioService.getDadosGeraisAfericaoReport(codUnidades, dataInicial, dataFinal);
     }
 }

@@ -28,7 +28,7 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
 
     @Override
     public void getDadosGeraisAfericaoCsv(@NotNull final OutputStream out,
-                                          @NotNull final Long codUnidade,
+                                          @NotNull final List<Long> codUnidade,
                                           @NotNull final LocalDate dataInicial,
                                           @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -50,7 +50,7 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
 
     @NotNull
     @Override
-    public Report getDadosGeraisAfericaoReport(@NotNull final Long codUnidade,
+    public Report getDadosGeraisAfericaoReport(@NotNull final List<Long> codUnidades,
                                                @NotNull final LocalDate dataInicial,
                                                @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -58,7 +58,7 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisAfericaoStmt(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getDadosGeraisAfericaoStmt(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -68,13 +68,11 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
 
     @NotNull
     private PreparedStatement getDadosGeraisAfericaoStmt(@NotNull final Connection conn,
-                                                         @NotNull final Long codUnidade,
+                                                         @NotNull final List<Long> codUnidades,
                                                          @NotNull final LocalDate dataInicial,
                                                          @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt =
                 conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_DADOS_GERAIS(?,?,?);");
-        final List<Long> codUnidades = new ArrayList<>();
-        codUnidades.add(codUnidade);
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
