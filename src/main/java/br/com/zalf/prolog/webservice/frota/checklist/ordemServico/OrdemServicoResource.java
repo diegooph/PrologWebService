@@ -40,7 +40,8 @@ public class OrdemServicoResource {
     @GET
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
-    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
     public List<OrdemServico> getOs(@PathParam("codUnidade") Long codUnidade,
                                     @PathParam("tipoVeiculo") String tipoVeiculo,
@@ -54,14 +55,27 @@ public class OrdemServicoResource {
     @GET
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/manutencao/{placa}/{status}/{prioridade}")
-    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
-    public List<ItemOrdemServico> getItensOsManutencaoHolder(@PathParam("placa") String placa,
-                                                             @PathParam("status") String status,
-                                                             @PathParam("prioridade") String prioridade,
-                                                             @QueryParam("limit") int limit,
-                                                             @QueryParam("offset") long offset) {
-        return service.getItensOsManutencaoHolder(placa, status, limit, offset, prioridade);
+    public List<ItemOrdemServico> getItensOsManutencaoHolder(@PathParam("placa") @Required String placa,
+                                                             @PathParam("status") @Required String status,
+                                                             @PathParam("prioridade") @Required String prioridade,
+                                                             @QueryParam("limit") @Optional Integer limit,
+                                                             @QueryParam("offset") @Optional Long offset)
+            throws ProLogException {
+        return service.getItensOsManutencaoHolder(placa, status, prioridade, limit, offset);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Path("/itens")
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+    public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required String placa)
+            throws ProLogException {
+        return service.getItensOsManutencaoHolder(placa, "%", "%", null, null);
     }
 
     @GET

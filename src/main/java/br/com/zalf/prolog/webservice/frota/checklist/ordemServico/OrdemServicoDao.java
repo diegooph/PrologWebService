@@ -28,8 +28,12 @@ public interface OrdemServicoDao {
 	List<OrdemServico> getOs(String placa, String status, Long codUnidade,
 							 String tipoVeiculo, Integer limit, Long offset) throws SQLException;
 
-	List<ItemOrdemServico> getItensOs(String placa, String status,
-									  int limit, long offset, String prioridade) throws SQLException;
+	@NotNull
+	List<ItemOrdemServico> getItensOs(@NotNull final String placa,
+									  @NotNull final String status,
+									  @NotNull final String prioridade,
+									  @Nullable final Integer limit,
+									  @Nullable final Long offset) throws SQLException;
 
 	List<ItemOrdemServico> getItensOs(@NotNull final String placa,
 									  @NotNull final Date untilDate,

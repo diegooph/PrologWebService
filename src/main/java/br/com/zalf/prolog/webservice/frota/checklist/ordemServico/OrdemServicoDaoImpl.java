@@ -103,19 +103,13 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         return oss;
     }
 
-    /**
-     * Busca os itens para a tela das bolinhas, após selecionar uma placa
-     * @param placa uma Placa
-     * @param status status dos Itens da OS
-     * @param limit um limit
-     * @param offset um offset
-     * @param prioridade prioridade dos itens a serem buscados
-     * @return Lista de ItemOrdemServico
-     * @throws SQLException caso não seja possível buscar os itens
-     */
+    @NotNull
     @Override
-    public List<ItemOrdemServico> getItensOs(String placa, String status,
-                                             int limit, long offset, String prioridade) throws SQLException {
+    public List<ItemOrdemServico> getItensOs(@NotNull final String placa,
+                                             @NotNull final String status,
+                                             @NotNull final String prioridade,
+                                             @Nullable final Integer limit,
+                                             @Nullable final Long offset) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -128,8 +122,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(1, status);
             stmt.setString(2, prioridade);
             stmt.setString(3, placa);
-            stmt.setInt(4, limit);
-            stmt.setLong(5, offset);
+            StatementUtils.bindValueOrNull(stmt, 4, limit, SqlType.INTEGER);
+            StatementUtils.bindValueOrNull(stmt, 5, offset, SqlType.BIGINT);
             rSet = stmt.executeQuery();
             return OrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
