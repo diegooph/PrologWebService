@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios.AfericaoRelatorioService;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -32,6 +33,9 @@ import java.util.List;
 public class RelatorioPneuResource {
     @NotNull
     private final RelatorioPneuService service = new RelatorioPneuService();
+
+    @NotNull
+    private final AfericaoRelatorioService afericaoRelatorioService = new AfericaoRelatorioService();
 
     @GET
     @Path("/afericoes-avulsas/csv")
@@ -410,5 +414,24 @@ public class RelatorioPneuResource {
                                               @QueryParam("dataFinal") long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
+    }
+
+    @GET
+    @Produces("application/csv")
+    @Path("/unidades/{codUnidades}/csv")
+    public StreamingOutput getDadosGeraisAfericao(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> afericaoRelatorioService.getDadosGeraisAfericaoCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/unidades/{codUnidades}/report")
+    public Report getDadosGeraisMovimentacaoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                   @QueryParam("dataInicial") @Required final String dataInicial,
+                                                   @QueryParam("dataFinal") @Required final String dataFinal)
+            throws ProLogException {
+        return afericaoRelatorioService.getDadosGeraisAfericaoReport(codUnidades, dataInicial, dataFinal);
     }
 }
