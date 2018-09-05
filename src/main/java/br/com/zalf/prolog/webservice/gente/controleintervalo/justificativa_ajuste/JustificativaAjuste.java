@@ -1,18 +1,18 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste;
 
 /**
  * Created on 04/09/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class MarcacaoJustificativaAjuste {
+public class JustificativaAjuste {
 
     private Long codJustificativaAjuste;
     private Long codEmpresa;
     private String nomeJustificativaAjuste;
     private boolean obrigatorioObservacao;
 
-    public MarcacaoJustificativaAjuste() {
+    public JustificativaAjuste() {
     }
 
     public Long getCodJustificativaAjuste() {
@@ -49,7 +49,7 @@ public class MarcacaoJustificativaAjuste {
 
     @Override
     public String toString() {
-        return "MarcacaoJustificativaAjuste{" +
+        return "JustificativaAjuste{" +
                 "codJustificativaAjuste=" + codJustificativaAjuste +
                 ", codEmpresa=" + codEmpresa +
                 ", nomeJustificativaAjuste='" + nomeJustificativaAjuste + '\'' +
