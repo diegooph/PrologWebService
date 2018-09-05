@@ -70,7 +70,7 @@ public class MovimentacaoRelatorioDaoImpl implements MovimentacaoRelatorioDao {
                                                              @NotNull final LocalDate dataInicial,
                                                              @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM ");
+                conn.prepareStatement("SELECT * FROM FUNC_MOVIMENTACAO_RELATORIO_DADOS_GERAIS(?,?,?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
