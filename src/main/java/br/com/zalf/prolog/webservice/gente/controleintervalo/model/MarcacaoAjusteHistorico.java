@@ -15,6 +15,7 @@ public class MarcacaoAjusteHistorico {
     private String descricaoAcaoRealizada;
 
     public MarcacaoAjusteHistorico() {
+        // TODO - Utilizar uma Factory para dado um ajuste, gerar a descrição correta.
     }
 
     public String getNomeColaboradorAjuste() {

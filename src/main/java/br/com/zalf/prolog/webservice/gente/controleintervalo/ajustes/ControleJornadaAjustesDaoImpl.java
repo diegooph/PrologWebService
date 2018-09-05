@@ -69,7 +69,7 @@ public class ControleJornadaAjustesDaoImpl implements ControleJornadaAjustesDao 
 
     @NotNull
     @Override
-    public List<MarcacaoInconsistencia> getMarcacoesInconsistentes(@NotNull final Long codMarcacao) throws Throwable {
+    public List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes(@NotNull final Long codMarcacao) throws Throwable {
         return null;
     }
 }
