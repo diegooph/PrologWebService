@@ -13,7 +13,6 @@ public class IntervaloAjuste {
     private LocalDateTime dataHoraMarcacao;
     private Long codTipoIntervaloMarcado;
     private String nomeTipoIntervaloMarcado;
-    private boolean temEdicao;
     private boolean isAtiva;
 
     public IntervaloAjuste() {
@@ -51,14 +50,6 @@ public class IntervaloAjuste {
         this.nomeTipoIntervaloMarcado = nomeTipoIntervaloMarcado;
     }
 
-    public boolean isTemEdicao() {
-        return temEdicao;
-    }
-
-    public void setTemEdicao(final boolean temEdicao) {
-        this.temEdicao = temEdicao;
-    }
-
     public boolean isAtiva() {
         return isAtiva;
     }
@@ -74,7 +65,6 @@ public class IntervaloAjuste {
                 ", dataHoraMarcacao=" + dataHoraMarcacao +
                 ", codTipoIntervaloMarcado=" + codTipoIntervaloMarcado +
                 ", nomeTipoIntervaloMarcado='" + nomeTipoIntervaloMarcado + '\'' +
-                ", temEdicao=" + temEdicao +
                 ", isAtiva=" + isAtiva +
                 '}';
     }

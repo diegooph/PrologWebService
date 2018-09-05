@@ -11,6 +11,7 @@ public class MarcacaoColaboradorAjuste {
     private Long codTipoIntervaloMarcado;
     private String nomeTipoIntervaloMarcado;
     private boolean temInconsistencia;
+    private boolean temEdicao;
 
     public MarcacaoColaboradorAjuste() {
     }
@@ -47,6 +48,14 @@ public class MarcacaoColaboradorAjuste {
         this.temInconsistencia = temInconsistencia;
     }
 
+    public boolean isTemEdicao() {
+        return temEdicao;
+    }
+
+    public void setTemEdicao(final boolean temEdicao) {
+        this.temEdicao = temEdicao;
+    }
+
     @Override
     public String toString() {
         return "MarcacaoColaboradorAjuste{" +
@@ -54,6 +63,7 @@ public class MarcacaoColaboradorAjuste {
                 ", codTipoIntervaloMarcado=" + codTipoIntervaloMarcado +
                 ", nomeTipoIntervaloMarcado='" + nomeTipoIntervaloMarcado + '\'' +
                 ", temInconsistencia=" + temInconsistencia +
+                ", temEdicao=" + temEdicao +
                 '}';
     }
 }
