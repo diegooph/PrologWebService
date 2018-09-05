@@ -28,7 +28,7 @@ public class MovimentacaoRelatorioDaoImpl implements MovimentacaoRelatorioDao {
 
     @Override
     public void getDadosGeraisMovimentacaoCsv(@NotNull final OutputStream out,
-                                              @NotNull final Long codUnidade,
+                                              @NotNull final List<Long> codUnidades,
                                               @NotNull final LocalDate dataInicial,
                                               @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -36,7 +36,7 @@ public class MovimentacaoRelatorioDaoImpl implements MovimentacaoRelatorioDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisMovimentacaoStmt(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getDadosGeraisMovimentacaoStmt(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(out)
@@ -50,7 +50,7 @@ public class MovimentacaoRelatorioDaoImpl implements MovimentacaoRelatorioDao {
 
     @NotNull
     @Override
-    public Report getDadosGeraisMovimentacaoReport(@NotNull final Long codUnidade,
+    public Report getDadosGeraisMovimentacaoReport(@NotNull final List<Long> codUnidades,
                                                    @NotNull final LocalDate dataInicial,
                                                    @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -58,7 +58,7 @@ public class MovimentacaoRelatorioDaoImpl implements MovimentacaoRelatorioDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisMovimentacaoStmt(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getDadosGeraisMovimentacaoStmt(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -67,13 +67,11 @@ public class MovimentacaoRelatorioDaoImpl implements MovimentacaoRelatorioDao {
     }
 
     private PreparedStatement getDadosGeraisMovimentacaoStmt(@NotNull final Connection conn,
-                                                             @NotNull final Long codUnidade,
+                                                             @NotNull final List<Long> codUnidades,
                                                              @NotNull final LocalDate dataInicial,
                                                              @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt =
                 conn.prepareStatement("SELECT * FROM ");
-        final List<Long> codUnidades = new ArrayList<>();
-        codUnidades.add(codUnidade);
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);

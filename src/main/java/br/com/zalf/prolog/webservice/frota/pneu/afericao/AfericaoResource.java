@@ -233,7 +233,7 @@ public class AfericaoResource {
 
     @GET
     @Path("/unidades/{codUnidades}/report")
-    public Report getDadosGeraisProdutividadeReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+    public Report getDadosGeraisMovimentacaoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                     @QueryParam("dataInicial") @Required final String dataInicial,
                                                     @QueryParam("dataFinal") @Required final String dataFinal)
             throws ProLogException {

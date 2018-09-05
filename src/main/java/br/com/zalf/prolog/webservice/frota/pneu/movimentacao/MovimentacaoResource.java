@@ -2,12 +2,14 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -15,9 +17,11 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppV
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.StreamingOutput;
 import java.util.List;
 
 /**
@@ -34,6 +38,9 @@ import java.util.List;
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class MovimentacaoResource {
     private final MovimentacaoService service = new MovimentacaoService();
+
+    @NotNull
+        private final MovimentacaoRelatorioService relatorioService = new MovimentacaoRelatorioService();
 
     @POST
     @Secured(permissions = {
@@ -74,5 +81,24 @@ public class MovimentacaoResource {
                                          @QueryParam("apenasAtivos") @Required final Boolean apenasAtivos)
             throws ProLogException {
         return service.getMotivos(codEmpresa, apenasAtivos);
+    }
+
+    @GET
+    @Produces("application/csv")
+    @Path("/unidades/{codUnidades}/csv")
+    public StreamingOutput getDadosGeraisMovimentacao(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> relatorioService.getDadosGeraisAfericaoCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/unidades/{codUnidades}/report")
+    public Report getDadosGeraisMovimentacaoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                    @QueryParam("dataInicial") @Required final String dataInicial,
+                                                    @QueryParam("dataFinal") @Required final String dataFinal)
+            throws ProLogException {
+        return relatorioService.getDadosGeraisAfericaoReport(codUnidades, dataInicial, dataFinal);
     }
 }

@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Created on 04/09/18.
@@ -20,13 +21,13 @@ public class MovimentacaoRelatorioService {
     private MovimentacaoRelatorioDao dao = Injection.provideMovimentacaoRelatorioDao();
 
     public void getDadosGeraisAfericaoCsv(@NotNull final OutputStream out,
-                                          @NotNull final Long codUnidade,
+                                          @NotNull final List<Long> codUnidades,
                                           @NotNull final String dataInicial,
                                           @NotNull final String dataFinal) {
         try {
             dao.getDadosGeraisMovimentacaoCsv(
                     out,
-                    codUnidade,
+                    codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
@@ -36,12 +37,12 @@ public class MovimentacaoRelatorioService {
     }
 
     @NotNull
-    public Report getDadosGeraisAfericaoReport(@NotNull final Long codUnidade,
+    public Report getDadosGeraisAfericaoReport(@NotNull final List<Long> codUnidades,
                                                @NotNull final String dataInicial,
                                                @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getDadosGeraisMovimentacaoReport(
-                    codUnidade,
+                    codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
