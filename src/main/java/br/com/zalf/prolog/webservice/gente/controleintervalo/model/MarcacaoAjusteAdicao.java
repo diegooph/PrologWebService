@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDateTime;
+import java.util.Calendar;
 
 /**
  * Created on 04/09/18.
@@ -15,6 +19,19 @@ public class MarcacaoAjusteAdicao extends MarcacaoAjuste {
 
     public MarcacaoAjusteAdicao() {
         super(TipoMarcacaoAjuste.ADICAO);
+    }
+
+    @NotNull
+    public static MarcacaoAjusteAdicao createDummy() {
+        final MarcacaoAjusteAdicao ajusteAdicao = new MarcacaoAjusteAdicao();
+        ajusteAdicao.setCodMarcacaoVinculo(101010L);
+        ajusteAdicao.setCodColaborador(2272L);
+        ajusteAdicao.setCodTipoIntervaloMarcado(10L);
+        ajusteAdicao.setDataHoraInserida(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
+        ajusteAdicao.setCodJustificativaAjuste(5L);
+        ajusteAdicao.setObservacaoAjuste("Dummy Data");
+        ajusteAdicao.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
+        return ajusteAdicao;
     }
 
     public Long getCodMarcacaoVinculo() {

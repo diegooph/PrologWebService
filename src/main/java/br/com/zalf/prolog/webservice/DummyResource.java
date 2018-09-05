@@ -3,10 +3,7 @@ package br.com.zalf.prolog.webservice;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoAjusteAdicaoInicioFim;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoColaboradorAjuste;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoConsolidada;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 
@@ -114,6 +111,33 @@ public class DummyResource {
     public MarcacaoAjusteAdicaoInicioFim getMarcacaoAjusteAdicaoInicioFim() {
         ensureDebugEnvironment();
         return MarcacaoAjusteAdicaoInicioFim.createDummy();
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/marcacao-ajuste-adicao")
+    @Secured
+    public MarcacaoAjusteAdicao getMarcacaoAjusteAdicao() {
+        ensureDebugEnvironment();
+        return MarcacaoAjusteAdicao.createDummy();
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/marcacao-ajuste-ativacao-inativacao")
+    @Secured
+    public MarcacaoAjusteAtivacaoInativacao getMarcacaoAjusteAtivacaoInativacao() {
+        ensureDebugEnvironment();
+        return MarcacaoAjusteAtivacaoInativacao.createDummy();
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/marcacao-ajuste-edicao")
+    @Secured
+    public MarcacaoAjusteEdicao getMarcacaoAjusteEdicao() {
+        ensureDebugEnvironment();
+        return MarcacaoAjusteEdicao.createDummy();
     }
 
     private void ensureDebugEnvironment() {
