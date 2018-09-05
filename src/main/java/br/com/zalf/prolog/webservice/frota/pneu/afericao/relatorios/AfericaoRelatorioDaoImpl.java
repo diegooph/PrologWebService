@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.closeConnection;
@@ -27,7 +26,7 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
 
 
     @Override
-    public void getDadosGeraisAfericaoCsv(@NotNull final OutputStream out,
+    public void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
                                           @NotNull final List<Long> codUnidade,
                                           @NotNull final LocalDate dataInicial,
                                           @NotNull final LocalDate dataFinal) throws Throwable {
@@ -36,7 +35,7 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisAfericaoStmt(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getDadosGeraisAfericoesStmt(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(out)
@@ -50,7 +49,7 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
 
     @NotNull
     @Override
-    public Report getDadosGeraisAfericaoReport(@NotNull final List<Long> codUnidades,
+    public Report getDadosGeraisAfericoesReport(@NotNull final List<Long> codUnidades,
                                                @NotNull final LocalDate dataInicial,
                                                @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -58,7 +57,7 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisAfericaoStmt(conn, codUnidades, dataInicial, dataFinal);
+            stmt = getDadosGeraisAfericoesStmt(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -67,7 +66,7 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
     }
 
     @NotNull
-    private PreparedStatement getDadosGeraisAfericaoStmt(@NotNull final Connection conn,
+    private PreparedStatement getDadosGeraisAfericoesStmt(@NotNull final Connection conn,
                                                          @NotNull final List<Long> codUnidades,
                                                          @NotNull final LocalDate dataInicial,
                                                          @NotNull final LocalDate dataFinal) throws Throwable {

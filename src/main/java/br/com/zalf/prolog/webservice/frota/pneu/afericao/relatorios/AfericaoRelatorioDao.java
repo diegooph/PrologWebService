@@ -24,7 +24,7 @@ public interface AfericaoRelatorioDao {
      * @throws Throwable - Se algum erro ocorrer.
      */
 
-    void getDadosGeraisAfericaoCsv(@NotNull final OutputStream out,
+    void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
                                    @NotNull final List<Long> codUnidades,
                                    @NotNull final LocalDate dataInicial,
                                    @NotNull final LocalDate dataFinal) throws Throwable;
@@ -38,7 +38,7 @@ public interface AfericaoRelatorioDao {
      * @throws Throwable - Se algum erro ocorrer.
      */
     @NotNull
-    Report getDadosGeraisAfericaoReport(@NotNull final List<Long> codUnidades,
+    Report getDadosGeraisAfericoesReport(@NotNull final List<Long> codUnidades,
                                         @NotNull final LocalDate dataInicial,
                                         @NotNull final LocalDate dataFinal) throws Throwable;
 }

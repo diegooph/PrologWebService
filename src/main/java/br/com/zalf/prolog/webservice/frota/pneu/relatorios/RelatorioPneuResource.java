@@ -36,7 +36,10 @@ public class RelatorioPneuResource {
     private final RelatorioPneuService service = new RelatorioPneuService();
 
     @NotNull
-    private final AfericaoRelatorioService afericaoRelatorioService = new AfericaoRelatorioService();
+    private final AfericaoRelatorioService afericoesRelatorioService = new AfericaoRelatorioService();
+
+    @NotNull
+    private final MovimentacaoRelatorioService movimentacoesRelatorioService = new MovimentacaoRelatorioService();
 
     @GET
     @Path("/afericoes-avulsas/csv")
@@ -419,12 +422,31 @@ public class RelatorioPneuResource {
 
     @GET
     @Produces("application/csv")
-    @Path("/unidades/{codUnidades}/csv")
-    public StreamingOutput getDadosGeraisAfericao(
+    @Path("/dados-gerais-afericoes/csv")
+    public StreamingOutput getDadosGeraisAfericoes(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) {
-        return outputStream -> afericaoRelatorioService.getDadosGeraisAfericaoCsv(outputStream, codUnidades, dataInicial, dataFinal);
+        return outputStream -> afericoesRelatorioService.getDadosGeraisAfericoesCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/dados-gerais-afericoes/report")
+    public Report getDadosGeraisAfericoesReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                @QueryParam("dataInicial") @Required final String dataInicial,
+                                                @QueryParam("dataFinal") @Required final String dataFinal)
+            throws ProLogException {
+        return afericoesRelatorioService.getDadosGeraisAfericoesReport(codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Produces("application/csv")
+    @Path("/dados-gerais-movimentacoes/csv")
+    public StreamingOutput getDadosGeraisMovimentacoes(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> movimentacoesRelatorioService.getDadosGeraisMovimentacoesCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
