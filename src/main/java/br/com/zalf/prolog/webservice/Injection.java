@@ -81,6 +81,8 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChang
 import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjustesDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjustesDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste.JustificativaAjusteDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste.JustificativaAjusteDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatoriosDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
@@ -257,6 +259,11 @@ public final class Injection {
     @NotNull
     public static ControleJornadaAjustesDao provideControleJornadaAjustesDao() {
         return new ControleJornadaAjustesDaoImpl();
+    }
+
+    @NotNull
+    public static JustificativaAjusteDao provideJustificativaAjusteDao() {
+        return new JustificativaAjusteDaoImpl();
     }
 
     @NotNull
