@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDateTime;
+import java.util.Calendar;
 
 /**
  * Created on 05/09/18.
@@ -16,6 +20,17 @@ public class MarcacaoAjusteHistorico {
 
     public MarcacaoAjusteHistorico() {
         // TODO - Utilizar uma Factory para dado um ajuste, gerar a descrição correta.
+    }
+
+    @NotNull
+    public static MarcacaoAjusteHistorico createDummy() {
+        final MarcacaoAjusteHistorico ajusteHistorico = new MarcacaoAjusteHistorico();
+        ajusteHistorico.setNomeColaboradorAjuste("Zalf Sistemas");
+        ajusteHistorico.setNomeJustificativaAjuste("Esqueceu");
+        ajusteHistorico.setObservacaoAjuste("Precisei atualizar a hora de marcação");
+        ajusteHistorico.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
+        ajusteHistorico.setDescricaoAcaoRealizada("atualizou a marcação do colaborador");
+        return ajusteHistorico;
     }
 
     public String getNomeColaboradorAjuste() {

@@ -140,6 +140,32 @@ public class DummyResource {
         return MarcacaoAjusteEdicao.createDummy();
     }
 
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/marcacoes-ajustes-historico-list")
+    @Secured
+    public List<MarcacaoAjusteHistorico> getMarcacaoAjusteHistorio() {
+        ensureDebugEnvironment();
+        final List<MarcacaoAjusteHistorico> marcacaoAjustes = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            marcacaoAjustes.add(MarcacaoAjusteHistorico.createDummy());
+        }
+        return marcacaoAjustes;
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/marcacoes-inconsistentes-list")
+    @Secured
+    public List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes() {
+        ensureDebugEnvironment();
+        final List<MarcacaoInconsistenciaExibicao> marcacaoInconsistentes = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            marcacaoInconsistentes.add(MarcacaoInconsistenciaExibicao.createDummy());
+        }
+        return marcacaoInconsistentes;
+    }
+
     private void ensureDebugEnvironment() {
         if (!BuildConfig.DEBUG) {
             throw new IllegalStateException("Esse resource só pode ser utilizado em ambientes de testes");

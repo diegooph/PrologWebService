@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 04/09/18.
  *
@@ -12,6 +14,15 @@ public class MarcacaoInconsistenciaExibicao {
 
     public MarcacaoInconsistenciaExibicao() {
         // TODO - Utilizar uma Factory para dado uma inconsistência, gerar a descrição correta.
+    }
+
+    @NotNull
+    public static MarcacaoInconsistenciaExibicao createDummy() {
+        final MarcacaoInconsistenciaExibicao marcacaoInconsistente = new MarcacaoInconsistenciaExibicao();
+        marcacaoInconsistente.setCodMarcacao(101001L);
+        marcacaoInconsistente.setCodMarcacaoInconsistencia(11111L);
+        marcacaoInconsistente.setDescricaoInconsistencia("Marcações estão sobrepostas");
+        return marcacaoInconsistente;
     }
 
     public Long getCodMarcacao() {
