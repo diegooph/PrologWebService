@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.MarcacaoAjusteAdicaoInicioFim;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;

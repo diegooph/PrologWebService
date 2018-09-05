@@ -1,8 +1,6 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoAjuste;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacaoAjuste;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
