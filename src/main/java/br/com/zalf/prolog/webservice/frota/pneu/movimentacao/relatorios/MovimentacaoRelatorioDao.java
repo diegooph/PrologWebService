@@ -24,10 +24,10 @@ public interface MovimentacaoRelatorioDao {
      * @throws Throwable - Se algum erro ocorrer.
      */
 
-    void getDadosGeraisMovimentacaoCsv(@NotNull final OutputStream out,
-                                       @NotNull final List<Long> codUnidades,
-                                       @NotNull final LocalDate dataInicial,
-                                       @NotNull final LocalDate dataFinal) throws Throwable;
+    void getDadosGeraisMovimentacoesCsv(@NotNull final OutputStream out,
+                                        @NotNull final List<Long> codUnidades,
+                                        @NotNull final LocalDate dataInicial,
+                                        @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método para gerar um relatório contendo todos os dados de aferições realizadas em arquivo CSV.
@@ -38,8 +38,8 @@ public interface MovimentacaoRelatorioDao {
      * @throws Throwable - Se algum erro ocorrer.
      */
     @NotNull
-    Report getDadosGeraisMovimentacaoReport(@NotNull final List<Long> codUnidades,
-                                            @NotNull final LocalDate dataInicial,
-                                            @NotNull final LocalDate dataFinal) throws Throwable;
+    Report getDadosGeraisMovimentacoesReport(@NotNull final List<Long> codUnidades,
+                                             @NotNull final LocalDate dataInicial,
+                                             @NotNull final LocalDate dataFinal) throws Throwable;
 }
 

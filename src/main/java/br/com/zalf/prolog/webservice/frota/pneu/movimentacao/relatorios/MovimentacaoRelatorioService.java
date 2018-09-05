@@ -20,12 +20,12 @@ public class MovimentacaoRelatorioService {
     @NotNull
     private MovimentacaoRelatorioDao dao = Injection.provideMovimentacaoRelatorioDao();
 
-    public void getDadosGeraisAfericaoCsv(@NotNull final OutputStream out,
+    public void getDadosGeraisMovimentacoesCsv(@NotNull final OutputStream out,
                                           @NotNull final List<Long> codUnidades,
                                           @NotNull final String dataInicial,
                                           @NotNull final String dataFinal) {
         try {
-            dao.getDadosGeraisMovimentacaoCsv(
+            dao.getDadosGeraisMovimentacoesCsv(
                     out,
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
@@ -37,11 +37,11 @@ public class MovimentacaoRelatorioService {
     }
 
     @NotNull
-    public Report getDadosGeraisAfericaoReport(@NotNull final List<Long> codUnidades,
+    public Report getDadosGeraisMovimentacoesReport(@NotNull final List<Long> codUnidades,
                                                @NotNull final String dataInicial,
                                                @NotNull final String dataFinal) throws ProLogException {
         try {
-            return dao.getDadosGeraisMovimentacaoReport(
+            return dao.getDadosGeraisMovimentacoesReport(
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));

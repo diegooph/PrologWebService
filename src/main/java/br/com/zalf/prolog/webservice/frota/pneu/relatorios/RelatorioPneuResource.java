@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios.AfericaoRelatorioService;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioService;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -427,11 +428,11 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/unidades/{codUnidades}/report")
-    public Report getDadosGeraisMovimentacaoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
-                                                   @QueryParam("dataInicial") @Required final String dataInicial,
-                                                   @QueryParam("dataFinal") @Required final String dataFinal)
+    @Path("/dados-gerais-movimentacoes/report")
+    public Report getDadosGeraisMovimentacoesReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                    @QueryParam("dataInicial") @Required final String dataInicial,
+                                                    @QueryParam("dataFinal") @Required final String dataFinal)
             throws ProLogException {
-        return afericaoRelatorioService.getDadosGeraisAfericaoReport(codUnidades, dataInicial, dataFinal);
+        return movimentacoesRelatorioService.getDadosGeraisMovimentacoesReport(codUnidades, dataInicial, dataFinal);
     }
 }
