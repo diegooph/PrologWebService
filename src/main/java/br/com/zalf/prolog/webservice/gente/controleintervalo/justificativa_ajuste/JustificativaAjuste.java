@@ -1,16 +1,18 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 04/09/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class JustificativaAjuste {
-
     private Long codJustificativaAjuste;
     private Long codEmpresa;
     private String nomeJustificativaAjuste;
     private boolean obrigatorioObservacao;
+    private boolean isAtiva;
 
     public JustificativaAjuste() {
     }
@@ -47,6 +49,14 @@ public class JustificativaAjuste {
         this.obrigatorioObservacao = obrigatorioObservacao;
     }
 
+    public boolean isAtiva() {
+        return isAtiva;
+    }
+
+    public void setAtiva(final boolean ativa) {
+        isAtiva = ativa;
+    }
+
     @Override
     public String toString() {
         return "JustificativaAjuste{" +
@@ -54,6 +64,7 @@ public class JustificativaAjuste {
                 ", codEmpresa=" + codEmpresa +
                 ", nomeJustificativaAjuste='" + nomeJustificativaAjuste + '\'' +
                 ", obrigatorioObservacao=" + obrigatorioObservacao +
+                ", isAtiva=" + isAtiva +
                 '}';
     }
 }
