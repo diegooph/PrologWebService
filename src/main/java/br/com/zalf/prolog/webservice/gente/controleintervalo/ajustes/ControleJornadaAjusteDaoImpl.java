@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ControleJornadaAjustesDaoImpl implements ControleJornadaAjustesDao {
+public class ControleJornadaAjusteDaoImpl implements ControleJornadaAjusteDao {
     @Override
     public void ajustaMarcacaoAdicao(@NotNull final Long codUnidade,
                                      @NotNull final MarcacaoAjusteAdicao marcacaoAjuste,

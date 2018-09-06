@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public interface ControleJornadaAjustesDao {
+public interface ControleJornadaAjusteDao {
 
     void ajustaMarcacaoAdicao(@NotNull final Long codUnidade,
                               @NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
