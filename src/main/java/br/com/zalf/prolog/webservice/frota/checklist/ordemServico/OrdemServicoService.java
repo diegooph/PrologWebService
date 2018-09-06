@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ConsertoMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
@@ -37,13 +38,27 @@ public class OrdemServicoService {
         }
     }
 
-    public boolean consertaItem (ItemOrdemServico item, String placa){
-        try{
-            return dao.consertaItem(item, placa);
-        }catch (SQLException e){
-            Log.e(TAG, String.format("Erro consertar um item \n" +
-                    "Placa: %s", placa), e);
-            return false;
+    public void consertaItem(@NotNull final ItemOrdemServico item) throws ProLogException {
+        try {
+            dao.consertaItem(item);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro consertar um item\n" +
+                    "Código: %d", item.getCodigo()), throwable);
+            throw Injection.provideProLogExceptionHandler().map(
+                    throwable,
+                    "Erro ao consertar o item, tente novamente");
+        }
+    }
+
+    public void consertaItens(@NotNull final ConsertoMultiplosItensOs itensConserto) throws ProLogException {
+        try {
+            dao.consertaItens(itensConserto);
+        } catch (final Throwable throwable) {
+            final String errorMessage = "Erro ao consertar os itens";
+            Log.e(TAG, errorMessage, throwable);
+            throw Injection.provideProLogExceptionHandler().map(
+                    throwable,
+                    errorMessage);
         }
     }
 

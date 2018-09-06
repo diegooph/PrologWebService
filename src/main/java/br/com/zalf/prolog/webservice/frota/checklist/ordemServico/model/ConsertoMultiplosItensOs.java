@@ -3,50 +3,77 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.util.List;
 
 public class ConsertoMultiplosItensOs {
 
+    /**
+     * Quem está realizando o conserto.
+     */
     private Long codColaboradorConserto;
-    /**
-     * Data em que o item foi apontado pela primeira vez
-     */
-    private LocalDateTime dataApontamento;
-    /**
-     * data e hora em que o item foi marcado como consertado
-     */
-    private LocalDateTime dataHoraConserto;
-    /**
-     * Km do veículo no momento em que o item foi fechado
-     */
-    private long kmVeiculoFechamento;
-    private ItemOrdemServico.Status status;
-    /**
-     * Tempo que o item levou para ser consertado
-     */
-    @SerializedName("tempoRealizacaoConsertoEmSegundos")
-    private Duration tempoRealizacaoConserto;
-    /**
-     * Prazo em horas para conserto do item
-     */
-    @SerializedName("tempoLimiteResolucaoEmSegundos")
-    private Duration tempoLimiteResolucao;
-    /**
-     * Tempo restante para consertar o item, baseado na sua prioridade
-     */
-    @SerializedName("tempoRestanteEmSegundos")
-    private Duration tempoRestante;
-    /**
-     * Observação do serviço realizado
-     */
-    private String feedbackResolucao;
-    /**
-     * Quantidade de apontamentos que um item tem
-     */
-    private int qtdApontamentos;
 
     /**
-     * Código sequencial do item.
+     * Duração do consertado.
      */
-    private Long codigo;
+    @SerializedName("duracaoRealizacaoConsertoEmSegundos")
+    private Duration duracaoRealizacaoConserto;
+
+    /**
+     * Km do veículo no momento em que o item foi fechado.
+     */
+    private long kmVeiculoFechamento;
+
+    /**
+     * Observação sobre o conserto.
+     */
+    private String feedbackResolucao;
+
+    /**
+     * Códigos dos {@link ItemOrdemServico itens} que serão fechados.
+     */
+    private List<Long> codigosItens;
+
+    public ConsertoMultiplosItensOs() {
+
+    }
+
+    public Long getCodColaboradorConserto() {
+        return codColaboradorConserto;
+    }
+
+    public void setCodColaboradorConserto(final Long codColaboradorConserto) {
+        this.codColaboradorConserto = codColaboradorConserto;
+    }
+
+    public Duration getDuracaoRealizacaoConserto() {
+        return duracaoRealizacaoConserto;
+    }
+
+    public void setDuracaoRealizacaoConserto(final Duration duracaoRealizacaoConserto) {
+        this.duracaoRealizacaoConserto = duracaoRealizacaoConserto;
+    }
+
+    public long getKmVeiculoFechamento() {
+        return kmVeiculoFechamento;
+    }
+
+    public void setKmVeiculoFechamento(final long kmVeiculoFechamento) {
+        this.kmVeiculoFechamento = kmVeiculoFechamento;
+    }
+
+    public String getFeedbackResolucao() {
+        return feedbackResolucao;
+    }
+
+    public void setFeedbackResolucao(final String feedbackResolucao) {
+        this.feedbackResolucao = feedbackResolucao;
+    }
+
+    public List<Long> getCodigosItens() {
+        return codigosItens;
+    }
+
+    public void setCodigosItens(final List<Long> codigosItens) {
+        this.codigosItens = codigosItens;
+    }
 }

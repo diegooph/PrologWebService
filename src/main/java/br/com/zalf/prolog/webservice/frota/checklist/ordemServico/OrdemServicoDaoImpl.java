@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ConsertoMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
@@ -42,6 +43,54 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             "WHERE  E.COD_OS::TEXT LIKE ? AND E.COD_UNIDADE::TEXT LIKE ? AND E.PLACA_VEICULO LIKE ? " +
             "AND E.STATUS_ITEM LIKE ? " +
             "ORDER BY E.PLACA_VEICULO, E.PRAZO ASC;";
+
+    @Override
+    public void consertaItem(@NotNull final ItemOrdemServico item) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
+                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, data_hora_conserto = ?, " +
+                    "FEEDBACK_CONSERTO = ? " +
+                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND COD_OS = ? AND " +
+                    "COD_PERGUNTA = ? AND " +
+                    "COD_ALTERNATIVA = ? ");
+            final Long cpfMecanico = item.getMecanico().getCpf();
+            stmt.setLong(1, cpfMecanico);
+            stmt.setLong(2, item.getTempoRealizacaoConserto().toMillis());
+            stmt.setLong(3, item.getKmVeiculoFechamento());
+            stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
+            stmt.setObject(5, OffsetDateTime.now(Clock.systemUTC()));
+            stmt.setString(6, item.getFeedbackResolucao().trim());
+            stmt.setString(7, item.getPlaca());
+            stmt.setLong(8, item.getCodOs());
+            stmt.setLong(9, item.getPergunta().getCodigo());
+            stmt.setLong(10, item.getPergunta().getAlternativasResposta().get(0).codigo);
+            if (stmt.executeUpdate() > 0) {
+                updateStatusOs(item.getPlaca(), item.getCodOs(), cpfMecanico, conn);
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+                veiculoDao.updateKmByPlaca(item.getPlaca(), item.getKmVeiculoFechamento(), conn);
+            } else {
+                throw new SQLException("Erro ao consertar o item");
+            }
+            conn.commit();
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
+    public void consertaItens(@NotNull final ConsertoMultiplosItensOs itensConserto) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+//            conn = getConnection();
+        } finally {
+            closeConnection(null, null, null);
+        }
+    }
 
     /**
      * Busca todas as OS e seus devidos itens, respeitando os filtros enviados nos parâmetros
@@ -275,43 +324,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             closeConnection(conn, stmt, rSet);
         }
         return placas;
-    }
-
-    @Override
-    public boolean consertaItem(ItemOrdemServico item, String placa) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
-                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, data_hora_conserto = ?, " +
-                    "FEEDBACK_CONSERTO = ? " +
-                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
-                    "COD_ALTERNATIVA = ? ");
-            final Long cpfMecanico = item.getMecanico().getCpf();
-            stmt.setLong(1, cpfMecanico);
-            stmt.setLong(2, item.getTempoRealizacaoConserto().toMillis());
-            stmt.setLong(3, item.getKmVeiculoFechamento());
-            stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
-            stmt.setObject(5, OffsetDateTime.now(Clock.systemUTC()));
-            stmt.setString(6, item.getFeedbackResolucao().trim());
-            stmt.setString(7, placa);
-            stmt.setLong(8, item.getCodOs());
-            stmt.setLong(9, item.getPergunta().getCodigo());
-            stmt.setLong(10, item.getPergunta().getAlternativasResposta().get(0).codigo);
-            if (stmt.executeUpdate() > 0){
-                updateStatusOs(placa, item.getCodOs(), cpfMecanico, conn);
-                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(placa, item.getKmVeiculoFechamento(), conn);
-            } else{
-                throw new SQLException("Erro ao consertar o item");
-            }
-            conn.commit();
-        } finally {
-            closeConnection(conn,stmt,null);
-        }
-        return true;
     }
 
     /**

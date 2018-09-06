@@ -5,13 +5,12 @@ import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.error.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ConsertoMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
@@ -19,31 +18,24 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
- * Created by jean on 11/08/16.
+ * Created on 06/09/2018
+ *DEPRECATED_ORDEM_SERVICO_RESOURCE
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
-@DebugLog
-@Path("/checklist/ordens-servicos")
+@Path("/checklist/ordemServico")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class OrdemServicoResource {
-    private final OrdemServicoService service = new OrdemServicoService();
+@Deprecated
+public class DEPRECATED_ORDEM_SERVICO_RESOURCE {
+    private static final String ERROR_MESSAGE = "Atualize o aplicativo para utilizar esta funcionalidade";
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    @Path("/itens/conserto")
+    @Path("/consertaItem/{placa}")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
-    public Response consertaItem(ItemOrdemServico item) throws ProLogException {
-        service.consertaItem(item);
-        return Response.ok("Item consertado com sucesso");
-    }
-
-    @POST
-    @UsedBy(platforms = Platform.ANDROID)
-    @Path("/itens/{codItemOs}/conserto-multiplos")
-    @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
-    public Response consertaItens(ConsertoMultiplosItensOs itensConserto) throws ProLogException {
-        service.consertaItens(itensConserto);
-        return Response.ok("Itens consertado com sucesso");
+    public Response consertaItem(ItemOrdemServico item,
+                                 @PathParam("placa") String placa) throws ProLogException {
+        throw new VersaoAppBloqueadaException(ERROR_MESSAGE);
     }
 
     @GET
@@ -57,8 +49,8 @@ public class OrdemServicoResource {
                                     @PathParam("placa") String placa,
                                     @PathParam("status") String status,
                                     @QueryParam("limit") Integer limit,
-                                    @QueryParam("offset") Long offset) {
-        return service.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
+                                    @QueryParam("offset") Long offset) throws ProLogException {
+        throw new VersaoAppBloqueadaException(ERROR_MESSAGE);
     }
 
     @GET
@@ -73,7 +65,7 @@ public class OrdemServicoResource {
                                                              @QueryParam("limit") @Optional Integer limit,
                                                              @QueryParam("offset") @Optional Long offset)
             throws ProLogException {
-        return service.getItensOsManutencaoHolder(placa, status, prioridade, limit, offset);
+        throw new VersaoAppBloqueadaException(ERROR_MESSAGE);
     }
 
     @GET
@@ -84,7 +76,7 @@ public class OrdemServicoResource {
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
     public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required String placa)
             throws ProLogException {
-        return service.getItensOsManutencaoHolder(placa, "%", "%", null, null);
+        throw new VersaoAppBloqueadaException(ERROR_MESSAGE);
     }
 
     @GET
@@ -97,7 +89,7 @@ public class OrdemServicoResource {
                                                        @PathParam("codUnidade") @Required Long codUnidade,
                                                        @QueryParam("statusItemOs") @Optional String statusItemOs)
             throws ProLogException {
-        return service.getItensOs(codOs, codUnidade, statusItemOs);
+        throw new VersaoAppBloqueadaException(ERROR_MESSAGE);
     }
 
     @GET
@@ -113,6 +105,26 @@ public class OrdemServicoResource {
                                                             @QueryParam("limit") @Required int limit,
                                                             @QueryParam("offset") @Required int offset)
             throws ProLogException {
-        return service.getResumoManutencaoHolder(codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit, offset);
+        throw new VersaoAppBloqueadaException(ERROR_MESSAGE);
+    }
+
+
+    /**
+     * @deprecated at 2018-08-13. Use {@link #getResumoManutencaoHolder(Long, Long, String, Boolean, int, int)} instead.
+     */
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+    @Deprecated
+    public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("codUnidade") Long codUnidade,
+                                                            @PathParam("tipoVeiculo") String codTipo,
+                                                            @PathParam("placa") String placa,
+                                                            @PathParam("status") String status,
+                                                            @QueryParam("limit") int limit,
+                                                            @QueryParam("offset") int offset) throws ProLogException {
+        throw new VersaoAppBloqueadaException(ERROR_MESSAGE);
     }
 }

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ConsertoMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
@@ -16,6 +17,22 @@ import java.util.List;
  * Created by didi on 9/16/16.
  */
 public interface OrdemServicoDao {
+
+    /**
+     * Conserta um {@link ItemOrdemServico item}.
+     *
+     * @param item item consertado
+     * @throws Throwable se ocorrer algum erro
+     */
+    void consertaItem(@NotNull final ItemOrdemServico item) throws Throwable;
+
+    /**
+     * Conserta múltiplos {@link ItemOrdemServico itens}.
+     *
+     * @param itensConserto os itens para conserto
+     * @throws Throwable se ocorrer algum erro
+     */
+    void consertaItens(@NotNull final ConsertoMultiplosItensOs itensConserto) throws Throwable;
 
 	/**
 	 * busca OS - Orde de Serviço - na banco
@@ -57,8 +74,7 @@ public interface OrdemServicoDao {
 	 * @throws SQLException se ocorrer erro no banco
 	 */
 	void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException;
-
-	/**
+    /**
 	 * Busca a lista de itens agrupadas por placa e criticidade (tela das bolinhas).
 	 */
 	@NotNull
@@ -68,14 +84,4 @@ public interface OrdemServicoDao {
                                                      final boolean itensEmAberto,
                                                      final int limit,
                                                      final int offset) throws Throwable;
-
-	/**
-	 * marca um item como consertado
-	 * @param item item consertado
-	 * @param placa placa do veículo
-	 * @return valor da operação
-	 * @throws SQLException se ocorrer erro no banco
-	 */
-	boolean consertaItem (ItemOrdemServico item, String placa) throws SQLException;
-
 }
