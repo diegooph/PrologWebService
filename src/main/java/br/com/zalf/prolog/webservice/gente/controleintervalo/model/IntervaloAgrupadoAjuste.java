@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class IntervaloAgrupadoAjuste {
 
-    private IntervaloAjuste intervaloIncial;
+    private IntervaloAjuste intervaloInicial;
     private IntervaloAjuste intervaloFinal;
 
     public IntervaloAgrupadoAjuste() {
@@ -18,17 +18,17 @@ public class IntervaloAgrupadoAjuste {
     @NotNull
     public static IntervaloAgrupadoAjuste createDummy() {
         final IntervaloAgrupadoAjuste intervaloAjuste = new IntervaloAgrupadoAjuste();
-        intervaloAjuste.setIntervaloIncial(IntervaloAjuste.createDummy());
+        intervaloAjuste.setIntervaloInicial(IntervaloAjuste.createDummy());
         intervaloAjuste.setIntervaloFinal(IntervaloAjuste.createDummy());
         return intervaloAjuste;
     }
 
-    public IntervaloAjuste getIntervaloIncial() {
-        return intervaloIncial;
+    public IntervaloAjuste getIntervaloInicial() {
+        return intervaloInicial;
     }
 
-    public void setIntervaloIncial(final IntervaloAjuste intervaloIncial) {
-        this.intervaloIncial = intervaloIncial;
+    public void setIntervaloInicial(final IntervaloAjuste intervaloInicial) {
+        this.intervaloInicial = intervaloInicial;
     }
 
     public IntervaloAjuste getIntervaloFinal() {
@@ -42,7 +42,7 @@ public class IntervaloAgrupadoAjuste {
     @Override
     public String toString() {
         return "IntervaloAgrupadoAjuste{" +
-                "intervaloIncial=" + intervaloIncial +
+                "intervaloInicial=" + intervaloInicial +
                 ", intervaloFinal=" + intervaloFinal +
                 '}';
     }
