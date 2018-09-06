@@ -88,4 +88,18 @@ public class OrdemServicoService {
             throw Injection.provideProLogExceptionHandler().map(e, "Erro ao buscar os itens de O.S.");
         }
     }
+
+    @NotNull
+    public List<ItemOrdemServico> getItensOs(@NotNull final Long codOs,
+                                             @NotNull final Long codUnidade,
+                                             @Nullable final String statusItemOs) throws ProLogException {
+        try {
+            return dao.getItensOs(codOs, codUnidade, statusItemOs);
+        } catch (Throwable e) {
+            Log.e(TAG, String.format("Erro ao buscar os itens de uma OS.\n" +
+                    "codOs: %d\n" +
+                    "codUnidade: %d\n", codOs, codUnidade), e);
+            throw Injection.provideProLogExceptionHandler().map(e, "Erro ao buscar os itens de O.S.");
+        }
+    }
 }

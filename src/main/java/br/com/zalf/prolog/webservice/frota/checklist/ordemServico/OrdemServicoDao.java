@@ -38,6 +38,11 @@ public interface OrdemServicoDao {
                                       @Nullable final Integer limit,
                                       @Nullable final Long offset) throws SQLException;
 
+	@NotNull
+	List<ItemOrdemServico> getItensOs(@NotNull final Long codOs,
+									  @NotNull final Long codUnidade,
+									  @Nullable final String statusItemOs) throws Throwable;
+
 	List<ItemOrdemServico> getItensOs(@NotNull final String placa,
 									  @NotNull final Date untilDate,
 									  @NotNull final ItemOrdemServico.Status statusItem,

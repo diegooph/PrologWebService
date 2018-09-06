@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrde
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
@@ -20,7 +21,7 @@ import java.util.List;
 /**
  * Created by jean on 11/08/16.
  */
-
+@DebugLog
 @Path("/checklist/ordemServico")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -79,6 +80,19 @@ public class OrdemServicoResource {
     public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required String placa)
             throws ProLogException {
         return service.getItensOsManutencaoHolder(placa, "%", "%", null, null);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Path("/{codOs}/unidades/{codUnidade}/itens")
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+    public List<ItemOrdemServico> getItensOrdemServico(@PathParam("codOs") @Required Long codOs,
+                                                       @PathParam("codUnidade") @Required Long codUnidade,
+                                                       @QueryParam("statusItemOs") @Optional String statusItemOs)
+            throws ProLogException {
+        return service.getItensOs(codOs, codUnidade, statusItemOs);
     }
 
     @GET

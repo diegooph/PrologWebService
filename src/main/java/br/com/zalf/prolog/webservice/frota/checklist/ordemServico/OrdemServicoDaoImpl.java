@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
+import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -127,6 +128,34 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(3, placa);
             StatementUtils.bindValueOrNull(stmt, 4, limit, SqlType.INTEGER);
             StatementUtils.bindValueOrNull(stmt, 5, offset, SqlType.BIGINT);
+            rSet = stmt.executeQuery();
+            return OrdemServicoConverter.createItensOrdemServico(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<ItemOrdemServico> getItensOs(@NotNull final Long codOs,
+                                             @NotNull final Long codUnidade,
+                                             @Nullable final String statusItemOs) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM ESTRATIFICACAO_OS EO " +
+                    "WHERE EO.COD_OS = ? AND EO.COD_UNIDADE = ? AND EO.STATUS_ITEM LIKE ? " +
+                    "ORDER BY EO.PRIORIDADE, EO.DATA_HORA DESC;");
+            stmt.setLong(1, codOs);
+            stmt.setLong(2, codUnidade);
+            if (statusItemOs == null) {
+                stmt.setString(3, "%");
+            } else {
+                // Caso seja um status, o parse para Enum é feito apenas para validar o atributo.
+                stmt.setString(3, ItemOrdemServico.Status.fromString(statusItemOs).asString());
+            }
             rSet = stmt.executeQuery();
             return OrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {

@@ -30,7 +30,7 @@ public class ItemOrdemServico {
                     }
                 }
             }
-            throw new IllegalArgumentException("Nenhum enum com esse valor encontrado");
+            throw new IllegalArgumentException("Nenhum enum com esse valor encontrado: " + text);
         }
     }
 
