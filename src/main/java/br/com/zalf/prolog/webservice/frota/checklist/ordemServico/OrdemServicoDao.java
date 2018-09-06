@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ManutencaoHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,14 +29,14 @@ public interface OrdemServicoDao {
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	List<OrdemServico> getOs(String placa, String status, Long codUnidade,
-							 String tipoVeiculo, Integer limit, Long offset) throws SQLException;
+                             String tipoVeiculo, Integer limit, Long offset) throws SQLException;
 
 	@NotNull
 	List<ItemOrdemServico> getItensOs(@NotNull final String placa,
-									  @NotNull final String status,
-									  @NotNull final String prioridade,
-									  @Nullable final Integer limit,
-									  @Nullable final Long offset) throws SQLException;
+                                      @NotNull final String status,
+                                      @NotNull final String prioridade,
+                                      @Nullable final Integer limit,
+                                      @Nullable final Long offset) throws SQLException;
 
 	List<ItemOrdemServico> getItensOs(@NotNull final String placa,
 									  @NotNull final Date untilDate,
@@ -55,11 +58,11 @@ public interface OrdemServicoDao {
 	 */
 	@NotNull
 	List<ManutencaoHolder> getResumoManutencaoHolder(@NotNull final Long codUnidade,
-													 @Nullable final Long codTipoVeiculo,
-													 @Nullable final String placaVeiculo,
-													 final boolean itensEmAberto,
-													 final int limit,
-													 final int offset) throws Throwable;
+                                                     @Nullable final Long codTipoVeiculo,
+                                                     @Nullable final String placaVeiculo,
+                                                     final boolean itensEmAberto,
+                                                     final int limit,
+                                                     final int offset) throws Throwable;
 
 	/**
 	 * marca um item como consertado
