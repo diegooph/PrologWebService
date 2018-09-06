@@ -17,6 +17,17 @@ public class JustificativaAjuste {
     public JustificativaAjuste() {
     }
 
+    @NotNull
+    public static JustificativaAjuste createDummy() {
+        final JustificativaAjuste justificativa = new JustificativaAjuste();
+        justificativa.setCodJustificativaAjuste(10L);
+        justificativa.setCodEmpresa(3L);
+        justificativa.setNomeJustificativaAjuste("Esquecimento");
+        justificativa.setObrigatorioObservacao(true);
+        justificativa.setAtiva(true);
+        return justificativa;
+    }
+
     public Long getCodJustificativaAjuste() {
         return codJustificativaAjuste;
     }
