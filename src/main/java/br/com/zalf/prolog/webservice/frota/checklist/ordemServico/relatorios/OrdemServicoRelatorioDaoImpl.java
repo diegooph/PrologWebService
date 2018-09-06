@@ -134,8 +134,8 @@ public class OrdemServicoRelatorioDaoImpl extends DatabaseConnection implements 
     public void getEstratificacaoOsCsv(@NotNull final OutputStream outputStream,
                                        @NotNull final List<Long> codUnidades,
                                        @NotNull final String placa,
-                                       @NotNull final OrdemServico.Status statusOs,
-                                       @NotNull final ItemOrdemServico.Status statusItemOs,
+                                       @NotNull final String statusOs,
+                                       @NotNull final String statusItemOs,
                                        @NotNull final LocalDate dataInicial,
                                        @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -155,8 +155,8 @@ public class OrdemServicoRelatorioDaoImpl extends DatabaseConnection implements 
     @Override
     public Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
                                             @NotNull final String placa,
-                                            @NotNull final OrdemServico.Status statusOs,
-                                            @NotNull final ItemOrdemServico.Status statusItemOs,
+                                            @NotNull final String statusOs,
+                                            @NotNull final String statusItemOs,
                                             @NotNull final LocalDate dataInicial,
                                             @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -176,16 +176,16 @@ public class OrdemServicoRelatorioDaoImpl extends DatabaseConnection implements 
     private PreparedStatement getEstratificacaoOs(@NotNull final Connection conn,
                                                   @NotNull final List<Long> codUnidades,
                                                   @NotNull final String placa,
-                                                  @NotNull final OrdemServico.Status statusOs,
-                                                  @NotNull final ItemOrdemServico.Status statusItemOs,
+                                                  @NotNull final String statusOs,
+                                                  @NotNull final String statusItemOs,
                                                   @NotNull final LocalDate dataInicial,
                                                   @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(?, ?, ?, ?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setString(2, placa);
-        stmt.setString(3, statusOs.asString());
-        stmt.setString(4, statusItemOs.asString());
+        stmt.setString(3, statusOs);
+        stmt.setString(4, statusItemOs);
         stmt.setObject(5, dataInicial);
         stmt.setObject(6, dataFinal);
         return stmt;

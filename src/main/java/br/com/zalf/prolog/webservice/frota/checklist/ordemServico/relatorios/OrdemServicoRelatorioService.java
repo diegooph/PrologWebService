@@ -4,8 +4,6 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
@@ -140,8 +138,8 @@ class OrdemServicoRelatorioService {
             return dao.getEstratificacaoOsReport(
                     codUnidades,
                     placa,
-                    OrdemServico.Status.fromString(statusOs),
-                    ItemOrdemServico.Status.fromString(statusItemOs),
+                    statusOs,
+                    statusItemOs,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
@@ -168,8 +166,8 @@ class OrdemServicoRelatorioService {
                     outputStream,
                     codUnidades,
                     placa,
-                    OrdemServico.Status.fromString(statusOs),
-                    ItemOrdemServico.Status.fromString(statusItemOs),
+                    statusOs,
+                    statusItemOs,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {

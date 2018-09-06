@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
@@ -44,16 +42,16 @@ public interface OrdemServicoRelatorioDao {
     void getEstratificacaoOsCsv(@NotNull final OutputStream outputStream, 
                                 @NotNull final List<Long> codUnidades, 
                                 @NotNull final String placa,
-                                @NotNull final OrdemServico.Status statusOs,
-                                @NotNull final ItemOrdemServico.Status statusItemOs,
+                                @NotNull final String statusOs,
+                                @NotNull final String statusItemOs,
                                 @NotNull final LocalDate dataInicial,
                                 @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
     Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
                                      @NotNull final String placa,
-                                     @NotNull final OrdemServico.Status statusOs,
-                                     @NotNull final ItemOrdemServico.Status statusItemOs,
+                                     @NotNull final String statusOs,
+                                     @NotNull final String statusItemOs,
                                      @NotNull final LocalDate dataInicial,
                                      @NotNull final LocalDate dataFinal) throws Throwable;
 }
