@@ -39,7 +39,7 @@ public class OrdemServicoResource {
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    @Path("/itens/{codItemOs}/conserto-multiplos")
+    @Path("/itens/conserto-multiplos")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
     public Response consertaItens(ConsertoMultiplosItensOs itensConserto) throws ProLogException {
         service.consertaItens(itensConserto);
