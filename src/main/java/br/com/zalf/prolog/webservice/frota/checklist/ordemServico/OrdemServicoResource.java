@@ -43,7 +43,7 @@ public class OrdemServicoResource {
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
     public Response consertaItens(ConsertoMultiplosItensOs itensConserto) throws ProLogException {
         service.consertaItens(itensConserto);
-        return Response.ok("Itens consertado com sucesso");
+        return Response.ok("Itens consertados com sucesso");
     }
 
     @GET
