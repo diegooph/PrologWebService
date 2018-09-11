@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
-import br.com.zalf.prolog.webservice.DummyResource;
+import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
@@ -22,7 +22,7 @@ import java.util.List;
 @Path("/dummies")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class DummyControleJornadaAjusteResource extends DummyResource {
+public class DummyControleJornadaAjusteResource extends DummyData {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)

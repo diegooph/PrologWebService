@@ -23,7 +23,7 @@ import java.util.List;
 @Path("/dummies")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class DummyResource {
+public class DummyResource extends DummyData {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
@@ -76,11 +76,5 @@ public class DummyResource {
             tipos.add(TipoIntervalo.createDummy());
         }
         return tipos;
-    }
-
-    protected void ensureDebugEnvironment() {
-        if (!BuildConfig.DEBUG) {
-            throw new IllegalStateException("Esse resource só pode ser utilizado em ambientes de testes");
-        }
     }
 }
