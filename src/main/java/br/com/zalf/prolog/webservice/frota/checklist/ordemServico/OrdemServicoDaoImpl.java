@@ -170,7 +170,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM ESTRATIFICACAO_OS E " +
                     "WHERE E.STATUS_ITEM LIKE ? AND E.PRIORIDADE LIKE ? AND E.PLACA_VEICULO = ? " +
-                    "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE, E.DATA_HORA DESC " +
+                    "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE_ORDEM, E.DATA_HORA DESC " +
                     "LIMIT ? OFFSET ?;");
             stmt.setString(1, status);
             stmt.setString(2, prioridade);
@@ -196,7 +196,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM ESTRATIFICACAO_OS EO " +
                     "WHERE EO.COD_OS = ? AND EO.COD_UNIDADE = ? AND EO.STATUS_ITEM LIKE ? " +
-                    "ORDER BY EO.PRIORIDADE, EO.DATA_HORA DESC;");
+                    "ORDER BY EO.PRIORIDADE_ORDEM, EO.DATA_HORA DESC;");
             stmt.setLong(1, codOs);
             stmt.setLong(2, codUnidade);
             if (statusItemOs == null) {
@@ -228,7 +228,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     "AND E.PRIORIDADE = ? " +
                     "AND E.PLACA_VEICULO = ? " +
                     "AND E.DATA_HORA::DATE %s (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(E.cod_unidade))) " +
-                    "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE, E.DATA_HORA DESC;";
+                    "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE_ORDEM, E.DATA_HORA DESC;";
             if (itensCriticosRetroativos) {
                 query = String.format(query, "<=");
             } else {
