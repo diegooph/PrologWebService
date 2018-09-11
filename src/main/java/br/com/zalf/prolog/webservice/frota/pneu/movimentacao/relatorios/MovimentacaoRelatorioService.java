@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
@@ -11,42 +11,42 @@ import java.io.OutputStream;
 import java.util.List;
 
 /**
- * Created on 30/08/18.
+ * Created on 04/09/18.
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class AfericaoRelatorioService {
-    private static final String TAG = AfericaoRelatorioService.class.getSimpleName();
+public class MovimentacaoRelatorioService {
+    private static final String TAG = MovimentacaoRelatorioService.class.getSimpleName();
     @NotNull
-    private AfericaoRelatorioDao dao = Injection.provideAfericaoRelatorioDao();
+    private MovimentacaoRelatorioDao dao = Injection.provideMovimentacaoRelatorioDao();
 
-    public void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
+    public void getDadosGeraisMovimentacoesCsv(@NotNull final OutputStream out,
                                           @NotNull final List<Long> codUnidades,
                                           @NotNull final String dataInicial,
                                           @NotNull final String dataFinal) {
         try {
-            dao.getDadosGeraisAfericoesCsv(
+            dao.getDadosGeraisMovimentacoesCsv(
                     out,
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao gerar relatório das aferições (CSV)", throwable);
+            Log.e(TAG, "Erro ao gerar relatório das movimentações (CSV)", throwable);
             throw new RuntimeException(throwable);
         }
     }
 
     @NotNull
-    public Report getDadosGeraisAfericoesReport(@NotNull final List<Long> codUnidades,
+    public Report getDadosGeraisMovimentacoesReport(@NotNull final List<Long> codUnidades,
                                                @NotNull final String dataInicial,
                                                @NotNull final String dataFinal) throws ProLogException {
         try {
-            return dao.getDadosGeraisAfericoesReport(
+            return dao.getDadosGeraisMovimentacoesReport(
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao gerar relatório das aferições (REPORT)", throwable);
+            Log.e(TAG, "Erro ao gerar relatório das movimentações (REPORT)", throwable);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao gerar relatório, tente novamente");

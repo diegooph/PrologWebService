@@ -67,7 +67,7 @@ class EscalaDiariaReader {
             item.setPlaca(linha[1].trim().replaceAll(" ", "").toUpperCase());
         }
         // CODIGO DO MAPA
-        if (linha[2] != null && linha[2].trim().isEmpty()) {
+        if (linha[2] != null && !linha[2].trim().isEmpty()) {
             item.setCodMapa(Long.parseLong(linha[2].trim()));
         }
         // CPF MOTORISTA
@@ -75,11 +75,17 @@ class EscalaDiariaReader {
             item.setCpfMotorista(Long.parseLong(linha[3].trim().replaceAll("[^\\d]", "")));
         }
         // CPF AJUDANTE 1
-        if (linha[4] != null && !linha[4].trim().replaceAll("[^\\d]", "").isEmpty()) {
+        // Caso seja enviado um XLSX, o parse acaba comprometendo células vazias (ou nulas) e elas não são mapeadas.
+        // Isso faz com que tenhamos erro ao realizar o parse de algo opcional.
+        if (linha.length >= 5
+                && linha[4] != null
+                && !linha[4].trim().replaceAll("[^\\d]", "").isEmpty()) {
             item.setCpfAjudante1(Long.parseLong(linha[4].trim().replaceAll("[^\\d]", "")));
         }
         // CPF AJUDANTE 2
-        if (linha[5] != null && !linha[5].trim().replaceAll("[^\\d]", "").isEmpty()) {
+        if (linha.length == 6
+                && linha[5] != null
+                && !linha[5].trim().replaceAll("[^\\d]", "").isEmpty()) {
             item.setCpfAjudante2(Long.parseLong(linha[5].trim().replaceAll("[^\\d]", "")));
         }
         return item;
