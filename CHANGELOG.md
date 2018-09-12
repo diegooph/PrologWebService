@@ -9,6 +9,7 @@ Change Log
 
 ### Features
 * Cria nova function e novos métodos para gerar relatório geral de aferição
+* Cria nova function e novos métodos para gerar relatório geral de movimentação
 
 ### Bug Fixes
 * Fixa delimitadores aceitos na escala diária (isso melhora e ajuda a biblioteca de parse a identificar o delimitador
