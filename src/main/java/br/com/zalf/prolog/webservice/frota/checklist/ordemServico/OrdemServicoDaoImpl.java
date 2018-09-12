@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
-import br.com.zalf.prolog.webservice.Filtros;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -86,9 +86,40 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-//            conn = getConnection();
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
+                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, DATA_HORA_CONSERTO = ?, " +
+                    "FEEDBACK_CONSERTO = ? WHERE COD_UNIDADE = ? AND CODIGO = ANY (?) AND DATA_HORA_CONSERTO IS NULL;");
+            final OffsetDateTime now = OffsetDateTime.now(Clock.systemUTC());
+            stmt.setLong(1, itensConserto.getCpfColaboradorConserto());
+            stmt.setLong(2, itensConserto.getDuracaoRealizacaoConserto().toMillis());
+            stmt.setLong(3, itensConserto.getKmVeiculoConserto());
+            stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
+            stmt.setObject(5, now);
+            stmt.setString(6, itensConserto.getFeedbackResolucao().trim());
+            stmt.setLong(7, itensConserto.getCodUnidadeItensOs());
+            stmt.setArray(8, PostgresUtils.listToArray(conn, SqlType.BIGINT, itensConserto.getCodigosItens()));
+            if (stmt.executeUpdate() == itensConserto.getCodigosItens().size()) {
+                fechaOrdensServicosComBaseItens(
+                        conn,
+                        itensConserto.getCodUnidadeItensOs(),
+                        itensConserto.getCodigosItens(),
+                        now);
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+                veiculoDao.updateKmByPlaca(itensConserto.getPlacaVeiculo(), itensConserto.getKmVeiculoConserto(), conn);
+                conn.commit();
+            } else {
+                throw new IllegalStateException("Erro ao marcar os itens como consertados");
+            }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
         } finally {
-            closeConnection(null, null, null);
+            closeConnection(conn);
+            closeStatement(stmt);
         }
     }
 
@@ -356,6 +387,54 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             }
         } finally {
             closeConnection(null, stmt, rSet);
+        }
+    }
+
+    private void fechaOrdensServicosComBaseItens(@NotNull final Connection conn,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final List<Long> codigosItens,
+                                                 @NotNull final OffsetDateTime now) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            // Primeiro recuperamos os códigos de O.S. baseado nos códigos dos itens.
+            stmt = conn.prepareStatement("SELECT DISTINCT COD_OS " +
+                    "FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI " +
+                    "WHERE COSI.CODIGO = ANY (?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codigosItens));
+            rSet = stmt.executeQuery();
+            final List<Long> codigosOrdensServicos = new ArrayList<>(codigosItens.size());
+            if (rSet.next()) {
+                do {
+                    codigosOrdensServicos.add(rSet.getLong("COD_OS"));
+                } while (rSet.next());
+            } else {
+                throw new IllegalStateException("Erro ao buscar os códigos das OSs para os itens: " + codigosItens);
+            }
+
+            // Depois podemos verificar se as Ordens de Serviços podem ser fechadas (caso não possuam mais itens
+            // pendentes).
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO " +
+                    "SET STATUS = ?, DATA_HORA_FECHAMENTO = ? " +
+                    "WHERE COD_UNIDADE = ? " +
+                    "      AND CODIGO = ? " +
+                    "      AND NOT EXISTS((SELECT COSI.CODIGO " +
+                    "           FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI " +
+                    "           WHERE COSI.COD_UNIDADE = ? AND COSI.COD_OS = ? AND COSI.STATUS_RESOLUCAO = ?));");
+            for (final Long codOs : codigosOrdensServicos) {
+                stmt.setString(1, OrdemServico.Status.FECHADA.asString());
+                stmt.setObject(2, now);
+                stmt.setLong(3, codUnidade);
+                stmt.setLong(4, codOs);
+                stmt.setLong(5, codUnidade);
+                stmt.setLong(6, codOs);
+                stmt.setString(7, ItemOrdemServico.Status.PENDENTE.asString());
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        } finally {
+            closeStatement(stmt);
+            closeResultSet(rSet);
         }
     }
 

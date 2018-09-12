@@ -10,7 +10,12 @@ public class ConsertoMultiplosItensOs {
     /**
      * Quem está realizando o conserto.
      */
-    private Long codColaboradorConserto;
+    private Long cpfColaboradorConserto;
+
+    /**
+     * A placa do veículo da qual os itens fechados pertencem.
+     */
+    private String placaVeiculo;
 
     /**
      * Duração do consertado.
@@ -19,14 +24,19 @@ public class ConsertoMultiplosItensOs {
     private Duration duracaoRealizacaoConserto;
 
     /**
-     * Km do veículo no momento em que o item foi fechado.
+     * Km do veículo no momento em que o item foi consertado.
      */
-    private long kmVeiculoFechamento;
+    private long kmVeiculoConserto;
 
     /**
      * Observação sobre o conserto.
      */
     private String feedbackResolucao;
+
+    /**
+     * O código da unidade da qual os itens de O.S. pertencem.
+     */
+    private Long codUnidadeItensOs;
 
     /**
      * Códigos dos {@link ItemOrdemServico itens} que serão fechados.
@@ -37,12 +47,28 @@ public class ConsertoMultiplosItensOs {
 
     }
 
-    public Long getCodColaboradorConserto() {
-        return codColaboradorConserto;
+    public Long getCodUnidadeItensOs() {
+        return codUnidadeItensOs;
     }
 
-    public void setCodColaboradorConserto(final Long codColaboradorConserto) {
-        this.codColaboradorConserto = codColaboradorConserto;
+    public void setCodUnidadeItensOs(final Long codUnidadeItensOs) {
+        this.codUnidadeItensOs = codUnidadeItensOs;
+    }
+
+    public String getPlacaVeiculo() {
+        return placaVeiculo;
+    }
+
+    public void setPlacaVeiculo(final String placaVeiculo) {
+        this.placaVeiculo = placaVeiculo;
+    }
+
+    public Long getCpfColaboradorConserto() {
+        return cpfColaboradorConserto;
+    }
+
+    public void setCpfColaboradorConserto(final Long cpfColaboradorConserto) {
+        this.cpfColaboradorConserto = cpfColaboradorConserto;
     }
 
     public Duration getDuracaoRealizacaoConserto() {
@@ -53,12 +79,12 @@ public class ConsertoMultiplosItensOs {
         this.duracaoRealizacaoConserto = duracaoRealizacaoConserto;
     }
 
-    public long getKmVeiculoFechamento() {
-        return kmVeiculoFechamento;
+    public long getKmVeiculoConserto() {
+        return kmVeiculoConserto;
     }
 
-    public void setKmVeiculoFechamento(final long kmVeiculoFechamento) {
-        this.kmVeiculoFechamento = kmVeiculoFechamento;
+    public void setKmVeiculoConserto(final long kmVeiculoConserto) {
+        this.kmVeiculoConserto = kmVeiculoConserto;
     }
 
     public String getFeedbackResolucao() {

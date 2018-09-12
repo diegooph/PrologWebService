@@ -60,6 +60,7 @@ public final class OrdemServicoConverter {
             item = new ItemOrdemServico();
             item.setCodigo(rSet.getLong("codigo"));
             item.setCodOs(rSet.getLong("cod_os"));
+            item.setCodUnidadeItemOs(rSet.getLong("COD_UNIDADE"));
             pergunta = createPergunta(rSet);
             alternativa = createAlternativa(rSet);
             alternativas = new ArrayList<>();

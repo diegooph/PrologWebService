@@ -38,47 +38,64 @@ public class ItemOrdemServico {
      * Código da OS ao qual esse item pertence
      */
     private Long codOs;
+
+    /**
+     * Código da unidade da qual este item pertence.
+     */
+    private Long codUnidadeItemOs;
+
     /**
      * Placa ao qual o item pertence
      */
     private String placa;
+
     /**
      * Pergunta e alternativa = item
      */
     private PerguntaRespostaChecklist pergunta;
+
     private Colaborador mecanico;
+
     /**
      * Data em que o item foi apontado pela primeira vez
      */
     private LocalDateTime dataApontamento;
+
     /**
      * data e hora em que o item foi marcado como consertado
      */
     private LocalDateTime dataHoraConserto;
+
     /**
      * Km do veículo no momento em que o item foi fechado
      */
     private long kmVeiculoFechamento;
+
     private Status status;
+
     /**
      * Tempo que o item levou para ser consertado
      */
     @SerializedName("tempoRealizacaoConsertoEmSegundos")
     private Duration tempoRealizacaoConserto;
+
     /**
      * Prazo em horas para conserto do item
      */
     @SerializedName("tempoLimiteResolucaoEmSegundos")
     private Duration tempoLimiteResolucao;
+
     /**
      * Tempo restante para consertar o item, baseado na sua prioridade
      */
     @SerializedName("tempoRestanteEmSegundos")
     private Duration tempoRestante;
+
     /**
      * Observação do serviço realizado
      */
     private String feedbackResolucao;
+
     /**
      * Quantidade de apontamentos que um item tem
      */
@@ -90,6 +107,15 @@ public class ItemOrdemServico {
     private Long codigo;
 
     public ItemOrdemServico() {
+
+    }
+
+    public Long getCodUnidadeItemOs() {
+        return codUnidadeItemOs;
+    }
+
+    public void setCodUnidadeItemOs(final Long codUnidadeItemOs) {
+        this.codUnidadeItemOs = codUnidadeItemOs;
     }
 
     public int getQtdApontamentos() {
