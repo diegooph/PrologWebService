@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created on 04/09/18.
@@ -13,6 +14,7 @@ import java.util.Calendar;
  */
 public class IntervaloAjuste {
 
+    private static final long TRINTA_MIN = 1800000;
     private Long codIntervalo;
     private LocalDateTime dataHoraMarcacao;
     private Long codTipoIntervaloMarcado;
@@ -23,13 +25,25 @@ public class IntervaloAjuste {
     }
 
     @NotNull
-    public static IntervaloAjuste createDummy() {
+    public static IntervaloAjuste createDummyInicio() {
         final IntervaloAjuste intervalo = new IntervaloAjuste();
         intervalo.setCodIntervalo(10101L);
         intervalo.setCodTipoIntervaloMarcado(10L);
         intervalo.setNomeTipoIntervaloMarcado("Refeição");
         intervalo.setAtiva(true);
         intervalo.setDataHoraMarcacao(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
+        return intervalo;
+    }
+
+    @NotNull
+    public static IntervaloAjuste createDummyFim() {
+        final IntervaloAjuste intervalo = new IntervaloAjuste();
+        intervalo.setCodIntervalo(10101L);
+        intervalo.setCodTipoIntervaloMarcado(10L);
+        intervalo.setNomeTipoIntervaloMarcado("Refeição");
+        intervalo.setAtiva(true);
+        Calendar.getInstance().getTimeInMillis();
+        intervalo.setDataHoraMarcacao(DateUtils.toLocalDateTime(new Date(System.currentTimeMillis() + TRINTA_MIN)));
         return intervalo;
     }
 

@@ -18,8 +18,8 @@ public class IntervaloAgrupadoAjuste {
     @NotNull
     public static IntervaloAgrupadoAjuste createDummy() {
         final IntervaloAgrupadoAjuste intervaloAjuste = new IntervaloAgrupadoAjuste();
-        intervaloAjuste.setIntervaloInicial(IntervaloAjuste.createDummy());
-        intervaloAjuste.setIntervaloFinal(IntervaloAjuste.createDummy());
+        intervaloAjuste.setIntervaloInicial(IntervaloAjuste.createDummyInicio());
+        intervaloAjuste.setIntervaloFinal(IntervaloAjuste.createDummyFim());
         return intervaloAjuste;
     }
 
