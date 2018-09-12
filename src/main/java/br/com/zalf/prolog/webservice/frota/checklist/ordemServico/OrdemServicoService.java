@@ -87,19 +87,19 @@ public class OrdemServicoService {
 
     @NotNull
     public List<ItemOrdemServico> getItensOsManutencaoHolder(@NotNull final String placa,
-                                                             @NotNull final String status,
-                                                             @NotNull final String prioridade,
+                                                             @NotNull final String statusItens,
+                                                             @NotNull final String prioridadeItens,
                                                              @Nullable final Integer limit,
                                                              @Nullable final Long offset) throws ProLogException {
         try {
-            return dao.getItensOs(placa, status, prioridade, limit, offset);
+            return dao.getItensOs(placa, statusItens, prioridadeItens, limit, offset);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os itens de uma OS. \n" +
                     "Placa: %s \n" +
-                    "status: %s \n" +
+                    "statusItens: %s \n" +
                     "limit: %d \n" +
                     "offset: %d \n" +
-                    "prioridade: %s", placa, status, limit, offset, prioridade), e);
+                    "prioridadeItens: %s", placa, statusItens, limit, offset, prioridadeItens), e);
             throw Injection.provideProLogExceptionHandler().map(e, "Erro ao buscar os itens de O.S.");
         }
     }

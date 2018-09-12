@@ -50,7 +50,7 @@ public interface OrdemServicoDao {
 
 	@NotNull
 	List<ItemOrdemServico> getItensOs(@NotNull final String placa,
-                                      @NotNull final String status,
+                                      @NotNull final String statusItens,
                                       @NotNull final String prioridade,
                                       @Nullable final Integer limit,
                                       @Nullable final Long offset) throws SQLException;

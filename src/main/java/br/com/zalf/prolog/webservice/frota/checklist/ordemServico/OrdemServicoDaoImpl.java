@@ -190,7 +190,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
     @NotNull
     @Override
     public List<ItemOrdemServico> getItensOs(@NotNull final String placa,
-                                             @NotNull final String status,
+                                             @NotNull final String statusItens,
                                              @NotNull final String prioridade,
                                              @Nullable final Integer limit,
                                              @Nullable final Long offset) throws SQLException {
@@ -203,7 +203,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     "WHERE E.STATUS_ITEM LIKE ? AND E.PRIORIDADE LIKE ? AND E.PLACA_VEICULO = ? " +
                     "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE_ORDEM, E.DATA_HORA DESC " +
                     "LIMIT ? OFFSET ?;");
-            stmt.setString(1, status);
+            stmt.setString(1, statusItens);
             stmt.setString(2, prioridade);
             stmt.setString(3, placa);
             StatementUtils.bindValueOrNull(stmt, 4, limit, SqlType.INTEGER);

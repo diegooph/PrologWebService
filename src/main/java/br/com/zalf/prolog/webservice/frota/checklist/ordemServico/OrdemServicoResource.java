@@ -63,28 +63,17 @@ public class OrdemServicoResource {
 
     @GET
     @UsedBy(platforms = Platform.ANDROID)
-    @Path("/manutencao/{placa}/{status}/{prioridade}")
-    @Secured(permissions = {
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
-    public List<ItemOrdemServico> getItensOsManutencaoHolder(@PathParam("placa") @Required String placa,
-                                                             @PathParam("status") @Required String status,
-                                                             @PathParam("prioridade") @Required String prioridade,
-                                                             @QueryParam("limit") @Optional Integer limit,
-                                                             @QueryParam("offset") @Optional Long offset)
-            throws ProLogException {
-        return service.getItensOsManutencaoHolder(placa, status, prioridade, limit, offset);
-    }
-
-    @GET
-    @UsedBy(platforms = Platform.ANDROID)
     @Path("/itens")
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
-    public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required String placa)
+    public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required String placa,
+                                                       @QueryParam("status-itens") @Optional String statusItens,
+                                                       @QueryParam("prioridade-itens") @Optional String prioridade,
+                                                       @QueryParam("limit") @Optional Integer limit,
+                                                       @QueryParam("offset") @Optional Long offset)
             throws ProLogException {
-        return service.getItensOsManutencaoHolder(placa, "%", "%", null, null);
+        return service.getItensOsManutencaoHolder(placa, statusItens, "%", null, null);
     }
 
     @GET
