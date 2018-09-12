@@ -21,9 +21,9 @@ public class AfericaoRelatorioService {
     private AfericaoRelatorioDao dao = Injection.provideAfericaoRelatorioDao();
 
     public void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
-                                          @NotNull final List<Long> codUnidades,
-                                          @NotNull final String dataInicial,
-                                          @NotNull final String dataFinal) {
+                                           @NotNull final List<Long> codUnidades,
+                                           @NotNull final String dataInicial,
+                                           @NotNull final String dataFinal) {
         try {
             dao.getDadosGeraisAfericoesCsv(
                     out,
@@ -38,8 +38,8 @@ public class AfericaoRelatorioService {
 
     @NotNull
     public Report getDadosGeraisAfericoesReport(@NotNull final List<Long> codUnidades,
-                                               @NotNull final String dataInicial,
-                                               @NotNull final String dataFinal) throws ProLogException {
+                                                @NotNull final String dataInicial,
+                                                @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getDadosGeraisAfericoesReport(
                     codUnidades,

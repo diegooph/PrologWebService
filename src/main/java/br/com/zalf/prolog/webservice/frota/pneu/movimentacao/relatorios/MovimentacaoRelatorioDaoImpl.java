@@ -24,12 +24,11 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  */
 public class MovimentacaoRelatorioDaoImpl implements MovimentacaoRelatorioDao {
 
-
     @Override
     public void getDadosGeraisMovimentacoesCsv(@NotNull final OutputStream out,
-                                              @NotNull final List<Long> codUnidades,
-                                              @NotNull final LocalDate dataInicial,
-                                              @NotNull final LocalDate dataFinal) throws Throwable {
+                                               @NotNull final List<Long> codUnidades,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -50,8 +49,8 @@ public class MovimentacaoRelatorioDaoImpl implements MovimentacaoRelatorioDao {
     @NotNull
     @Override
     public Report getDadosGeraisMovimentacoesReport(@NotNull final List<Long> codUnidades,
-                                                   @NotNull final LocalDate dataInicial,
-                                                   @NotNull final LocalDate dataFinal) throws Throwable {
+                                                    @NotNull final LocalDate dataInicial,
+                                                    @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -65,12 +64,13 @@ public class MovimentacaoRelatorioDaoImpl implements MovimentacaoRelatorioDao {
         }
     }
 
+    @NotNull
     private PreparedStatement getDadosGeraisMovimentacoesStmt(@NotNull final Connection conn,
-                                                             @NotNull final List<Long> codUnidades,
-                                                             @NotNull final LocalDate dataInicial,
-                                                             @NotNull final LocalDate dataFinal) throws Throwable {
+                                                              @NotNull final List<Long> codUnidades,
+                                                              @NotNull final LocalDate dataInicial,
+                                                              @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_MOVIMENTACAO_RELATORIO_DADOS_GERAIS(?,?,?);");
+                conn.prepareStatement("SELECT * FROM FUNC_MOVIMENTACAO_RELATORIO_DADOS_GERAIS(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);

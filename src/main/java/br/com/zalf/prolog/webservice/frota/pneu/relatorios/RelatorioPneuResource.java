@@ -170,6 +170,52 @@ public class RelatorioPneuResource {
         return service.getResumoGeralPneusReport(codUnidades, status);
     }
 
+    @GET
+    @Produces("application/csv")
+    @Path("/dados-gerais-afericoes/csv")
+    public StreamingOutput getDadosGeraisAfericoesCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> afericoesRelatorioService.getDadosGeraisAfericoesCsv(
+                outputStream,
+                codUnidades,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Path("/dados-gerais-afericoes/report")
+    public Report getDadosGeraisAfericoesReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                @QueryParam("dataInicial") @Required final String dataInicial,
+                                                @QueryParam("dataFinal") @Required final String dataFinal)
+            throws ProLogException {
+        return afericoesRelatorioService.getDadosGeraisAfericoesReport(codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Produces("application/csv")
+    @Path("/dados-gerais-movimentacoes/csv")
+    public StreamingOutput getDadosGeraisMovimentacoesCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> movimentacoesRelatorioService.getDadosGeraisMovimentacoesCsv(
+                outputStream,
+                codUnidades,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Path("/dados-gerais-movimentacoes/report")
+    public Report getDadosGeraisMovimentacoesReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                    @QueryParam("dataInicial") @Required final String dataInicial,
+                                                    @QueryParam("dataFinal") @Required final String dataFinal)
+            throws ProLogException {
+        return movimentacoesRelatorioService.getDadosGeraisMovimentacoesReport(codUnidades, dataInicial, dataFinal);
+    }
+
     /**
      * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getQtdPneusByFaixaSulco(List, List)} instead.
      */
@@ -418,43 +464,5 @@ public class RelatorioPneuResource {
                                               @QueryParam("dataFinal") long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
-    }
-
-    @GET
-    @Produces("application/csv")
-    @Path("/dados-gerais-afericoes/csv")
-    public StreamingOutput getDadosGeraisAfericoes(
-            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
-            @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal) {
-        return outputStream -> afericoesRelatorioService.getDadosGeraisAfericoesCsv(outputStream, codUnidades, dataInicial, dataFinal);
-    }
-
-    @GET
-    @Path("/dados-gerais-afericoes/report")
-    public Report getDadosGeraisAfericoesReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
-                                                @QueryParam("dataInicial") @Required final String dataInicial,
-                                                @QueryParam("dataFinal") @Required final String dataFinal)
-            throws ProLogException {
-        return afericoesRelatorioService.getDadosGeraisAfericoesReport(codUnidades, dataInicial, dataFinal);
-    }
-
-    @GET
-    @Produces("application/csv")
-    @Path("/dados-gerais-movimentacoes/csv")
-    public StreamingOutput getDadosGeraisMovimentacoes(
-            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
-            @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal) {
-        return outputStream -> movimentacoesRelatorioService.getDadosGeraisMovimentacoesCsv(outputStream, codUnidades, dataInicial, dataFinal);
-    }
-
-    @GET
-    @Path("/dados-gerais-movimentacoes/report")
-    public Report getDadosGeraisMovimentacoesReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
-                                                    @QueryParam("dataInicial") @Required final String dataInicial,
-                                                    @QueryParam("dataFinal") @Required final String dataFinal)
-            throws ProLogException {
-        return movimentacoesRelatorioService.getDadosGeraisMovimentacoesReport(codUnidades, dataInicial, dataFinal);
     }
 }
