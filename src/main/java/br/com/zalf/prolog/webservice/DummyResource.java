@@ -3,8 +3,7 @@ package br.com.zalf.prolog.webservice;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 
 import javax.ws.rs.Consumes;
@@ -28,18 +27,14 @@ public class DummyResource extends DummyData {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/cargo")
-    @Secured
     public Cargo getCargo() {
-        ensureDebugEnvironment();
         return Cargo.createDummy();
     }
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/cargo-list")
-    @Secured
     public List<Cargo> getCargoList() {
-        ensureDebugEnvironment();
         final List<Cargo> cargos = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             cargos.add(Cargo.createDummy());
@@ -50,27 +45,21 @@ public class DummyResource extends DummyData {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/visao")
-    @Secured
     public Visao getVisao() {
-        ensureDebugEnvironment();
         return Visao.createDummy();
     }
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/tipo-intervalo")
-    @Secured
     public TipoIntervalo getTipoIntervalo() {
-        ensureDebugEnvironment();
         return TipoIntervalo.createDummy();
     }
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/tipo-intervalo-list")
-    @Secured
     public List<TipoIntervalo> getTipoIntervaloList() {
-        ensureDebugEnvironment();
         final List<TipoIntervalo> tipos = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             tipos.add(TipoIntervalo.createDummy());

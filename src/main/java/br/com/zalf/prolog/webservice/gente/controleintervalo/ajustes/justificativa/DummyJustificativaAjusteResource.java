@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificat
 import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -26,9 +25,7 @@ public final class DummyJustificativaAjusteResource extends DummyData {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/justificativas-ajustes-list")
-    @Secured
     public List<JustificativaAjuste> getJustificativasAjuste() {
-        ensureDebugEnvironment();
         final List<JustificativaAjuste> justificativas = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             justificativas.add(JustificativaAjuste.createDummy());
@@ -39,9 +36,7 @@ public final class DummyJustificativaAjusteResource extends DummyData {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/justificativa-ajuste")
-    @Secured
     public JustificativaAjuste getJustificativaAjuste() {
-        ensureDebugEnvironment();
         return JustificativaAjuste.createDummy();
     }
 }
