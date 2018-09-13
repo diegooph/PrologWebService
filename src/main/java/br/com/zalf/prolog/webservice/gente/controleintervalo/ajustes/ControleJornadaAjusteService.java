@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ControleJornadaAjusteService {
+public final class ControleJornadaAjusteService {
 
     @NotNull
     final ControleJornadaAjusteDao dao = Injection.provideControleJornadaAjustesDao();

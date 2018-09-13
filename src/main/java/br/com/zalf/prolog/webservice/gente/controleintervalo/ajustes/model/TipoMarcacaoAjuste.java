@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +34,7 @@ public enum TipoMarcacaoAjuste {
     public static TipoMarcacaoAjuste fromString(@NotNull final String tipoMarcacaoAjuste) {
         Preconditions.checkNotNull(tipoMarcacaoAjuste, "tipoMarcacaoAjuste cannot be null!");
 
-        for (final TipoMarcacaoAjuste value : TipoMarcacaoAjuste.values()) {
+        for (final TipoMarcacaoAjuste value : values()) {
             if (tipoMarcacaoAjuste.equals(value.stringRepresentation)) {
                 return value;
             }

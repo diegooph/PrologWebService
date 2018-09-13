@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/controle-jornada/ajustes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class ControleJornadaAjusteResource {
+public final class ControleJornadaAjusteResource {
 
     @NotNull
     final ControleJornadaAjusteService service = new ControleJornadaAjusteService();

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;

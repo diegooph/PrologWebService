@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,8 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class IntervaloAgrupadoAjuste {
-
+public final class IntervaloAgrupadoAjuste {
     private IntervaloAjuste intervaloInicial;
     private IntervaloAjuste intervaloFinal;
 

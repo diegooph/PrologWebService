@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa;
 
 import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
@@ -21,7 +21,7 @@ import java.util.List;
 @Path("/dummies")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class DummyJustificativaAjusteResource extends DummyData {
+public final class DummyJustificativaAjusteResource extends DummyData {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
 
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +11,7 @@ import java.util.Calendar;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class MarcacaoAjusteAdicao extends MarcacaoAjuste {
+public final class MarcacaoAjusteAdicao extends MarcacaoAjuste {
     private Long codMarcacaoVinculo;
     private Long codColaborador;
     private Long codTipoIntervaloMarcado;

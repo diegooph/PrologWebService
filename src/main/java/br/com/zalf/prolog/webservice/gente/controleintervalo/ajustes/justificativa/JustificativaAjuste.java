@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class JustificativaAjuste {
+public final class JustificativaAjuste {
     private Long codJustificativaAjuste;
     private Long codEmpresa;
     private String nomeJustificativaAjuste;

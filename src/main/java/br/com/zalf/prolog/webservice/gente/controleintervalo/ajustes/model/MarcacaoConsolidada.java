@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
 
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class MarcacaoConsolidada {
+public final class MarcacaoConsolidada {
 
     private LocalDate data;
     private int totalMarcacoesDia;

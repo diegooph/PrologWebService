@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class MarcacaoInconsistenciaExibicao {
+public final class MarcacaoInconsistenciaExibicao {
     private Long codMarcacao;
     private Long codMarcacaoInconsistencia;
     private String descricaoInconsistencia;

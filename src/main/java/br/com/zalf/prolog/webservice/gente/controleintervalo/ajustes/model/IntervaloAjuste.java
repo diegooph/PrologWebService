@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
 
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import org.jetbrains.annotations.NotNull;
@@ -12,8 +12,7 @@ import java.util.Date;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class IntervaloAjuste {
-
+public final class IntervaloAjuste {
     private static final long TRINTA_MIN = 1800000;
     private Long codIntervalo;
     private LocalDateTime dataHoraMarcacao;

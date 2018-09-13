@@ -83,8 +83,8 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChang
 import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjusteDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjusteDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste.JustificativaAjusteDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste.JustificativaAjusteDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa.JustificativaAjusteDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa.JustificativaAjusteDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatoriosDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;

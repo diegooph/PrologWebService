@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ControleJornadaAjusteDaoImpl implements ControleJornadaAjusteDao {
+public final class ControleJornadaAjusteDaoImpl implements ControleJornadaAjusteDao {
     @Override
     public void ajustaMarcacaoAdicao(@NotNull final Long codUnidade,
                                      @NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
