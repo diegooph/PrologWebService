@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -32,7 +32,7 @@ final class ControleIntervaloRelatorioConverter {
     @NotNull
     static List<FolhaPontoRelatorio> createFolhaPontoRelatorio(
             @NotNull final ResultSet rSet,
-            @NotNull final List<TipoIntervalo> tiposIntervalos,
+            @NotNull final List<TipoMarcacao> tiposIntervalos,
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal,
             @NotNull final ZoneId zoneIdUnidade) throws Throwable {
@@ -42,7 +42,7 @@ final class ControleIntervaloRelatorioConverter {
                 .withZoneSameInstant(zoneIdUnidade)
                 .toLocalDateTime();
         final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
-        final Map<Long, TipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(tiposIntervalos);
+        final Map<Long, TipoMarcacao> tiposIntervalosUnidade = tiposIntervalosToMap(tiposIntervalos);
         Long cpfAnterior = null;
         String nomeAnterior = null;
         LocalDate diaAnterior = null;
@@ -130,8 +130,8 @@ final class ControleIntervaloRelatorioConverter {
     }
 
     @NotNull
-    private static Map<Long, TipoIntervalo> tiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
-        final Map<Long, TipoIntervalo> tiposIntervalosMap = new HashMap<>();
+    private static Map<Long, TipoMarcacao> tiposIntervalosToMap(@NotNull final List<TipoMarcacao> tiposIntervalos) {
+        final Map<Long, TipoMarcacao> tiposIntervalosMap = new HashMap<>();
         tiposIntervalos.forEach(
                 tipoIntervalo -> tiposIntervalosMap.put(tipoIntervalo.getCodigo(),tipoIntervalo));
         return tiposIntervalosMap;

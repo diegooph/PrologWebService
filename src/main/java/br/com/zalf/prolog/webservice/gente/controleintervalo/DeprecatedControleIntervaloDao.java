@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
@@ -14,9 +14,9 @@ import java.util.Optional;
 @Deprecated
 public interface DeprecatedControleIntervaloDao {
 
-    List<TipoIntervalo> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException;
+    List<TipoMarcacao> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException;
 
-    Intervalo getIntervaloAberto(Long cpf, TipoIntervalo tipoInvervalo) throws SQLException;
+    Intervalo getIntervaloAberto(Long cpf, TipoMarcacao tipoInvervalo) throws SQLException;
 
     void insertIntervalo(Intervalo intervalo) throws SQLException;
 
@@ -24,10 +24,10 @@ public interface DeprecatedControleIntervaloDao {
 
     void insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException;
 
-    Long insertTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
-    void updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
     void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,

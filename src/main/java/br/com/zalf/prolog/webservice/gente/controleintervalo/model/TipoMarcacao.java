@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * Created by Zart on 18/08/2017.
  */
-public class TipoIntervalo {
+public class TipoMarcacao {
 
     private Long codigo;
 
@@ -34,7 +34,7 @@ public class TipoIntervalo {
     @SerializedName("tempoLimiteEstouroSegundos")
     private Duration tempoLimiteEstouro;
 
-    public TipoIntervalo() {
+    public TipoMarcacao() {
 
     }
 
@@ -123,13 +123,13 @@ public class TipoIntervalo {
         if (obj == null)
             return false;
 
-        if (!(obj instanceof TipoIntervalo))
+        if (!(obj instanceof TipoMarcacao))
             return false;
 
         if (obj == this)
             return true;
 
-        final TipoIntervalo tipoIntervalo = (TipoIntervalo) obj;
+        final TipoMarcacao tipoIntervalo = (TipoMarcacao) obj;
         return !(codigo == null || tipoIntervalo.codigo == null) && codigo.equals(tipoIntervalo.codigo);
     }
 
@@ -139,8 +139,8 @@ public class TipoIntervalo {
     }
 
     @NotNull
-    public static TipoIntervalo createDummy() {
-        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
+    public static TipoMarcacao createDummy() {
+        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
         tipoIntervalo.setCodigo(10L);
         tipoIntervalo.setNome("Alimentação");
         tipoIntervalo.setAtivo(true);

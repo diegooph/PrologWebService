@@ -29,7 +29,7 @@ public final class IntervaloMarcacao {
     @NotNull
     private FonteDataHora fonteDataHora;
     @NotNull
-    private TipoMarcacaoIntervalo tipoMarcacaoIntervalo;
+    private MarcacaoInicioFim tipoMarcacaoIntervalo;
     @Nullable
     private String justificativaEstouro;
     @Nullable
@@ -114,11 +114,11 @@ public final class IntervaloMarcacao {
     }
 
     @NotNull
-    public TipoMarcacaoIntervalo getTipoMarcacaoIntervalo() {
+    public MarcacaoInicioFim getTipoMarcacaoIntervalo() {
         return tipoMarcacaoIntervalo;
     }
 
-    public void setTipoMarcacaoIntervalo(@NotNull TipoMarcacaoIntervalo tipoMarcacaoIntervalo) {
+    public void setTipoMarcacaoIntervalo(@NotNull MarcacaoInicioFim tipoMarcacaoIntervalo) {
         this.tipoMarcacaoIntervalo = tipoMarcacaoIntervalo;
     }
 

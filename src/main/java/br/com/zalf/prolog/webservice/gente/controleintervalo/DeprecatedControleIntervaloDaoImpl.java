@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Localizacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
@@ -25,12 +25,12 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
     private static final String TAG = DeprecatedControleIntervaloDaoImpl.class.getSimpleName();
 
     @Override
-    public List<TipoIntervalo> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
+    public List<TipoMarcacao> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
         return new ControleIntervaloDaoImpl().getTiposIntervalosByUnidade(codUnidade, true, withCargos);
     }
 
     @Override
-    public Intervalo getIntervaloAberto(Long cpf, TipoIntervalo tipoInvervalo) throws SQLException {
+    public Intervalo getIntervaloAberto(Long cpf, TipoMarcacao tipoInvervalo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -108,13 +108,13 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
     }
 
     @Override
-    public Long insertTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    public Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
         return new ControleIntervaloDaoImpl().insertTipoIntervalo(tipoIntervalo, listener);
     }
 
     @Override
-    public void updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    public void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                                     @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
         new ControleIntervaloDaoImpl().updateTipoIntervalo(tipoIntervalo, listener);
     }
@@ -279,7 +279,7 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
         try {
             conn = getConnection();
             final Intervalo intervalo = new Intervalo();
-            final TipoIntervalo tipoIntervalo = new TipoIntervalo();
+            final TipoMarcacao tipoIntervalo = new TipoMarcacao();
             tipoIntervalo.setCodigo(codTipo);
             final Colaborador colaborador = new Colaborador();
             colaborador.setCpf(cpf);
@@ -402,7 +402,7 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
         intervalo.setValido(rSet.getBoolean("VALIDO"));
         final LocalDateTime dataAtual = LocalDateTime.now(TimeZoneManager.getZoneIdForCpf(cpf, conn));
         intervalo.setTempoDecorrido(Duration.ofMillis(ChronoUnit.MILLIS.between(dataAtual, intervalo.getDataHoraInicio())));
-        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
         tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
         intervalo.setTipo(tipoIntervalo);
         intervalo.setColaborador(colaborador);

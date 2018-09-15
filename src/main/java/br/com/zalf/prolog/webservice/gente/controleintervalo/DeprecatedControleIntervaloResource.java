@@ -103,19 +103,19 @@ public class DeprecatedControleIntervaloResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/completos")
-    public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
+    public List<TipoMarcacao> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
         return service.getTiposIntervalos(codUnidade, true,true);
     }
 
     @POST
     @Path("/tipos")
-    public AbstractResponse insertTipoIntervalo(TipoIntervalo tipoIntervalo) {
+    public AbstractResponse insertTipoIntervalo(TipoMarcacao tipoIntervalo) {
         return service.insertTipoIntervalo(tipoIntervalo);
     }
 
     @PUT
     @Path("/tipos")
-    public Response updateTipoInvervalo(TipoIntervalo tipoIntervalo) {
+    public Response updateTipoInvervalo(TipoMarcacao tipoIntervalo) {
         if (service.updateTipoIntervalo(tipoIntervalo)) {
             return Response.ok("Tipo de intervalo editado com sucesso");
         } else {
@@ -129,7 +129,7 @@ public class DeprecatedControleIntervaloResource {
             Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
     @Path("/tipos/{codUnidade}/resumidos")
-    public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
+    public List<TipoMarcacao> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
         return service.getTiposIntervalos(codUnidade, true,false);
     }
 
@@ -182,14 +182,14 @@ public class DeprecatedControleIntervaloResource {
             marcacao.setDataHoraMaracao(intervalo.getDataHoraInicio());
             marcacao.setFonteDataHora(intervalo.getFonteDataHoraInicio());
             marcacao.setLocalizacaoMarcacao(intervalo.getLocalizacaoInicio());
-            marcacao.setTipoMarcacaoIntervalo(TipoMarcacaoIntervalo.MARCACAO_INICIO);
+            marcacao.setTipoMarcacaoIntervalo(MarcacaoInicioFim.MARCACAO_INICIO);
         } else {
             marcacao.setDataHoraMaracao(intervalo.getDataHoraFim());
             marcacao.setFonteDataHora(intervalo.getFonteDataHoraFim());
             marcacao.setLocalizacaoMarcacao(intervalo.getLocalizacaoFim());
             marcacao.setJustificativaTempoRecomendado(intervalo.getJustificativaTempoRecomendado());
             marcacao.setJustificativaEstouro(intervalo.getJustificativaEstouro());
-            marcacao.setTipoMarcacaoIntervalo(TipoMarcacaoIntervalo.MARCACAO_FIM);
+            marcacao.setTipoMarcacaoIntervalo(MarcacaoInicioFim.MARCACAO_FIM);
         }
         return marcacao;
     }
@@ -209,7 +209,7 @@ public class DeprecatedControleIntervaloResource {
         colaborador.setCpf(marcacao.getCpfColaborador());
         intervalo.setColaborador(colaborador);
 
-        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
         tipoIntervalo.setCodigo(marcacao.getCodTipoIntervalo());
         intervalo.setTipo(tipoIntervalo);
 

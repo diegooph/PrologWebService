@@ -6,12 +6,23 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Calendar;
 
 /**
+ * Classe utilizada quando uma marcação for ativada ou inativada, seja ela de início ou de fim.
+ *
  * Created on 04/09/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class MarcacaoAjusteAtivacaoInativacao extends MarcacaoAjuste {
-    private boolean isAtivo;
+    /**
+     * O código da marcação que será ativada ou inativada.
+     */
+    private Long codMarcacaoAtivacaoInativacao;
+
+    /**
+     * <code>boolean</code> indicando se a marcação deve ser ativada ou inativada. <code>true</code> para ativar
+     * e <code>false</code> para inativar.
+     */
+    private boolean deveAtivar;
 
     public MarcacaoAjusteAtivacaoInativacao() {
         super(TipoMarcacaoAjuste.ATIVACAO_INATIVACAO);
@@ -20,25 +31,34 @@ public final class MarcacaoAjusteAtivacaoInativacao extends MarcacaoAjuste {
     @NotNull
     public static MarcacaoAjusteAtivacaoInativacao createDummy() {
         final MarcacaoAjusteAtivacaoInativacao ajusteAtivacaoInativacao = new MarcacaoAjusteAtivacaoInativacao();
-        ajusteAtivacaoInativacao.setAtivo(true);
+        ajusteAtivacaoInativacao.setDeveAtivar(true);
+        ajusteAtivacaoInativacao.setCodMarcacaoAtivacaoInativacao(20L);
         ajusteAtivacaoInativacao.setCodJustificativaAjuste(5L);
         ajusteAtivacaoInativacao.setObservacaoAjuste("Dummy Data");
         ajusteAtivacaoInativacao.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
         return ajusteAtivacaoInativacao;
     }
 
-    public boolean isAtivo() {
-        return isAtivo;
+    public Long getCodMarcacaoAtivacaoInativacao() {
+        return codMarcacaoAtivacaoInativacao;
     }
 
-    public void setAtivo(final boolean ativo) {
-        isAtivo = ativo;
+    public void setCodMarcacaoAtivacaoInativacao(final Long codMarcacaoAtivacaoInativacao) {
+        this.codMarcacaoAtivacaoInativacao = codMarcacaoAtivacaoInativacao;
+    }
+
+    public boolean isDeveAtivar() {
+        return deveAtivar;
+    }
+
+    public void setDeveAtivar(final boolean deveAtivar) {
+        this.deveAtivar = deveAtivar;
     }
 
     @Override
     public String toString() {
         return "MarcacaoAjusteAtivacaoInativacao{" +
-                "isAtivo=" + isAtivo +
+                "deveAtivar=" + deveAtivar +
                 '}';
     }
 }

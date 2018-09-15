@@ -13,7 +13,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import org.jetbrains.annotations.NotNull;
@@ -184,7 +184,7 @@ public class ColaboradorService {
             // Se usuário tem acesso a marcação de intervalo, precisamos setar os tipos de intervalo também.
             if (colaborador.getVisao().hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)) {
                 final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
-                final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(
+                final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(
                         colaborador.getUnidade().getCodigo(),
                         true,
                         true);

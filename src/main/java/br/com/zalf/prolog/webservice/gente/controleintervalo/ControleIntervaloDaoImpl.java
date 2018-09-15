@@ -91,11 +91,11 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, cpf);
             stmt.setLong(4, codTipoIntervalo);
-            stmt.setString(5, TipoMarcacaoIntervalo.MARCACAO_INICIO.asString());
+            stmt.setString(5, MarcacaoInicioFim.MARCACAO_INICIO.asString());
             stmt.setLong(6, codUnidade);
             stmt.setLong(7, cpf);
             stmt.setLong(8, codTipoIntervalo);
-            stmt.setString(9, TipoMarcacaoIntervalo.MARCACAO_FIM.asString());
+            stmt.setString(9, MarcacaoInicioFim.MARCACAO_FIM.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createIntervaloMarcacao(rSet);
@@ -141,7 +141,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     @Override
-    public Long insertTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    public Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                                     @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -182,7 +182,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     }
 
     @Override
-    public void updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    public void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                                     @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -222,14 +222,14 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     @Override
-    public List<TipoIntervalo> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
-                                                           final boolean apenasAtivos,
-                                                           final boolean withCargos)
+    public List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
+                                                          final boolean apenasAtivos,
+                                                          final boolean withCargos)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<TipoIntervalo> tipos = new ArrayList<>();
+        final List<TipoMarcacao> tipos = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALOS_UNIDADE(?, ?);");
@@ -247,8 +247,8 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     @Override
-    public TipoIntervalo getTipoIntervalo(@NotNull final Long codUnidade,
-                                          @NotNull final Long codTipoIntervalo) throws SQLException {
+    public TipoMarcacao getTipoIntervalo(@NotNull final Long codUnidade,
+                                         @NotNull final Long codTipoIntervalo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -284,7 +284,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     @Override
     public void updateStatusAtivoTipoIntervalo(@NotNull final Long codUnidade,
                                                @NotNull final Long codTipoIntervalo,
-                                               @NotNull final TipoIntervalo tipoIntervalo,
+                                               @NotNull final TipoMarcacao tipoIntervalo,
                                                @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -406,7 +406,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         intervalo.setColaborador(colaborador);
 
         // TODO: Recuperar nome do tipo de intervalo.
-        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
         tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
         tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
         intervalo.setTipo(tipoIntervalo);
@@ -453,7 +453,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         return intervalo;
     }
 
-    private void associaCargosTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    private void associaCargosTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                                             @NotNull final Connection conn) throws SQLException {
         deleteCargosTipoIntervalo(
                 tipoIntervalo.getUnidade().getCodigo(),
@@ -504,10 +504,10 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     }
 
     @NotNull
-    private TipoIntervalo createTipoInvervalo(@NotNull final ResultSet rSet,
-                                              final boolean withCargos,
-                                              @NotNull final Connection conn) throws SQLException {
-        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
+    private TipoMarcacao createTipoInvervalo(@NotNull final ResultSet rSet,
+                                             final boolean withCargos,
+                                             @NotNull final Connection conn) throws SQLException {
+        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
         tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
         tipoIntervalo.setCodigoPorUnidade(rSet.getLong("CODIGO_TIPO_INTERVALO_POR_UNIDADE"));
         tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
@@ -526,7 +526,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     }
 
     @NotNull
-    private List<Cargo> getCargosByTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    private List<Cargo> getCargosByTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                                                  @NotNull final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -558,7 +558,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         intervaloMarcacao.setCodTipoIntervalo(rSet.getLong("COD_TIPO_INTERVALO"));
         intervaloMarcacao.setDataHoraMaracao(rSet.getObject("DATA_HORA", LocalDateTime.class));
         intervaloMarcacao.setFonteDataHora(FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA")));
-        intervaloMarcacao.setTipoMarcacaoIntervalo(TipoMarcacaoIntervalo.fromString(rSet.getString("TIPO_MARCACAO")));
+        intervaloMarcacao.setTipoMarcacaoIntervalo(MarcacaoInicioFim.fromString(rSet.getString("TIPO_MARCACAO")));
         intervaloMarcacao.setJustificativaTempoRecomendado(rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
         intervaloMarcacao.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
 

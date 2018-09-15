@@ -13,7 +13,7 @@ public class IntervaloOfflineSupport {
     private List<Colaborador> colaboradores;
 
     @Nullable
-    private List<TipoIntervalo> tiposIntervalo;
+    private List<TipoMarcacao> tiposIntervalo;
 
     @Nullable
     private Long versaoDadosIntervalo;
@@ -33,11 +33,11 @@ public class IntervaloOfflineSupport {
         this.colaboradores = colaboradores;
     }
 
-    public List<TipoIntervalo> getTiposIntervalo() {
+    public List<TipoMarcacao> getTiposIntervalo() {
         return tiposIntervalo;
     }
 
-    public void setTiposIntervalo(List<TipoIntervalo> tiposIntervalo) {
+    public void setTiposIntervalo(List<TipoMarcacao> tiposIntervalo) {
         this.tiposIntervalo = tiposIntervalo;
     }
 

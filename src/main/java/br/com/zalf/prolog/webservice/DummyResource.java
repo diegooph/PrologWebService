@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.Visao;
@@ -56,17 +56,17 @@ public class DummyResource extends DummyData {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/tipo-intervalo")
-    public TipoIntervalo getTipoIntervalo() {
-        return TipoIntervalo.createDummy();
+    public TipoMarcacao getTipoIntervalo() {
+        return TipoMarcacao.createDummy();
     }
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/tipo-intervalo-list")
-    public List<TipoIntervalo> getTipoIntervaloList() {
-        final List<TipoIntervalo> tipos = new ArrayList<>();
+    public List<TipoMarcacao> getTipoIntervaloList() {
+        final List<TipoMarcacao> tipos = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            tipos.add(TipoIntervalo.createDummy());
+            tipos.add(TipoMarcacao.createDummy());
         }
         return tipos;
     }

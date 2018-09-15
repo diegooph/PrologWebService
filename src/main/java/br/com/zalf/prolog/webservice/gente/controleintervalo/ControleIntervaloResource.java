@@ -92,8 +92,8 @@ public final class ControleIntervaloResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/{codTipoIntervalo}")
-    public TipoIntervalo getTipoIntervalo(@PathParam("codUnidade") @Required final Long codUnidade,
-                                          @PathParam("codTipoIntervalo") @Required final Long codTipoIntervalo) {
+    public TipoMarcacao getTipoIntervalo(@PathParam("codUnidade") @Required final Long codUnidade,
+                                         @PathParam("codTipoIntervalo") @Required final Long codTipoIntervalo) {
         return service.getTipoIntervalo(codUnidade, codTipoIntervalo);
     }
 
@@ -104,8 +104,8 @@ public final class ControleIntervaloResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/resumidos")
-    public List<TipoIntervalo> getTiposIntervalosResumidos(@Required @PathParam("codUnidade") Long codUnidade,
-                                                           @Optional @QueryParam("apenasAtivos")
+    public List<TipoMarcacao> getTiposIntervalosResumidos(@Required @PathParam("codUnidade") Long codUnidade,
+                                                          @Optional @QueryParam("apenasAtivos")
                                                            @DefaultValue("true") boolean apenasAtivos) {
         return service.getTiposIntervalos(codUnidade, apenasAtivos, false);
     }
@@ -117,8 +117,8 @@ public final class ControleIntervaloResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/completos")
-    public List<TipoIntervalo> getTiposIntervalosCompletos(@Required @PathParam("codUnidade") Long codUnidade,
-                                                           @Optional @QueryParam("apenasAtivos")
+    public List<TipoMarcacao> getTiposIntervalosCompletos(@Required @PathParam("codUnidade") Long codUnidade,
+                                                          @Optional @QueryParam("apenasAtivos")
                                                            @DefaultValue("true") boolean apenasAtivos) {
         return service.getTiposIntervalos(codUnidade, apenasAtivos, true);
     }
@@ -126,14 +126,14 @@ public final class ControleIntervaloResource {
     @POST
     @Path("/tipos")
     @Secured(permissions = Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO)
-    public AbstractResponse insertTipoIntervalo(TipoIntervalo tipoIntervalo) {
+    public AbstractResponse insertTipoIntervalo(TipoMarcacao tipoIntervalo) {
         return service.insertTipoIntervalo(tipoIntervalo);
     }
 
     @PUT
     @Path("/tipos")
     @Secured(permissions = Pilares.Gente.Intervalo.ALTERAR_TIPO_INTERVALO)
-    public Response updateTipoInvervalo(TipoIntervalo tipoIntervalo) {
+    public Response updateTipoInvervalo(TipoMarcacao tipoIntervalo) {
         if(service.updateTipoIntervalo(tipoIntervalo)) {
             return Response.ok("Tipo de intervalo editado com sucesso");
         } else {
@@ -146,7 +146,7 @@ public final class ControleIntervaloResource {
     @Secured(permissions = Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO)
     public Response inativarTipoIntervalo(@Required @PathParam("codUnidade") Long codUnidade,
                                           @Required @PathParam("codTipoIntervalo") Long codTipoIntervalo,
-                                          @Required final TipoIntervalo tipoIntervalo) throws ProLogException {
+                                          @Required final TipoMarcacao tipoIntervalo) throws ProLogException {
         service.updateStatusAtivo(codUnidade, codTipoIntervalo, tipoIntervalo);
         if (tipoIntervalo.isAtivo()) {
             return Response.ok("Tipo de marcação ativada com sucesso");

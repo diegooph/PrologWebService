@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Intervalo {
     private Long codigo;
-    private TipoIntervalo tipo;
+    private TipoMarcacao tipo;
     private LocalDateTime dataHoraInicio;
     private FonteDataHora fonteDataHoraInicio;
     private LocalDateTime dataHoraFim;
@@ -25,15 +25,15 @@ public class Intervalo {
 
     /**
      * Essa justificativa é obrigada a ser fornecida caso o {@link Colaborador} feche o intervalo
-     * com um {@link #tempoDecorrido} <b>maior</b> que o {@link TipoIntervalo#tempoLimiteEstouro} do
-     * {@link TipoIntervalo} ao qual ele é referente.
+     * com um {@link #tempoDecorrido} <b>maior</b> que o {@link TipoMarcacao#tempoLimiteEstouro} do
+     * {@link TipoMarcacao} ao qual ele é referente.
      */
     private String justificativaEstouro;
 
     /**
      * Essa justificativa é obrigada a ser fornecida caso o {@link Colaborador} feche o intervalo
-     * com um {@link #tempoDecorrido} <b>menor</b> que o {@link TipoIntervalo#tempoRecomendado} do
-     * {@link TipoIntervalo} ao qual ele é referente.
+     * com um {@link #tempoDecorrido} <b>menor</b> que o {@link TipoMarcacao#tempoRecomendado} do
+     * {@link TipoMarcacao} ao qual ele é referente.
      */
     private String justificativaTempoRecomendado;
 
@@ -72,11 +72,11 @@ public class Intervalo {
         this.codigo = codigo;
     }
 
-    public TipoIntervalo getTipo() {
+    public TipoMarcacao getTipo() {
         return tipo;
     }
 
-    public void setTipo(TipoIntervalo tipo) {
+    public void setTipo(TipoMarcacao tipo) {
         this.tipo = tipo;
     }
 

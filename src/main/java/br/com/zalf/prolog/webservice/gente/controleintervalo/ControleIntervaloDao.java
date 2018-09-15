@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,24 +34,24 @@ public interface ControleIntervaloDao {
                                                      final long offset) throws SQLException;
 
     @NotNull
-    Long insertTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
-    void updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
     @NotNull
-    List<TipoIntervalo> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
-                                                    final boolean apenasAtivos,
-                                                    final boolean withCargos) throws SQLException;
+    List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
+                                                   final boolean apenasAtivos,
+                                                   final boolean withCargos) throws SQLException;
 
     @NotNull
-    TipoIntervalo getTipoIntervalo(@NotNull final Long codUnidade,
-                                   @NotNull final Long codTipoIntervalo) throws SQLException;
+    TipoMarcacao getTipoIntervalo(@NotNull final Long codUnidade,
+                                  @NotNull final Long codTipoIntervalo) throws SQLException;
 
     void updateStatusAtivoTipoIntervalo(@NotNull final Long codUnidade,
                                         @NotNull final Long codTipoIntervalo,
-                                        @NotNull final TipoIntervalo tipoIntervalo,
+                                        @NotNull final TipoMarcacao tipoIntervalo,
                                         @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
     @NotNull

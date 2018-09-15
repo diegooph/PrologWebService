@@ -3,8 +3,8 @@ package test.gente.controlejornada;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacaoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.FolhaPontoTipoIntervalo;
@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacaoIntervalo.MARCACAO_FIM;
-import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacaoIntervalo.MARCACAO_INICIO;
+import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim.MARCACAO_FIM;
+import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim.MARCACAO_INICIO;
 import static org.junit.Assert.*;
 
 /**
@@ -63,10 +63,10 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         final ControleIntervaloService intervaloService = new ControleIntervaloService();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
-        final List<TipoIntervalo> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
+        final List<TipoMarcacao> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
         assertNotNull(tiposIntervalos);
         assertFalse(tiposIntervalos.isEmpty());
-        final TipoIntervalo tipoIntervalo = tiposIntervalos.get(0);
+        final TipoMarcacao tipoIntervalo = tiposIntervalos.get(0);
         assertNotNull(tipoIntervalo);
 
         final String inicioFiltro = "2018-01-05";
@@ -126,10 +126,10 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         final ControleIntervaloService intervaloService = new ControleIntervaloService();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
-        final List<TipoIntervalo> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
+        final List<TipoMarcacao> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
         assertNotNull(tiposIntervalos);
         assertFalse(tiposIntervalos.isEmpty());
-        final TipoIntervalo tipoIntervalo = tiposIntervalos.get(0);
+        final TipoMarcacao tipoIntervalo = tiposIntervalos.get(0);
         assertNotNull(tipoIntervalo);
 
         final String inicioFiltro = "2018-01-10";
@@ -179,7 +179,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
 
     private IntervaloMarcacao createIntervaloMarcacao(@NotNull final Long codTipoIntervalo,
                                                       @NotNull final LocalDateTime dataHoraMarcacao,
-                                                      @NotNull final TipoMarcacaoIntervalo tipoMarcacaoIntervalo)
+                                                      @NotNull final MarcacaoInicioFim tipoMarcacaoIntervalo)
             throws Throwable {
         final IntervaloMarcacao intervaloMarcacao = new IntervaloMarcacao();
         intervaloMarcacao.setCodUnidade(COD_UNIDADE);
