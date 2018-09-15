@@ -23,7 +23,7 @@ public final class PneuImportReader {
     }
 
     @NotNull
-    static List<Pneu> readListFromCsvFilePath(@NotNull final File file) {
+    public static List<Pneu> readListFromCsvFilePath(@NotNull final File file) {
         final BeanListProcessor<PneuImport> rowProcessor = new BeanListProcessor<>(PneuImport.class);
         final CsvParserSettings settings = new CsvParserSettings();
         settings.setDelimiterDetectionEnabled(true, ',', ';');
@@ -63,7 +63,6 @@ public final class PneuImportReader {
             pneu.setSulcosAtuais(sulcoAtual);
 
             pneu.setPressaoCorreta(i.getPressaoRecomendada());
-            pneu.setPressaoAtual(i.getPressaoAtual());
             pneu.setStatus(i.getStatusPneu());
             pneu.setVidaAtual(i.getVidaAtual());
             pneu.setVidasTotal(i.getVidasTotal());

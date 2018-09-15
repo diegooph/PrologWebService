@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu.importar;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import com.univocity.parsers.annotations.*;
+import com.univocity.parsers.conversions.EnumSelector;
 
 import java.math.BigDecimal;
 
@@ -26,9 +27,6 @@ public final class PneuImport {
     @Parsed(field = "pressao_recomendada")
     private double pressaoRecomendada;
 
-    @Parsed(field = "pressao_atual")
-    private double pressaoAtual;
-
     @Parsed(field = "altura_sulco_interno")
     private double alturaSulcoInterno;
 
@@ -42,8 +40,7 @@ public final class PneuImport {
     private double alturaSulcoExterno;
 
     @Parsed(field = "status")
-    @EnumOptions(customElement = "stringRepresentation")
-    @Validate
+    @EnumOptions(selectors = EnumSelector.STRING)
     private StatusPneu statusPneu;
 
     @Parsed(field = "cod_unidade")
@@ -95,10 +92,6 @@ public final class PneuImport {
 
     public double getPressaoRecomendada() {
         return pressaoRecomendada;
-    }
-
-    public double getPressaoAtual() {
-        return pressaoAtual;
     }
 
     public double getAlturaSulcoInterno() {
