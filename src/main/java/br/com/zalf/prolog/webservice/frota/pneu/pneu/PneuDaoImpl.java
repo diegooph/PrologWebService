@@ -70,10 +70,50 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     }
 
+    @NotNull
+    @Override
+    public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            final List<Long> codigosPneus = new ArrayList<>(pneus.size());
+            for (final Pneu pneu : pneus) {
+                codigosPneus.add(internalInsert(conn, pneu, pneu.getCodUnidadeAlocado()));
+            }
+            return codigosPneus;
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
     @Override
     @NotNull
     public Long insert(Pneu pneu, Long codUnidade) throws Throwable {
         Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            return internalInsert(conn, pneu, codUnidade);
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    @NotNull
+    private Long internalInsert(@NotNull final Connection conn,
+                                @NotNull final Pneu pneu,
+                                @NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Long codPneu;
@@ -86,8 +126,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 }
             }
 
-            conn = getConnection();
-            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO pneu (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, "
                     + "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, altura_sulco_central_externo, "
                     + "altura_sulco_externo, cod_unidade, status, vida_atual, vida_total, cod_modelo_banda, dot, valor, "
@@ -141,13 +179,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
 
             conn.commit();
-        } catch (Throwable e) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw e;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeStatement(stmt);
+            closeResultSet(rSet);
         }
         return codPneu;
     }

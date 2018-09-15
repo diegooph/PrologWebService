@@ -27,10 +27,20 @@ public interface PneuDao {
      * @param pneu       um pneu
      * @param codUnidade código da unidade
      * @return código do pneu recém cadastrado
-     * @throws SQLException caso ocorra erro no banco
+     * @throws Throwable caso ocorra erro no banco
      */
     @NotNull
     Long insert(Pneu pneu, Long codUnidade) throws Throwable;
+
+    /**
+     * Insere vários pneus em lote, caso um falhe, aborta a inserção de todos.
+     *
+     * @param pneus - pneus para inserir
+     * @return códigos dos pneus recém cadastrados
+     * @throws Throwable caso ocorra erro no banco
+     */
+    @NotNull
+    List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable;
 
     /**
      * Atualiza medições do pneu no banco.
