@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.importar;
 
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import com.univocity.parsers.annotations.*;
 import com.univocity.parsers.conversions.EnumSelector;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
@@ -74,9 +77,17 @@ public final class PneuImport {
     @BooleanString(trueStrings = {"yes", "y", "1"}, falseStrings = {"no", "n", "0"})
     private boolean pneuNovoNuncaRodado;
 
-    @Parsed(field = "dot")
     @Validate
     private String dot;
+
+    @Parsed(field = "dot")
+    public void setDot(@NotNull final String dot) {
+        if (StringUtils.isNullOrEmpty(dot) || !Pneu.isDotValid(dot)) {
+            throw new IllegalArgumentException("O dot fornecido não é válido: " + dot);
+        }
+
+        this.dot = dot;
+    }
 
     public String getCodigoCliente() {
         return codigoCliente;
