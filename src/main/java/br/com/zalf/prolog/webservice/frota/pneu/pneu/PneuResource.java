@@ -16,9 +16,11 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppV
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.InputStream;
 import java.util.List;
 
 @Path("/pneus")
@@ -32,6 +34,13 @@ import java.util.List;
 public class PneuResource {
 
     private PneuService service = new PneuService();
+
+    @POST
+    @Secured
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    public List<Long> insert(@FormDataParam("file") InputStream fileInputStream) throws ProLogException {
+        return service.insert(fileInputStream);
+    }
 
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)

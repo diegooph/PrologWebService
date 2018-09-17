@@ -7,7 +7,7 @@ import com.univocity.parsers.csv.CsvParserSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +23,14 @@ public final class PneuImportReader {
     }
 
     @NotNull
-    public static List<Pneu> readListFromCsvFilePath(@NotNull final File file) {
+    public static List<Pneu> readFromCsv(@NotNull final InputStream inputStream) {
         final BeanListProcessor<PneuImport> rowProcessor = new BeanListProcessor<>(PneuImport.class);
         final CsvParserSettings settings = new CsvParserSettings();
         settings.setDelimiterDetectionEnabled(true, ',', ';');
         settings.setProcessor(rowProcessor);
         settings.setHeaderExtractionEnabled(true);
         final CsvParser parser = new CsvParser(settings);
-        parser.parse(file);
+        parser.parse(inputStream);
         return toPneus(rowProcessor.getBeans());
     }
 
@@ -78,6 +78,7 @@ public final class PneuImportReader {
             final ModeloBanda modeloBanda = new ModeloBanda();
             modeloBanda.setCodigo(i.getCodModeloBanda());
             banda.setModelo(modeloBanda);
+            banda.setValor(i.getValorBanda());
             return banda;
         }
 
