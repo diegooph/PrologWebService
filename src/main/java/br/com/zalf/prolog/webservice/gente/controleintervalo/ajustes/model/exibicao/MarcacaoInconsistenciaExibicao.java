@@ -1,8 +1,10 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Representa uma inconsistência de uma marcação.
+ *
  * Created on 04/09/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
@@ -10,6 +12,10 @@ import org.jetbrains.annotations.NotNull;
 public final class MarcacaoInconsistenciaExibicao {
     private Long codMarcacao;
     private Long codMarcacaoInconsistencia;
+
+    /**
+     * Uma descrição, humanamente legível, especificando a inconsistência.
+     */
     private String descricaoInconsistencia;
 
     public MarcacaoInconsistenciaExibicao() {

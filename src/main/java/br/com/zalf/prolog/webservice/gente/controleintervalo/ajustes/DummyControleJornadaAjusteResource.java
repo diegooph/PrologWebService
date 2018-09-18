@@ -4,6 +4,10 @@ import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoInconsistenciaExibicao;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 
@@ -30,10 +34,10 @@ public final class DummyControleJornadaAjusteResource extends DummyData {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/marcacoes-consolidadas-list")
-    public List<MarcacaoConsolidada> getMarcacoesConsolidadas() {
-        final List<MarcacaoConsolidada> marcacoesConsolidadas = new ArrayList<>();
+    public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadas() {
+        final List<ConsolidadoMarcacoesDia> marcacoesConsolidadas = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            marcacoesConsolidadas.add(MarcacaoConsolidada.createDummy());
+            marcacoesConsolidadas.add(ConsolidadoMarcacoesDia.createDummy());
         }
         return marcacoesConsolidadas;
     }
@@ -80,10 +84,10 @@ public final class DummyControleJornadaAjusteResource extends DummyData {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/marcacoes-ajustes-historico-list")
-    public List<MarcacaoAjusteHistorico> getMarcacaoAjusteHistorio() {
-        final List<MarcacaoAjusteHistorico> marcacaoAjustes = new ArrayList<>();
+    public List<MarcacaoAjusteHistoricoExibicao> getMarcacaoAjusteHistorio() {
+        final List<MarcacaoAjusteHistoricoExibicao> marcacaoAjustes = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            marcacaoAjustes.add(MarcacaoAjusteHistorico.createDummy());
+            marcacaoAjustes.add(MarcacaoAjusteHistoricoExibicao.createDummy());
         }
         return marcacaoAjustes;
     }

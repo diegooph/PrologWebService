@@ -1,34 +1,56 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao;
 
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa.JustificativaAjuste;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
 
 /**
+ * Classe utilizada para representar o histórico de um ajuste que temos salvo em banco, seja ele uma edição, ativação
+ * ou qualquer outro.
+ *
  * Created on 05/09/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class MarcacaoAjusteHistorico {
+public final class MarcacaoAjusteHistoricoExibicao {
+    /**
+     * Nome do {@link Colaborador colaborador} responsável por realizar o ajuste.
+     */
     private String nomeColaboradorAjuste;
+
+    /**
+     * O nome da {@link JustificativaAjuste justificativa} que foi utilizada para embasar o ajuste realizado.
+     */
     private String nomeJustificativaAjuste;
+
+    /**
+     * A observação que foi adicionada no momento do ajuste.
+     */
     private String observacaoAjuste;
+
+    /**
+     * Data e hora da realização do ajuste.
+     */
     private LocalDateTime dataHoraAjuste;
+
+    /**
+     * Uma descrição, humanamente legível, especificando o ajuste que foi realizado.
+     */
     private String descricaoAcaoRealizada;
 
-    public MarcacaoAjusteHistorico() {
+    public MarcacaoAjusteHistoricoExibicao() {
         // TODO - Utilizar uma Factory para dado um ajuste, gerar a descrição correta.
     }
 
     @NotNull
-    public static MarcacaoAjusteHistorico createDummy() {
-        final MarcacaoAjusteHistorico ajusteHistorico = new MarcacaoAjusteHistorico();
+    public static MarcacaoAjusteHistoricoExibicao createDummy() {
+        final MarcacaoAjusteHistoricoExibicao ajusteHistorico = new MarcacaoAjusteHistoricoExibicao();
         ajusteHistorico.setNomeColaboradorAjuste("Zalf Sistemas");
         ajusteHistorico.setNomeJustificativaAjuste("Esqueceu");
         ajusteHistorico.setObservacaoAjuste("Precisei atualizar a hora de marcação");
-        ajusteHistorico.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
+        ajusteHistorico.setDataHoraAjuste(LocalDateTime.now());
         ajusteHistorico.setDescricaoAcaoRealizada("atualizou a marcação do colaborador");
         return ajusteHistorico;
     }

@@ -18,7 +18,7 @@ public final class MarcacaoAjusteEdicao extends MarcacaoAjuste {
     private Long codMarcacaoEdicao;
 
     /**
-     * A noda data e hora da marcação.
+     * A nova data e hora da marcação.
      */
     private LocalDateTime dataHoraNovaInserida;
 

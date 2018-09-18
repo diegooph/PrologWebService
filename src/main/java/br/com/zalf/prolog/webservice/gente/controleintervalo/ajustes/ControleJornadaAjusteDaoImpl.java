@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoInconsistenciaExibicao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -44,11 +48,11 @@ public final class ControleJornadaAjusteDaoImpl implements ControleJornadaAjuste
 
     @NotNull
     @Override
-    public List<MarcacaoConsolidada> getMarcacoesConsolidadas(@NotNull final Long codUnidade,
-                                                              @NotNull final String codColaborador,
-                                                              @NotNull final String codTipoIntervalo,
-                                                              @NotNull final LocalDate dataInicial,
-                                                              @NotNull final LocalDate dataFinal) throws Throwable {
+    public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadas(@NotNull final Long codUnidade,
+                                                                  @NotNull final String codColaborador,
+                                                                  @NotNull final String codTipoIntervalo,
+                                                                  @NotNull final LocalDate dataInicial,
+                                                                  @NotNull final LocalDate dataFinal) throws Throwable {
         return null;
     }
 
@@ -63,7 +67,7 @@ public final class ControleJornadaAjusteDaoImpl implements ControleJornadaAjuste
 
     @NotNull
     @Override
-    public List<MarcacaoAjusteHistorico> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable {
+    public List<MarcacaoAjusteHistoricoExibicao> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable {
         return null;
     }
 

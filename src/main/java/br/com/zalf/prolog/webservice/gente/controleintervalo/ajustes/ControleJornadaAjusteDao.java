@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoInconsistenciaExibicao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -32,11 +36,11 @@ public interface ControleJornadaAjusteDao {
                               @NotNull final String token) throws Throwable;
 
     @NotNull
-    List<MarcacaoConsolidada> getMarcacoesConsolidadas(@NotNull final Long codUnidade,
-                                                       @NotNull final String codColaborador,
-                                                       @NotNull final String codTipoIntervalo,
-                                                       @NotNull final LocalDate dataInicial,
-                                                       @NotNull final LocalDate dataFinal) throws Throwable;
+    List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadas(@NotNull final Long codUnidade,
+                                                           @NotNull final String codColaborador,
+                                                           @NotNull final String codTipoIntervalo,
+                                                           @NotNull final LocalDate dataInicial,
+                                                           @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
     List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
@@ -45,7 +49,7 @@ public interface ControleJornadaAjusteDao {
             @NotNull final LocalDate dataInicial) throws Throwable;
 
     @NotNull
-    List<MarcacaoAjusteHistorico> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable;
+    List<MarcacaoAjusteHistoricoExibicao> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable;
 
     @NotNull
     List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes(@NotNull final Long codMarcacao) throws Throwable;
