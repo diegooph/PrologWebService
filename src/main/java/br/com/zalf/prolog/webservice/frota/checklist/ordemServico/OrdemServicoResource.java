@@ -68,12 +68,12 @@ public class OrdemServicoResource {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
     public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required String placa,
-                                                       @QueryParam("status-itens") @Optional String statusItens,
-                                                       @QueryParam("prioridade-itens") @Optional String prioridade,
+                                                       @QueryParam("status-itens") @Required String statusItens,
+                                                       @QueryParam("prioridade-itens") @Required String prioridade,
                                                        @QueryParam("limit") @Optional Integer limit,
                                                        @QueryParam("offset") @Optional Long offset)
             throws ProLogException {
-        return service.getItensOsManutencaoHolder(placa, statusItens, "%", null, null);
+        return service.getItensOsManutencaoHolder(placa, statusItens, prioridade, limit, offset);
     }
 
     @GET

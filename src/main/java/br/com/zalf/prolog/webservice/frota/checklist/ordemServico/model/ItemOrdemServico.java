@@ -8,8 +8,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
+ * Itens que compõem uma Ordem de Serviço.
+ *
  * Created by jean on 25/07/16.
- * Itens que compõe uma OS
  */
 public class ItemOrdemServico {
 
@@ -54,6 +55,9 @@ public class ItemOrdemServico {
      */
     private PerguntaRespostaChecklist pergunta;
 
+    /**
+     * Usuário responsável pelo conserto do item
+     */
     private Colaborador mecanico;
 
     /**
@@ -71,6 +75,10 @@ public class ItemOrdemServico {
      */
     private long kmVeiculoFechamento;
 
+    /**
+     * Status em que o item se encontra, podendo ser {@link Status}#RESOLVIDO
+     * ou {@link Status}#PENDENTE
+     */
     private Status status;
 
     /**

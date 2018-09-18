@@ -34,51 +34,75 @@ public interface OrdemServicoDao {
      */
     void consertaItens(@NotNull final ConsertoMultiplosItensOs itensConserto) throws Throwable;
 
-	/**
-	 * busca OS - Orde de Serviço - na banco
-	 * @param placa placa do veículo
-	 * @param status status
-	 * @param codUnidade código da unidade
-	 * @param tipoVeiculo tipo de veículo
-	 * @param limit limit de busca no banco
-	 * @param offset offset de busca no banco
-	 * @return uma lista de Ordens de serviços
-	 * @throws SQLException caso ocorrer erro no banco
-	 */
-	List<OrdemServico> getOs(String placa, String status, Long codUnidade,
+    /**
+     * busca OS - Orde de Serviço - na banco
+     *
+     * @param placa       placa do veículo
+     * @param status      status
+     * @param codUnidade  código da unidade
+     * @param tipoVeiculo tipo de veículo
+     * @param limit       limit de busca no banco
+     * @param offset      offset de busca no banco
+     * @return uma lista de Ordens de serviços
+     * @throws SQLException caso ocorrer erro no banco
+     */
+    List<OrdemServico> getOs(String placa, String status, Long codUnidade,
                              String tipoVeiculo, Integer limit, Long offset) throws SQLException;
 
-	@NotNull
-	List<ItemOrdemServico> getItensOs(@NotNull final String placa,
+    /**
+     * Busca os itens de Ordens de Serviços utilizando limit e offset.
+     *
+     * @param placa       Placa do veículo que será buscados os itens.
+     * @param statusItens Status do item, {@link ItemOrdemServico.Status#RESOLVIDO}
+     *                    ou {@link ItemOrdemServico.Status#PENDENTE}.
+     * @param prioridade  Prioridade do Item, BAIXA, ALTA, CRITICA.
+     * @param limit       Limite da busca dos dados.
+     * @param offset      Offset de busca dos dados.
+     * @return Lista de Itens de Ordem de Serviço
+     * @throws SQLException Se algum erro acontecer
+     */
+    @NotNull
+    List<ItemOrdemServico> getItensOs(@NotNull final String placa,
                                       @NotNull final String statusItens,
                                       @NotNull final String prioridade,
                                       @Nullable final Integer limit,
                                       @Nullable final Long offset) throws SQLException;
 
-	@NotNull
-	List<ItemOrdemServico> getItensOs(@NotNull final Long codOs,
-									  @NotNull final Long codUnidade,
-									  @Nullable final String statusItemOs) throws Throwable;
-
-	List<ItemOrdemServico> getItensOs(@NotNull final String placa,
-									  @NotNull final Date untilDate,
-									  @NotNull final ItemOrdemServico.Status statusItem,
-									  @NotNull final String prioridadeItem,
-									  final boolean itensCriticosRetroativos) throws SQLException;
-
-	/**
-	 * insere um item com problema na OS
-	 * @param checklist um checklist
-	 * @param conn conexão do banco
-	 * @param codUnidade código da unidade
-	 * @throws SQLException se ocorrer erro no banco
-	 */
-	void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException;
     /**
-	 * Busca a lista de itens agrupadas por placa e criticidade (tela das bolinhas).
-	 */
-	@NotNull
-	List<ManutencaoHolder> getResumoManutencaoHolder(@NotNull final Long codUnidade,
+     * Busca os Itens de uma Ordem de Serviço específica.
+     *
+     * @param codOs        Código da OS que será buscado os itens.
+     * @param codUnidade   Código da Unidade da OS.
+     * @param statusItemOs Status dos itens a serem buscados.
+     * @return Lista de Itens da Ordem de Serviço.
+     * @throws Throwable Se algum erro ocorrer na busca dos dados.
+     */
+    @NotNull
+    List<ItemOrdemServico> getItensOs(@NotNull final Long codOs,
+                                      @NotNull final Long codUnidade,
+                                      @Nullable final String statusItemOs) throws Throwable;
+
+    List<ItemOrdemServico> getItensOs(@NotNull final String placa,
+                                      @NotNull final Date untilDate,
+                                      @NotNull final ItemOrdemServico.Status statusItem,
+                                      @NotNull final String prioridadeItem,
+                                      final boolean itensCriticosRetroativos) throws SQLException;
+
+    /**
+     * insere um item com problema na OS
+     *
+     * @param checklist  um checklist
+     * @param conn       conexão do banco
+     * @param codUnidade código da unidade
+     * @throws SQLException se ocorrer erro no banco
+     */
+    void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException;
+
+    /**
+     * Busca a lista de itens agrupadas por placa e criticidade (tela das bolinhas).
+     */
+    @NotNull
+    List<ManutencaoHolder> getResumoManutencaoHolder(@NotNull final Long codUnidade,
                                                      @Nullable final Long codTipoVeiculo,
                                                      @Nullable final String placaVeiculo,
                                                      final boolean itensEmAberto,
