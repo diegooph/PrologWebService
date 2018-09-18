@@ -23,12 +23,12 @@ public final class MarcacaoColaboradorAjuste {
     /**
      * O código do {@link TipoMarcacao tipo de marcação} que foi realizado.
      */
-    private Long codTipoIntervaloMarcado;
+    private Long codTipoMarcacao;
 
     /**
      * O nome do {@link TipoMarcacao tipo de marcação} que foi realizado.
      */
-    private String nomeTipoIntervaloMarcado;
+    private String nomeTipoMarcacao;
 
     /**
      * Identifica se alguma das marcações tem alguma inconsistência.
@@ -53,8 +53,8 @@ public final class MarcacaoColaboradorAjuste {
     @NotNull
     public static MarcacaoColaboradorAjuste createDummy() {
         final MarcacaoColaboradorAjuste colaboradorAjuste = new MarcacaoColaboradorAjuste();
-        colaboradorAjuste.setCodTipoIntervaloMarcado(10L);
-        colaboradorAjuste.setNomeTipoIntervaloMarcado("Refeição");
+        colaboradorAjuste.setCodTipoMarcacao(10L);
+        colaboradorAjuste.setNomeTipoMarcacao("Refeição");
         colaboradorAjuste.setTemInconsistencia(true);
         colaboradorAjuste.setJaFoiAjustada(true);
         colaboradorAjuste.setMarcacoes(MarcacaoAgrupadaAjusteExibicao.createDummy());
@@ -69,20 +69,20 @@ public final class MarcacaoColaboradorAjuste {
         this.marcacoes = marcacoes;
     }
 
-    public Long getCodTipoIntervaloMarcado() {
-        return codTipoIntervaloMarcado;
+    public Long getCodTipoMarcacao() {
+        return codTipoMarcacao;
     }
 
-    public void setCodTipoIntervaloMarcado(final Long codTipoIntervaloMarcado) {
-        this.codTipoIntervaloMarcado = codTipoIntervaloMarcado;
+    public void setCodTipoMarcacao(final Long codTipoMarcacao) {
+        this.codTipoMarcacao = codTipoMarcacao;
     }
 
-    public String getNomeTipoIntervaloMarcado() {
-        return nomeTipoIntervaloMarcado;
+    public String getNomeTipoMarcacao() {
+        return nomeTipoMarcacao;
     }
 
-    public void setNomeTipoIntervaloMarcado(final String nomeTipoIntervaloMarcado) {
-        this.nomeTipoIntervaloMarcado = nomeTipoIntervaloMarcado;
+    public void setNomeTipoMarcacao(final String nomeTipoMarcacao) {
+        this.nomeTipoMarcacao = nomeTipoMarcacao;
     }
 
     public boolean isTemInconsistencia() {
@@ -105,8 +105,8 @@ public final class MarcacaoColaboradorAjuste {
     public String toString() {
         return "MarcacaoColaboradorAjuste{" +
                 "intervaloAgrupadoAjuste=" + marcacoes +
-                ", codTipoIntervaloMarcado=" + codTipoIntervaloMarcado +
-                ", nomeTipoIntervaloMarcado='" + nomeTipoIntervaloMarcado + '\'' +
+                ", codTipoMarcacao=" + codTipoMarcacao +
+                ", nomeTipoMarcacao='" + nomeTipoMarcacao + '\'' +
                 ", temInconsistencia=" + temInconsistencia +
                 ", jaFoiAjustada=" + jaFoiAjustada +
                 '}';

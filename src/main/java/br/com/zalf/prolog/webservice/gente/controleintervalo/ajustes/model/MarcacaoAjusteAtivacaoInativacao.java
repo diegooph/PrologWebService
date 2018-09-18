@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 /**
  * Classe utilizada quando uma marcação for ativada ou inativada, seja ela de início ou de fim.
@@ -35,7 +34,7 @@ public final class MarcacaoAjusteAtivacaoInativacao extends MarcacaoAjuste {
         ajusteAtivacaoInativacao.setCodMarcacaoAtivacaoInativacao(20L);
         ajusteAtivacaoInativacao.setCodJustificativaAjuste(5L);
         ajusteAtivacaoInativacao.setObservacaoAjuste("Dummy Data");
-        ajusteAtivacaoInativacao.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
+        ajusteAtivacaoInativacao.setDataHoraAjuste(LocalDateTime.now());
         return ajusteAtivacaoInativacao;
     }
 
