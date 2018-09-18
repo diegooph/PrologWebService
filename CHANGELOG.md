@@ -7,13 +7,14 @@ Change Log
 ### Features
 * Permite filtro por múltiplas unidades nos relatórios do checklist
 * Cria gráfico em linhas como um componente da dashboard
+* Cria nova function e novos métodos para gerar relatório geral de movimentação
+* Cria componente da dashboard para buscar quantidade de checklists realizados por dia
 
 <a name="v0.0.75"></a>
 ## Version [v0.0.75](https://github.com/luizfp/PrologWeb/compare/v0.0.74...v0.0.75) (2018-09-04)
 
 ### Features
 * Cria nova function e novos métodos para gerar relatório geral de aferição
-* Cria nova function e novos métodos para gerar relatório geral de movimentação
 
 ### Bug Fixes
 * Fixa delimitadores aceitos na escala diária (isso melhora e ajuda a biblioteca de parse a identificar o delimitador
