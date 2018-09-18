@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
@@ -37,9 +38,10 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_CHECKLIST_RELATORIO_QTD_POR_TIPO(?, ?);");
+                    "FUNC_CHECKLIST_RELATORIO_QTD_POR_TIPO(?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setInt(2, diasRetroativosParaBuscar);
+            stmt.setObject(2, Now.localDateTimeUtc());
+            stmt.setInt(3, diasRetroativosParaBuscar);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<QuantidadeChecklists> checklists = new ArrayList<>();
