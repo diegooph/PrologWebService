@@ -16,33 +16,28 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ControleJornadaAjusteDaoImpl implements ControleJornadaAjusteDao {
+
     @Override
-    public void ajustaMarcacaoAdicao(@NotNull final Long codUnidade,
-                                     @NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
-                                     @NotNull final String token) throws Throwable {
+    public void adicionarMarcacao(@NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
+                                  @NotNull final String token) throws Throwable {
 
     }
 
     @Override
-    public void ajustaMarcacaoAdicaoInicioFim(@NotNull final Long codUnidade,
-                                              @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
-                                              @NotNull final String token) throws Throwable {
+    public void adicionarMarcacaoInicioFim(@NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
+                                           @NotNull final String token) throws Throwable {
 
     }
 
     @Override
-    public void ajustaMarcacaoAtivacaoInativacao(@NotNull final Long codUnidade,
-                                                 @NotNull final Long codMarcacao,
-                                                 @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste,
-                                                 @NotNull final String token) throws Throwable {
+    public void ativarInativarMarcacao(@NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste,
+                                       @NotNull final String token) throws Throwable {
 
     }
 
     @Override
-    public void ajustaMarcacaoEdicao(@NotNull final Long codUnidade,
-                                     @NotNull final Long codMarcacao,
-                                     @NotNull final MarcacaoAjusteEdicao marcacaoAjuste,
-                                     @NotNull final String token) throws Throwable {
+    public void editarMarcacao(@NotNull final MarcacaoAjusteEdicao marcacaoAjuste,
+                               @NotNull final String token) throws Throwable {
 
     }
 
@@ -67,13 +62,15 @@ public final class ControleJornadaAjusteDaoImpl implements ControleJornadaAjuste
 
     @NotNull
     @Override
-    public List<MarcacaoAjusteHistoricoExibicao> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable {
+    public List<MarcacaoAjusteHistoricoExibicao> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws
+            Throwable {
         return null;
     }
 
     @NotNull
     @Override
-    public List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes(@NotNull final Long codMarcacao) throws Throwable {
+    public List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes(@NotNull final Long codMarcacao) throws
+            Throwable {
         return null;
     }
 }

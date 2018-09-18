@@ -17,23 +17,17 @@ import java.util.List;
  */
 public interface ControleJornadaAjusteDao {
 
-    void ajustaMarcacaoAdicao(@NotNull final Long codUnidade,
-                              @NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
-                              @NotNull final String token) throws Throwable;
+    void adicionarMarcacao(@NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
+                           @NotNull final String token) throws Throwable;
 
-    void ajustaMarcacaoAdicaoInicioFim(@NotNull final Long codUnidade,
-                                       @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
-                                       @NotNull final String token) throws Throwable;
+    void adicionarMarcacaoInicioFim(@NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
+                                    @NotNull final String token) throws Throwable;
 
-    void ajustaMarcacaoAtivacaoInativacao(@NotNull final Long codUnidade,
-                                          @NotNull final Long codMarcacao,
-                                          @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste,
-                                          @NotNull final String token) throws Throwable;
+    void ativarInativarMarcacao(@NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste,
+                                @NotNull final String token) throws Throwable;
 
-    void ajustaMarcacaoEdicao(@NotNull final Long codUnidade,
-                              @NotNull final Long codMarcacao,
-                              @NotNull final MarcacaoAjusteEdicao marcacaoAjuste,
-                              @NotNull final String token) throws Throwable;
+    void editarMarcacao(@NotNull final MarcacaoAjusteEdicao marcacaoAjuste,
+                        @NotNull final String token) throws Throwable;
 
     @NotNull
     List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadas(@NotNull final Long codUnidade,
