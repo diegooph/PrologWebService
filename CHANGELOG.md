@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Permite filtro por múltiplas unidades nos relatórios do checklist
+* Cria gráfico em linhas como um componente da dashboard
 
 <a name="v0.0.75"></a>
 ## Version [v0.0.75](https://github.com/luizfp/PrologWeb/compare/v0.0.74...v0.0.75) (2018-09-04)
