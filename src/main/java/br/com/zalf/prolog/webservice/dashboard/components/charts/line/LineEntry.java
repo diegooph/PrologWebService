@@ -11,28 +11,21 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class LineEntry extends Entry {
     private final double valor;
-    private final int index;
     @NotNull
     private final String representacaoValor;
     @Nullable
     private final String descricao;
 
     public LineEntry(final double valor,
-                     final int index,
                      @NotNull final String representacaoValor,
                      @Nullable final String descricao) {
         this.valor = valor;
-        this.index = index;
         this.representacaoValor = representacaoValor;
         this.descricao = descricao;
     }
 
     public double getValor() {
         return valor;
-    }
-
-    public int getIndex() {
-        return index;
     }
 
     @NotNull
