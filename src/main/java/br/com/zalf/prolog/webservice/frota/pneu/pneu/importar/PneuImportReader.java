@@ -37,48 +37,48 @@ public final class PneuImportReader {
     @NotNull
     private static List<Pneu> toPneus(@NotNull final List<PneuImport> pneusImport) {
         final List<Pneu> pneus = new ArrayList<>(pneusImport.size());
-        for (final PneuImport i : pneusImport) {
+        for (final PneuImport pneuImport : pneusImport) {
             final Pneu pneu = new PneuComum();
-            pneu.setCodigoCliente(i.getCodigoCliente());
-            pneu.setDot(i.getDot());
-            pneu.setValor(i.getValor());
-            pneu.setCodUnidadeAlocado(i.getCodUnidadeAlocado());
-            pneu.setPneuNovoNuncaRodado(i.isPneuNovoNuncaRodado());
+            pneu.setCodigoCliente(pneuImport.getCodigoCliente());
+            pneu.setDot(pneuImport.getDot());
+            pneu.setValor(pneuImport.getValor());
+            pneu.setCodUnidadeAlocado(pneuImport.getCodUnidadeAlocado());
+            pneu.setPneuNovoNuncaRodado(pneuImport.isPneuNovoNuncaRodado());
 
             final ModeloPneu modeloPneu = new ModeloPneu();
-            modeloPneu.setCodigo(i.getCodModeloPneu());
+            modeloPneu.setCodigo(pneuImport.getCodModeloPneu());
             pneu.setModelo(modeloPneu);
 
-            pneu.setBanda(createBanda(i));
+            pneu.setBanda(createBanda(pneuImport));
 
             final PneuComum.Dimensao dimensao = new PneuComum.Dimensao();
-            dimensao.setCodigo(i.getCodDimensao());
+            dimensao.setCodigo(pneuImport.getCodDimensao());
             pneu.setDimensao(dimensao);
 
             final Sulcos sulcoAtual = new Sulcos();
-            sulcoAtual.setCentralInterno(i.getAlturaSulcoCentralInterno());
-            sulcoAtual.setCentralExterno(i.getAlturaSulcoCentralExterno());
-            sulcoAtual.setExterno(i.getAlturaSulcoExterno());
-            sulcoAtual.setInterno(i.getAlturaSulcoInterno());
+            sulcoAtual.setCentralInterno(pneuImport.getAlturaSulcoCentralInterno());
+            sulcoAtual.setCentralExterno(pneuImport.getAlturaSulcoCentralExterno());
+            sulcoAtual.setExterno(pneuImport.getAlturaSulcoExterno());
+            sulcoAtual.setInterno(pneuImport.getAlturaSulcoInterno());
             pneu.setSulcosAtuais(sulcoAtual);
 
-            pneu.setPressaoCorreta(i.getPressaoRecomendada());
-            pneu.setStatus(i.getStatusPneu());
-            pneu.setVidaAtual(i.getVidaAtual());
-            pneu.setVidasTotal(i.getVidasTotal());
+            pneu.setPressaoCorreta(pneuImport.getPressaoRecomendada());
+            pneu.setStatus(pneuImport.getStatusPneu());
+            pneu.setVidaAtual(pneuImport.getVidaAtual());
+            pneu.setVidasTotal(pneuImport.getVidasTotal());
             pneus.add(pneu);
         }
         return pneus;
     }
 
     @Nullable
-    private static Banda createBanda(@NotNull final PneuImport i) {
-        if (i.getCodModeloBanda() != null) {
+    private static Banda createBanda(@NotNull final PneuImport pneuImport) {
+        if (pneuImport.getCodModeloBanda() != null) {
             final Banda banda = new Banda();
             final ModeloBanda modeloBanda = new ModeloBanda();
-            modeloBanda.setCodigo(i.getCodModeloBanda());
+            modeloBanda.setCodigo(pneuImport.getCodModeloBanda());
             banda.setModelo(modeloBanda);
-            banda.setValor(i.getValorBanda());
+            banda.setValor(pneuImport.getValorBanda());
             return banda;
         }
 
