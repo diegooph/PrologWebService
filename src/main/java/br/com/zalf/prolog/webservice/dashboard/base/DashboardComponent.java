@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * Classe abstrata que contém os métodos genéricos a todos os <br>Componentes</br>.
  * <p>
- * Um componente é qualquer tipo de informação que pode ser extratificada através de relatórios
+ * Um componente é qualquer tipo de informação que pode ser estratificada através de relatórios
  * dos dados persistentes no banco de dados. A <br>Dashboard</br> será composta de um conjunto de
  * componentes, estes serão dispostos de forma a serem um resumo de um conjunto maior de informações.
  * <p>

@@ -18,6 +18,8 @@ public enum IdentificadorTipoComponente {
     GRAFICO_BARRAS_VERTICAIS("GRAFICO_BARRAS_VERTICAIS"),
     GRAFICO_BARRAS_VERTICAIS_AGRUPADAS("GRAFICO_BARRAS_VERTICAIS_AGRUPADAS"),
     GRAFICO_DENSIDADE("GRAFICO_DENSIDADE"),
+    GRAFICO_LINHAS_HORIZONTAIS("GRAFICO_LINHAS_HORIZONTAIS"),
+    GRAFICO_LINHAS_VERTICAIS("GRAFICO_LINHAS_VERTICAIS"),
     QUANTIDADE_ITEM("QUANTIDADE_ITEM"),
     GRAFICO_SETORES("GRAFICO_SETORES"),
     TABELA("TABELA");
@@ -39,6 +41,7 @@ public enum IdentificadorTipoComponente {
         return identificador;
     }
 
+    @NotNull
     public static IdentificadorTipoComponente fromString(@Nonnull final String string) {
         Preconditions.checkNotNull(string, "string cannot be null!");
 

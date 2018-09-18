@@ -10,7 +10,7 @@ package br.com.zalf.prolog.webservice.dashboard.base;
  * <p>
  * Um objeto <code>{@link Entry}</code> é o último nível de abstração dentro da hierarquia dos
  * <code>{@link DashboardComponent}</code>, assim, esse objeto contém o informação de uma entrada
- * dentro do <br>Componente</br>.
+ * dentro do <b>Componente</b>.
  */
 public abstract class Entry {
 }
