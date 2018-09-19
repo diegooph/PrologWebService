@@ -22,7 +22,7 @@ public final class ConsolidadoMarcacoesDia {
     /**
      * O dia de refência pela qual as marcações estão agrupadas.
      */
-    private LocalDate data;
+    private LocalDate dia;
 
     /**
      * O total de marcações no dia de referência.
@@ -46,7 +46,7 @@ public final class ConsolidadoMarcacoesDia {
     @NotNull
     public static ConsolidadoMarcacoesDia createDummy() {
         final ConsolidadoMarcacoesDia consolidada = new ConsolidadoMarcacoesDia();
-        consolidada.setData(ProLogDateParser.toLocalDate("2018-09-04"));
+        consolidada.setDia(ProLogDateParser.toLocalDate("2018-09-04"));
         consolidada.setTotalMarcacoesDia(10);
         consolidada.setTotalInconsistenciasDia(5);
         final List<MarcacoesDiaColaborador> consolidadaColaboradores = new ArrayList<>();
@@ -57,12 +57,12 @@ public final class ConsolidadoMarcacoesDia {
         return consolidada;
     }
 
-    public LocalDate getData() {
-        return data;
+    public LocalDate getDia() {
+        return dia;
     }
 
-    public void setData(final LocalDate data) {
-        this.data = data;
+    public void setDia(final LocalDate dia) {
+        this.dia = dia;
     }
 
     public int getTotalMarcacoesDia() {
@@ -92,7 +92,7 @@ public final class ConsolidadoMarcacoesDia {
     @Override
     public String toString() {
         return "MarcacaoConsolidada{" +
-                "data=" + data +
+                "dia=" + dia +
                 ", totalMarcacoesDia=" + totalMarcacoesDia +
                 ", totalInconsistenciasDia=" + totalInconsistenciasDia +
                 ", marcacoesColaboradores=" + marcacoesColaboradores +
