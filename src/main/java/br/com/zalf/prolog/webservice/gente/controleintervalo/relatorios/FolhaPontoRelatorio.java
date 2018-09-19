@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import com.google.common.base.Preconditions;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +56,7 @@ public final class FolhaPontoRelatorio {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     public void calculaTempoEmCadaTipoIntervalo(@NotNull final LocalDate dataInicial,
                                                 @NotNull final LocalDate dataFinal,
-                                                @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade,
+                                                @NotNull final Map<Long, TipoMarcacao> tiposIntervalosUnidade,
                                                 @NotNull final ZoneId zoneId) {
         //noinspection ConstantConditions
         Preconditions.checkState(marcacoesDias != null);
@@ -161,7 +161,7 @@ public final class FolhaPontoRelatorio {
 
     @NotNull
     private Set<FolhaPontoTipoIntervalo> createTiposIntervalosMarcados(
-            @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade,
+            @NotNull final Map<Long, TipoMarcacao> tiposIntervalosUnidade,
             @NotNull final Map<Long, Long> segundosTotaisTipoIntervalo,
             @NotNull final Map<Long, Long> segundosHorasNoturnasTipoIntervalo) {
         Preconditions.checkArgument(segundosTotaisTipoIntervalo.size() == segundosHorasNoturnasTipoIntervalo.size());

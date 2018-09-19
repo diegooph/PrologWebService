@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
 
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
@@ -7,6 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 
 /**
+ * Essa é a superclasse de qualquer ajuste que seja realizado no sistema. Os ajustes podem ser de qualquer um dos tipos
+ * presentes no {@code enum} {@link TipoMarcacaoAjuste}. Cada tipo no {@code enum} tem uma subclasse específica que
+ * contém informações próprias do ajuste sendo realizado.
+ *
  * Created on 04/09/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)

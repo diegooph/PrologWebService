@@ -5,11 +5,4 @@ package br.com.zalf.prolog.webservice;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class DummyData {
-
-    protected void ensureDebugEnvironment() {
-        if (!BuildConfig.DEBUG) {
-            throw new IllegalStateException("Esse resource só pode ser utilizado em ambientes de testes");
-        }
-    }
-}
+public class DummyData { }

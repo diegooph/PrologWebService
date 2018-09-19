@@ -1,20 +1,46 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Representa uma opção de justificativa disponível ao se realizar o ajuste de uma marcação.
+ *
+ * O usuário é obrigado a selecionar uma justificativa sempre que um ajuste é realizado.
+ *
  * Created on 04/09/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class JustificativaAjuste {
+public final class JustificativaAjuste {
+    /**
+     * Código único dessa justificativa.
+     */
     private Long codJustificativaAjuste;
+
+    /**
+     * Código da {@link Empresa empresa} do qual essa justificativa pertence.
+     */
     private Long codEmpresa;
+
+    /**
+     * Nome dessa justificativa.
+     */
     private String nomeJustificativaAjuste;
+
+    /**
+     * Indica se para esta justificativa, é obrigatório fornecer uma observação.
+     */
     private boolean obrigatorioObservacao;
+
+    /**
+     * Indica se esta justificativa está ativa.
+     * <code>true</code> se estiver ativa, <code>false</code> caso contrário.
+     */
     private boolean isAtiva;
 
     public JustificativaAjuste() {
+
     }
 
     @NotNull

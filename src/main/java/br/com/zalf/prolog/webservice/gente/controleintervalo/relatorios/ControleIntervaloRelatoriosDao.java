@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Clt;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -153,7 +153,7 @@ public interface ControleIntervaloRelatoriosDao {
      * o atributo {@code codTipoIntervalo} deve ser "%".
      *
      * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
-     * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
+     * @param codTipoIntervalo - Código do {@link TipoMarcacao} que os dados serão filtrados
      * @param cpf              - Identificador do {@link Colaborador} para buscar os dados.
      * @param dataInicial      - Data inicial do período de filtro.
      * @param dataFinal        - Data final do período de filtro.
@@ -181,12 +181,12 @@ public interface ControleIntervaloRelatoriosDao {
 
     /**
      * Método para gerar um relatório contendo a soma do período de todos os intervalos marcados pelos colaboradores
-     * da pertencentes ao {@code codUnidade}. Para buscar a soma de todos os {@link TipoIntervalo}s o atributo
+     * da pertencentes ao {@code codUnidade}. Para buscar a soma de todos os {@link TipoMarcacao}s o atributo
      * {@code codTipoIntervalo} deve ser "%". Este método gera um arquivo CSV para fins de exportação.
      *
      * @param out              - Arquivo onde os dados serão armazenados para retornar.
      * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
-     * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
+     * @param codTipoIntervalo - Código do {@link TipoMarcacao} que os dados serão filtrados
      * @param dataInicial      - Data inicial do período de filtro.
      * @param dataFinal        - Data final do período de filtro.
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
@@ -200,12 +200,12 @@ public interface ControleIntervaloRelatoriosDao {
 
     /**
      * Método para gerar um relatório contendo a soma do período de todos os intervalos marcados pelos colaboradores
-     * da pertencentes ao {@code codUnidade}. Para buscar a soma de todos os {@link TipoIntervalo}s o atributo
+     * da pertencentes ao {@code codUnidade}. Para buscar a soma de todos os {@link TipoMarcacao}s o atributo
      * {@code codTipoIntervalo} deve ser "%". Este método gera um objeto {@link Report} para fins de visualização
      * dos dados na aplicação.
      *
      * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
-     * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
+     * @param codTipoIntervalo - Código do {@link TipoMarcacao} que os dados serão filtrados
      * @param dataInicial      - Data inicial do período de filtro.
      * @param dataFinal        - Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.

@@ -24,7 +24,7 @@ public class ControleIntervaloService {
     private static final String TAG = ControleIntervaloService.class.getSimpleName();
     private ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
 
-    public List<TipoIntervalo> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
+    public List<TipoMarcacao> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
         try {
             return dao.getTiposIntervalosByUnidade(codUnidade, apenasAtivos, withCargos);
         } catch (SQLException e) {
@@ -35,7 +35,7 @@ public class ControleIntervaloService {
         }
     }
 
-    public TipoIntervalo getTipoIntervalo(Long codUnidade, Long codTipoIntervalo) {
+    public TipoMarcacao getTipoIntervalo(Long codUnidade, Long codTipoIntervalo) {
         try {
             return dao.getTipoIntervalo(codUnidade, codTipoIntervalo);
         } catch (SQLException e) {
@@ -90,7 +90,7 @@ public class ControleIntervaloService {
         }
     }
 
-    public AbstractResponse insertTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo) {
+    public AbstractResponse insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo) {
         try {
             return ResponseWithCod.ok(
                     "Tipo de intervalo inserido com sucesso",
@@ -102,7 +102,7 @@ public class ControleIntervaloService {
         }
     }
 
-    public boolean updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo) {
+    public boolean updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo) {
         try {
             dao.updateTipoIntervalo(tipoIntervalo, Injection.provideDadosIntervaloChangedListener());
             return true;
@@ -114,7 +114,7 @@ public class ControleIntervaloService {
 
     public void updateStatusAtivo(@NotNull final Long codUnidade,
                                   @NotNull final Long codTipoIntervalo,
-                                  @NotNull final TipoIntervalo tipoIntervalo) throws ProLogException {
+                                  @NotNull final TipoMarcacao tipoIntervalo) throws ProLogException {
         try {
             dao.updateStatusAtivoTipoIntervalo(
                     codUnidade,
@@ -144,7 +144,7 @@ public class ControleIntervaloService {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO,
                     codUnidade);
-            final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
+            final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
             final Optional<Long> versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 

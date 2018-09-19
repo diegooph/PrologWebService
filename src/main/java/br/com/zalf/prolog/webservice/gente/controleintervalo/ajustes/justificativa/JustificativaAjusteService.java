@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa;
 
 import br.com.zalf.prolog.webservice.Injection;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class JustificativaAjusteService {
+public final class JustificativaAjusteService {
 
     @NotNull
     final JustificativaAjusteDao dao = Injection.provideJustificativaAjusteDao();

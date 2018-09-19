@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.CsvReport;
 import br.com.zalf.prolog.webservice.commons.util.date.Durations;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,12 +29,12 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
     @NotNull
     private final ResultSet rSet;
     @NotNull
-    private final List<TipoIntervalo> tiposIntervalos;
+    private final List<TipoMarcacao> tiposIntervalos;
     @NotNull
     private final Map<Long, Integer> tipoIntervaloIndexColuna;
 
     RelatorioTotaisPorTipoIntervalo(@NotNull final ResultSet rSet,
-                                    @NotNull final List<TipoIntervalo> tiposIntervalos,
+                                    @NotNull final List<TipoMarcacao> tiposIntervalos,
                                     @Nullable final Long codTipoIntervaloFiltrado) {
         this.rSet = rSet;
         if (codTipoIntervaloFiltrado != null) {
@@ -116,7 +116,7 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         header.add("CPF");
         header.add("NOME");
         header.add("CARGO");
-        for (final TipoIntervalo tipoIntervalo : tiposIntervalos) {
+        for (final TipoMarcacao tipoIntervalo : tiposIntervalos) {
             header.add(tipoIntervalo.getNome());
             tipoIntervaloIndexColuna.put(tipoIntervalo.getCodigo(), header.size() - 1);
         }

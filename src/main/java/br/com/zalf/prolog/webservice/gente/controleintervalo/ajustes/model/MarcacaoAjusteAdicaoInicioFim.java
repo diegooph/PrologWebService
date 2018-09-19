@@ -1,20 +1,39 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
 
 /**
+ * Classe utilizada quando é inserido um início e também um fim, de uma vez só, para um colaborador.
+ *
  * Created on 04/09/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
+public final class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
+    /**
+     * Código do {@link Colaborador colaborador} para o qual as marcações de início e fim serão criadas.
+     */
     private Long codColaboradorMarcacao;
-    private Long codTipoIntervaloMarcado;
+
+    /**
+     * Código do {@link TipoMarcacao tipo de marcação} para o qual as marcações de início e fim serão criadas.
+     */
+    private Long codTipoMarcacaoReferente;
+
+    /**
+     * Data e hora da marcação de início.
+     */
     private LocalDateTime dataHoraInicio;
+
+    /**
+     * Data e hora da marcação de fim.
+     */
     private LocalDateTime dataHoraFim;
 
     public MarcacaoAjusteAdicaoInicioFim() {
@@ -25,7 +44,7 @@ public class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
     public static MarcacaoAjusteAdicaoInicioFim createDummy() {
         final MarcacaoAjusteAdicaoInicioFim adicaoInicioFim = new MarcacaoAjusteAdicaoInicioFim();
         adicaoInicioFim.setCodColaboradorMarcacao(2272L);
-        adicaoInicioFim.setCodTipoIntervaloMarcado(10L);
+        adicaoInicioFim.setCodTipoMarcacaoReferente(10L);
         adicaoInicioFim.setDataHoraInicio(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
         adicaoInicioFim.setDataHoraFim(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
         adicaoInicioFim.setCodJustificativaAjuste(5L);
@@ -42,12 +61,12 @@ public class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
         this.codColaboradorMarcacao = codColaboradorMarcacao;
     }
 
-    public Long getCodTipoIntervaloMarcado() {
-        return codTipoIntervaloMarcado;
+    public Long getCodTipoMarcacaoReferente() {
+        return codTipoMarcacaoReferente;
     }
 
-    public void setCodTipoIntervaloMarcado(final Long codTipoIntervaloMarcado) {
-        this.codTipoIntervaloMarcado = codTipoIntervaloMarcado;
+    public void setCodTipoMarcacaoReferente(final Long codTipoMarcacaoReferente) {
+        this.codTipoMarcacaoReferente = codTipoMarcacaoReferente;
     }
 
     public LocalDateTime getDataHoraInicio() {
@@ -70,7 +89,7 @@ public class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
     public String toString() {
         return "MarcacaoAjusteAdicaoInicioFim{" +
                 "codColaboradorMarcacao='" + codColaboradorMarcacao + '\'' +
-                ", codTipoIntervaloMarcado=" + codTipoIntervaloMarcado +
+                ", codTipoMarcacaoReferente=" + codTipoMarcacaoReferente +
                 ", dataHoraInicio=" + dataHoraInicio +
                 ", dataHoraFim=" + dataHoraFim +
                 '}';

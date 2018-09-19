@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum TipoMarcacaoIntervalo {
+public enum MarcacaoInicioFim {
     MARCACAO_INICIO("MARCACAO_INICIO"),
     MARCACAO_FIM("MARCACAO_FIM");
 
     @NotNull
     private final String tipoMarcacao;
 
-    TipoMarcacaoIntervalo(@NotNull final String tipoMarcacao) {
+    MarcacaoInicioFim(@NotNull final String tipoMarcacao) {
         this.tipoMarcacao = tipoMarcacao;
     }
 
@@ -31,10 +31,10 @@ public enum TipoMarcacaoIntervalo {
     }
 
     @NotNull
-    public static TipoMarcacaoIntervalo fromString(@NotNull final String tipoMarcacao) {
+    public static MarcacaoInicioFim fromString(@NotNull final String tipoMarcacao) {
         Preconditions.checkNotNull(tipoMarcacao);
 
-        for (TipoMarcacaoIntervalo marcacao : TipoMarcacaoIntervalo.values()) {
+        for (final MarcacaoInicioFim marcacao : MarcacaoInicioFim.values()) {
             if (marcacao.tipoMarcacao.equals(tipoMarcacao)) {
                 return marcacao;
             }

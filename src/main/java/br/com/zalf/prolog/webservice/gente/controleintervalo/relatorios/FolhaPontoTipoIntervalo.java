@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +11,7 @@ import java.time.Duration;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class FolhaPontoTipoIntervalo extends TipoIntervalo {
+public final class FolhaPontoTipoIntervalo extends TipoMarcacao {
 
     /**
      * O tempo somado que o colaborador passou nesse tipo de intervalo, de acordo com o período buscado no relatório.
@@ -31,7 +31,7 @@ public final class FolhaPontoTipoIntervalo extends TipoIntervalo {
     }
 
     @NotNull
-    public static FolhaPontoTipoIntervalo createFromTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+    public static FolhaPontoTipoIntervalo createFromTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                                                                   @NotNull final Long tempoTotalTipoIntervaloSegundos,
                                                                   @NotNull final Long tempoTotalHorasNoturnasSegundos) {
         final FolhaPontoTipoIntervalo folhaTipo = new FolhaPontoTipoIntervalo();

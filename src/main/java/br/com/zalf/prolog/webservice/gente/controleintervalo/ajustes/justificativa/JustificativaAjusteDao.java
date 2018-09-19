@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.justificativa_ajuste;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -26,7 +26,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.QuantidadeServicos
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.ModeloVeiculo;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjuste;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;

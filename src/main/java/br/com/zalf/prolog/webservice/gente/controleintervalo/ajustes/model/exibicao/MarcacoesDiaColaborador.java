@@ -1,25 +1,44 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Representa a quantidade de marcações que um colaborador tem em um dado dia. É utilizado em conjunto com o
+ * {@link ConsolidadoMarcacoesDia consolidado} para compor a listagem exibida no Sistema Web.
+ *
  * Created on 04/09/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class MarcacaoConsolidadaDiaColaborador {
-
+public final class MarcacoesDiaColaborador {
+    /**
+     * Código do {@link Colaborador colaborador} do qual as informações são referentes.
+     */
     private Long codColaborador;
+
+    /**
+     * Nome do {@link Colaborador colaborador} do qual as informações são referentes.
+     */
     private String nomeColaborador;
+
+    /**
+     * Quantidade de marcações que o colaborador marcou (ou que foram marcadas em seu nome) no dia.
+     */
     private int qtdMarcacoesDia;
+
+    /**
+     * Quantidade de inconsistências geradas no dia atual.
+     */
     private int qtdInconsistenciasDia;
 
-    public MarcacaoConsolidadaDiaColaborador() {
+    public MarcacoesDiaColaborador() {
+
     }
 
     @NotNull
-    public static MarcacaoConsolidadaDiaColaborador createDummy() {
-        final MarcacaoConsolidadaDiaColaborador consolidadaDiaColaborador = new MarcacaoConsolidadaDiaColaborador();
+    public static MarcacoesDiaColaborador createDummy() {
+        final MarcacoesDiaColaborador consolidadaDiaColaborador = new MarcacoesDiaColaborador();
         consolidadaDiaColaborador.setCodColaborador(2272L);
         consolidadaDiaColaborador.setNomeColaborador("Zalf Sistemas");
         consolidadaDiaColaborador.setQtdMarcacoesDia(10);

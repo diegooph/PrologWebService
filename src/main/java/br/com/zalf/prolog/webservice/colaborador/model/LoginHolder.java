@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.colaborador.model;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
@@ -37,7 +37,7 @@ public class LoginHolder {
      * Caso o colaborador tenha a permissão {@link Pilares.Gente.Intervalo#MARCAR_INTERVALO} ou alguém
      * da sua unidade possuir, esse objeto conterá um {@link List<Colaborador>} que possuirá
      * todos os colaboradores que têm essa permissão.
-     * O objeto também conterá um {@link List<TipoIntervalo>} referente aos tipos de intervalo da unidade,
+     * O objeto também conterá um {@link List< TipoMarcacao >} referente aos tipos de intervalo da unidade,
      * além disso um {@link Date} sinalizando a última vez que este objeto sofreu atualização.
      */
     @NotNull
@@ -45,12 +45,12 @@ public class LoginHolder {
 
     /**
      * Caso o colaborador tenha a permissão {@link Pilares.Gente.Intervalo#MARCAR_INTERVALO}, essa
-     * lista conterá os {@link TipoIntervalo} que existem para sua unidade. Se ele não tiver essa
+     * lista conterá os {@link TipoMarcacao} que existem para sua unidade. Se ele não tiver essa
      * permissão, a lista será {@code null}.
      */
     @Nullable
     @Deprecated
-    private List<TipoIntervalo> tiposIntervalos;
+    private List<TipoMarcacao> tiposIntervalos;
 
     public Colaborador getColaborador() {
         return colaborador;
@@ -85,12 +85,12 @@ public class LoginHolder {
     }
 
     @Deprecated
-    public List<TipoIntervalo> getTiposIntervalos() {
+    public List<TipoMarcacao> getTiposIntervalos() {
         return tiposIntervalos;
     }
 
     @Deprecated
-    public void setTiposIntervalos(List<TipoIntervalo> tiposIntervalos) {
+    public void setTiposIntervalos(List<TipoMarcacao> tiposIntervalos) {
         this.tiposIntervalos = tiposIntervalos;
     }
 }
