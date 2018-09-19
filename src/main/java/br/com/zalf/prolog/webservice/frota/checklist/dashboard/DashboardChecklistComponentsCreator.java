@@ -42,8 +42,8 @@ final class DashboardChecklistComponentsCreator {
         });
 
         final List<LineGroup> groups = new ArrayList<>(2 /* saída e retorno */);
-        final LineGroup groupSaida = new LineGroup("Saída", entriesSaida, Color.BLACK);
-        final LineGroup groupRetorno = new LineGroup("Retorno", entriesRetorno, Color.BLUE);
+        final LineGroup groupSaida = new LineGroup("Saída", entriesSaida, Color.fromHex("#185887"));
+        final LineGroup groupRetorno = new LineGroup("Retorno", entriesRetorno, Color.fromHex("#EDA444"));
         groups.add(groupSaida);
         groups.add(groupRetorno);
 
