@@ -8,6 +8,9 @@ Change Log
 * Permite filtro por múltiplas unidades nos relatórios do checklist
 * Cria gráfico em linhas como um componente da dashboard
 
+### Refactors
+* Atualiza versão da biblioteca univocity-parsers para 2.7.5
+
 <a name="v0.0.75"></a>
 ## Version [v0.0.75](https://github.com/luizfp/PrologWeb/compare/v0.0.74...v0.0.75) (2018-09-04)
 
