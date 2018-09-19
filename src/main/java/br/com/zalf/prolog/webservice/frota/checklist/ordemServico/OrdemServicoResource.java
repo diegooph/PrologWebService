@@ -69,7 +69,7 @@ public class OrdemServicoResource {
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
     public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required String placa,
                                                        @QueryParam("status-itens") @Required String statusItens,
-                                                       @QueryParam("prioridade-itens") @Required String prioridade,
+                                                       @QueryParam("prioridade-itens") @Optional String prioridade,
                                                        @QueryParam("limit") @Optional Integer limit,
                                                        @QueryParam("offset") @Optional Long offset)
             throws ProLogException {

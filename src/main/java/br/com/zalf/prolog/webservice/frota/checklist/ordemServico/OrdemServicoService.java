@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
+import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -89,11 +90,16 @@ public class OrdemServicoService {
     @NotNull
     List<ItemOrdemServico> getItensOsManutencaoHolder(@NotNull final String placa,
                                                       @NotNull final String statusItens,
-                                                      @NotNull final String prioridadeItens,
+                                                      @Nullable final String prioridadeItens,
                                                       @Nullable final Integer limit,
                                                       @Nullable final Long offset) throws ProLogException {
         try {
-            return dao.getItensOs(placa, statusItens, prioridadeItens, limit, offset);
+            return dao.getItensOs(
+                    placa,
+                    statusItens,
+                    prioridadeItens == null ? Filtros.getFiltroTodos() : prioridadeItens,
+                    limit,
+                    offset);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os itens de uma OS. \n" +
                     "placa: %s \n" +
