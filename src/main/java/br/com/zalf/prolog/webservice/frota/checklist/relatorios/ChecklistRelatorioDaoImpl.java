@@ -40,7 +40,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
             stmt = conn.prepareStatement("SELECT * FROM " +
                     "FUNC_CHECKLIST_RELATORIO_QTD_POR_TIPO(?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.localDateTimeUtc());
+            stmt.setObject(2, Now.localDateUtc());
             stmt.setInt(3, diasRetroativosParaBuscar);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
