@@ -140,18 +140,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         }
     }
 
-    /**
-     * Busca todas as OS e seus devidos itens, respeitando os filtros enviados nos parâmetros
-     *
-     * @param placa       uma placa especifica ou '%' para buscar OS de todas as placas
-     * @param status      status da OS, podendo ser Aberta ou Fechada
-     * @param codUnidade  código da unidade a serem buscadas as OS
-     * @param tipoVeiculo tipo do veículo ou '%' para todos os tipos
-     * @param limit       quantidade de OS que deseja retornar
-     * @param offset      um offset
-     * @return uma lista de OrdemServico
-     * @throws SQLException caso não seja possivel realizar a busca
-     */
     @Override
     public List<OrdemServico> getOs(String placa, String status, Long codUnidade,
                                     String tipoVeiculo, Integer limit, Long offset) throws SQLException {
@@ -295,15 +283,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         }
     }
 
-    /**
-     * Método chamado quando é recebido um checklist, verifica as premissas para criar uma nova OS ou add
-     * o item com problema a uma OS existente
-     *
-     * @param checklist  Um checklist
-     * @param conn       uma Connection
-     * @param codUnidade Código da unidade que gerou o checklist
-     * @throws SQLException caso nao seja possivel realizar a busca
-     */
     @Override
     public void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException {
         Long tempCodOs = null;
@@ -458,16 +437,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         }
     }
 
-    /**
-     * Insere um serviço em uma O.S. específica
-     *
-     * @param codPergunta    código do item a ser adicional
-     * @param codAlternativa código da alternativa marcada
-     * @param codOs          código da OS ao qual deve ser inserido o item
-     * @param placa          uma placa
-     * @param conn           uma Connection
-     * @throws SQLException caso não seja possível realizar a busca
-     */
     private void insertServicoOs(Long codPergunta, Long codAlternativa, Long codOs, String placa, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {

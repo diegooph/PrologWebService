@@ -18,23 +18,23 @@ import java.util.List;
  * Classe OrdemServicoService responsavel por comunicar-se com a interface DAO
  */
 public class OrdemServicoService {
-
-    private OrdemServicoDao dao = Injection.provideOrdemServicoDao();
     private static final String TAG = OrdemServicoService.class.getSimpleName();
+    @NotNull
+    private final OrdemServicoDao dao = Injection.provideOrdemServicoDao();
 
     public List<OrdemServico> getOs(String placa, String status, Long codUnidade,
-                                    String tipoVeiculo, Integer limit, Long offset){
-        try{
+                                    String tipoVeiculo, Integer limit, Long offset) throws ProLogException {
+        try {
             return dao.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
-        }catch (SQLException e){
+        } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar as OS. \n" +
                     "Placa: %s \n" +
                     "Status: %s \n" +
                     "codUnidade: %d \n" +
                     "tipoVeiculo: %s \n" +
                     "limit: %d \n" +
-                    "offset: %d", placa, status, codUnidade, tipoVeiculo, limit, offset), e);
-            return null;
+                    "offset: %d", placa, status, codUnidade, tipoVeiculo, limit, offset), throwable);
+            throw Injection.provideProLogExceptionHandler().map(throwable, "Erro ao buscar ordens de serviços");
         }
     }
 
@@ -70,7 +70,8 @@ public class OrdemServicoService {
                                                      final int limit,
                                                      final int offset) throws ProLogException {
         try {
-            return dao.getResumoManutencaoHolder(codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit, offset);
+            return dao.getResumoManutencaoHolder(codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit,
+                    offset);
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao a quantidade de itens de OS do checklist.\n" +
                     "codUnidade: %d\n" +

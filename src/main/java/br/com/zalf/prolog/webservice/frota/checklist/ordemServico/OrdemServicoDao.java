@@ -35,7 +35,7 @@ public interface OrdemServicoDao {
     void consertaItens(@NotNull final ConsertoMultiplosItensOs itensConserto) throws Throwable;
 
     /**
-     * busca OS - Orde de Serviço - na banco
+     * Busca as ordens de serviços.
      *
      * @param placa       placa do veículo
      * @param status      status
@@ -50,12 +50,12 @@ public interface OrdemServicoDao {
                              String tipoVeiculo, Integer limit, Long offset) throws SQLException;
 
     /**
-     * Busca os itens de Ordens de Serviços utilizando limit e offset.
+     * Busca os itens de Ordens de Serviços utilizando, opcionalmente, limit e offset.
      *
-     * @param placa       Placa do veículo que será buscados os itens.
+     * @param placa       Placa do veículo que será buscado os itens.
      * @param statusItens Status do item, {@link ItemOrdemServico.Status#RESOLVIDO}
      *                    ou {@link ItemOrdemServico.Status#PENDENTE}.
-     * @param prioridade  Prioridade do Item, BAIXA, ALTA, CRITICA.
+     * @param prioridade  Prioridade do Item: BAIXA, ALTA ou CRITICA.
      * @param limit       Limite da busca dos dados.
      * @param offset      Offset de busca dos dados.
      * @return Lista de Itens de Ordem de Serviço
@@ -89,7 +89,8 @@ public interface OrdemServicoDao {
                                       final boolean itensCriticosRetroativos) throws SQLException;
 
     /**
-     * insere um item com problema na OS
+     * Método chamado quando é recebido um checklist, verifica as premissas para criar uma nova OS ou add
+     * o item com problema a uma OS existente.
      *
      * @param checklist  um checklist
      * @param conn       conexão do banco
@@ -99,7 +100,7 @@ public interface OrdemServicoDao {
     void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException;
 
     /**
-     * Busca a lista de itens agrupadas por placa e criticidade (tela das bolinhas).
+     * Busca a lista de itens agrupados por placa e criticidade.
      */
     @NotNull
     List<ManutencaoHolder> getResumoManutencaoHolder(@NotNull final Long codUnidade,

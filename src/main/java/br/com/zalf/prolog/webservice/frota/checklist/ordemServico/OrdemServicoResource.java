@@ -57,7 +57,7 @@ public class OrdemServicoResource {
                                     @PathParam("placa") String placa,
                                     @PathParam("status") String status,
                                     @QueryParam("limit") Integer limit,
-                                    @QueryParam("offset") Long offset) {
+                                    @QueryParam("offset") Long offset) throws Throwable {
         return service.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
     }
 
