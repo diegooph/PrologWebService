@@ -7,9 +7,11 @@ Change Log
 ### Features
 * Permite filtro por múltiplas unidades nos relatórios do checklist
 * Cria gráfico em linhas como um componente da dashboard
+* Cria método para fechamento de múltiplos itens de O.S. do checklist
 
 ### Refactors
 * Atualiza versão da biblioteca univocity-parsers para 2.7.5
+* Altera métodos de busca dos itens de O.S. do checklist
 
 <a name="v0.0.75"></a>
 ## Version [v0.0.75](https://github.com/luizfp/PrologWeb/compare/v0.0.74...v0.0.75) (2018-09-04)
