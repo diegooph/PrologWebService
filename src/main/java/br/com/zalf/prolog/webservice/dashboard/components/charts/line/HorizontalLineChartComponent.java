@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -24,6 +25,8 @@ public final class HorizontalLineChartComponent extends ChartComponent {
     private final List<HorizontalLimitLine> limitLines;
     @NotNull
     private final LineData lineData;
+    @Nullable
+    private final Map<Double, String> informacoesPontos;
 
     private HorizontalLineChartComponent(@NotNull final Integer codigo,
                                          @NotNull final String titulo,
@@ -37,8 +40,9 @@ public final class HorizontalLineChartComponent extends ChartComponent {
                                          @NotNull final String labelEixoX,
                                          @NotNull final String labelEixoY,
                                          @NotNull final LineData lineData,
+                                         @NotNull final LinesOrientation orientation,
                                          @Nullable final List<HorizontalLimitLine> limitLines,
-                                         @NotNull final LinesOrientation orientation) {
+                                         @Nullable final Map<Double, String> informacoesPontos) {
         super(codigo,
                 orientation == LinesOrientation.HORIZONTAL
                         ? IdentificadorTipoComponente.GRAFICO_LINHAS_HORIZONTAIS
@@ -55,6 +59,7 @@ public final class HorizontalLineChartComponent extends ChartComponent {
         this.labelEixoY = labelEixoY;
         this.limitLines = limitLines;
         this.lineData = lineData;
+        this.informacoesPontos = informacoesPontos;
     }
 
     public static class Builder extends BaseComponentBuilder {
@@ -63,6 +68,7 @@ public final class HorizontalLineChartComponent extends ChartComponent {
         private List<HorizontalLimitLine> limitLines;
         private LineData lineData;
         private LinesOrientation linesOrientation;
+        private Map<Double, String> informacoesPontos;
 
         public Builder() {}
 
@@ -140,6 +146,11 @@ public final class HorizontalLineChartComponent extends ChartComponent {
             return this;
         }
 
+        public Builder withInformacoesPontos(@NotNull Map<Double, String> informacoesPontos) {
+            this.informacoesPontos = informacoesPontos;
+            return this;
+        }
+
         public Builder withLinesOrientation(@NotNull LinesOrientation linesOrientation) {
             this.linesOrientation = linesOrientation;
             return this;
@@ -166,8 +177,9 @@ public final class HorizontalLineChartComponent extends ChartComponent {
                     labelEixoX,
                     labelEixoY,
                     lineData,
+                    linesOrientation,
                     limitLines,
-                    linesOrientation);
+                    informacoesPontos);
         }
     }
 }

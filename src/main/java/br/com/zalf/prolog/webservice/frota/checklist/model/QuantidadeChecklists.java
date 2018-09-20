@@ -44,4 +44,8 @@ public class QuantidadeChecklists {
     public int getTotalChecklistsRetorno() {
         return totalChecklistsRetorno;
     }
+
+    public boolean teveChecklistsRealizados() {
+        return totalChecklistsSaida > 0 || totalChecklistsRetorno > 0;
+    }
 }

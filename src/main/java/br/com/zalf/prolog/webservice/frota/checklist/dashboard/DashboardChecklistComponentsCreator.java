@@ -7,7 +7,9 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 18/09/2018
@@ -26,6 +28,7 @@ final class DashboardChecklistComponentsCreator {
             @NotNull final ComponentDataHolder component,
             @NotNull final List<QuantidadeChecklists> checklistsDia) {
 
+        final Map<Double, String> informacoesPontos = new HashMap<>(checklistsDia.size());
         final List<LineEntry> entriesSaida = new ArrayList<>();
         final List<LineEntry> entriesRetorno = new ArrayList<>();
         for (int i = 0; i < checklistsDia.size(); i++) {
@@ -44,10 +47,22 @@ final class DashboardChecklistComponentsCreator {
                     null);
             entriesSaida.add(saida);
             entriesRetorno.add(retorno);
-        }
-        checklistsDia.forEach(qtdChecklists -> {
 
-        });
+            // Cria a informação do ponto no gráfico em linhas.
+            String informacaoPonto = qtdChecklists.getDataFormatada();
+            if (qtdChecklists.teveChecklistsRealizados()) {
+                if (qtdChecklists.getTotalChecklistsSaida() > 0) {
+                    informacaoPonto = String.format("%s\nSaída: %d", informacaoPonto, qtdChecklists.getTotalChecklistsSaida());
+
+                }
+                if (qtdChecklists.getTotalChecklistsRetorno() > 0) {
+                    informacaoPonto = String.format("%s\nRetorno: %d", informacaoPonto, qtdChecklists.getTotalChecklistsRetorno());
+                }
+            } else {
+                informacaoPonto = String.format("%s\nsem checklists", informacaoPonto);
+            }
+            informacoesPontos.put((double) i, informacaoPonto);
+        }
 
         final List<LineGroup> groups = new ArrayList<>(2 /* saída e retorno */);
         final LineGroup groupSaida = new LineGroup("Saída", entriesSaida, Color.fromHex("#185887"));
@@ -70,6 +85,7 @@ final class DashboardChecklistComponentsCreator {
                 .withLabelEixoY(component.labelEixoY)
                 .withLineData(lineData)
                 .withLinesOrientation(LinesOrientation.HORIZONTAL)
+                .withInformacoesPontos(informacoesPontos)
                 .build();
     }
 }
