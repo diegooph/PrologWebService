@@ -28,17 +28,25 @@ final class DashboardChecklistComponentsCreator {
 
         final List<LineEntry> entriesSaida = new ArrayList<>();
         final List<LineEntry> entriesRetorno = new ArrayList<>();
-        checklistsDia.forEach(qtdChecklists -> {
+        for (int i = 0; i < checklistsDia.size(); i++) {
+            final QuantidadeChecklists qtdChecklists = checklistsDia.get(i);
             final LineEntry saida = new LineEntry(
                     qtdChecklists.getTotalChecklistsSaida(),
+                    i,
                     String.valueOf(qtdChecklists.getTotalChecklistsSaida()),
+                    qtdChecklists.getDataFormatada(),
                     null);
             final LineEntry retorno = new LineEntry(
                     qtdChecklists.getTotalChecklistsRetorno(),
+                    i,
                     String.valueOf(qtdChecklists.getTotalChecklistsRetorno()),
+                    qtdChecklists.getDataFormatada(),
                     null);
             entriesSaida.add(saida);
             entriesRetorno.add(retorno);
+        }
+        checklistsDia.forEach(qtdChecklists -> {
+
         });
 
         final List<LineGroup> groups = new ArrayList<>(2 /* saída e retorno */);
