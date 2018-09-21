@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.line.HorizontalLineChartComponent;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.checklist.relatorios.ChecklistRelatorioDao;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,8 +18,12 @@ import java.util.List;
  */
 public final class DashboardChecklistService {
     private static final String TAG = DashboardChecklistService.class.getSimpleName();
+    @NotNull
     private final DashboardDao dashDao = Injection.provideDashboardDao();
+    @NotNull
     private final ChecklistRelatorioDao relatorioDao = Injection.provideChecklistRelatorioDao();
+    @NotNull
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @NotNull
     public HorizontalLineChartComponent getQtdChecklistsUltimos30DiasByTipo(
@@ -30,9 +35,9 @@ public final class DashboardChecklistService {
                     relatorioDao.getQtdChecklistsRealizadosByTipo(codUnidades, 30));
         } catch (final Throwable throwable) {
             Log.e(TAG,
-                    "Erro ao buscar a quantidade de pneus por status para as unidades: " + codUnidades,
+                    "Erro ao buscar a quantidade de checklists realizados para as unidades: " + codUnidades,
                     throwable);
-            throw new RuntimeException(throwable);
+            throw exceptionHandler.map(throwable, "Erro ao buscar a quantidade de checklists realizados");
         }
     }
 }
