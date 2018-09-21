@@ -15,7 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setString(2, statusItensContagem.asString());
             rSet = stmt.executeQuery();
-            final Map<PrioridadePergunta, Integer> qtdItensOs = new HashMap<>();
+            final Map<PrioridadePergunta, Integer> qtdItensOs = new LinkedHashMap<>();
             while (rSet.next()) {
                 qtdItensOs.put(
                         PrioridadePergunta.fromString(rSet.getString("PRIORIDADE")),
