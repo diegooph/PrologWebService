@@ -1,4 +1,6 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model;
+
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
 
 import java.util.List;
 

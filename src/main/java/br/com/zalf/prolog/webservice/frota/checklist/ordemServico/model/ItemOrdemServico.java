@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;

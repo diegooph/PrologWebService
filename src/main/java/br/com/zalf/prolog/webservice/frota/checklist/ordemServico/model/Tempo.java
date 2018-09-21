@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model;
 
 /**
  * Created by luiz on 3/18/16.

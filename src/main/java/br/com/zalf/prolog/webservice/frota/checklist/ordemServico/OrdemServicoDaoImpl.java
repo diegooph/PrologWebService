@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
@@ -11,6 +10,9 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ManutencaoHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
