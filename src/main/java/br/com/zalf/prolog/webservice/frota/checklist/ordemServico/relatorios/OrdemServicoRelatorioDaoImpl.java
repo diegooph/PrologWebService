@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadePergunta;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
@@ -13,12 +15,41 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by luiz on 26/04/17.
  */
-public class OrdemServicoRelatorioDaoImpl extends DatabaseConnection implements OrdemServicoRelatorioDao {
+public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection implements OrdemServicoRelatorioDao {
+
+    @NotNull
+    @Override
+    public Map<PrioridadePergunta, Integer> getQtdItensOsByPrioridade(
+            @NotNull final List<Long> codUnidades,
+            @NotNull final ItemOrdemServico.Status statusItensContagem) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "FUNC_CHECKLIST_OS_RELATORIO_QTD_ITENS_POR_PRIORIDADE(?, ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setString(2, statusItensContagem.asString());
+            rSet = stmt.executeQuery();
+            final Map<PrioridadePergunta, Integer> qtdItensOs = new HashMap<>();
+            while (rSet.next()) {
+                qtdItensOs.put(
+                        PrioridadePergunta.fromString(rSet.getString("PRIORIDADE")),
+                        rSet.getInt("QUANTIDADE"));
+            }
+            return qtdItensOs;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
 
     @Override
     public void getItensMaiorQuantidadeNokCsv(@NotNull final OutputStream outputStream,
