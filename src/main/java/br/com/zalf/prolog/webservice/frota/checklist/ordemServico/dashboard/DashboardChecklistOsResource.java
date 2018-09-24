@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.dashboard;
 
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -29,5 +30,13 @@ public final class DashboardChecklistOsResource {
             @PathParam("codComponente") final Integer codComponente,
             @QueryParam("codUnidades") final List<Long> codUnidades) throws ProLogException {
         return service.getQtdItensOsAbertosByPrioridade(codComponente, codUnidades);
+    }
+
+    @GET
+    @Path("/placas-maior-quantidade-itens-os-abertos/{codComponente}")
+    public TableComponent getPlacasMaiorQtdItensOsAbertos(
+            @PathParam("codComponente") final Integer codComponente,
+            @QueryParam("codUnidades") final List<Long> codUnidades) throws ProLogException {
+        return service.getPlacasMaiorQtdItensOsAbertos(codComponente, codUnidades);
     }
 }

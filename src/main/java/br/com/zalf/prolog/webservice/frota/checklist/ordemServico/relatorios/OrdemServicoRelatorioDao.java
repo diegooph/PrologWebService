@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadePergunta;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.PlacaItensOsAbertos;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
@@ -14,6 +15,10 @@ import java.util.Map;
  * Created by luiz on 26/04/17.
  */
 public interface OrdemServicoRelatorioDao {
+
+    @NotNull
+    List<PlacaItensOsAbertos> getPlacasMaiorQtdItensOsAbertos(@NotNull final List<Long> codUnidades,
+                                                              final int qtdPlacasParaBuscar) throws Throwable;
 
     @NotNull
     Map<PrioridadePergunta, Integer> getQtdItensOsByPrioridade(@NotNull final List<Long> codUnidades,
