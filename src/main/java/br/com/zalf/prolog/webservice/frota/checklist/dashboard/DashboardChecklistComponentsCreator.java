@@ -84,6 +84,7 @@ final class DashboardChecklistComponentsCreator {
                 .withLabelEixoX(component.labelEixoX)
                 .withLabelEixoY(component.labelEixoY)
                 .withLineData(lineData)
+                .withSelectionLineColor(Color.RED)
                 .withLinesOrientation(LinesOrientation.HORIZONTAL)
                 .withInformacoesPontos(informacoesPontos)
                 .build();

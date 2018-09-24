@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.dashboard.components.charts.line;
 
+import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.ChartComponent;
@@ -25,6 +26,8 @@ public final class HorizontalLineChartComponent extends ChartComponent {
     private final List<HorizontalLimitLine> limitLines;
     @NotNull
     private final LineData lineData;
+    @NotNull
+    private final Color selectionLineColor;
     @Nullable
     private final Map<Double, String> informacoesPontos;
 
@@ -40,6 +43,7 @@ public final class HorizontalLineChartComponent extends ChartComponent {
                                          @NotNull final String labelEixoX,
                                          @NotNull final String labelEixoY,
                                          @NotNull final LineData lineData,
+                                         @NotNull final Color selectionLineColor,
                                          @NotNull final LinesOrientation orientation,
                                          @Nullable final List<HorizontalLimitLine> limitLines,
                                          @Nullable final Map<Double, String> informacoesPontos) {
@@ -59,6 +63,7 @@ public final class HorizontalLineChartComponent extends ChartComponent {
         this.labelEixoY = labelEixoY;
         this.limitLines = limitLines;
         this.lineData = lineData;
+        this.selectionLineColor = selectionLineColor;
         this.informacoesPontos = informacoesPontos;
     }
 
@@ -69,6 +74,7 @@ public final class HorizontalLineChartComponent extends ChartComponent {
         private LineData lineData;
         private LinesOrientation linesOrientation;
         private Map<Double, String> informacoesPontos;
+        private Color selectionLineColor;
 
         public Builder() {}
 
@@ -156,12 +162,18 @@ public final class HorizontalLineChartComponent extends ChartComponent {
             return this;
         }
 
+        public Builder withSelectionLineColor(@NotNull Color selectionLineColor) {
+            this.selectionLineColor = selectionLineColor;
+            return this;
+        }
+
         @Override
         public HorizontalLineChartComponent build() {
             ensureNotNullValues();
             checkNotNull(labelEixoX, "labelEixoX deve ser instanciada com 'withLabelEixoX'");
             checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
             checkNotNull(lineData, "lineData deve ser instanciada com 'withLineData'");
+            checkNotNull(selectionLineColor, "selectionLineColor deve ser instanciada com 'withSelectionLineColor'");
             checkNotNull(linesOrientation, "linesOrientation deve ser instanciada com 'withLinesOrientation'");
 
             return new HorizontalLineChartComponent(
@@ -177,6 +189,7 @@ public final class HorizontalLineChartComponent extends ChartComponent {
                     labelEixoX,
                     labelEixoY,
                     lineData,
+                    selectionLineColor,
                     linesOrientation,
                     limitLines,
                     informacoesPontos);
