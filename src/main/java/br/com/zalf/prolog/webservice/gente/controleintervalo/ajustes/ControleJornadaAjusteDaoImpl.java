@@ -18,36 +18,36 @@ import java.util.List;
 public final class ControleJornadaAjusteDaoImpl implements ControleJornadaAjusteDao {
 
     @Override
-    public void adicionarMarcacao(@NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
-                                  @NotNull final String token) throws Throwable {
+    public void adicionarMarcacaoAjuste(@NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
+                                        @NotNull final String token) throws Throwable {
 
     }
 
     @Override
-    public void adicionarMarcacaoInicioFim(@NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
-                                           @NotNull final String token) throws Throwable {
+    public void adicionarMarcacaoAjusteInicioFim(@NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
+                                                 @NotNull final String token) throws Throwable {
 
     }
 
     @Override
-    public void ativarInativarMarcacao(@NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste,
-                                       @NotNull final String token) throws Throwable {
+    public void ativarInativarMarcacaoAjuste(@NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste,
+                                             @NotNull final String token) throws Throwable {
 
     }
 
     @Override
-    public void editarMarcacao(@NotNull final MarcacaoAjusteEdicao marcacaoAjuste,
-                               @NotNull final String token) throws Throwable {
+    public void editarMarcacaoAjuste(@NotNull final MarcacaoAjusteEdicao marcacaoAjuste,
+                                     @NotNull final String token) throws Throwable {
 
     }
 
     @NotNull
     @Override
-    public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadas(@NotNull final Long codUnidade,
-                                                                  @NotNull final String codColaborador,
-                                                                  @NotNull final String codTipoIntervalo,
-                                                                  @NotNull final LocalDate dataInicial,
-                                                                  @NotNull final LocalDate dataFinal) throws Throwable {
+    public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(@NotNull final Long codUnidade,
+                                                                            @NotNull final String codColaborador,
+                                                                            @NotNull final String codTipoIntervalo,
+                                                                            @NotNull final LocalDate dataInicial,
+                                                                            @NotNull final LocalDate dataFinal) throws Throwable {
         return null;
     }
 
@@ -56,7 +56,7 @@ public final class ControleJornadaAjusteDaoImpl implements ControleJornadaAjuste
     public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
             @NotNull final Long codUnidade,
             @NotNull final String codColaborador,
-            @NotNull final LocalDate dataInicial) throws Throwable {
+            @NotNull final LocalDate data) throws Throwable {
         return null;
     }
 
