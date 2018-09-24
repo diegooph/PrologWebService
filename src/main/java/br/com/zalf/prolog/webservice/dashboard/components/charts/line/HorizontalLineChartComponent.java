@@ -18,16 +18,46 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class HorizontalLineChartComponent extends ChartComponent {
+    /**
+     * A label que deve ser exibida para o eixo X do gráfico.
+     */
     @NotNull
     private final String labelEixoX;
+
+    /**
+     * A label que deve ser exibida para o eixo Y do gráfico.
+     */
     @NotNull
     private final String labelEixoY;
+
+    /**
+     * Podem ser entendidas como linhas de 'meta'. É uma constante no eixo Y que deve atravessar o gráfico totalmente
+     * e ter sua descrição anexada.
+     *
+     * Exemplo: Em um gráfico de vendas / mês, uma limitLine poderia ser uma linha reta na posição Y 50k indicando que
+     * essa é a meta a ser atingida.
+     */
     @Nullable
     private final List<HorizontalLimitLine> limitLines;
+
+    /**
+     * Contém todos os dados necessários para plotar o gráfico.
+     */
     @NotNull
     private final LineData lineData;
+
+    /**
+     * Quando o usuário clica em um ponto (x, y) específico do gráfico, uma linha deve ser desenhada cortando o gráfico
+     * nesse ponto x e y que foi clicado. Este atributo indica a cor que deve ter essa linha.
+     */
     @NotNull
     private final Color selectionLineColor;
+
+    /**
+     * Quando um usuário clicar em um ponto no eixo Y, seja qual for o seu X, deve ser acessível para ele as informações
+     * desse ponto. Esse {@link Map map} mapeia uma posição no eixo Y (representada como um {@link Double double}) para
+     * as informações que devem ser exibidas quando o click nesse ponto ocorrer.
+     */
     @Nullable
     private final Map<Double, String> informacoesPontos;
 
