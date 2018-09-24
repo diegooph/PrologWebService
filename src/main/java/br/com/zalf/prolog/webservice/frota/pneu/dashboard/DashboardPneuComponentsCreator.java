@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalC
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieData;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.SliceValueMode;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterData;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterEntry;
@@ -55,7 +56,7 @@ final class DashboardPneuComponentsCreator {
                 String.valueOf(integer),
                 statusPneu.getSliceColor())));
         final PieData pieData = new PieData(entries);
-        return PieChartComponent.createDefault(component, pieData);
+        return PieChartComponent.createDefault(component, pieData, SliceValueMode.SLICE_PERCENTAGE);
     }
 
     @NotNull
@@ -186,7 +187,7 @@ final class DashboardPneuComponentsCreator {
                 String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoNoPrazo()),
                 Color.fromHex("#15C41F")));
         final PieData pieData = new PieData(entries);
-        return PieChartComponent.createDefault(component, pieData);
+        return PieChartComponent.createDefault(component, pieData, SliceValueMode.SLICE_PERCENTAGE);
     }
 
     @NotNull

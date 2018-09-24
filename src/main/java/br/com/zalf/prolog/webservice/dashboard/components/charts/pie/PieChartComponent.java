@@ -5,9 +5,10 @@ import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.ChartComponent;
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created on 10/01/18.
@@ -16,10 +17,13 @@ import org.jetbrains.annotations.Nullable;
  */
 public class PieChartComponent extends ChartComponent {
     @NotNull
-    private PieData pieData;
+    private final PieData pieData;
+    @NotNull
+    private final SliceValueMode sliceValueMode;
 
     public static PieChartComponent createDefault(@NotNull final ComponentDataHolder component,
-                                                  @NotNull final PieData pieData) {
+                                                  @NotNull final PieData pieData,
+                                                  @NotNull final SliceValueMode sliceValueMode) {
         return new PieChartComponent.Builder()
                 .withCodigo(component.codigoComponente)
                 .withTitulo(component.tituloComponente)
@@ -31,42 +35,30 @@ public class PieChartComponent extends ChartComponent {
                 .withQtdBlocosVerticais(component.qtdBlocosVerticais)
                 .withOrdemExibicao(component.ordemExibicao)
                 .withPieData(pieData)
+                .withSliceValueMode(sliceValueMode)
                 .build();
     }
 
-    private PieChartComponent(@NotNull Integer codigo,
-                              @NotNull String titulo,
-                              @Nullable String subtitulo,
-                              @NotNull String descricao,
-                              @NotNull String urlEndpointDados,
-                              @NotNull Integer codTipoComponente,
-                              int qtdBlocosHorizontais,
-                              int qtdBlocosVerticais,
-                              int ordem,
-                              @NotNull PieData pieData) {
+    private PieChartComponent(@NotNull final Integer codigo,
+                              @NotNull final String titulo,
+                              @Nullable final String subtitulo,
+                              @NotNull final String descricao,
+                              @NotNull final String urlEndpointDados,
+                              @NotNull final Integer codTipoComponente,
+                              final int qtdBlocosHorizontais,
+                              final int qtdBlocosVerticais,
+                              final int ordem,
+                              @NotNull final PieData pieData,
+                              @NotNull final SliceValueMode sliceValueMode) {
         super(codigo, IdentificadorTipoComponente.GRAFICO_SETORES, titulo, subtitulo, descricao, urlEndpointDados,
                 codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
         this.pieData = pieData;
-    }
-
-    @NotNull
-    public PieData getPieData() {
-        return pieData;
-    }
-
-    public void setPieData(@NotNull PieData pieData) {
-        this.pieData = pieData;
-    }
-
-    @Override
-    public String toString() {
-        return "PieChartComponent{" +
-                "pieData=" + pieData +
-                '}';
+        this.sliceValueMode = sliceValueMode;
     }
 
     public static class Builder extends BaseComponentBuilder {
         private PieData pieData;
+        private SliceValueMode sliceValueMode;
 
         public Builder() {}
 
@@ -129,8 +121,16 @@ public class PieChartComponent extends ChartComponent {
             return this;
         }
 
+        public Builder withSliceValueMode(@NotNull SliceValueMode sliceValueMode) {
+            this.sliceValueMode = sliceValueMode;
+            return this;
+        }
+
         @Override
         public PieChartComponent build() {
+            ensureNotNullValues();
+            checkNotNull(pieData, "pieData deve ser instanciada com 'withPieData'");
+            checkNotNull(sliceValueMode, "sliceValueMode deve ser instanciada com 'withSliceValueMode'");
             return new PieChartComponent(
                     codigo,
                     titulo,
@@ -141,13 +141,8 @@ public class PieChartComponent extends ChartComponent {
                     qtdBlocosHorizontais,
                     qtdBlocosVerticais,
                     ordemExibicao,
-                    pieData);
-        }
-
-        @Override
-        protected void ensureNotNullValues() {
-            super.ensureNotNullValues();
-            Preconditions.checkNotNull(pieData, "pieData deve ser instanciada com 'withPieData'");
+                    pieData,
+                    sliceValueMode);
         }
     }
 }

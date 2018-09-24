@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieData;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.SliceValueMode;
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadePergunta;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.PlacaItensOsAbertos;
@@ -36,7 +37,7 @@ final class DashboardChecklistOsComponentsCreator {
                 String.valueOf(integer),
                 statusPneu.getSliceColor())));
         final PieData pieData = new PieData(entries);
-        return PieChartComponent.createDefault(component, pieData);
+        return PieChartComponent.createDefault(component, pieData, SliceValueMode.VALUE_REPRESENTATION);
     }
 
     @NotNull
