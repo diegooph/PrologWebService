@@ -6,8 +6,6 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
