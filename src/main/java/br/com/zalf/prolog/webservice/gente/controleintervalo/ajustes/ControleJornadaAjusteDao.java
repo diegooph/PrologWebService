@@ -29,12 +29,12 @@ public interface ControleJornadaAjusteDao {
      * para uma marcação de fim avulsa.
      * Para mais informações sobre os dados de uma adição consulte {@link MarcacaoAjusteAdicao}.
      *
-     * @param marcacaoAjuste Objeto contendo os novos dados da marcação.
      * @param token          Identificador do usuário que realizou a edição.
+     * @param marcacaoAjuste Objeto contendo os novos dados da marcação.
      * @throws Throwable Caso algum erro no processamento ou conexão com o Banco de Dados ocorrer.
      */
-    void adicionarMarcacaoAjuste(@NotNull final MarcacaoAjusteAdicao marcacaoAjuste,
-                                 @NotNull final String token) throws Throwable;
+    void adicionarMarcacaoAjuste(@NotNull final String token,
+                                 @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws Throwable;
 
     /**
      * Este método é utilizado para criar um intervalo completo, contendo uma marcação de início

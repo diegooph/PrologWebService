@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -24,13 +24,12 @@ public final class ControleJornadaAjusteResource {
     @NotNull
     final ControleJornadaAjusteService service = new ControleJornadaAjusteService();
 
-    @GET
+    @POST
     @UsedBy(platforms = Platform.ANDROID)
-    @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
-    @Path("/abertos/{codUnidade}/{cpf}/{codTipoIntervalo}")
-    public IntervaloMarcacao getIntervaloAberto(@PathParam("codUnidade") Long codUnidade,
-                                                @PathParam("cpf") Long cpf,
-                                                @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Exception {
-        return null;
+    @Secured()
+    @Path("/adicionar-marcacao")
+    public Response adicionarMarcacaoAjuste(@HeaderParam("Authorization") String userToken,
+                                            @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws ProLogException {
+        return service.adicionarMarcacaoAjuste(userToken, marcacaoAjuste);
     }
 }
