@@ -207,13 +207,18 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM ESTRATIFICACAO_OS E " +
                     "WHERE E.STATUS_ITEM LIKE ? AND E.PRIORIDADE LIKE ? AND E.PLACA_VEICULO = ? " +
-                    "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE_ORDEM, E.DATA_HORA DESC " +
+                    "ORDER BY " +
+                    "  E.PLACA_VEICULO, " +
+                    "  CASE WHEN E.STATUS_ITEM = ? THEN 0 ELSE 1 END, " +
+                    "  E.PRIORIDADE_ORDEM, " +
+                    "  E.DATA_HORA ASC " +
                     "LIMIT ? OFFSET ?;");
             stmt.setString(1, statusItens);
             stmt.setString(2, prioridade);
             stmt.setString(3, placa);
-            StatementUtils.bindValueOrNull(stmt, 4, limit, SqlType.INTEGER);
-            StatementUtils.bindValueOrNull(stmt, 5, offset, SqlType.BIGINT);
+            stmt.setString(4, ItemOrdemServico.Status.PENDENTE.asString());
+            StatementUtils.bindValueOrNull(stmt, 5, limit, SqlType.INTEGER);
+            StatementUtils.bindValueOrNull(stmt, 6, offset, SqlType.BIGINT);
             rSet = stmt.executeQuery();
             return OrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
@@ -233,7 +238,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM ESTRATIFICACAO_OS EO " +
                     "WHERE EO.COD_OS = ? AND EO.COD_UNIDADE = ? AND EO.STATUS_ITEM LIKE ? " +
-                    "ORDER BY EO.PRIORIDADE_ORDEM, EO.DATA_HORA DESC;");
+                    "ORDER BY EO.DATA_HORA_CONSERTO NULLS FIRST, EO.PRIORIDADE_ORDEM, EO.DATA_HORA DESC;");
             stmt.setLong(1, codOs);
             stmt.setLong(2, codUnidade);
             if (statusItemOs == null) {
