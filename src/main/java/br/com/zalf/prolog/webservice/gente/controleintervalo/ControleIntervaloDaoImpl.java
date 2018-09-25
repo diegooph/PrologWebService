@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -14,7 +13,6 @@ import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -131,7 +129,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             stmt.setLong(5, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()){
-                intervalos.add(createIntervaloAgrupado(rSet));
+                intervalos.add(ControleJornadaConverter.createIntervalo(rSet));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -395,62 +393,6 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         } finally {
             closeStatement(stmt);
         }
-    }
-
-    @NotNull
-    private Intervalo createIntervaloAgrupado(@NotNull final ResultSet rSet) throws SQLException {
-        final Intervalo intervalo = new Intervalo();
-
-        final Colaborador colaborador = new Colaborador();
-        colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
-        intervalo.setColaborador(colaborador);
-
-        // TODO: Recuperar nome do tipo de intervalo.
-        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
-        tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
-        tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
-        intervalo.setTipo(tipoIntervalo);
-
-        intervalo.setDataHoraInicio(rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class));
-        intervalo.setDataHoraFim(rSet.getObject("DATA_HORA_FIM", LocalDateTime.class));
-        final String fonteDataHoraInicio = rSet.getString("FONTE_DATA_HORA_INICIO");
-        if (!rSet.wasNull()) {
-            intervalo.setFonteDataHoraInicio(FonteDataHora.fromString(fonteDataHoraInicio));
-        }
-        final String fonteDataHoraFim = rSet.getString("FONTE_DATA_HORA_FIM");
-        if (!rSet.wasNull()) {
-            intervalo.setFonteDataHoraFim(FonteDataHora.fromString(fonteDataHoraFim));
-        }
-        intervalo.setJustificativaTempoRecomendado(rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
-        intervalo.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
-
-        final String latitudeInicio = rSet.getString("LATITUDE_MARCACAO_INICIO");
-        if (!rSet.wasNull()) {
-            final Localizacao localizacao = new Localizacao();
-            localizacao.setLatitude(latitudeInicio);
-            localizacao.setLongitude(rSet.getString("LONGITUDE_MARCACAO_INICIO"));
-            intervalo.setLocalizacaoInicio(localizacao);
-        }
-
-        final String latitudeFim = rSet.getString("LATITUDE_MARCACAO_FIM");
-        if (!rSet.wasNull()) {
-            final Localizacao localizacao = new Localizacao();
-            localizacao.setLatitude(latitudeFim);
-            localizacao.setLongitude(rSet.getString("LONGITUDE_MARCACAO_FIM"));
-            intervalo.setLocalizacaoFim(localizacao);
-        }
-
-        // Cálculo do tempo decorrido.
-        final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
-        final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
-        if (dataHoraInicio != null && dataHoraFim != null) {
-            intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(dataHoraInicio, dataHoraFim))));
-        } else if (dataHoraFim == null) {
-            // TODO: Precisamos trocar esse cálculo para contecer no app.
-//            intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(dataHoraInicio, dataHoraFim))));
-        }
-
-        return intervalo;
     }
 
     private void associaCargosTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
