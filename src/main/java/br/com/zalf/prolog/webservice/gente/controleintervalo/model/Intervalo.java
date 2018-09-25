@@ -159,4 +159,8 @@ public class Intervalo {
     public void setTempoDecorrido(Duration tempoDecorrido) {
         this.tempoDecorrido = tempoDecorrido;
     }
+
+    public boolean temInicioEFim() {
+        return dataHoraInicio != null && dataHoraFim != null;
+    }
 }
