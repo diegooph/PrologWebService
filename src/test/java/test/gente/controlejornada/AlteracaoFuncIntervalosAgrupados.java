@@ -27,8 +27,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Em setembro/2018 houve uma refatoração na forma como os intervalos são conectados um ao outro (início com fim).
- * Por conta disso, a func_intervalos_agruapdos(), responsável pelo matching das marcações, foi totalmente refatorada.
+ * Em setembro/2018 houve uma refatoração na forma como os intervalos são vinculados um ao outro (início com fim).
+ * Por conta disso, a func_intervalos_agrupados, responsável pelo matching das marcações, foi totalmente refatorada.
  *
  * A nova estrutura garante o vínculo entre inícios e fins através de uma tabela que mapeia um ao outro. Não é mais algo
  * feito a cada consulta, através da data/hora da marcação.
