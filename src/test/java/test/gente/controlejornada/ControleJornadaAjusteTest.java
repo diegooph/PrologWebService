@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjusteService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -32,15 +33,35 @@ public class ControleJornadaAjusteTest extends BaseTest {
         service.adicionarMarcacaoAjuste("pkb88p0n605emj86l007g3m8u4", marcacaoAjusteAdicao);
     }
 
+    @Test
+    public void testInserirAjusteAdicaoInicioFim() throws Throwable {
+        final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste = createMarcacaoAjusteAdicaoInicioFim();
+        System.out.println(GsonUtils.getGson().toJson(marcacaoAjuste));
+        service.adicionarMarcacaoAjusteInicioFim("pkb88p0n605emj86l007g3m8u4", marcacaoAjuste);
+    }
+
     @NotNull
     private MarcacaoAjusteAdicao createMarcacaoAjusteAdicao() {
         final MarcacaoAjusteAdicao ajusteAdicao = new MarcacaoAjusteAdicao();
-        ajusteAdicao.setCodMarcacaoVinculo(2546L);
-        ajusteAdicao.setDataHoraInserida(ProLogDateParser.toLocalDateTime("2018-02-27T17:25:45"));
+        ajusteAdicao.setCodMarcacaoVinculo(57056L);
+        ajusteAdicao.setDataHoraInserida(ProLogDateParser.toLocalDateTime("2018-02-27T21:20:45"));
         ajusteAdicao.setCodJustificativaAjuste(1L);
-        ajusteAdicao.setObservacaoAjuste("Dummy Data Test");
+        ajusteAdicao.setObservacaoAjuste("Dummy Data Test Adicao FIM");
         ajusteAdicao.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
-        ajusteAdicao.setMarcacaoInicioFim(MarcacaoInicioFim.MARCACAO_INICIO);
+        ajusteAdicao.setMarcacaoInicioFim(MarcacaoInicioFim.MARCACAO_FIM);
         return ajusteAdicao;
+    }
+
+    @NotNull
+    private MarcacaoAjusteAdicaoInicioFim createMarcacaoAjusteAdicaoInicioFim() {
+        final MarcacaoAjusteAdicaoInicioFim adicaoInicioFim = new MarcacaoAjusteAdicaoInicioFim();
+        adicaoInicioFim.setCodColaboradorMarcacao(2272L);
+        adicaoInicioFim.setCodTipoMarcacaoReferente(15L);
+        adicaoInicioFim.setDataHoraInicio(ProLogDateParser.toLocalDateTime("2018-09-16T15:40:41"));
+        adicaoInicioFim.setDataHoraFim(ProLogDateParser.toLocalDateTime("2018-09-16T19:38:41"));
+        adicaoInicioFim.setCodJustificativaAjuste(5L);
+        adicaoInicioFim.setObservacaoAjuste("Dummy Data Test Adicao Inicio e Fim");
+        adicaoInicioFim.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
+        return adicaoInicioFim;
     }
 }
