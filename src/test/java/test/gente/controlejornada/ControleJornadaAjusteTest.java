@@ -6,11 +6,13 @@ import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjusteService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import test.BaseTest;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 /**
@@ -38,6 +40,23 @@ public class ControleJornadaAjusteTest extends BaseTest {
         final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste = createMarcacaoAjusteAdicaoInicioFim();
         System.out.println(GsonUtils.getGson().toJson(marcacaoAjuste));
         service.adicionarMarcacaoAjusteInicioFim("pkb88p0n605emj86l007g3m8u4", marcacaoAjuste);
+    }
+
+    @Test
+    public void testAtivarInativarMarcacao() throws Throwable {
+        final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste = createMarcacaoAjusteAtivacaoInativacao();
+        System.out.println(GsonUtils.getGson().toJson(marcacaoAjuste));
+        service.ativarInativarMarcacaoAjuste("pkb88p0n605emj86l007g3m8u4", marcacaoAjuste);
+    }
+
+    private MarcacaoAjusteAtivacaoInativacao createMarcacaoAjusteAtivacaoInativacao() {
+        final MarcacaoAjusteAtivacaoInativacao ajusteAtivacaoInativacao = new MarcacaoAjusteAtivacaoInativacao();
+        ajusteAtivacaoInativacao.setDeveAtivar(true);
+        ajusteAtivacaoInativacao.setCodMarcacaoAtivacaoInativacao(57059L);
+        ajusteAtivacaoInativacao.setCodJustificativaAjuste(1L);
+        ajusteAtivacaoInativacao.setObservacaoAjuste("Dummy Data Test Inativacao");
+        ajusteAtivacaoInativacao.setDataHoraAjuste(LocalDateTime.now());
+        return ajusteAtivacaoInativacao;
     }
 
     @NotNull
