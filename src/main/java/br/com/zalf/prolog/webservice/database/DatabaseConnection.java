@@ -36,7 +36,10 @@ public class DatabaseConnection {
         if (closeable != null) {
             for (int i = 0; i < closeable.length; i++) {
                 try {
-                    closeable[i].close();
+                    final AutoCloseable autoCloseable = closeable[i];
+                    if (autoCloseable != null) {
+                        autoCloseable.close();
+                    }
                 } catch (final Exception ignore) {}
             }
         }
