@@ -46,7 +46,8 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                         new PlacaItensOsAbertos(
                                 rSet.getString("NOME_UNIDADE"),
                                 rSet.getString("PLACA"),
-                                rSet.getInt("QUANTIDADE_ITENS_ABERTOS")));
+                                rSet.getInt("QUANTIDADE_ITENS_ABERTOS"),
+                                rSet.getInt("QUANTIDADE_ITENS_CRITICOS_ABERTOS")));
             }
             return itensOsAbertos;
         } finally {

@@ -45,20 +45,22 @@ final class DashboardChecklistOsComponentsCreator {
             @NotNull final ComponentDataHolder component,
             @NotNull final List<PlacaItensOsAbertos> itensOsAbertos) {
         // Header.
-        final List<TableItemHeader> itemHeaders = new ArrayList<>(3);
+        final List<TableItemHeader> itemHeaders = new ArrayList<>(4);
         itemHeaders.add(new TableItemHeader("Unidade", null));
         itemHeaders.add(new TableItemHeader("Placas", null));
-        itemHeaders.add(new TableItemHeader("Itens O.S. Abertos", null));
+        itemHeaders.add(new TableItemHeader("Total Itens Abertos", null));
+        itemHeaders.add(new TableItemHeader("Críticos", null));
         final TableHeader tableHeader = new TableHeader(itemHeaders);
 
         // Linhas.
         final List<TableLine> lines = new ArrayList<>();
         itensOsAbertos.forEach(placaItens -> {
             // Colunas.
-            final List<TableColumn> columns = new ArrayList<>(3);
+            final List<TableColumn> columns = new ArrayList<>(4);
             columns.add(new TableColumn(placaItens.getNomeUnidadePlaca()));
             columns.add(new TableColumn(placaItens.getPlaca()));
             columns.add(new TableColumn(String.valueOf(placaItens.getQtdItensOsAbertosPlaca())));
+            columns.add(new TableColumn(String.valueOf(placaItens.getQtdItensOsCriticosAbertosPlaca())));
             lines.add(new TableLine(columns));
         });
 

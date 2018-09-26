@@ -13,13 +13,16 @@ public final class PlacaItensOsAbertos {
     @NotNull
     private final String placa;
     private final int qtdItensOsAbertosPlaca;
+    private final int qtdItensOsCriticosAbertosPlaca;
 
     public PlacaItensOsAbertos(@NotNull final String nomeUnidadePlaca,
                                @NotNull final String placa,
-                               final int qtdItensOsAbertosPlaca) {
+                               final int qtdItensOsAbertosPlaca,
+                               final int qtdItensOsCriticosAbertosPlaca) {
         this.nomeUnidadePlaca = nomeUnidadePlaca;
         this.placa = placa;
         this.qtdItensOsAbertosPlaca = qtdItensOsAbertosPlaca;
+        this.qtdItensOsCriticosAbertosPlaca = qtdItensOsCriticosAbertosPlaca;
     }
 
     @NotNull
@@ -34,5 +37,9 @@ public final class PlacaItensOsAbertos {
 
     public int getQtdItensOsAbertosPlaca() {
         return qtdItensOsAbertosPlaca;
+    }
+
+    public int getQtdItensOsCriticosAbertosPlaca() {
+        return qtdItensOsCriticosAbertosPlaca;
     }
 }
