@@ -41,12 +41,12 @@ public interface ControleJornadaAjusteDao {
      * e uma marcação de fim. Não é possível, para este método a existência de apenas uma marcação.
      * Para mais informações sobre os dados de uma adição consulte {@link MarcacaoAjusteAdicaoInicioFim}.
      *
-     * @param marcacaoAjuste Objeto contendo os novos dados da marcação.
      * @param token          Identificador do usuário que realizou a edição.
+     * @param marcacaoAjuste Objeto contendo os novos dados da marcação.
      * @throws Throwable Caso algum erro no processamento ou conexão com o Banco de Dados ocorrer.
      */
-    void adicionarMarcacaoAjusteInicioFim(@NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
-                                          @NotNull final String token) throws Throwable;
+    void adicionarMarcacaoAjusteInicioFim(@NotNull final String token,
+                                          @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste) throws Throwable;
 
     /**
      * Método utilizado para ativar ou inativar uma marcação.

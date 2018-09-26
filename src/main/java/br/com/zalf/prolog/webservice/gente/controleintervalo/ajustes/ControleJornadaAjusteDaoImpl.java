@@ -34,8 +34,22 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final Long codMarcacaoInserida = insereMarcacaoAjuste(conn, token, marcacaoAjuste);
-            insereVinculoNaMarcacao(conn, codMarcacaoInserida, marcacaoAjuste);
+            final Long codMarcacaoInserida = insereMarcacaoAjusteAdicao(conn, token, marcacaoAjuste);
+            final MarcacaoInicioFim marcacaoInicioFim = marcacaoAjuste.getMarcacaoInicioFim();
+            insereVinculoNaMarcacao(
+                    conn,
+                    codMarcacaoInserida,
+                    marcacaoAjuste.getMarcacaoInicioFim());
+            final Long codMarcacaoInicio = marcacaoInicioFim.equals(MarcacaoInicioFim.MARCACAO_INICIO)
+                    ? codMarcacaoInserida
+                    : marcacaoAjuste.getCodMarcacaoVinculo();
+            final Long codMarcacaoFim = marcacaoInicioFim.equals(MarcacaoInicioFim.MARCACAO_FIM)
+                    ? codMarcacaoInserida
+                    : marcacaoAjuste.getCodMarcacaoVinculo();
+            insereVinculoInicioFim(
+                    conn,
+                    codMarcacaoInicio,
+                    codMarcacaoFim);
             insereInformacoesEdicaoMarcacao(conn, codMarcacaoInserida, token, marcacaoAjuste);
             conn.commit();
         } catch (final Throwable e) {
@@ -49,9 +63,29 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
     }
 
     @Override
-    public void adicionarMarcacaoAjusteInicioFim(@NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
-                                                 @NotNull final String token) throws Throwable {
-
+    public void adicionarMarcacaoAjusteInicioFim(
+            @NotNull final String token,
+            @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            final Long codMarcacaoInicioInserida =
+                    insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste, MarcacaoInicioFim.MARCACAO_INICIO);
+            final Long codMarcacaoFimInserida =
+                    insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste, MarcacaoInicioFim.MARCACAO_FIM);
+            insereVinculoNaMarcacao(conn, codMarcacaoInicioInserida, MarcacaoInicioFim.MARCACAO_INICIO);
+            insereVinculoNaMarcacao(conn, codMarcacaoFimInserida, MarcacaoInicioFim.MARCACAO_FIM);
+            insereVinculoInicioFim(conn, codMarcacaoInicioInserida, codMarcacaoFimInserida);
+            conn.commit();
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            closeConnection(conn);
+        }
     }
 
     @Override
@@ -100,9 +134,68 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
     }
 
     @NotNull
-    private Long insereMarcacaoAjuste(@NotNull final Connection conn,
-                                      @NotNull final String token,
-                                      @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws SQLException {
+    private Long insereMarcacaoAjusteAdicaoInicioFim(
+            @NotNull final Connection conn,
+            @NotNull final String token,
+            @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
+            @NotNull final MarcacaoInicioFim marcacaoInicioFim) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO INTERVALO (COD_UNIDADE, " +
+                    "                       COD_TIPO_INTERVALO, " +
+                    "                       CPF_COLABORADOR, " +
+                    "                       DATA_HORA, " +
+                    "                       TIPO_MARCACAO, " +
+                    "                       FONTE_DATA_HORA, " +
+                    "                       JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
+                    "                       JUSTIFICATIVA_ESTOURO, " +
+                    "                       LATITUDE_MARCACAO, " +
+                    "                       LONGITUDE_MARCACAO, " +
+                    "                       DATA_HORA_SINCRONIZACAO, " +
+                    "                       COD_COLABORADOR_INSERCAO) " +
+                    "VALUES (" +
+                    "  (SELECT COD_UNIDADE FROM COLABORADOR WHERE CODIGO = ?), " +
+                    "  ?, " +
+                    "  (SELECT CPF FROM COLABORADOR WHERE CODIGO = ?), " +
+                    "  ?, " +
+                    "  ?, " +
+                    "  'SERVIDOR', " +
+                    "  NULL, " +
+                    "  NULL, " +
+                    "  NULL, " +
+                    "  NULL, " +
+                    "  ?, " +
+                    "  (SELECT CODIGO FROM COLABORADOR " +
+                    "WHERE CPF = (SELECT CPF_COLABORADOR FROM TOKEN_AUTENTICACAO WHERE TOKEN = ?))) " +
+                    "RETURNING CODIGO AS COD_MARCACAO_INSERIDA;");
+            stmt.setLong(1, marcacaoAjuste.getCodColaboradorMarcacao());
+            stmt.setLong(2, marcacaoAjuste.getCodTipoMarcacaoReferente());
+            stmt.setLong(3, marcacaoAjuste.getCodColaboradorMarcacao());
+            stmt.setObject(4, marcacaoInicioFim.equals(MarcacaoInicioFim.MARCACAO_INICIO)
+                    ? marcacaoAjuste.getDataHoraInicio()
+                    : marcacaoAjuste.getDataHoraFim());
+            stmt.setString(5, marcacaoInicioFim.asString());
+            stmt.setObject(6, Now.localDateTimeUtc());
+            stmt.setString(7, token);
+            rSet = stmt.executeQuery();
+            if (rSet.next() && rSet.getLong("COD_MARCACAO_INSERIDA") != 0) {
+                return rSet.getLong("COD_MARCACAO_INSERIDA");
+            } else {
+                throw new SQLException("Não foi possível inserir de "
+                        + marcacaoInicioFim.asString() +
+                        " da marcação completa");
+            }
+        } finally {
+            closeStatement(stmt);
+            closeResultSet(rSet);
+        }
+    }
+
+    @NotNull
+    private Long insereMarcacaoAjusteAdicao(@NotNull final Connection conn,
+                                            @NotNull final String token,
+                                            @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -138,7 +231,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setString(2, token);
             stmt.setLong(3, marcacaoAjuste.getCodMarcacaoVinculo());
             rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.getLong("NEW_COD_MARCACAO") != 0)  {
+            if (rSet.next() && rSet.getLong("NEW_COD_MARCACAO") != 0) {
                 return rSet.getLong("NEW_COD_MARCACAO");
             } else {
                 throw new SQLException("Não foi possível inserir a marcação");
@@ -151,11 +244,11 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     private void insereVinculoNaMarcacao(@NotNull final Connection conn,
                                          @NotNull final Long codMarcacaoInserida,
-                                         @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws SQLException {
+                                         @NotNull final MarcacaoInicioFim marcacaoInicioFim) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            if (marcacaoAjuste.getMarcacaoInicioFim().equals(MarcacaoInicioFim.MARCACAO_INICIO)) {
+            if (marcacaoInicioFim.equals(MarcacaoInicioFim.MARCACAO_INICIO)) {
                 stmt = conn.prepareStatement("INSERT INTO MARCACAO_INICIO(COD_MARCACAO_INICIO) " +
                         "VALUES (?) RETURNING CODIGO");
             } else {
@@ -164,9 +257,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             }
             stmt.setLong(1, codMarcacaoInserida);
             rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.getLong("CODIGO") != 0) {
-                insereVinculoInicioFim(conn, codMarcacaoInserida, marcacaoAjuste);
-            } else {
+            if (!rSet.next() || rSet.getLong("CODIGO") == 0) {
                 throw new SQLException("Não foi possível inserir o vinculo entre as marcações");
             }
         } finally {
@@ -176,26 +267,17 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
     }
 
     private void insereVinculoInicioFim(@NotNull final Connection conn,
-                                        @NotNull final Long codMarcacaoInserida,
-                                        @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws SQLException {
+                                        @NotNull final Long codMarcacaoInicio,
+                                        @NotNull final Long codMarcacaoFim) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            if (marcacaoAjuste.getMarcacaoInicioFim().equals(MarcacaoInicioFim.MARCACAO_INICIO)) {
-                stmt = conn.prepareStatement("INSERT INTO " +
-                        "MARCACAO_VINCULO_INICIO_FIM(COD_MARCACAO_INICIO, COD_MARCACAO_FIM) " +
-                        "VALUES (?, ?) " +
-                        "RETURNING CODIGO AS CODIGO_VINCULO");
-                stmt.setLong(1, codMarcacaoInserida);
-                stmt.setLong(2, marcacaoAjuste.getCodMarcacaoVinculo());
-            } else {
-                stmt = conn.prepareStatement("INSERT INTO " +
-                        "MARCACAO_VINCULO_INICIO_FIM(COD_MARCACAO_INICIO, COD_MARCACAO_FIM) " +
-                        "VALUES (?, ?) " +
-                        "RETURNING CODIGO AS CODIGO_VINCULO");
-                stmt.setLong(1, marcacaoAjuste.getCodMarcacaoVinculo());
-                stmt.setLong(2, codMarcacaoInserida);
-            }
+            stmt = conn.prepareStatement("INSERT INTO " +
+                    "MARCACAO_VINCULO_INICIO_FIM(COD_MARCACAO_INICIO, COD_MARCACAO_FIM) " +
+                    "VALUES (?, ?) " +
+                    "RETURNING CODIGO AS CODIGO_VINCULO");
+            stmt.setLong(1, codMarcacaoInicio);
+            stmt.setLong(2, codMarcacaoFim);
             rSet = stmt.executeQuery();
             if (!rSet.next() || rSet.getLong("CODIGO_VINCULO") == 0) {
                 throw new SQLException("Não foi possível inserir o vinculo entre as marcações");
