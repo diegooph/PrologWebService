@@ -20,7 +20,7 @@ import java.util.List;
  */
 public final class ConsolidadoMarcacoesDia {
     /**
-     * O dia de refência pela qual as marcações estão agrupadas.
+     * O dia de refência pelo qual as marcações estão agrupadas.
      */
     private LocalDate dia;
 
@@ -35,7 +35,7 @@ public final class ConsolidadoMarcacoesDia {
     private int totalInconsistenciasDia;
 
     /**
-     * As marcações de cada que cada colaborador realizou no dia de referência.
+     * As marcações que cada colaborador realizou no dia de referência.
      */
     private List<MarcacoesDiaColaborador> marcacoesColaboradores;
 
