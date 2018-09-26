@@ -31,11 +31,23 @@ public class DatabaseConnection {
         }
     }
 
+    @SuppressWarnings("ForLoopReplaceableByForEach")
+    public static void close(@Nullable final AutoCloseable... closeable) {
+        if (closeable != null) {
+            for (int i = 0; i < closeable.length; i++) {
+                try {
+                    closeable[i].close();
+                } catch (final Exception ignore) {}
+            }
+        }
+    }
+
     /**
      * Método responsável por fechar a conexão com o banco.
      *
      * @since 5 de dez de 2015 11:42:22
      */
+    @Deprecated
     public static void closeConnection(@Nullable final Connection conn,
                                        @Nullable final PreparedStatement stmt,
                                        @Nullable final ResultSet rSet) {
@@ -56,14 +68,17 @@ public class DatabaseConnection {
         }
     }
 
+    @Deprecated
     public static void closeConnection(@Nullable final Connection conn) {
         closeConnection(conn, null, null);
     }
 
+    @Deprecated
     public void closeStatement(@Nullable final PreparedStatement stmt) {
         closeConnection(null, stmt, null);
     }
 
+    @Deprecated
     public void closeResultSet(@Nullable final ResultSet rSet) {
         closeConnection(null, null, rSet);
     }
