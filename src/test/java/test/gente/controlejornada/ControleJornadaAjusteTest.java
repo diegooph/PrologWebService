@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJor
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -47,6 +48,24 @@ public class ControleJornadaAjusteTest extends BaseTest {
         final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste = createMarcacaoAjusteAtivacaoInativacao();
         System.out.println(GsonUtils.getGson().toJson(marcacaoAjuste));
         service.ativarInativarMarcacaoAjuste("pkb88p0n605emj86l007g3m8u4", marcacaoAjuste);
+    }
+
+    @Test
+    public void testEdicaoMarcacao() throws Throwable {
+        final MarcacaoAjusteEdicao marcacaoAjuste = createMarcacaoAjusteEdicao();
+        System.out.println(GsonUtils.getGson().toJson(marcacaoAjuste));
+        service.editarMarcacaoAjuste("pkb88p0n605emj86l007g3m8u4", marcacaoAjuste);
+    }
+
+    @NotNull
+    private MarcacaoAjusteEdicao createMarcacaoAjusteEdicao() {
+        final MarcacaoAjusteEdicao ajusteEdicao = new MarcacaoAjusteEdicao();
+        ajusteEdicao.setDataHoraNovaInserida(ProLogDateParser.toLocalDateTime("2018-02-23T16:30:00"));
+        ajusteEdicao.setCodJustificativaAjuste(1L);
+        ajusteEdicao.setObservacaoAjuste("Dummy Data Test Edicao");
+        ajusteEdicao.setDataHoraAjuste(LocalDateTime.now());
+        ajusteEdicao.setCodMarcacaoEdicao(778L);
+        return ajusteEdicao;
     }
 
     private MarcacaoAjusteAtivacaoInativacao createMarcacaoAjusteAtivacaoInativacao() {
