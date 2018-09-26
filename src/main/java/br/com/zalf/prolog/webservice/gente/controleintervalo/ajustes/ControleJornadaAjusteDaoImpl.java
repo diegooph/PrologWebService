@@ -2,22 +2,21 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoInconsistenciaExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -50,7 +49,12 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                     conn,
                     codMarcacaoInicio,
                     codMarcacaoFim);
-            insereInformacoesEdicaoMarcacao(conn, codMarcacaoInserida, token, marcacaoAjuste);
+            insereInformacoesEdicaoMarcacao(
+                    conn,
+                    codMarcacaoInserida,
+                    token,
+                    marcacaoAjuste,
+                    marcacaoAjuste.getDataHoraInserida());
             conn.commit();
         } catch (final Throwable e) {
             if (conn != null) {
@@ -77,6 +81,18 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             insereVinculoNaMarcacao(conn, codMarcacaoInicioInserida, MarcacaoInicioFim.MARCACAO_INICIO);
             insereVinculoNaMarcacao(conn, codMarcacaoFimInserida, MarcacaoInicioFim.MARCACAO_FIM);
             insereVinculoInicioFim(conn, codMarcacaoInicioInserida, codMarcacaoFimInserida);
+            insereInformacoesEdicaoMarcacao(
+                    conn,
+                    codMarcacaoInicioInserida,
+                    token,
+                    marcacaoAjuste,
+                    null);
+            insereInformacoesEdicaoMarcacao(
+                    conn,
+                    codMarcacaoFimInserida,
+                    token,
+                    marcacaoAjuste,
+                    null);
             conn.commit();
         } catch (final Throwable e) {
             if (conn != null) {
@@ -89,9 +105,29 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
     }
 
     @Override
-    public void ativarInativarMarcacaoAjuste(@NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste,
-                                             @NotNull final String token) throws Throwable {
-
+    public void ativarInativarMarcacaoAjuste(
+            @NotNull final String token,
+            @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            internalAtivarInativarMarcacaoAjuste(conn, marcacaoAjuste);
+            insereInformacoesEdicaoMarcacao(
+                    conn,
+                    marcacaoAjuste.getCodMarcacaoAtivacaoInativacao(),
+                    token,
+                    marcacaoAjuste,
+                    null);
+            conn.commit();
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            closeConnection(conn);
+        }
     }
 
     @Override
@@ -288,17 +324,19 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         }
     }
 
-    private void insereInformacoesEdicaoMarcacao(@NotNull final Connection conn,
-                                                 @NotNull final Long codMarcacaoInserida,
-                                                 @NotNull final String token,
-                                                 @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws SQLException {
+    private void insereInformacoesEdicaoMarcacao(
+            @NotNull final Connection conn,
+            @NotNull final Long codMarcacaoInserida,
+            @NotNull final String token,
+            @NotNull final MarcacaoAjuste marcacaoAjuste,
+            @Nullable final LocalDateTime dataHoraInserida) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_MARCACAO_INSERT_AJUSTE_MARCACAO(?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
             stmt.setLong(1, codMarcacaoInserida);
-            stmt.setObject(2, marcacaoAjuste.getDataHoraInserida());
+            stmt.setObject(2, dataHoraInserida);
             stmt.setLong(3, marcacaoAjuste.getCodJustificativaAjuste());
             stmt.setString(4, marcacaoAjuste.getObservacaoAjuste());
             stmt.setString(5, marcacaoAjuste.getTipoMarcacaoAjuste().asString());
@@ -311,6 +349,22 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         } finally {
             closeStatement(stmt);
             closeResultSet(rSet);
+        }
+    }
+
+    private void internalAtivarInativarMarcacaoAjuste(
+            @NotNull final Connection conn,
+            @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE INTERVALO SET IS_ATIVO = ? WHERE CODIGO = ?;");
+            stmt.setBoolean(1, marcacaoAjuste.isDeveAtivar());
+            stmt.setLong(2, marcacaoAjuste.getCodMarcacaoAtivacaoInativacao());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível inserir as edições da marcação");
+            }
+        } finally {
+            closeStatement(stmt);
         }
     }
 }

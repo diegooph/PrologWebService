@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,6 +43,16 @@ public final class ControleJornadaAjusteResource {
             @HeaderParam("Authorization") String userToken,
             @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste) throws ProLogException {
         return service.adicionarMarcacaoAjusteInicioFim(userToken, marcacaoAjuste);
+    }
+
+    @DELETE
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured()
+    @Path("/ativar-desativar-marcacao")
+    public Response ativarInativarMarcacaoAjuste(
+            @HeaderParam("Authorization") String userToken,
+            @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws ProLogException {
+        return service.ativarInativarMarcacaoAjuste(userToken, marcacaoAjuste);
     }
 
 }

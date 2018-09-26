@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -29,8 +30,9 @@ public final class ControleJornadaAjusteService {
             dao.adicionarMarcacaoAjuste(TokenCleaner.getOnlyToken(userToken), marcacaoAjuste);
             return Response.ok("Adição de marcação realizada");
         } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao realizar adição de marcação", e);
-            throw exceptionHandler.map(e, "Erro ao realizar adição de marcação, tente novamente");
+            final String msg = "Erro ao realizar adição de marcação, tente novamente";
+            Log.e(TAG, msg, e);
+            throw exceptionHandler.map(e, msg);
         }
     }
 
@@ -41,10 +43,26 @@ public final class ControleJornadaAjusteService {
             dao.adicionarMarcacaoAjusteInicioFim(TokenCleaner.getOnlyToken(userToken), marcacaoAjuste);
             return Response.ok("Adição das marcações de início e fim realizadas");
         } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao realizar adição das marcações de início e fim", e);
-            throw exceptionHandler.map(
-                    e,
-                    "Erro ao realizar adição das marcações de início e fim, tente novamente");
+            final String msg = "Erro ao realizar adição das marcações de início e fim, tente novamente";
+            Log.e(TAG, msg, e);
+            throw exceptionHandler.map(e, msg);
+        }
+    }
+
+    public Response ativarInativarMarcacaoAjuste(
+            @NotNull final String userToken,
+            @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws ProLogException {
+        try {
+            dao.ativarInativarMarcacaoAjuste(TokenCleaner.getOnlyToken(userToken), marcacaoAjuste);
+            return Response.ok("Marcação "
+                    + (marcacaoAjuste.isDeveAtivar() ? "ativada" : "desativada") +
+                    " com sucesso");
+        } catch (final Throwable e) {
+            final String msg = "Erro ao"
+                    + (marcacaoAjuste.isDeveAtivar() ? "ativadar" : "desativadar") +
+                    " a marcação, tente novamente";
+            Log.e(TAG, msg, e);
+            throw exceptionHandler.map(e, msg);
         }
     }
 }

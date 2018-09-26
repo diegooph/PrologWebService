@@ -52,12 +52,12 @@ public interface ControleJornadaAjusteDao {
      * Método utilizado para ativar ou inativar uma marcação.
      * Para mais informações sobre os dados de uma adição consulte {@link MarcacaoAjusteAtivacaoInativacao}.
      *
-     * @param marcacaoAjuste Objeto contendo os novos dados da marcação.
      * @param token          Identificador do usuário que realizou a edição.
+     * @param marcacaoAjuste Objeto contendo os novos dados da marcação.
      * @throws Throwable Caso algum erro no processamento ou conexão com o Banco de Dados ocorrer.
      */
-    void ativarInativarMarcacaoAjuste(@NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste,
-                                      @NotNull final String token) throws Throwable;
+    void ativarInativarMarcacaoAjuste(@NotNull final String token,
+                                      @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable;
 
     /**
      * Método para inserir os novos dados da marcação. Isso ocorre quando uma edição de marcação é realizada
