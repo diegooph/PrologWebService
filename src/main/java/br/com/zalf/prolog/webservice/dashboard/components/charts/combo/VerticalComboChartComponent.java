@@ -211,7 +211,7 @@ public class VerticalComboChartComponent extends ChartComponent {
             Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
             Preconditions.checkNotNull(comboData, "comboData deve ser instanciada com 'withComboData'");
             Preconditions.checkNotNull(legendas, "legendas deve ser instanciada com 'withLegendas'");
-            Preconditions.checkNotNull(entryColors, "legendas deve ser instanciada com 'withEntryColors'");
+            Preconditions.checkNotNull(entryColors, "entryColors deve ser instanciada com 'withEntryColors'");
 
             return new VerticalComboChartComponent(
                     codigo,

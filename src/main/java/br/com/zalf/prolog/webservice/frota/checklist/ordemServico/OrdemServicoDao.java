@@ -49,7 +49,7 @@ public interface OrdemServicoDao {
     List<OrdemServico> getOs(String placa, String status, Long codUnidade,
                              String tipoVeiculo, Integer limit, Long offset) throws SQLException;
 
-    /**
+	/**
      * Busca os itens de Ordens de Serviços utilizando, opcionalmente, limit e offset.
      *
      * @param placa       Placa do veículo que será buscado os itens.
@@ -64,11 +64,9 @@ public interface OrdemServicoDao {
     @NotNull
     List<ItemOrdemServico> getItensOs(@NotNull final String placa,
                                       @NotNull final String statusItens,
-                                      @NotNull final String prioridade,
+									  @NotNull final String prioridade,
                                       @Nullable final Integer limit,
-                                      @Nullable final Long offset) throws SQLException;
-
-    /**
+                                      @Nullable final Long offset) throws SQLException;/**
      * Busca os Itens de uma Ordem de Serviço específica.
      *
      * @param codOs        Código da OS que será buscado os itens.

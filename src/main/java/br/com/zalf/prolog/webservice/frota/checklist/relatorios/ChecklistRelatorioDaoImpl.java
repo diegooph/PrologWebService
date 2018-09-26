@@ -5,7 +5,9 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
@@ -13,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +25,41 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
 
     public ChecklistRelatorioDaoImpl() {
 
+    }
+
+    @NotNull
+    @Override
+    public List<QuantidadeChecklists> getQtdChecklistsRealizadosByTipo(@NotNull final List<Long> codUnidades,
+                                                                       final int diasRetroativosParaBuscar)
+            throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "FUNC_CHECKLIST_RELATORIO_QTD_POR_TIPO(?, ?, ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setObject(2, Now.localDateUtc());
+            stmt.setInt(3, diasRetroativosParaBuscar);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<QuantidadeChecklists> checklists = new ArrayList<>();
+                do {
+                    checklists.add(new QuantidadeChecklists(
+                            rSet.getObject("DATA", LocalDate.class),
+                            rSet.getString("DATA_FORMATADA"),
+                            rSet.getInt("TOTAL_CHECKLISTS_SAIDA"),
+                            rSet.getInt("TOTAL_CHECKLISTS_RETORNO")));
+                } while (rSet.next());
+                return checklists;
+            } else {
+                throw new IllegalStateException("Erro ao buscar as informações de checklists realizados para as " +
+                        "unidades: " + codUnidades);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @Override

@@ -8,6 +8,10 @@ Change Log
 * Permite filtro por múltiplas unidades nos relatórios do checklist
 * Cria gráfico em linhas como um componente da dashboard
 * Cria método para fechamento de múltiplos itens de O.S. do checklist
+* Cria nova function e novos métodos para gerar relatório geral de movimentação
+* Cria componente da dashboard para buscar quantidade de checklists realizados por dia
+* Cria componente da dashboard para buscar quantidade de itens de O.S. abertos por prioridade
+* Cria componente da dashboard para buscar placas com maior quantidade de itens de O.S. abertos
 
 ### Refactors
 * Atualiza versão da biblioteca univocity-parsers para 2.7.5
@@ -18,7 +22,6 @@ Change Log
 
 ### Features
 * Cria nova function e novos métodos para gerar relatório geral de aferição
-* Cria nova function e novos métodos para gerar relatório geral de movimentação
 
 ### Bug Fixes
 * Fixa delimitadores aceitos na escala diária (isso melhora e ajuda a biblioteca de parse a identificar o delimitador

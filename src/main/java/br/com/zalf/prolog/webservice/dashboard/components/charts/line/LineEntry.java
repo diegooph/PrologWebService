@@ -10,34 +10,43 @@ import org.jetbrains.annotations.Nullable;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class LineEntry extends Entry {
-    private final double valor;
-    private final int index;
+    private final double y;
+    private final double x;
     @NotNull
-    private final String representacaoValor;
+    private final String representacaoY;
+    @NotNull
+    private final String representacaoX;
     @Nullable
     private final String descricao;
 
-    public LineEntry(final double valor,
-                     final int index,
-                     @NotNull final String representacaoValor,
+    public LineEntry(final double y,
+                     final double x,
+                     @NotNull final String representacaoY,
+                     @NotNull final String representacaoX,
                      @Nullable final String descricao) {
-        this.valor = valor;
-        this.index = index;
-        this.representacaoValor = representacaoValor;
+        this.y = y;
+        this.x = x;
+        this.representacaoY = representacaoY;
+        this.representacaoX = representacaoX;
         this.descricao = descricao;
     }
 
-    public double getValor() {
-        return valor;
+    public double getY() {
+        return y;
     }
 
-    public int getIndex() {
-        return index;
+    public double getX() {
+        return x;
     }
 
     @NotNull
-    public String getRepresentacaoValor() {
-        return representacaoValor;
+    public String getRepresentacaoY() {
+        return representacaoY;
+    }
+
+    @NotNull
+    public String getRepresentacaoX() {
+        return representacaoX;
     }
 
     @Nullable
