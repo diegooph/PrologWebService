@@ -74,7 +74,7 @@ public final class PneuImport {
     private Long codEmpresa;
 
     @Parsed(field = "pneu_novo_nunca_rodado")
-    @BooleanString(trueStrings = {"yes", "y", "1"}, falseStrings = {"no", "n", "0"})
+    @BooleanString(trueStrings = {"yes", "y", "1", "TRUE", "true"}, falseStrings = {"no", "n", "0", "FALSE", "false"})
     private boolean pneuNovoNuncaRodado;
 
     @Validate
