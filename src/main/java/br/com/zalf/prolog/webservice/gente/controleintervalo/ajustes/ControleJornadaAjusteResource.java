@@ -27,7 +27,7 @@ public final class ControleJornadaAjusteResource {
     @POST
     @UsedBy(platforms = Platform.ANDROID)
     @Secured()
-    @Path("/adicionar-marcacao")
+    @Path("/adicionar-marcacao-avulsa")
     public Response adicionarMarcacaoAjuste(@HeaderParam("Authorization") String userToken,
                                             @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws ProLogException {
         return service.adicionarMarcacaoAjuste(userToken, marcacaoAjuste);
