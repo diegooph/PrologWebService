@@ -73,6 +73,11 @@ public final class PneuImportReader {
 
     @Nullable
     private static Banda createBanda(@NotNull final PneuImport pneuImport) {
+        if (pneuImport.getVidaAtual() > 1 && pneuImport.getCodModeloBanda() == null) {
+            throw new IllegalStateException("O pneu " + pneuImport.getCodigoCliente() + " está acima da primeira vida e " +
+                    "não tem banda setada");
+        }
+
         if (pneuImport.getCodModeloBanda() != null) {
             final Banda banda = new Banda();
             final ModeloBanda modeloBanda = new ModeloBanda();
