@@ -62,7 +62,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             }
             throw e;
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -100,7 +100,31 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             }
             throw e;
         } finally {
-            closeConnection(conn);
+            close(conn);
+        }
+    }
+
+    @Override
+    public void editarMarcacaoAjuste(@NotNull final String token,
+                                     @NotNull final MarcacaoAjusteEdicao marcacaoAjuste) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            insereInformacoesEdicaoMarcacao(
+                    conn,
+                    marcacaoAjuste.getCodMarcacaoEdicao(),
+                    token,
+                    marcacaoAjuste,
+                    marcacaoAjuste.getDataHoraNovaInserida());
+            conn.commit();
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            close(conn);
         }
     }
 
@@ -126,14 +150,8 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             }
             throw e;
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
-    }
-
-    @Override
-    public void editarMarcacaoAjuste(@NotNull final MarcacaoAjusteEdicao marcacaoAjuste,
-                                     @NotNull final String token) throws Throwable {
-
     }
 
     @NotNull
@@ -223,8 +241,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                         " da marcação completa");
             }
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -273,8 +290,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                 throw new SQLException("Não foi possível inserir a marcação");
             }
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -297,8 +313,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                 throw new SQLException("Não foi possível inserir o vinculo entre as marcações");
             }
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -319,8 +334,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                 throw new SQLException("Não foi possível inserir o vinculo entre as marcações");
             }
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -347,8 +361,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                 throw new SQLException("Não foi possível inserir as edições da marcação");
             }
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -364,7 +377,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                 throw new SQLException("Não foi possível inserir as edições da marcação");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 }

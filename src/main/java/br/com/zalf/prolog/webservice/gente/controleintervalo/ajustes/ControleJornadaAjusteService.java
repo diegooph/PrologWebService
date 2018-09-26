@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHand
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -24,6 +25,7 @@ public final class ControleJornadaAjusteService {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
+    @NotNull
     public Response adicionarMarcacaoAjuste(@NotNull final String userToken,
                                             @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws ProLogException {
         try {
@@ -36,6 +38,7 @@ public final class ControleJornadaAjusteService {
         }
     }
 
+    @NotNull
     public Response adicionarMarcacaoAjusteInicioFim(
             @NotNull final String userToken,
             @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste) throws ProLogException {
@@ -49,6 +52,20 @@ public final class ControleJornadaAjusteService {
         }
     }
 
+    @NotNull
+    public Response editarMarcacaoAjuste(@NotNull final String userToken,
+                                         @NotNull final MarcacaoAjusteEdicao marcacaoAjuste) throws ProLogException {
+        try {
+            dao.editarMarcacaoAjuste(TokenCleaner.getOnlyToken(userToken), marcacaoAjuste);
+            return Response.ok("Edição da marcação realizada");
+        } catch (final Throwable e) {
+            final String msg = "Erro ao realizar edição da marcação, tente novamente";
+            Log.e(TAG, msg, e);
+            throw exceptionHandler.map(e, msg);
+        }
+    }
+
+    @NotNull
     public Response ativarInativarMarcacaoAjuste(
             @NotNull final String userToken,
             @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws ProLogException {

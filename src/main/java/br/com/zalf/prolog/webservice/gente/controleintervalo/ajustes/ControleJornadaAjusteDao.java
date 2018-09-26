@@ -49,6 +49,17 @@ public interface ControleJornadaAjusteDao {
                                           @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste) throws Throwable;
 
     /**
+     * Método para inserir os novos dados da marcação. Isso ocorre quando uma edição de marcação é realizada
+     * na aplicação. Para mais informações sobre os dados de uma edição consulte {@link MarcacaoAjusteEdicao}.
+     *
+     * @param token          Identificador do usuário que realizou a edição.
+     * @param marcacaoAjuste Objeto contendo os novos dados da marcação.
+     * @throws Throwable Caso algum erro no processamento ou conexão com o Banco de Dados ocorrer.
+     */
+    void editarMarcacaoAjuste(@NotNull final String token,
+                              @NotNull final MarcacaoAjusteEdicao marcacaoAjuste) throws Throwable;
+
+    /**
      * Método utilizado para ativar ou inativar uma marcação.
      * Para mais informações sobre os dados de uma adição consulte {@link MarcacaoAjusteAtivacaoInativacao}.
      *
@@ -58,17 +69,6 @@ public interface ControleJornadaAjusteDao {
      */
     void ativarInativarMarcacaoAjuste(@NotNull final String token,
                                       @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable;
-
-    /**
-     * Método para inserir os novos dados da marcação. Isso ocorre quando uma edição de marcação é realizada
-     * na aplicação. Para mais informações sobre os dados de uma edição consulte {@link MarcacaoAjusteEdicao}.
-     *
-     * @param marcacaoAjuste Objeto contendo os novos dados da marcação.
-     * @param token          Identificador do usuário que realizou a edição.
-     * @throws Throwable Caso algum erro no processamento ou conexão com o Banco de Dados ocorrer.
-     */
-    void editarMarcacaoAjuste(@NotNull final MarcacaoAjusteEdicao marcacaoAjuste,
-                              @NotNull final String token) throws Throwable;
 
     /**
      * Método utilizado para buscar os totais de marcações de um dia, respeitando os filtros aplicados.
