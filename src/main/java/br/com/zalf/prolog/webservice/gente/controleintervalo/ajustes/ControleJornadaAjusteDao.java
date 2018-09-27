@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
-import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
@@ -11,7 +10,9 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibi
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoInconsistenciaExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -72,26 +73,21 @@ public interface ControleJornadaAjusteDao {
 
     /**
      * Método utilizado para buscar os totais de marcações de um dia, respeitando os filtros aplicados.
-     * Para filtrar por marcações de TODOS os Colaboradores, o parâmetro {@code codColaborador}
-     * deve ser {@link Filtros#SELECIONOU_TODOS}.
-     * Para filtrar por TODOS os tipos de marcações executados no dia, o parâmetro {@code codTipoIntervalo}
-     * deve ser {@link Filtros#SELECIONOU_TODOS}.
      *
-     * @param codUnidade       Código da {@link Unidade} que serão buscados os dados.
-     * @param codColaborador   Código do {@link Colaborador} que será buscado as marcações.
-     * @param codTipoIntervalo Código do Tipo de Intervalo que será buscado.
+     * @param codUnidade       Código da {@link Unidade unidade} que serão buscados os dados.
+     * @param codTipoMarcacao  Código do {@link TipoMarcacao tipo de intervalo} que será buscado.
+     * @param codColaborador   Código do {@link Colaborador colaborador} que será buscado as marcações.
      * @param dataInicial      Data inicial da filtragem dos dados.
      * @param dataFinal        Data final da filtragem dos dados.
-     * @return Um {@link List<ConsolidadoMarcacoesDia>} contendo os dados filtrados.
-     * @throws Throwable Caso algum erro no processamento ou conexão com o Banco de Dados ocorrer.
+     * @return Uma {@link List lista} de {@link ConsolidadoMarcacoesDia marcações} contendo os dados filtrados.
+     * @throws Throwable Caso qualquer erro aconteça.
      */
     @NotNull
-    List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(
-            @NotNull final Long codUnidade,
-            @NotNull final String codColaborador,
-            @NotNull final String codTipoIntervalo,
-            @NotNull final LocalDate dataInicial,
-            @NotNull final LocalDate dataFinal) throws Throwable;
+    List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(@NotNull final Long codUnidade,
+                                                                     @Nullable final Long codTipoMarcacao,
+                                                                     @Nullable final Long codColaborador,
+                                                                     @NotNull final LocalDate dataInicial,
+                                                                     @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Busca todas as marcações realizadas pelo {@link Colaborador} na {@code data} filtrada.

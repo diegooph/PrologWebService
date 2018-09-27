@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
@@ -18,6 +19,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 04/09/18.
@@ -157,11 +160,27 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
     @NotNull
     @Override
     public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(@NotNull final Long codUnidade,
-                                                                            @NotNull final String codColaborador,
-                                                                            @NotNull final String codTipoIntervalo,
+                                                                            @Nullable final Long codTipoMarcacao,
+                                                                            @Nullable final Long codColaborador,
                                                                             @NotNull final LocalDate dataInicial,
-                                                                            @NotNull final LocalDate dataFinal) throws Throwable {
-        return null;
+                                                                            @NotNull final LocalDate dataFinal)
+            throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_CONSOLIDADOS_AJUSTE(?, ?, ?, ?, ?);");
+            stmt.setLong(1, codUnidade);
+            bindValueOrNull(stmt, 2, codTipoMarcacao, SqlType.BIGINT);
+            bindValueOrNull(stmt, 3, codColaborador, SqlType.BIGINT);
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
+            rSet = stmt.executeQuery();
+            return ControleJornadaAjusteConverter.createConsolidadoMarcacoesDia(rSet);
+        } finally {
+            close(stmt, rSet, conn);
+        }
     }
 
     @NotNull

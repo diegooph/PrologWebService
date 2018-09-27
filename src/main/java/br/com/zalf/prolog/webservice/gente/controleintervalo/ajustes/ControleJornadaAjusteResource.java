@@ -2,17 +2,20 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created on 04/09/18.
@@ -23,9 +26,26 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ControleJornadaAjusteResource {
-
     @NotNull
-    final ControleJornadaAjusteService service = new ControleJornadaAjusteService();
+    private final ControleJornadaAjusteService service = new ControleJornadaAjusteService();
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured()
+    @Path("/marcacoes")
+    public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(
+            @QueryParam("codUnidade") @Required Long codUnidade,
+            @QueryParam("codTipoMarcacao") @Required Long codTipoMarcacao,
+            @QueryParam("codColaborador") @Required Long codColaborador,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) throws ProLogException {
+        return service.getMarcacoesConsolidadasParaAjuste(
+                codUnidade,
+                codTipoMarcacao,
+                codColaborador,
+                dataInicial,
+                dataFinal);
+    }
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
