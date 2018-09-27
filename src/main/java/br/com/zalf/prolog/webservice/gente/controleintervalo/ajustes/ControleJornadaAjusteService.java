@@ -75,8 +75,8 @@ public final class ControleJornadaAjusteService {
                     + (marcacaoAjuste.isDeveAtivar() ? "ativada" : "desativada") +
                     " com sucesso");
         } catch (final Throwable e) {
-            final String msg = "Erro ao"
-                    + (marcacaoAjuste.isDeveAtivar() ? "ativadar" : "desativadar") +
+            final String msg = "Erro ao "
+                    + (marcacaoAjuste.isDeveAtivar() ? "ativar" : "desativar") +
                     " a marcação, tente novamente";
             Log.e(TAG, msg, e);
             throw exceptionHandler.map(e, msg);
