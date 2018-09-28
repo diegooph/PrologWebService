@@ -81,6 +81,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             for (final Pneu pneu : pneus) {
                 codigosPneus.add(internalInsert(conn, pneu, pneu.getCodUnidadeAlocado()));
             }
+            conn.commit();
             return codigosPneus;
         } catch (Throwable e) {
             if (conn != null) {
@@ -99,7 +100,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            return internalInsert(conn, pneu, codUnidade);
+            final Long codPneuInserido = internalInsert(conn, pneu, codUnidade);
+            conn.commit();
+            return codPneuInserido;
         } catch (Throwable e) {
             if (conn != null) {
                 conn.rollback();
@@ -177,8 +180,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             if (fotosCadastro != null && !fotosCadastro.isEmpty()) {
                 insertFotosCadastroPneu(pneu.getCodigo(), fotosCadastro, conn);
             }
-
-            conn.commit();
         } finally {
             closeStatement(stmt);
             closeResultSet(rSet);
