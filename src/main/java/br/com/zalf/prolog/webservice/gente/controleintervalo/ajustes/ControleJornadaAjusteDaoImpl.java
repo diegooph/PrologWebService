@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -387,7 +388,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_MARCACAO_INSERT_INFORMACOES_AJUSTE(?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
             stmt.setLong(1, codMarcacaoInserida);
-            stmt.setObject(2, dataHoraInserida);
+            stmt.setObject(2, dataHoraInserida != null ? dataHoraInserida.atOffset(ZoneOffset.UTC) : null);
             stmt.setLong(3, marcacaoAjuste.getCodJustificativaAjuste());
             stmt.setString(4, marcacaoAjuste.getObservacaoAjuste());
             stmt.setString(5, marcacaoAjuste.getTipoAcaoAjuste().asString());
