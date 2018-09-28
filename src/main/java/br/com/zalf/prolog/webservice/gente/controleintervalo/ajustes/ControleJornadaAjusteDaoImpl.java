@@ -129,22 +129,19 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final Long codMarcacaoInicioInserida =
-                    insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste, TipoInicioFim.MARCACAO_INICIO);
-            final Long codMarcacaoFimInserida =
-                    insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste, TipoInicioFim.MARCACAO_FIM);
-            insereVinculoMarcacaoInicioOuFim(conn, codMarcacaoInicioInserida, TipoInicioFim.MARCACAO_INICIO);
-            insereVinculoMarcacaoInicioOuFim(conn, codMarcacaoFimInserida, TipoInicioFim.MARCACAO_FIM);
-            insereVinculoInicioFim(conn, codMarcacaoInicioInserida, codMarcacaoFimInserida);
+            final ResultInsertInicioFim codigos = insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste);
+            insereVinculoMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoInicio(), TipoInicioFim.MARCACAO_INICIO);
+            insereVinculoMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoFim(), TipoInicioFim.MARCACAO_FIM);
+            insereVinculoInicioFim(conn, codigos.getCodMarcacaoInicio(), codigos.getCodMarcacaoFim());
             insereInformacoesEdicaoMarcacao(
                     conn,
-                    codMarcacaoInicioInserida,
+                    codigos.getCodMarcacaoInicio(),
                     token,
                     marcacaoAjuste,
                     null);
             insereInformacoesEdicaoMarcacao(
                     conn,
-                    codMarcacaoFimInserida,
+                    codigos.getCodMarcacaoFim(),
                     token,
                     marcacaoAjuste,
                     null);
@@ -224,58 +221,29 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
     }
 
     @NotNull
-    private Long insereMarcacaoAjusteAdicaoInicioFim(
+    private ResultInsertInicioFim insereMarcacaoAjusteAdicaoInicioFim(
             @NotNull final Connection conn,
             @NotNull final String token,
-            @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
-            @NotNull final TipoInicioFim tipoInicioFim) throws Throwable {
+            @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO INTERVALO (COD_UNIDADE, " +
-                    "                       COD_TIPO_INTERVALO, " +
-                    "                       CPF_COLABORADOR, " +
-                    "                       DATA_HORA, " +
-                    "                       TIPO_MARCACAO, " +
-                    "                       FONTE_DATA_HORA, " +
-                    "                       JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
-                    "                       JUSTIFICATIVA_ESTOURO, " +
-                    "                       LATITUDE_MARCACAO, " +
-                    "                       LONGITUDE_MARCACAO, " +
-                    "                       DATA_HORA_SINCRONIZACAO, " +
-                    "                       COD_COLABORADOR_INSERCAO) " +
-                    "VALUES (" +
-                    "  (SELECT COD_UNIDADE FROM COLABORADOR WHERE CODIGO = ?), " +
-                    "  ?, " +
-                    "  (SELECT CPF FROM COLABORADOR WHERE CODIGO = ?), " +
-                    "  ?, " +
-                    "  ?, " +
-                    "  'SERVIDOR', " +
-                    "  NULL, " +
-                    "  NULL, " +
-                    "  NULL, " +
-                    "  NULL, " +
-                    "  ?, " +
-                    "  (SELECT CODIGO FROM COLABORADOR " +
-                    "WHERE CPF = (SELECT CPF_COLABORADOR FROM TOKEN_AUTENTICACAO WHERE TOKEN = ?))) " +
-                    "RETURNING CODIGO AS COD_MARCACAO_INSERIDA;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_INSERT_MARCACAO_INICIO_FIM(?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, marcacaoAjuste.getCodColaboradorMarcacao());
             stmt.setLong(2, marcacaoAjuste.getCodTipoMarcacaoReferente());
-            stmt.setLong(3, marcacaoAjuste.getCodColaboradorMarcacao());
-            stmt.setObject(4, tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)
-                    ? marcacaoAjuste.getDataHoraInicio()
-                    : marcacaoAjuste.getDataHoraFim());
-            stmt.setString(5, tipoInicioFim.asString());
-            stmt.setObject(6, Now.localDateTimeUtc());
-            stmt.setString(7, token);
+
+            // TODO: aplicar tz da unidade.
+            stmt.setObject(3, marcacaoAjuste.getDataHoraInicio());
+            stmt.setObject(4, marcacaoAjuste.getDataHoraFim());
+            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setString(6, token);
             rSet = stmt.executeQuery();
-            final long codMarcacaoInserida = rSet.getLong("COD_MARCACAO_INSERIDA");
-            if (rSet.next() && codMarcacaoInserida > 0) {
-                return codMarcacaoInserida;
+            if (rSet.next()) {
+                return new ResultInsertInicioFim(
+                        rSet.getLong("COD_MARCACAO_INICIO"),
+                        rSet.getLong("COD_MARCACAO_FIM"));
             } else {
-                throw new SQLException("Não foi possível inserir a(o) "
-                        + tipoInicioFim.asString() +
-                        " da marcação completa");
+                throw new SQLException("Não foi possível inserir as marcações de início e fim");
             }
         } finally {
             close(stmt, rSet);
@@ -289,37 +257,11 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, " +
-                    "                        COD_TIPO_INTERVALO, " +
-                    "                        CPF_COLABORADOR, " +
-                    "                        DATA_HORA, " +
-                    "                        TIPO_MARCACAO, " +
-                    "                        FONTE_DATA_HORA, " +
-                    "                        JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
-                    "                        JUSTIFICATIVA_ESTOURO, " +
-                    "                        LATITUDE_MARCACAO, " +
-                    "                        LONGITUDE_MARCACAO, " +
-                    "                        DATA_HORA_SINCRONIZACAO, " +
-                    "                        COD_COLABORADOR_INSERCAO) " +
-                    "    SELECT " +
-                    "      I.COD_UNIDADE, " +
-                    "      I.COD_TIPO_INTERVALO, " +
-                    "      I.CPF_COLABORADOR, " +
-                    "      ?, " +
-                    "      (CASE WHEN I.TIPO_MARCACAO = 'MARCACAO_INICIO' THEN 'MARCACAO_FIM' ELSE 'MARCACAO_INICIO' END), " +
-                    "      I.FONTE_DATA_HORA, " +
-                    "      NULL, " +
-                    "      NULL, " +
-                    "      NULL, " +
-                    "      NULL, " +
-                    "      NULL, " +
-                    "      (SELECT C.CODIGO FROM COLABORADOR C " +
-                    "      WHERE CPF = (SELECT CPF_COLABORADOR FROM TOKEN_AUTENTICACAO WHERE TOKEN = ?)) " +
-                    "    FROM INTERVALO I WHERE I.CODIGO = ? " +
-                    "  RETURNING CODIGO AS NEW_COD_MARCACAO");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_INSERT_MARCACAO_AVULSA_AJUSTE(?, ?, ?);");
+            // TODO: aplicar TZ da unidade
             stmt.setObject(1, marcacaoAjuste.getDataHoraInserida());
-            stmt.setString(2, token);
-            stmt.setLong(3, marcacaoAjuste.getCodMarcacaoVinculo());
+            stmt.setLong(2, marcacaoAjuste.getCodMarcacaoVinculo());
+            stmt.setString(3, token);
             rSet = stmt.executeQuery();
             final long codMarcacaoInserida = rSet.getLong("NEW_COD_MARCACAO");
             if (rSet.next() && codMarcacaoInserida > 0) {
@@ -388,6 +330,8 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_MARCACAO_INSERT_INFORMACOES_AJUSTE(?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
             stmt.setLong(1, codMarcacaoInserida);
+            // TODO: tem que usar o código da unidade para aplicar o TZ correto.
+//            final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCpf(relato.getColaboradorRelato().getCpf(), conn);
             stmt.setObject(2, dataHoraInserida != null ? dataHoraInserida.atOffset(ZoneOffset.UTC) : null);
             stmt.setLong(3, marcacaoAjuste.getCodJustificativaAjuste());
             stmt.setString(4, marcacaoAjuste.getObservacaoAjuste());
