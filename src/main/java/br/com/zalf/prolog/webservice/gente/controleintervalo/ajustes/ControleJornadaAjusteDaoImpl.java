@@ -89,10 +89,10 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             conn.setAutoCommit(false);
             final Long codMarcacaoInserida = insereMarcacaoAjusteAdicao(conn, token, marcacaoAjuste);
             final MarcacaoInicioFim marcacaoInicioFim = marcacaoAjuste.getMarcacaoInicioFim();
-            insereVinculoNaMarcacao(
+            insereVinculoMarcacaoInicioOuFim(
                     conn,
                     codMarcacaoInserida,
-                    marcacaoAjuste.getMarcacaoInicioFim());
+                    marcacaoInicioFim);
             final Long codMarcacaoInicio = marcacaoInicioFim.equals(MarcacaoInicioFim.MARCACAO_INICIO)
                     ? codMarcacaoInserida
                     : marcacaoAjuste.getCodMarcacaoVinculo();
@@ -132,8 +132,8 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                     insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste, MarcacaoInicioFim.MARCACAO_INICIO);
             final Long codMarcacaoFimInserida =
                     insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste, MarcacaoInicioFim.MARCACAO_FIM);
-            insereVinculoNaMarcacao(conn, codMarcacaoInicioInserida, MarcacaoInicioFim.MARCACAO_INICIO);
-            insereVinculoNaMarcacao(conn, codMarcacaoFimInserida, MarcacaoInicioFim.MARCACAO_FIM);
+            insereVinculoMarcacaoInicioOuFim(conn, codMarcacaoInicioInserida, MarcacaoInicioFim.MARCACAO_INICIO);
+            insereVinculoMarcacaoInicioOuFim(conn, codMarcacaoFimInserida, MarcacaoInicioFim.MARCACAO_FIM);
             insereVinculoInicioFim(conn, codMarcacaoInicioInserida, codMarcacaoFimInserida);
             insereInformacoesEdicaoMarcacao(
                     conn,
@@ -227,7 +227,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             @NotNull final Connection conn,
             @NotNull final String token,
             @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
-            @NotNull final MarcacaoInicioFim marcacaoInicioFim) throws SQLException {
+            @NotNull final MarcacaoInicioFim marcacaoInicioFim) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -283,7 +283,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
     @NotNull
     private Long insereMarcacaoAjusteAdicao(@NotNull final Connection conn,
                                             @NotNull final String token,
-                                            @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws SQLException {
+                                            @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -319,8 +319,9 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setString(2, token);
             stmt.setLong(3, marcacaoAjuste.getCodMarcacaoVinculo());
             rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.getLong("NEW_COD_MARCACAO") != 0) {
-                return rSet.getLong("NEW_COD_MARCACAO");
+            final long codMarcacaoInserida = rSet.getLong("NEW_COD_MARCACAO");
+            if (rSet.next() && codMarcacaoInserida > 0) {
+                return codMarcacaoInserida;
             } else {
                 throw new SQLException("Não foi possível inserir a marcação");
             }
@@ -329,9 +330,9 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         }
     }
 
-    private void insereVinculoNaMarcacao(@NotNull final Connection conn,
-                                         @NotNull final Long codMarcacaoInserida,
-                                         @NotNull final MarcacaoInicioFim marcacaoInicioFim) throws SQLException {
+    private void insereVinculoMarcacaoInicioOuFim(@NotNull final Connection conn,
+                                                  @NotNull final Long codMarcacaoInserida,
+                                                  @NotNull final MarcacaoInicioFim marcacaoInicioFim) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -344,7 +345,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             }
             stmt.setLong(1, codMarcacaoInserida);
             rSet = stmt.executeQuery();
-            if (!rSet.next() || rSet.getLong("CODIGO") == 0) {
+            if (!rSet.next() || rSet.getLong("CODIGO") <= 0) {
                 throw new SQLException("Não foi possível inserir o vinculo entre as marcações");
             }
         } finally {
@@ -354,7 +355,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     private void insereVinculoInicioFim(@NotNull final Connection conn,
                                         @NotNull final Long codMarcacaoInicio,
-                                        @NotNull final Long codMarcacaoFim) throws SQLException {
+                                        @NotNull final Long codMarcacaoFim) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -365,7 +366,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setLong(1, codMarcacaoInicio);
             stmt.setLong(2, codMarcacaoFim);
             rSet = stmt.executeQuery();
-            if (!rSet.next() || rSet.getLong("CODIGO_VINCULO") == 0) {
+            if (!rSet.next() || rSet.getLong("CODIGO_VINCULO") <= 0) {
                 throw new SQLException("Não foi possível inserir o vinculo entre as marcações");
             }
         } finally {
@@ -378,7 +379,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             @NotNull final Long codMarcacaoInserida,
             @NotNull final String token,
             @NotNull final MarcacaoAjuste marcacaoAjuste,
-            @Nullable final LocalDateTime dataHoraInserida) throws SQLException {
+            @Nullable final LocalDateTime dataHoraInserida) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -392,7 +393,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setString(6, token);
             stmt.setObject(7, Now.localDateTimeUtc());
             rSet = stmt.executeQuery();
-            if (!rSet.next() || rSet.getLong("CODIGO") == 0) {
+            if (!rSet.next() || rSet.getLong("CODIGO") <= 0) {
                 throw new SQLException("Não foi possível inserir as edições da marcação");
             }
         } finally {
@@ -402,7 +403,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     private void internalAtivarInativarMarcacaoAjuste(
             @NotNull final Connection conn,
-            @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws SQLException {
+            @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE INTERVALO SET IS_ATIVO = ? WHERE CODIGO = ?;");

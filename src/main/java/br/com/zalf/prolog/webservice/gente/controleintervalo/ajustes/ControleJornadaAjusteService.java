@@ -119,13 +119,11 @@ public final class ControleJornadaAjusteService {
             @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws ProLogException {
         try {
             dao.ativarInativarMarcacaoAjuste(TokenCleaner.getOnlyToken(userToken), marcacaoAjuste);
-            return Response.ok("Marcação "
-                    + (marcacaoAjuste.isDeveAtivar() ? "ativada" : "desativada") +
-                    " com sucesso");
+            return Response.ok(String.format("Marcação %s com sucesso",
+                    marcacaoAjuste.isDeveAtivar() ? "ativada" : "desativada"));
         } catch (final Throwable e) {
-            final String msg = "Erro ao "
-                    + (marcacaoAjuste.isDeveAtivar() ? "ativar" : "desativar") +
-                    " a marcação, tente novamente";
+            final String msg = String.format("Erro ao %s a marcação",
+                    marcacaoAjuste.isDeveAtivar() ? "ativar" : "desativar");
             Log.e(TAG, msg, e);
             throw exceptionHandler.map(e, msg);
         }

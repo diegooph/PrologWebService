@@ -93,11 +93,10 @@ public final class ControleJornadaAjusteResource {
     @DELETE
     @UsedBy(platforms = Platform.ANDROID)
     @Secured()
-    @Path("/ativar-desativar-marcacao")
+    @Path("/ativar-inativar-marcacao")
     public Response ativarInativarMarcacaoAjuste(
             @HeaderParam("Authorization") String userToken,
             @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws ProLogException {
         return service.ativarInativarMarcacaoAjuste(userToken, marcacaoAjuste);
     }
-
 }
