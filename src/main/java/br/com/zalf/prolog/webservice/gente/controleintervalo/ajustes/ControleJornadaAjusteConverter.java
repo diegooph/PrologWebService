@@ -24,28 +24,29 @@ public final class ControleJornadaAjusteConverter {
     @NotNull
     static List<ConsolidadoMarcacoesDia> createConsolidadoMarcacoesDia(@NotNull final ResultSet rSet) throws Throwable {
         final List<ConsolidadoMarcacoesDia> dias = new ArrayList<>();
-        ConsolidadoMarcacoesDia consolidado = new ConsolidadoMarcacoesDia();
+        ConsolidadoMarcacoesDia consolidado = null;
         boolean primeiraLinha = true;
         while (rSet.next()) {
             final LocalDate dia = rSet.getObject("DIA", LocalDate.class);
             if (primeiraLinha) {
+                consolidado = new ConsolidadoMarcacoesDia();
                 consolidado.setDia(dia);
                 consolidado.setTotalInconsistenciasDia(-1);
                 consolidado.setTotalMarcacoesDia(rSet.getInt("TOTAL_MARCACOES_GERAL_DIA"));
                 consolidado.setMarcacoesColaboradores(new ArrayList<>());
                 consolidado.getMarcacoesColaboradores().add(createMarcacoesColaborador(rSet));
+                dias.add(consolidado);
             } else {
-                consolidado.getMarcacoesColaboradores().add(createMarcacoesColaborador(rSet));
                 if (!consolidado.getDia().equals(dia)) {
-                    dias.add(consolidado);
-
                     // Cria novo dia.
                     consolidado = new ConsolidadoMarcacoesDia();
                     consolidado.setDia(dia);
                     consolidado.setTotalInconsistenciasDia(-1);
                     consolidado.setTotalMarcacoesDia(rSet.getInt("TOTAL_MARCACOES_GERAL_DIA"));
                     consolidado.setMarcacoesColaboradores(new ArrayList<>());
+                    dias.add(consolidado);
                 }
+                consolidado.getMarcacoesColaboradores().add(createMarcacoesColaborador(rSet));
             }
             primeiraLinha = false;
         }
