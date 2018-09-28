@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -25,20 +24,17 @@ public final class MarcacaoAjusteExibicao {
     private LocalDateTime dataHoraMarcacao;
 
     /**
-     * Código do {@link TipoMarcacao tipo de marcação} utilizado.
-     */
-    private Long codTipoMarcacao;
-
-    /**
-     * Nome do {@link TipoMarcacao tipo de marcação} utilizado.
-     */
-    private String nomeTipoMarcacao;
-
-    /**
      * Indica se esta marcação está ativa.
      * <code>true</code> se estiver ativa, <code>false</code> caso contrário.
      */
     private boolean isAtiva;
+
+    /**
+     * Identifica se esta marcação já foi ajustada.
+     *
+     * <code>true</code> se esta marcação já foi ajustada, <code>false</code> caso contrário.
+     */
+    private boolean jaFoiAjustada;
 
     public MarcacaoAjusteExibicao() {
 
@@ -48,8 +44,7 @@ public final class MarcacaoAjusteExibicao {
     public static MarcacaoAjusteExibicao createDummyInicio() {
         final MarcacaoAjusteExibicao intervalo = new MarcacaoAjusteExibicao();
         intervalo.setCodMarcacao(10101L);
-        intervalo.setCodTipoMarcacao(10L);
-        intervalo.setNomeTipoMarcacao("Refeição");
+        intervalo.setJaFoiAjustada(true);
         intervalo.setAtiva(true);
         intervalo.setDataHoraMarcacao(LocalDateTime.now());
         return intervalo;
@@ -59,8 +54,7 @@ public final class MarcacaoAjusteExibicao {
     public static MarcacaoAjusteExibicao createDummyFim() {
         final MarcacaoAjusteExibicao intervalo = new MarcacaoAjusteExibicao();
         intervalo.setCodMarcacao(10101L);
-        intervalo.setCodTipoMarcacao(10L);
-        intervalo.setNomeTipoMarcacao("Refeição");
+        intervalo.setJaFoiAjustada(false);
         intervalo.setAtiva(true);
         intervalo.setDataHoraMarcacao(LocalDateTime.now().plus(30, ChronoUnit.MINUTES));
         return intervalo;
@@ -82,27 +76,19 @@ public final class MarcacaoAjusteExibicao {
         this.dataHoraMarcacao = dataHoraMarcacao;
     }
 
-    public Long getCodTipoMarcacao() {
-        return codTipoMarcacao;
-    }
-
-    public void setCodTipoMarcacao(final Long codTipoMarcacao) {
-        this.codTipoMarcacao = codTipoMarcacao;
-    }
-
-    public String getNomeTipoMarcacao() {
-        return nomeTipoMarcacao;
-    }
-
-    public void setNomeTipoMarcacao(final String nomeTipoMarcacao) {
-        this.nomeTipoMarcacao = nomeTipoMarcacao;
-    }
-
     public boolean isAtiva() {
         return isAtiva;
     }
 
     public void setAtiva(final boolean ativa) {
         isAtiva = ativa;
+    }
+
+    public boolean isJaFoiAjustada() {
+        return jaFoiAjustada;
+    }
+
+    public void setJaFoiAjustada(final boolean jaFoiAjustada) {
+        this.jaFoiAjustada = jaFoiAjustada;
     }
 }

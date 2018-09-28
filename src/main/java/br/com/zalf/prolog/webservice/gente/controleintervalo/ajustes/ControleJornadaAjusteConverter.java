@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacoesDiaColaborador;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +50,44 @@ public final class ControleJornadaAjusteConverter {
             primeiraLinha = false;
         }
         return dias;
+    }
+
+    @NotNull
+    static MarcacaoColaboradorAjuste createMarcacaoColaboradorAjuste(@NotNull final ResultSet rSet) throws Throwable {
+        final MarcacaoColaboradorAjuste marcacoesColab = new MarcacaoColaboradorAjuste();
+        marcacoesColab.setCodTipoMarcacao(rSet.getLong("COD_TIPO_MARCACAO"));
+        marcacoesColab.setNomeTipoMarcacao(rSet.getString("NOME_TIPO_MARCACAO"));
+        marcacoesColab.setJaFoiAjustada(
+                rSet.getBoolean("FOI_EDITADO_INICIO")
+                || rSet.getBoolean("FOI_EDITADO_FIM"));
+        marcacoesColab.setMarcacoes(createMarcacaoAgrupadaAjusteExibicao(rSet));
+        return marcacoesColab;
+    }
+
+    @NotNull
+    private static MarcacaoAgrupadaAjusteExibicao createMarcacaoAgrupadaAjusteExibicao(@NotNull final ResultSet rSet)
+            throws Throwable {
+        MarcacaoAjusteExibicao inicio = null;
+        final LocalDateTime dataHoraInicio = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class);
+        if (dataHoraInicio != null) {
+            inicio = new MarcacaoAjusteExibicao();
+            inicio.setAtiva(rSet.getBoolean("VALIDO_INICIO"));
+            inicio.setCodMarcacao(rSet.getLong("COD_MARCACAO_INICIO"));
+            inicio.setJaFoiAjustada(rSet.getBoolean("FOI_EDITADO_INICIO"));
+            inicio.setDataHoraMarcacao(dataHoraInicio);
+        }
+
+        MarcacaoAjusteExibicao fim = null;
+        final LocalDateTime dataHoraFim = rSet.getObject("DATA_HORA_FIM", LocalDateTime.class);
+        if (dataHoraFim != null) {
+            fim = new MarcacaoAjusteExibicao();
+            fim.setAtiva(rSet.getBoolean("VALIDO_FIM"));
+            fim.setCodMarcacao(rSet.getLong("COD_MARCACAO_FIM"));
+            fim.setJaFoiAjustada(rSet.getBoolean("FOI_EDITADO_FIM"));
+            fim.setDataHoraMarcacao(dataHoraFim);
+        }
+
+        return new MarcacaoAgrupadaAjusteExibicao(inicio, fim);
     }
 
     @NotNull

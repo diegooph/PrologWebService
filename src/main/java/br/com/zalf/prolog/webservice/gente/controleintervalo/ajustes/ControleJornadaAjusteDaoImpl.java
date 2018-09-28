@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
@@ -28,6 +29,56 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection implements ControleJornadaAjusteDao {
+
+    @NotNull
+    @Override
+    public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(@NotNull final Long codUnidade,
+                                                                            @Nullable final Long codTipoMarcacao,
+                                                                            @Nullable final Long codColaborador,
+                                                                            @NotNull final LocalDate dataInicial,
+                                                                            @NotNull final LocalDate dataFinal)
+            throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_MARCACOES_CONSOLIDADAS_AJUSTE(?, ?, ?, ?, ?);");
+            stmt.setLong(1, codUnidade);
+            bindValueOrNull(stmt, 2, codTipoMarcacao, SqlType.BIGINT);
+            bindValueOrNull(stmt, 3, codColaborador, SqlType.BIGINT);
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
+            rSet = stmt.executeQuery();
+            return ControleJornadaAjusteConverter.createConsolidadoMarcacoesDia(rSet);
+        } finally {
+            close(stmt, rSet, conn);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(@NotNull final Long codColaborador,
+                                                                             @NotNull final LocalDate dia)
+            throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_MARCACOES_COLABORADOR_AJUSTE(?, ?);");
+            stmt.setLong(1, codColaborador);
+            stmt.setObject(2, dia);
+            rSet = stmt.executeQuery();
+            final List<MarcacaoColaboradorAjuste> marcacoes = new ArrayList<>();
+            while (rSet.next()) {
+                marcacoes.add(ControleJornadaAjusteConverter.createMarcacaoColaboradorAjuste(rSet));
+            }
+            return marcacoes;
+        } finally {
+            close(stmt, rSet, conn);
+        }
+    }
 
     @Override
     public void adicionarMarcacaoAjuste(@NotNull final String token,
@@ -155,41 +206,6 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         } finally {
             close(conn);
         }
-    }
-
-    @NotNull
-    @Override
-    public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(@NotNull final Long codUnidade,
-                                                                            @Nullable final Long codTipoMarcacao,
-                                                                            @Nullable final Long codColaborador,
-                                                                            @NotNull final LocalDate dataInicial,
-                                                                            @NotNull final LocalDate dataFinal)
-            throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_CONSOLIDADOS_AJUSTE(?, ?, ?, ?, ?);");
-            stmt.setLong(1, codUnidade);
-            bindValueOrNull(stmt, 2, codTipoMarcacao, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, codColaborador, SqlType.BIGINT);
-            stmt.setObject(4, dataInicial);
-            stmt.setObject(5, dataFinal);
-            rSet = stmt.executeQuery();
-            return ControleJornadaAjusteConverter.createConsolidadoMarcacoesDia(rSet);
-        } finally {
-            close(stmt, rSet, conn);
-        }
-    }
-
-    @NotNull
-    @Override
-    public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
-            @NotNull final Long codUnidade,
-            @NotNull final String codColaborador,
-            @NotNull final LocalDate data) throws Throwable {
-        return null;
     }
 
     @NotNull

@@ -25,6 +25,38 @@ import java.util.List;
 public interface ControleJornadaAjusteDao {
 
     /**
+     * Método utilizado para buscar os totais de marcações de um dia, respeitando os filtros aplicados.
+     *
+     * @param codUnidade       Código da {@link Unidade unidade} que serão buscados os dados.
+     * @param codTipoMarcacao  Código do {@link TipoMarcacao tipo de intervalo} que será buscado.
+     * @param codColaborador   Código do {@link Colaborador colaborador} que será buscado as marcações.
+     * @param dataInicial      Data inicial da filtragem dos dados.
+     * @param dataFinal        Data final da filtragem dos dados.
+     * @return Uma {@link List lista} de {@link ConsolidadoMarcacoesDia marcações} contendo os dados filtrados.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
+    @NotNull
+    List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(@NotNull final Long codUnidade,
+                                                                     @Nullable final Long codTipoMarcacao,
+                                                                     @Nullable final Long codColaborador,
+                                                                     @NotNull final LocalDate dataInicial,
+                                                                     @NotNull final LocalDate dataFinal) throws Throwable;
+
+    /**
+     * Busca todas as marcações realizadas pelo {@link Colaborador colaborador} no dia filtrado.
+     * Estas marcações serão listadas para possibilitar a edição das mesmas.
+     *
+     * @param codColaborador Código do {@link Colaborador} que será buscado as marcações.
+     * @param dia            Dia da qual as marcações serão buscadas.
+     * @return Um {@link List<MarcacaoColaboradorAjuste>} contendo os dados filtrados.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
+    @NotNull
+    List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
+            @NotNull final Long codColaborador,
+            @NotNull final LocalDate dia) throws Throwable;
+
+    /**
      * Método para vincular uma marcação a um {@link Colaborador}. Isso ocorre quando é criado
      * uma marcação de fim para um início já existente, ou a criação de uma marcação de início
      * para uma marcação de fim avulsa.
@@ -70,40 +102,6 @@ public interface ControleJornadaAjusteDao {
      */
     void ativarInativarMarcacaoAjuste(@NotNull final String token,
                                       @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable;
-
-    /**
-     * Método utilizado para buscar os totais de marcações de um dia, respeitando os filtros aplicados.
-     *
-     * @param codUnidade       Código da {@link Unidade unidade} que serão buscados os dados.
-     * @param codTipoMarcacao  Código do {@link TipoMarcacao tipo de intervalo} que será buscado.
-     * @param codColaborador   Código do {@link Colaborador colaborador} que será buscado as marcações.
-     * @param dataInicial      Data inicial da filtragem dos dados.
-     * @param dataFinal        Data final da filtragem dos dados.
-     * @return Uma {@link List lista} de {@link ConsolidadoMarcacoesDia marcações} contendo os dados filtrados.
-     * @throws Throwable Caso qualquer erro aconteça.
-     */
-    @NotNull
-    List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(@NotNull final Long codUnidade,
-                                                                     @Nullable final Long codTipoMarcacao,
-                                                                     @Nullable final Long codColaborador,
-                                                                     @NotNull final LocalDate dataInicial,
-                                                                     @NotNull final LocalDate dataFinal) throws Throwable;
-
-    /**
-     * Busca todas as marcações realizadas pelo {@link Colaborador} na {@code data} filtrada.
-     * Estas marcações serão listadas para possibilitar a posterior edição destas marcações.
-     *
-     * @param codUnidade     Código da {@link Unidade} que serão buscados os dados.
-     * @param codColaborador Código do {@link Colaborador} que será buscado as marcações.
-     * @param data           Data da qual as marcações serão buscadas.
-     * @return Um {@link List<MarcacaoColaboradorAjuste>} contendo os dados filtrados.
-     * @throws Throwable Caso algum erro no processamento ou conexão com o Banco de Dados ocorrer.
-     */
-    @NotNull
-    List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
-            @NotNull final Long codUnidade,
-            @NotNull final String codColaborador,
-            @NotNull final LocalDate data) throws Throwable;
 
     @NotNull
     List<MarcacaoAjusteHistoricoExibicao> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable;

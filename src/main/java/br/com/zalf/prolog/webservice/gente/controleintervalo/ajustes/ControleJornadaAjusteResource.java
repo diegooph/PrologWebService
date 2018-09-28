@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.Marca
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +33,7 @@ public final class ControleJornadaAjusteResource {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured()
-    @Path("/marcacoes")
+    @Path("/marcacoes-consolidadas")
     public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(
             @QueryParam("codUnidade") @Required Long codUnidade,
             @QueryParam("codTipoMarcacao") @Required Long codTipoMarcacao,
@@ -45,6 +46,18 @@ public final class ControleJornadaAjusteResource {
                 codColaborador,
                 dataInicial,
                 dataFinal);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured()
+    @Path("/marcacoes-colaboradores")
+    public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
+            @QueryParam("codColaborador") @Required Long codColaborador,
+            @QueryParam("dia") @Required String dia) throws ProLogException {
+        return service.getMarcacoesColaboradorParaAjuste(
+                codColaborador,
+                dia);
     }
 
     @POST

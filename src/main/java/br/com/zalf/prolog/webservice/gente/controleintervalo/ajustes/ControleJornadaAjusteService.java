@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.Marca
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,6 +53,23 @@ public final class ControleJornadaAjusteService {
                     "dataFinal: %s", codUnidade, codTipoMarcacao, codColaborador, dataInicial, dataFinal);
             Log.e(TAG, log, e);
             throw exceptionHandler.map(e, "Erro ao buscar as marcações");
+        }
+    }
+
+    @NotNull
+    public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(@NotNull final Long codColaborador,
+                                                                             @NotNull final String dia)
+            throws ProLogException {
+        try {
+            return dao.getMarcacoesColaboradorParaAjuste(
+                    codColaborador,
+                    ProLogDateParser.toLocalDate(dia));
+        } catch (final Throwable e) {
+            final String log = String.format("Erro ao buscar as marcações do colaborador:\n" +
+                    "codColaborador: %d\n" +
+                    "dia: %s\n", codColaborador, dia);
+            Log.e(TAG, log, e);
+            throw exceptionHandler.map(e, "Erro ao buscar as marcações do colaborador");
         }
     }
 
