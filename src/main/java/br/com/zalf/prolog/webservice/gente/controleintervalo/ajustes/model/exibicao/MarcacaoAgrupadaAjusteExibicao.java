@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Agrupa uma marcação de início com sua equivalente de fim para exibição.
@@ -15,39 +16,36 @@ public final class MarcacaoAgrupadaAjusteExibicao {
     /**
      * Uma marcação de início para exibição, pode ser <code>null</code>.
      */
-    private MarcacaoAjusteExibicao marcacaoInicio;
+    @Nullable
+    private final MarcacaoAjusteExibicao marcacaoInicio;
 
     /**
      * Uma marcação de fim para exibição, pode ser <code>null</code>.
      */
-    private MarcacaoAjusteExibicao marcacaoFim;
+    @Nullable
+    private final MarcacaoAjusteExibicao marcacaoFim;
 
-    public MarcacaoAgrupadaAjusteExibicao() {
-
+    public MarcacaoAgrupadaAjusteExibicao(@Nullable final MarcacaoAjusteExibicao marcacaoInicio,
+                                          @Nullable final MarcacaoAjusteExibicao marcacaoFim) {
+        this.marcacaoInicio = marcacaoInicio;
+        this.marcacaoFim = marcacaoFim;
     }
 
     @NotNull
     public static MarcacaoAgrupadaAjusteExibicao createDummy() {
-        final MarcacaoAgrupadaAjusteExibicao intervaloAjuste = new MarcacaoAgrupadaAjusteExibicao();
-        intervaloAjuste.setMarcacaoInicio(MarcacaoAjusteExibicao.createDummyInicio());
-        intervaloAjuste.setMarcacaoFim(MarcacaoAjusteExibicao.createDummyFim());
-        return intervaloAjuste;
+        return new MarcacaoAgrupadaAjusteExibicao(
+                MarcacaoAjusteExibicao.createDummyInicio(),
+                MarcacaoAjusteExibicao.createDummyFim());
     }
 
+    @Nullable
     public MarcacaoAjusteExibicao getMarcacaoInicio() {
         return marcacaoInicio;
     }
 
-    public void setMarcacaoInicio(final MarcacaoAjusteExibicao marcacaoInicio) {
-        this.marcacaoInicio = marcacaoInicio;
-    }
-
+    @Nullable
     public MarcacaoAjusteExibicao getMarcacaoFim() {
         return marcacaoFim;
-    }
-
-    public void setMarcacaoFim(final MarcacaoAjusteExibicao marcacaoFim) {
-        this.marcacaoFim = marcacaoFim;
     }
 
     @Override
