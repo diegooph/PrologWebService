@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibi
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoInconsistenciaExibicao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,15 +88,15 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             conn = getConnection();
             conn.setAutoCommit(false);
             final Long codMarcacaoInserida = insereMarcacaoAjusteAdicao(conn, token, marcacaoAjuste);
-            final MarcacaoInicioFim marcacaoInicioFim = marcacaoAjuste.getMarcacaoInicioFim();
+            final TipoInicioFim tipoInicioFim = marcacaoAjuste.getTipoInicioFim();
             insereVinculoMarcacaoInicioOuFim(
                     conn,
                     codMarcacaoInserida,
-                    marcacaoInicioFim);
-            final Long codMarcacaoInicio = marcacaoInicioFim.equals(MarcacaoInicioFim.MARCACAO_INICIO)
+                    tipoInicioFim);
+            final Long codMarcacaoInicio = tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)
                     ? codMarcacaoInserida
                     : marcacaoAjuste.getCodMarcacaoVinculo();
-            final Long codMarcacaoFim = marcacaoInicioFim.equals(MarcacaoInicioFim.MARCACAO_FIM)
+            final Long codMarcacaoFim = tipoInicioFim.equals(TipoInicioFim.MARCACAO_FIM)
                     ? codMarcacaoInserida
                     : marcacaoAjuste.getCodMarcacaoVinculo();
             insereVinculoInicioFim(
@@ -129,11 +129,11 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             conn = getConnection();
             conn.setAutoCommit(false);
             final Long codMarcacaoInicioInserida =
-                    insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste, MarcacaoInicioFim.MARCACAO_INICIO);
+                    insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste, TipoInicioFim.MARCACAO_INICIO);
             final Long codMarcacaoFimInserida =
-                    insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste, MarcacaoInicioFim.MARCACAO_FIM);
-            insereVinculoMarcacaoInicioOuFim(conn, codMarcacaoInicioInserida, MarcacaoInicioFim.MARCACAO_INICIO);
-            insereVinculoMarcacaoInicioOuFim(conn, codMarcacaoFimInserida, MarcacaoInicioFim.MARCACAO_FIM);
+                    insereMarcacaoAjusteAdicaoInicioFim(conn, token, marcacaoAjuste, TipoInicioFim.MARCACAO_FIM);
+            insereVinculoMarcacaoInicioOuFim(conn, codMarcacaoInicioInserida, TipoInicioFim.MARCACAO_INICIO);
+            insereVinculoMarcacaoInicioOuFim(conn, codMarcacaoFimInserida, TipoInicioFim.MARCACAO_FIM);
             insereVinculoInicioFim(conn, codMarcacaoInicioInserida, codMarcacaoFimInserida);
             insereInformacoesEdicaoMarcacao(
                     conn,
@@ -227,7 +227,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             @NotNull final Connection conn,
             @NotNull final String token,
             @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste,
-            @NotNull final MarcacaoInicioFim marcacaoInicioFim) throws Throwable {
+            @NotNull final TipoInicioFim tipoInicioFim) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -261,10 +261,10 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setLong(1, marcacaoAjuste.getCodColaboradorMarcacao());
             stmt.setLong(2, marcacaoAjuste.getCodTipoMarcacaoReferente());
             stmt.setLong(3, marcacaoAjuste.getCodColaboradorMarcacao());
-            stmt.setObject(4, marcacaoInicioFim.equals(MarcacaoInicioFim.MARCACAO_INICIO)
+            stmt.setObject(4, tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)
                     ? marcacaoAjuste.getDataHoraInicio()
                     : marcacaoAjuste.getDataHoraFim());
-            stmt.setString(5, marcacaoInicioFim.asString());
+            stmt.setString(5, tipoInicioFim.asString());
             stmt.setObject(6, Now.localDateTimeUtc());
             stmt.setString(7, token);
             rSet = stmt.executeQuery();
@@ -273,7 +273,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                 return codMarcacaoInserida;
             } else {
                 throw new SQLException("Não foi possível inserir a(o) "
-                        + marcacaoInicioFim.asString() +
+                        + tipoInicioFim.asString() +
                         " da marcação completa");
             }
         } finally {
@@ -333,11 +333,11 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     private void insereVinculoMarcacaoInicioOuFim(@NotNull final Connection conn,
                                                   @NotNull final Long codMarcacaoInserida,
-                                                  @NotNull final MarcacaoInicioFim marcacaoInicioFim) throws Throwable {
+                                                  @NotNull final TipoInicioFim tipoInicioFim) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            if (marcacaoInicioFim.equals(MarcacaoInicioFim.MARCACAO_INICIO)) {
+            if (tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)) {
                 stmt = conn.prepareStatement("INSERT INTO MARCACAO_INICIO(COD_MARCACAO_INICIO) " +
                         "VALUES (?) RETURNING CODIGO");
             } else {

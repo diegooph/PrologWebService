@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloSe
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.FolhaPontoTipoIntervalo;
@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim.MARCACAO_FIM;
-import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim.MARCACAO_INICIO;
+import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim.MARCACAO_FIM;
+import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim.MARCACAO_INICIO;
 import static org.junit.Assert.*;
 
 /**
@@ -179,7 +179,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
 
     private IntervaloMarcacao createIntervaloMarcacao(@NotNull final Long codTipoIntervalo,
                                                       @NotNull final LocalDateTime dataHoraMarcacao,
-                                                      @NotNull final MarcacaoInicioFim tipoMarcacaoIntervalo)
+                                                      @NotNull final TipoInicioFim tipoMarcacaoIntervalo)
             throws Throwable {
         final IntervaloMarcacao intervaloMarcacao = new IntervaloMarcacao();
         intervaloMarcacao.setCodUnidade(COD_UNIDADE);

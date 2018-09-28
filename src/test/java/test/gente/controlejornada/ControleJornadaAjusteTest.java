@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.Marca
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import test.BaseTest;
@@ -86,7 +86,7 @@ public class ControleJornadaAjusteTest extends BaseTest {
         ajusteAdicao.setCodJustificativaAjuste(1L);
         ajusteAdicao.setObservacaoAjuste("Dummy Data Test Adicao FIM");
         ajusteAdicao.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
-        ajusteAdicao.setMarcacaoInicioFim(MarcacaoInicioFim.MARCACAO_FIM);
+        ajusteAdicao.setTipoInicioFim(TipoInicioFim.MARCACAO_FIM);
         return ajusteAdicao;
     }
 

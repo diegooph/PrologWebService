@@ -182,14 +182,14 @@ public class DeprecatedControleIntervaloResource {
             marcacao.setDataHoraMaracao(intervalo.getDataHoraInicio());
             marcacao.setFonteDataHora(intervalo.getFonteDataHoraInicio());
             marcacao.setLocalizacaoMarcacao(intervalo.getLocalizacaoInicio());
-            marcacao.setTipoMarcacaoIntervalo(MarcacaoInicioFim.MARCACAO_INICIO);
+            marcacao.setTipoMarcacaoIntervalo(TipoInicioFim.MARCACAO_INICIO);
         } else {
             marcacao.setDataHoraMaracao(intervalo.getDataHoraFim());
             marcacao.setFonteDataHora(intervalo.getFonteDataHoraFim());
             marcacao.setLocalizacaoMarcacao(intervalo.getLocalizacaoFim());
             marcacao.setJustificativaTempoRecomendado(intervalo.getJustificativaTempoRecomendado());
             marcacao.setJustificativaEstouro(intervalo.getJustificativaEstouro());
-            marcacao.setTipoMarcacaoIntervalo(MarcacaoInicioFim.MARCACAO_FIM);
+            marcacao.setTipoMarcacaoIntervalo(TipoInicioFim.MARCACAO_FIM);
         }
         return marcacao;
     }

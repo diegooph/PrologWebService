@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model;
 
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.MarcacaoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -30,7 +30,7 @@ public final class MarcacaoAjusteAdicao extends MarcacaoAjuste {
     /**
      * O tipo da marcação que deve ser criada, se é de início ou fim.
      */
-    private MarcacaoInicioFim marcacaoInicioFim;
+    private TipoInicioFim tipoInicioFim;
 
     public MarcacaoAjusteAdicao() {
         super(TipoMarcacaoAjuste.ADICAO);
@@ -44,16 +44,16 @@ public final class MarcacaoAjusteAdicao extends MarcacaoAjuste {
         ajusteAdicao.setCodJustificativaAjuste(5L);
         ajusteAdicao.setObservacaoAjuste("Dummy Data");
         ajusteAdicao.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
-        ajusteAdicao.setMarcacaoInicioFim(MarcacaoInicioFim.MARCACAO_INICIO);
+        ajusteAdicao.setTipoInicioFim(TipoInicioFim.MARCACAO_INICIO);
         return ajusteAdicao;
     }
 
-    public MarcacaoInicioFim getMarcacaoInicioFim() {
-        return marcacaoInicioFim;
+    public TipoInicioFim getTipoInicioFim() {
+        return tipoInicioFim;
     }
 
-    public void setMarcacaoInicioFim(final MarcacaoInicioFim marcacaoInicioFim) {
-        this.marcacaoInicioFim = marcacaoInicioFim;
+    public void setTipoInicioFim(final TipoInicioFim tipoInicioFim) {
+        this.tipoInicioFim = tipoInicioFim;
     }
 
     public Long getCodMarcacaoVinculo() {

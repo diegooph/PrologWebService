@@ -89,11 +89,11 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, cpf);
             stmt.setLong(4, codTipoIntervalo);
-            stmt.setString(5, MarcacaoInicioFim.MARCACAO_INICIO.asString());
+            stmt.setString(5, TipoInicioFim.MARCACAO_INICIO.asString());
             stmt.setLong(6, codUnidade);
             stmt.setLong(7, cpf);
             stmt.setLong(8, codTipoIntervalo);
-            stmt.setString(9, MarcacaoInicioFim.MARCACAO_FIM.asString());
+            stmt.setString(9, TipoInicioFim.MARCACAO_FIM.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createIntervaloMarcacao(rSet);
@@ -500,7 +500,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         intervaloMarcacao.setCodTipoIntervalo(rSet.getLong("COD_TIPO_INTERVALO"));
         intervaloMarcacao.setDataHoraMaracao(rSet.getObject("DATA_HORA", LocalDateTime.class));
         intervaloMarcacao.setFonteDataHora(FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA")));
-        intervaloMarcacao.setTipoMarcacaoIntervalo(MarcacaoInicioFim.fromString(rSet.getString("TIPO_MARCACAO")));
+        intervaloMarcacao.setTipoMarcacaoIntervalo(TipoInicioFim.fromString(rSet.getString("TIPO_MARCACAO")));
         intervaloMarcacao.setJustificativaTempoRecomendado(rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
         intervaloMarcacao.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
 
