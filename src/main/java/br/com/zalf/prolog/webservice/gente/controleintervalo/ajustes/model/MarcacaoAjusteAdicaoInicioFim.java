@@ -37,7 +37,7 @@ public final class MarcacaoAjusteAdicaoInicioFim extends MarcacaoAjuste {
     private LocalDateTime dataHoraFim;
 
     public MarcacaoAjusteAdicaoInicioFim() {
-        super(TipoMarcacaoAjuste.ADICAO_INICIO_FIM);
+        super(TipoAcaoAjuste.ADICAO_INICIO_FIM);
     }
 
     @NotNull

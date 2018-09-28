@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 /**
  * Essa é a superclasse de qualquer ajuste que seja realizado no sistema. Os ajustes podem ser de qualquer um dos tipos
- * presentes no {@code enum} {@link TipoMarcacaoAjuste}. Cada tipo no {@code enum} tem uma subclasse específica que
+ * presentes no {@code enum} {@link TipoAcaoAjuste}. Cada tipo no {@code enum} tem uma subclasse específica que
  * contém informações próprias do ajuste sendo realizado.
  *
  * Created on 04/09/18.
@@ -21,20 +21,20 @@ public abstract class MarcacaoAjuste {
     private LocalDateTime dataHoraAjuste;
     @Exclude
     @NotNull
-    private final TipoMarcacaoAjuste tipoMarcacaoAjuste;
+    private final TipoAcaoAjuste tipoAcaoAjuste;
 
-    public MarcacaoAjuste(@NotNull final TipoMarcacaoAjuste tipoMarcacaoAjuste) {
-        this.tipoMarcacaoAjuste = tipoMarcacaoAjuste;
+    public MarcacaoAjuste(@NotNull final TipoAcaoAjuste tipoAcaoAjuste) {
+        this.tipoAcaoAjuste = tipoAcaoAjuste;
     }
 
     @NotNull
     public static RuntimeTypeAdapterFactory<MarcacaoAjuste> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
                 .of(MarcacaoAjuste.class, "tipoMarcacaoAjuste")
-                .registerSubtype(MarcacaoAjusteAdicao.class, TipoMarcacaoAjuste.ADICAO.asString())
-                .registerSubtype(MarcacaoAjusteAdicaoInicioFim.class, TipoMarcacaoAjuste.ADICAO_INICIO_FIM.asString())
-                .registerSubtype(MarcacaoAjusteEdicao.class, TipoMarcacaoAjuste.EDICAO.asString())
-                .registerSubtype(MarcacaoAjusteAtivacaoInativacao.class, TipoMarcacaoAjuste.ATIVACAO_INATIVACAO.asString());
+                .registerSubtype(MarcacaoAjusteAdicao.class, TipoAcaoAjuste.ADICAO.asString())
+                .registerSubtype(MarcacaoAjusteAdicaoInicioFim.class, TipoAcaoAjuste.ADICAO_INICIO_FIM.asString())
+                .registerSubtype(MarcacaoAjusteEdicao.class, TipoAcaoAjuste.EDICAO.asString())
+                .registerSubtype(MarcacaoAjusteAtivacaoInativacao.class, TipoAcaoAjuste.ATIVACAO_INATIVACAO.asString());
     }
 
     public Long getCodJustificativaAjuste() {
@@ -62,8 +62,8 @@ public abstract class MarcacaoAjuste {
     }
 
     @NotNull
-    public TipoMarcacaoAjuste getTipoMarcacaoAjuste() {
-        return tipoMarcacaoAjuste;
+    public TipoAcaoAjuste getTipoAcaoAjuste() {
+        return tipoAcaoAjuste;
     }
 
     @Override
@@ -72,7 +72,7 @@ public abstract class MarcacaoAjuste {
                 "codJustificativaAjuste=" + codJustificativaAjuste +
                 ", observacaoAjuste='" + observacaoAjuste + '\'' +
                 ", dataHoraAjuste=" + dataHoraAjuste +
-                ", tipoMarcacaoAjuste=" + tipoMarcacaoAjuste +
+                ", tipoMarcacaoAjuste=" + tipoAcaoAjuste +
                 '}';
     }
 }

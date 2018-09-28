@@ -33,7 +33,7 @@ public final class MarcacaoAjusteAdicao extends MarcacaoAjuste {
     private TipoInicioFim tipoInicioFim;
 
     public MarcacaoAjusteAdicao() {
-        super(TipoMarcacaoAjuste.ADICAO);
+        super(TipoAcaoAjuste.ADICAO);
     }
 
     @NotNull

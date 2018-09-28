@@ -23,7 +23,7 @@ public final class MarcacaoAjusteEdicao extends MarcacaoAjuste {
     private LocalDateTime dataHoraNovaInserida;
 
     public MarcacaoAjusteEdicao() {
-        super(TipoMarcacaoAjuste.EDICAO);
+        super(TipoAcaoAjuste.EDICAO);
     }
 
     @NotNull

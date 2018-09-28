@@ -390,7 +390,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setObject(2, dataHoraInserida);
             stmt.setLong(3, marcacaoAjuste.getCodJustificativaAjuste());
             stmt.setString(4, marcacaoAjuste.getObservacaoAjuste());
-            stmt.setString(5, marcacaoAjuste.getTipoMarcacaoAjuste().asString());
+            stmt.setString(5, marcacaoAjuste.getTipoAcaoAjuste().asString());
             stmt.setString(6, token);
             stmt.setObject(7, Now.localDateTimeUtc());
             rSet = stmt.executeQuery();

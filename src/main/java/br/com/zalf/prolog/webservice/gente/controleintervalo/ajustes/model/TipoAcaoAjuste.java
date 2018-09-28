@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public enum TipoMarcacaoAjuste {
+public enum TipoAcaoAjuste {
     /**
      * Constante para representar a adição de uma marcação, de início ou de fim, não ambas.
      */
@@ -34,7 +34,7 @@ public enum TipoMarcacaoAjuste {
     @NotNull
     private final String stringRepresentation;
 
-    TipoMarcacaoAjuste(@NotNull final String stringRepresentation) {
+    TipoAcaoAjuste(@NotNull final String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 
@@ -49,10 +49,10 @@ public enum TipoMarcacaoAjuste {
     }
 
     @NotNull
-    public static TipoMarcacaoAjuste fromString(@NotNull final String tipoMarcacaoAjuste) {
+    public static TipoAcaoAjuste fromString(@NotNull final String tipoMarcacaoAjuste) {
         Preconditions.checkNotNull(tipoMarcacaoAjuste, "tipoMarcacaoAjuste cannot be null!");
 
-        for (final TipoMarcacaoAjuste value : values()) {
+        for (final TipoAcaoAjuste value : values()) {
             if (tipoMarcacaoAjuste.equals(value.stringRepresentation)) {
                 return value;
             }

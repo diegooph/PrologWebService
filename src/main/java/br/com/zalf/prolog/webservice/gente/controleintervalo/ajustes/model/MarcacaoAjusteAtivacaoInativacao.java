@@ -24,7 +24,7 @@ public final class MarcacaoAjusteAtivacaoInativacao extends MarcacaoAjuste {
     private boolean deveAtivar;
 
     public MarcacaoAjusteAtivacaoInativacao() {
-        super(TipoMarcacaoAjuste.ATIVACAO_INATIVACAO);
+        super(TipoAcaoAjuste.ATIVACAO_INATIVACAO);
     }
 
     @NotNull
