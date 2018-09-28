@@ -392,7 +392,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setString(4, marcacaoAjuste.getObservacaoAjuste());
             stmt.setString(5, marcacaoAjuste.getTipoAcaoAjuste().asString());
             stmt.setString(6, token);
-            stmt.setObject(7, Now.localDateTimeUtc());
+            stmt.setObject(7, Now.offsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (!rSet.next() || rSet.getLong("CODIGO") <= 0) {
                 throw new SQLException("Não foi possível inserir as edições da marcação");

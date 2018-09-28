@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Created on 04/03/2018
@@ -35,5 +36,10 @@ public final class Now {
     @NotNull
     public static LocalDateTime localDateTimeUtc() {
         return LocalDateTime.now(Clock.systemUTC());
+    }
+
+    @NotNull
+    public static OffsetDateTime offsetDateTimeUtc() {
+        return OffsetDateTime.now(Clock.systemUTC());
     }
 }
