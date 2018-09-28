@@ -47,23 +47,23 @@ public class AlteracaoFuncIntervalosAgrupados extends BaseTest {
     private Connection conn;
 
     @Before
-    public void initialize() throws Throwable {
+    public void initialize() {
         conn = DatabaseConnection.getConnection();
     }
 
     @After
     public void destroy() {
         if (conn != null) {
-            DatabaseConnection.closeConnection(conn);
+            DatabaseConnection.close(conn);
         }
     }
 
     @Test
     public void testTodasMarcacoesIguaisComVinculosOk() throws Throwable {
         try {
-            final List<Intervalo> antigos = getIntervalosAntigos(conn, BUSCA_ANTIGOS);
+            final List<Intervalo> antigos = getMarcaoes(conn, BUSCA_ANTIGOS);
             System.out.println("Marcações antigas buscadas");
-            final List<Intervalo> novos = getIntervalosAntigos(conn, BUSCA_NOVOS);
+            final List<Intervalo> novos = getMarcaoes(conn, BUSCA_NOVOS);
             System.out.println("Marcações novas buscadas");
 
             assertNotNull(antigos);
@@ -116,13 +116,13 @@ public class AlteracaoFuncIntervalosAgrupados extends BaseTest {
                 assertEquals(antigo.isValido(), novo.isValido());
             }
         } finally {
-            DatabaseConnection.closeConnection(conn);
+            DatabaseConnection.close(conn);
         }
     }
 
     @NotNull
-    private List<Intervalo> getIntervalosAntigos(@NotNull final Connection conn,
-                                                 @NotNull final String sql) throws Throwable {
+    private List<Intervalo> getMarcaoes(@NotNull final Connection conn,
+                                        @NotNull final String sql) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -134,7 +134,7 @@ public class AlteracaoFuncIntervalosAgrupados extends BaseTest {
             }
             return intervalos;
         } finally {
-            DatabaseConnection.closeConnection(null, stmt, rSet);
+            DatabaseConnection.close(stmt, rSet);
         }
     }
 
@@ -193,7 +193,7 @@ public class AlteracaoFuncIntervalosAgrupados extends BaseTest {
         if (dataHoraInicio != null && dataHoraFim != null) {
             intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(dataHoraInicio, dataHoraFim))));
         } else if (dataHoraFim == null) {
-//             Precisamos trocar esse cálculo para contecer no app.
+//             Precisamos trocar esse cálculo para acontecer no app.
 //            intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(dataHoraInicio, dataHoraFim))));
         }
 
