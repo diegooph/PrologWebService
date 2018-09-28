@@ -268,10 +268,11 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setObject(6, Now.localDateTimeUtc());
             stmt.setString(7, token);
             rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.getLong("COD_MARCACAO_INSERIDA") != 0) {
-                return rSet.getLong("COD_MARCACAO_INSERIDA");
+            final long codMarcacaoInserida = rSet.getLong("COD_MARCACAO_INSERIDA");
+            if (rSet.next() && codMarcacaoInserida > 0) {
+                return codMarcacaoInserida;
             } else {
-                throw new SQLException("Não foi possível inserir de "
+                throw new SQLException("Não foi possível inserir a(o) "
                         + marcacaoInicioFim.asString() +
                         " da marcação completa");
             }
@@ -410,7 +411,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setBoolean(1, marcacaoAjuste.isDeveAtivar());
             stmt.setLong(2, marcacaoAjuste.getCodMarcacaoAtivacaoInativacao());
             if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Não foi possível inserir as edições da marcação");
+                throw new SQLException("Não foi possível ativar/inativar a marcação");
             }
         } finally {
             close(stmt);
