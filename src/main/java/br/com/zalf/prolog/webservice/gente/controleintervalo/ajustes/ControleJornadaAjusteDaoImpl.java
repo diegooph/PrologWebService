@@ -385,7 +385,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_MARCACAO_INSERT_AJUSTE_MARCACAO(?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
+                    "FROM FUNC_MARCACAO_INSERT_INFORMACOES_AJUSTE(?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
             stmt.setLong(1, codMarcacaoInserida);
             stmt.setObject(2, dataHoraInserida);
             stmt.setLong(3, marcacaoAjuste.getCodJustificativaAjuste());
