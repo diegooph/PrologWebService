@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.Marca
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -23,6 +24,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
+@DebugLog
 @Path("/controle-jornada/ajustes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
