@@ -72,7 +72,7 @@ public final class ControleJornadaAjusteConverter {
         final LocalDateTime dataHoraInicio = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class);
         if (dataHoraInicio != null) {
             inicio = new MarcacaoAjusteExibicao();
-            inicio.setAtiva(rSet.getBoolean("VALIDO_INICIO"));
+            inicio.setAtiva(rSet.getBoolean("STATUS_ATIVO_INICIO"));
             inicio.setCodMarcacao(rSet.getLong("COD_MARCACAO_INICIO"));
             inicio.setJaFoiAjustada(rSet.getBoolean("FOI_EDITADO_INICIO"));
             inicio.setDataHoraMarcacao(dataHoraInicio);
@@ -82,7 +82,7 @@ public final class ControleJornadaAjusteConverter {
         final LocalDateTime dataHoraFim = rSet.getObject("DATA_HORA_FIM", LocalDateTime.class);
         if (dataHoraFim != null) {
             fim = new MarcacaoAjusteExibicao();
-            fim.setAtiva(rSet.getBoolean("VALIDO_FIM"));
+            fim.setAtiva(rSet.getBoolean("STATUS_ATIVO_FIM"));
             fim.setCodMarcacao(rSet.getLong("COD_MARCACAO_FIM"));
             fim.setJaFoiAjustada(rSet.getBoolean("FOI_EDITADO_FIM"));
             fim.setDataHoraMarcacao(dataHoraFim);

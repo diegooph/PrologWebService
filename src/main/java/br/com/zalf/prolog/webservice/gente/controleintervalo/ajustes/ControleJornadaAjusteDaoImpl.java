@@ -358,7 +358,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE INTERVALO SET IS_ATIVO = ? WHERE CODIGO = ?;");
+            stmt = conn.prepareStatement("UPDATE INTERVALO SET STATUS_ATIVO = ? WHERE CODIGO = ?;");
             stmt.setBoolean(1, marcacaoAjuste.isDeveAtivar());
             stmt.setLong(2, marcacaoAjuste.getCodMarcacaoAtivacaoInativacao());
             if (stmt.executeUpdate() == 0) {
