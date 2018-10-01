@@ -57,7 +57,7 @@ public interface ControleJornadaAjusteDao {
     @NotNull
     List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
             @NotNull final Long codColaborador,
-            @NotNull final Long codTipoMarcacao,
+            @Nullable final Long codTipoMarcacao,
             @NotNull final LocalDate dia) throws Throwable;
 
     /**

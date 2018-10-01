@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -18,7 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
     @Override
     public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
             @NotNull final Long codColaborador,
-            @NotNull final Long codTipoMarcacao,
+            @Nullable final Long codTipoMarcacao,
             @NotNull final LocalDate dia) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -71,7 +72,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_MARCACOES_COLABORADOR_AJUSTE(?, ?, ?);");
             stmt.setLong(1, codColaborador);
-            stmt.setLong(2, codTipoMarcacao);
+            bindValueOrNull(stmt, 2, codTipoMarcacao, SqlType.BIGINT);
             stmt.setObject(3, dia);
             rSet = stmt.executeQuery();
             final List<MarcacaoColaboradorAjuste> marcacoes = new ArrayList<>();
@@ -234,10 +235,9 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                     "FROM FUNC_MARCACAO_INSERT_MARCACAO_INICIO_FIM(?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, marcacaoAjuste.getCodColaboradorMarcacao());
             stmt.setLong(2, marcacaoAjuste.getCodTipoMarcacaoReferente());
-
-            // TODO: aplicar tz da unidade.
-            stmt.setObject(3, marcacaoAjuste.getDataHoraInicio());
-            stmt.setObject(4, marcacaoAjuste.getDataHoraFim());
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(token, conn);
+            stmt.setObject(3, marcacaoAjuste.getDataHoraInicio().atZone(zoneId));
+            stmt.setObject(4, marcacaoAjuste.getDataHoraFim().atZone(zoneId));
             stmt.setObject(5, Now.offsetDateTimeUtc());
             stmt.setString(6, token);
             rSet = stmt.executeQuery();
@@ -263,8 +263,8 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_INSERT_MARCACAO_AVULSA_AJUSTE(?, ?, ?);");
-            // TODO: aplicar TZ da unidade
-            stmt.setObject(1, marcacaoAjuste.getDataHoraInserida());
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(token, conn);
+            stmt.setObject(1, marcacaoAjuste.getDataHoraInserida().atZone(zoneId));
             stmt.setLong(2, marcacaoAjuste.getCodMarcacaoVinculo());
             stmt.setString(3, token);
             rSet = stmt.executeQuery();
@@ -335,9 +335,8 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_MARCACAO_INSERT_INFORMACOES_AJUSTE(?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
             stmt.setLong(1, codMarcacaoInserida);
-            // TODO: tem que usar o código da unidade para aplicar o TZ correto.
-//            final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCpf(relato.getColaboradorRelato().getCpf(), conn);
-            stmt.setObject(2, dataHoraInserida != null ? dataHoraInserida.atOffset(ZoneOffset.UTC) : null);
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(token, conn);
+            stmt.setObject(2, dataHoraInserida != null ? dataHoraInserida.atZone(zoneId) : null);
             stmt.setLong(3, marcacaoAjuste.getCodJustificativaAjuste());
             stmt.setString(4, marcacaoAjuste.getObservacaoAjuste());
             stmt.setString(5, marcacaoAjuste.getTipoAcaoAjuste().asString());

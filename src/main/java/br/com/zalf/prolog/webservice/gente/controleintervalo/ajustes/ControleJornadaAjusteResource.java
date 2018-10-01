@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -38,8 +39,8 @@ public final class ControleJornadaAjusteResource {
     @Path("/marcacoes-consolidadas")
     public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(
             @QueryParam("codUnidade") @Required Long codUnidade,
-            @QueryParam("codTipoMarcacao") @Required Long codTipoMarcacao,
-            @QueryParam("codColaborador") @Required Long codColaborador,
+            @QueryParam("codTipoMarcacao") @Optional Long codTipoMarcacao,
+            @QueryParam("codColaborador") @Optional Long codColaborador,
             @QueryParam("dataInicial") @Required String dataInicial,
             @QueryParam("dataFinal") @Required String dataFinal) throws ProLogException {
         return service.getMarcacoesConsolidadasParaAjuste(
