@@ -29,6 +29,7 @@ final class DashboardChecklistComponentsCreator {
             @NotNull final List<QuantidadeChecklists> checklistsDia) {
 
         final Map<Double, String> informacoesPontos = new HashMap<>(checklistsDia.size());
+        final Map<Double, String> representacoesValoresX = new HashMap<>(checklistsDia.size());
         final List<LineEntry> entriesSaida = new ArrayList<>();
         final List<LineEntry> entriesRetorno = new ArrayList<>();
         for (int i = 0; i < checklistsDia.size(); i++) {
@@ -62,6 +63,7 @@ final class DashboardChecklistComponentsCreator {
                 informacaoPonto = String.format("%s\nsem checklists", informacaoPonto);
             }
             informacoesPontos.put((double) i, informacaoPonto);
+            representacoesValoresX.put((double) i, qtdChecklists.getDataFormatada());
         }
 
         final List<LineGroup> groups = new ArrayList<>(2 /* saída e retorno */);
@@ -85,6 +87,7 @@ final class DashboardChecklistComponentsCreator {
                 .withLabelEixoY(component.labelEixoY)
                 .withLineData(lineData)
                 .withSelectionLineColor(Color.RED)
+                .withRepresentacoesValoresX(representacoesValoresX)
                 .withLinesOrientation(LinesOrientation.HORIZONTAL)
                 .withInformacoesPontos(informacoesPontos)
                 .build();

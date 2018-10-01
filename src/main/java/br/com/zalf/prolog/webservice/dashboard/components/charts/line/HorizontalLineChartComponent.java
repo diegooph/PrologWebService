@@ -31,16 +31,6 @@ public final class HorizontalLineChartComponent extends ChartComponent {
     private final String labelEixoY;
 
     /**
-     * Podem ser entendidas como linhas de 'meta'. É uma constante no eixo Y que deve atravessar o gráfico totalmente
-     * e ter sua descrição anexada.
-     *
-     * Exemplo: Em um gráfico de vendas / mês, uma limitLine poderia ser uma linha reta na posição Y 50k indicando que
-     * essa é a meta a ser atingida.
-     */
-    @Nullable
-    private final List<HorizontalLimitLine> limitLines;
-
-    /**
      * Contém todos os dados necessários para plotar o gráfico.
      */
     @NotNull
@@ -52,6 +42,25 @@ public final class HorizontalLineChartComponent extends ChartComponent {
      */
     @NotNull
     private final Color selectionLineColor;
+
+    /**
+     * Como um mesmo gráfico pode ter linhas que não possuem valores nos mesmos pontos, não é possível, e nem
+     * recomendado, pegar as representações dos valores do eixo X de uma linha específica. Esse {@link Map map} irá
+     * mapear todos os valores que esse gráfico tem para o eixo X (independente da linha) para sua respectiva
+     * representação de valor.
+     */
+    @NotNull
+    private final Map<Double, String> representacoesValoresX;
+
+    /**
+     * Podem ser entendidas como linhas de 'meta'. É uma constante no eixo Y que deve atravessar o gráfico totalmente
+     * e ter sua descrição anexada.
+     *
+     * Exemplo: Em um gráfico de vendas / mês, uma limitLine poderia ser uma linha reta na posição Y 50k indicando que
+     * essa é a meta a ser atingida.
+     */
+    @Nullable
+    private final List<HorizontalLimitLine> limitLines;
 
     /**
      * Quando um usuário clicar em um ponto no eixo Y, seja qual for o seu X, deve ser acessível para ele as informações
@@ -75,6 +84,7 @@ public final class HorizontalLineChartComponent extends ChartComponent {
                                          @NotNull final LineData lineData,
                                          @NotNull final Color selectionLineColor,
                                          @NotNull final LinesOrientation orientation,
+                                         @NotNull final Map<Double, String> representacoesValoresX,
                                          @Nullable final List<HorizontalLimitLine> limitLines,
                                          @Nullable final Map<Double, String> informacoesPontos) {
         super(codigo,
@@ -91,9 +101,10 @@ public final class HorizontalLineChartComponent extends ChartComponent {
                 ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;
-        this.limitLines = limitLines;
         this.lineData = lineData;
         this.selectionLineColor = selectionLineColor;
+        this.representacoesValoresX = representacoesValoresX;
+        this.limitLines = limitLines;
         this.informacoesPontos = informacoesPontos;
     }
 
@@ -105,6 +116,7 @@ public final class HorizontalLineChartComponent extends ChartComponent {
         private LinesOrientation linesOrientation;
         private Map<Double, String> informacoesPontos;
         private Color selectionLineColor;
+        private Map<Double, String> representacoesValoresX;
 
         public Builder() {}
 
@@ -197,6 +209,11 @@ public final class HorizontalLineChartComponent extends ChartComponent {
             return this;
         }
 
+        public Builder withRepresentacoesValoresX(@NotNull Map<Double, String> representacoesValoresX) {
+            this.representacoesValoresX = representacoesValoresX;
+            return this;
+        }
+
         @Override
         public HorizontalLineChartComponent build() {
             ensureNotNullValues();
@@ -205,6 +222,7 @@ public final class HorizontalLineChartComponent extends ChartComponent {
             checkNotNull(lineData, "lineData deve ser instanciada com 'withLineData'");
             checkNotNull(selectionLineColor, "selectionLineColor deve ser instanciada com 'withSelectionLineColor'");
             checkNotNull(linesOrientation, "linesOrientation deve ser instanciada com 'withLinesOrientation'");
+            checkNotNull(representacoesValoresX, "representacoesValoresX deve ser instanciada com 'withRepresentacoesValoresX'");
 
             return new HorizontalLineChartComponent(
                     codigo,
@@ -221,6 +239,7 @@ public final class HorizontalLineChartComponent extends ChartComponent {
                     lineData,
                     selectionLineColor,
                     linesOrientation,
+                    representacoesValoresX,
                     limitLines,
                     informacoesPontos);
         }
