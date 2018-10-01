@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.importar;
 
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import com.univocity.parsers.common.processor.BeanListProcessor;
 import com.univocity.parsers.csv.CsvParser;
@@ -24,7 +23,7 @@ public final class PneuImportReader {
     }
 
     @NotNull
-    public static List<Pneu> readFromCsv(@NotNull final InputStream inputStream) throws Throwable {
+    public static List<Pneu> readFromCsv(@NotNull final InputStream inputStream) {
         final BeanListProcessor<PneuImport> rowProcessor = new BeanListProcessor<>(PneuImport.class);
         final CsvParserSettings settings = new CsvParserSettings();
         settings.setDelimiterDetectionEnabled(true, ',', ';');
@@ -36,7 +35,7 @@ public final class PneuImportReader {
     }
 
     @NotNull
-    private static List<Pneu> toPneus(@NotNull final List<PneuImport> pneusImport) throws Throwable {
+    private static List<Pneu> toPneus(@NotNull final List<PneuImport> pneusImport) {
         final List<Pneu> pneus = new ArrayList<>(pneusImport.size());
         for (final PneuImport pneuImport : pneusImport) {
             final Pneu pneu = new PneuComum();
@@ -67,7 +66,6 @@ public final class PneuImportReader {
             pneu.setStatus(pneuImport.getStatusPneu());
             pneu.setVidaAtual(pneuImport.getVidaAtual());
             pneu.setVidasTotal(pneuImport.getVidasTotal());
-            PneuValidator.validacaoAtributosPneu(pneu, pneu.getCodUnidadeAlocado());
             pneus.add(pneu);
         }
         return pneus;
