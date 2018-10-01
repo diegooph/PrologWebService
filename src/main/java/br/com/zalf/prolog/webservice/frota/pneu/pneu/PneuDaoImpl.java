@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizadoIncrementaVida;
@@ -74,12 +75,14 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     @Override
     public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
         Connection conn = null;
+        int linha = 1;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
             final List<Long> codigosPneus = new ArrayList<>(pneus.size());
             for (final Pneu pneu : pneus) {
                 codigosPneus.add(internalInsert(conn, pneu, pneu.getCodUnidadeAlocado()));
+                linha++;
             }
             conn.commit();
             return codigosPneus;
@@ -87,7 +90,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             if (conn != null) {
                 conn.rollback();
             }
-            throw e;
+            throw new GenericException("Erro ao inserir pneu da linha: " + linha + " -- " + e.getMessage());
         } finally {
             closeConnection(conn);
         }
