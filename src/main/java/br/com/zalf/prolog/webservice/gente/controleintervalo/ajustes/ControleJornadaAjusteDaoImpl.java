@@ -262,15 +262,15 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_INSERT_MARCACAO_AVULSA_AJUSTE(?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_MARCACAO_INSERT_MARCACAO_AVULSA_AJUSTE(?, ?, ?) AS CODIGO;");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(token, conn);
-            stmt.setObject(1, marcacaoAjuste.getDataHoraInserida().atZone(zoneId));
+            stmt.setObject(1, marcacaoAjuste.getDataHoraInserida().atZone(zoneId).toLocalDate());
             stmt.setLong(2, marcacaoAjuste.getCodMarcacaoVinculo());
             stmt.setString(3, token);
             rSet = stmt.executeQuery();
-            final long codMarcacaoInserida = rSet.getLong("NEW_COD_MARCACAO");
-            if (rSet.next() && codMarcacaoInserida > 0) {
-                return codMarcacaoInserida;
+            if (rSet.next() && rSet.getLong("CODIGO") > 0) {
+                return rSet.getLong("CODIGO");
             } else {
                 throw new SQLException("Não foi possível inserir a marcação");
             }
@@ -287,10 +287,10 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         try {
             if (tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)) {
                 stmt = conn.prepareStatement("INSERT INTO MARCACAO_INICIO(COD_MARCACAO_INICIO) " +
-                        "VALUES (?) RETURNING CODIGO");
+                        "VALUES (?) RETURNING COD_MARCACAO_INICIO AS CODIGO");
             } else {
                 stmt = conn.prepareStatement("INSERT INTO MARCACAO_FIM(COD_MARCACAO_FIM) " +
-                        "VALUES (?) RETURNING CODIGO");
+                        "VALUES (?) RETURNING COD_MARCACAO_FIM AS CODIGO");
             }
             stmt.setLong(1, codMarcacaoInserida);
             rSet = stmt.executeQuery();
@@ -336,7 +336,9 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                     "FROM FUNC_MARCACAO_INSERT_INFORMACOES_AJUSTE(?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
             stmt.setLong(1, codMarcacaoInserida);
             final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(token, conn);
-            stmt.setObject(2, dataHoraInserida != null ? dataHoraInserida.atZone(zoneId) : null);
+            stmt.setObject(2, dataHoraInserida != null
+                    ? dataHoraInserida.atZone(zoneId).toLocalDate()
+                    : null);
             stmt.setLong(3, marcacaoAjuste.getCodJustificativaAjuste());
             stmt.setString(4, marcacaoAjuste.getObservacaoAjuste());
             stmt.setString(5, marcacaoAjuste.getTipoAcaoAjuste().asString());
