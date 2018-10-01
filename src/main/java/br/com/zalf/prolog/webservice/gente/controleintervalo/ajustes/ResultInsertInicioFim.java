@@ -7,24 +7,24 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ResultInsertInicioFim {
+final class ResultInsertInicioFim {
     @NotNull
     private final Long codMarcacaoInicio;
     @NotNull
     private final Long codMarcacaoFim;
 
-    public ResultInsertInicioFim(@NotNull final Long codMarcacaoInicio, @NotNull final Long codMarcacaoFim) {
+    ResultInsertInicioFim(@NotNull final Long codMarcacaoInicio, @NotNull final Long codMarcacaoFim) {
         this.codMarcacaoInicio = codMarcacaoInicio;
         this.codMarcacaoFim = codMarcacaoFim;
     }
 
     @NotNull
-    public Long getCodMarcacaoInicio() {
+    Long getCodMarcacaoInicio() {
         return codMarcacaoInicio;
     }
 
     @NotNull
-    public Long getCodMarcacaoFim() {
+    Long getCodMarcacaoFim() {
         return codMarcacaoFim;
     }
 }

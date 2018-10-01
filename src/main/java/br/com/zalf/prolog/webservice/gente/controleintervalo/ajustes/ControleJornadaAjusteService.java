@@ -31,12 +31,12 @@ public final class ControleJornadaAjusteService {
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @NotNull
-    public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(@NotNull final Long codUnidade,
-                                                                            @Nullable final Long codTipoMarcacao,
-                                                                            @Nullable final Long codColaborador,
-                                                                            @NotNull final String dataInicial,
-                                                                            @NotNull final String dataFinal)
-            throws ProLogException {
+    List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(
+            @NotNull final Long codUnidade,
+            @Nullable final Long codTipoMarcacao,
+            @Nullable final Long codColaborador,
+            @NotNull final String dataInicial,
+            @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getMarcacoesConsolidadasParaAjuste(
                     codUnidade,
@@ -57,17 +57,20 @@ public final class ControleJornadaAjusteService {
     }
 
     @NotNull
-    public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(@NotNull final Long codColaborador,
-                                                                             @NotNull final String dia)
-            throws ProLogException {
+    List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
+            @NotNull final Long codColaborador,
+            @NotNull final Long codTipoMarcacao,
+            @NotNull final String dia) throws ProLogException {
         try {
             return dao.getMarcacoesColaboradorParaAjuste(
                     codColaborador,
+                    codTipoMarcacao,
                     ProLogDateParser.toLocalDate(dia));
         } catch (final Throwable e) {
             final String log = String.format("Erro ao buscar as marcações do colaborador:\n" +
                     "codColaborador: %d\n" +
-                    "dia: %s\n", codColaborador, dia);
+                    "codTipoMarcacao: %d\n" +
+                    "dia: %s\n", codColaborador, codTipoMarcacao, dia);
             Log.e(TAG, log, e);
             throw exceptionHandler.map(e, "Erro ao buscar as marcações do colaborador");
         }

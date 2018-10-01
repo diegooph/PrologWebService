@@ -36,25 +36,28 @@ public interface ControleJornadaAjusteDao {
      * @throws Throwable Caso qualquer erro aconteça.
      */
     @NotNull
-    List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(@NotNull final Long codUnidade,
-                                                                     @Nullable final Long codTipoMarcacao,
-                                                                     @Nullable final Long codColaborador,
-                                                                     @NotNull final LocalDate dataInicial,
-                                                                     @NotNull final LocalDate dataFinal) throws
-            Throwable;
+    List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(
+            @NotNull final Long codUnidade,
+            @Nullable final Long codTipoMarcacao,
+            @Nullable final Long codColaborador,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
-     * Busca todas as marcações realizadas pelo {@link Colaborador colaborador} no dia filtrado.
-     * Estas marcações serão listadas para possibilitar a edição das mesmas.
+     * Busca todas as marcações realizadas pelo {@link Colaborador colaborador} no dia filtrado,
+     * respeitando o {@code codTipoMarcacao} selecionado para filtragem.
+     * Estas marcações serão listadas para possibilitar o ajuste das mesmas.
      *
-     * @param codColaborador Código do {@link Colaborador} que será buscado as marcações.
-     * @param dia            Dia da qual as marcações serão buscadas.
+     * @param codColaborador  Código do {@link Colaborador} que será buscado as marcações.
+     * @param codTipoMarcacao Código do {@link TipoMarcacao} que será buscado.
+     * @param dia             Dia da qual as marcações serão buscadas.
      * @return Um {@link List<MarcacaoColaboradorAjuste>} contendo os dados filtrados.
      * @throws Throwable Caso qualquer erro aconteça.
      */
     @NotNull
     List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
             @NotNull final Long codColaborador,
+            @NotNull final Long codTipoMarcacao,
             @NotNull final LocalDate dia) throws Throwable;
 
     /**

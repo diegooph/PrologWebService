@@ -56,14 +56,13 @@ public final class ControleJornadaAjusteResource {
     @Path("/marcacoes-colaboradores")
     public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
             @QueryParam("codColaborador") @Required Long codColaborador,
+            @QueryParam("codTipoMarcacao") @Required Long codTipoMarcacao,
             @QueryParam("dia") @Required String dia) throws ProLogException {
-        return service.getMarcacoesColaboradorParaAjuste(
-                codColaborador,
-                dia);
+        return service.getMarcacoesColaboradorParaAjuste(codColaborador, codTipoMarcacao, dia);
     }
 
     @POST
-    @UsedBy(platforms = Platform.ANDROID)
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured()
     @Path("/adicionar-marcacao-avulsa")
     public Response adicionarMarcacaoAjuste(@HeaderParam("Authorization") String userToken,
@@ -72,7 +71,7 @@ public final class ControleJornadaAjusteResource {
     }
 
     @POST
-    @UsedBy(platforms = Platform.ANDROID)
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured()
     @Path("/adicionar-marcacao-inicio-fim")
     public Response adicionarMarcacaoAjuste(
@@ -82,7 +81,7 @@ public final class ControleJornadaAjusteResource {
     }
 
     @POST
-    @UsedBy(platforms = Platform.ANDROID)
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured()
     @Path("/editar-marcacao")
     public Response editarMarcacaoAjuste(@HeaderParam("Authorization") String userToken,
@@ -91,7 +90,7 @@ public final class ControleJornadaAjusteResource {
     }
 
     @DELETE
-    @UsedBy(platforms = Platform.ANDROID)
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured()
     @Path("/ativar-inativar-marcacao")
     public Response ativarInativarMarcacaoAjuste(

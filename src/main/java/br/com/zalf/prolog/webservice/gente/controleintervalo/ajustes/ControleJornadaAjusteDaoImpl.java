@@ -33,18 +33,19 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     @NotNull
     @Override
-    public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(@NotNull final Long codUnidade,
-                                                                            @Nullable final Long codTipoMarcacao,
-                                                                            @Nullable final Long codColaborador,
-                                                                            @NotNull final LocalDate dataInicial,
-                                                                            @NotNull final LocalDate dataFinal)
-            throws Throwable {
+    public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(
+            @NotNull final Long codUnidade,
+            @Nullable final Long codTipoMarcacao,
+            @Nullable final Long codColaborador,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_MARCACOES_CONSOLIDADAS_AJUSTE(?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_MARCACAO_GET_MARCACOES_CONSOLIDADAS_AJUSTE(?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
             bindValueOrNull(stmt, 2, codTipoMarcacao, SqlType.BIGINT);
             bindValueOrNull(stmt, 3, codColaborador, SqlType.BIGINT);
@@ -59,17 +60,19 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     @NotNull
     @Override
-    public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(@NotNull final Long codColaborador,
-                                                                             @NotNull final LocalDate dia)
-            throws Throwable {
+    public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
+            @NotNull final Long codColaborador,
+            @NotNull final Long codTipoMarcacao,
+            @NotNull final LocalDate dia) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_MARCACOES_COLABORADOR_AJUSTE(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_MARCACOES_COLABORADOR_AJUSTE(?, ?, ?);");
             stmt.setLong(1, codColaborador);
-            stmt.setObject(2, dia);
+            stmt.setLong(2, codTipoMarcacao);
+            stmt.setObject(3, dia);
             rSet = stmt.executeQuery();
             final List<MarcacaoColaboradorAjuste> marcacoes = new ArrayList<>();
             while (rSet.next()) {
@@ -90,21 +93,15 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             conn.setAutoCommit(false);
             final Long codMarcacaoInserida = insereMarcacaoAjusteAdicao(conn, token, marcacaoAjuste);
             final TipoInicioFim tipoInicioFim = marcacaoAjuste.getTipoInicioFim();
-            insereVinculoMarcacaoInicioOuFim(
-                    conn,
-                    codMarcacaoInserida,
-                    tipoInicioFim);
+            insereVinculoMarcacaoInicioOuFim(conn, codMarcacaoInserida, tipoInicioFim);
             final Long codMarcacaoInicio = tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)
                     ? codMarcacaoInserida
                     : marcacaoAjuste.getCodMarcacaoVinculo();
             final Long codMarcacaoFim = tipoInicioFim.equals(TipoInicioFim.MARCACAO_FIM)
                     ? codMarcacaoInserida
                     : marcacaoAjuste.getCodMarcacaoVinculo();
-            insereVinculoInicioFim(
-                    conn,
-                    codMarcacaoInicio,
-                    codMarcacaoFim);
-            insereInformacoesEdicaoMarcacao(
+            insereVinculoInicioFim(conn, codMarcacaoInicio, codMarcacaoFim);
+            insereInformacoesAjusteMarcacao(
                     conn,
                     codMarcacaoInserida,
                     token,
@@ -133,13 +130,13 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             insereVinculoMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoInicio(), TipoInicioFim.MARCACAO_INICIO);
             insereVinculoMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoFim(), TipoInicioFim.MARCACAO_FIM);
             insereVinculoInicioFim(conn, codigos.getCodMarcacaoInicio(), codigos.getCodMarcacaoFim());
-            insereInformacoesEdicaoMarcacao(
+            insereInformacoesAjusteMarcacao(
                     conn,
                     codigos.getCodMarcacaoInicio(),
                     token,
                     marcacaoAjuste,
                     null);
-            insereInformacoesEdicaoMarcacao(
+            insereInformacoesAjusteMarcacao(
                     conn,
                     codigos.getCodMarcacaoFim(),
                     token,
@@ -163,7 +160,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            insereInformacoesEdicaoMarcacao(
+            insereInformacoesAjusteMarcacao(
                     conn,
                     marcacaoAjuste.getCodMarcacaoEdicao(),
                     token,
@@ -189,7 +186,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             conn = getConnection();
             conn.setAutoCommit(false);
             internalAtivarInativarMarcacaoAjuste(conn, marcacaoAjuste);
-            insereInformacoesEdicaoMarcacao(
+            insereInformacoesAjusteMarcacao(
                     conn,
                     marcacaoAjuste.getCodMarcacaoAtivacaoInativacao(),
                     token,
@@ -208,18 +205,23 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     @NotNull
     @Override
-    public List<MarcacaoAjusteHistoricoExibicao> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws
-            Throwable {
+    public List<MarcacaoAjusteHistoricoExibicao> getMarcacaoAjusteHistorio(
+            @NotNull final Long codMarcacao) throws Throwable {
         return null;
     }
 
     @NotNull
     @Override
-    public List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes(@NotNull final Long codMarcacao) throws
-            Throwable {
+    public List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes(
+            @NotNull final Long codMarcacao) throws Throwable {
         return null;
     }
 
+    //############################################################################################
+    //############################################################################################
+    //                                  PRIVATE METHODS
+    //############################################################################################
+    //############################################################################################
     @NotNull
     private ResultInsertInicioFim insereMarcacaoAjusteAdicaoInicioFim(
             @NotNull final Connection conn,
@@ -228,7 +230,8 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_INSERT_MARCACAO_INICIO_FIM(?, ?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_MARCACAO_INSERT_MARCACAO_INICIO_FIM(?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, marcacaoAjuste.getCodColaboradorMarcacao());
             stmt.setLong(2, marcacaoAjuste.getCodTipoMarcacaoReferente());
 
@@ -238,7 +241,9 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setObject(5, Now.offsetDateTimeUtc());
             stmt.setString(6, token);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
+            if (rSet.next()
+                    && rSet.getLong("COD_MARCACAO_INICIO") > 0
+                    && rSet.getLong("COD_MARCACAO_FIM") > 0) {
                 return new ResultInsertInicioFim(
                         rSet.getLong("COD_MARCACAO_INICIO"),
                         rSet.getLong("COD_MARCACAO_FIM"));
@@ -318,7 +323,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         }
     }
 
-    private void insereInformacoesEdicaoMarcacao(
+    private void insereInformacoesAjusteMarcacao(
             @NotNull final Connection conn,
             @NotNull final Long codMarcacaoInserida,
             @NotNull final String token,
