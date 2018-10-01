@@ -77,6 +77,10 @@ public final class PneuImportReader {
             throw new IllegalStateException("O pneu " + pneuImport.getCodigoCliente() + " está acima da primeira vida e " +
                     "não tem banda setada");
         }
+        if (pneuImport.getVidaAtual() > pneuImport.getVidasTotal()) {
+            throw new IllegalStateException("A total de vidas não pode ser maior do que a vida atual: "
+                    + pneuImport.getCodigoCliente());
+        }
 
         if (pneuImport.getCodModeloBanda() != null) {
             final Banda banda = new Banda();
