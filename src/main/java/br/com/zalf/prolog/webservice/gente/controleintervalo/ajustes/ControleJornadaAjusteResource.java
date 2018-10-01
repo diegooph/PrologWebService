@@ -90,7 +90,7 @@ public final class ControleJornadaAjusteResource {
         return service.editarMarcacaoAjuste(userToken, marcacaoAjuste);
     }
 
-    @DELETE
+    @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured()
     @Path("/ativar-inativar-marcacao")
