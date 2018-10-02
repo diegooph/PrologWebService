@@ -59,8 +59,8 @@ public final class ControleJornadaAjusteConverter {
         marcacoesColab.setCodTipoMarcacao(rSet.getLong("COD_TIPO_MARCACAO"));
         marcacoesColab.setNomeTipoMarcacao(rSet.getString("NOME_TIPO_MARCACAO"));
         marcacoesColab.setJaFoiAjustada(
-                rSet.getBoolean("FOI_EDITADO_INICIO")
-                || rSet.getBoolean("FOI_EDITADO_FIM"));
+                rSet.getBoolean("FOI_AJUSTADO_INICIO")
+                || rSet.getBoolean("FOI_AJUSTADO_FIM"));
         marcacoesColab.setMarcacoes(createMarcacaoAgrupadaAjusteExibicao(rSet));
         return marcacoesColab;
     }
@@ -74,7 +74,7 @@ public final class ControleJornadaAjusteConverter {
             inicio = new MarcacaoAjusteExibicao();
             inicio.setAtiva(rSet.getBoolean("STATUS_ATIVO_INICIO"));
             inicio.setCodMarcacao(rSet.getLong("COD_MARCACAO_INICIO"));
-            inicio.setJaFoiAjustada(rSet.getBoolean("FOI_EDITADO_INICIO"));
+            inicio.setJaFoiAjustada(rSet.getBoolean("FOI_AJUSTADO_INICIO"));
             inicio.setDataHoraMarcacao(dataHoraInicio);
         }
 
@@ -84,7 +84,7 @@ public final class ControleJornadaAjusteConverter {
             fim = new MarcacaoAjusteExibicao();
             fim.setAtiva(rSet.getBoolean("STATUS_ATIVO_FIM"));
             fim.setCodMarcacao(rSet.getLong("COD_MARCACAO_FIM"));
-            fim.setJaFoiAjustada(rSet.getBoolean("FOI_EDITADO_FIM"));
+            fim.setJaFoiAjustada(rSet.getBoolean("FOI_AJUSTADO_FIM"));
             fim.setDataHoraMarcacao(dataHoraFim);
         }
 
