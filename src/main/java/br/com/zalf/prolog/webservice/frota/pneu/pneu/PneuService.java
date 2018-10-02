@@ -43,7 +43,7 @@ public class PneuService {
         try {
             return dao.insert(PneuImportReader.readFromCsv(fileInputStream));
         } catch (final Throwable throwable) {
-            final String errorMessage = "Erro ao inserir pneus";
+            final String errorMessage = "Erro ao inserir pneus -- " + throwable.getMessage();
             Log.e(TAG, errorMessage, throwable);
             throw exceptionHandler.map(throwable, errorMessage);
         }
