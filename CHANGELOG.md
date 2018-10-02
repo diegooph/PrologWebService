@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.76"></a>
-## Version [v0.0.76](https://github.com/luizfp/PrologWeb/compare/v0.0.75...v0.0.76) (release-data) [unreleased]
+## Version [v0.0.76](https://github.com/luizfp/PrologWeb/compare/v0.0.75...v0.0.76) (2018-10-02)
 
 ### Features
 * Permite filtro por múltiplas unidades nos relatórios do checklist
