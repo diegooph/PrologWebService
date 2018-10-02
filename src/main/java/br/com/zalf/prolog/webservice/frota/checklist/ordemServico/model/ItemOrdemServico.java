@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -8,8 +8,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
+ * Itens que compõem uma Ordem de Serviço.
+ *
  * Created by jean on 25/07/16.
- * Itens que compõe uma OS
  */
 public class ItemOrdemServico {
 
@@ -30,7 +31,7 @@ public class ItemOrdemServico {
                     }
                 }
             }
-            throw new IllegalArgumentException("Nenhum enum com esse valor encontrado");
+            throw new IllegalArgumentException("Nenhum enum com esse valor encontrado: " + text);
         }
     }
 
@@ -38,47 +39,71 @@ public class ItemOrdemServico {
      * Código da OS ao qual esse item pertence
      */
     private Long codOs;
+
+    /**
+     * Código da unidade da qual este item pertence.
+     */
+    private Long codUnidadeItemOs;
+
     /**
      * Placa ao qual o item pertence
      */
     private String placa;
+
     /**
      * Pergunta e alternativa = item
      */
     private PerguntaRespostaChecklist pergunta;
+
+    /**
+     * Usuário responsável pelo conserto do item
+     */
     private Colaborador mecanico;
+
     /**
      * Data em que o item foi apontado pela primeira vez
      */
     private LocalDateTime dataApontamento;
+
     /**
      * data e hora em que o item foi marcado como consertado
      */
     private LocalDateTime dataHoraConserto;
+
     /**
      * Km do veículo no momento em que o item foi fechado
      */
     private long kmVeiculoFechamento;
+
+    /**
+     * Status em que o item se encontra, podendo ser {@link Status}#RESOLVIDO
+     * ou {@link Status}#PENDENTE
+     */
     private Status status;
+
     /**
      * Tempo que o item levou para ser consertado
      */
     @SerializedName("tempoRealizacaoConsertoEmSegundos")
     private Duration tempoRealizacaoConserto;
+
     /**
      * Prazo em horas para conserto do item
      */
     @SerializedName("tempoLimiteResolucaoEmSegundos")
     private Duration tempoLimiteResolucao;
+
     /**
      * Tempo restante para consertar o item, baseado na sua prioridade
      */
     @SerializedName("tempoRestanteEmSegundos")
     private Duration tempoRestante;
+
     /**
      * Observação do serviço realizado
      */
     private String feedbackResolucao;
+
     /**
      * Quantidade de apontamentos que um item tem
      */
@@ -90,6 +115,15 @@ public class ItemOrdemServico {
     private Long codigo;
 
     public ItemOrdemServico() {
+
+    }
+
+    public Long getCodUnidadeItemOs() {
+        return codUnidadeItemOs;
+    }
+
+    public void setCodUnidadeItemOs(final Long codUnidadeItemOs) {
+        this.codUnidadeItemOs = codUnidadeItemOs;
     }
 
     public int getQtdApontamentos() {

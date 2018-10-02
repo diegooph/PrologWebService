@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
@@ -27,7 +27,7 @@ public class OrdemServico {
                     }
                 }
             }
-            throw new IllegalArgumentException("Nenhum enum com esse valor encontrado");
+            throw new IllegalArgumentException("Nenhum enum com esse valor encontrado: " + text);
         }
     }
 

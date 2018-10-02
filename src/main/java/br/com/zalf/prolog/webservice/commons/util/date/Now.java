@@ -28,7 +28,7 @@ public final class Now {
     }
 
     @NotNull
-    public static LocalDate localDate() {
+    public static LocalDate localDateUtc() {
         return LocalDate.now(Clock.systemUTC());
     }
 

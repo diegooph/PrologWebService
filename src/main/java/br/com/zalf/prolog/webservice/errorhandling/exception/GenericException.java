@@ -11,7 +11,7 @@ public class GenericException extends ProLogException {
 
     public GenericException(@NotNull final String message,
                             @Nullable final String developerMessage,
-                            @NotNull final Exception parentException) {
+                            @NotNull final Throwable parentException) {
             super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                     ProLogErrorCodes.GENERIC.errorCode(),
                     message,

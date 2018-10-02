@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Created on 04/09/18.
@@ -19,14 +20,14 @@ public class MovimentacaoRelatorioService {
     @NotNull
     private MovimentacaoRelatorioDao dao = Injection.provideMovimentacaoRelatorioDao();
 
-    public void getDadosGeraisAfericaoCsv(@NotNull final OutputStream out,
-                                          @NotNull final Long codUnidade,
-                                          @NotNull final String dataInicial,
-                                          @NotNull final String dataFinal) {
+    public void getDadosGeraisMovimentacoesCsv(@NotNull final OutputStream out,
+                                               @NotNull final List<Long> codUnidades,
+                                               @NotNull final String dataInicial,
+                                               @NotNull final String dataFinal) {
         try {
-            dao.getDadosGeraisMovimentacaoCsv(
+            dao.getDadosGeraisMovimentacoesCsv(
                     out,
-                    codUnidade,
+                    codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
@@ -36,12 +37,12 @@ public class MovimentacaoRelatorioService {
     }
 
     @NotNull
-    public Report getDadosGeraisAfericaoReport(@NotNull final Long codUnidade,
-                                               @NotNull final String dataInicial,
-                                               @NotNull final String dataFinal) throws ProLogException {
+    public Report getDadosGeraisMovimentacoesReport(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final String dataInicial,
+                                                    @NotNull final String dataFinal) throws ProLogException {
         try {
-            return dao.getDadosGeraisMovimentacaoReport(
-                    codUnidade,
+            return dao.getDadosGeraisMovimentacoesReport(
+                    codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {

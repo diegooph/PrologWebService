@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Created on 30/08/18.
@@ -19,14 +20,14 @@ public class AfericaoRelatorioService {
     @NotNull
     private AfericaoRelatorioDao dao = Injection.provideAfericaoRelatorioDao();
 
-    public void getDadosGeraisAfericaoCsv(@NotNull final OutputStream out,
-                                          @NotNull final Long codUnidade,
-                                          @NotNull final String dataInicial,
-                                          @NotNull final String dataFinal) {
+    public void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
+                                           @NotNull final List<Long> codUnidades,
+                                           @NotNull final String dataInicial,
+                                           @NotNull final String dataFinal) {
         try {
-            dao.getDadosGeraisAfericaoCsv(
+            dao.getDadosGeraisAfericoesCsv(
                     out,
-                    codUnidade,
+                    codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
@@ -36,12 +37,12 @@ public class AfericaoRelatorioService {
     }
 
     @NotNull
-    public Report getDadosGeraisAfericaoReport(@NotNull final Long codUnidade,
-                                               @NotNull final String dataInicial,
-                                               @NotNull final String dataFinal) throws ProLogException {
+    public Report getDadosGeraisAfericoesReport(@NotNull final List<Long> codUnidades,
+                                                @NotNull final String dataInicial,
+                                                @NotNull final String dataFinal) throws ProLogException {
         try {
-            return dao.getDadosGeraisAfericaoReport(
-                    codUnidade,
+            return dao.getDadosGeraisAfericoesReport(
+                    codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {

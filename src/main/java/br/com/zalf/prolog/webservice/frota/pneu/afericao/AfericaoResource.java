@@ -46,9 +46,6 @@ public class AfericaoResource {
     @NotNull
     private final AfericaoService service = new AfericaoService();
 
-    @NotNull
-    private final AfericaoRelatorioService relatorioService = new AfericaoRelatorioService();
-
     @POST
     @Secured(permissions = {
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
@@ -219,24 +216,5 @@ public class AfericaoResource {
             @QueryParam("offset") long offset,
             @HeaderParam("Authorization") String userToken) throws ProLogException {
         throw new VersaoAppBloqueadaException("Atualize o aplicativo para poder buscar as aferições realizadas");
-    }
-
-    @GET
-    @Produces("application/csv")
-    @Path("/unidades/{codUnidade}/csv")
-    public StreamingOutput getDadosGeraisAfericao(
-            @PathParam("codUnidade") @Required final Long codUnidade,
-            @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal) {
-        return outputStream -> relatorioService.getDadosGeraisAfericaoCsv(outputStream, codUnidade, dataInicial, dataFinal);
-    }
-
-    @GET
-    @Path("/unidades/{codUnidade}/report")
-    public Report getDadosGeraisProdutividadeReport(@PathParam("codUnidade") @Required final Long codUnidade,
-                                                    @QueryParam("dataInicial") @Required final String dataInicial,
-                                                    @QueryParam("dataFinal") @Required final String dataFinal)
-            throws ProLogException {
-        return relatorioService.getDadosGeraisAfericaoReport(codUnidade, dataInicial, dataFinal);
     }
 }

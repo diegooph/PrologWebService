@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios.AfericaoRelatorioService;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioService;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -32,6 +34,12 @@ import java.util.List;
 public class RelatorioPneuResource {
     @NotNull
     private final RelatorioPneuService service = new RelatorioPneuService();
+
+    @NotNull
+    private final AfericaoRelatorioService afericoesRelatorioService = new AfericaoRelatorioService();
+
+    @NotNull
+    private final MovimentacaoRelatorioService movimentacoesRelatorioService = new MovimentacaoRelatorioService();
 
     @GET
     @Path("/afericoes-avulsas/csv")
@@ -160,6 +168,52 @@ public class RelatorioPneuResource {
     public Report getResumoGeralPneusReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                             @QueryParam("status-pneu") @Optional final String status) {
         return service.getResumoGeralPneusReport(codUnidades, status);
+    }
+
+    @GET
+    @Produces("application/csv")
+    @Path("/dados-gerais-afericoes/csv")
+    public StreamingOutput getDadosGeraisAfericoesCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> afericoesRelatorioService.getDadosGeraisAfericoesCsv(
+                outputStream,
+                codUnidades,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Path("/dados-gerais-afericoes/report")
+    public Report getDadosGeraisAfericoesReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                @QueryParam("dataInicial") @Required final String dataInicial,
+                                                @QueryParam("dataFinal") @Required final String dataFinal)
+            throws ProLogException {
+        return afericoesRelatorioService.getDadosGeraisAfericoesReport(codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Produces("application/csv")
+    @Path("/dados-gerais-movimentacoes/csv")
+    public StreamingOutput getDadosGeraisMovimentacoesCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> movimentacoesRelatorioService.getDadosGeraisMovimentacoesCsv(
+                outputStream,
+                codUnidades,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Path("/dados-gerais-movimentacoes/report")
+    public Report getDadosGeraisMovimentacoesReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                    @QueryParam("dataInicial") @Required final String dataInicial,
+                                                    @QueryParam("dataFinal") @Required final String dataFinal)
+            throws ProLogException {
+        return movimentacoesRelatorioService.getDadosGeraisMovimentacoesReport(codUnidades, dataInicial, dataFinal);
     }
 
     /**

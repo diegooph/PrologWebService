@@ -1,16 +1,23 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ConsertoMultiplosItensOs;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ManutencaoHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +27,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.*;
+import java.time.Clock;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
@@ -39,17 +48,100 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             "AND E.STATUS_ITEM LIKE ? " +
             "ORDER BY E.PLACA_VEICULO, E.PRAZO ASC;";
 
-    /**
-     * Busca todas as OS e seus devidos itens, respeitando os filtros enviados nos parâmetros
-     * @param placa uma placa especifica ou '%' para buscar OS de todas as placas
-     * @param status status da OS, podendo ser Aberta ou Fechada
-     * @param codUnidade código da unidade a serem buscadas as OS
-     * @param tipoVeiculo tipo do veículo ou '%' para todos os tipos
-     * @param limit quantidade de OS que deseja retornar
-     * @param offset um offset
-     * @return uma lista de OrdemServico
-     * @throws SQLException caso não seja possivel realizar a busca
-     */
+    @Override
+    public void consertaItem(@NotNull final ItemOrdemServico item) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
+                    "  CPF_MECANICO = ?, " +
+                    "  TEMPO_REALIZACAO = ?, " +
+                    "  KM = ?, " +
+                    "  STATUS_RESOLUCAO = ?, " +
+                    "  DATA_HORA_CONSERTO = ?, " +
+                    "  FEEDBACK_CONSERTO = ? " +
+                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?) " +
+                    "      AND COD_OS = ? " +
+                    "      AND COD_PERGUNTA = ? " +
+                    "      AND COD_ALTERNATIVA = ?;");
+            final Long cpfMecanico = item.getMecanico().getCpf();
+            stmt.setLong(1, cpfMecanico);
+            stmt.setLong(2, item.getTempoRealizacaoConserto().toMillis());
+            stmt.setLong(3, item.getKmVeiculoFechamento());
+            stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
+            stmt.setObject(5, OffsetDateTime.now(Clock.systemUTC()));
+            stmt.setString(6, item.getFeedbackResolucao().trim());
+            stmt.setString(7, item.getPlaca());
+            stmt.setLong(8, item.getCodOs());
+            stmt.setLong(9, item.getPergunta().getCodigo());
+            stmt.setLong(10, item.getPergunta().getAlternativasResposta().get(0).codigo);
+            if (stmt.executeUpdate() > 0) {
+                updateStatusOs(conn, item.getPlaca(), item.getCodOs());
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+                veiculoDao.updateKmByPlaca(item.getPlaca(), item.getKmVeiculoFechamento(), conn);
+                conn.commit();
+            } else {
+                throw new SQLException("Erro ao consertar o item");
+            }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
+    public void consertaItens(@NotNull final ConsertoMultiplosItensOs itensConserto) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
+                    "  CPF_MECANICO = ?, " +
+                    "  TEMPO_REALIZACAO = ?, " +
+                    "  KM = ?, " +
+                    "  STATUS_RESOLUCAO = ?, " +
+                    "  DATA_HORA_CONSERTO = ?, " +
+                    "  FEEDBACK_CONSERTO = ? " +
+                    "WHERE COD_UNIDADE = ? AND CODIGO = ANY (?) AND DATA_HORA_CONSERTO IS NULL;");
+            final OffsetDateTime now = OffsetDateTime.now(Clock.systemUTC());
+            stmt.setLong(1, itensConserto.getCpfColaboradorConserto());
+            stmt.setLong(2, itensConserto.getDuracaoRealizacaoConserto().toMillis());
+            stmt.setLong(3, itensConserto.getKmVeiculoConserto());
+            stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
+            stmt.setObject(5, now);
+            stmt.setString(6, itensConserto.getFeedbackResolucao().trim());
+            stmt.setLong(7, itensConserto.getCodUnidadeItensOs());
+            stmt.setArray(8, PostgresUtils.listToArray(conn, SqlType.BIGINT, itensConserto.getCodigosItens()));
+            if (stmt.executeUpdate() == itensConserto.getCodigosItens().size()) {
+                fechaOrdensServicosComBaseItens(
+                        conn,
+                        itensConserto.getCodUnidadeItensOs(),
+                        itensConserto.getCodigosItens(),
+                        now);
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+                veiculoDao.updateKmByPlaca(itensConserto.getPlacaVeiculo(), itensConserto.getKmVeiculoConserto(), conn);
+                conn.commit();
+            } else {
+                throw new IllegalStateException("Erro ao marcar os itens como consertados");
+            }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            closeConnection(conn);
+            closeStatement(stmt);
+        }
+    }
+
     @Override
     public List<OrdemServico> getOs(String placa, String status, Long codUnidade,
                                     String tipoVeiculo, Integer limit, Long offset) throws SQLException {
@@ -79,7 +171,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     "ORDER BY COS.CODIGO DESC " +
                     "%s";
             if (limit != null && offset != null) {
-                query = String.format(query, " LIMIT " + limit +  "OFFSET " + offset);
+                query = String.format(query, " LIMIT " + limit + "OFFSET " + offset);
             } else {
                 query = String.format(query, "");
             }
@@ -103,19 +195,13 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         return oss;
     }
 
-    /**
-     * Busca os itens para a tela das bolinhas, após selecionar uma placa
-     * @param placa uma Placa
-     * @param status status dos Itens da OS
-     * @param limit um limit
-     * @param offset um offset
-     * @param prioridade prioridade dos itens a serem buscados
-     * @return Lista de ItemOrdemServico
-     * @throws SQLException caso não seja possível buscar os itens
-     */
+    @NotNull
     @Override
-    public List<ItemOrdemServico> getItensOs(String placa, String status,
-                                             int limit, long offset, String prioridade) throws SQLException {
+    public List<ItemOrdemServico> getItensOs(@NotNull final String placa,
+                                             @NotNull final String statusItens,
+                                             @NotNull final String prioridade,
+                                             @Nullable final Integer limit,
+                                             @Nullable final Long offset) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -123,13 +209,46 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM ESTRATIFICACAO_OS E " +
                     "WHERE E.STATUS_ITEM LIKE ? AND E.PRIORIDADE LIKE ? AND E.PLACA_VEICULO = ? " +
-                    "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE, E.DATA_HORA DESC " +
+                    "ORDER BY " +
+                    "  E.PLACA_VEICULO, " +
+                    "  CASE WHEN E.STATUS_ITEM = ? THEN 0 ELSE 1 END, " +
+                    "  E.PRIORIDADE_ORDEM, " +
+                    "  E.DATA_HORA ASC " +
                     "LIMIT ? OFFSET ?;");
-            stmt.setString(1, status);
+            stmt.setString(1, statusItens);
             stmt.setString(2, prioridade);
             stmt.setString(3, placa);
-            stmt.setInt(4, limit);
-            stmt.setLong(5, offset);
+            stmt.setString(4, ItemOrdemServico.Status.PENDENTE.asString());
+            StatementUtils.bindValueOrNull(stmt, 5, limit, SqlType.INTEGER);
+            StatementUtils.bindValueOrNull(stmt, 6, offset, SqlType.BIGINT);
+            rSet = stmt.executeQuery();
+            return OrdemServicoConverter.createItensOrdemServico(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<ItemOrdemServico> getItensOs(@NotNull final Long codOs,
+                                             @NotNull final Long codUnidade,
+                                             @Nullable final String statusItemOs) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM ESTRATIFICACAO_OS EO " +
+                    "WHERE EO.COD_OS = ? AND EO.COD_UNIDADE = ? AND EO.STATUS_ITEM LIKE ? " +
+                    "ORDER BY EO.DATA_HORA_CONSERTO NULLS FIRST, EO.PRIORIDADE_ORDEM, EO.DATA_HORA DESC;");
+            stmt.setLong(1, codOs);
+            stmt.setLong(2, codUnidade);
+            if (statusItemOs == null) {
+                stmt.setString(3, "%");
+            } else {
+                // Caso seja um status, o parse para Enum é feito apenas para validar o atributo.
+                stmt.setString(3, ItemOrdemServico.Status.fromString(statusItemOs).asString());
+            }
             rSet = stmt.executeQuery();
             return OrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
@@ -153,7 +272,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     "AND E.PRIORIDADE = ? " +
                     "AND E.PLACA_VEICULO = ? " +
                     "AND E.DATA_HORA::DATE %s (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(E.cod_unidade))) " +
-                    "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE, E.DATA_HORA DESC;";
+                    "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE_ORDEM, E.DATA_HORA DESC;";
             if (itensCriticosRetroativos) {
                 query = String.format(query, "<=");
             } else {
@@ -171,22 +290,14 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         }
     }
 
-    /**
-     * Método chamado quando é recebido um checklist, verifica as premissas para criar uma nova OS ou add
-     * o item com problema a uma OS existente
-     * @param checklist Um checklist
-     * @param conn uma Connection
-     * @param codUnidade Código da unidade que gerou o checklist
-     * @throws SQLException caso nao seja possivel realizar a busca
-     */
     @Override
     public void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException {
         Long tempCodOs = null;
         Long gerouOs = null;
         // Todas as os de uma unica placa.
         final List<OrdemServico> ordens = getOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), codUnidade, "%", null, null);
-        for (final PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) { //verifica cada pergunta do checklist
-            for (final AlternativaChecklist alternativa: pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta
+        for (final PerguntaRespostaChecklist pergunta : checklist.getListRespostas()) { //verifica cada pergunta do checklist
+            for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta
                 if (alternativa.selected) {
                     if (ordens != null) {//verifica se ja tem algum item em aberto
                         tempCodOs = jaPossuiItemEmAberto(pergunta.getCodigo(), alternativa.codigo, ordens);
@@ -251,48 +362,12 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         return placas;
     }
 
-    @Override
-    public boolean consertaItem(ItemOrdemServico item, String placa) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
-                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, data_hora_conserto = ?, " +
-                    "FEEDBACK_CONSERTO = ? " +
-                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
-                    "COD_ALTERNATIVA = ? ");
-            final Long cpfMecanico = item.getMecanico().getCpf();
-            stmt.setLong(1, cpfMecanico);
-            stmt.setLong(2, item.getTempoRealizacaoConserto().toMillis());
-            stmt.setLong(3, item.getKmVeiculoFechamento());
-            stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
-            stmt.setObject(5, OffsetDateTime.now(Clock.systemUTC()));
-            stmt.setString(6, item.getFeedbackResolucao().trim());
-            stmt.setString(7, placa);
-            stmt.setLong(8, item.getCodOs());
-            stmt.setLong(9, item.getPergunta().getCodigo());
-            stmt.setLong(10, item.getPergunta().getAlternativasResposta().get(0).codigo);
-            if (stmt.executeUpdate() > 0){
-                updateStatusOs(placa, item.getCodOs(), cpfMecanico, conn);
-                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(placa, item.getKmVeiculoFechamento(), conn);
-            } else{
-                throw new SQLException("Erro ao consertar o item");
-            }
-            conn.commit();
-        } finally {
-            closeConnection(conn,stmt,null);
-        }
-        return true;
-    }
-
     /**
      * Cria uma ordem de serviço no banco de dados e retorna o código gerado na criação
-     * @param placa uma placa
+     *
+     * @param placa        uma placa
      * @param codChecklist código do checklist que originou a O.S.
-     * @param conn uma Connection
+     * @param conn         uma Connection
      * @return um Long com o códdigo da OS criada
      * @throws SQLException caso não seja possivel inserir a OS
      */
@@ -321,16 +396,55 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         }
     }
 
-    /**
-     * Insere um serviço em uma O.S. específica
-     * @param codPergunta código do item a ser adicional
-     * @param codAlternativa código da alternativa marcada
-     * @param codOs código da OS ao qual deve ser inserido o item
-     * @param placa uma placa
-     * @param conn uma Connection
-     * @throws SQLException caso não seja possível realizar a busca
-     */
-    private void insertServicoOs(Long codPergunta, Long codAlternativa, Long codOs, String placa, Connection conn) throws SQLException{
+    private void fechaOrdensServicosComBaseItens(@NotNull final Connection conn,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final List<Long> codigosItens,
+                                                 @NotNull final OffsetDateTime now) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            // Primeiro recuperamos os códigos de O.S. baseado nos códigos dos itens.
+            stmt = conn.prepareStatement("SELECT DISTINCT COD_OS " +
+                    "FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI " +
+                    "WHERE COSI.CODIGO = ANY (?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codigosItens));
+            rSet = stmt.executeQuery();
+            final List<Long> codigosOrdensServicos = new ArrayList<>(codigosItens.size());
+            if (rSet.next()) {
+                do {
+                    codigosOrdensServicos.add(rSet.getLong("COD_OS"));
+                } while (rSet.next());
+            } else {
+                throw new IllegalStateException("Erro ao buscar os códigos das OSs para os itens: " + codigosItens);
+            }
+
+            // Depois podemos verificar se as Ordens de Serviços podem ser fechadas (caso não possuam mais itens
+            // pendentes).
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO " +
+                    "SET STATUS = ?, DATA_HORA_FECHAMENTO = ? " +
+                    "WHERE COD_UNIDADE = ? " +
+                    "      AND CODIGO = ? " +
+                    "      AND NOT EXISTS((SELECT COSI.CODIGO " +
+                    "           FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI " +
+                    "           WHERE COSI.COD_UNIDADE = ? AND COSI.COD_OS = ? AND COSI.STATUS_RESOLUCAO = ?));");
+            for (final Long codOs : codigosOrdensServicos) {
+                stmt.setString(1, OrdemServico.Status.FECHADA.asString());
+                stmt.setObject(2, now);
+                stmt.setLong(3, codUnidade);
+                stmt.setLong(4, codOs);
+                stmt.setLong(5, codUnidade);
+                stmt.setLong(6, codOs);
+                stmt.setString(7, ItemOrdemServico.Status.PENDENTE.asString());
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        } finally {
+            closeStatement(stmt);
+            closeResultSet(rSet);
+        }
+    }
+
+    private void insertServicoOs(Long codPergunta, Long codAlternativa, Long codOs, String placa, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO checklist_ordem_servico_itens(COD_UNIDADE, COD_OS, cod_pergunta, cod_alternativa, status_resolucao)\n" +
@@ -351,11 +465,12 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
     /**
      * Incrementa a quantidade de apontamentos de um item, caso ele ainda esteja em aberto e tenha sido
      * inserido em um novo checklist.
-     * @param placa uma placa
-     * @param codOs um codigo
-     * @param codPergunta um codigo
-     * @param codAlternativa     um codigo
-     * @param conn uma Connection
+     *
+     * @param placa          uma placa
+     * @param codOs          um codigo
+     * @param codPergunta    um codigo
+     * @param codAlternativa um codigo
+     * @param conn           uma Connection
      * @throws SQLException caso não seja possivel realizar a busca
      */
     private void incrementaQtApontamento(String placa, Long codOs, Long codPergunta, Long codAlternativa, Connection conn) throws SQLException {
@@ -394,10 +509,11 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
 
     /**
      * Busca os itens que compõe uma ou mais OS, usdao quando são buscadas as OS (e não o manutencaoHolder que busca só os itens)
-     * @param placa Placa da OS, "%" para todas as placas
-     * @param codOs Código da OS, "%" para todas as OS
-     * @param status Status da OS, "%" para todos os status
-     * @param conn uma Connection
+     *
+     * @param placa      Placa da OS, "%" para todas as placas
+     * @param codOs      Código da OS, "%" para todas as OS
+     * @param status     Status da OS, "%" para todos os status
+     * @param conn       uma Connection
      * @param codUnidade Código da unidade
      * @return um list de ItemOrdemServico
      * @throws SQLException caso não seja possível realizar a busca
@@ -420,18 +536,19 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
 
     /**
      * Verifica se o item com problema já consta em alguma OS, caso já exista, retorna o código dessa OS
-     * @param codPergunta um cod
+     *
+     * @param codPergunta    um cod
      * @param codAlternativa um cod
-     * @param oss Todas as OS em aberto de uma placa
+     * @param oss            Todas as OS em aberto de uma placa
      * @return Long com o código da OS no qual o item se encontra em aberto
      */
     private Long jaPossuiItemEmAberto(Long codPergunta, long codAlternativa, List<OrdemServico> oss) {
         Log.d("verificando se possui item em aberto", "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
-        for (final OrdemServico os:oss) {
-            for (final ItemOrdemServico item:os.getItens()) {
-                for (final Alternativa alternativa: item.getPergunta().getAlternativasResposta()) {
+        for (final OrdemServico os : oss) {
+            for (final ItemOrdemServico item : os.getItens()) {
+                for (final Alternativa alternativa : item.getPergunta().getAlternativasResposta()) {
                     if (item.getPergunta().getCodigo().equals(codPergunta) && alternativa.codigo == codAlternativa && alternativa.tipo != Alternativa.TIPO_OUTROS
-                            && item.getStatus().asString().equals(ItemOrdemServico.Status.PENDENTE.asString())){
+                            && item.getStatus().asString().equals(ItemOrdemServico.Status.PENDENTE.asString())) {
                         return os.getCodigo();
                     }
                 }
@@ -440,12 +557,20 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         return null;
     }
 
-    private void updateStatusOs(String placa, Long codOs, Long cpf, Connection conn) throws SQLException {
+    private void updateStatusOs(@NotNull final Connection conn,
+                                @NotNull final String placa,
+                                @NotNull final Long codOs) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE checklist_ordem_servico SET status = ?, DATA_HORA_FECHAMENTO = ? WHERE " +
-                    "    COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND CODIGO = ? AND (SELECT count(*) FROM checklist_ordem_servico_itens " +
-                    "    WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND COD_OS = ? AND status_resolucao = ?) = 0");
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO SET " +
+                    "  STATUS = ?, " +
+                    "  DATA_HORA_FECHAMENTO = ? " +
+                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?) " +
+                    "      AND CODIGO = ? " +
+                    "      AND (SELECT COUNT(*) FROM CHECKLIST_ORDEM_SERVICO_ITENS " +
+                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?) " +
+                    "      AND COD_OS = ? " +
+                    "      AND STATUS_RESOLUCAO = ?) = 0;");
             stmt.setString(1, OrdemServico.Status.FECHADA.asString());
             stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setString(3, placa);
@@ -459,14 +584,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         }
     }
 
-    /**
-     * Ordena lista das bolinhas, jogando para cima as placas com maior quantidade de itens críticos.
-     */
-    private void ordenaLista(List<ManutencaoHolder> list) {
-        list.sort(new CustomComparator());
-        Collections.reverse(list);
-    }
-
     private class CustomComparator implements Comparator<ManutencaoHolder> {
 
         /**
@@ -475,11 +592,11 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         @Override
         public int compare(ManutencaoHolder o1, ManutencaoHolder o2) {
             final Integer valor1 = Double.compare(o1.getQtdCritica(), o2.getQtdCritica());
-            if (valor1!=0) {
+            if (valor1 != 0) {
                 return valor1;
             }
             final Integer valor2 = Double.compare(o1.getQtdAlta(), o2.getQtdAlta());
-            if( valor2 != 0) {
+            if (valor2 != 0) {
                 return valor2;
             }
             return Double.compare(o1.getQtdBaixa(), o2.getQtdBaixa());

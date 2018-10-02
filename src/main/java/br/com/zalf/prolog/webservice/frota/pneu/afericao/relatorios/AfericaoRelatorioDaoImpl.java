@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.closeConnection;
@@ -25,18 +24,17 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  */
 public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
 
-
     @Override
-    public void getDadosGeraisAfericaoCsv(@NotNull final OutputStream out,
-                                          @NotNull final Long codUnidade,
-                                          @NotNull final LocalDate dataInicial,
-                                          @NotNull final LocalDate dataFinal) throws Throwable {
+    public void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
+                                           @NotNull final List<Long> codUnidade,
+                                           @NotNull final LocalDate dataInicial,
+                                           @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisAfericaoStmt(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getDadosGeraisAfericoesStmt(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(out)
@@ -50,15 +48,15 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
 
     @NotNull
     @Override
-    public Report getDadosGeraisAfericaoReport(@NotNull final Long codUnidade,
-                                               @NotNull final LocalDate dataInicial,
-                                               @NotNull final LocalDate dataFinal) throws Throwable {
+    public Report getDadosGeraisAfericoesReport(@NotNull final List<Long> codUnidades,
+                                                @NotNull final LocalDate dataInicial,
+                                                @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisAfericaoStmt(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getDadosGeraisAfericoesStmt(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -67,14 +65,12 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
     }
 
     @NotNull
-    private PreparedStatement getDadosGeraisAfericaoStmt(@NotNull final Connection conn,
-                                                         @NotNull final Long codUnidade,
-                                                         @NotNull final LocalDate dataInicial,
-                                                         @NotNull final LocalDate dataFinal) throws Throwable {
+    private PreparedStatement getDadosGeraisAfericoesStmt(@NotNull final Connection conn,
+                                                          @NotNull final List<Long> codUnidades,
+                                                          @NotNull final LocalDate dataInicial,
+                                                          @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_DADOS_GERAIS(?,?,?);");
-        final List<Long> codUnidades = new ArrayList<>();
-        codUnidades.add(codUnidade);
+                conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_DADOS_GERAIS(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
