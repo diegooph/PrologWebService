@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+
 /**
  * Created on 08/03/2018
  *
@@ -28,8 +31,9 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     }
 
+    @NotNull
     @Override
-    public void insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
+    public Long insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -38,20 +42,25 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             // cenário pois o app pode tentar sincronizar uma marcação, ela ser inserida com sucesso, mas a conexão
             // com o servidor se perder nesse meio tempo, aí o app acha, erroneamente, que a marcação ainda não foi
             // sincronizada.
-            if (!marcacaoIntervaloJaExiste(intervaloMarcacao, conn)) {
-                internalInsertMarcacaoIntervalo(intervaloMarcacao, conn);
+            final Long codMarcacaoExistente = marcacaoIntervaloJaExiste(conn, intervaloMarcacao);
+            // o codMarcacaoExistente será <= 0, se e sómente se, não existir uma marcação equivalente
+            // no Banco de Dados.
+            if (codMarcacaoExistente <= 0) {
+                return internalInsertMarcacaoIntervalo(conn, intervaloMarcacao);
+            } else {
+                return codMarcacaoExistente;
             }
         } finally {
-            closeConnection(conn, null, null);
+            close(conn);
         }
     }
 
     @Nullable
     @Override
-    public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
-                                                               @NotNull final Long cpf,
-                                                               @NotNull final Long codTipoIntervalo)
-            throws SQLException {
+    public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(
+            @NotNull final Long codUnidade,
+            @NotNull final Long cpf,
+            @NotNull final Long codTipoIntervalo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -128,7 +137,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             stmt.setLong(4, limit);
             stmt.setLong(5, offset);
             rSet = stmt.executeQuery();
-            while (rSet.next()){
+            while (rSet.next()) {
                 intervalos.add(ControleJornadaConverter.createIntervalo(rSet));
             }
         } finally {
@@ -335,14 +344,15 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         return Optional.empty();
     }
 
-    private boolean marcacaoIntervaloJaExiste(@NotNull final IntervaloMarcacao intervaloMarcacao,
-                                              @NotNull final Connection conn) throws SQLException {
+    @NotNull
+    private Long marcacaoIntervaloJaExiste(@NotNull final Connection conn,
+                                           @NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
 
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT EXISTS(SELECT I.CODIGO FROM INTERVALO I WHERE " +
-                    "I.COD_UNIDADE = ? AND I.CPF_COLABORADOR = ? AND I.DATA_HORA = ? AND I.TIPO_MARCACAO = ?);");
+            stmt = conn.prepareStatement("SELECT I.CODIGO FROM INTERVALO I " +
+                    "WHERE I.COD_UNIDADE = ? AND I.CPF_COLABORADOR = ? AND I.DATA_HORA = ? AND I.TIPO_MARCACAO = ?;");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(intervaloMarcacao.getCodUnidade(), conn);
             stmt.setLong(1, intervaloMarcacao.getCodUnidade());
             stmt.setLong(2, intervaloMarcacao.getCpfColaborador());
@@ -350,48 +360,57 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             stmt.setString(4, intervaloMarcacao.getTipoMarcacaoIntervalo().asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getBoolean("EXISTS");
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Não foi possível consultar a existência de uma duplicata desta marcação");
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
-        return false;
     }
 
-    private void internalInsertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao,
-                                                 @NotNull final Connection conn) throws SQLException {
+    @NotNull
+    private Long internalInsertMarcacaoIntervalo(@NotNull final Connection conn,
+                                                 @NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR, " +
-                    "DATA_HORA, TIPO_MARCACAO, FONTE_DATA_HORA, JUSTIFICATIVA_TEMPO_RECOMENDADO, JUSTIFICATIVA_ESTOURO, " +
-                    "LATITUDE_MARCACAO, LONGITUDE_MARCACAO, DATA_HORA_SINCRONIZACAO) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            stmt = conn.prepareStatement("INSERT INTO INTERVALO(" +
+                    "                      COD_UNIDADE, " +
+                    "                      COD_TIPO_INTERVALO, " +
+                    "                      CPF_COLABORADOR, " +
+                    "                      DATA_HORA, " +
+                    "                      TIPO_MARCACAO, " +
+                    "                      FONTE_DATA_HORA, " +
+                    "                      JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
+                    "                      JUSTIFICATIVA_ESTOURO, " +
+                    "                      LATITUDE_MARCACAO, " +
+                    "                      LONGITUDE_MARCACAO, " +
+                    "                      DATA_HORA_SINCRONIZACAO) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "RETURNING CODIGO;");
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, intervaloMarcacao.getCodTipoIntervalo());
             stmt.setLong(3, intervaloMarcacao.getCpfColaborador());
             stmt.setObject(4, intervaloMarcacao.getDataHoraMaracao().atZone(zoneId).toOffsetDateTime());
-
             stmt.setString(5, intervaloMarcacao.getTipoMarcacaoIntervalo().asString());
             stmt.setString(6, intervaloMarcacao.getFonteDataHora().asString());
             stmt.setString(7, intervaloMarcacao.getJustificativaTempoRecomendado());
             stmt.setString(8, intervaloMarcacao.getJustificativaEstouro());
-
             final Localizacao localizacao = intervaloMarcacao.getLocalizacaoMarcacao();
-            if (localizacao != null) {
-                stmt.setString(9, localizacao.getLatitude());
-                stmt.setString(10, localizacao.getLongitude());
-            } else {
-                stmt.setNull(9, Types.VARCHAR);
-                stmt.setNull(10, Types.VARCHAR);
-            }
+            bindValueOrNull(stmt, 9, localizacao != null ? localizacao.getLatitude() : null, SqlType.VARCHAR);
+            bindValueOrNull(stmt, 10, localizacao != null ? localizacao.getLongitude() : null, SqlType.VARCHAR);
             stmt.setTimestamp(11, Now.timestampUtc());
-            if (stmt.executeUpdate() == 0) {
+            rSet = stmt.executeQuery();
+            if (rSet.next() && rSet.getLong("CODIGO") > 0) {
+                return rSet.getLong("CODIGO");
+            } else {
                 throw new SQLException("Erro ao inserir marcação de intervalo");
             }
         } finally {
-            closeStatement(stmt);
+            close(rSet, stmt);
         }
     }
 

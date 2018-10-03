@@ -18,7 +18,25 @@ import java.util.Optional;
  */
 public interface ControleIntervaloDao {
 
-    void insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException;
+    /**
+     * Método utilizado para sincronizar no Banco de Dados uma Marcação.
+     *
+     * @param intervaloMarcacao Uma {@link IntervaloMarcacao marcação} contendo os dados a serem inseridos.
+     * @return Código único que identifica a marcação no banco de dados.
+     * @throws SQLException Se ocorrer algum erro na sincronização.
+     */
+    @NotNull
+    Long insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException;
+
+    /**
+     * Método utilizado para buscar a versão em que os dados dos Intervalos se encontram.
+     *
+     * @param codUnidade Código da unidade de onde a versão será buscada.
+     * @return Valor {@link Long} que representa a versão atual dos dados de Intervalos.
+     * @throws SQLException Se algum erro ocorrer na busca dos dados.
+     */
+    @NotNull
+    Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
 
     @Nullable
     IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
@@ -53,7 +71,4 @@ public interface ControleIntervaloDao {
                                         @NotNull final Long codTipoIntervalo,
                                         @NotNull final TipoMarcacao tipoIntervalo,
                                         @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
-
-    @NotNull
-    Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
 }

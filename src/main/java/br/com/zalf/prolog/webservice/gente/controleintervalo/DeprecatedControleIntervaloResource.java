@@ -36,7 +36,7 @@ import java.util.List;
 @DebugLog
 @Deprecated
 public class DeprecatedControleIntervaloResource {
-
+    @NotNull
     private final ControleIntervaloService service = new ControleIntervaloService();
 
     /**
@@ -51,7 +51,6 @@ public class DeprecatedControleIntervaloResource {
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             Intervalo intervalo) {
-
         return service.insertMarcacaoIntervalo(versaoDadosIntervalo, toIntervaloMarcacao(intervalo));
     }
 
