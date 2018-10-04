@@ -136,12 +136,6 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             insereVinculoInicioFim(conn, codigos.getCodMarcacaoInicio(), codigos.getCodMarcacaoFim());
             insereInformacoesAjusteMarcacao(
                     conn,
-                    codigos.getCodMarcacaoInicio(),
-                    tokenResponsavelAjuste,
-                    marcacaoAjuste,
-                    null);
-            insereInformacoesAjusteMarcacao(
-                    conn,
                     codigos.getCodMarcacaoFim(),
                     tokenResponsavelAjuste,
                     marcacaoAjuste,
@@ -268,10 +262,11 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_MARCACAO_INSERT_MARCACAO_AVULSA_AJUSTE(?, ?, ?) AS CODIGO;");
+                    "FROM FUNC_MARCACAO_INSERT_MARCACAO_AVULSA_AJUSTE(?, ?, ?, ?) AS CODIGO;");
             stmt.setObject(1, marcacaoAjuste.getDataHoraInserida().atZone(zoneIdCliente).toOffsetDateTime());
             stmt.setLong(2, marcacaoAjuste.getCodMarcacaoVinculo());
-            stmt.setString(3, token);
+            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setString(4, token);
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.getLong("CODIGO") > 0) {
                 return rSet.getLong("CODIGO");
