@@ -66,11 +66,11 @@ public interface ControleJornadaAjusteDao {
      * para uma marcação de fim já existente.
      * Para mais informações sobre os dados de uma adição consulte {@link MarcacaoAjusteAdicao este objeto}.
      *
-     * @param token          Identificador do usuário que realizou a adição.
-     * @param marcacaoAjuste Objeto contendo os novos dados da marcação.
+     * @param tokenResponsavelAjuste Identificador do usuário que realizou a adição.
+     * @param marcacaoAjuste         Objeto contendo os novos dados da marcação.
      * @throws Throwable Caso qualquer erro aconteça.
      */
-    void adicionarMarcacaoAjuste(@NotNull final String token,
+    void adicionarMarcacaoAjuste(@NotNull final String tokenResponsavelAjuste,
                                  @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws Throwable;
 
     /**
@@ -78,22 +78,22 @@ public interface ControleJornadaAjusteDao {
      * de forma separada utilize {@link #adicionarMarcacaoAjuste(String, MarcacaoAjusteAdicao)}.
      * Para mais informações sobre os dados de uma adição consulte {@link MarcacaoAjusteAdicaoInicioFim este objeto}.
      *
-     * @param token          Identificador do usuário que realizou a adição.
-     * @param marcacaoAjuste Objeto contendo os dados da marcação de início e fim.
+     * @param tokenResponsavelAjuste Identificador do usuário que realizou a adição.
+     * @param marcacaoAjuste         Objeto contendo os dados da marcação de início e fim.
      * @throws Throwable Caso qualquer erro aconteça.
      */
-    void adicionarMarcacaoAjusteInicioFim(@NotNull final String token,
+    void adicionarMarcacaoAjusteInicioFim(@NotNull final String tokenResponsavelAjuste,
                                           @NotNull final MarcacaoAjusteAdicaoInicioFim marcacaoAjuste) throws Throwable;
 
     /**
      * Método para editar uma marcação de início ou fim.
      * Para mais informações sobre os dados de uma edição consulte {@link MarcacaoAjusteEdicao este objeto}.
      *
-     * @param token          Identificador do usuário que realizou a edição.
-     * @param marcacaoAjuste Objeto contendo os novos dados da marcação.
+     * @param tokenResponsavelAjuste Identificador do usuário que realizou a edição.
+     * @param marcacaoAjuste         Objeto contendo os novos dados da marcação.
      * @throws Throwable Caso qualquer erro aconteça.
      */
-    void editarMarcacaoAjuste(@NotNull final String token,
+    void editarMarcacaoAjuste(@NotNull final String tokenResponsavelAjuste,
                               @NotNull final MarcacaoAjusteEdicao marcacaoAjuste) throws Throwable;
 
     /**
@@ -101,11 +101,11 @@ public interface ControleJornadaAjusteDao {
      * Para mais informações sobre os dados de uma ativação ou inativação consulte
      * {@link MarcacaoAjusteAtivacaoInativacao este objeto}.
      *
-     * @param token          Identificador do usuário que realizou a ativação ou inativação.
-     * @param marcacaoAjuste Objeto contendo as informações necessárias para se ativar ou inativar uma marcação.
+     * @param tokenResponsavelAjuste Identificador do usuário que realizou a ativação ou inativação.
+     * @param marcacaoAjuste         Objeto contendo as informações necessárias para se ativar ou inativar uma marcação.
      * @throws Throwable Caso qualquer erro aconteça.
      */
-    void ativarInativarMarcacaoAjuste(@NotNull final String token,
+    void ativarInativarMarcacaoAjuste(@NotNull final String tokenResponsavelAjuste,
                                       @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable;
 
     @NotNull
