@@ -20,9 +20,31 @@ import java.util.Optional;
  * Created by Zart on 19/08/2017.
  */
 public class ControleIntervaloService {
-
+    @NotNull
     private static final String TAG = ControleIntervaloService.class.getSimpleName();
+    @NotNull
     private ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
+
+    @NotNull
+    public ResponseIntervalo insertMarcacaoIntervalo(final long versaoDadosIntervalo,
+                                                     @NotNull final IntervaloMarcacao intervaloMarcacao) {
+        EstadoVersaoIntervalo estadoVersaoIntervalo = null;
+        try {
+            @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
+            final Long versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(intervaloMarcacao.getCodUnidade()).get();
+            estadoVersaoIntervalo = versaoDadosIntervalo < versaoDadosBanco
+                    ? EstadoVersaoIntervalo.VERSAO_DESATUALIZADA
+                    : EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
+            final Long codIntervalo = dao.insertMarcacaoIntervalo(intervaloMarcacao);
+            return ResponseIntervalo.ok(codIntervalo, "Intervalo inserido com sucesso", estadoVersaoIntervalo);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format(
+                    "Erro ao inserir ou atualizar um intervalo. \n" +
+                    "versaoDadosIntervalo: %d", versaoDadosIntervalo),
+                    e);
+            return ResponseIntervalo.error("Erro ao inserir intervalo", estadoVersaoIntervalo);
+        }
+    }
 
     public List<TipoMarcacao> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
         try {
@@ -53,27 +75,6 @@ public class ControleIntervaloService {
             Log.e(TAG, String.format("Erro ao buscar os intervalos em abertos de um colaborador. \n" +
                     "cpf: %d", cpf), e);
             throw e;
-        }
-    }
-
-    public ResponseIntervalo insertMarcacaoIntervalo(long versaoDadosIntervalo, IntervaloMarcacao intervaloMarcacao) {
-        EstadoVersaoIntervalo estadoVersaoIntervalo = null;
-        try {
-            final Long codUnidade = intervaloMarcacao.getCodUnidade();
-            // Temos certeza que existira no banco, se não existir, então melhor dar erro.
-            @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
-            final Long versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade).get();
-            if (versaoDadosIntervalo < versaoDadosBanco) {
-                estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
-            } else {
-                estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
-            }
-            dao.insertMarcacaoIntervalo(intervaloMarcacao);
-            return ResponseIntervalo.ok("Intervalo inserido com sucesso", estadoVersaoIntervalo);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao inserir ou atualizar um intervalo. \n" +
-                    "versaoDadosIntervalo: %d", versaoDadosIntervalo), e);
-            return ResponseIntervalo.error("Erro ao inserir intervalo", estadoVersaoIntervalo);
         }
     }
 
