@@ -83,8 +83,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
                     "R.CODIGO AS CODIGO, " +
-                    "R.DATA_HORA_LOCAL AS DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
-                    "R.DATA_HORA_DATABASE AS DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
+                    "R.DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
+                    "R.DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
                     "R.LATITUDE AS LATITUDE, " +
                     "R.LONGITUDE AS LONGITUDE, " +
                     "R.URL_FOTO_1 AS URL_FOTO_1, " +
