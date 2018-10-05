@@ -53,6 +53,13 @@ public interface RelatoDao {
 
 	boolean fechaRelato(Relato relato) throws SQLException;
 
-	List<Alternativa> getAlternativas(Long codUnidade, Long codSetor) throws SQLException;
-
+	/**
+	 * Busca as alternativas disponíveis para seleção durante a realização de um relato.
+	 *
+	 * @param codUnidade código de uma unidade.
+	 * @param codSetor   cod do setor do colaborador que está realizando o relato, serve para fitlrar as alternativas.
+	 * @return lista de {@link Alternativa alternativas}.
+	 */
+	@NotNull
+	List<Alternativa> getAlternativas(@NotNull final Long codUnidade, @NotNull final Long codSetor) throws SQLException;
 }

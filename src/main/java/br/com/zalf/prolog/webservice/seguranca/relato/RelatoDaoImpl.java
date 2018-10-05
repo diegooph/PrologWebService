@@ -455,29 +455,20 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
         return true;
     }
 
-    /**
-     * Busca as alternativas para compor um relato, utilizado quando o usuário loga e quando cria um novo relato.
-     * Mantém o banco de dados(mobile) atualizado.
-     *
-     * @param codUnidade código de uma unidade
-     * @param codSetor   cod do setor do colaborador que está realizando o relato, serve para fitlrar as alternativas.
-     * @return lista de Alterniva
-     * @throws SQLException
-     */
+    @NotNull
     @Override
-    public List<Alternativa> getAlternativas(Long codUnidade, Long codSetor) throws SQLException {
-        final List<Alternativa> listAlternativas = new ArrayList<>();
+    public List<Alternativa> getAlternativas(@NotNull final Long codUnidade, @NotNull final Long codSetor)
+            throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CODIGO, ALTERNATIVA "
-                    + "FROM RELATO_ALTERNATIVA "
-                    + "WHERE COD_SETOR = ? OR COD_SETOR IS NULL AND COD_UNIDADE = ? AND STATUS_ATIVO = TRUE ORDER BY ALTERNATIVA ASC");
-            stmt.setLong(1, codSetor);
-            stmt.setLong(2, codUnidade);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATO_GET_ALTERNATIVAS(?, ?, TRUE)");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codSetor);
             rSet = stmt.executeQuery();
+            final List<Alternativa> alternativas = new ArrayList<>();
             while (rSet.next()) {
                 final Alternativa alternativa = new Alternativa();
                 alternativa.codigo = rSet.getLong("CODIGO");
@@ -485,12 +476,12 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 if (alternativa.alternativa.equals("Outros")) {
                     alternativa.tipo = Alternativa.TIPO_OUTROS;
                 }
-                listAlternativas.add(alternativa);
+                alternativas.add(alternativa);
             }
+            return alternativas;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return listAlternativas;
     }
 
     private String getCampoFiltro(String campoFiltro) {
