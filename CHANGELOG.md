@@ -4,6 +4,10 @@ Change Log
 <a name="v0.0.77"></a>
 ## Version [v0.0.77](https://github.com/luizfp/PrologWeb/compare/v0.0.76...v0.0.77) (release-data) [unreleased]
 
+### Bug Fixes
+* Corrige busca das alternativas disponíveis para realização de um relato
+* Corrige método de busca de um relato pelo seu código
+
 <a name="v0.0.76"></a>
 ## Version [v0.0.76](https://github.com/luizfp/PrologWeb/compare/v0.0.75...v0.0.76) (2018-10-02)
 
