@@ -37,11 +37,11 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         Connection conn = null;
         try {
             conn = getConnection();
-            // Se a marcação já existir, nós não tentamos inserir novamente e simplemente não fazemos nada. Isso garante
-            // um retorno OK para o app e assim a marcação será colocada como sincronizada. É importante tratar esse
-            // cenário pois o app pode tentar sincronizar uma marcação, ela ser inserida com sucesso, mas a conexão
-            // com o servidor se perder nesse meio tempo, aí o app acha, erroneamente, que a marcação ainda não foi
-            // sincronizada.
+            // Se a marcação já existir, nós não tentamos inserir novamente e simplemente não fazemos nada.
+            // Isso garante um retorno OK para o app e assim a marcação será colocada como sincronizada.
+            // É importante tratar esse cenário pois o app pode tentar sincronizar uma marcação,
+            // ela ser inserida com sucesso, mas a conexão com o servidor se perder nesse meio tempo,
+            // aí o app acha, erroneamente, que a marcação ainda não foi sincronizada.
             final Long codMarcacaoExistente = marcacaoIntervaloJaExiste(conn, intervaloMarcacao);
             // o codMarcacaoExistente será <= 0, se e sómente se, não existir uma marcação equivalente
             // no Banco de Dados.
@@ -375,6 +375,25 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
+            /*
+            Temos um fluxo já definido de caminhos a serem seguidos para cada caso que poderemos ter na marcação.
+
+            1 --> intervaloMarcacao é de INICIO
+                1.1 --> Insere intervaloMarcacao na tabela Intervalo.
+                1.2 --> e retorna o código;
+            2 --> intervaloMarcacao é de FIM
+                2.1 --> Marcação possuí código de vínculo
+                    2.1.1 --> Insere marcação na tabela Intervalo
+                    2.1.2 --> O código de vínculo possuí outra marcação associada
+                        2.1.2.1 --> Insere códigos na Tabela Inconsistência
+                    2.1.3 --> O código de vínculo não possuí outra marcação associada
+                        2.1.3.1 --> FIM DO PROCESSO;
+                2.2 --> Marcação não possuí código de vínculo
+                    2.2.1 --> Executa algoritmo de matching de marcações
+                    2.2.2 --> O código de vínculo possuí outra marcação associada
+                        2.2.2.1 --> Insere códigos na Tabela Inconsistência
+                    2.2.3 --> O código de vínculo não possuí outra marcação associada
+             */
             stmt = conn.prepareStatement("INSERT INTO INTERVALO(" +
                     "                      COD_UNIDADE, " +
                     "                      COD_TIPO_INTERVALO, " +
