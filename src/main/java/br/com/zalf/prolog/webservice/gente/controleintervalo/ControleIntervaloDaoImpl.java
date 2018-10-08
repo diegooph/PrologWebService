@@ -464,7 +464,6 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                     2.2.4 --> Retorna o código;
                     2.2.5 --> FIM DO PROCESSO;
          */
-
         if (intervaloMarcacao.getTipoMarcacaoIntervalo().equals(TipoInicioFim.MARCACAO_INICIO)) {
             final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
             insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_INICIO);
@@ -477,16 +476,20 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                 insereMarcacaoInconsistenteSeExistir(conn, intervaloMarcacao.getCodMarcacaoVinculada(), codMarcacaoInserida);
                 return codMarcacaoInserida;
             } else {
-                final Long codMarcacacaoVinculo = buscaMarcacaoInicioVinculo();
-                if (codMarcacacaoVinculo != null) {
+                final Long codMarcacacaoVinculo = buscaMarcacaoInicioVinculo(
+                        conn,
+                        intervaloMarcacao.getCodUnidade(),
+                        intervaloMarcacao.getCodTipoIntervalo(),
+                        intervaloMarcacao.getCpfColaborador());
+                if (codMarcacacaoVinculo == null || codMarcacacaoVinculo == 0) {
                     final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
                     insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
-                    insereVinculoInicioFim(conn, codMarcacacaoVinculo, codMarcacaoInserida);
-                    insereMarcacaoInconsistenteSeExistir(conn, codMarcacacaoVinculo, codMarcacaoInserida);
                     return codMarcacaoInserida;
                 } else {
                     final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
                     insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
+                    insereVinculoInicioFim(conn, codMarcacacaoVinculo, codMarcacaoInserida);
+                    insereMarcacaoInconsistenteSeExistir(conn, codMarcacacaoVinculo, codMarcacaoInserida);
                     return codMarcacaoInserida;
                 }
             }
@@ -513,9 +516,29 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     }
 
     @Nullable
-    private Long buscaMarcacaoInicioVinculo() {
-        // TODO - implementar busca de vinculos
-        return null;
+    private Long buscaMarcacaoInicioVinculo(@NotNull final Connection conn,
+                                            @NotNull final Long codUnidade,
+                                            @NotNull final Long codTipoIntervalo,
+                                            @NotNull final Long cpfColaborador) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_MARCACAO_BUSCA_MARCACAO_VICULO_BY_MARCACAO(?, ?, ?) AS CODIGO;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTipoIntervalo);
+            stmt.setLong(2, cpfColaborador);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codigo = rSet.getLong("CODIGO");
+                // retornamos null caso codigo == 0 pois significa que não existe um código de vínculo
+                return codigo != 0 ? codigo : null;
+            } else{
+                throw new SQLException("Erro ao buscar código de vínculo para a marcação");
+            }
+        } finally {
+            close(rSet, stmt);
+        }
     }
 
     @NotNull
