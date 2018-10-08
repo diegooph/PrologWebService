@@ -2,11 +2,13 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +28,7 @@ public interface ControleIntervaloDao {
      * @throws SQLException Se ocorrer algum erro na sincronização.
      */
     @NotNull
-    Long insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException;
+    Long insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws Throwable;
 
     /**
      * Método utilizado para buscar a versão em que os dados dos Intervalos se encontram.
@@ -71,4 +73,30 @@ public interface ControleIntervaloDao {
                                         @NotNull final Long codTipoIntervalo,
                                         @NotNull final TipoMarcacao tipoIntervalo,
                                         @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
+
+    /**
+     * Método utilizado para inserir ó código de uma marcação na tabela de INICIO ou FIM
+     * dependendo do {@code tipoInicioFim} recebido por parâmetro.
+     *
+     * @param conn                {@link Connection} a ser utilizada para realizar esta operação.
+     * @param codMarcacaoInserida Código da marcação que deve ser salvo.
+     * @param tipoInicioFim       {@link TipoInicioFim#MARCACAO_INICIO} ou {@link TipoInicioFim#MARCACAO_FIM}
+     * @throws Throwable Caso algum erro ocorrer na operação.
+     */
+    void insereMarcacaoInicioOuFim(@NotNull final Connection conn,
+                                   @NotNull final Long codMarcacaoInserida,
+                                   @NotNull final TipoInicioFim tipoInicioFim) throws Throwable;
+
+    /**
+     * Método utilizado para salvar o vínculo entre uma marcação de
+     * {@link TipoInicioFim#MARCACAO_INICIO} e {@link TipoInicioFim#MARCACAO_FIM}.
+     *
+     * @param conn              {@link Connection} a ser utilizada para realizar este vínculo.
+     * @param codMarcacaoInicio Código da {@link TipoInicioFim#MARCACAO_INICIO} que será inserida.
+     * @param codMarcacaoFim    Código da {@link TipoInicioFim#MARCACAO_FIM} que será inserida.
+     * @throws Throwable Caso algum erro ocorrer na criação do vínculo.
+     */
+    void insereVinculoInicioFim(@NotNull final Connection conn,
+                                @NotNull final Long codMarcacaoInicio,
+                                @NotNull final Long codMarcacaoFim) throws Throwable;
 }

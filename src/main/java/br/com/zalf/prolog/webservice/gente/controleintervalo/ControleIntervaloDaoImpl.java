@@ -33,10 +33,11 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     @Override
-    public Long insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
+    public Long insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
+            conn.setAutoCommit(false);
             // Se a marcação já existir, nós não tentamos inserir novamente e simplemente não fazemos nada.
             // Isso garante um retorno OK para o app e assim a marcação será colocada como sincronizada.
             // É importante tratar esse cenário pois o app pode tentar sincronizar uma marcação,
@@ -46,10 +47,18 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             // o codMarcacaoExistente será <= 0, se e sómente se, não existir uma marcação equivalente
             // no Banco de Dados.
             if (codMarcacaoExistente <= 0) {
-                return internalInsertMarcacaoIntervalo(conn, intervaloMarcacao);
+                final Long codMarcacaoInserida = internalInsertMarcacaoIntervalo(conn, intervaloMarcacao);
+                conn.commit();
+                return codMarcacaoInserida;
             } else {
+                conn.commit();
                 return codMarcacaoExistente;
             }
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
         } finally {
             close(conn);
         }
@@ -344,6 +353,53 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         return Optional.empty();
     }
 
+    @Override
+    public void insereMarcacaoInicioOuFim(@NotNull final Connection conn,
+                                          @NotNull final Long codMarcacaoInserida,
+                                          @NotNull final TipoInicioFim tipoInicioFim) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            if (tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)) {
+                stmt = conn.prepareStatement("INSERT INTO MARCACAO_INICIO(COD_MARCACAO_INICIO) " +
+                        "VALUES (?) RETURNING COD_MARCACAO_INICIO AS CODIGO");
+            } else {
+                stmt = conn.prepareStatement("INSERT INTO MARCACAO_FIM(COD_MARCACAO_FIM) " +
+                        "VALUES (?) RETURNING COD_MARCACAO_FIM AS CODIGO");
+            }
+            stmt.setLong(1, codMarcacaoInserida);
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || rSet.getLong("CODIGO") <= 0) {
+                throw new SQLException("Não foi possível inserir o código da marcação na tabela: "
+                        + tipoInicioFim.asString());
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @Override
+    public void insereVinculoInicioFim(@NotNull final Connection conn,
+                                        @NotNull final Long codMarcacaoInicio,
+                                        @NotNull final Long codMarcacaoFim) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO " +
+                    "MARCACAO_VINCULO_INICIO_FIM(COD_MARCACAO_INICIO, COD_MARCACAO_FIM) " +
+                    "VALUES (?, ?) " +
+                    "RETURNING CODIGO AS CODIGO_VINCULO");
+            stmt.setLong(1, codMarcacaoInicio);
+            stmt.setLong(2, codMarcacaoFim);
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || rSet.getLong("CODIGO_VINCULO") <= 0) {
+                throw new SQLException("Não foi possível inserir o vinculo entre as marcações");
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
     @NotNull
     private Long marcacaoIntervaloJaExiste(@NotNull final Connection conn,
                                            @NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
@@ -371,43 +427,105 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     private Long internalInsertMarcacaoIntervalo(@NotNull final Connection conn,
-                                                 @NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
+                                                 @NotNull final IntervaloMarcacao intervaloMarcacao) throws Throwable {
+        /*
+        Temos um fluxo já definido de caminhos a serem seguidos para cada caso que poderemos ter na marcação.
+
+            1 --> intervaloMarcacao é de INICIO
+                1.1 --> Insere marcacao na tabela Intervalo.
+                1.2 --> Insere codMarcacao na tabela de MARCACAO_INICIO.
+                1.3 --> Retorna o código;
+                1.4 --> FIM DO PROCESSO;
+            2 --> intervaloMarcacao é de FIM
+                2.1 --> Marcação possuí código de vínculo
+                    2.1.1 --> Insere marcação na tabela Intervalo.
+                    2.1.2 --> Insere codMarcacao na tabela MARCACAO_FIM.
+                    2.1.3 --> Insere codMarcacao e codMarcacaoVinculada na tabela VINCULO_INICIO_FIM.
+                    2.1.4 --> O código de vínculo possuí outra marcação associada
+                        2.1.4.1 --> Insere códigos na Tabela Inconsistência.
+                        2.1.4.2 --> FIM DO PROCESSO;
+                    2.1.5 --> O código de vínculo não possuí outra marcação associada
+                        2.1.5.1 --> FIM DO PROCESSO;
+                2.2 --> Marcação não possuí código de vínculo
+                    2.2.1 --> Busca codMarcacaoInicio com base no algoritmo de matching de marcações
+                    2.2.2 --> CodMarcacaoInicio encontrado
+                        2.2.2.1 --> Insere marcação na tabela Intervalo.
+                        2.2.2.2 --> Insere codMarcacao na tabela MARCACAO_FIM.
+                        2.2.2.3 --> Insere codMarcacao e codMarcacaoInicio na tabela VINCULO_INICIO_FIM.
+                        2.2.2.4 --> O código de vínculo possuí outra marcação associada
+                            2.2.2.4.1 --> Insere códigos na Tabela Inconsistência.
+                            2.2.2.4.2 --> FIM DO PROCESSO;
+                        2.2.2.5 --> O código de vínculo não possuí outra marcação associada
+                            2.2.2.5.1 --> FIM DO PROCESSO;
+                    2.2.3 --> CodMarcacaoInicio não encontrado
+                        2.2.2.1 --> Insere marcação na tabela Intervalo.
+                        2.2.2.2 --> Insere codMarcacao na tabela MARCACAO_FIM.
+                        2.2.2.3 --> FIM DO PROCESSO;
+                    2.2.4 --> Retorna o código;
+                    2.2.5 --> FIM DO PROCESSO;
+         */
+
+        if (intervaloMarcacao.getTipoMarcacaoIntervalo().equals(TipoInicioFim.MARCACAO_INICIO)) {
+            final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
+            insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_INICIO);
+            return codMarcacaoInserida;
+        } else {
+            if (intervaloMarcacao.getCodMarcacaoVinculada() != null) {
+                final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
+                insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
+                insereVinculoInicioFim(conn, intervaloMarcacao.getCodMarcacaoVinculada(), codMarcacaoInserida);
+                insereMarcacaoInconsistenteSeExistir(conn, intervaloMarcacao.getCodMarcacaoVinculada(), codMarcacaoInserida);
+                return codMarcacaoInserida;
+            } else {
+                final Long codMarcacacaoVinculo = buscaMarcacaoInicioVinculo();
+                if (codMarcacacaoVinculo != null) {
+                    final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
+                    insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
+                    insereVinculoInicioFim(conn, codMarcacacaoVinculo, codMarcacaoInserida);
+                    insereMarcacaoInconsistenteSeExistir(conn, codMarcacacaoVinculo, codMarcacaoInserida);
+                    return codMarcacaoInserida;
+                } else {
+                    final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
+                    insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
+                    return codMarcacaoInserida;
+                }
+            }
+        }
+    }
+
+    private void insereMarcacaoInconsistenteSeExistir(@NotNull final Connection conn,
+                                                      @NotNull final Long codMarcacaoVinculada,
+                                                      @NotNull final Long codMarcacaoInserida) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            /*
-            Temos um fluxo já definido de caminhos a serem seguidos para cada caso que poderemos ter na marcação.
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_MARCACAO_INSERT_MARCACAO_INCONSISTENCIA(?, ?) AS RESULT;");
+            stmt.setLong(1, codMarcacaoVinculada);
+            stmt.setLong(2, codMarcacaoInserida);
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || !rSet.getBoolean("RESULT")) {
+                throw new SQLException("Erro ao inserir as inconsistências das marcações");
+            }
+        } finally {
+            close(rSet, stmt);
+        }
+    }
 
-            1 --> intervaloMarcacao é de INICIO
-                1.1 --> Insere intervaloMarcacao na tabela Intervalo.
-                1.2 --> e retorna o código;
-            2 --> intervaloMarcacao é de FIM
-                2.1 --> Marcação possuí código de vínculo
-                    2.1.1 --> Insere marcação na tabela Intervalo
-                    2.1.2 --> O código de vínculo possuí outra marcação associada
-                        2.1.2.1 --> Insere códigos na Tabela Inconsistência
-                    2.1.3 --> O código de vínculo não possuí outra marcação associada
-                        2.1.3.1 --> FIM DO PROCESSO;
-                2.2 --> Marcação não possuí código de vínculo
-                    2.2.1 --> Executa algoritmo de matching de marcações
-                    2.2.2 --> O código de vínculo possuí outra marcação associada
-                        2.2.2.1 --> Insere códigos na Tabela Inconsistência
-                    2.2.3 --> O código de vínculo não possuí outra marcação associada
-             */
-            stmt = conn.prepareStatement("INSERT INTO INTERVALO(" +
-                    "                      COD_UNIDADE, " +
-                    "                      COD_TIPO_INTERVALO, " +
-                    "                      CPF_COLABORADOR, " +
-                    "                      DATA_HORA, " +
-                    "                      TIPO_MARCACAO, " +
-                    "                      FONTE_DATA_HORA, " +
-                    "                      JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
-                    "                      JUSTIFICATIVA_ESTOURO, " +
-                    "                      LATITUDE_MARCACAO, " +
-                    "                      LONGITUDE_MARCACAO, " +
-                    "                      DATA_HORA_SINCRONIZACAO) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
-                    "RETURNING CODIGO;");
+    @Nullable
+    private Long buscaMarcacaoInicioVinculo() {
+        // TODO - implementar busca de vinculos
+        return null;
+    }
+
+    @NotNull
+    private Long insertMarcacao(@NotNull final Connection conn,
+                                @NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_MARCACAO_INSERT_MARCACAO_JORNADA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);

@@ -36,6 +36,8 @@ public final class IntervaloMarcacao {
     private String justificativaTempoRecomendado;
     @Nullable
     private Localizacao localizacaoMarcacao;
+    @Nullable
+    private Long codMarcacaoVinculada;
 
     public IntervaloMarcacao() {
 
@@ -149,6 +151,15 @@ public final class IntervaloMarcacao {
         this.localizacaoMarcacao = localizacaoMarcacao;
     }
 
+    @Nullable
+    public Long getCodMarcacaoVinculada() {
+        return codMarcacaoVinculada;
+    }
+
+    public void setCodMarcacaoVinculada(@Nullable final Long codMarcacaoVinculada) {
+        this.codMarcacaoVinculada = codMarcacaoVinculada;
+    }
+
     @Override
     public String toString() {
         return "IntervaloMarcacao{" +
@@ -157,13 +168,14 @@ public final class IntervaloMarcacao {
                 ", codTipoIntervalo=" + codTipoIntervalo +
                 ", codUnidade=" + codUnidade +
                 ", cpfColaborador=" + cpfColaborador +
-                ", dataNascimentoColaborador='" + dataNascimentoColaborador + '\'' +
+                ", dataNascimentoColaborador=" + dataNascimentoColaborador +
                 ", dataHoraMaracao=" + dataHoraMaracao +
                 ", fonteDataHora=" + fonteDataHora +
                 ", tipoMarcacaoIntervalo=" + tipoMarcacaoIntervalo +
                 ", justificativaEstouro='" + justificativaEstouro + '\'' +
                 ", justificativaTempoRecomendado='" + justificativaTempoRecomendado + '\'' +
                 ", localizacaoMarcacao=" + localizacaoMarcacao +
+                ", codMarcacaoVinculada=" + codMarcacaoVinculada +
                 '}';
     }
 }
