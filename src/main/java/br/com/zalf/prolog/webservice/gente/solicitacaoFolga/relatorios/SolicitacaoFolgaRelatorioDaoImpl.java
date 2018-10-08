@@ -54,7 +54,7 @@ public class SolicitacaoFolgaRelatorioDaoImpl extends DatabaseConnection impleme
     private PreparedStatement getResumoFolgasConcedidasStatement(Connection conn, long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT TO_CHAR(AD.DATA, 'DD/MM/YYYY') AS \"DATA SOLICITAÇÃO\",\n" +
-                "  count(codigo) AS \"TOTAL CONCEDIDAS\",\n" +
+                "  count(sf.codigo) AS \"TOTAL CONCEDIDAS\",\n" +
                 "  sum(CASE WHEN sf.periodo LIKE 'MANHA' THEN 1 ELSE 0 end) as \"CONCEDIDAS MANHÃ\",\n" +
                 "  sum(CASE WHEN sf.periodo LIKE 'TARDE' THEN 1 ELSE 0 end) as \"CONCEDIDAS TARTE\",\n" +
                 "  sum(CASE WHEN sf.periodo LIKE 'NOITE' THEN 1 ELSE 0 end) as \"CONCEDIDAS NOITE\",\n" +
