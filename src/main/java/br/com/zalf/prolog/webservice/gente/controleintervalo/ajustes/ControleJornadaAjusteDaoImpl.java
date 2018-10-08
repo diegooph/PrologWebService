@@ -71,8 +71,8 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_MARCACOES_COLABORADOR_AJUSTE(?, ?, ?);");
-            stmt.setLong(1, codColaborador);
-            bindValueOrNull(stmt, 2, codTipoMarcacao, SqlType.BIGINT);
+            bindValueOrNull(stmt, 1, codTipoMarcacao, SqlType.BIGINT);
+            stmt.setLong(2, codColaborador);
             stmt.setObject(3, dia);
             rSet = stmt.executeQuery();
             final List<MarcacaoColaboradorAjuste> marcacoes = new ArrayList<>();
