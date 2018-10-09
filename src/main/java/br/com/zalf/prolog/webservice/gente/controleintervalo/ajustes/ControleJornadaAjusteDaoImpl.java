@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
@@ -336,7 +337,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setLong(1, codMarcacaoAjustada);
             stmt.setObject(2, dataHoraInserida);
             stmt.setLong(3, marcacaoAjuste.getCodJustificativaAjuste());
-            stmt.setString(4, marcacaoAjuste.getObservacaoAjuste());
+            bindValueOrNull(stmt, 4, StringUtils.emptyToNull(marcacaoAjuste.getObservacaoAjuste()), SqlType.TEXT);
             stmt.setString(5, marcacaoAjuste.getTipoAcaoAjuste().asString());
             stmt.setString(6, tokenResponsavelAjuste);
             stmt.setObject(7, Now.offsetDateTimeUtc());
