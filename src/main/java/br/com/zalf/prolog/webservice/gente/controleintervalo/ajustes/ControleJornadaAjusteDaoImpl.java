@@ -1,10 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoAjusteHistoricoExibicao;
@@ -96,14 +98,15 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(tokenResponsavelAjuste, conn);
             final Long codMarcacaoInserida = insereMarcacaoAjusteAdicao(conn, tokenResponsavelAjuste, marcacaoAjuste, zoneId);
             final TipoInicioFim tipoInicioFim = marcacaoAjuste.getTipoInicioFim();
-            insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, tipoInicioFim);
+            final ControleIntervaloDao controleIntervaloDao = Injection.provideControleIntervaloDao();
+            controleIntervaloDao.insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, tipoInicioFim);
             final Long codMarcacaoInicio = tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)
                     ? codMarcacaoInserida
                     : marcacaoAjuste.getCodMarcacaoVinculo();
             final Long codMarcacaoFim = tipoInicioFim.equals(TipoInicioFim.MARCACAO_FIM)
                     ? codMarcacaoInserida
                     : marcacaoAjuste.getCodMarcacaoVinculo();
-            insereVinculoInicioFim(conn, codMarcacaoInicio, codMarcacaoFim);
+            controleIntervaloDao.insereVinculoInicioFim(conn, codMarcacaoInicio, codMarcacaoFim);
             insereInformacoesAjusteMarcacao(
                     conn,
                     codMarcacaoInserida,
@@ -131,10 +134,15 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final ResultInsertInicioFim codigos = insereMarcacaoAjusteAdicaoInicioFim(conn, tokenResponsavelAjuste, marcacaoAjuste);
-            insereMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoInicio(), TipoInicioFim.MARCACAO_INICIO);
-            insereMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoFim(), TipoInicioFim.MARCACAO_FIM);
-            insereVinculoInicioFim(conn, codigos.getCodMarcacaoInicio(), codigos.getCodMarcacaoFim());
+            final ResultInsertInicioFim codigos =
+                    insereMarcacaoAjusteAdicaoInicioFim(conn, tokenResponsavelAjuste, marcacaoAjuste);
+            final ControleIntervaloDao controleIntervaloDao = Injection.provideControleIntervaloDao();
+            controleIntervaloDao
+                    .insereMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoInicio(), TipoInicioFim.MARCACAO_INICIO);
+            controleIntervaloDao
+                    .insereMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoFim(), TipoInicioFim.MARCACAO_FIM);
+            controleIntervaloDao
+                    .insereVinculoInicioFim(conn, codigos.getCodMarcacaoInicio(), codigos.getCodMarcacaoFim());
             insereInformacoesAjusteMarcacao(
                     conn,
                     codigos.getCodMarcacaoFim(),
@@ -273,50 +281,6 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                 return rSet.getLong("CODIGO");
             } else {
                 throw new SQLException("Não foi possível inserir a marcação");
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    private void insereMarcacaoInicioOuFim(@NotNull final Connection conn,
-                                           @NotNull final Long codMarcacaoInserida,
-                                           @NotNull final TipoInicioFim tipoInicioFim) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            if (tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)) {
-                stmt = conn.prepareStatement("INSERT INTO MARCACAO_INICIO(COD_MARCACAO_INICIO) " +
-                        "VALUES (?) RETURNING COD_MARCACAO_INICIO AS CODIGO");
-            } else {
-                stmt = conn.prepareStatement("INSERT INTO MARCACAO_FIM(COD_MARCACAO_FIM) " +
-                        "VALUES (?) RETURNING COD_MARCACAO_FIM AS CODIGO");
-            }
-            stmt.setLong(1, codMarcacaoInserida);
-            rSet = stmt.executeQuery();
-            if (!rSet.next() || rSet.getLong("CODIGO") <= 0) {
-                throw new SQLException("Não foi possível inserir o vinculo entre as marcações");
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    private void insereVinculoInicioFim(@NotNull final Connection conn,
-                                        @NotNull final Long codMarcacaoInicio,
-                                        @NotNull final Long codMarcacaoFim) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("INSERT INTO " +
-                    "MARCACAO_VINCULO_INICIO_FIM(COD_MARCACAO_INICIO, COD_MARCACAO_FIM) " +
-                    "VALUES (?, ?) " +
-                    "RETURNING CODIGO AS CODIGO_VINCULO");
-            stmt.setLong(1, codMarcacaoInicio);
-            stmt.setLong(2, codMarcacaoFim);
-            rSet = stmt.executeQuery();
-            if (!rSet.next() || rSet.getLong("CODIGO_VINCULO") <= 0) {
-                throw new SQLException("Não foi possível inserir o vinculo entre as marcações");
             }
         } finally {
             close(stmt, rSet);
