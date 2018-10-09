@@ -407,13 +407,13 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT I.CODIGO FROM INTERVALO I " +
-                    "WHERE I.COD_UNIDADE = ? AND I.CPF_COLABORADOR = ? AND I.DATA_HORA = ? AND I.TIPO_MARCACAO = ?;");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_MARCACAO_BUSCA_COD_MARCACAO_JA_EXISTE(?, ?, ?, ?) AS CODIGO;");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(intervaloMarcacao.getCodUnidade(), conn);
             stmt.setLong(1, intervaloMarcacao.getCodUnidade());
             stmt.setLong(2, intervaloMarcacao.getCpfColaborador());
-            stmt.setObject(3, intervaloMarcacao.getDataHoraMaracao().atZone(zoneId).toOffsetDateTime());
-            stmt.setString(4, intervaloMarcacao.getTipoMarcacaoIntervalo().asString());
+            stmt.setString(3, intervaloMarcacao.getTipoMarcacaoIntervalo().asString());
+            stmt.setObject(4, intervaloMarcacao.getDataHoraMaracao().atZone(zoneId).toOffsetDateTime());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -527,7 +527,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                     "FROM FUNC_MARCACAO_BUSCA_MARCACAO_VICULO_BY_MARCACAO(?, ?, ?) AS CODIGO;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codTipoIntervalo);
-            stmt.setLong(2, cpfColaborador);
+            stmt.setLong(3, cpfColaborador);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codigo = rSet.getLong("CODIGO");

@@ -37,7 +37,7 @@ public class ControleIntervaloService {
                     : EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
             final Long codIntervalo = dao.insertMarcacaoIntervalo(intervaloMarcacao);
             return ResponseIntervalo.ok(codIntervalo, "Intervalo inserido com sucesso", estadoVersaoIntervalo);
-        } catch (SQLException e) {
+        } catch (Throwable e) {
             Log.e(TAG, String.format(
                     "Erro ao inserir ou atualizar um intervalo. \n" +
                     "versaoDadosIntervalo: %d", versaoDadosIntervalo),
