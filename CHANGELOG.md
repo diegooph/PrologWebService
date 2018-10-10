@@ -8,6 +8,7 @@ Change Log
 * Corrige busca das alternativas disponíveis para realização de um relato
 * Corrige método de busca de um relato pelo seu código
 * Corrige query de relatório da solicitação de folga
+* Corrige leitura da hrSaida e hrEntrada no import do mapa
 
 <a name="v0.0.76"></a>
 ## Version [v0.0.76](https://github.com/luizfp/PrologWeb/compare/v0.0.75...v0.0.76) (2018-10-02)
