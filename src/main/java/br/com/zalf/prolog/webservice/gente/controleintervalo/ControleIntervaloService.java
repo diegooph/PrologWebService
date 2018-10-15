@@ -47,6 +47,38 @@ public class ControleIntervaloService {
         }
     }
 
+    @Nullable
+    IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
+                                                        @NotNull final Long cpfColaborador,
+                                                        @NotNull final Long codTipoIntervalo) throws Exception {
+        try {
+            return dao.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpfColaborador, codTipoIntervalo);
+        } catch (Exception e) {
+            Log.e(TAG, String.format("Erro ao buscar os intervalos em abertos de um colaborador. \n" +
+                    "cpfColaborador: %d \n" +
+                    "codTipoIntervalo: %d", cpfColaborador, codTipoIntervalo), e);
+            throw e;
+        }
+    }
+
+    @NotNull
+    List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
+                                                     @NotNull final Long cpfColaborador,
+                                                     @NotNull final String codTipoIntevalo,
+                                                     final long limit,
+                                                     final long offset) {
+        try {
+            return dao.getMarcacoesIntervaloColaborador(codUnidade, cpfColaborador, codTipoIntevalo, limit, offset);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar os intervalos de um colaborador. \n" +
+                    "cpfColaborador: %s \n" +
+                    "codTipoIntevalo: %s \n" +
+                    "limit: %d \n" +
+                    "offset: %d", cpfColaborador, codTipoIntevalo, limit, offset), e);
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<TipoMarcacao> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
         try {
             return dao.getTiposIntervalosByUnidade(codUnidade, apenasAtivos, withCargos);
@@ -65,33 +97,6 @@ public class ControleIntervaloService {
             Log.e(TAG, String.format("Erro ao buscar tipo de intervalo. \n" +
                     "codUnidade: %d \n" +
                     "codTipoIntervalo: %d", codUnidade, codTipoIntervalo), e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Nullable
-    IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
-                                                        @NotNull final Long cpfColaborador,
-                                                        @NotNull final Long codTipoIntervalo) throws Exception {
-        try {
-            return dao.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpfColaborador, codTipoIntervalo);
-        } catch (Exception e) {
-            Log.e(TAG, String.format("Erro ao buscar os intervalos em abertos de um colaborador. \n" +
-                    "cpfColaborador: %d \n" +
-                    "codTipoIntervalo: %d", cpfColaborador, codTipoIntervalo), e);
-            throw e;
-        }
-    }
-
-    public List<Intervalo> getMarcacoesIntervaloColaborador(Long codUnidade, Long cpf, String codTipo, long limit, long offset) {
-        try {
-            return dao.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar os intervalos de um colaborador. \n" +
-                    "cpf: %s \n" +
-                    "codTipo: %s \n" +
-                    "limit: %d \n" +
-                    "offset: %d", cpf, codTipo, limit, offset), e);
             throw new RuntimeException(e);
         }
     }

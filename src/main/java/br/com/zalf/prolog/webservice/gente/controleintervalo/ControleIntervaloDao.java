@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -50,7 +49,7 @@ public interface ControleIntervaloDao {
      *
      * @param codUnidade       Código da {@link Unidade} de onde será filtrado as marcações.
      * @param cpfColaborador   CPF do {@link Colaborador} que realizou a marcação.
-     * @param codTipoIntervalo Código do {@link Intervalo} que será buscado.
+     * @param codTipoIntervalo Código do tipo {@link Intervalo} que será buscado.
      * @return Um {@link IntervaloMarcacao} caso existir ou null.
      * @throws SQLException Se algum erro ocorrer na busca da marcação em andamento.
      */
@@ -59,11 +58,23 @@ public interface ControleIntervaloDao {
                                                         @NotNull final Long cpfColaborador,
                                                         @NotNull final Long codTipoIntervalo) throws SQLException;
 
-    @Nonnull
+    /**
+     * Método utilizado para listar as marcações do usuário através do {@code cpfColaborador}.
+     * Este método irá listar todas as marcações realizadas pelo colaborador, inclusive as marcações editadas
+     * ou inseridas pelos seus supervisores.
+     *
+     * @param codUnidade      Código da {@link Unidade} do colaborador.
+     * @param cpfColaborador  CPF do {@link Colaborador}.
+     * @param codTipoIntevalo Código do tipo {@link Intervalo} que será buscado.
+     * @param limit           Limite de valores retornados na busca.
+     * @param offset          Valor de início da busca.
+     * @return Uma {@link List<Intervalo>} contendo os intervalos do colaborador e aqueles inseridos em nome dele.
+     * @throws SQLException Caso algum erro aconteça na busca.
+     */
     @NotNull
     List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
-                                                     @NotNull final Long cpf,
-                                                     @NotNull final String codTipo,
+                                                     @NotNull final Long cpfColaborador,
+                                                     @NotNull final String codTipoIntevalo,
                                                      final long limit,
                                                      final long offset) throws SQLException;
 

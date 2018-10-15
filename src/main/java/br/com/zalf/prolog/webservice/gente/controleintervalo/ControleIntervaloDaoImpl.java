@@ -92,8 +92,8 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     @NotNull
     @Override
     public List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
-                                                            @NotNull final Long cpf,
-                                                            @NotNull final String codTipo,
+                                                            @NotNull final Long cpfColaborador,
+                                                            @NotNull final String codTipoIntevalo,
                                                             final long limit,
                                                             final long offset) throws SQLException {
         Connection conn = null;
@@ -104,12 +104,8 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_GET_MARCACOES_COLABORADOR(?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
-            stmt.setLong(2, cpf);
-            if (codTipo.equals("%")) {
-                stmt.setNull(3, Types.BIGINT);
-            } else {
-                stmt.setLong(3, Long.valueOf(codTipo));
-            }
+            stmt.setLong(2, cpfColaborador);
+            bindValueOrNull(stmt, 3, codTipoIntevalo.equals("%") ? null : codTipoIntevalo, SqlType.BIGINT);
             stmt.setLong(4, limit);
             stmt.setLong(5, offset);
             rSet = stmt.executeQuery();
@@ -117,7 +113,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                 intervalos.add(ControleJornadaConverter.createIntervalo(rSet));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return intervalos;
     }
