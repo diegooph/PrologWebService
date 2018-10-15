@@ -255,16 +255,15 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             stmt = conn.prepareStatement("SELECT " +
                     "IT.CODIGO AS CODIGO_TIPO_INTERVALO, " +
                     "IT.CODIGO_TIPO_INTERVALO_POR_UNIDADE AS CODIGO_TIPO_INTERVALO_POR_UNIDADE, " +
-                    "IT.NOME AS " +
-                    "NOME_TIPO_INTERVALO, " +
+                    "IT.NOME AS NOME_TIPO_INTERVALO, " +
                     "IT.COD_UNIDADE, " +
                     "IT.ATIVO, " +
                     "IT.HORARIO_SUGERIDO, " +
                     "IT.ICONE, " +
                     "IT.TEMPO_ESTOURO_MINUTOS, " +
                     "IT.TEMPO_RECOMENDADO_MINUTOS " +
-                    "FROM INTERVALO_TIPO_CARGO ITC JOIN VIEW_INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC" +
-                    ".COD_TIPO_INTERVALO = IT.CODIGO " +
+                    "FROM INTERVALO_TIPO_CARGO ITC JOIN VIEW_INTERVALO_TIPO IT " +
+                    "ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC.COD_TIPO_INTERVALO = IT.CODIGO " +
                     " WHERE IT.COD_UNIDADE = ? AND IT.CODIGO = ?;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codTipoIntervalo);
@@ -275,7 +274,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                 throw new SQLException("Nenhum tipo de intervalo encontrado com o código: " + codTipoIntervalo);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

@@ -79,7 +79,10 @@ public class ControleIntervaloService {
         }
     }
 
-    public List<TipoMarcacao> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
+    @NotNull
+    public List<TipoMarcacao> getTiposIntervalos(@NotNull final Long codUnidade,
+                                                 final boolean apenasAtivos,
+                                                 final boolean withCargos) {
         try {
             return dao.getTiposIntervalosByUnidade(codUnidade, apenasAtivos, withCargos);
         } catch (SQLException e) {
@@ -90,7 +93,9 @@ public class ControleIntervaloService {
         }
     }
 
-    public TipoMarcacao getTipoIntervalo(Long codUnidade, Long codTipoIntervalo) {
+    @NotNull
+    TipoMarcacao getTipoIntervalo(@NotNull final Long codUnidade,
+                                  @NotNull final Long codTipoIntervalo) {
         try {
             return dao.getTipoIntervalo(codUnidade, codTipoIntervalo);
         } catch (SQLException e) {

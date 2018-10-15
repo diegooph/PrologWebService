@@ -102,6 +102,14 @@ public interface ControleIntervaloDao {
                                                    final boolean apenasAtivos,
                                                    final boolean withCargos) throws SQLException;
 
+    /**
+     * Método utilizado para buscar as informações de um {@link TipoMarcacao} específico
+     *
+     * @param codUnidade       Código da {@link Unidade} que o tipo pertence.
+     * @param codTipoIntervalo Código do {@link TipoMarcacao} que será buscado.
+     * @return Um {@link TipoMarcacao} com seus atributos.
+     * @throws SQLException Se algum erro ocorrer na busca.
+     */
     @NotNull
     TipoMarcacao getTipoIntervalo(@NotNull final Long codUnidade,
                                   @NotNull final Long codTipoIntervalo) throws SQLException;
