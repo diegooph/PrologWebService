@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
+import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -101,8 +103,17 @@ public interface ColaboradorDao {
 	@NotNull
     Colaborador getByToken(@NotNull final String token) throws SQLException;
 
-	List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
-															   @NotNull final Long codUnidade) throws SQLException;
+	/**
+	 * Método que busca uma {@link List<Colaborador>} que possuem acesso à um {@code codFuncaoProLog} específico.
+	 *
+	 * @param codUnidade      Código da {@link Unidade} que será buscado os colaboradores.
+	 * @param codFuncaoProLog Código da {@link FuncaoProLog} que estamos filtrando.
+	 * @return Uma {@link List<Colaborador>} que possuem a {@link FuncaoProLog} em questão.
+	 * @throws SQLException Caso algum erro na busca acontecer.
+	 */
+	@NotNull
+	List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(@NotNull final Long codUnidade,
+															   final int codFuncaoProLog) throws SQLException;
 
 	Long getCodUnidadeByCpf(@NotNull final Long cpf) throws SQLException;
 

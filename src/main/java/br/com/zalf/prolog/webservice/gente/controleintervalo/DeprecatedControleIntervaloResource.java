@@ -65,7 +65,7 @@ public class DeprecatedControleIntervaloResource {
     public IntervaloOfflineSupport getIntervaloOfflineSupport(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             @PathParam("codUnidade") Long codUnidade) {
-        return service.getIntervaloOfflineSupport(versaoDadosIntervalo, codUnidade, new ColaboradorService());
+        return service.getIntervaloOfflineSupport(new ColaboradorService(), codUnidade, versaoDadosIntervalo);
     }
 
     @GET

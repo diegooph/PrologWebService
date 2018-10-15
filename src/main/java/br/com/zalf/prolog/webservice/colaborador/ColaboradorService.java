@@ -141,9 +141,9 @@ public class ColaboradorService {
 
             final ControleIntervaloService intervaloService = new ControleIntervaloService();
             final IntervaloOfflineSupport intervaloOfflineSupport = intervaloService.getIntervaloOfflineSupport(
-                    loginRequest.getVersaoDadosIntervalo(),
+                    this,
                     colaborador.getUnidade().getCodigo(),
-                    this);
+                    loginRequest.getVersaoDadosIntervalo());
             loginHolder.setIntervaloOfflineSupport(intervaloOfflineSupport);
 
         } catch (SQLException | AmazonCredentialsException e) {
@@ -154,10 +154,11 @@ public class ColaboradorService {
         return loginHolder;
     }
 
-    public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
-                                                                      @NotNull final Long codUnidade) {
+    @NotNull
+    public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(@NotNull final Long codUnidade,
+                                                                      final int codFuncaoProLog) {
         try {
-            return dao.getColaboradoresComAcessoFuncaoByUnidade(codFuncaoProLog, codUnidade);
+            return dao.getColaboradoresComAcessoFuncaoByUnidade(codUnidade, codFuncaoProLog);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar colaboradores com acesso a uma determinada " +
                     "função(%d) de uma determinada unidade(%d)", codFuncaoProLog, codUnidade), e);

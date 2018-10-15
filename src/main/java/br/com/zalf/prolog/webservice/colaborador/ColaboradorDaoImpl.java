@@ -360,10 +360,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
     @NotNull
     @Override
-    public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
-                                                                      @NotNull final Long codUnidade)
-            throws SQLException {
-
+    public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(@NotNull final Long codUnidade,
+                                                                      final int codFuncaoProLog) throws SQLException {
         Preconditions.checkNotNull(codUnidade, "codUnidade não pode ser null!");
 
         Connection conn = null;
@@ -398,7 +396,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 return colaboradores;
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

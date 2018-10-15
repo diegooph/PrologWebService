@@ -147,17 +147,12 @@ public class ControleIntervaloService {
     }
 
     @NotNull
-    public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
-                                                              Long codUnidade,
-                                                              ColaboradorService colaboradorService) {
-        IntervaloOfflineSupport intervaloOfflineSupport = null;
+    public IntervaloOfflineSupport getIntervaloOfflineSupport(@NotNull final ColaboradorService colaboradorService,
+                                                              @NotNull final Long codUnidade,
+                                                              @Nullable final Long versaoDadosApp) {
         try {
-            final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
-                    Pilares.Gente.Intervalo.MARCAR_INTERVALO,
-                    codUnidade);
-            final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
-            final Optional<Long> versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
+            final Optional<Long> versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
 
             // Isso é algo importante para se destacar: se ao buscarmos a versão dos dados de intervalo para uma unidade
             // e não existir nada, assumimos que a unidade também não possui nenhum colaborador com acesso a essa
@@ -184,19 +179,23 @@ public class ControleIntervaloService {
                 }
             }
             // Criamos o objeto.
-            intervaloOfflineSupport = new IntervaloOfflineSupport(estadoVersaoIntervalo);
+            final IntervaloOfflineSupport intervaloOfflineSupport = new IntervaloOfflineSupport(estadoVersaoIntervalo);
+            final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
+                    codUnidade,
+                    Pilares.Gente.Intervalo.MARCAR_INTERVALO);
             intervaloOfflineSupport.setColaboradores(colaboradores);
+            final List<TipoMarcacao> tiposIntervalo =
+                    dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
             intervaloOfflineSupport.setTiposIntervalo(tiposIntervalo);
             intervaloOfflineSupport.setEstadoVersaoIntervalo(estadoVersaoIntervalo);
             versaoDadosBanco.ifPresent(intervaloOfflineSupport::setVersaoDadosIntervalo);
+            return intervaloOfflineSupport;
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o IntervaloOfflineSupport. \n" +
                     "codUnidade: %d \n" +
                     "versaoDadosApp: %d \n", codUnidade, versaoDadosApp), e);
             throw new RuntimeException("Erro ao criar IntervaoOfflineSupport");
         }
-
-        return intervaloOfflineSupport;
     }
 
     @Deprecated

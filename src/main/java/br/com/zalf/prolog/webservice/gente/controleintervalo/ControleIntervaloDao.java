@@ -85,6 +85,18 @@ public interface ControleIntervaloDao {
     void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
+    /**
+     * Método utilizado para listar os {@link TipoMarcacao} de uma {@link Unidade}.
+     * Este método filtra por {@link TipoMarcacao#ativo} e {@link TipoMarcacao#cargos} através das
+     * flags {@code apenasAtivos} e {@code withCargos} respectivamente.
+     *
+     * @param codUnidade   Código da {@link Unidade} dos tipos sendo filtrados.
+     * @param apenasAtivos Se TRUE então apenas os tipos ativos serão retornados, caso FALSE todos.
+     * @param withCargos   Se TRUE então será retornado os cargos que podem marcar esse intervalo,
+     *                     caso FALSE então cargos serão NULL.
+     * @return Uma {@link List<TipoMarcacao>} com os tipos de marcações da unidade.
+     * @throws SQLException Caso algum erro ocorrer.
+     */
     @NotNull
     List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
                                                    final boolean apenasAtivos,

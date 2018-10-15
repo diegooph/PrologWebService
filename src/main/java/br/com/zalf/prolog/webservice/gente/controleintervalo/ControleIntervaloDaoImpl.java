@@ -64,6 +64,26 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         }
     }
 
+    @NotNull
+    @Override
+    public Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT VERSAO_DADOS FROM INTERVALO_UNIDADE WHERE COD_UNIDADE = ?;");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return Optional.of(rSet.getLong("VERSAO_DADOS"));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return Optional.empty();
+    }
+
     @Nullable
     @Override
     public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(
@@ -203,23 +223,22 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     @Override
     public List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
                                                           final boolean apenasAtivos,
-                                                          final boolean withCargos)
-            throws SQLException {
+                                                          final boolean withCargos) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<TipoMarcacao> tipos = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALOS_UNIDADE(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALOS_UNIDADE(?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setBoolean(2, apenasAtivos);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                tipos.add(createTipoInvervalo(rSet, withCargos, conn));
+                tipos.add(createTipoInvervalo(conn, rSet, withCargos));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return tipos;
     }
@@ -251,7 +270,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             stmt.setLong(2, codTipoIntervalo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return createTipoInvervalo(rSet, true, conn);
+                return createTipoInvervalo(conn, rSet, true);
             } else {
                 throw new SQLException("Nenhum tipo de intervalo encontrado com o código: " + codTipoIntervalo);
             }
@@ -294,26 +313,6 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         } finally {
             closeConnection(conn, stmt, null);
         }
-    }
-
-    @NotNull
-    @Override
-    public Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT VERSAO_DADOS FROM INTERVALO_UNIDADE WHERE COD_UNIDADE = ?;");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return Optional.of(rSet.getLong("VERSAO_DADOS"));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return Optional.empty();
     }
 
     @Override
@@ -588,9 +587,9 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     }
 
     @NotNull
-    private TipoMarcacao createTipoInvervalo(@NotNull final ResultSet rSet,
-                                             final boolean withCargos,
-                                             @NotNull final Connection conn) throws SQLException {
+    private TipoMarcacao createTipoInvervalo(@NotNull final Connection conn,
+                                             @NotNull final ResultSet rSet,
+                                             final boolean withCargos) throws SQLException {
         final TipoMarcacao tipoIntervalo = new TipoMarcacao();
         tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
         tipoIntervalo.setCodigoPorUnidade(rSet.getLong("CODIGO_TIPO_INTERVALO_POR_UNIDADE"));
@@ -604,22 +603,22 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         tipoIntervalo.setTempoLimiteEstouro(Duration.ofMinutes(rSet.getLong("TEMPO_ESTOURO_MINUTOS")));
         tipoIntervalo.setTempoRecomendado(Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")));
         if (withCargos) {
-            tipoIntervalo.setCargos(getCargosByTipoIntervalo(tipoIntervalo, conn));
+            tipoIntervalo.setCargos(getCargosByTipoIntervalo(conn, tipoIntervalo));
         }
         return tipoIntervalo;
     }
 
     @NotNull
-    private List<Cargo> getCargosByTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                                 @NotNull final Connection conn) throws SQLException {
+    private List<Cargo> getCargosByTipoIntervalo(@NotNull final Connection conn,
+                                                 @NotNull final TipoMarcacao tipoIntervalo) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<Cargo> cargos = new ArrayList<>();
         try {
             stmt = conn.prepareStatement("SELECT DISTINCT F.* FROM " +
                     "  INTERVALO_TIPO_CARGO ITC JOIN UNIDADE U ON U.CODIGO = ITC.COD_UNIDADE " +
-                    "JOIN FUNCAO F ON F.cod_emprESA = U.cod_empresa AND F.codigo = ITC.COD_CARGO " +
-                    "WHERE ITC.COD_TIPO_INTERVALO = ? and ITC.COD_UNIDADE = ?;");
+                    "JOIN FUNCAO F ON F.COD_EMPRESA = U.COD_EMPRESA AND F.CODIGO = ITC.COD_CARGO " +
+                    "WHERE ITC.COD_TIPO_INTERVALO = ? AND ITC.COD_UNIDADE = ?;");
             stmt.setLong(1, tipoIntervalo.getCodigo());
             stmt.setLong(2, tipoIntervalo.getUnidade().getCodigo());
             rSet = stmt.executeQuery();
@@ -627,7 +626,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                 cargos.add(new Cargo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
         return cargos;
     }
