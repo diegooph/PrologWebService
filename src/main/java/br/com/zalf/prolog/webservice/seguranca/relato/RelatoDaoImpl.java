@@ -3,11 +3,14 @@ package br.com.zalf.prolog.webservice.seguranca.relato;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.seguranca.pdv.Pdv;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.time.*;
@@ -17,7 +20,8 @@ import java.util.List;
 public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 
     @Override
-    public boolean insert(Relato relato) throws SQLException {
+    public boolean insert(@NotNull final Relato relato,
+                          @Nullable final Integer versaoApp) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -25,9 +29,9 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             stmt = conn.prepareStatement("INSERT INTO RELATO "
                     + "(DATA_HORA_LOCAL,  DATA_HORA_DATABASE, LATITUDE, LONGITUDE, "
                     + "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR, STATUS, COD_UNIDADE, "
-                    + " COD_SETOR, COD_ALTERNATIVA, RESPOSTA_OUTROS, COD_PDV) "
+                    + " COD_SETOR, COD_ALTERNATIVA, RESPOSTA_OUTROS, COD_PDV, VERSAO_APP) "
                     + "VALUES (?,?,?,?,?,?,?,?,?,(SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF = ?),"
-                    + "(SELECT COD_SETOR FROM COLABORADOR WHERE CPF = ?),?,?,?)");
+                    + "(SELECT COD_SETOR FROM COLABORADOR WHERE CPF = ?),?,?,?,?)");
             final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCpf(relato.getColaboradorRelato().getCpf(), conn);
             stmt.setObject(1, relato.getDataLocal().atZone(unidadeZoneId).toOffsetDateTime());
             stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
@@ -50,6 +54,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             } else {
                 stmt.setNull(14, Types.INTEGER);
             }
+            StatementUtils.bindValueOrNull(stmt, 15, versaoApp, SqlType.INTEGER);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o relato");

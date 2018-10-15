@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.seguranca.relato;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -19,7 +20,8 @@ public interface RelatoDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível inserir
 	 */
-	boolean insert(Relato relato) throws SQLException;
+	boolean insert(@NotNull final Relato relato,
+				   @Nullable final Integer versaoApp) throws SQLException;
 
 	/**
 	 * Deleta um Relato do banco de dados
