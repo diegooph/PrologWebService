@@ -91,9 +91,6 @@ public interface ControleIntervaloDao {
     Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
-    void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                             @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
-
     /**
      * Método utilizado para listar os {@link TipoMarcacao} de uma {@link Unidade}.
      * Este método filtra por {@link TipoMarcacao#ativo} e {@link TipoMarcacao#cargos} através das
@@ -123,6 +120,27 @@ public interface ControleIntervaloDao {
     TipoMarcacao getTipoIntervalo(@NotNull final Long codUnidade,
                                   @NotNull final Long codTipoIntervalo) throws SQLException;
 
+    /**
+     * Método utilizado para atualizar as informações de um {@link TipoMarcacao}.
+     *
+     * @param tipoIntervalo {@link TipoMarcacao} contendo as novas informações.
+     * @param listener      Listener da classe {@link DadosIntervaloChangedListener}
+     *                      utilizado para notificar alterações nos tipos de intervalos.
+     * @throws Throwable Se algum erro ocorrer durante a atualização.
+     */
+    void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
+                             @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
+
+    /**
+     * Método utilizado para inativar ou ativar um {@link TipoMarcacao}.
+     *
+     * @param codUnidade       Código da {@link Unidade} que o tipo pertence.
+     * @param codTipoIntervalo Código do {@link TipoMarcacao} que será ativado ou inativado.
+     * @param tipoIntervalo    {@link TipoMarcacao} contendo o status ativo ou inativo.
+     * @param listener         Listener da classe {@link DadosIntervaloChangedListener}
+     *                         utilizado para notificar alterações nos tipos de intervalos.
+     * @throws Throwable Se algum erro ocorrer durante a atualização.
+     */
     void updateStatusAtivoTipoIntervalo(@NotNull final Long codUnidade,
                                         @NotNull final Long codTipoIntervalo,
                                         @NotNull final TipoMarcacao tipoIntervalo,

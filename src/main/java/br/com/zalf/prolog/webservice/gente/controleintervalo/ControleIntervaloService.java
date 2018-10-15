@@ -118,7 +118,7 @@ public class ControleIntervaloService {
         }
     }
 
-    public boolean updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo) {
+    boolean updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo) {
         try {
             dao.updateTipoIntervalo(tipoIntervalo, Injection.provideDadosIntervaloChangedListener());
             return true;
@@ -128,9 +128,9 @@ public class ControleIntervaloService {
         }
     }
 
-    public void updateStatusAtivo(@NotNull final Long codUnidade,
-                                  @NotNull final Long codTipoIntervalo,
-                                  @NotNull final TipoMarcacao tipoIntervalo) throws ProLogException {
+    void updateStatusAtivo(@NotNull final Long codUnidade,
+                           @NotNull final Long codTipoIntervalo,
+                           @NotNull final TipoMarcacao tipoIntervalo) throws ProLogException {
         try {
             dao.updateStatusAtivoTipoIntervalo(
                     codUnidade,
@@ -141,12 +141,9 @@ public class ControleIntervaloService {
             Log.e(TAG, String.format("Erro ao inativar o tipo de intervalo. \n" +
                     "codUnidade: %d \n" +
                     "codTipoIntervalo: %d", codUnidade, codTipoIntervalo), e);
-            final String errorMessage;
-            if (tipoIntervalo.isAtivo()) {
-                errorMessage = "Erro ao ativar tipo de marcação, tente novamente";
-            } else {
-                errorMessage = "Erro ao inativar tipo de marcação, tente novamente";
-            }
+            final String errorMessage = "Erro ao "
+                    + (tipoIntervalo.isAtivo() ? "ativar" : "inativar")
+                    + " tipo de marcação, tente novamente";
             throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
         }
     }

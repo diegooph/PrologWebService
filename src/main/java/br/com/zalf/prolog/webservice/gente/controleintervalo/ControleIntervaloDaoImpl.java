@@ -180,45 +180,6 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         }
     }
 
-    @Override
-    public void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                    @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
-                    "SET NOME = ?, ICONE = ?, TEMPO_RECOMENDADO_MINUTOS = ?, TEMPO_ESTOURO_MINUTOS = ?, " +
-                    "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ? AND ATIVO = TRUE;");
-            stmt.setString(1, tipoIntervalo.getNome());
-            stmt.setString(2, tipoIntervalo.getIcone().getNomeIcone());
-            stmt.setLong(3, tipoIntervalo.getTempoRecomendado().toMinutes());
-            stmt.setLong(4, tipoIntervalo.getTempoLimiteEstouro().toMinutes());
-            stmt.setTime(5, tipoIntervalo.getHorarioSugerido());
-            stmt.setLong(6, tipoIntervalo.getUnidade().getCodigo());
-            stmt.setLong(7, tipoIntervalo.getCodigo());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao atualizar o Tipo de Intervalo de código: " + tipoIntervalo.getCodigo());
-            }
-            associaCargosTipoIntervalo(conn, tipoIntervalo);
-            // Avisamos o listener que um tipo de intervalo mudou.
-            listener.onTiposIntervaloChanged(conn, tipoIntervalo.getUnidade().getCodigo());
-
-            // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
-            conn.commit();
-        } catch (Throwable e) {
-            // Pegamos apenas para fazer o rollback, depois subimos o erro.
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw e;
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-    }
-
     @NotNull
     @Override
     public List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
@@ -279,6 +240,44 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     }
 
     @Override
+    public void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
+                                    @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
+                    "SET NOME = ?, ICONE = ?, TEMPO_RECOMENDADO_MINUTOS = ?, TEMPO_ESTOURO_MINUTOS = ?, " +
+                    "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ? AND ATIVO = TRUE;");
+            stmt.setString(1, tipoIntervalo.getNome());
+            stmt.setString(2, tipoIntervalo.getIcone().getNomeIcone());
+            stmt.setLong(3, tipoIntervalo.getTempoRecomendado().toMinutes());
+            stmt.setLong(4, tipoIntervalo.getTempoLimiteEstouro().toMinutes());
+            stmt.setTime(5, tipoIntervalo.getHorarioSugerido());
+            stmt.setLong(6, tipoIntervalo.getUnidade().getCodigo());
+            stmt.setLong(7, tipoIntervalo.getCodigo());
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao atualizar o Tipo de Intervalo de código: " + tipoIntervalo.getCodigo());
+            }
+            associaCargosTipoIntervalo(conn, tipoIntervalo);
+            // Avisamos o listener que um tipo de intervalo mudou.
+            listener.onTiposIntervaloChanged(conn, tipoIntervalo.getUnidade().getCodigo());
+            // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
+            conn.commit();
+        } catch (Throwable e) {
+            // Pegamos apenas para fazer o rollback, depois subimos o erro.
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    @Override
     public void updateStatusAtivoTipoIntervalo(@NotNull final Long codUnidade,
                                                @NotNull final Long codTipoIntervalo,
                                                @NotNull final TipoMarcacao tipoIntervalo,
@@ -297,10 +296,8 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             if (count == 0) {
                 throw new SQLException("Erro ao inativar o Tipo de Intervalo de código: " + codTipoIntervalo);
             }
-
             // Avisamos o listener que um tipo de intervalo mudou.
             listener.onTiposIntervaloChanged(conn, codUnidade);
-
             // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
             conn.commit();
         } catch (final Throwable e) {
@@ -310,7 +307,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             }
             throw e;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
     }
 
