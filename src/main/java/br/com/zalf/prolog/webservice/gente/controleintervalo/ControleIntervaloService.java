@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -68,12 +69,16 @@ public class ControleIntervaloService {
         }
     }
 
-    public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(Long codUnidade, Long cpf, Long codTipoIntervalo) throws Exception {
+    @Nullable
+    IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
+                                                        @NotNull final Long cpfColaborador,
+                                                        @NotNull final Long codTipoIntervalo) throws Exception {
         try {
-            return dao.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoIntervalo);
+            return dao.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpfColaborador, codTipoIntervalo);
         } catch (Exception e) {
             Log.e(TAG, String.format("Erro ao buscar os intervalos em abertos de um colaborador. \n" +
-                    "cpf: %d", cpf), e);
+                    "cpfColaborador: %d \n" +
+                    "codTipoIntervalo: %d", cpfColaborador, codTipoIntervalo), e);
             throw e;
         }
     }

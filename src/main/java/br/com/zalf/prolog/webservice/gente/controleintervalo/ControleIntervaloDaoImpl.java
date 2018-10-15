@@ -68,56 +68,23 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     @Override
     public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(
             @NotNull final Long codUnidade,
-            @NotNull final Long cpf,
+            @NotNull final Long cpfColaborador,
             @NotNull final Long codTipoIntervalo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  I.CODIGO                          AS CODIGO, " +
-                    "  I.CODIGO_MARCACAO_POR_UNIDADE     AS COD_MARCACAO_POR_UNIDADE, " +
-                    "  I.COD_UNIDADE                     AS COD_UNIDADE, " +
-                    "  I.COD_TIPO_INTERVALO              AS COD_TIPO_INTERVALO, " +
-                    "  I.CPF_COLABORADOR                 AS CPF_COLABORADOR, " +
-                    "  C.DATA_NASCIMENTO                 AS DATA_NASCIMENTO_COLABORADOR, " +
-                    "  I.DATA_HORA AT TIME ZONE ?        AS DATA_HORA, " +
-                    "  I.TIPO_MARCACAO                   AS TIPO_MARCACAO, " +
-                    "  I.FONTE_DATA_HORA                 AS FONTE_DATA_HORA, " +
-                    "  I.JUSTIFICATIVA_TEMPO_RECOMENDADO AS JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
-                    "  I.JUSTIFICATIVA_ESTOURO           AS JUSTIFICATIVA_ESTOURO, " +
-                    "  I.LATITUDE_MARCACAO               AS LATITUDE_MARCACAO, " +
-                    "  I.LONGITUDE_MARCACAO              AS LONGITUDE_MARCACAO " +
-                    "FROM VIEW_INTERVALO I " +
-                    "JOIN COLABORADOR C ON I.CPF_COLABORADOR = C.CPF " +
-                    "WHERE I.COD_UNIDADE = ? " +
-                    "      AND I.CPF_COLABORADOR = ? " +
-                    "      AND I.COD_TIPO_INTERVALO = ? " +
-                    "      AND I.TIPO_MARCACAO = ? " +
-                    "      AND DATA_HORA >= (SELECT MAX(DATA_HORA) " +
-                    "                        FROM INTERVALO I " +
-                    "                        WHERE I.COD_UNIDADE = ? " +
-                    "                              AND I.CPF_COLABORADOR = ? " +
-                    "                              AND I.COD_TIPO_INTERVALO = ? " +
-                    "                              AND I.TIPO_MARCACAO = ?) " +
-                    "ORDER BY I.DATA_HORA DESC " +
-                    "LIMIT 1;");
-            stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-            stmt.setLong(2, codUnidade);
-            stmt.setLong(3, cpf);
-            stmt.setLong(4, codTipoIntervalo);
-            stmt.setString(5, TipoInicioFim.MARCACAO_INICIO.asString());
-            stmt.setLong(6, codUnidade);
-            stmt.setLong(7, cpf);
-            stmt.setLong(8, codTipoIntervalo);
-            stmt.setString(9, TipoInicioFim.MARCACAO_FIM.asString());
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_BUSCA_MARCACAO_EM_ANDAMENTO(?, ?, ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTipoIntervalo);
+            stmt.setLong(3, cpfColaborador);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createIntervaloMarcacao(rSet);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return null;
     }
@@ -669,6 +636,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         return cargos;
     }
 
+    @NotNull
     private IntervaloMarcacao createIntervaloMarcacao(@NotNull final ResultSet rSet) throws SQLException {
         final IntervaloMarcacao intervaloMarcacao = new IntervaloMarcacao();
         intervaloMarcacao.setCodigo(rSet.getLong("CODIGO"));
@@ -682,7 +650,6 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         intervaloMarcacao.setTipoMarcacaoIntervalo(TipoInicioFim.fromString(rSet.getString("TIPO_MARCACAO")));
         intervaloMarcacao.setJustificativaTempoRecomendado(rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
         intervaloMarcacao.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
-
         final String latitudeMarcacao = rSet.getString("LATITUDE_MARCACAO");
         if (!rSet.wasNull()) {
             final Localizacao localizacao = new Localizacao();

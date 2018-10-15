@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
@@ -40,9 +42,21 @@ public interface ControleIntervaloDao {
     @NotNull
     Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
 
+    /**
+     * Método utilizado para buscar uma marcação que esteja em andamento, ou seja, uma marcação que ainda
+     * não teve seu fim marcado pelo colaborador.
+     * Este método realiza a busca com base no {@code cpfColaborador} e no {@code codTipoIntervalo} para
+     * analisar se alguma marcação de um tipo específico do colaborador está em andamento.
+     *
+     * @param codUnidade       Código da {@link Unidade} de onde será filtrado as marcações.
+     * @param cpfColaborador   CPF do {@link Colaborador} que realizou a marcação.
+     * @param codTipoIntervalo Código do {@link Intervalo} que será buscado.
+     * @return Um {@link IntervaloMarcacao} caso existir ou null.
+     * @throws SQLException Se algum erro ocorrer na busca da marcação em andamento.
+     */
     @Nullable
     IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
-                                                        @NotNull final Long cpf,
+                                                        @NotNull final Long cpfColaborador,
                                                         @NotNull final Long codTipoIntervalo) throws SQLException;
 
     @Nonnull
