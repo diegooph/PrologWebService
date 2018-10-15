@@ -106,12 +106,12 @@ public class ControleIntervaloService {
         }
     }
 
-    public AbstractResponse insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo) {
+    @NotNull
+    AbstractResponse insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo) {
         try {
             return ResponseWithCod.ok(
                     "Tipo de intervalo inserido com sucesso",
-                    dao.insertTipoIntervalo(tipoIntervalo,
-                    Injection.provideDadosIntervaloChangedListener()));
+                    dao.insertTipoIntervalo(tipoIntervalo, Injection.provideDadosIntervaloChangedListener()));
         } catch (Throwable e){
             Log.e(TAG, "Erro ao inserir o tipo de intervalo", e);
             return Response.error("Erro ao inserir o tipo de intervalo");

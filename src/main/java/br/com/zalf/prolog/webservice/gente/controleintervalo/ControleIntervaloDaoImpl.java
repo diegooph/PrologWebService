@@ -160,7 +160,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 tipoIntervalo.setCodigo(rSet.getLong("CODIGO"));
-                associaCargosTipoIntervalo(tipoIntervalo, conn);
+                associaCargosTipoIntervalo(conn, tipoIntervalo);
                 // Avisamos o listener que um tipo de intervalo FOI INCLUÍDO.
                 listener.onTiposIntervaloChanged(conn, tipoIntervalo.getUnidade().getCodigo());
                 // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
@@ -176,7 +176,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             }
             throw e;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -202,7 +202,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o Tipo de Intervalo de código: " + tipoIntervalo.getCodigo());
             }
-            associaCargosTipoIntervalo(tipoIntervalo, conn);
+            associaCargosTipoIntervalo(conn, tipoIntervalo);
             // Avisamos o listener que um tipo de intervalo mudou.
             listener.onTiposIntervaloChanged(conn, tipoIntervalo.getUnidade().getCodigo());
 
@@ -535,22 +535,22 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         }
     }
 
-    private void associaCargosTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                            @NotNull final Connection conn) throws SQLException {
+    private void associaCargosTipoIntervalo(@NotNull final Connection conn,
+                                            @NotNull final TipoMarcacao tipoIntervalo) throws SQLException {
         deleteCargosTipoIntervalo(
+                conn,
                 tipoIntervalo.getUnidade().getCodigo(),
-                tipoIntervalo.getCodigo(),
-                conn);
+                tipoIntervalo.getCodigo());
         insertCargosTipoIntervalo(
+                conn,
                 tipoIntervalo.getUnidade().getCodigo(),
                 tipoIntervalo.getCodigo(),
-                tipoIntervalo.getCargos(),
-                conn);
+                tipoIntervalo.getCargos());
     }
 
-    private void deleteCargosTipoIntervalo(@NotNull final Long codUnidade,
-                                           @NotNull final Long codTipoIntervalo,
-                                           @NotNull final Connection conn) throws SQLException {
+    private void deleteCargosTipoIntervalo(@NotNull final Connection conn,
+                                           @NotNull final Long codUnidade,
+                                           @NotNull final Long codTipoIntervalo) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("DELETE FROM INTERVALO_TIPO_CARGO WHERE COD_UNIDADE = ? AND " +
@@ -561,14 +561,14 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             // Não precisamos verificar se o delete afetou alguma linha pois o intervalo pode não ter nenhum cargo
             // vinculado.
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
-    private void insertCargosTipoIntervalo(@NotNull final Long codUnidade,
+    private void insertCargosTipoIntervalo(@NotNull final Connection conn,
+                                           @NotNull final Long codUnidade,
                                            @NotNull final Long codTipoIntervalo,
-                                           @NotNull final List<Cargo> cargos,
-                                           @NotNull final Connection conn) throws SQLException {
+                                           @NotNull final List<Cargo> cargos) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO INTERVALO_TIPO_CARGO VALUES (?,?,?);");
@@ -581,7 +581,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                 }
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 

@@ -78,6 +78,15 @@ public interface ControleIntervaloDao {
                                                      final long limit,
                                                      final long offset) throws SQLException;
 
+    /**
+     * Método utilizado para inserir um novo {@link TipoMarcacao}.
+     *
+     * @param tipoIntervalo O {@link TipoMarcacao} que será inserido.
+     * @param listener      Listener da classe {@link DadosIntervaloChangedListener}
+     *                      utilizado para notificar alterações nos tipos de intervalos.
+     * @return Código do {@link TipoMarcacao} recém inserido.
+     * @throws Throwable Caso algum erro na inserção ocorrer.
+     */
     @NotNull
     Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
