@@ -141,7 +141,7 @@ public class DeprecatedControleIntervaloResource {
     public AbstractResponse DEPRECATED_INICIA_INTERVALO(@PathParam("codUnidade") Long codUnidade,
                                                         @PathParam("cpf") Long cpf,
                                                         @PathParam("codTipoIntervalo") Long codTipo) {
-        Long codIntervalo = service.iniciaIntervalo(codUnidade, cpf, codTipo);
+        final Long codIntervalo = service.iniciaIntervalo(codUnidade, cpf, codTipo);
         if (codIntervalo != null) {
             return ResponseWithCod.ok("Intervalo iniciado com sucesso", codIntervalo);
         } else {
@@ -156,9 +156,9 @@ public class DeprecatedControleIntervaloResource {
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}")
     @Deprecated
-    public Response DEPRECATED_INSERE_FINALIZACAO_INTERVALO(Intervalo intervalo, @PathParam("codUnidade") Long
-            codUnidade) {
-        if (service.insereFinalizacaoIntervalo(intervalo, codUnidade)) {
+    public Response DEPRECATED_INSERE_FINALIZACAO_INTERVALO(Intervalo intervalo,
+                                                            @PathParam("codUnidade") Long codUnidade) {
+        if (service.insereFinalizacaoIntervalo(codUnidade, intervalo)) {
             return Response.ok("Intervalo finalizado com sucesso");
         } else {
             return Response.error("Erro ao finalizar o intervalo");

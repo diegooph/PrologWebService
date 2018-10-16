@@ -200,23 +200,27 @@ public class ControleIntervaloService {
         }
     }
 
+    @Nullable
     @Deprecated
-    public Long iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) {
+    public Long iniciaIntervalo(@NotNull final Long codUnidade,
+                                @NotNull final Long cpf,
+                                @NotNull final Long codTipoIntervalo) {
         try {
-            return new DeprecatedControleIntervaloDaoImpl().iniciaIntervalo(codUnidade, cpf, codTipo);
+            return new DeprecatedControleIntervaloDaoImpl().iniciaIntervalo(codUnidade, cpf, codTipoIntervalo);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao iniciar o intervalo. \n" +
                     "codUnidade: %d \n" +
                     "cpf: %d \n" +
-                    "codTipo: %d", codUnidade, cpf, codTipo), e);
+                    "codTipoIntervalo: %d", codUnidade, cpf, codTipoIntervalo), e);
             throw new RuntimeException(e);
         }
     }
 
     @Deprecated
-    public boolean insereFinalizacaoIntervalo(Intervalo intervalo, Long codUnidade) {
+    public boolean insereFinalizacaoIntervalo(@NotNull final Long codUnidade,
+                                              @NotNull final Intervalo intervalo) {
         try {
-            return new DeprecatedControleIntervaloDaoImpl().insereFinalizacaoIntervalo(intervalo, codUnidade);
+            return new DeprecatedControleIntervaloDaoImpl().insereFinalizacaoIntervalo(codUnidade, intervalo);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao inserir uma finalização de intevalo. \n" +
                     "codUnidade: %d", codUnidade), e);

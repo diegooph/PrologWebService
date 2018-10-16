@@ -7,6 +7,8 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Localizacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.time.*;
@@ -18,62 +20,66 @@ import java.time.temporal.ChronoUnit;
 @Deprecated
 public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection implements DeprecatedControleIntervaloDao {
 
-    private static final String TAG = DeprecatedControleIntervaloDaoImpl.class.getSimpleName();
-
     @Deprecated
     @Override
-    public Long iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) throws SQLException {
+    public Long iniciaIntervalo(@NotNull final Long codUnidade,
+                                @NotNull final Long cpf,
+                                @NotNull final Long codTipoIntervalo) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
             final Intervalo intervalo = new Intervalo();
             final TipoMarcacao tipoIntervalo = new TipoMarcacao();
-            tipoIntervalo.setCodigo(codTipo);
+            tipoIntervalo.setCodigo(codTipoIntervalo);
             final Colaborador colaborador = new Colaborador();
             colaborador.setCpf(cpf);
             intervalo.setTipo(tipoIntervalo);
             intervalo.setColaborador(colaborador);
             intervalo.setDataHoraInicio(LocalDateTime.now(TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn)));
             intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
-            return insertIntervalo(intervalo, codUnidade, conn);
+            return insertIntervalo(conn, codUnidade, intervalo);
         } finally {
-            closeConnection(conn, null, null);
+            close(conn);
         }
     }
 
     @Deprecated
     @Override
-    public boolean insereFinalizacaoIntervalo (Intervalo intervalo, Long codUnidade) throws SQLException{
+    public boolean insereFinalizacaoIntervalo (@NotNull final Long codUnidade,
+                                               @NotNull final Intervalo intervalo) throws SQLException{
         Connection conn = null;
         try {
             conn = getConnection();
             // Seta fontes por questão de compatibilidade.
             intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
             intervalo.setFonteDataHoraFim(FonteDataHora.SERVIDOR);
-            final Intervalo intervaloEmAberto = getIntervaloAberto(intervalo.getColaborador().getCpf(), intervalo.getTipo());
+            final Intervalo intervaloEmAberto =
+                    getIntervaloAberto(conn, intervalo.getColaborador().getCpf(), intervalo.getTipo());
             if (intervaloEmAberto != null) {
                 if(intervalo.getCodigo().equals(intervaloEmAberto.getCodigo())){
-                    return finalizaIntervaloEmAberto(intervalo);
+                    return finalizaIntervaloEmAberto(conn, intervalo);
                 }
             } else {
                 intervalo.setDataHoraInicio(null);
                 intervalo.setDataHoraFim(LocalDateTime.now(TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn)));
-                Long codigo = insertIntervalo(intervalo, codUnidade, conn);
+                final Long codigo = insertIntervalo(conn, codUnidade, intervalo);
                 if (codigo != null) {
                     return true;
                 }
             }
         } finally {
-            closeConnection(conn, null, null);
+            close(conn);
         }
         return false;
     }
 
-    private Long insertIntervalo(Intervalo intervalo, Long codUnidade, Connection conn) throws SQLException {
+    @Nullable
+    private Long insertIntervalo(@NotNull final Connection conn,
+                                 @NotNull final Long codUnidade,
+                                 @NotNull final Intervalo intervalo) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR, " +
                     "DATA_HORA_INICIO, FONTE_DATA_HORA_INICIO, DATA_HORA_FIM, FONTE_DATA_HORA_FIM, " +
                     "LATITUDE_INICIO, LATITUDE_FIM, LONGITUDE_INICIO, LONGITUDE_FIM) VALUES (?,?,?,?,?,?,?,?,?,?,?) " +
@@ -107,17 +113,18 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
                 return rSet.getLong("CODIGO");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(stmt, rSet);
         }
         return null;
     }
 
-    private Intervalo getIntervaloAberto(Long cpf, TipoMarcacao tipoInvervalo) throws SQLException {
-        Connection conn = null;
+    @Nullable
+    private Intervalo getIntervaloAberto(@NotNull final Connection conn,
+                                         @NotNull final Long cpf,
+                                         @NotNull final TipoMarcacao tipoInvervalo) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
                     "I.CPF_COLABORADOR AS CPF_COLABORADOR, " +
                     "I.CODIGO AS CODIGO, " +
@@ -147,19 +154,18 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
             stmt.setLong(7, cpf);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return createIntervaloAberto(rSet, conn);
+                return createIntervaloAberto(conn, rSet);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(stmt, rSet);
         }
         return null;
     }
 
-    private boolean finalizaIntervaloEmAberto(Intervalo intervalo) throws SQLException {
-        Connection conn = null;
+    private boolean finalizaIntervaloEmAberto(@NotNull final Connection conn,
+                                              @NotNull final Intervalo intervalo) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement("UPDATE INTERVALO SET DATA_HORA_FIM = ?, FONTE_DATA_HORA_FIM = ?, " +
                     "JUSTIFICATIVA_ESTOURO = ?, LATITUDE_FIM = ?, LONGITUDE_FIM = ? WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
             stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
@@ -175,12 +181,14 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
                 throw new SQLException("Erro ao finalizar o intervalo");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(stmt);
         }
         return true;
     }
 
-    private Intervalo createIntervaloAberto(ResultSet rSet, Connection conn) throws SQLException {
+    @NotNull
+    private Intervalo createIntervaloAberto(@NotNull final Connection conn,
+                                            @NotNull final ResultSet rSet) throws SQLException {
         final Colaborador colaborador = new Colaborador();
         final Long cpf = rSet.getLong("CPF_COLABORADOR");
         colaborador.setCpf(cpf);
