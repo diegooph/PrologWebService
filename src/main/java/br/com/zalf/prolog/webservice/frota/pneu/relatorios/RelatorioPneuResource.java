@@ -42,6 +42,20 @@ public class RelatorioPneuResource {
     private final MovimentacaoRelatorioService movimentacoesRelatorioService = new MovimentacaoRelatorioService();
 
     @GET
+    @Path("/km-rodado-por-pneu-por-vida/csv")
+    public StreamingOutput getKmRodadoPorPneuPorVidaCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
+        return outputStream -> service.getKmRodadoPorPneuPorVidaCsv(outputStream, codUnidades);
+    }
+
+    @GET
+    @Path("/km-rodado-por-pneu-por-vida/report")
+    public Report getKmRodadoPorPneuPorVidaReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades)
+            throws ProLogException {
+        return service.getKmRodadoPorPneuPorVidaReport(codUnidades);
+    }
+
+    @GET
     @Path("/afericoes-avulsas/csv")
     public StreamingOutput getAfericoesAvulsasCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
