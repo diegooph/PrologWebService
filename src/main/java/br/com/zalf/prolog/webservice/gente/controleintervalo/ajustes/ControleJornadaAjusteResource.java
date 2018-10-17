@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.Marca
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -98,5 +99,14 @@ public final class ControleJornadaAjusteResource {
             @HeaderParam("Authorization") String userToken,
             @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws ProLogException {
         return service.ativarInativarMarcacaoAjuste(userToken, marcacaoAjuste);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured()
+    @Path("/historicos")
+    public List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(
+            @QueryParam("codMarcacoes") @Required List<Long> codMarcacoes) throws ProLogException {
+        return service.getHistoricoAjusteMarcacoes(codMarcacoes);
     }
 }

@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.Marca
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -129,6 +130,17 @@ public final class ControleJornadaAjusteService {
                     marcacaoAjuste.isDeveAtivar() ? "ativar" : "desativar");
             Log.e(TAG, msg, e);
             throw exceptionHandler.map(e, msg);
+        }
+    }
+
+    @NotNull
+    public List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(
+            @NotNull final List<Long> codMarcacoes) throws ProLogException {
+        try {
+            return dao.getHistoricoAjusteMarcacoes(codMarcacoes);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar histórico para as marcações: " + codMarcacoes, e);
+            throw exceptionHandler.map(e, "Erro ao buscar histórico das marcações, tente novamente");
         }
     }
 }

@@ -22,6 +22,17 @@ public final class ControleJornadaAjusteConverter {
     }
 
     @NotNull
+    static MarcacaoAjusteHistoricoExibicao createHistoricoAjuste(@NotNull final ResultSet rSet) throws Throwable {
+        final MarcacaoAjusteHistoricoExibicao historicoExibicao = new MarcacaoAjusteHistoricoExibicao();
+        historicoExibicao.setDataHoraAjuste(rSet.getObject("DATA_HORA_AJUSTE", LocalDateTime.class));
+        historicoExibicao.setNomeColaboradorAjuste(rSet.getString("NOME_RESPONSAVEL_AJUSTE"));
+        historicoExibicao.setNomeJustificativaAjuste(rSet.getString("JUSTIFICATIVA_AJUSTE"));
+        historicoExibicao.setObservacaoAjuste(rSet.getString("OBSERVACAO_AJUSTE"));
+        historicoExibicao.setDescricaoAcaoRealizada("TESTE DE AÇÃO REALIZADA");
+        return historicoExibicao;
+    }
+
+    @NotNull
     static List<ConsolidadoMarcacoesDia> createConsolidadoMarcacoesDia(@NotNull final ResultSet rSet) throws Throwable {
         final List<ConsolidadoMarcacoesDia> dias = new ArrayList<>();
         ConsolidadoMarcacoesDia consolidado = null;

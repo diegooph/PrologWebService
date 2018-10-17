@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -213,9 +214,24 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     @NotNull
     @Override
-    public List<MarcacaoAjusteHistoricoExibicao> getMarcacaoAjusteHistorio(
-            @NotNull final Long codMarcacao) throws Throwable {
-        return null;
+    public List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(
+            @NotNull final List<Long> codMarcacoes) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_HISTORICO_AJUSTES(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codMarcacoes));
+            rSet = stmt.executeQuery();
+            final List<MarcacaoAjusteHistoricoExibicao> historicos = new ArrayList<>();
+            while (rSet.next()) {
+                historicos.add(ControleJornadaAjusteConverter.createHistoricoAjuste(rSet));
+            }
+            return historicos;
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @NotNull

@@ -109,7 +109,7 @@ public interface ControleJornadaAjusteDao {
                                       @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable;
 
     @NotNull
-    List<MarcacaoAjusteHistoricoExibicao> getMarcacaoAjusteHistorio(@NotNull final Long codMarcacao) throws Throwable;
+    List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(@NotNull final List<Long> codMarcacoes) throws Throwable;
 
     @NotNull
     List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes(@NotNull final Long codMarcacao) throws Throwable;
