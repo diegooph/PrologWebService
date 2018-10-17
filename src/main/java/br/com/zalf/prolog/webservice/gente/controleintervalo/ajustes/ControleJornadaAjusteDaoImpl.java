@@ -189,15 +189,17 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
     @Override
     public void ativarInativarMarcacaoAjuste(
             @NotNull final String tokenResponsavelAjuste,
-            @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable {
+            @NotNull final MarcacaoAjuste marcacaoAjuste,
+            @NotNull final Long codMarcacao,
+            final boolean deveAtivar) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            internalAtivarInativarMarcacaoAjuste(conn, marcacaoAjuste);
+            internalAtivarInativarMarcacaoAjuste(conn, codMarcacao, deveAtivar);
             insereInformacoesAjusteMarcacao(
                     conn,
-                    marcacaoAjuste.getCodMarcacaoAtivacaoInativacao(),
+                    codMarcacao,
                     tokenResponsavelAjuste,
                     marcacaoAjuste,
                     null);
@@ -332,12 +334,13 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     private void internalAtivarInativarMarcacaoAjuste(
             @NotNull final Connection conn,
-            @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable {
+            @NotNull final Long codMarcacao,
+            final boolean deveAtivar) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE INTERVALO SET STATUS_ATIVO = ? WHERE CODIGO = ?;");
-            stmt.setBoolean(1, marcacaoAjuste.isDeveAtivar());
-            stmt.setLong(2, marcacaoAjuste.getCodMarcacaoAtivacaoInativacao());
+            stmt.setBoolean(1, deveAtivar);
+            stmt.setLong(2, codMarcacao);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível ativar/inativar a marcação");
             }

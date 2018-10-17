@@ -6,10 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
@@ -94,11 +91,21 @@ public final class ControleJornadaAjusteResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured()
-    @Path("/ativar-inativar-marcacao")
-    public Response ativarInativarMarcacaoAjuste(
+    @Path("/ativar-marcacao")
+    public Response ativarMarcacaoAjuste(
             @HeaderParam("Authorization") String userToken,
-            @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws ProLogException {
-        return service.ativarInativarMarcacaoAjuste(userToken, marcacaoAjuste);
+            @NotNull final MarcacaoAjusteAtivacao marcacaoAjuste) throws ProLogException {
+        return service.ativarMarcacaoAjuste(userToken, marcacaoAjuste);
+    }
+
+    @POST
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured()
+    @Path("/inativar-marcacao")
+    public Response inativarMarcacaoAjuste(
+            @HeaderParam("Authorization") String userToken,
+            @NotNull final MarcacaoAjusteInativacao marcacaoAjuste) throws ProLogException {
+        return service.inativarMarcacaoAjuste(userToken, marcacaoAjuste);
     }
 
     @GET

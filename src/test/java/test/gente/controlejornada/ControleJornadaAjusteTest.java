@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjusteService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
@@ -45,9 +45,9 @@ public class ControleJornadaAjusteTest extends BaseTest {
 
     @Test
     public void testAtivarInativarMarcacao() throws Throwable {
-        final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste = createMarcacaoAjusteAtivacaoInativacao();
+        final MarcacaoAjusteAtivacao marcacaoAjuste = createMarcacaoAjusteAtivacaoInativacao();
         System.out.println(GsonUtils.getGson().toJson(marcacaoAjuste));
-        service.ativarInativarMarcacaoAjuste("pkb88p0n605emj86l007g3m8u4", marcacaoAjuste);
+        service.ativarMarcacaoAjuste("pkb88p0n605emj86l007g3m8u4", marcacaoAjuste);
     }
 
     @Test
@@ -68,10 +68,9 @@ public class ControleJornadaAjusteTest extends BaseTest {
         return ajusteEdicao;
     }
 
-    private MarcacaoAjusteAtivacaoInativacao createMarcacaoAjusteAtivacaoInativacao() {
-        final MarcacaoAjusteAtivacaoInativacao ajusteAtivacaoInativacao = new MarcacaoAjusteAtivacaoInativacao();
-        ajusteAtivacaoInativacao.setDeveAtivar(true);
-        ajusteAtivacaoInativacao.setCodMarcacaoAtivacaoInativacao(57059L);
+    private MarcacaoAjusteAtivacao createMarcacaoAjusteAtivacaoInativacao() {
+        final MarcacaoAjusteAtivacao ajusteAtivacaoInativacao = new MarcacaoAjusteAtivacao();
+        ajusteAtivacaoInativacao.setCodMarcacaoAtivacao(57059L);
         ajusteAtivacaoInativacao.setCodJustificativaAjuste(1L);
         ajusteAtivacaoInativacao.setObservacaoAjuste("Dummy Data Test Inativacao");
         ajusteAtivacaoInativacao.setDataHoraAjuste(LocalDateTime.now());

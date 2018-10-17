@@ -34,7 +34,8 @@ public abstract class MarcacaoAjuste {
                 .registerSubtype(MarcacaoAjusteAdicao.class, TipoAcaoAjuste.ADICAO.asString())
                 .registerSubtype(MarcacaoAjusteAdicaoInicioFim.class, TipoAcaoAjuste.ADICAO_INICIO_FIM.asString())
                 .registerSubtype(MarcacaoAjusteEdicao.class, TipoAcaoAjuste.EDICAO.asString())
-                .registerSubtype(MarcacaoAjusteAtivacaoInativacao.class, TipoAcaoAjuste.ATIVACAO_INATIVACAO.asString());
+                .registerSubtype(MarcacaoAjusteAtivacao.class, TipoAcaoAjuste.ATIVACAO.asString())
+                .registerSubtype(MarcacaoAjusteInativacao.class, TipoAcaoAjuste.INATIVACAO.asString());
     }
 
     public Long getCodJustificativaAjuste() {

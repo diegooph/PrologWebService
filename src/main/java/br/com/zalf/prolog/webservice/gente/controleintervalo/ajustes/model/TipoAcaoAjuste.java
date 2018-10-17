@@ -22,9 +22,14 @@ public enum TipoAcaoAjuste {
     EDICAO("EDICAO"),
 
     /**
-     * Constante para representar a ativação/inativação de uma marcação.
+     * Constante para representar a ativação de uma marcação.
      */
-    ATIVACAO_INATIVACAO("ATIVACAO_INATIVACAO"),
+    ATIVACAO("ATIVACAO"),
+
+    /**
+     * Constante para representar a inativação de uma marcação.
+     */
+    INATIVACAO("INATIVACAO"),
 
     /**
      * Constante para representar a adição de uma marcação de início E fim, ao mesmo tempo.

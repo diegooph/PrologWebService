@@ -2,10 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
@@ -98,15 +95,15 @@ public interface ControleJornadaAjusteDao {
 
     /**
      * Método utilizado para ativar ou inativar uma marcação.
-     * Para mais informações sobre os dados de uma ativação ou inativação consulte
-     * {@link MarcacaoAjusteAtivacaoInativacao este objeto}.
      *
      * @param tokenResponsavelAjuste Identificador do usuário que realizou a ativação ou inativação.
      * @param marcacaoAjuste         Objeto contendo as informações necessárias para se ativar ou inativar uma marcação.
      * @throws Throwable Caso qualquer erro aconteça.
      */
     void ativarInativarMarcacaoAjuste(@NotNull final String tokenResponsavelAjuste,
-                                      @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws Throwable;
+                                      @NotNull final MarcacaoAjuste marcacaoAjuste,
+                                      @NotNull final Long codMarcacao,
+                                      final boolean deveAtivar) throws Throwable;
 
     @NotNull
     List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(@NotNull final List<Long> codMarcacoes) throws Throwable;

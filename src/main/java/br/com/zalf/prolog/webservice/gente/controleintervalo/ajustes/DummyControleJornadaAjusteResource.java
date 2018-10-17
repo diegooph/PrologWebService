@@ -70,8 +70,8 @@ public final class DummyControleJornadaAjusteResource extends DummyData {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/marcacao-ajuste-ativacao-inativacao")
-    public MarcacaoAjusteAtivacaoInativacao getMarcacaoAjusteAtivacaoInativacao() {
-        return MarcacaoAjusteAtivacaoInativacao.createDummy();
+    public MarcacaoAjusteAtivacao getMarcacaoAjusteAtivacaoInativacao() {
+        return MarcacaoAjusteAtivacao.createDummy();
     }
 
     @GET

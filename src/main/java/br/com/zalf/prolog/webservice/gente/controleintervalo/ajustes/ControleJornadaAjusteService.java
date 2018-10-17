@@ -7,10 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAtivacaoInativacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
@@ -118,16 +115,36 @@ public final class ControleJornadaAjusteService {
     }
 
     @NotNull
-    public Response ativarInativarMarcacaoAjuste(
+    public Response ativarMarcacaoAjuste(
             @NotNull final String userToken,
-            @NotNull final MarcacaoAjusteAtivacaoInativacao marcacaoAjuste) throws ProLogException {
+            @NotNull final MarcacaoAjusteAtivacao marcacaoAjuste) throws ProLogException {
         try {
-            dao.ativarInativarMarcacaoAjuste(TokenCleaner.getOnlyToken(userToken), marcacaoAjuste);
-            return Response.ok(String.format("Marcação %s com sucesso",
-                    marcacaoAjuste.isDeveAtivar() ? "ativada" : "desativada"));
+            dao.ativarInativarMarcacaoAjuste(
+                    TokenCleaner.getOnlyToken(userToken),
+                    marcacaoAjuste,
+                    marcacaoAjuste.getCodMarcacaoAtivacao(),
+                    true);
+            return Response.ok("Marcação ativada com sucesso");
         } catch (final Throwable e) {
-            final String msg = String.format("Erro ao %s a marcação",
-                    marcacaoAjuste.isDeveAtivar() ? "ativar" : "desativar");
+            final String msg = "Erro ao ativar a marcação";
+            Log.e(TAG, msg, e);
+            throw exceptionHandler.map(e, msg);
+        }
+    }
+
+    @NotNull
+    public Response inativarMarcacaoAjuste(
+            @NotNull final String userToken,
+            @NotNull final MarcacaoAjusteInativacao marcacaoAjuste) throws ProLogException {
+        try {
+            dao.ativarInativarMarcacaoAjuste(
+                    TokenCleaner.getOnlyToken(userToken),
+                    marcacaoAjuste,
+                    marcacaoAjuste.getCodMarcacaoInativacao(),
+                    false);
+            return Response.ok("Marcação inativada com sucesso");
+        } catch (final Throwable e) {
+            final String msg = "Erro ao inativar a marcação";
             Log.e(TAG, msg, e);
             throw exceptionHandler.map(e, msg);
         }

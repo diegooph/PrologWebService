@@ -30,7 +30,7 @@ public final class DescricaoAcaoAjusteCreator {
                 return "Marcação de " + tipoInicioFim.asString() + " com data e hora '" + dataHoraNova.toString() + "' criada por " + nomeColaborador;
             case EDICAO:
                 return "Marcação de " + tipoInicioFim.asString() + " editada de '" + dataHoraAntiga.toString() + "' para '" + dataHoraNova.toString() + "' por " + nomeColaborador;
-            case ATIVACAO_INATIVACAO:
+            case ATIVACAO:
                 return "Marcação de " + tipoInicioFim.asString() + " ativada ou inativada por " + nomeColaborador;
         }
 
