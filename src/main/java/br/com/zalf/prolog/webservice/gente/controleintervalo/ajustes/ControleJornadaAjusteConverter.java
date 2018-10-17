@@ -39,7 +39,13 @@ public final class ControleJornadaAjusteConverter {
         historicoExibicao.setNomeColaboradorAjuste(rSet.getString("NOME_RESPONSAVEL_AJUSTE"));
         historicoExibicao.setNomeJustificativaAjuste(rSet.getString("JUSTIFICATIVA_AJUSTE"));
         historicoExibicao.setObservacaoAjuste(rSet.getString("OBSERVACAO_AJUSTE"));
-        historicoExibicao.setDescricaoAcaoRealizada(DescricaoAcaoAjusteCreator.create(historicoExibicao.getTipoAcaoAjuste(), historicoExibicao.getTipoInicioFimMarcacao(), historicoExibicao.getDataHoraAntiga(), historicoExibicao.getDataHoraNova(), historicoExibicao.getNomeColaboradorAjuste(), historicoExibicao.getDataHoraAjuste()));
+        historicoExibicao.setDescricaoAcaoRealizada(DescricaoAcaoAjusteCreator.create(
+                historicoExibicao.getTipoAcaoAjuste(),
+                historicoExibicao.getTipoInicioFimMarcacao(),
+                historicoExibicao.getDataHoraAntiga(),
+                historicoExibicao.getDataHoraNova(),
+                historicoExibicao.getNomeColaboradorAjuste(),
+                historicoExibicao.getDataHoraAjuste()));
         return historicoExibicao;
     }
 
