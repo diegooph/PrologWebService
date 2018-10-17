@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes;
 
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.TipoAcaoAjuste;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.DescricaoAcaoAjusteCreator;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -24,11 +28,18 @@ public final class ControleJornadaAjusteConverter {
     @NotNull
     static MarcacaoAjusteHistoricoExibicao createHistoricoAjuste(@NotNull final ResultSet rSet) throws Throwable {
         final MarcacaoAjusteHistoricoExibicao historicoExibicao = new MarcacaoAjusteHistoricoExibicao();
+        // Infos da marcação.
+        historicoExibicao.setDataHoraAntiga(rSet.getObject("DATA_HORA_ANTIGA", LocalDateTime.class));
+        historicoExibicao.setDataHoraNova(rSet.getObject("DATA_HORA_NOVA", LocalDateTime.class));
+        historicoExibicao.setTipoInicioFimMarcacao(TipoInicioFim.fromString(rSet.getString("TIPO_MARCACAO")));
+        historicoExibicao.setTipoAcaoAjuste(TipoAcaoAjuste.fromString(rSet.getString("ACAO_AJUSTE")));
+
+        // Infos do ajuste.
         historicoExibicao.setDataHoraAjuste(rSet.getObject("DATA_HORA_AJUSTE", LocalDateTime.class));
         historicoExibicao.setNomeColaboradorAjuste(rSet.getString("NOME_RESPONSAVEL_AJUSTE"));
         historicoExibicao.setNomeJustificativaAjuste(rSet.getString("JUSTIFICATIVA_AJUSTE"));
         historicoExibicao.setObservacaoAjuste(rSet.getString("OBSERVACAO_AJUSTE"));
-        historicoExibicao.setDescricaoAcaoRealizada("TESTE DE AÇÃO REALIZADA");
+        historicoExibicao.setDescricaoAcaoRealizada(DescricaoAcaoAjusteCreator.create(historicoExibicao.getTipoAcaoAjuste(), historicoExibicao.getTipoInicioFimMarcacao(), historicoExibicao.getDataHoraAntiga(), historicoExibicao.getDataHoraNova(), historicoExibicao.getNomeColaboradorAjuste(), historicoExibicao.getDataHoraAjuste()));
         return historicoExibicao;
     }
 

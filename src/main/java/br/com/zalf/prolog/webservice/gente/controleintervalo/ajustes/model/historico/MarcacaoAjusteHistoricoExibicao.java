@@ -1,10 +1,13 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa.JustificativaAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.TipoAcaoAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Classe utilizada para representar o histórico de um ajuste que temos salvo em banco, seja ele uma edição, ativação
@@ -36,12 +39,33 @@ public final class MarcacaoAjusteHistoricoExibicao {
     private LocalDateTime dataHoraAjuste;
 
     /**
+     * Data e hora antiga da marcação, que existia antes do ajuste acontecer.
+     */
+    private LocalDateTime dataHoraAntiga;
+
+    /**
+     * Data e hora nova da marcação, fornecida no momento do ajuste ou a mesma de {@link #dataHoraAntiga} caso o ajuste
+     * não tenha sido uma {@link TipoAcaoAjuste#EDICAO edição}.
+     */
+    private LocalDateTime dataHoraNova;
+
+    /**
+     * O {@link TipoInicioFim tipo} da marcação que foi ajustada.
+     */
+    private TipoInicioFim tipoInicioFimMarcacao;
+
+    /**
+     * A {@link TipoAcaoAjuste ação de ajuste} que foi executada na marcação.
+     */
+    private TipoAcaoAjuste tipoAcaoAjuste;
+
+    /**
      * Uma descrição, humanamente legível, especificando o ajuste que foi realizado.
      */
     private String descricaoAcaoRealizada;
 
     public MarcacaoAjusteHistoricoExibicao() {
-        // TODO - Utilizar uma Factory para dado um ajuste, gerar a descrição correta.
+
     }
 
     @NotNull
@@ -50,7 +74,11 @@ public final class MarcacaoAjusteHistoricoExibicao {
         ajusteHistorico.setNomeColaboradorAjuste("Zalf Sistemas");
         ajusteHistorico.setNomeJustificativaAjuste("Esqueceu");
         ajusteHistorico.setObservacaoAjuste("Precisei atualizar a hora de marcação");
-        ajusteHistorico.setDataHoraAjuste(LocalDateTime.now());
+        ajusteHistorico.setDataHoraAntiga(LocalDateTime.now());
+        ajusteHistorico.setDataHoraNova(LocalDateTime.now().plus(1, ChronoUnit.HOURS));
+        ajusteHistorico.setDataHoraAjuste(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
+        ajusteHistorico.setTipoAcaoAjuste(TipoAcaoAjuste.EDICAO);
+        ajusteHistorico.setTipoInicioFimMarcacao(TipoInicioFim.MARCACAO_INICIO);
         ajusteHistorico.setDescricaoAcaoRealizada("atualizou a marcação do colaborador");
         return ajusteHistorico;
     }
@@ -93,6 +121,38 @@ public final class MarcacaoAjusteHistoricoExibicao {
 
     public void setDescricaoAcaoRealizada(final String descricaoAcaoRealizada) {
         this.descricaoAcaoRealizada = descricaoAcaoRealizada;
+    }
+
+    public LocalDateTime getDataHoraAntiga() {
+        return dataHoraAntiga;
+    }
+
+    public void setDataHoraAntiga(final LocalDateTime dataHoraAntiga) {
+        this.dataHoraAntiga = dataHoraAntiga;
+    }
+
+    public LocalDateTime getDataHoraNova() {
+        return dataHoraNova;
+    }
+
+    public void setDataHoraNova(final LocalDateTime dataHoraNova) {
+        this.dataHoraNova = dataHoraNova;
+    }
+
+    public TipoInicioFim getTipoInicioFimMarcacao() {
+        return tipoInicioFimMarcacao;
+    }
+
+    public void setTipoInicioFimMarcacao(final TipoInicioFim tipoInicioFimMarcacao) {
+        this.tipoInicioFimMarcacao = tipoInicioFimMarcacao;
+    }
+
+    public TipoAcaoAjuste getTipoAcaoAjuste() {
+        return tipoAcaoAjuste;
+    }
+
+    public void setTipoAcaoAjuste(final TipoAcaoAjuste tipoAcaoAjuste) {
+        this.tipoAcaoAjuste = tipoAcaoAjuste;
     }
 
     @Override
