@@ -265,7 +265,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                         inconsistencias.add(ControleJornadaAjusteConverter.createInconsistenciaSemVinculo(rSet));
                     }
                     return inconsistencias;
-                case INICIO_DEPOIS_FIM:
+                case FIM_ANTES_INICIO:
                 break;
             }
         } finally {

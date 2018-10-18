@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum  TipoInconsistenciaMarcacao {
+public enum TipoInconsistenciaMarcacao {
     SEM_VINCULO("SEM_VINCULO"),
-    INICIO_DEPOIS_FIM("INICIO_DEPOIS_FIM");
+    FIM_ANTES_INICIO("FIM_ANTES_INICIO");
 
     @NotNull
     private final String stringRepresentation;
