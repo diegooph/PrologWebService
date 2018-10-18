@@ -105,6 +105,16 @@ public interface ControleJornadaAjusteDao {
                                       @NotNull final Long codMarcacao,
                                       final boolean deveAtivar) throws Throwable;
 
+    /**
+     * Método para buscar o histórico de todos os ajustes das marcações que se tenha interesse. Ele recebe uma lista
+     * de códigos de marcações que se deseja buscar para facilitar o caso de uso de marcações vinculadas, onde se tem
+     * interesse no histórico de ajuste das duas marcações.
+     *
+     * @param codMarcacoes O código das marcações das quais queremos buscar os históricos de ajustes.
+     * @return Uma lista contendo o histórico de ajustes das marcações buscadas ou uma lista vazia caso as
+     * marcações nunca tenham sido ajustadas.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
     @NotNull
     List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(@NotNull final List<Long> codMarcacoes) throws Throwable;
 
