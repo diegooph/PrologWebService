@@ -25,6 +25,26 @@ import java.util.Map;
 public interface RelatorioPneuDao {
 
     /**
+     * Método para gerar um relatório contendo a quantidade de KM percorrido por pneu e por vida.
+     *
+     * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @throws Throwable - Se algum erro na busca dos dados ocorrer.
+     */
+    void getKmRodadoPorPneuPorVidaCsv(@NotNull final OutputStream outputStream,
+                                      @NotNull final List<Long> codUnidades) throws Throwable;
+
+    /**
+     * Método para gerar um relatório contendo a quantidade de KM percorrido por pneu e por vida.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - Um objeto {@link Report} com os dados filtrados.
+     * @throws Throwable - Se algum erro na busca dos dados ocorrer.
+     */
+    @NotNull
+    Report getKmRodadoPorPneuPorVidaReport(@NotNull final List<Long> codUnidades) throws Throwable;
+
+    /**
      * Método para gerar um relatório contendo todas as aferições avulsas realizadas durante o período filtrado.
      * Para fins de exportação em CSV.
      *

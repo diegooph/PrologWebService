@@ -24,12 +24,11 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  */
 public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
 
-
     @Override
     public void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
-                                          @NotNull final List<Long> codUnidade,
-                                          @NotNull final LocalDate dataInicial,
-                                          @NotNull final LocalDate dataFinal) throws Throwable {
+                                           @NotNull final List<Long> codUnidade,
+                                           @NotNull final LocalDate dataInicial,
+                                           @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -50,8 +49,8 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
     @NotNull
     @Override
     public Report getDadosGeraisAfericoesReport(@NotNull final List<Long> codUnidades,
-                                               @NotNull final LocalDate dataInicial,
-                                               @NotNull final LocalDate dataFinal) throws Throwable {
+                                                @NotNull final LocalDate dataInicial,
+                                                @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -67,11 +66,11 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
 
     @NotNull
     private PreparedStatement getDadosGeraisAfericoesStmt(@NotNull final Connection conn,
-                                                         @NotNull final List<Long> codUnidades,
-                                                         @NotNull final LocalDate dataInicial,
-                                                         @NotNull final LocalDate dataFinal) throws Throwable {
+                                                          @NotNull final List<Long> codUnidades,
+                                                          @NotNull final LocalDate dataInicial,
+                                                          @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_DADOS_GERAIS(?,?,?);");
+                conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_DADOS_GERAIS(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);

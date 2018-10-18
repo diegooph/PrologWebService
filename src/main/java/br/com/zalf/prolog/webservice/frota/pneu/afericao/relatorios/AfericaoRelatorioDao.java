@@ -18,21 +18,20 @@ public interface AfericaoRelatorioDao {
      * Método para gerar um relatório contendo todos os dados de aferições realizadas em arquivo CSV.
      *
      * @param out         - Streaming onde os dados serão escritos.
-     * @param codUnidades  - Códigos das unidades pela quais as informações serão filtradas.
+     * @param codUnidades - Códigos das unidades pela quais as informações serão filtradas.
      * @param dataInicial - Data inicial do período de filtro.
      * @param dataFinal   - Data final do período de filtro.
      * @throws Throwable - Se algum erro ocorrer.
      */
-
     void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
                                    @NotNull final List<Long> codUnidades,
                                    @NotNull final LocalDate dataInicial,
                                    @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
-     * Método para gerar um relatório contendo todos os dados de aferições realizadas em arquivo CSV.
+     * Método para gerar um relatório contendo todos os dados de aferições realizadas em formato {@link Report report}.
      *
-     * @param codUnidades  - Códigos das unidades pela quais as informações serão filtradas.
+     * @param codUnidades - Códigos das unidades pela quais as informações serão filtradas.
      * @param dataInicial - Data inicial do período de filtro.
      * @param dataFinal   - Data final do período de filtro.
      * @throws Throwable - Se algum erro ocorrer.

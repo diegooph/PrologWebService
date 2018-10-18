@@ -8,12 +8,14 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuValidator;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.importar.PneuImportReader;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -33,6 +35,17 @@ public class PneuService {
             final String errorMessage = "Erro ao inserir o pneu";
             Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
             throw exceptionHandler.map(e, errorMessage);
+        }
+    }
+
+    @NotNull
+    public List<Long> insert(@NotNull final InputStream fileInputStream) throws ProLogException {
+        try {
+            return dao.insert(PneuImportReader.readFromCsv(fileInputStream));
+        } catch (final Throwable throwable) {
+            final String errorMessage = "Erro ao inserir pneus -- " + throwable.getMessage();
+            Log.e(TAG, errorMessage, throwable);
+            throw exceptionHandler.map(throwable, errorMessage);
         }
     }
 

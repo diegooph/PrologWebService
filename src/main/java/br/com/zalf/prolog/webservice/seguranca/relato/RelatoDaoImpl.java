@@ -3,11 +3,14 @@ package br.com.zalf.prolog.webservice.seguranca.relato;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.seguranca.pdv.Pdv;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.time.*;
@@ -17,7 +20,8 @@ import java.util.List;
 public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 
     @Override
-    public boolean insert(Relato relato) throws SQLException {
+    public boolean insert(@NotNull final Relato relato,
+                          @Nullable final Integer versaoApp) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -25,9 +29,9 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             stmt = conn.prepareStatement("INSERT INTO RELATO "
                     + "(DATA_HORA_LOCAL,  DATA_HORA_DATABASE, LATITUDE, LONGITUDE, "
                     + "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR, STATUS, COD_UNIDADE, "
-                    + " COD_SETOR, COD_ALTERNATIVA, RESPOSTA_OUTROS, COD_PDV) "
+                    + " COD_SETOR, COD_ALTERNATIVA, RESPOSTA_OUTROS, COD_PDV, VERSAO_APP) "
                     + "VALUES (?,?,?,?,?,?,?,?,?,(SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF = ?),"
-                    + "(SELECT COD_SETOR FROM COLABORADOR WHERE CPF = ?),?,?,?)");
+                    + "(SELECT COD_SETOR FROM COLABORADOR WHERE CPF = ?),?,?,?,?)");
             final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCpf(relato.getColaboradorRelato().getCpf(), conn);
             stmt.setObject(1, relato.getDataLocal().atZone(unidadeZoneId).toOffsetDateTime());
             stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
@@ -50,6 +54,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             } else {
                 stmt.setNull(14, Types.INTEGER);
             }
+            StatementUtils.bindValueOrNull(stmt, 15, versaoApp, SqlType.INTEGER);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o relato");
@@ -83,8 +88,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
                     "R.CODIGO AS CODIGO, " +
-                    "R.DATA_HORA_LOCAL AS DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
-                    "R.DATA_HORA_DATABASE AS DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
+                    "R.DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
+                    "R.DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
                     "R.LATITUDE AS LATITUDE, " +
                     "R.LONGITUDE AS LONGITUDE, " +
                     "R.URL_FOTO_1 AS URL_FOTO_1, " +
@@ -455,29 +460,20 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
         return true;
     }
 
-    /**
-     * Busca as alternativas para compor um relato, utilizado quando o usuário loga e quando cria um novo relato.
-     * Mantém o banco de dados(mobile) atualizado.
-     *
-     * @param codUnidade código de uma unidade
-     * @param codSetor   cod do setor do colaborador que está realizando o relato, serve para fitlrar as alternativas.
-     * @return lista de Alterniva
-     * @throws SQLException
-     */
+    @NotNull
     @Override
-    public List<Alternativa> getAlternativas(Long codUnidade, Long codSetor) throws SQLException {
-        final List<Alternativa> listAlternativas = new ArrayList<>();
+    public List<Alternativa> getAlternativas(@NotNull final Long codUnidade, @NotNull final Long codSetor)
+            throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CODIGO, ALTERNATIVA "
-                    + "FROM RELATO_ALTERNATIVA "
-                    + "WHERE COD_SETOR = ? OR COD_SETOR IS NULL AND COD_UNIDADE = ? AND STATUS_ATIVO = TRUE ORDER BY ALTERNATIVA ASC");
-            stmt.setLong(1, codSetor);
-            stmt.setLong(2, codUnidade);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATO_GET_ALTERNATIVAS(?, ?, TRUE)");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codSetor);
             rSet = stmt.executeQuery();
+            final List<Alternativa> alternativas = new ArrayList<>();
             while (rSet.next()) {
                 final Alternativa alternativa = new Alternativa();
                 alternativa.codigo = rSet.getLong("CODIGO");
@@ -485,12 +481,12 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 if (alternativa.alternativa.equals("Outros")) {
                     alternativa.tipo = Alternativa.TIPO_OUTROS;
                 }
-                listAlternativas.add(alternativa);
+                alternativas.add(alternativa);
             }
+            return alternativas;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return listAlternativas;
     }
 
     private String getCampoFiltro(String campoFiltro) {

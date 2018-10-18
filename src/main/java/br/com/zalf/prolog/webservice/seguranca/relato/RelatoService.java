@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -13,13 +14,14 @@ import java.util.List;
  * Classe RelatoService responsavel por comunicar-se com a interface DAO
  */
 public class RelatoService {
-
-    private RelatoDao dao = Injection.provideRelatoDao();
     private static final String TAG = RelatoService.class.getSimpleName();
+    @NotNull
+    private final RelatoDao dao = Injection.provideRelatoDao();
 
-    public boolean insert(Relato relato) {
+    public boolean insert(@NotNull final Relato relato,
+                          @Nullable final Integer versaoApp) {
         try {
-            return dao.insert(relato);
+            return dao.insert(relato, versaoApp);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir o relato", e);
             return false;

@@ -27,10 +27,20 @@ public interface PneuDao {
      * @param pneu       um pneu
      * @param codUnidade código da unidade
      * @return código do pneu recém cadastrado
-     * @throws SQLException caso ocorra erro no banco
+     * @throws Throwable caso ocorra erro no banco
      */
     @NotNull
     Long insert(Pneu pneu, Long codUnidade) throws Throwable;
+
+    /**
+     * Insere vários pneus em lote, caso um falhe, aborta a inserção de todos.
+     *
+     * @param pneus Pneus para inserir.
+     * @return Códigos dos pneus recém cadastrados.
+     * @throws Throwable Caso ocorra erro no banco.
+     */
+    @NotNull
+    List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable;
 
     /**
      * Atualiza medições do pneu no banco.
@@ -63,9 +73,9 @@ public interface PneuDao {
     /**
      * Atualiza a pressão do pneu.
      *
-     * @param conn       Instância da conexão com o banco de dados.
-     * @param codPneu    Código do {@link Pneu} que será atualizado.
-     * @param pressao    Nova pressão a ser inserida no pneu.
+     * @param conn    Instância da conexão com o banco de dados.
+     * @param codPneu Código do {@link Pneu} que será atualizado.
+     * @param pressao Nova pressão a ser inserida no pneu.
      * @return Valor booleano indicando se a operação foi sucesso ou não.
      * @throws Throwable Se algum erro ocorrer na atualização.
      */
@@ -90,9 +100,9 @@ public interface PneuDao {
     /**
      * atualiza status do pneu
      *
-     * @param conn       conexão do banco
-     * @param pneu       um pneu
-     * @param status     status do pneu
+     * @param conn   conexão do banco
+     * @param pneu   um pneu
+     * @param status status do pneu
      * @throws SQLException caso ocorra erro no banco
      */
     void updateStatus(@NotNull final Connection conn,

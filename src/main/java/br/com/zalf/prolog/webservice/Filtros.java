@@ -11,13 +11,18 @@ public class Filtros {
     /**
      * Caractere que determina se todas as opções em uma listagem foram selecionadas.
      */
-    private static final String SELECIONOU_TODOS = "%";
+    private static final String FILTRO_TODOS = "%";
 
     private Filtros() {
         throw new IllegalStateException(Filtros.class.getSimpleName() + " cannot be instantiated!");
     }
 
     public static boolean isFiltroTodos(@NotNull final String value) {
-        return value.equals(SELECIONOU_TODOS);
+        return value.equals(FILTRO_TODOS);
+    }
+
+    @NotNull
+    public static String getFiltroTodos() {
+        return FILTRO_TODOS;
     }
 }
