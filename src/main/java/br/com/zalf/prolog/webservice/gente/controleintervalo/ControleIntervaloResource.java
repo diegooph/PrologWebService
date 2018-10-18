@@ -38,7 +38,7 @@ public final class ControleIntervaloResource {
     @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
-            @HeaderParam("ProLog-Android-App-Version") Integer versaoApp,
+            @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) Integer versaoApp,
             IntervaloMarcacao intervaloMarcacao) {
         return service.insertMarcacaoIntervalo(versaoDadosIntervalo, intervaloMarcacao, versaoApp);
     }
