@@ -28,7 +28,10 @@ public class ControleIntervaloService {
 
     @NotNull
     public ResponseIntervalo insertMarcacaoIntervalo(final long versaoDadosIntervalo,
-                                                     @NotNull final IntervaloMarcacao intervaloMarcacao) {
+                                                     @NotNull final IntervaloMarcacao intervaloMarcacao,
+                                                     @Nullable final Integer versaoAppMomentoSincronizacao) {
+        // Devemos salvar no objeto o parâmetro de versão capturado no Header da requisição.
+        intervaloMarcacao.setVersaoAppMomentoSincronizacao(versaoAppMomentoSincronizacao);
         EstadoVersaoIntervalo estadoVersaoIntervalo = null;
         try {
             @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
