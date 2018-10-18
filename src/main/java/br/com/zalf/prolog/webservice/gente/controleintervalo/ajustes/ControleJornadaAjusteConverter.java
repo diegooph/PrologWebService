@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.TipoA
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.DescricaoAcaoAjusteCreator;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.InconsistenciaSemVinculo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +24,17 @@ public final class ControleJornadaAjusteConverter {
     public ControleJornadaAjusteConverter() {
         throw new IllegalStateException(ControleJornadaAjusteConverter.class.getSimpleName()
                 + " cannot be instantiated!");
+    }
+
+    @NotNull
+    static InconsistenciaSemVinculo createInconsistenciaSemVinculo(@NotNull final ResultSet rSet) throws Throwable {
+        final InconsistenciaSemVinculo inconsistencia = new InconsistenciaSemVinculo();
+        inconsistencia.setCodMarcacaoSemVinculo(rSet.getLong("COD_MARCACAO_SEM_VINCULO"));
+        inconsistencia.setTipoInicioFim(TipoInicioFim.fromString(rSet.getString("TIPO_INICIO_FIM")));
+        inconsistencia.setDataHoraMarcacao(rSet.getObject("DATA_HORA_MARCACAO", LocalDateTime.class));
+        inconsistencia.setNomeColaboradorMarcacao(rSet.getString("NOME_COLABORADOR"));
+        inconsistencia.setDescricaoInconsistencia("ESTA É UMA INCONSISTÊNCIA CAUSADA PELA MARCAÇÃO NÃO TER VÍNCULO");
+        return inconsistencia;
     }
 
     @NotNull

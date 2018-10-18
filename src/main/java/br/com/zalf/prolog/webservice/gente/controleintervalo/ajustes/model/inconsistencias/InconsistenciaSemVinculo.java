@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 public final class InconsistenciaSemVinculo extends MarcacaoInconsistencia {
     private Long codMarcacaoSemVinculo;
-    private TipoInicioFim tipoMarcacao;
+    private TipoInicioFim tipoInicioFim;
     private LocalDateTime dataHoraMarcacao;
     private String nomeColaboradorMarcacao;
 
@@ -27,12 +27,12 @@ public final class InconsistenciaSemVinculo extends MarcacaoInconsistencia {
         this.codMarcacaoSemVinculo = codMarcacaoSemVinculo;
     }
 
-    public TipoInicioFim getTipoMarcacao() {
-        return tipoMarcacao;
+    public TipoInicioFim getTipoInicioFim() {
+        return tipoInicioFim;
     }
 
-    public void setTipoMarcacao(final TipoInicioFim tipoMarcacao) {
-        this.tipoMarcacao = tipoMarcacao;
+    public void setTipoInicioFim(final TipoInicioFim tipoInicioFim) {
+        this.tipoInicioFim = tipoInicioFim;
     }
 
     public LocalDateTime getDataHoraMarcacao() {

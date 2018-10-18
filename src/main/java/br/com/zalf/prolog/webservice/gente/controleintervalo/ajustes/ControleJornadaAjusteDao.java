@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibi
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.MarcacaoInconsistencia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.TipoInconsistenciaMarcacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -119,9 +120,22 @@ public interface ControleJornadaAjusteDao {
      * @throws Throwable Caso qualquer erro aconteça.
      */
     @NotNull
-    List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(@NotNull final List<Long> codMarcacoes) throws Throwable;
+    List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(@NotNull final List<Long> codMarcacoes)
+            throws Throwable;
 
+    /**
+     * Método para buscar todos os {@link TipoInconsistenciaMarcacao tipos de inconsistência} que possa existir para o
+     * colaborador e dia filtrados.
+     *
+     * @param codColaborador O código do colaborador para o qual queremos buscar as inconsistências.
+     * @param dia            O dia do qual queremos buscar as inconsistências.
+     * @return Uma lista contendo as inconsistências, se existirem, para o colaborador, dia e tipo de inconsistência
+     * especificado. Uma lista vazia caso não existam inconsistências.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
     @NotNull
-    List<MarcacaoInconsistencia> getInconsistenciasColaboradorDia(@NotNull final Long codColaborador,
-                                                                  @NotNull final LocalDate dia) throws Throwable;
+    List<MarcacaoInconsistencia> getInconsistenciasColaboradorDia(
+            @NotNull final Long codColaborador,
+            @NotNull final LocalDate dia,
+            @NotNull final TipoInconsistenciaMarcacao tipoInconsistencia) throws Throwable;
 }

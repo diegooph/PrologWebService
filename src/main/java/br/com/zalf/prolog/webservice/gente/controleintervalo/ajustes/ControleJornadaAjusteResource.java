@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.MarcacaoInconsistencia;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import org.jetbrains.annotations.NotNull;
@@ -115,5 +116,16 @@ public final class ControleJornadaAjusteResource {
     public List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(
             @QueryParam("codMarcacoes") @Required List<Long> codMarcacoes) throws ProLogException {
         return service.getHistoricoAjusteMarcacoes(codMarcacoes);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured()
+    @Path("/inconsistencias")
+    public List<MarcacaoInconsistencia> getHistoricoAjusteMarcacoes(
+            @QueryParam("codColaborador") @Required Long codColaborador,
+            @QueryParam("dia") @Required String dia,
+            @QueryParam("tipoInconsistencia") @Required String tipoInconsistencia) throws ProLogException {
+        return service.getInconsistenciasColaboradorDia(codColaborador, dia, tipoInconsistencia);
     }
 }
