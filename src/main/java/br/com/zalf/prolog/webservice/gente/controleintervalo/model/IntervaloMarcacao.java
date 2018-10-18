@@ -38,6 +38,10 @@ public final class IntervaloMarcacao {
     private Localizacao localizacaoMarcacao;
     @Nullable
     private Long codMarcacaoVinculada;
+    @Nullable
+    private Integer versaoAppMomentoMarcacao;
+    @Nullable
+    private Integer versaoAppMomentoSincronizacao;
 
     public IntervaloMarcacao() {
 
@@ -160,6 +164,24 @@ public final class IntervaloMarcacao {
         this.codMarcacaoVinculada = codMarcacaoVinculada;
     }
 
+    @Nullable
+    public Integer getVersaoAppMomentoMarcacao() {
+        return versaoAppMomentoMarcacao;
+    }
+
+    public void setVersaoAppMomentoMarcacao(@Nullable final Integer versaoAppMomentoMarcacao) {
+        this.versaoAppMomentoMarcacao = versaoAppMomentoMarcacao;
+    }
+
+    @Nullable
+    public Integer getVersaoAppMomentoSincronizacao() {
+        return versaoAppMomentoSincronizacao;
+    }
+
+    public void setVersaoAppMomentoSincronizacao(@Nullable final Integer versaoAppMomentoSincronizacao) {
+        this.versaoAppMomentoSincronizacao = versaoAppMomentoSincronizacao;
+    }
+
     @Override
     public String toString() {
         return "IntervaloMarcacao{" +
@@ -176,6 +198,8 @@ public final class IntervaloMarcacao {
                 ", justificativaTempoRecomendado='" + justificativaTempoRecomendado + '\'' +
                 ", localizacaoMarcacao=" + localizacaoMarcacao +
                 ", codMarcacaoVinculada=" + codMarcacaoVinculada +
+                ", versaoAppMomentoMarcacao=" + versaoAppMomentoMarcacao +
+                ", versaoAppMomentoSincronizacao=" + versaoAppMomentoSincronizacao +
                 '}';
     }
 }

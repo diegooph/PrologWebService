@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizadoIncrementaVida;
@@ -70,10 +71,55 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     }
 
+    @NotNull
+    @Override
+    public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
+        Connection conn = null;
+        int linha = 1;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            final List<Long> codigosPneus = new ArrayList<>(pneus.size());
+            for (final Pneu pneu : pneus) {
+                codigosPneus.add(internalInsert(conn, pneu, pneu.getCodUnidadeAlocado()));
+                linha++;
+            }
+            conn.commit();
+            return codigosPneus;
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw new GenericException("Erro ao inserir pneu da linha: " + linha + " -- " + e.getMessage());
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
     @Override
     @NotNull
     public Long insert(Pneu pneu, Long codUnidade) throws Throwable {
         Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            final Long codPneuInserido = internalInsert(conn, pneu, codUnidade);
+            conn.commit();
+            return codPneuInserido;
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    @NotNull
+    private Long internalInsert(@NotNull final Connection conn,
+                                @NotNull final Pneu pneu,
+                                @NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Long codPneu;
@@ -86,8 +132,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 }
             }
 
-            conn = getConnection();
-            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO pneu (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, "
                     + "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, altura_sulco_central_externo, "
                     + "altura_sulco_externo, cod_unidade, status, vida_atual, vida_total, cod_modelo_banda, dot, valor, "
@@ -139,15 +183,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             if (fotosCadastro != null && !fotosCadastro.isEmpty()) {
                 insertFotosCadastroPneu(pneu.getCodigo(), fotosCadastro, conn);
             }
-
-            conn.commit();
-        } catch (Throwable e) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw e;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeStatement(stmt);
+            closeResultSet(rSet);
         }
         return codPneu;
     }

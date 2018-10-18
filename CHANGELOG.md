@@ -1,8 +1,36 @@
 Change Log
 ==========
 
+<a name="v0.0.77"></a>
+## Version [v0.0.77](https://github.com/luizfp/PrologWeb/compare/v0.0.76...v0.0.77) (release-data) [unreleased]
+
+### Features
+* Cria relatório para mostrar o KM rodado por pneu e por vida
+
+### Refactors
+* Altera insert do relato para salvar a versão do app que fez a requisição
+
+### Bug Fixes
+* Corrige busca das alternativas disponíveis para realização de um relato
+* Corrige método de busca de um relato pelo seu código
+* Corrige query de relatório da solicitação de folga
+* Corrige leitura da hrSaida e hrEntrada no import do mapa
+
 <a name="v0.0.76"></a>
-## Version [v0.0.76](https://github.com/luizfp/PrologWeb/compare/v0.0.75...v0.0.76) (release-data) [unreleased]
+## Version [v0.0.76](https://github.com/luizfp/PrologWeb/compare/v0.0.75...v0.0.76) (2018-10-02)
+
+### Features
+* Permite filtro por múltiplas unidades nos relatórios do checklist
+* Cria gráfico em linhas como um componente da dashboard
+* Cria método para fechamento de múltiplos itens de O.S. do checklist
+* Cria nova function e novos métodos para gerar relatório geral de movimentação
+* Cria componente da dashboard para buscar quantidade de checklists realizados por dia
+* Cria componente da dashboard para buscar quantidade de itens de O.S. abertos por prioridade
+* Cria componente da dashboard para buscar placas com maior quantidade de itens de O.S. abertos
+
+### Refactors
+* Atualiza versão da biblioteca univocity-parsers para 2.7.5
+* Altera métodos de busca dos itens de O.S. do checklist
 
 <a name="v0.0.75"></a>
 ## Version [v0.0.75](https://github.com/luizfp/PrologWeb/compare/v0.0.74...v0.0.75) (2018-09-04)

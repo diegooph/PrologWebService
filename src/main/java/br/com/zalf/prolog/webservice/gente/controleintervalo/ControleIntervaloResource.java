@@ -3,10 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Optional;
-import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
@@ -41,8 +38,9 @@ public final class ControleIntervaloResource {
     @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
+            @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) Integer versaoApp,
             IntervaloMarcacao intervaloMarcacao) {
-        return service.insertMarcacaoIntervalo(versaoDadosIntervalo, intervaloMarcacao);
+        return service.insertMarcacaoIntervalo(versaoDadosIntervalo, intervaloMarcacao, versaoApp);
     }
 
     /**

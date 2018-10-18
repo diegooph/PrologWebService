@@ -501,11 +501,10 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.veicBM = Double.parseDouble(linha.get(20).replace(",", "."));
         mapa.rShow = Integer.parseInt(linha.get(21));
         mapa.entrVol = linha.get(22).replace(" ", "");
-        Date hrSaida = toTimestamp(linha.get(23));
-        Date hrEntrada = toTimestamp(linha.get(24));
+        final Date hrSaida = toTimestamp(linha.get(23));
+        final Date hrEntrada = toTimestamp(linha.get(24));
         if (hrSaida == null && hrEntrada == null) {
-            mapa.hrSai = new Date(0);
-            mapa.hrEntr = new Date(0);
+            throw new IllegalStateException("Não é possível inserir um mapa que não tenha hrSaida e nem hrEntrada");
         } else if (hrSaida == null) {
             mapa.hrSai = hrEntrada;
             mapa.hrEntr = hrEntrada;

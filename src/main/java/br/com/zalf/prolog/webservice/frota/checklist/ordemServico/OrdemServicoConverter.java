@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +60,7 @@ public final class OrdemServicoConverter {
             item = new ItemOrdemServico();
             item.setCodigo(rSet.getLong("codigo"));
             item.setCodOs(rSet.getLong("cod_os"));
+            item.setCodUnidadeItemOs(rSet.getLong("COD_UNIDADE"));
             pergunta = createPergunta(rSet);
             alternativa = createAlternativa(rSet);
             alternativas = new ArrayList<>();

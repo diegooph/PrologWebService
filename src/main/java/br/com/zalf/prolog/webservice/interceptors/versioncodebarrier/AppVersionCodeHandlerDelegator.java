@@ -57,7 +57,7 @@ public final class AppVersionCodeHandlerDelegator implements ContainerRequestFil
         }
 
         final String versionCodeString = requestContext
-                .getHeaderString(ProLogCustomHeaders.APP_VERSION_ANDROID_APP.getHeaderName());
+                .getHeaderString(ProLogCustomHeaders.APP_VERSION_ANDROID_APP);
 
         final VersionNotPresentAction notPresentAction = annotation.actionIfVersionNotPresent();
         try {

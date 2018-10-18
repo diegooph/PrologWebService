@@ -119,7 +119,7 @@ public class ServicoRelatorioDaoImpl extends DatabaseConnection implements Servi
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
-        stmt.setObject(4, Now.localDate());
+        stmt.setObject(4, Now.localDateUtc());
         return stmt;
     }
 }

@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
@@ -50,8 +51,9 @@ public class DeprecatedControleIntervaloResource {
     @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
+            @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) Integer versaoApp,
             Intervalo intervalo) {
-        return service.insertMarcacaoIntervalo(versaoDadosIntervalo, toIntervaloMarcacao(intervalo));
+        return service.insertMarcacaoIntervalo(versaoDadosIntervalo, toIntervaloMarcacao(intervalo), versaoApp);
     }
 
     /**

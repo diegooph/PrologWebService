@@ -13,7 +13,8 @@ public enum SqlType {
     BIGINT("bigint", Types.BIGINT),
     TEXT("text", Types.VARCHAR),
     VARCHAR("varchar", Types.VARCHAR),
-    BOOLEAN("boolean", Types.BOOLEAN);
+    BOOLEAN("boolean", Types.BOOLEAN),
+    INTEGER("bigint", Types.INTEGER);
 
     @NotNull
     private final String typeString;

@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 class DataAccessException extends ProLogException {
 
     DataAccessException(@NotNull final String message) {
-        this(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), ProLogErrorCodes.RECURSO_JA_EXISTE.errorCode(), message);
+        this(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), ProLogErrorCodes.GENERIC.errorCode(), message);
     }
 
     DataAccessException(final int httpStatusCode, final int proLogErrorCode, @NotNull final String message) {

@@ -506,7 +506,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_MARCACAO_INSERT_MARCACAO_JORNADA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
+                    "FROM FUNC_MARCACAO_INSERT_MARCACAO_JORNADA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);
@@ -521,6 +521,8 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             bindValueOrNull(stmt, 9, localizacao != null ? localizacao.getLatitude() : null, SqlType.VARCHAR);
             bindValueOrNull(stmt, 10, localizacao != null ? localizacao.getLongitude() : null, SqlType.VARCHAR);
             stmt.setTimestamp(11, Now.timestampUtc());
+            bindValueOrNull(stmt, 12, intervaloMarcacao.getVersaoAppMomentoMarcacao(), SqlType.BIGINT);
+            bindValueOrNull(stmt, 13, intervaloMarcacao.getVersaoAppMomentoSincronizacao(), SqlType.BIGINT);
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.getLong("CODIGO") > 0) {
                 return rSet.getLong("CODIGO");

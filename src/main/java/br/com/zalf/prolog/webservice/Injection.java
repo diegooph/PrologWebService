@@ -38,8 +38,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDaoImpl;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios.RelatoriosOrdemServicoDao;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios.RelatoriosOrdemServicoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios.OrdemServicoRelatorioDao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios.OrdemServicoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.relatorios.ChecklistRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
@@ -234,8 +234,8 @@ public final class Injection {
     }
 
     @NotNull
-    public static RelatoriosOrdemServicoDao provideRelatoriosOrdemServicoDao() {
-        return new RelatoriosOrdemServicoDaoImpl();
+    public static OrdemServicoRelatorioDao provideRelatoriosOrdemServicoDao() {
+        return new OrdemServicoRelatorioDaoImpl();
     }
 
     @NotNull
