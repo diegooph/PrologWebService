@@ -8,11 +8,14 @@ import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoInconsistenciaExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.MarcacaoInconsistencia;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -238,8 +241,8 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     @NotNull
     @Override
-    public List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes(
-            @NotNull final Long codMarcacao) throws Throwable {
+    public List<MarcacaoInconsistencia> getInconsistenciasColaboradorDia(@NotNull final Long codColaborador,
+                                                                         @NotNull final LocalDate dia) throws Throwable {
         return null;
     }
 
