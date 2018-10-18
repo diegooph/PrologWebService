@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +18,17 @@ public final class InconsistenciaSemVinculo extends MarcacaoInconsistencia {
 
     public InconsistenciaSemVinculo() {
         super(TipoInconsistenciaMarcacao.SEM_VINCULO);
+    }
+
+    @NotNull
+    public static InconsistenciaSemVinculo createDummy() {
+        final InconsistenciaSemVinculo inconsistencia = new InconsistenciaSemVinculo();
+        inconsistencia.setCodMarcacaoSemVinculo(10L);
+        inconsistencia.setTipoInicioFim(TipoInicioFim.MARCACAO_INICIO);
+        inconsistencia.setDataHoraMarcacao(LocalDateTime.now());
+        inconsistencia.setNomeColaboradorMarcacao("João da Silva");
+        inconsistencia.setDescricaoInconsistencia("ESTA É UMA INCONSISTÊNCIA CAUSADA PELA MARCAÇÃO NÃO TER VÍNCULO");
+        return inconsistencia;
     }
 
     public Long getCodMarcacaoSemVinculo() {

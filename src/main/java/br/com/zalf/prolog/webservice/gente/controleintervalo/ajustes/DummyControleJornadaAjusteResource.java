@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.MarcacaoInconsistencia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.InconsistenciaSemVinculo;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 
@@ -101,9 +101,12 @@ public final class DummyControleJornadaAjusteResource extends DummyData {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/marcacoes-inconsistentes-list")
-    public List<MarcacaoInconsistencia> getMarcacoesInconsistentes() {
-        // TODO
-        return null;
+    @Path("/inconsistencias-sem-vinculo-list")
+    public List<InconsistenciaSemVinculo> getInconsistenciasSemVinculo() {
+        final List<InconsistenciaSemVinculo> inconsistencia = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            inconsistencia.add(InconsistenciaSemVinculo.createDummy());
+        }
+        return inconsistencia;
     }
 }
