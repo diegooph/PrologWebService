@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum  TipoInconsistenciaMarcacao {
     SEM_VINCULO("SEM_VINCULO"),
-    INICIO_ANTES_FIM("INICIO_ANTES_FIM");
+    INICIO_DEPOIS_FIM("INICIO_DEPOIS_FIM");
 
     @NotNull
     private final String stringRepresentation;

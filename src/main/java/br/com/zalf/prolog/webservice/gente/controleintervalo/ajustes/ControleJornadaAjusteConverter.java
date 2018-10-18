@@ -33,6 +33,7 @@ public final class ControleJornadaAjusteConverter {
         inconsistencia.setTipoInicioFim(TipoInicioFim.fromString(rSet.getString("TIPO_INICIO_FIM")));
         inconsistencia.setDataHoraMarcacao(rSet.getObject("DATA_HORA_MARCACAO", LocalDateTime.class));
         inconsistencia.setNomeColaboradorMarcacao(rSet.getString("NOME_COLABORADOR"));
+        // TODO:
         inconsistencia.setDescricaoInconsistencia("ESTA É UMA INCONSISTÊNCIA CAUSADA PELA MARCAÇÃO NÃO TER VÍNCULO");
         return inconsistencia;
     }

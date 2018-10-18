@@ -29,7 +29,7 @@ public abstract class MarcacaoInconsistencia {
         return RuntimeTypeAdapterFactory
                 .of(MarcacaoInconsistencia.class, "tipoInconsistenciaMarcacao")
                 .registerSubtype(InconsistenciaSemVinculo.class, TipoInconsistenciaMarcacao.SEM_VINCULO.asString())
-                .registerSubtype(InconsistenciaInicioAntesFim.class, TipoInconsistenciaMarcacao.INICIO_ANTES_FIM.asString());
+                .registerSubtype(InconsistenciaInicioAntesFim.class, TipoInconsistenciaMarcacao.INICIO_DEPOIS_FIM.asString());
     }
 
     public String getDescricaoInconsistencia() {
