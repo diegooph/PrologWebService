@@ -266,7 +266,16 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                     }
                     return inconsistencias;
                 case FIM_ANTES_INICIO:
-                break;
+                    stmt = conn.prepareStatement("SELECT * FROM " +
+                            "FUNC_MARCACAO_GET_INCONSISTENCIAS_TIPO_FIM_ANTES_INICIO(?, ?);");
+                    stmt.setLong(1, codColaborador);
+                    stmt.setObject(2, dia);
+                    rSet = stmt.executeQuery();
+                    inconsistencias = new ArrayList<>();
+                    while (rSet.next()) {
+                        inconsistencias.add(ControleJornadaAjusteConverter.createInconsistenciaFimAntesInicio(rSet));
+                    }
+                    return inconsistencias;
             }
         } finally {
             close(conn, stmt, rSet);
