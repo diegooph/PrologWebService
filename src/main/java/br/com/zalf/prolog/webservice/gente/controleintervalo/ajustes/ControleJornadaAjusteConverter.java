@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.TipoA
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.DescricaoAcaoAjusteCreator;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias
+        .DescricaoInconsistenciaCreator;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.InconsistenciaFimAntesInicio;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.InconsistenciaSemVinculo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
@@ -36,8 +38,9 @@ public final class ControleJornadaAjusteConverter {
         inconsistencia.setCodMarcacaoFim(rSet.getLong("COD_MARCACAO_FIM"));
         inconsistencia.setDataHoraMarcacaoFim(rSet.getObject("DATA_HORA_MARCACAO_FIM", LocalDateTime.class));
         inconsistencia.setNomeColaboradorMarcacao(rSet.getString("NOME_COLABORADOR"));
-        // TODO:
-        inconsistencia.setDescricaoInconsistencia("ESTA É UMA INCONSISTÊNCIA CAUSADA POR UM FIM ANTES DO INÍCIO");
+        inconsistencia.setDescricaoInconsistencia(DescricaoInconsistenciaCreator.descricaoFimAntesInicio(
+                inconsistencia.getDataHoraMarcacaoInicio(),
+                inconsistencia.getDataHoraMarcacaoFim()));
         return inconsistencia;
     }
 
@@ -48,8 +51,9 @@ public final class ControleJornadaAjusteConverter {
         inconsistencia.setTipoInicioFim(TipoInicioFim.fromString(rSet.getString("TIPO_INICIO_FIM")));
         inconsistencia.setDataHoraMarcacao(rSet.getObject("DATA_HORA_MARCACAO", LocalDateTime.class));
         inconsistencia.setNomeColaboradorMarcacao(rSet.getString("NOME_COLABORADOR"));
-        // TODO:
-        inconsistencia.setDescricaoInconsistencia("ESTA É UMA INCONSISTÊNCIA CAUSADA PELA MARCAÇÃO NÃO TER VÍNCULO");
+        inconsistencia.setDescricaoInconsistencia(DescricaoInconsistenciaCreator.descricaoSemVinculo(
+                inconsistencia.getDataHoraMarcacao(),
+                inconsistencia.getTipoInicioFim()));
         return inconsistencia;
     }
 
