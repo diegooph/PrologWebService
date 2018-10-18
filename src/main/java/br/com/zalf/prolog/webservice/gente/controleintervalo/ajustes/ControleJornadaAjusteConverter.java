@@ -44,8 +44,7 @@ public final class ControleJornadaAjusteConverter {
                 historicoExibicao.getTipoInicioFimMarcacao(),
                 historicoExibicao.getDataHoraAntiga(),
                 historicoExibicao.getDataHoraNova(),
-                historicoExibicao.getNomeColaboradorAjuste(),
-                historicoExibicao.getDataHoraAjuste()));
+                historicoExibicao.getNomeColaboradorAjuste()));
         return historicoExibicao;
     }
 

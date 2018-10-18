@@ -9,8 +9,20 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public enum TipoInicioFim {
-    MARCACAO_INICIO("MARCACAO_INICIO"),
-    MARCACAO_FIM("MARCACAO_FIM");
+    MARCACAO_INICIO("MARCACAO_INICIO") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "Início";
+        }
+    },
+    MARCACAO_FIM("MARCACAO_FIM") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "Fim";
+        }
+    };
 
     @NotNull
     private final String tipoMarcacao;
@@ -18,6 +30,9 @@ public enum TipoInicioFim {
     TipoInicioFim(@NotNull final String tipoMarcacao) {
         this.tipoMarcacao = tipoMarcacao;
     }
+
+    @NotNull
+    public abstract String getLegibleString();
 
     @NotNull
     public String asString() {
