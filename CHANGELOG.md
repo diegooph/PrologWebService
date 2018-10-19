@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.77"></a>
-## Version [v0.0.77](https://github.com/luizfp/PrologWeb/compare/v0.0.76...v0.0.77) (release-data) [unreleased]
+## Version [v0.0.77](https://github.com/luizfp/PrologWeb/compare/v0.0.76...v0.0.77) (2018-10-19)
 
 ### Features
 * Cria relatório para mostrar o KM rodado por pneu e por vida
