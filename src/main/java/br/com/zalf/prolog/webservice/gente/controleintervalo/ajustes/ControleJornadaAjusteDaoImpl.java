@@ -8,11 +8,15 @@ import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteEdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoInconsistenciaExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.MarcacaoInconsistencia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.TipoInconsistenciaMarcacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -97,7 +101,8 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             conn = getConnection();
             conn.setAutoCommit(false);
             final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(tokenResponsavelAjuste, conn);
-            final Long codMarcacaoInserida = insereMarcacaoAjusteAdicao(conn, tokenResponsavelAjuste, marcacaoAjuste, zoneId);
+            final Long codMarcacaoInserida = insereMarcacaoAjusteAdicao(conn, tokenResponsavelAjuste, marcacaoAjuste,
+                    zoneId);
             final TipoInicioFim tipoInicioFim = marcacaoAjuste.getTipoInicioFim();
             final ControleIntervaloDao controleIntervaloDao = Injection.provideControleIntervaloDao();
             controleIntervaloDao.insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, tipoInicioFim);
@@ -238,9 +243,46 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
 
     @NotNull
     @Override
-    public List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes(
-            @NotNull final Long codMarcacao) throws Throwable {
-        return null;
+    public List<MarcacaoInconsistencia> getInconsistenciasColaboradorDia(
+            @NotNull final Long codColaborador,
+            @NotNull final LocalDate dia,
+            @NotNull final TipoInconsistenciaMarcacao tipoInconsistencia) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            List<MarcacaoInconsistencia> inconsistencias;
+            switch (tipoInconsistencia) {
+                case SEM_VINCULO:
+                    stmt = conn.prepareStatement("SELECT * FROM " +
+                            "FUNC_MARCACAO_GET_INCONSISTENCIAS_TIPO_SEM_VINCULO(?, ?);");
+                    stmt.setLong(1, codColaborador);
+                    stmt.setObject(2, dia);
+                    rSet = stmt.executeQuery();
+                    inconsistencias = new ArrayList<>();
+                    while (rSet.next()) {
+                        inconsistencias.add(ControleJornadaAjusteConverter.createInconsistenciaSemVinculo(rSet));
+                    }
+                    return inconsistencias;
+                case FIM_ANTES_INICIO:
+                    stmt = conn.prepareStatement("SELECT * FROM " +
+                            "FUNC_MARCACAO_GET_INCONSISTENCIAS_TIPO_FIM_ANTES_INICIO(?, ?);");
+                    stmt.setLong(1, codColaborador);
+                    stmt.setObject(2, dia);
+                    rSet = stmt.executeQuery();
+                    inconsistencias = new ArrayList<>();
+                    while (rSet.next()) {
+                        inconsistencias.add(ControleJornadaAjusteConverter.createInconsistenciaFimAntesInicio(rSet));
+                    }
+                    return inconsistencias;
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+
+        throw new IllegalArgumentException("Busca do tipo de inconstência ainda não suportada: "
+                + tipoInconsistencia.asString());
     }
 
     //############################################################################################

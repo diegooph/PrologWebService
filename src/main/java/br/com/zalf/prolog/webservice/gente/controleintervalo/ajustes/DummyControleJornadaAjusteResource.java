@@ -5,9 +5,10 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoInconsistenciaExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.InconsistenciaFimAntesInicio;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.InconsistenciaSemVinculo;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 
@@ -101,12 +102,23 @@ public final class DummyControleJornadaAjusteResource extends DummyData {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/marcacoes-inconsistentes-list")
-    public List<MarcacaoInconsistenciaExibicao> getMarcacoesInconsistentes() {
-        final List<MarcacaoInconsistenciaExibicao> marcacaoInconsistentes = new ArrayList<>();
+    @Path("/inconsistencias-sem-vinculo-list")
+    public List<InconsistenciaSemVinculo> getInconsistenciasSemVinculo() {
+        final List<InconsistenciaSemVinculo> inconsistencia = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            marcacaoInconsistentes.add(MarcacaoInconsistenciaExibicao.createDummy());
+            inconsistencia.add(InconsistenciaSemVinculo.createDummy());
         }
-        return marcacaoInconsistentes;
+        return inconsistencia;
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/inconsistencias-fim-antes-inicio-list")
+    public List<InconsistenciaFimAntesInicio> getInconsistenciasFimAntesInicio() {
+        final List<InconsistenciaFimAntesInicio> inconsistencia = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            inconsistencia.add(InconsistenciaFimAntesInicio.createDummy());
+        }
+        return inconsistencia;
     }
 }

@@ -8,10 +8,12 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.MarcacaoInconsistencia;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -25,6 +27,7 @@ import java.util.List;
  */
 @DebugLog
 @Path("/controle-jornada/ajustes")
+@Secured(permissions = Pilares.Gente.Intervalo.AJUSTE_MARCACOES)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ControleJornadaAjusteResource {
@@ -33,7 +36,6 @@ public final class ControleJornadaAjusteResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured()
     @Path("/marcacoes-consolidadas")
     public List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(
             @QueryParam("codUnidade") @Required Long codUnidade,
@@ -51,7 +53,6 @@ public final class ControleJornadaAjusteResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured()
     @Path("/marcacoes-colaboradores")
     public List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
             @QueryParam("codColaborador") @Required Long codColaborador,
@@ -62,7 +63,6 @@ public final class ControleJornadaAjusteResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured()
     @Path("/adicionar-marcacao-avulsa")
     public Response adicionarMarcacaoAjuste(@HeaderParam("Authorization") String userToken,
                                             @NotNull final MarcacaoAjusteAdicao marcacaoAjuste) throws ProLogException {
@@ -71,7 +71,6 @@ public final class ControleJornadaAjusteResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured()
     @Path("/adicionar-marcacao-inicio-fim")
     public Response adicionarMarcacaoAjuste(
             @HeaderParam("Authorization") String userToken,
@@ -81,7 +80,6 @@ public final class ControleJornadaAjusteResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured()
     @Path("/editar-marcacao")
     public Response editarMarcacaoAjuste(@HeaderParam("Authorization") String userToken,
                                          @NotNull final MarcacaoAjusteEdicao marcacaoAjuste) throws ProLogException {
@@ -90,7 +88,6 @@ public final class ControleJornadaAjusteResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured()
     @Path("/ativar-marcacao")
     public Response ativarMarcacaoAjuste(
             @HeaderParam("Authorization") String userToken,
@@ -100,7 +97,6 @@ public final class ControleJornadaAjusteResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured()
     @Path("/inativar-marcacao")
     public Response inativarMarcacaoAjuste(
             @HeaderParam("Authorization") String userToken,
@@ -110,10 +106,19 @@ public final class ControleJornadaAjusteResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured()
     @Path("/historicos")
     public List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(
             @QueryParam("codMarcacoes") @Required List<Long> codMarcacoes) throws ProLogException {
         return service.getHistoricoAjusteMarcacoes(codMarcacoes);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/inconsistencias")
+    public List<MarcacaoInconsistencia> getHistoricoAjusteMarcacoes(
+            @QueryParam("codColaborador") @Required Long codColaborador,
+            @QueryParam("dia") @Required String dia,
+            @QueryParam("tipoInconsistencia") @Required String tipoInconsistencia) throws ProLogException {
+        return service.getInconsistenciasColaboradorDia(codColaborador, dia, tipoInconsistencia);
     }
 }

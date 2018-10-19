@@ -15,12 +15,24 @@ public enum TipoInicioFim {
         public String getLegibleString() {
             return "Início";
         }
+
+        @NotNull
+        @Override
+        public TipoInicioFim getTipoContrario() {
+            return MARCACAO_FIM;
+        }
     },
     MARCACAO_FIM("MARCACAO_FIM") {
         @NotNull
         @Override
         public String getLegibleString() {
             return "Fim";
+        }
+
+        @NotNull
+        @Override
+        public TipoInicioFim getTipoContrario() {
+            return MARCACAO_INICIO;
         }
     };
 
@@ -33,6 +45,9 @@ public enum TipoInicioFim {
 
     @NotNull
     public abstract String getLegibleString();
+
+    @NotNull
+    public abstract TipoInicioFim getTipoContrario();
 
     @NotNull
     public String asString() {

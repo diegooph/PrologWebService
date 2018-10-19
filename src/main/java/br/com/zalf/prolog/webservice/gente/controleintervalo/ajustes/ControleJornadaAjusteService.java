@@ -9,8 +9,10 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.ConsolidadoMarcacoesDia;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.exibicao.MarcacaoColaboradorAjuste;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.MarcacaoInconsistencia;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.inconsistencias.TipoInconsistenciaMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -158,6 +160,25 @@ public final class ControleJornadaAjusteService {
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar histórico para as marcações: " + codMarcacoes, e);
             throw exceptionHandler.map(e, "Erro ao buscar histórico das marcações, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<MarcacaoInconsistencia> getInconsistenciasColaboradorDia(
+            @NotNull final Long codColaborador,
+            @NotNull final String dia,
+            @NotNull final String tipoInconsistencia) throws ProLogException {
+        try {
+            return dao.getInconsistenciasColaboradorDia(
+                    codColaborador,
+                    ProLogDateParser.toLocalDate(dia),
+                    TipoInconsistenciaMarcacao.fromString(tipoInconsistencia));
+        } catch (final Throwable e) {
+            Log.e(TAG, String.format("Erro ao buscar as inconsistências.\n" +
+                    "codColaborador: %d\n" +
+                    "dia: %s\n" +
+                    "tipoInconsistencia: %s", codColaborador, dia, tipoInconsistencia), e);
+            throw exceptionHandler.map(e, "Erro ao buscar as inconsistências, tente novamente");
         }
     }
 }
