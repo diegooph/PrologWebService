@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
+ * Cria descrições humanamente legíveis para todas as ações de ajuste.
+ *
  * Created on 17/10/2018
  *
  * @author Luiz Felipe (https://github.com/luizfp)
