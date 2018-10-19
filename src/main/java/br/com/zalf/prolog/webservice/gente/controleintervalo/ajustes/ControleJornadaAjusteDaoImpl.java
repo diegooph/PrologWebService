@@ -118,9 +118,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                     codMarcacaoInserida,
                     tokenResponsavelAjuste,
                     marcacaoAjuste,
-                    marcacaoAjuste.getDataHoraInserida() != null
-                            ? marcacaoAjuste.getDataHoraInserida().atZone(zoneId).toOffsetDateTime()
-                            : null);
+                    null);
             conn.commit();
         } catch (final Throwable e) {
             if (conn != null) {
