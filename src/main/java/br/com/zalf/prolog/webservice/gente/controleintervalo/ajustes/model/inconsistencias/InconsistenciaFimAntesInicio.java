@@ -6,15 +6,37 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
+ * Classe utilizada para representar uma inconsistência onde o fim de uma marcação tem data e hora anterior a marcação
+ * de início vinculada.
+ *
  * Created on 18/10/2018
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class InconsistenciaFimAntesInicio extends MarcacaoInconsistencia {
+    /**
+     * O código da marcação de início.
+     */
     private Long codMarcacaoInicio;
+
+    /**
+     * A data e hora da marcação de início. Essa data e hora deve ser sempre posterior a {@link #dataHoraMarcacaoFim}.
+     */
     private LocalDateTime dataHoraMarcacaoInicio;
+
+    /**
+     * O código da marcação de fim.
+     */
     private Long codMarcacaoFim;
+
+    /**
+     * A data e hora da marcação de fim. Essa data e hora deve ser sempre anterior a {@link #dataHoraMarcacaoInicio}.
+     */
     private LocalDateTime dataHoraMarcacaoFim;
+
+    /**
+     * O nome do colaborador que realizou a marcação.
+     */
     private String nomeColaboradorMarcacao;
 
     public InconsistenciaFimAntesInicio() {
@@ -47,6 +69,10 @@ public final class InconsistenciaFimAntesInicio extends MarcacaoInconsistencia {
 
     public void setDataHoraMarcacaoInicio(final LocalDateTime dataHoraMarcacaoInicio) {
         this.dataHoraMarcacaoInicio = dataHoraMarcacaoInicio;
+
+        if (dataHoraMarcacaoFim != null) {
+            garanteInconsistencia();
+        }
     }
 
     public Long getCodMarcacaoFim() {
@@ -63,6 +89,10 @@ public final class InconsistenciaFimAntesInicio extends MarcacaoInconsistencia {
 
     public void setDataHoraMarcacaoFim(final LocalDateTime dataHoraMarcacaoFim) {
         this.dataHoraMarcacaoFim = dataHoraMarcacaoFim;
+
+        if (dataHoraMarcacaoInicio != null) {
+            garanteInconsistencia();
+        }
     }
 
     public String getNomeColaboradorMarcacao() {
@@ -71,5 +101,12 @@ public final class InconsistenciaFimAntesInicio extends MarcacaoInconsistencia {
 
     public void setNomeColaboradorMarcacao(final String nomeColaboradorMarcacao) {
         this.nomeColaboradorMarcacao = nomeColaboradorMarcacao;
+    }
+
+    private void garanteInconsistencia() {
+        if (!dataHoraMarcacaoFim.isBefore(dataHoraMarcacaoInicio)) {
+            throw new IllegalStateException("A data/hora de fim: " + dataHoraMarcacaoFim + " precisa ser anterior da " +
+                    "data/hora de início: " + dataHoraMarcacaoInicio);
+        }
     }
 }

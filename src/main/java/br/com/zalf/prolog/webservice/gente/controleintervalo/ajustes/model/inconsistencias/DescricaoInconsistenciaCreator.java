@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
+ * Cria descrições humanamente legíveis para todos os tipos de inconsistências.
+ *
  * Created on 18/10/2018
  *
  * @author Luiz Felipe (https://github.com/luizfp)

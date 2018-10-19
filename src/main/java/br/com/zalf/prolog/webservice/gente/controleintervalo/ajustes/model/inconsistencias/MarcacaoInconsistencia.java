@@ -5,6 +5,10 @@ import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Essa é a superclasse de qualquer inconsistência de marcações que exista. As inconsistências podem ser de qualquer um
+ * dos tipos presentes no {@code enum} {@link TipoInconsistenciaMarcacao}. Cada tipo no {@code enum} tem uma subclasse
+ * específica que contém informações próprias da inconsistência em questão.
+ *
  * Created on 18/10/2018
  *
  * @author Luiz Felipe (https://github.com/luizfp)

@@ -6,14 +6,32 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 
 /**
+ * Classe utilizada para representar uma inconsistência onde uma marcação de início não tem fim, ou de fim não tem
+ * início.
+ *
  * Created on 18/10/2018
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class InconsistenciaSemVinculo extends MarcacaoInconsistencia {
+    /**
+     * O código da marcação que não possui vínculo.
+     */
     private Long codMarcacaoSemVinculo;
+
+    /**
+     * Indica se a marcação que não possui vínculo é de início ou fim.
+     */
     private TipoInicioFim tipoInicioFim;
+
+    /**
+     * A data e hora da marcação que não possui vínculo.
+     */
     private LocalDateTime dataHoraMarcacao;
+
+    /**
+     * O nome do colaborador que realizou a marcação.
+     */
     private String nomeColaboradorMarcacao;
 
     public InconsistenciaSemVinculo() {
