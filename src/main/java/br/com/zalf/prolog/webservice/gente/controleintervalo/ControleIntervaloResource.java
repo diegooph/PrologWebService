@@ -71,8 +71,7 @@ public final class ControleIntervaloResource {
     @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = {
             Pilares.Gente.Intervalo.MARCAR_INTERVALO,
             Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.EDITAR_MARCACAO,
-            Pilares.Gente.Intervalo.VALIDAR_INVALIDAR_MARCACAO,
+            Pilares.Gente.Intervalo.AJUSTE_MARCACOES,
             Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
     @Path("/{codUnidade}/{cpf}/{codTipoIntervalo}")
     public List<Intervalo> getIntervalosColaborador(@PathParam("codUnidade") Long codUnidade,
