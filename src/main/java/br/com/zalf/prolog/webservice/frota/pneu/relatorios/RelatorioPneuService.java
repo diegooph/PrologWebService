@@ -29,9 +29,7 @@ public class RelatorioPneuService {
     public void getKmRodadoPorPneuPorVidaCsv(@NotNull final OutputStream outputStream,
                                              @NotNull final List<Long> codUnidades) {
         try {
-            dao.getKmRodadoPorPneuPorVidaCsv(
-                    outputStream,
-                    codUnidades);
+            dao.getKmRodadoPorPneuPorVidaCsv(outputStream, codUnidades);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de km percorrido por pneu por vida (CSV)", throwable);
             throw new RuntimeException(throwable);
@@ -41,8 +39,7 @@ public class RelatorioPneuService {
     @NotNull
     public Report getKmRodadoPorPneuPorVidaReport(@NotNull final List<Long> codUnidades) throws ProLogException {
         try {
-            return dao.getKmRodadoPorPneuPorVidaReport(
-                    codUnidades);
+            return dao.getKmRodadoPorPneuPorVidaReport(codUnidades);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de km percorrido por pneu por vida (REPORT)", throwable);
             throw exceptionHandler.map(
