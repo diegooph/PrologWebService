@@ -129,7 +129,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 veiculoDao.updateKmByPlaca(itensConserto.getPlacaVeiculo(), itensConserto.getKmVeiculoConserto(), conn);
                 conn.commit();
             } else {
-                throw new IllegalStateException("Erro ao marcar os itens como consertados");
+                throw new IllegalStateException("Erro ao marcar os itens como consertados: "
+                        + itensConserto.getCodigosItens());
             }
         } catch (final Throwable t) {
             if (conn != null) {

@@ -32,11 +32,46 @@ import java.util.*;
  * @author jean
  */
 public class RelatorioPneuDaoImpl extends DatabaseConnection implements RelatorioPneuDao {
-
     private static final String TAG = RelatorioPneuDaoImpl.class.getSimpleName();
 
     public RelatorioPneuDaoImpl() {
 
+    }
+
+    @Override
+    public void getKmRodadoPorPneuPorVidaCsv(@NotNull final OutputStream outputStream,
+                                             @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getKmRodadoPorPneuPorVida(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(outputStream)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getKmRodadoPorPneuPorVidaReport(@NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getKmRodadoPorPneuPorVida(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @Override
@@ -812,6 +847,14 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getKmRodadoPorPneuPorVida(@NotNull final Connection conn,
+                                                        @NotNull final List<Long> codUnidades) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_KM_RODADO_POR_VIDA(?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         return stmt;
     }
 

@@ -1,10 +1,12 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -15,13 +17,14 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RelatoResource {
-
-    private RelatoService service = new RelatoService();
+    @NotNull
+    private final RelatoService service = new RelatoService();
 
     @POST
     @Secured(permissions = Pilares.Seguranca.Relato.REALIZAR)
-    public Response insert(Relato relato) {
-        if (service.insert(relato)) {
+    public Response insert(Relato relato,
+                           @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) Integer versaoApp) {
+        if (service.insert(relato, versaoApp)) {
             return Response.ok("Relato inserido com sucesso");
         } else {
             return Response.error("Erro ao inserir relato");

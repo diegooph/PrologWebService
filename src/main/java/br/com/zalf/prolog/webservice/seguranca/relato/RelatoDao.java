@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.seguranca.relato;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -19,7 +20,8 @@ public interface RelatoDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível inserir
 	 */
-	boolean insert(Relato relato) throws SQLException;
+	boolean insert(@NotNull final Relato relato,
+				   @Nullable final Integer versaoApp) throws SQLException;
 
 	/**
 	 * Deleta um Relato do banco de dados
@@ -53,6 +55,13 @@ public interface RelatoDao {
 
 	boolean fechaRelato(Relato relato) throws SQLException;
 
-	List<Alternativa> getAlternativas(Long codUnidade, Long codSetor) throws SQLException;
-
+	/**
+	 * Busca as alternativas disponíveis para seleção durante a realização de um relato.
+	 *
+	 * @param codUnidade código de uma unidade.
+	 * @param codSetor   cod do setor do colaborador que está realizando o relato, serve para fitlrar as alternativas.
+	 * @return lista de {@link Alternativa alternativas}.
+	 */
+	@NotNull
+	List<Alternativa> getAlternativas(@NotNull final Long codUnidade, @NotNull final Long codSetor) throws SQLException;
 }
