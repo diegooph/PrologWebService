@@ -97,16 +97,37 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
                                                   @NotNull final String placa,
                                                   @NotNull final String tipoAfericao) throws Throwable {
-        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
-        final Veiculo veiculo = veiculoDao.getVeiculoByPlaca(placa, true);
-        final List<Pneu> estepes = veiculo.getEstepes();
-        novaAfericao.setEstepesVeiculo(estepes);
-        novaAfericao.setVeiculo(veiculo);
-        final Restricao restricao = getRestricoesByPlaca(placa);
-        novaAfericao.setRestricao(restricao);
-        novaAfericao.setDeveAferirEstepes(getConfiguracaTiposVeiculosAfericaoEstepe(placa).isPodeAferirEstepe());
-        return novaAfericao;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+            final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
+            final Veiculo veiculo = veiculoDao.getVeiculoByPlaca(conn, placa, true);
+            final List<Pneu> estepes = veiculo.getEstepes();
+            novaAfericao.setEstepesVeiculo(estepes);
+            novaAfericao.setVeiculo(veiculo);
+
+            // Configurações/parametrizações necessárias para a aferição.
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIGURACOES_AFERICAO_BY_PLACA(?);");
+            stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                novaAfericao.setRestricao(createRestricao(rSet));
+                novaAfericao.setDeveAferirEstepes(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
+                novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(
+                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"));
+                novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(
+                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
+            } else {
+                throw new IllegalStateException("Dados de configurações de aferição não encontrados para a placa: "
+                        + placa);
+            }
+            return novaAfericao;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @NotNull
@@ -413,7 +434,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private ConfiguracaoTipoVeiculoAferivel getConfiguracaTiposVeiculosAfericaoEstepe(@NotNull final String placa)
+    private ConfiguracaoTipoVeiculoAferivel getConfiguracoesNovaAfericaoPlaca(@NotNull final String placa)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;

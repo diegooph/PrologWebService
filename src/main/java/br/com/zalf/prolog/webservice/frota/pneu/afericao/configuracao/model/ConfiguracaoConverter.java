@@ -24,8 +24,8 @@ public final class ConfiguracaoConverter {
                 codigo == 0 ? null : codigo,
                 rSet.getLong("COD_UNIDADE"),
                 rSet.getString("NOME_UNIDADE"),
-                rSet.getBigDecimal("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
-                rSet.getBigDecimal("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
+                rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
+                rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
     }
 
     @NotNull

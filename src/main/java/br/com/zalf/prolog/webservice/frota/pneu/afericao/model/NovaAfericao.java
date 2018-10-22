@@ -11,6 +11,10 @@ import org.jetbrains.annotations.NotNull;
 public abstract class NovaAfericao {
     private Restricao restricao;
 
+    private double variacaoAceitaSulcoMenorMilimetros;
+
+    private double variacaoAceitaSulcoMaiorMilimetros;
+
     @Exclude
     @NotNull
     private final TipoProcessoColetaAfericao tipo;
@@ -25,6 +29,22 @@ public abstract class NovaAfericao {
 
     public void setRestricao(Restricao restricao) {
         this.restricao = restricao;
+    }
+
+    public double getVariacaoAceitaSulcoMenorMilimetros() {
+        return variacaoAceitaSulcoMenorMilimetros;
+    }
+
+    public void setVariacaoAceitaSulcoMenorMilimetros(final double variacaoAceitaSulcoMenorMilimetros) {
+        this.variacaoAceitaSulcoMenorMilimetros = variacaoAceitaSulcoMenorMilimetros;
+    }
+
+    public double getVariacaoAceitaSulcoMaiorMilimetros() {
+        return variacaoAceitaSulcoMaiorMilimetros;
+    }
+
+    public void setVariacaoAceitaSulcoMaiorMilimetros(final double variacaoAceitaSulcoMaiorMilimetros) {
+        this.variacaoAceitaSulcoMaiorMilimetros = variacaoAceitaSulcoMaiorMilimetros;
     }
 
     @NotNull

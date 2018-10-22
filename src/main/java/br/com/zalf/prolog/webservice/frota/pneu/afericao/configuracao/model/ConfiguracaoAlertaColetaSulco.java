@@ -4,8 +4,6 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigDecimal;
-
 /**
  * Essa classe contém os parâmetros de verificação para exibição (ou não) de um alerta no momento de realização de uma
  * aferição no aplicativo.
@@ -44,7 +42,7 @@ public final class ConfiguracaoAlertaColetaSulco {
      * inferior a 9 mm, um alerta deve ser exibido. Caso valores entre [9, 10] sejam coletados, eles estão dentro da
      * varição aceita e nenhum alerta precisa ser exibido.
      */
-    private final BigDecimal variacaoAceitaSulcoMenorMilimetros;
+    private final double variacaoAceitaSulcoMenorMilimetros;
 
     /**
      * Indica a variação aceita, em milímetros, para coletas de sulco MAIORES do que a última medida salva no sistema.
@@ -53,13 +51,13 @@ public final class ConfiguracaoAlertaColetaSulco {
      * maior a 9 mm, um alerta deve ser exibido. Caso valores entre [8, 9] sejam coletados, eles estão dentro da
      * varição aceita e nenhum alerta precisa ser exibido.
      */
-    private final BigDecimal variacaoAceitaSulcoMaiorMilimetros;
+    private final double variacaoAceitaSulcoMaiorMilimetros;
 
     public ConfiguracaoAlertaColetaSulco(@Nullable final Long codigo,
                                          @NotNull final Long codUnidadeReferente,
                                          @NotNull final String nomeUnidadeReferente,
-                                         final BigDecimal variacaoAceitaSulcoMenorMilimetros,
-                                         final BigDecimal variacaoAceitaSulcoMaiorMilimetros) {
+                                         final double variacaoAceitaSulcoMenorMilimetros,
+                                         final double variacaoAceitaSulcoMaiorMilimetros) {
         this.codigo = codigo;
         this.codUnidadeReferente = codUnidadeReferente;
         this.nomeUnidadeReferente = nomeUnidadeReferente;
@@ -82,11 +80,11 @@ public final class ConfiguracaoAlertaColetaSulco {
         return nomeUnidadeReferente;
     }
 
-    public BigDecimal getVariacaoAceitaSulcoMenorMilimetros() {
+    public double getVariacaoAceitaSulcoMenorMilimetros() {
         return variacaoAceitaSulcoMenorMilimetros;
     }
 
-    public BigDecimal getVariacaoAceitaSulcoMaiorMilimetros() {
+    public double getVariacaoAceitaSulcoMaiorMilimetros() {
         return variacaoAceitaSulcoMaiorMilimetros;
     }
 }

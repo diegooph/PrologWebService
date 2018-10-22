@@ -84,8 +84,8 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
                 stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_UPSERT_CONFIG_ALERTA_SULCO(?, ?, ?, ?);");
                 bindValueOrNull(stmt, 1, configuracao.getCodigo(), SqlType.BIGINT);
                 stmt.setLong(2, configuracao.getCodUnidadeReferente());
-                stmt.setBigDecimal(3, configuracao.getVariacaoAceitaSulcoMenorMilimetros());
-                stmt.setBigDecimal(4, configuracao.getVariacaoAceitaSulcoMaiorMilimetros());
+                stmt.setDouble(3, configuracao.getVariacaoAceitaSulcoMenorMilimetros());
+                stmt.setDouble(4, configuracao.getVariacaoAceitaSulcoMaiorMilimetros());
                 rSet = stmt.executeQuery();
                 if (rSet.next() && rSet.getBoolean(1)) {
                     conn.commit();
