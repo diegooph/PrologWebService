@@ -3,12 +3,12 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoTipoVeiculoAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoAfericaoValidator;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.model.ConfiguracaoAlertaColetaSulco;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.model.ConfiguracaoTipoVeiculoAferivel;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -18,33 +18,44 @@ import java.util.List;
  */
 public class ConfiguracaoAfericaoService {
     private static final String TAG = ConfiguracaoAfericaoService.class.getSimpleName();
+    @NotNull
     private final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
+    @NotNull
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
+    @NotNull
     public Response updateConfiguracao(@NotNull final Long codUnidade,
-                                       @NotNull final List<ConfiguracaoTipoVeiculoAfericao> configuracoes) throws Exception {
+                                       @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes)
+            throws ProLogException {
         try {
             ConfiguracaoAfericaoValidator.validateUpdate(configuracoes);
-            dao.insertOrUpdateConfiguracao(codUnidade, configuracoes);
+            dao.insertOrUpdateTiposVeiculoAferiveis(codUnidade, configuracoes);
             return Response.ok("Configurações atualizadas com sucesso!");
-        } catch (GenericException e) {
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao atualizar configuração tipos de veículo da aferição", e);
-            throw e;
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao atualizar configuração tipos de veículo da aferição", e);
-            throw new GenericException("Não foi possível atualizar as configurações de Aferição",
-                    "Algo deu errado no servidor. Não foi possível atualizar as configurações de Aferição",
-                    e);
+            throw exceptionHandler.map(e, "Não foi possível atualizar as configurações, tente novamente");
         }
     }
 
-    public List<ConfiguracaoTipoVeiculoAfericao> getConfiguracoesTipoAfericaoVeiculo(@NotNull final Long codUnidade) throws Exception {
+    @NotNull
+    public List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(@NotNull final Long codUnidade)
+            throws ProLogException {
         try {
             return dao.getConfiguracoesTipoAfericaoVeiculo(codUnidade);
-        } catch (SQLException e) {
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar configurações de tipos de veículo da aferição", e);
-            throw new GenericException("Não foi possível buscar as configurações de Aferição",
-                    "Algo deu errado no servidor. Não foi possível buscar as configurações de Aferição",
-                    e);
+            throw exceptionHandler.map(e, "Não foi possível buscar as configurações, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(@NotNull final Long codColaborador)
+            throws ProLogException {
+        try {
+            return dao.getConfiguracoesAlertaColetaSulco(codColaborador);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar configurações de alerta para coleta de sulco", e);
+            throw exceptionHandler.map(e, "Não foi possível buscar as configurações, tente novamente");
         }
     }
 }

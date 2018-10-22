@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.model.ConfiguracaoTipoVeiculoAferivel;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuConverter;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
@@ -412,7 +413,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private ConfiguracaoTipoVeiculoAfericao getConfiguracaTiposVeiculosAfericaoEstepe(@NotNull final String placa)
+    private ConfiguracaoTipoVeiculoAferivel getConfiguracaTiposVeiculosAfericaoEstepe(@NotNull final String placa)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -455,9 +456,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private ConfiguracaoTipoVeiculoAfericao createConfiguracaoTipoAfericao(
+    private ConfiguracaoTipoVeiculoAferivel createConfiguracaoTipoAfericao(
             @NotNull final ResultSet rSet) throws Throwable {
-        final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
+        final ConfiguracaoTipoVeiculoAferivel config = new ConfiguracaoTipoVeiculoAferivel();
         config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
         config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
         config.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));

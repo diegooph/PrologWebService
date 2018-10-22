@@ -1,6 +1,7 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
+package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.model.ConfiguracaoTipoVeiculoAferivel;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,9 +23,9 @@ public final class ConfiguracaoAfericaoValidator {
         throw new IllegalStateException(ConfiguracaoAfericaoValidator.class.getSimpleName() + " cannot be instanciated!");
     }
 
-    public static void validateUpdate(@NotNull final List<ConfiguracaoTipoVeiculoAfericao> configuracoes)
+    public static void validateUpdate(@NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes)
             throws GenericException {
-        for (final ConfiguracaoTipoVeiculoAfericao configuracao : configuracoes) {
+        for (final ConfiguracaoTipoVeiculoAferivel configuracao : configuracoes) {
             try {
                 validateTipoVeiculo(configuracao);
             } catch (Exception e) {
@@ -33,7 +34,7 @@ public final class ConfiguracaoAfericaoValidator {
         }
     }
 
-    private static void validateTipoVeiculo(@NotNull final ConfiguracaoTipoVeiculoAfericao configuracao) {
+    private static void validateTipoVeiculo(@NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) {
         Preconditions.checkNotNull(configuracao.getTipoVeiculo(), "Tipo de veículo não está correto");
         Preconditions.checkNotNull(configuracao.getTipoVeiculo().getCodigo(), "Código do Tipo de veículo não está correto");
     }
