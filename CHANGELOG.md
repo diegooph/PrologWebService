@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+<a name="v0.0.78"></a>
+## Version [v0.0.78](https://github.com/luizfp/PrologWeb/compare/v0.0.77...v0.0.78) (release-data) [unreleased]
+
 <a name="v0.0.77"></a>
 ## Version [v0.0.77](https://github.com/luizfp/PrologWeb/compare/v0.0.76...v0.0.77) (2018-10-19)
 
