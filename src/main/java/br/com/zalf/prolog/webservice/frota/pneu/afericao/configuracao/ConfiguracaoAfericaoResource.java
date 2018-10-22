@@ -27,9 +27,9 @@ public class ConfiguracaoAfericaoResource {
     @PUT
     @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
     @Path("/tipos-veiculo/{codUnidade}")
-    public Response update(@PathParam("codUnidade") Long codUnidade,
-                           List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws ProLogException {
-        return service.updateConfiguracao(codUnidade, configuracoes);
+    public Response updateTiposVeiculos(@PathParam("codUnidade") Long codUnidade,
+                                        List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws ProLogException {
+        return service.updateConfiguracaoTiposVeiculosAferiveis(codUnidade, configuracoes);
     }
 
     @GET
@@ -38,6 +38,13 @@ public class ConfiguracaoAfericaoResource {
     public List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(
             @PathParam("codUnidade") Long codUnidade) throws ProLogException {
         return service.getConfiguracoesTipoAfericaoVeiculo(codUnidade);
+    }
+
+    @PUT
+    @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
+    @Path("/alertas-sulco")
+    public Response updateTiposVeiculos(List<ConfiguracaoAlertaColetaSulco> configuracoes) throws ProLogException {
+        return service.updateConfiguracaoAlertaColetaSulco(configuracoes);
     }
 
     @GET

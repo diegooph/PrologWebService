@@ -19,10 +19,13 @@ public final class ConfiguracaoConverter {
     @NotNull
     public static ConfiguracaoAlertaColetaSulco createConfiguracaoAlertaColetaSulco(@NotNull final ResultSet rSet)
             throws Throwable {
+        final long codigo = rSet.getLong("CODIGO");
         return new ConfiguracaoAlertaColetaSulco(
+                codigo == 0 ? null : codigo,
                 rSet.getLong("COD_UNIDADE"),
-                rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
-                rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
+                rSet.getString("NOME_UNIDADE"),
+                rSet.getBigDecimal("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
+                rSet.getBigDecimal("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
     }
 
     @NotNull

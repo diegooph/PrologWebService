@@ -24,12 +24,12 @@ public class ConfiguracaoAfericaoService {
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @NotNull
-    public Response updateConfiguracao(@NotNull final Long codUnidade,
-                                       @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes)
-            throws ProLogException {
+    public Response updateConfiguracaoTiposVeiculosAferiveis(
+            @NotNull final Long codUnidade,
+            @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws ProLogException {
         try {
-            ConfiguracaoAfericaoValidator.validateUpdate(configuracoes);
-            dao.insertOrUpdateTiposVeiculoAferiveis(codUnidade, configuracoes);
+            ConfiguracaoAfericaoValidator.validateUpdateTiposVeiculosAferiveis(configuracoes);
+            dao.insertOrUpdateConfiguracoesTiposVeiculosAferiveis(codUnidade, configuracoes);
             return Response.ok("Configurações atualizadas com sucesso!");
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao atualizar configuração tipos de veículo da aferição", e);
@@ -45,6 +45,18 @@ public class ConfiguracaoAfericaoService {
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar configurações de tipos de veículo da aferição", e);
             throw exceptionHandler.map(e, "Não foi possível buscar as configurações, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Response updateConfiguracaoAlertaColetaSulco(
+            @NotNull final List<ConfiguracaoAlertaColetaSulco> configuracoes) throws ProLogException {
+        try {
+            dao.insertOrUpdateConfiguracoesAlertaColetaSulco(configuracoes);
+            return Response.ok("Configurações atualizadas com sucesso!");
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao atualizar configuração alerta de sulco", e);
+            throw exceptionHandler.map(e, "Não foi possível atualizar as configurações, tente novamente");
         }
     }
 

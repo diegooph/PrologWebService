@@ -23,7 +23,7 @@ public final class ConfiguracaoAfericaoValidator {
         throw new IllegalStateException(ConfiguracaoAfericaoValidator.class.getSimpleName() + " cannot be instanciated!");
     }
 
-    public static void validateUpdate(@NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes)
+    public static void validateUpdateTiposVeiculosAferiveis(@NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes)
             throws GenericException {
         for (final ConfiguracaoTipoVeiculoAferivel configuracao : configuracoes) {
             try {

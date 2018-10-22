@@ -36,7 +36,7 @@ public class ConfiguracaoAfericaoTest extends BaseTest {
         config.setPodeAferirSulcoPressao(false);
         config.setPodeAferirEstepe(true);
         configs.add(config);
-        dao.insertOrUpdateTiposVeiculoAferiveis(5L, configs);
+        dao.insertOrUpdateConfiguracoesTiposVeiculosAferiveis(5L, configs);
 
         List<ConfiguracaoTipoVeiculoAferivel> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
 
@@ -67,7 +67,7 @@ public class ConfiguracaoAfericaoTest extends BaseTest {
         config.setPodeAferirSulcoPressao(true);
         config.setPodeAferirEstepe(false);
         configs.add(config);
-        dao.insertOrUpdateTiposVeiculoAferiveis(5L, configs);
+        dao.insertOrUpdateConfiguracoesTiposVeiculosAferiveis(5L, configs);
 
         List<ConfiguracaoTipoVeiculoAferivel> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
 
@@ -89,7 +89,7 @@ public class ConfiguracaoAfericaoTest extends BaseTest {
         config.setPodeAferirSulcoPressao(false);
         config.setPodeAferirEstepe(false);
         configs.add(config);
-        dao.insertOrUpdateTiposVeiculoAferiveis(5L, configs);
+        dao.insertOrUpdateConfiguracoesTiposVeiculosAferiveis(5L, configs);
 
         List<ConfiguracaoTipoVeiculoAferivel> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
 

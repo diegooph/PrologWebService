@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.model.ConfiguracaoAlertaColetaSulco;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.model.ConfiguracaoConverter;
@@ -13,6 +14,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+
 /**
  * Created on 03/05/18.
  *
@@ -25,8 +28,8 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
     }
 
     @Override
-    public void insertOrUpdateTiposVeiculoAferiveis(@NotNull final Long codUnidade,
-                                                    @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes)
+    public void insertOrUpdateConfiguracoesTiposVeiculosAferiveis(@NotNull final Long codUnidade,
+                                                                  @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes)
             throws Throwable {
         Connection conn = null;
         try {
@@ -35,9 +38,9 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
                 // Garantimos que se um código for == NULL se trata de uma configuração NOVA
                 // Então fazemos um insert, caso contrário um update.
                 if (configuracao.getCodigo() == null) {
-                    insertConfiguracao(conn, codUnidade, configuracao);
+                    insertConfiguracaoTipoVeiculo(conn, codUnidade, configuracao);
                 } else {
-                    updateCondiguracao(conn, codUnidade, configuracao);
+                    updateCondiguracaoTipoVeiculo(conn, codUnidade, configuracao);
                 }
             }
         } finally {
@@ -68,6 +71,37 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         return configTipoAfericao;
     }
 
+    @Override
+    public void insertOrUpdateConfiguracoesAlertaColetaSulco(
+            @NotNull final List<ConfiguracaoAlertaColetaSulco> configuracoes) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            for (final ConfiguracaoAlertaColetaSulco configuracao : configuracoes) {
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_UPSERT_CONFIG_ALERTA_SULCO(?, ?, ?, ?);");
+                bindValueOrNull(stmt, 1, configuracao.getCodigo(), SqlType.BIGINT);
+                stmt.setLong(2, configuracao.getCodUnidadeReferente());
+                stmt.setBigDecimal(3, configuracao.getVariacaoAceitaSulcoMenorMilimetros());
+                stmt.setBigDecimal(4, configuracao.getVariacaoAceitaSulcoMaiorMilimetros());
+                rSet = stmt.executeQuery();
+                if (rSet.next() && rSet.getBoolean(1)) {
+                    conn.commit();
+                } else {
+                    throw new IllegalStateException("Erro ao atualizar configurações da unidade: "
+                            + configuracao.getCodUnidadeReferente());
+                }
+            }
+        } finally {
+            if (conn != null) {
+                conn.rollback();
+            }
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
     @NotNull
     @Override
     public List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(@NotNull final Long codColaborador)
@@ -90,9 +124,9 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         }
     }
 
-    private void insertConfiguracao(@NotNull final Connection conn,
-                                    @NotNull final Long codUnidade,
-                                    @NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) throws Throwable {
+    private void insertConfiguracaoTipoVeiculo(@NotNull final Connection conn,
+                                               @NotNull final Long codUnidade,
+                                               @NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO " +
@@ -113,9 +147,9 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         }
     }
 
-    private boolean updateCondiguracao(@NotNull final Connection conn,
-                                       @NotNull final Long codUnidade,
-                                       @NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) throws Throwable {
+    private boolean updateCondiguracaoTipoVeiculo(@NotNull final Connection conn,
+                                                  @NotNull final Long codUnidade,
+                                                  @NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO " +

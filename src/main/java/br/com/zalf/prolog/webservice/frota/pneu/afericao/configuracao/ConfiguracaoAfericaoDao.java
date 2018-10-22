@@ -22,8 +22,8 @@ public interface ConfiguracaoAfericaoDao {
      * @param configuracoes - Novas {@link ConfiguracaoTipoVeiculoAferivel}s que serão inseridas.
      * @throws SQLException - Caso algum erro acorrer.
      */
-    void insertOrUpdateTiposVeiculoAferiveis(@NotNull final Long codUnidade,
-                                             @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes)
+    void insertOrUpdateConfiguracoesTiposVeiculosAferiveis(@NotNull final Long codUnidade,
+                                                           @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes)
             throws Throwable;
 
     /**
@@ -35,6 +35,10 @@ public interface ConfiguracaoAfericaoDao {
      */
     @NotNull
     List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(@NotNull final Long codUnidade)
+            throws Throwable;
+
+
+    void insertOrUpdateConfiguracoesAlertaColetaSulco(@NotNull final List<ConfiguracaoAlertaColetaSulco> configuracoes)
             throws Throwable;
 
     @NotNull
