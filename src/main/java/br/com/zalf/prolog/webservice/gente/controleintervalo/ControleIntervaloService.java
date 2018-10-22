@@ -202,32 +202,4 @@ public class ControleIntervaloService {
             throw new RuntimeException("Erro ao criar IntervaoOfflineSupport");
         }
     }
-
-    @Nullable
-    @Deprecated
-    public Long iniciaIntervalo(@NotNull final Long codUnidade,
-                                @NotNull final Long cpf,
-                                @NotNull final Long codTipoIntervalo) {
-        try {
-            return new DeprecatedControleIntervaloDaoImpl().iniciaIntervalo(codUnidade, cpf, codTipoIntervalo);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao iniciar o intervalo. \n" +
-                    "codUnidade: %d \n" +
-                    "cpf: %d \n" +
-                    "codTipoIntervalo: %d", codUnidade, cpf, codTipoIntervalo), e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Deprecated
-    public boolean insereFinalizacaoIntervalo(@NotNull final Long codUnidade,
-                                              @NotNull final Intervalo intervalo) {
-        try {
-            return new DeprecatedControleIntervaloDaoImpl().insereFinalizacaoIntervalo(codUnidade, intervalo);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao inserir uma finalização de intevalo. \n" +
-                    "codUnidade: %d", codUnidade), e);
-            return false;
-        }
-    }
 }
