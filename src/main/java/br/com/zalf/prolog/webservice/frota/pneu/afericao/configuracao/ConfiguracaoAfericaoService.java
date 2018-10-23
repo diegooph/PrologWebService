@@ -32,7 +32,7 @@ public class ConfiguracaoAfericaoService {
             dao.insertOrUpdateConfiguracoesTiposVeiculosAferiveis(codUnidade, configuracoes);
             return Response.ok("Configurações atualizadas com sucesso!");
         } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao atualizar configuração tipos de veículo da aferição", e);
+            Log.e(TAG, "Erro ao atualizar configurações dos tipos de veículo da aferição", e);
             throw exceptionHandler.map(e, "Não foi possível atualizar as configurações, tente novamente");
         }
     }
@@ -55,7 +55,7 @@ public class ConfiguracaoAfericaoService {
             dao.insertOrUpdateConfiguracoesAlertaColetaSulco(configuracoes);
             return Response.ok("Configurações atualizadas com sucesso!");
         } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao atualizar configuração alerta de sulco", e);
+            Log.e(TAG, "Erro ao atualizar configuração de alerta na coleta de sulco", e);
             throw exceptionHandler.map(e, "Não foi possível atualizar as configurações, tente novamente");
         }
     }
@@ -66,7 +66,7 @@ public class ConfiguracaoAfericaoService {
         try {
             return dao.getConfiguracoesAlertaColetaSulco(codColaborador);
         } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao buscar configurações de alerta para coleta de sulco", e);
+            Log.e(TAG, "Erro ao buscar configurações de alerta na coleta de sulco", e);
             throw exceptionHandler.map(e, "Não foi possível buscar as configurações, tente novamente");
         }
     }

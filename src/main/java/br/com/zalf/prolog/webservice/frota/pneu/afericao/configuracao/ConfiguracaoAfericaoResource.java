@@ -22,12 +22,12 @@ import java.util.List;
 @DebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
 public class ConfiguracaoAfericaoResource {
     @NotNull
     private final ConfiguracaoAfericaoService service = new ConfiguracaoAfericaoService();
 
     @PUT
-    @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
     @Path("/tipos-veiculo/{codUnidade}")
     public Response updateTiposVeiculos(@PathParam("codUnidade") Long codUnidade,
                                         List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws ProLogException {
@@ -35,7 +35,6 @@ public class ConfiguracaoAfericaoResource {
     }
 
     @GET
-    @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
     @Path("/tipos-veiculo/{codUnidade}")
     public List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(
             @PathParam("codUnidade") Long codUnidade) throws ProLogException {
@@ -43,14 +42,12 @@ public class ConfiguracaoAfericaoResource {
     }
 
     @PUT
-    @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
     @Path("/alertas-sulcos")
     public Response updateTiposVeiculos(List<ConfiguracaoAlertaColetaSulco> configuracoes) throws ProLogException {
         return service.updateConfiguracaoAlertaColetaSulco(configuracoes);
     }
 
     @GET
-    @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
     @Path("/alertas-sulcos")
     public List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(
             @QueryParam("codColaborador") Long codColaborador) throws ProLogException {
