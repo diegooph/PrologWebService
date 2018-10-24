@@ -110,7 +110,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             novaAfericao.setVeiculo(veiculo);
 
             // Configurações/parametrizações necessárias para a aferição.
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIGURACOES_AFERICAO_BY_PLACA(?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIGURACOES_NOVA_AFERICAO_PLACA(?);");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
