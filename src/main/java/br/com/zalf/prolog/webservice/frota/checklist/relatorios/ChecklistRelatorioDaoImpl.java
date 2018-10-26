@@ -245,6 +245,47 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         }
     }
 
+    @Override
+    public void getListagemModelosChecklistCsv(@NotNull final OutputStream outputStream,
+                                               @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getListagemModelosChecklistStatement(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getListagemModelosChecklistReport(@NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getListagemModelosChecklistStatement(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    private PreparedStatement getListagemModelosChecklistStatement(@NotNull final Connection conn,
+                                                                   @NotNull final List<Long> codUnidades)
+            throws Throwable {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
+                "FUNC_CHECKLIST_RELATORIO_LISTAGEM_MODELOS_CHECKLIST(?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        return stmt;
+    }
+
     @NotNull
     private PreparedStatement getExtratoChecklistsRealizadosDiaAmbev(@NotNull final Connection conn,
                                                                      @NotNull final List<Long> codUnidades,

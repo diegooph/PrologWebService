@@ -174,4 +174,25 @@ class ChecklistRelatorioService {
             Log.e(TAG, "Erro ao buscar o relatório com a estratificação das respostas NOK dos checklists (CSV)", e);
         }
     }
+
+    public Report getListagemModelosChecklistReport(@NotNull final List<Long> codUnidades) {
+        try {
+            return dao.getListagemModelosChecklistReport(
+                    codUnidades);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar o relatório com a listagem de modelos dos checklists (REPORT)", e);
+            return null;
+        }
+    }
+
+    public void getListagemModelosChecklistCsv(@NotNull final OutputStream outputStream,
+                                               @NotNull final List<Long> codUnidades) {
+        try {
+            dao.getListagemModelosChecklistCsv(
+                    outputStream,
+                    codUnidades);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar o relatório com a listagem de modelos dos checklists (CSV)", e);
+        }
+    }
 }
