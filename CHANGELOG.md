@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.78"></a>
 ## Version [v0.0.78](https://github.com/luizfp/PrologWeb/compare/v0.0.77...v0.0.78) (release-data) [unreleased]
 
+### Refactors
+* Altera verificação de cadastro de pneus para permitir inserções de pneu com valor 0
+
 <a name="v0.0.77"></a>
 ## Version [v0.0.77](https://github.com/luizfp/PrologWeb/compare/v0.0.76...v0.0.77) (2018-10-19)
 
