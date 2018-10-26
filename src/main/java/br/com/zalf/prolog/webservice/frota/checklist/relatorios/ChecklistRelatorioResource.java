@@ -112,4 +112,17 @@ public class ChecklistRelatorioResource {
                                                             @QueryParam("dataFinal") String dataFinal) {
         return outputStream -> service.getEstratificacaoRespostasNokCsv(outputStream, codUnidades, placa, dataInicial, dataFinal);
     }
+
+    @GET
+    @Path("/ambev-checklists-listagem-modelos/report")
+    public Report getListagemModelosChecklistReport(@QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getListagemModelosChecklistReport(codUnidades);
+    }
+
+    @GET
+    @Path("/ambev-checklists-listagem-modelos/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
+    public StreamingOutput getListagemModelosChecklistCsv(@QueryParam("codUnidades") List<Long> codUnidades) {
+        return outputStream -> service.getListagemModelosChecklistCsv(outputStream, codUnidades);
+    }
 }
