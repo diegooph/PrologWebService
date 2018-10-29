@@ -28,14 +28,14 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     private static final String TAG = ControleIntervaloRelatorioDaoImpl.class.getSimpleName();
 
     @Override
-    public void getIntervalosCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+    public void getMarcacoesDiariasCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getIntervalosStmt(codUnidade, dataInicial, dataFinal, cpf, conn);
+            stmt = getMarcacoesDiariasStmt(codUnidade, dataInicial, dataFinal, cpf, conn);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
@@ -44,14 +44,14 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @Override
-    public Report getIntervalosReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+    public Report getMarcacoesDiariasReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getIntervalosStmt(codUnidade, dataInicial, dataFinal, cpf, conn);
+            stmt = getMarcacoesDiariasStmt(codUnidade, dataInicial, dataFinal, cpf, conn);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -371,10 +371,10 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
-    private PreparedStatement getIntervalosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf,
+    private PreparedStatement getMarcacoesDiariasStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf,
                                                 Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM FUNC_RELATORIO_MARCACAO_PONTO_REALIZADOS(?, ?, ?, ?);");
+                "SELECT * FROM FUNC_RELATORIO_MARCACOES_DIARIAS(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));

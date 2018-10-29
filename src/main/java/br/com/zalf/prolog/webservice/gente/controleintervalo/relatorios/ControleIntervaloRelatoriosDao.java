@@ -31,7 +31,7 @@ public interface ControleIntervaloRelatoriosDao {
      * @throws SQLException
      * @throws IOException
      */
-    void getIntervalosCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+    void getMarcacoesDiariasCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
             throws SQLException, IOException;
 
     /**
@@ -46,7 +46,7 @@ public interface ControleIntervaloRelatoriosDao {
      * @throws IOException
      */
     @NotNull
-    Report getIntervalosReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+    Report getMarcacoesDiariasReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
             throws SQLException, IOException;
 
     /**
