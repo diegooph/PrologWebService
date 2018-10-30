@@ -47,6 +47,10 @@ public final class IntervaloMarcacao {
 
     }
 
+    public boolean isInicio() {
+        return tipoMarcacaoIntervalo.equals(TipoInicioFim.MARCACAO_INICIO);
+    }
+
     @NotNull
     public Long getCodigo() {
         return codigo;

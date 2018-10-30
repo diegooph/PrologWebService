@@ -421,7 +421,7 @@ public final class ControleJornadaDaoImpl extends DatabaseConnection implements 
                     2.2.4 --> Retorna o código;
                     2.2.5 --> FIM DO PROCESSO;
          */
-        if (intervaloMarcacao.getTipoMarcacaoIntervalo().equals(TipoInicioFim.MARCACAO_INICIO)) {
+        if (intervaloMarcacao.isInicio()) {
             final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
             insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_INICIO);
             return codMarcacaoInserida;
@@ -430,6 +430,7 @@ public final class ControleJornadaDaoImpl extends DatabaseConnection implements 
                 final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
                 insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
                 insereVinculoInicioFim(conn, intervaloMarcacao.getCodMarcacaoVinculada(), codMarcacaoInserida);
+                // TODO: Se o vínculo já existir, daria erro no método acima nem chegando a chamar o abaixo.
                 insereMarcacaoInconsistenteSeExistir(conn, intervaloMarcacao.getCodMarcacaoVinculada(), codMarcacaoInserida);
                 return codMarcacaoInserida;
             } else {
@@ -438,7 +439,7 @@ public final class ControleJornadaDaoImpl extends DatabaseConnection implements 
                         intervaloMarcacao.getCodUnidade(),
                         intervaloMarcacao.getCodTipoIntervalo(),
                         intervaloMarcacao.getCpfColaborador());
-                if (codMarcacacaoVinculo == null || codMarcacacaoVinculo == 0) {
+                if (codMarcacacaoVinculo == null || codMarcacacaoVinculo <= 0) {
                     final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
                     insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
                     return codMarcacaoInserida;
@@ -446,6 +447,7 @@ public final class ControleJornadaDaoImpl extends DatabaseConnection implements 
                     final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
                     insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
                     insereVinculoInicioFim(conn, codMarcacacaoVinculo, codMarcacaoInserida);
+                    // TODO: Se o vínculo já existir, daria erro no método acima nem chegando a chamar o abaixo.
                     insereMarcacaoInconsistenteSeExistir(conn, codMarcacacaoVinculo, codMarcacaoInserida);
                     return codMarcacaoInserida;
                 }
