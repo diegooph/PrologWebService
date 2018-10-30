@@ -22,11 +22,11 @@ import java.util.Optional;
 public interface ControleJornadaDao {
 
     /**
-     * Método utilizado para sincronizar no Banco de Dados uma Marcação.
+     * Método utilizado para salvar no Banco de Dados uma Marcação.
      *
      * @param intervaloMarcacao Uma {@link IntervaloMarcacao marcação} contendo os dados a serem inseridos.
      * @return Código único que identifica a marcação no banco de dados.
-     * @throws SQLException Se ocorrer algum erro na sincronização.
+     * @throws Throwable Se ocorrer algum erro na sincronização.
      */
     @NotNull
     Long insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws Throwable;

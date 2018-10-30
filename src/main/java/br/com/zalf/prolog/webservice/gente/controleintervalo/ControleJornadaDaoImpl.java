@@ -42,9 +42,9 @@ public final class ControleJornadaDaoImpl extends DatabaseConnection implements 
             // Isso garante um retorno OK para o app e assim a marcação será colocada como sincronizada.
             // É importante tratar esse cenário pois o app pode tentar sincronizar uma marcação,
             // ela ser inserida com sucesso, mas a conexão com o servidor se perder nesse meio tempo,
-            // aí o app acha, erroneamente, que a marcação ainda não foi sincronizada.
+            // e o app acaba assumindo, erroneamente, que a marcação ainda não foi sincronizada.
             final Long codMarcacaoExistente = marcacaoIntervaloJaExiste(conn, intervaloMarcacao);
-            // o codMarcacaoExistente será <= 0, se e sómente se, não existir uma marcação equivalente
+            // O codMarcacaoExistente será <= 0, se e somente se, não existir uma marcação equivalente
             // no Banco de Dados.
             if (codMarcacaoExistente <= 0) {
                 final Long codMarcacaoInserida = internalInsertMarcacaoIntervalo(conn, intervaloMarcacao);
@@ -365,8 +365,7 @@ public final class ControleJornadaDaoImpl extends DatabaseConnection implements 
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_MARCACAO_BUSCA_COD_MARCACAO_JA_EXISTE(?, ?, ?, ?) AS CODIGO;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_BUSCA_COD_MARCACAO(?, ?, ?, ?) AS CODIGO;");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(intervaloMarcacao.getCodUnidade(), conn);
             stmt.setLong(1, intervaloMarcacao.getCodUnidade());
             stmt.setLong(2, intervaloMarcacao.getCpfColaborador());
