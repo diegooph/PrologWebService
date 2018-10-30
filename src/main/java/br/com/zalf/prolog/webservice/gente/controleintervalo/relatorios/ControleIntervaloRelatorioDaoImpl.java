@@ -43,9 +43,10 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
+    @NotNull
     @Override
     public Report getMarcacoesDiariasReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
-            throws SQLException, IOException {
+            throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
