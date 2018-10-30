@@ -47,7 +47,7 @@ public interface ControleIntervaloRelatoriosDao {
      */
     @NotNull
     Report getMarcacoesDiariasReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
-            throws SQLException, IOException;
+            throws SQLException;
 
     /**
      * Relatório que estratifica todos os mapas, seus colaboradores e intervalos realizados por cada um

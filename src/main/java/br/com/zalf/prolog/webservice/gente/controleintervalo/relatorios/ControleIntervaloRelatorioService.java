@@ -30,20 +30,20 @@ public class ControleIntervaloRelatorioService {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os intervalos realizados (CSV). \n" +
                     "codUnidade: %d \n" +
                     "cpf: %s \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+                    "dataInicial: %d \n" +
+                    "dataFinal: %d", codUnidade, cpf, dataInicial, dataFinal), e);
         }
     }
 
     public Report getMarcacoesDiariasReport(Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
         try {
             return dao.getMarcacoesDiariasReport(codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os intervalos realizados (REPORT). \n" +
                     "codUnidade: %d \n" +
                     "cpf: %s \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+                    "dataInicial: %d \n" +
+                    "dataFinal: %d", codUnidade, cpf, dataInicial, dataFinal), e);
             return null;
         }
     }

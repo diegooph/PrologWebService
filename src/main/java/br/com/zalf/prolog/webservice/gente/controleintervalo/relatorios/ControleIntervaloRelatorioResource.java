@@ -24,9 +24,9 @@ public class ControleIntervaloRelatorioResource {
     @Produces("application/csv")
     @Path("/realizados/{codUnidade}/{cpf}/csv")
     public StreamingOutput getMarcacoesDiariasCsv(@PathParam("codUnidade") Long codUnidade,
-                                            @QueryParam("dataInicial") Long dataInicial,
-                                            @QueryParam("dataFinal") Long dataFinal,
-                                            @PathParam("cpf") String cpf) {
+                                                  @QueryParam("dataInicial") Long dataInicial,
+                                                  @QueryParam("dataFinal") Long dataFinal,
+                                                  @PathParam("cpf") String cpf) {
         return outputStream -> service.getMarcacoesDiariasCsv(outputStream, codUnidade, dataInicial, dataFinal, cpf);
     }
 
@@ -34,9 +34,9 @@ public class ControleIntervaloRelatorioResource {
     @Secured
     @Path("/realizados/{codUnidade}/{cpf}/report")
     public Report getMarcacoesDiariasReport(@PathParam("codUnidade") Long codUnidade,
-                                      @QueryParam("dataInicial") Long dataInicial,
-                                      @QueryParam("dataFinal") Long dataFinal,
-                                      @PathParam("cpf") String cpf) {
+                                            @QueryParam("dataInicial") Long dataInicial,
+                                            @QueryParam("dataFinal") Long dataFinal,
+                                            @PathParam("cpf") String cpf) {
         return service.getMarcacoesDiariasReport(codUnidade, dataInicial, dataFinal, cpf);
     }
 
