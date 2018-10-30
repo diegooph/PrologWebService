@@ -6,6 +6,9 @@ Change Log
 
 ### Refactors
 * Altera verificação de cadastro de pneus para permitir inserções de pneu com valor 0
+* Cria nova function e novos métodos para gerar relatório de listagem de modelos de checklist
+* Altera nome dos métodos e da function referente ao relatório de marcações diárias
+* Acrescenta colunas ao relatório de marcações diárias
 
 <a name="v0.0.77"></a>
 ## Version [v0.0.77](https://github.com/luizfp/PrologWeb/compare/v0.0.76...v0.0.77) (2018-10-19)
