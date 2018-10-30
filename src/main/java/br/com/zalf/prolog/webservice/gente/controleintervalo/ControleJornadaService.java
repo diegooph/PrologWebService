@@ -20,9 +20,9 @@ import java.util.Optional;
 /**
  * Created by Zart on 19/08/2017.
  */
-public class ControleIntervaloService {
+public class ControleJornadaService {
     @NotNull
-    private static final String TAG = ControleIntervaloService.class.getSimpleName();
+    private static final String TAG = ControleJornadaService.class.getSimpleName();
     @NotNull
     private ControleJornadaDao dao = Injection.provideControleJornadaDao();
 

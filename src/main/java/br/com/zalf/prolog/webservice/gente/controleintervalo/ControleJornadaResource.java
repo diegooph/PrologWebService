@@ -34,7 +34,7 @@ import java.util.List;
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class ControleJornadaResource {
     @NotNull
-    private final ControleIntervaloService service = new ControleIntervaloService();
+    private final ControleJornadaService service = new ControleJornadaService();
 
     /**
      * O motivo deste método não necessitar nem da permissão de marcacão de intervalo, é que se um colaborador que antes

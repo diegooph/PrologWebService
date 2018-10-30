@@ -11,7 +11,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -139,7 +139,7 @@ public class ColaboradorService {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             }
 
-            final ControleIntervaloService intervaloService = new ControleIntervaloService();
+            final ControleJornadaService intervaloService = new ControleJornadaService();
             final IntervaloOfflineSupport intervaloOfflineSupport = intervaloService.getIntervaloOfflineSupport(
                     this,
                     colaborador.getUnidade().getCodigo(),
