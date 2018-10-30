@@ -195,4 +195,31 @@ class ChecklistRelatorioService {
             Log.e(TAG, "Erro ao buscar o relatório com a listagem de modelos dos checklists (CSV)", e);
         }
     }
+
+    public Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
+                                                @NotNull final String dataInicial,
+                                                @NotNull final String dataFinal) {
+        try {
+            return dao.getDadosGeraisChecklistReport(
+                    codUnidades, dataInicial, dataFinal);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar o relatório de dados dos checklists (REPORT)", e);
+            return null;
+        }
+    }
+
+    public void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
+                                           @NotNull final List<Long> codUnidades,
+                                           @NotNull final String dataInicial,
+                                           @NotNull final String dataFinal) {
+        try {
+            dao.getDadosGeraisChecklistCsv(
+                    outputStream,
+                    codUnidades,
+                    dataInicial,
+                    dataFinal);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar o relatório de dados gerais dos checklists (CSV)", e);
+        }
+    }
 }

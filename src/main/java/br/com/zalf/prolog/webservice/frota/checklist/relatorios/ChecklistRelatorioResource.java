@@ -125,4 +125,21 @@ public class ChecklistRelatorioResource {
     public StreamingOutput getListagemModelosChecklistCsv(@QueryParam("codUnidades") List<Long> codUnidades) {
         return outputStream -> service.getListagemModelosChecklistCsv(outputStream, codUnidades);
     }
+
+    @GET
+    @Path("/ambev-checklists-dados-gerais/report")
+    public Report getDadosGeraisChecklistReport(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                @QueryParam("dataInicial") String dataInicial,
+                                                @QueryParam("dataFinal") String dataFinal) {
+        return service.getDadosGeraisChecklistReport(codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/ambev-checklists-dados-gerais/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
+    public StreamingOutput getDadosGeraisChecklistCsv(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                      @QueryParam("dataInicial") String dataInicial,
+                                                      @QueryParam("dataFinal") String dataFinal) {
+        return outputStream -> service.getDadosGeraisChecklistCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
 }

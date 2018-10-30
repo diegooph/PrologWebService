@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -276,6 +277,58 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
             closeConnection(conn, stmt, rSet);
         }
     }
+
+    @NotNull
+    @Override
+    public void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
+                                           @NotNull final List<Long> codUnidades,
+                                           @NotNull final String dataInicial,
+                                           @NotNull final String dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+
+    }
+
+    @NotNull
+    @Override
+    public Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
+                                                @NotNull final String dataInicial,
+                                                @NotNull final String dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    private PreparedStatement getDadosGeraisChecklistStatement(@NotNull final Connection conn,
+                                                               @NotNull final List<Long> codUnidades,
+                                                               @NotNull final String dataInicial,
+                                                               @NotNull final String dataFinal)
+            throws Throwable {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
+                "FUNC_CHECKLIST_RELATORIO_DADOS_GERAIS(?,?,?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        stmt.setObject(2, dataInicial);
+        stmt.setObject(3, dataFinal);
+        return stmt;
+    }
+
 
     private PreparedStatement getListagemModelosChecklistStatement(@NotNull final Connection conn,
                                                                    @NotNull final List<Long> codUnidades)
