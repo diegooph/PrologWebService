@@ -21,11 +21,11 @@ import java.util.Map;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-final class ControleIntervaloRelatorioConverter {
-    private static final String TAG = ControleIntervaloRelatorioConverter.class.getSimpleName();
+final class ControleJornadaRelatorioConverter {
+    private static final String TAG = ControleJornadaRelatorioConverter.class.getSimpleName();
 
-    private ControleIntervaloRelatorioConverter() {
-        throw new IllegalStateException(ControleIntervaloRelatorioConverter.class.getSimpleName()
+    private ControleJornadaRelatorioConverter() {
+        throw new IllegalStateException(ControleJornadaRelatorioConverter.class.getSimpleName()
                 + " cannot be instantiated!");
     }
 

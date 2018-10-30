@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Zart on 28/08/2017.
  */
-public interface ControleIntervaloRelatoriosDao {
+public interface ControleJornadaRelatoriosDao {
 
     /**
      * Relatório que estratifica todos os intervalos realizadas em um período, uma linha para cada intervalo

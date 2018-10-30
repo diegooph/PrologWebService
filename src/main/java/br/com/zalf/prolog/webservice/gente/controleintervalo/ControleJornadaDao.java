@@ -19,7 +19,7 @@ import java.util.Optional;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public interface ControleIntervaloDao {
+public interface ControleJornadaDao {
 
     /**
      * Método utilizado para sincronizar no Banco de Dados uma Marcação.

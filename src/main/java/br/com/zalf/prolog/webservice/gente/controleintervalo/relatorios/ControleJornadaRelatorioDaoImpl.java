@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaDao;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,8 +24,8 @@ import java.util.List;
 /**
  * Created by Zart on 28/08/2017.
  */
-public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implements ControleIntervaloRelatoriosDao {
-    private static final String TAG = ControleIntervaloRelatorioDaoImpl.class.getSimpleName();
+public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implements ControleJornadaRelatoriosDao {
+    private static final String TAG = ControleJornadaRelatorioDaoImpl.class.getSimpleName();
 
     @Override
     public void getIntervalosCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
@@ -209,8 +209,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             stmt.setString(6, zoneId.getId());
             rSet = stmt.executeQuery();
 
-            final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
-            return ControleIntervaloRelatorioConverter.createFolhaPontoRelatorio(
+            final ControleJornadaDao dao = Injection.provideControleJornadaDao();
+            return ControleJornadaRelatorioConverter.createFolhaPontoRelatorio(
                     rSet,
                     dao.getTiposIntervalosByUnidade(codUnidade, true, false),
                     dataInicial,
@@ -272,7 +272,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             conn = getConnection();
             stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
+            final ControleJornadaDao dao = Injection.provideControleJornadaDao();
             new CsvWriter
                     .Builder(out)
                     .withCsvReport(new RelatorioTotaisPorTipoIntervalo(

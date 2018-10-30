@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioService;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleJornadaRelatorioService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.FolhaPontoTipoIntervalo;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class ControleJornadaRelatorioTest extends BaseTest {
-    private ControleIntervaloRelatorioService service;
+    private ControleJornadaRelatorioService service;
     private static final Long COD_UNIDADE = 5L;
     private static final Long CPF_COLABORADOR = 3383283194L;
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -44,7 +44,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
 
     @Override
     public void initialize() {
-        service = new ControleIntervaloRelatorioService();
+        service = new ControleJornadaRelatorioService();
     }
 
     @Test

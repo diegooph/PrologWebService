@@ -17,10 +17,10 @@ import java.util.List;
 /**
  * Created by Zart on 28/08/2017.
  */
-public class ControleIntervaloRelatorioService {
+public class ControleJornadaRelatorioService {
 
-    private static final String TAG = ControleIntervaloRelatorioService.class.getSimpleName();
-    private ControleIntervaloRelatoriosDao dao = Injection.provideControleIntervaloRelatoriosDao();
+    private static final String TAG = ControleJornadaRelatorioService.class.getSimpleName();
+    private ControleJornadaRelatoriosDao dao = Injection.provideControleJornadaRelatoriosDao();
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     public void getIntervalosCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {

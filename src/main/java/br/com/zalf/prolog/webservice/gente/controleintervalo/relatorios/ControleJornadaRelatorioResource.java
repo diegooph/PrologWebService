@@ -15,9 +15,9 @@ import java.util.List;
 @Path("/intervalos/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class ControleIntervaloRelatorioResource {
+public class ControleJornadaRelatorioResource {
 
-    private ControleIntervaloRelatorioService service = new ControleIntervaloRelatorioService();
+    private ControleJornadaRelatorioService service = new ControleJornadaRelatorioService();
 
     @GET
     @Secured

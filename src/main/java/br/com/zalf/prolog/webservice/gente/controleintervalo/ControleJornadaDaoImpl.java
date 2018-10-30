@@ -25,9 +25,9 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ControleIntervaloDaoImpl extends DatabaseConnection implements ControleIntervaloDao {
+public final class ControleJornadaDaoImpl extends DatabaseConnection implements ControleJornadaDao {
 
-    public ControleIntervaloDaoImpl() {
+    public ControleJornadaDaoImpl() {
 
     }
 

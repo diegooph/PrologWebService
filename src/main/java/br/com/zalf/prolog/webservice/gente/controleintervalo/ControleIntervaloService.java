@@ -24,7 +24,7 @@ public class ControleIntervaloService {
     @NotNull
     private static final String TAG = ControleIntervaloService.class.getSimpleName();
     @NotNull
-    private ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
+    private ControleJornadaDao dao = Injection.provideControleJornadaDao();
 
     @NotNull
     public ResponseIntervalo insertMarcacaoIntervalo(final long versaoDadosIntervalo,

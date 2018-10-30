@@ -32,7 +32,7 @@ import java.util.List;
         targetVersionCode = 60,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-public final class ControleIntervaloResource {
+public final class ControleJornadaResource {
     @NotNull
     private final ControleIntervaloService service = new ControleIntervaloService();
 

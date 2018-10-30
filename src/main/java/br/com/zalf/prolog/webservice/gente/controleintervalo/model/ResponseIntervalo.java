@@ -1,14 +1,14 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloResource;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Classe utilizada para retornar informações das marcações que são sincronizadas através dos métodos
  * de inserção de marcações.
- * * {@link ControleIntervaloResource#insertIntervalo(long, Integer, IntervaloMarcacao)}.
+ * * {@link ControleJornadaResource#insertIntervalo(long, Integer, IntervaloMarcacao)}.
  *
  * O seu {@link #status} é referente ao insert do próprio {@link Intervalo}:
  * * status {@link #OK} significa inserido com sucesso;

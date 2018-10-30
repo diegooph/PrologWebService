@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjuste;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
@@ -104,15 +104,15 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             final Long codMarcacaoInserida = insereMarcacaoAjusteAdicao(conn, tokenResponsavelAjuste, marcacaoAjuste,
                     zoneId);
             final TipoInicioFim tipoInicioFim = marcacaoAjuste.getTipoInicioFim();
-            final ControleIntervaloDao controleIntervaloDao = Injection.provideControleIntervaloDao();
-            controleIntervaloDao.insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, tipoInicioFim);
+            final ControleJornadaDao controleJornadaDao = Injection.provideControleJornadaDao();
+            controleJornadaDao.insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, tipoInicioFim);
             final Long codMarcacaoInicio = tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)
                     ? codMarcacaoInserida
                     : marcacaoAjuste.getCodMarcacaoVinculo();
             final Long codMarcacaoFim = tipoInicioFim.equals(TipoInicioFim.MARCACAO_FIM)
                     ? codMarcacaoInserida
                     : marcacaoAjuste.getCodMarcacaoVinculo();
-            controleIntervaloDao.insereVinculoInicioFim(conn, codMarcacaoInicio, codMarcacaoFim);
+            controleJornadaDao.insereVinculoInicioFim(conn, codMarcacaoInicio, codMarcacaoFim);
             insereInformacoesAjusteMarcacao(
                     conn,
                     codMarcacaoInserida,
@@ -140,12 +140,12 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             conn.setAutoCommit(false);
             final ResultInsertInicioFim codigos =
                     insereMarcacaoAjusteAdicaoInicioFim(conn, tokenResponsavelAjuste, marcacaoAjuste);
-            final ControleIntervaloDao controleIntervaloDao = Injection.provideControleIntervaloDao();
-            controleIntervaloDao
+            final ControleJornadaDao controleJornadaDao = Injection.provideControleJornadaDao();
+            controleJornadaDao
                     .insereMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoInicio(), TipoInicioFim.MARCACAO_INICIO);
-            controleIntervaloDao
+            controleJornadaDao
                     .insereMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoFim(), TipoInicioFim.MARCACAO_FIM);
-            controleIntervaloDao
+            controleJornadaDao
                     .insereVinculoInicioFim(conn, codigos.getCodMarcacaoInicio(), codigos.getCodMarcacaoFim());
             insereInformacoesAjusteMarcacao(
                     conn,
