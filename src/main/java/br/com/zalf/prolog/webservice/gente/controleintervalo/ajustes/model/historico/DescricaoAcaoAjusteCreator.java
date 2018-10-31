@@ -31,23 +31,23 @@ public final class DescricaoAcaoAjusteCreator {
         switch (acaoAjuste) {
             case ADICAO:
             case ADICAO_INICIO_FIM:
-                return String.format("\u002B Marcação de <b>%s</b> <i>CRIADA</i> com data e hora <b>\"%s\"</b> por %s",
+                return String.format("Marcação de <b>%s</b> <i>CRIADA</i> com data e hora <b>\"%s\"</b> por %s",
                         inicioFimExibicao,
                         format(dataHoraNova),
                         nomeColaborador);
             case EDICAO:
-                return String.format("\u270E Marcação de <b>%s</b> <i>EDITADA</i> de <b>\"%s\"</b> para <b>\"%s\"</b> por %s",
+                return String.format("Marcação de <b>%s</b> <i>EDITADA</i> de <b>\"%s\"</b> para <b>\"%s\"</b> por %s",
                         inicioFimExibicao,
                         format(dataHoraAntiga),
                         format(dataHoraNova),
                         nomeColaborador);
             case ATIVACAO:
-                return String.format("\u2713 Marcação de <b>%s</b> (%s) <i>ATIVADA</i> por %s",
+                return String.format("Marcação de <b>%s</b> (%s) <i>ATIVADA</i> por %s",
                         inicioFimExibicao,
                         format(dataHoraAntiga),
                         nomeColaborador);
             case INATIVACAO:
-                return String.format("\u0058 Marcação de <b>%s</b> (%s) <i>INATIVADA</i> por %s",
+                return String.format("Marcação de <b>%s</b> (%s) <i>INATIVADA</i> por %s",
                         inicioFimExibicao,
                         format(dataHoraAntiga),
                         nomeColaborador);
