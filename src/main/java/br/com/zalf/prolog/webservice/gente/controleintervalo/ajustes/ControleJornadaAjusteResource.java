@@ -115,7 +115,7 @@ public final class ControleJornadaAjusteResource {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/inconsistencias")
-    public List<MarcacaoInconsistencia> getHistoricoAjusteMarcacoes(
+    public List<MarcacaoInconsistencia> getInconsistenciasColaboradorDia(
             @QueryParam("codColaborador") @Required Long codColaborador,
             @QueryParam("dia") @Required String dia,
             @QueryParam("tipoInconsistencia") @Required String tipoInconsistencia) throws ProLogException {
