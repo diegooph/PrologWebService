@@ -127,8 +127,9 @@ public interface ControleJornadaAjusteDao {
      * Método para buscar todos os {@link TipoInconsistenciaMarcacao tipos de inconsistência} que possa existir para o
      * colaborador e dia filtrados.
      *
-     * @param codColaborador O código do colaborador para o qual queremos buscar as inconsistências.
-     * @param dia            O dia do qual queremos buscar as inconsistências.
+     * @param codColaborador     O código do colaborador para o qual queremos buscar as inconsistências.
+     * @param dia                O dia do qual queremos buscar as inconsistências.
+     * @param tipoInconsistencia {@link TipoInconsistenciaMarcacao} que estamos buscando.
      * @return Uma lista contendo as inconsistências, se existirem, para o colaborador, dia e tipo de inconsistência
      * especificado. Uma lista vazia caso não existam inconsistências.
      * @throws Throwable Caso qualquer erro aconteça.
