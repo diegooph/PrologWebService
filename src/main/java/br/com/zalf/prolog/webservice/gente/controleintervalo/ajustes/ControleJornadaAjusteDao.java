@@ -120,8 +120,8 @@ public interface ControleJornadaAjusteDao {
      * @throws Throwable Caso qualquer erro aconteça.
      */
     @NotNull
-    List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(@NotNull final List<Long> codMarcacoes)
-            throws Throwable;
+    List<MarcacaoAjusteHistoricoExibicao> getHistoricoAjusteMarcacoes(
+            @NotNull final List<Long> codMarcacoes) throws Throwable;
 
     /**
      * Método para buscar todos os {@link TipoInconsistenciaMarcacao tipos de inconsistência} que possa existir para o
