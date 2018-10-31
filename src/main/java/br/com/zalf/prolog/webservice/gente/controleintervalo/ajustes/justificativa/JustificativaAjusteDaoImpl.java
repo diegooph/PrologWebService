@@ -1,15 +1,19 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa;
 
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 05/09/18.
@@ -69,13 +73,9 @@ public final class JustificativaAjusteDaoImpl extends DatabaseConnection impleme
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM MARCACAO_JUSTIFICATIVA_AJUSTE JA " +
-                    "WHERE (JA.COD_EMPRESA = ? AND F_IF(? IS NULL, TRUE, ? = JA.STATUS_ATIVO)) OR " +
-                    "      (JA.COD_EMPRESA IS NULL AND JA.STATUS_ATIVO = TRUE);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_BUSCA_JUSTIFICATIVAS_AJUSTES(?, ?);");
             stmt.setLong(1, codEmpresa);
-            StatementUtils.bindValueOrNull(stmt,2, ativas, SqlType.BOOLEAN);
-            StatementUtils.bindValueOrNull(stmt,3, ativas, SqlType.BOOLEAN);
+            bindValueOrNull(stmt,2, ativas, SqlType.BOOLEAN);
             rSet = stmt.executeQuery();
             final List<JustificativaAjuste> justificativas = new ArrayList<>();
             while (rSet.next()) {
