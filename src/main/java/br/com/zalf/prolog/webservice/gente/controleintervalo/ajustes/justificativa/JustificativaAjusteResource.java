@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -19,25 +20,25 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Path("/controle-jornada/justificativas-ajustes")
+@DebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class JustificativaAjusteResource {
-
     @NotNull
-    final JustificativaAjusteService service = new JustificativaAjusteService();
+    private final JustificativaAjusteService service = new JustificativaAjusteService();
 
     @GET
-    @UsedBy(platforms = Platform.ANDROID)
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured()
     @Path("/")
     public List<JustificativaAjuste> getJustificativasAjuste(@QueryParam("codEmpresa") @Required final Long codEmpresa,
-                                                             @QueryParam("ativos") @Optional final Boolean ativos)
+                                                             @QueryParam("ativas") @Optional final Boolean ativas)
             throws ProLogException {
-        return service.getJustificativasAjuste(codEmpresa, ativos);
+        return service.getJustificativasAjuste(codEmpresa, ativas);
     }
 
     @POST
-    @UsedBy(platforms = Platform.ANDROID)
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured()
     @Path("/")
     public AbstractResponse adicionarMarcacaoAjuste(

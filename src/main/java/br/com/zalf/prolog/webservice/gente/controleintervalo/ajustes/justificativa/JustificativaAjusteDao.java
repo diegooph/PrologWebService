@@ -30,7 +30,7 @@ public interface JustificativaAjusteDao {
 
     @NotNull
     List<JustificativaAjuste> getJustificativasAjuste(@NotNull final Long codEmpresa,
-                                                      @Nullable final Boolean ativos) throws Throwable;
+                                                      @Nullable final Boolean ativas) throws Throwable;
 
     @NotNull
     JustificativaAjuste getJustificativaAjuste(@NotNull final Long codEmpresa,
