@@ -52,8 +52,6 @@ public final class DescricaoAcaoAjusteCreator {
                         format(dataHoraAntiga),
                         nomeColaborador);
         }
-
-
         throw new IllegalStateException();
     }
 
