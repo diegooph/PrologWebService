@@ -4,9 +4,12 @@ Change Log
 <a name="v0.0.78"></a>
 ## Version [v0.0.78](https://github.com/luizfp/PrologWeb/compare/v0.0.77...v0.0.78) (release-data) [unreleased]
 
+### Features
+* Cria nova function e novos métodos para gerar relatório de listagem de modelos de checklist
+* Cria nova function e novos métodos para gerar relatório de dados gerais de checklist
+
 ### Refactors
 * Altera verificação de cadastro de pneus para permitir inserções de pneu com valor 0
-* Cria nova function e novos métodos para gerar relatório de listagem de modelos de checklist
 * Altera nome dos métodos e da function referente ao relatório de marcações diárias
 * Acrescenta colunas ao relatório de marcações diárias
 
