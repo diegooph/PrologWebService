@@ -98,35 +98,22 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                                   @NotNull final String placa,
                                                   @NotNull final String tipoAfericao) throws Throwable {
         Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
             conn = getConnection();
-            final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
             final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
-            final Veiculo veiculo = veiculoDao.getVeiculoByPlaca(conn, placa, true);
-            final List<Pneu> estepes = veiculo.getEstepes();
-            novaAfericao.setEstepesVeiculo(estepes);
+            final Veiculo veiculo = Injection.provideVeiculoDao().getVeiculoByPlaca(conn, placa, true);
+            novaAfericao.setEstepesVeiculo(veiculo.getEstepes());
             novaAfericao.setVeiculo(veiculo);
 
             // Configurações/parametrizações necessárias para a aferição.
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIGURACOES_NOVA_AFERICAO_PLACA(?);");
-            stmt.setString(1, placa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                novaAfericao.setRestricao(createRestricao(rSet));
-                novaAfericao.setDeveAferirEstepes(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
-                novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(
-                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"));
-                novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(
-                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
-            } else {
-                throw new IllegalStateException("Dados de configurações de aferição não encontrados para a placa: "
-                        + placa);
-            }
+            final ConfiguracaoNovaAfericao configuracao = getConfiguracaoNovaAfericao(conn, placa);
+            novaAfericao.setRestricao(Restricao.createRestricaoFrom(configuracao));
+            novaAfericao.setDeveAferirEstepes(configuracao.isPodeAferirEstepe());
+            novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(configuracao.getVariacaoAceitaSulcoMenorMilimetros());
+            novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(configuracao.getVariacaoAceitaSulcoMaiorMilimetros());
             return novaAfericao;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(conn);
         }
     }
 
@@ -414,6 +401,18 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
+    @Override
+    public ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final String placa) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return getConfiguracaoNovaAfericao(conn, placa);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    @NotNull
     private Restricao getRestricaoByCodUnidade(@NotNull final Connection conn,
                                                @NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
@@ -452,6 +451,45 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    private ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final Connection conn,
+                                                                 @NotNull final String placa) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIGURACOES_NOVA_AFERICAO_PLACA(?);");
+            stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createConfiguracaoNovaAfericao(rSet);
+            } else {
+                throw new IllegalStateException("Dados de configurações de aferição não encontrados para a placa: "
+                        + placa);
+            }
+        } finally {
+            closeConnection(null, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private ConfiguracaoNovaAfericao createConfiguracaoNovaAfericao(@NotNull final ResultSet rSet) throws SQLException {
+        final ConfiguracaoNovaAfericao config = new ConfiguracaoNovaAfericao();
+        config.setSulcoMinimoDescarte(rSet.getDouble("SULCO_MINIMO_DESCARTE"));
+        config.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
+        config.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
+        config.setToleranciaInspecao(rSet.getDouble("TOLERANCIA_INSPECAO"));
+        config.setPeriodoDiasAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));
+        config.setPeriodoDiasAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
+        config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
+        config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
+        config.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
+        config.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
+        config.setVariacaoAceitaSulcoMenorMilimetros(rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"));
+        config.setVariacaoAceitaSulcoMaiorMilimetros(rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
+        config.setUsaDefaultProLog(rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"));
+        return config;
     }
 
     @NotNull
@@ -542,11 +580,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             // Já aproveitamos esse switch para atualizar as medições do pneu na tabela PNEU.
             switch (afericao.getTipoMedicaoColetadaAfericao()) {
                 case SULCO_PRESSAO:
-                    pneuDao.updateMedicoes(
-                            conn,
-                            pneu.getCodigo(),
-                            pneu.getSulcosAtuais(),
-                            pneu.getPressaoAtual());
+                    pneuDao.updateMedicoes(conn, pneu.getCodigo(), pneu.getSulcosAtuais(), pneu.getPressaoAtual());
                     stmt.setDouble(4, pneu.getPressaoAtual());
                     stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
                     stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
