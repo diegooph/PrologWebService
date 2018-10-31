@@ -8,6 +8,9 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Created on 05/09/18.
@@ -27,6 +30,17 @@ final class JustificativaAjusteService {
         try {
             return ResponseWithCod.ok("Justificativa inserida com sucesso",
                     dao.insertJustificativaAjuste(TokenCleaner.getOnlyToken(userToken), justificativaAjuste));
+        } catch (Throwable e) {
+            Log.e(TAG, "Erro ao inserir a Justificativa", e);
+            throw exceptionHandler.map(e, "Erro ao inserir a Justificativa, tente novamente");
+        }
+    }
+
+    @NotNull
+    List<JustificativaAjuste> getJustificativasAjuste(@NotNull final Long codEmpresa,
+                                                      @Nullable final Boolean ativos) throws ProLogException {
+        try {
+            return dao.getJustificativasAjuste(codEmpresa, ativos);
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao inserir a Justificativa", e);
             throw exceptionHandler.map(e, "Erro ao inserir a Justificativa, tente novamente");

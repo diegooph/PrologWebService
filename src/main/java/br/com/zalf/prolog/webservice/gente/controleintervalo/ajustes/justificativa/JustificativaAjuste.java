@@ -16,7 +16,7 @@ public final class JustificativaAjuste {
     /**
      * Código único dessa justificativa.
      */
-    private Long codJustificativaAjuste;
+    private Long codigo;
 
     /**
      * Código da {@link Empresa empresa} do qual essa justificativa pertence.
@@ -46,7 +46,7 @@ public final class JustificativaAjuste {
     @NotNull
     public static JustificativaAjuste createDummy() {
         final JustificativaAjuste justificativa = new JustificativaAjuste();
-        justificativa.setCodJustificativaAjuste(10L);
+        justificativa.setCodigo(10L);
         justificativa.setCodEmpresa(3L);
         justificativa.setNomeJustificativaAjuste("Esquecimento");
         justificativa.setObrigatorioObservacao(true);
@@ -54,12 +54,12 @@ public final class JustificativaAjuste {
         return justificativa;
     }
 
-    public Long getCodJustificativaAjuste() {
-        return codJustificativaAjuste;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setCodJustificativaAjuste(final Long codJustificativaAjuste) {
-        this.codJustificativaAjuste = codJustificativaAjuste;
+    public void setCodigo(final Long codigo) {
+        this.codigo = codigo;
     }
 
     public Long getCodEmpresa() {
@@ -97,7 +97,7 @@ public final class JustificativaAjuste {
     @Override
     public String toString() {
         return "JustificativaAjuste{" +
-                "codJustificativaAjuste=" + codJustificativaAjuste +
+                "codigo=" + codigo +
                 ", codEmpresa=" + codEmpresa +
                 ", nomeJustificativaAjuste='" + nomeJustificativaAjuste + '\'' +
                 ", obrigatorioObservacao=" + obrigatorioObservacao +

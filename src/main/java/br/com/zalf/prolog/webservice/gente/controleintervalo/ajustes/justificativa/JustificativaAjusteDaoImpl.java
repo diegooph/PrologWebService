@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,7 +51,7 @@ public final class JustificativaAjusteDaoImpl extends DatabaseConnection impleme
                 throw new SQLException("Não foi possível inserir a justificativa");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -64,7 +65,38 @@ public final class JustificativaAjusteDaoImpl extends DatabaseConnection impleme
     @Override
     public List<JustificativaAjuste> getJustificativasAjuste(@NotNull final Long codEmpresa,
                                                              @Nullable final Boolean ativos) throws Throwable {
-        return null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM JUSTIFICATIVAS_AJUSTE WHERE COD_EMPRESA = ?;");
+            stmt.setObject(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            final List<JustificativaAjuste> justificativas = new ArrayList<>();
+            while (rSet.next()) {
+                final JustificativaAjuste j = new JustificativaAjuste();
+                j.setCodEmpresa(rSet.getLong("CODIGO"));
+                j.setCodigo(rSet.getLong("COD_EMPRESA"));
+                j.setObrigatorioObservacao(rSet.getBoolean("OBRIGA_OBSERVACAO"));
+                        /*
+                         * CODIGO BIGSERIAL NOT NULL,
+                         *   NOME TEXT NOT NULL,
+                         *   COD_EMPRESA BIGINT,
+                         *   OBRIGA_OBSERVACAO BOOLEAN NOT NULL DEFAULT TRUE,
+                         *   STATUS_ATIVO BOOLEAN NOT NULL DEFAULT TRUE,
+                         *   EDITAVEL BOOLEAN NOT NULL DEFAULT TRUE,
+                         *   COD_COLABORADOR_CRIACAO BIGINT,
+                         *   DATA_HORA_CRIACAO TIMESTAMP,
+                         *   COD_COLABORADOR_ULTIMA_EDICAO BIGINT,
+                         *   DATA_HORA_ULTIMA_EDICAO TIMESTAMP,
+                         */
+                justificativas.add(j);
+            }
+            return justificativas;
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @NotNull
