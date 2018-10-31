@@ -128,7 +128,7 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/ambev-checklists-dados-gerais/report")
+    @Path("/dados-gerais-checklists-realizados/report")
     public Report getDadosGeraisChecklistReport(@QueryParam("codUnidades") List<Long> codUnidades,
                                                 @QueryParam("dataInicial") String dataInicial,
                                                 @QueryParam("dataFinal") String dataFinal) throws ProLogException {
@@ -136,7 +136,7 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/ambev-checklists-dados-gerais/csv")
+    @Path("/dados-gerais-checklists-realizados/csv")
     @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getDadosGeraisChecklistCsv(@QueryParam("codUnidades") List<Long> codUnidades,
                                                       @QueryParam("dataInicial") String dataInicial,

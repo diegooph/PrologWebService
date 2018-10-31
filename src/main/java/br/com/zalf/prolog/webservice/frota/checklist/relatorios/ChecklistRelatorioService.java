@@ -223,8 +223,7 @@ class ChecklistRelatorioService {
                                          @NotNull final String dataInicial,
                                          @NotNull final String dataFinal) throws ProLogException {
         try {
-            return dao.getDadosGeraisChecklistReport(
-                    codUnidades, dataInicial, dataFinal);
+            return dao.getDadosGeraisChecklistReport(codUnidades, dataInicial, dataFinal);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de dados dos checklists (REPORT)", e);
             throw exceptionHandler.map(e,
