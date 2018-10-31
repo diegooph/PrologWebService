@@ -78,7 +78,6 @@ public interface ChecklistRelatorioDao {
     @NotNull
     Report getListagemModelosChecklistReport(@NotNull final List<Long> codUnidades) throws Throwable;
 
-    @NotNull
     void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
                                     @NotNull final List<Long> codUnidades,
                                     @NotNull final String dataInicial,

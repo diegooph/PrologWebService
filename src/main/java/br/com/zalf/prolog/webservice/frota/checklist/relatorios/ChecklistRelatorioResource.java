@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -35,7 +36,7 @@ public class ChecklistRelatorioResource {
     @Path("/ambev-checklists-realizados-dia/report")
     public Report getChecklistsRealizadosDiaAmbevReport(@QueryParam("codUnidades") List<Long> codUnidades,
                                                         @QueryParam("dataInicial") String dataInicial,
-                                                        @QueryParam("dataFinal") String dataFinal) {
+                                                        @QueryParam("dataFinal") String dataFinal) throws ProLogException {
         return service.getChecklistsRealizadosDiaAmbevReport(codUnidades, dataInicial, dataFinal);
     }
 
@@ -53,7 +54,7 @@ public class ChecklistRelatorioResource {
     @Path("/ambev-extrato-checklists-realizados-dia/report")
     public Report getExtratoChecklistsRealizadosDiaAmbevReport(@QueryParam("codUnidades") List<Long> codUnidades,
                                                                @QueryParam("dataInicial") String dataInicial,
-                                                               @QueryParam("dataFinal") String dataFinal) {
+                                                               @QueryParam("dataFinal") String dataFinal) throws ProLogException {
         return service.getExtratoChecklistsRealizadosDiaAmbevReport(codUnidades, dataInicial, dataFinal);
     }
 
@@ -71,7 +72,7 @@ public class ChecklistRelatorioResource {
     @Path("/tempo-realizacao-checklists-motoristas/report")
     public Report getTempoRealizacaoChecklistsMotoristasReport(@QueryParam("codUnidades") List<Long> codUnidades,
                                                                @QueryParam("dataInicial") String dataInicial,
-                                                               @QueryParam("dataFinal") String dataFinal) {
+                                                               @QueryParam("dataFinal") String dataFinal) throws ProLogException {
         return service.getTempoRealizacaoChecklistsMotoristasReport(codUnidades, dataInicial, dataFinal);
     }
 
@@ -90,7 +91,7 @@ public class ChecklistRelatorioResource {
     public Report getResumoChecklistsReport(@PathParam("placa") String placa,
                                             @QueryParam("codUnidades") List<Long> codUnidades,
                                             @QueryParam("dataInicial") String dataInicial,
-                                            @QueryParam("dataFinal") String dataFinal) {
+                                            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
         return service.getResumoChecklistsReport(codUnidades, placa, dataInicial, dataFinal);
     }
 
@@ -99,7 +100,7 @@ public class ChecklistRelatorioResource {
     public Report getEstratificacaoRespostasNokReport(@PathParam("placa") String placa,
                                                       @QueryParam("codUnidades") List<Long> codUnidades,
                                                       @QueryParam("dataInicial") String dataInicial,
-                                                      @QueryParam("dataFinal") String dataFinal) {
+                                                      @QueryParam("dataFinal") String dataFinal) throws ProLogException {
         return service.getEstratificacaoRespostasNokReport(codUnidades, placa, dataInicial, dataFinal);
     }
 
@@ -114,13 +115,13 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/ambev-checklists-listagem-modelos/report")
-    public Report getListagemModelosChecklistReport(@QueryParam("codUnidades") List<Long> codUnidades) {
+    @Path("/listagem-modelos/report")
+    public Report getListagemModelosChecklistReport(@QueryParam("codUnidades") List<Long> codUnidades) throws ProLogException {
         return service.getListagemModelosChecklistReport(codUnidades);
     }
 
     @GET
-    @Path("/ambev-checklists-listagem-modelos/csv")
+    @Path("/listagem-modelos/csv")
     @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getListagemModelosChecklistCsv(@QueryParam("codUnidades") List<Long> codUnidades) {
         return outputStream -> service.getListagemModelosChecklistCsv(outputStream, codUnidades);
@@ -130,7 +131,7 @@ public class ChecklistRelatorioResource {
     @Path("/ambev-checklists-dados-gerais/report")
     public Report getDadosGeraisChecklistReport(@QueryParam("codUnidades") List<Long> codUnidades,
                                                 @QueryParam("dataInicial") String dataInicial,
-                                                @QueryParam("dataFinal") String dataFinal) {
+                                                @QueryParam("dataFinal") String dataFinal) throws ProLogException {
         return service.getDadosGeraisChecklistReport(codUnidades, dataInicial, dataFinal);
     }
 

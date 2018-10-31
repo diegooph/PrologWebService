@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -278,7 +277,6 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         }
     }
 
-    @NotNull
     @Override
     public void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
                                            @NotNull final List<Long> codUnidades,
@@ -316,11 +314,11 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         }
     }
 
+    @NotNull
     private PreparedStatement getDadosGeraisChecklistStatement(@NotNull final Connection conn,
                                                                @NotNull final List<Long> codUnidades,
                                                                @NotNull final String dataInicial,
-                                                               @NotNull final String dataFinal)
-            throws Throwable {
+                                                               @NotNull final String dataFinal) throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_RELATORIO_DADOS_GERAIS(?,?,?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
@@ -329,10 +327,10 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         return stmt;
     }
 
-
-    private PreparedStatement getListagemModelosChecklistStatement(@NotNull final Connection conn,
-                                                                   @NotNull final List<Long> codUnidades)
-            throws Throwable {
+    @NotNull
+    private PreparedStatement getListagemModelosChecklistStatement(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codUnidades) throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_RELATORIO_LISTAGEM_MODELOS_CHECKLIST(?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
@@ -340,11 +338,11 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     }
 
     @NotNull
-    private PreparedStatement getExtratoChecklistsRealizadosDiaAmbev(@NotNull final Connection conn,
-                                                                     @NotNull final List<Long> codUnidades,
-                                                                     @NotNull final LocalDate dataInicial,
-                                                                     @NotNull final LocalDate dataFinal)
-            throws Throwable {
+    private PreparedStatement getExtratoChecklistsRealizadosDiaAmbev(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codUnidades,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_RELATORIO_AMBEV_EXTRATO_REALIZADOS_DIA(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
