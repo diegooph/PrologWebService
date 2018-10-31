@@ -36,8 +36,8 @@ public interface ConfiguracaoAfericaoDao {
      * @throws Throwable Caso algum erro acorrer.
      */
     @NotNull
-    List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(@NotNull final Long codUnidade)
-            throws Throwable;
+    List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(
+            @NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Cria ou atualiza, caso já exista, as configurações de alertas na coleta de sulcos para cada
@@ -47,8 +47,8 @@ public interface ConfiguracaoAfericaoDao {
      *                      atualizadas.
      * @throws Throwable Caso algum erro acorrer.
      */
-    void insertOrUpdateConfiguracoesAlertaColetaSulco(@NotNull final List<ConfiguracaoAlertaColetaSulco> configuracoes)
-            throws Throwable;
+    void insertOrUpdateConfiguracoesAlertaColetaSulco(
+            @NotNull final List<ConfiguracaoAlertaColetaSulco> configuracoes) throws Throwable;
 
     /**
      * Busca todas as configurações de alertas na coleta de sulcos das unidades que o {@link Colaborador colaborador}
@@ -59,6 +59,6 @@ public interface ConfiguracaoAfericaoDao {
      * @throws Throwable Caso algum erro acorrer.
      */
     @NotNull
-    List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(@NotNull final Long codColaborador)
-            throws Throwable;
+    List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(
+            @NotNull final Long codColaborador) throws Throwable;
 }

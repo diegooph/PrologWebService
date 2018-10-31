@@ -17,8 +17,8 @@ public final class ConfiguracaoConverter {
     }
 
     @NotNull
-    public static ConfiguracaoAlertaColetaSulco createConfiguracaoAlertaColetaSulco(@NotNull final ResultSet rSet)
-            throws Throwable {
+    public static ConfiguracaoAlertaColetaSulco createConfiguracaoAlertaColetaSulco(
+            @NotNull final ResultSet rSet) throws Throwable {
         final long codigo = rSet.getLong("CODIGO");
         return new ConfiguracaoAlertaColetaSulco(
                 codigo == 0 ? null : codigo,
@@ -29,8 +29,8 @@ public final class ConfiguracaoConverter {
     }
 
     @NotNull
-    public static ConfiguracaoTipoVeiculoAferivel createConfiguracaoTipoVeiculoAfericao(@NotNull final ResultSet rSet)
-            throws Throwable {
+    public static ConfiguracaoTipoVeiculoAferivel createConfiguracaoTipoVeiculoAfericao(
+            @NotNull final ResultSet rSet) throws Throwable {
         final ConfiguracaoTipoVeiculoAferivel config = new ConfiguracaoTipoVeiculoAferivel();
         final long codigo = rSet.getLong("CODIGO");
         config.setCodigo(codigo == 0 ? null : codigo);

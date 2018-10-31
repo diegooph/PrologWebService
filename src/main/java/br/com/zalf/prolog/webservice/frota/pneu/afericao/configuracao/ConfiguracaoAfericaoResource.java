@@ -29,8 +29,9 @@ public class ConfiguracaoAfericaoResource {
 
     @PUT
     @Path("/tipos-veiculo/{codUnidade}")
-    public Response updateTiposVeiculos(@PathParam("codUnidade") Long codUnidade,
-                                        List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws ProLogException {
+    public Response updateConfiguracaoTiposVeiculosAferiveis(
+            @PathParam("codUnidade") Long codUnidade,
+            List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws ProLogException {
         return service.updateConfiguracaoTiposVeiculosAferiveis(codUnidade, configuracoes);
     }
 
@@ -43,7 +44,8 @@ public class ConfiguracaoAfericaoResource {
 
     @PUT
     @Path("/alertas-sulcos")
-    public Response updateTiposVeiculos(List<ConfiguracaoAlertaColetaSulco> configuracoes) throws ProLogException {
+    public Response updateConfiguracaoAlertaColetaSulco(
+            List<ConfiguracaoAlertaColetaSulco> configuracoes) throws ProLogException {
         return service.updateConfiguracaoAlertaColetaSulco(configuracoes);
     }
 

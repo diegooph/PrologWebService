@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ConfiguracaoAfericaoService {
+class ConfiguracaoAfericaoService {
     private static final String TAG = ConfiguracaoAfericaoService.class.getSimpleName();
     @NotNull
     private final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
@@ -24,7 +24,7 @@ public class ConfiguracaoAfericaoService {
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @NotNull
-    public Response updateConfiguracaoTiposVeiculosAferiveis(
+    Response updateConfiguracaoTiposVeiculosAferiveis(
             @NotNull final Long codUnidade,
             @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws ProLogException {
         try {
@@ -38,8 +38,8 @@ public class ConfiguracaoAfericaoService {
     }
 
     @NotNull
-    public List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(@NotNull final Long codUnidade)
-            throws ProLogException {
+    List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(
+            @NotNull final Long codUnidade) throws ProLogException {
         try {
             return dao.getConfiguracoesTipoAfericaoVeiculo(codUnidade);
         } catch (final Throwable e) {
@@ -49,7 +49,7 @@ public class ConfiguracaoAfericaoService {
     }
 
     @NotNull
-    public Response updateConfiguracaoAlertaColetaSulco(
+    Response updateConfiguracaoAlertaColetaSulco(
             @NotNull final List<ConfiguracaoAlertaColetaSulco> configuracoes) throws ProLogException {
         try {
             dao.insertOrUpdateConfiguracoesAlertaColetaSulco(configuracoes);
@@ -61,8 +61,8 @@ public class ConfiguracaoAfericaoService {
     }
 
     @NotNull
-    public List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(@NotNull final Long codColaborador)
-            throws ProLogException {
+    List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(
+            @NotNull final Long codColaborador) throws ProLogException {
         try {
             return dao.getConfiguracoesAlertaColetaSulco(codColaborador);
         } catch (final Throwable e) {

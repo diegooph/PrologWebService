@@ -28,9 +28,9 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
     }
 
     @Override
-    public void insertOrUpdateConfiguracoesTiposVeiculosAferiveis(@NotNull final Long codUnidade,
-                                                                  @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes)
-            throws Throwable {
+    public void insertOrUpdateConfiguracoesTiposVeiculosAferiveis(
+            @NotNull final Long codUnidade,
+            @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -104,8 +104,8 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
 
     @NotNull
     @Override
-    public List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(@NotNull final Long codColaborador)
-            throws Throwable {
+    public List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(
+            @NotNull final Long codColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -114,19 +114,20 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIG_ALERTA_COLETA_SULCO(?);");
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
-            final List<ConfiguracaoAlertaColetaSulco> configs = new ArrayList<>();
+            final List<ConfiguracaoAlertaColetaSulco> configuracoes = new ArrayList<>();
             while (rSet.next()) {
-                configs.add(ConfiguracaoConverter.createConfiguracaoAlertaColetaSulco(rSet));
+                configuracoes.add(ConfiguracaoConverter.createConfiguracaoAlertaColetaSulco(rSet));
             }
-            return configs;
+            return configuracoes;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
     }
 
-    private void insertConfiguracaoTipoVeiculo(@NotNull final Connection conn,
-                                               @NotNull final Long codUnidade,
-                                               @NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) throws Throwable {
+    private void insertConfiguracaoTipoVeiculo(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO " +
@@ -147,9 +148,10 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         }
     }
 
-    private boolean updateCondiguracaoTipoVeiculo(@NotNull final Connection conn,
-                                                  @NotNull final Long codUnidade,
-                                                  @NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) throws Throwable {
+    private boolean updateCondiguracaoTipoVeiculo(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO " +
