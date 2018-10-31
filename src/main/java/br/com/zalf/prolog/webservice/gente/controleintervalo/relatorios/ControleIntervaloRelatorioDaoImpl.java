@@ -375,7 +375,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     private PreparedStatement getMarcacoesDiariasStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf,
                                                 Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM FUNC_RELATORIO_MARCACOES_DIARIAS(?, ?, ?, ?);");
+                "SELECT * FROM FUNC_MARCACAO_RELATORIO_MARCACOES_DIARIAS(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
