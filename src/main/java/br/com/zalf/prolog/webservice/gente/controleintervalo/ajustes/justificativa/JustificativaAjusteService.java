@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class JustificativaAjusteService {
+public final class JustificativaAjusteService {
 
     private static final String TAG = JustificativaAjusteService.class.getSimpleName();
     @NotNull
@@ -25,8 +25,9 @@ final class JustificativaAjusteService {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
-    AbstractResponse insertJustificativaAjuste(@NotNull final String userToken,
-                                               @NotNull final JustificativaAjuste justificativaAjuste) throws ProLogException {
+    public AbstractResponse insertJustificativaAjuste(@NotNull final String userToken,
+                                                      @NotNull final JustificativaAjuste justificativaAjuste) throws
+            ProLogException {
         try {
             return ResponseWithCod.ok("Justificativa inserida com sucesso",
                     dao.insertJustificativaAjuste(TokenCleaner.getOnlyToken(userToken), justificativaAjuste));
@@ -37,13 +38,13 @@ final class JustificativaAjusteService {
     }
 
     @NotNull
-    List<JustificativaAjuste> getJustificativasAjuste(@NotNull final Long codEmpresa,
-                                                      @Nullable final Boolean ativos) throws ProLogException {
+    public List<JustificativaAjuste> getJustificativasAjuste(@NotNull final Long codEmpresa,
+                                                             @Nullable final Boolean ativas) throws ProLogException {
         try {
-            return dao.getJustificativasAjuste(codEmpresa, ativos);
+            return dao.getJustificativasAjuste(codEmpresa, ativas);
         } catch (Throwable e) {
-            Log.e(TAG, "Erro ao inserir a Justificativa", e);
-            throw exceptionHandler.map(e, "Erro ao inserir a Justificativa, tente novamente");
+            Log.e(TAG, "Erro ao buscar as justificativas de ajustes", e);
+            throw exceptionHandler.map(e, "Erro ao buscar as justificativas de ajustes, tente novamente");
         }
     }
 }
