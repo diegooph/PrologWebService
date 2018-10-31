@@ -17,6 +17,13 @@ public final class JustificativaAjusteConverter {
 
     @NotNull
     static JustificativaAjuste createJustificativaAjuste(@NotNull final ResultSet rSet) throws Throwable {
-        return null;
+        final JustificativaAjuste justificativa = new JustificativaAjuste();
+        justificativa.setCodigo(rSet.getLong("CODIGO"));
+        justificativa.setCodEmpresa(rSet.getLong("COD_EMPRESA") == 0
+                ? null
+                : rSet.getLong("COD_EMPRESA"));
+        justificativa.setObrigatorioObservacao(rSet.getBoolean("OBRIGA_OBSERVACAO"));
+        justificativa.setAtiva(rSet.getBoolean("STATUS_ATIVO"));
+        return justificativa;
     }
 }

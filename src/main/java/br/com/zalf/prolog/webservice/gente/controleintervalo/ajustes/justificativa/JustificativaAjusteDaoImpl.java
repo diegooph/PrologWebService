@@ -79,12 +79,7 @@ public final class JustificativaAjusteDaoImpl extends DatabaseConnection impleme
             rSet = stmt.executeQuery();
             final List<JustificativaAjuste> justificativas = new ArrayList<>();
             while (rSet.next()) {
-                final JustificativaAjuste j = new JustificativaAjuste();
-                j.setCodEmpresa(rSet.getLong("CODIGO"));
-                j.setCodigo(rSet.getLong("COD_EMPRESA"));
-                j.setObrigatorioObservacao(rSet.getBoolean("OBRIGA_OBSERVACAO"));
-                j.setAtiva(rSet.getBoolean("STATUS_ATIVO"));
-                justificativas.add(j);
+                justificativas.add(JustificativaAjusteConverter.createJustificativaAjuste(rSet));
             }
             return justificativas;
         } finally {
