@@ -10,7 +10,10 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -387,7 +390,6 @@ public final class ControleJornadaDaoImpl extends DatabaseConnection implements 
                                                  @NotNull final IntervaloMarcacao intervaloMarcacao) throws Throwable {
         /*
         Temos um fluxo já definido de caminhos a serem seguidos para cada caso que poderemos ter na marcação.
-
             1 --> intervaloMarcacao é de INICIO
                 1.1 --> Insere marcacao na tabela Intervalo.
                 1.2 --> Insere codMarcacao na tabela de MARCACAO_INICIO.
@@ -397,23 +399,23 @@ public final class ControleJornadaDaoImpl extends DatabaseConnection implements 
                 2.1 --> Marcação possuí código de vínculo
                     2.1.1 --> Insere marcação na tabela Intervalo.
                     2.1.2 --> Insere codMarcacao na tabela MARCACAO_FIM.
-                    2.1.3 --> Insere codMarcacao e codMarcacaoVinculada na tabela VINCULO_INICIO_FIM.
-                    2.1.4 --> O código de vínculo possuí outra marcação associada
-                        2.1.4.1 --> Insere códigos na Tabela Inconsistência.
+                    2.1.3 --> O código de vínculo possuí outra marcação associada
+                        2.1.3.1 --> Insere códigos na Tabela Inconsistência.
+                        2.1.3.2 --> FIM DO PROCESSO;
+                    2.1.4 --> O código de vínculo não possuí outra marcação associada
+                        2.1.4.1 --> Insere codMarcacao e codMarcacaoVinculada na tabela VINCULO_INICIO_FIM.
                         2.1.4.2 --> FIM DO PROCESSO;
-                    2.1.5 --> O código de vínculo não possuí outra marcação associada
-                        2.1.5.1 --> FIM DO PROCESSO;
                 2.2 --> Marcação não possuí código de vínculo
                     2.2.1 --> Busca codMarcacaoInicio com base no algoritmo de matching de marcações
                     2.2.2 --> CodMarcacaoInicio encontrado
                         2.2.2.1 --> Insere marcação na tabela Intervalo.
                         2.2.2.2 --> Insere codMarcacao na tabela MARCACAO_FIM.
-                        2.2.2.3 --> Insere codMarcacao e codMarcacaoInicio na tabela VINCULO_INICIO_FIM.
-                        2.2.2.4 --> O código de vínculo possuí outra marcação associada
-                            2.2.2.4.1 --> Insere códigos na Tabela Inconsistência.
+                        2.2.2.3 --> O código de vínculo possuí outra marcação associada
+                            2.2.2.3.1 --> Insere códigos na Tabela Inconsistência.
+                            2.2.2.3.2 --> FIM DO PROCESSO;
+                        2.2.2.4 --> O código de vínculo não possuí outra marcação associada
+                            2.2.2.4.1 --> Insere codMarcacao e codMarcacaoVinculada na tabela VINCULO_INICIO_FIM.
                             2.2.2.4.2 --> FIM DO PROCESSO;
-                        2.2.2.5 --> O código de vínculo não possuí outra marcação associada
-                            2.2.2.5.1 --> FIM DO PROCESSO;
                     2.2.3 --> CodMarcacaoInicio não encontrado
                         2.2.2.1 --> Insere marcação na tabela Intervalo.
                         2.2.2.2 --> Insere codMarcacao na tabela MARCACAO_FIM.
@@ -426,32 +428,54 @@ public final class ControleJornadaDaoImpl extends DatabaseConnection implements 
             insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_INICIO);
             return codMarcacaoInserida;
         } else {
-            if (intervaloMarcacao.getCodMarcacaoVinculada() != null) {
+            final Long codMarcacaoVinculada = intervaloMarcacao.getCodMarcacaoVinculada() != null
+                    ? intervaloMarcacao.getCodMarcacaoVinculada()
+                    : buscaMarcacaoInicioVinculo(
+                    conn,
+                    intervaloMarcacao.getCodUnidade(),
+                    intervaloMarcacao.getCodTipoIntervalo(),
+                    intervaloMarcacao.getCpfColaborador());
+            if (codMarcacaoVinculada != null && codMarcacaoVinculada > 0) {
                 final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
                 insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
-                insereVinculoInicioFim(conn, intervaloMarcacao.getCodMarcacaoVinculada(), codMarcacaoInserida);
-                // TODO: Se o vínculo já existir, daria erro no método acima nem chegando a chamar o abaixo.
-                insereMarcacaoInconsistenteSeExistir(conn, intervaloMarcacao.getCodMarcacaoVinculada(), codMarcacaoInserida);
+                insertInconsistenciaOrVinculo(conn, codMarcacaoVinculada, codMarcacaoInserida);
                 return codMarcacaoInserida;
             } else {
-                final Long codMarcacacaoVinculo = buscaMarcacaoInicioVinculo(
-                        conn,
-                        intervaloMarcacao.getCodUnidade(),
-                        intervaloMarcacao.getCodTipoIntervalo(),
-                        intervaloMarcacao.getCpfColaborador());
-                if (codMarcacacaoVinculo == null || codMarcacacaoVinculo <= 0) {
-                    final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
-                    insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
-                    return codMarcacaoInserida;
-                } else {
-                    final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
-                    insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
-                    insereVinculoInicioFim(conn, codMarcacacaoVinculo, codMarcacaoInserida);
-                    // TODO: Se o vínculo já existir, daria erro no método acima nem chegando a chamar o abaixo.
-                    insereMarcacaoInconsistenteSeExistir(conn, codMarcacacaoVinculo, codMarcacaoInserida);
-                    return codMarcacaoInserida;
-                }
+                final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
+                insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
+                return codMarcacaoInserida;
             }
+        }
+    }
+
+    private void insertInconsistenciaOrVinculo(@NotNull final Connection conn,
+                                               @NotNull final Long codMarcacaoVinculada,
+                                               @NotNull final Long codMarcacaoInserida) throws Throwable {
+        if (marcacaoPossuiInconsistencia(conn, codMarcacaoVinculada)) {
+            insereMarcacaoInconsistenteSeExistir(conn, codMarcacaoVinculada, codMarcacaoInserida);
+        } else {
+            insereVinculoInicioFim(conn, codMarcacaoVinculada, codMarcacaoInserida);
+        }
+    }
+
+    private boolean marcacaoPossuiInconsistencia(@NotNull final Connection conn,
+                                                 @NotNull final Long codMarcacao) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT CODIGO " +
+                    "FROM MARCACAO_VINCULO_INICIO_FIM " +
+                    "WHERE COD_MARCACAO_INICIO = ?;");
+            stmt.setLong(1, codMarcacao);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                // Se o CODIGO <= 0 então não existe inconsistência para a marcação.
+                return rSet.getLong("CODIGO") > 0;
+            } else {
+                throw new SQLException("Erro ao verificar se uma marcação " + codMarcacao + " possui inconsistência");
+            }
+        } finally {
+            close(rSet, stmt);
         }
     }
 
