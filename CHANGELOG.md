@@ -9,7 +9,6 @@ Change Log
 * Cria nova function e novos métodos para gerar relatório de dados gerais de checklist
 
 ### Refactors
-* Altera verificação de cadastro de pneus para permitir inserções de pneu com valor 0
 * Altera nome dos métodos e da function referente ao relatório de marcações diárias
 * Acrescenta colunas ao relatório de marcações diárias
 
