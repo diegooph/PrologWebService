@@ -12,6 +12,9 @@ Change Log
 * Altera nome dos métodos e da function referente ao relatório de marcações diárias
 * Acrescenta colunas ao relatório de marcações diárias
 
+### Bug Fixes
+* Remove autenticação com @Secured do insert de marcações para corrigir problema no envio da data de nascimento do app
+
 <a name="v0.0.77"></a>
 ## Version [v0.0.77](https://github.com/luizfp/PrologWebService/compare/v0.0.76...v0.0.77) (2018-10-19)
 
