@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.78"></a>
-## Version [v0.0.78](https://github.com/luizfp/PrologWeb/compare/v0.0.77...v0.0.78) (release-data) [unreleased]
+## Version [v0.0.78](https://github.com/luizfp/PrologWebService/compare/v0.0.77...v0.0.78) (release-data) [unreleased]
 
 ### Features
 * Cria nova function e novos métodos para gerar relatório de listagem de modelos de checklist
@@ -14,7 +14,7 @@ Change Log
 * Acrescenta colunas ao relatório de marcações diárias
 
 <a name="v0.0.77"></a>
-## Version [v0.0.77](https://github.com/luizfp/PrologWeb/compare/v0.0.76...v0.0.77) (2018-10-19)
+## Version [v0.0.77](https://github.com/luizfp/PrologWebService/compare/v0.0.76...v0.0.77) (2018-10-19)
 
 ### Features
 * Cria relatório para mostrar o KM rodado por pneu e por vida
@@ -29,7 +29,7 @@ Change Log
 * Corrige leitura da hrSaida e hrEntrada no import do mapa
 
 <a name="v0.0.76"></a>
-## Version [v0.0.76](https://github.com/luizfp/PrologWeb/compare/v0.0.75...v0.0.76) (2018-10-02)
+## Version [v0.0.76](https://github.com/luizfp/PrologWebService/compare/v0.0.75...v0.0.76) (2018-10-02)
 
 ### Features
 * Permite filtro por múltiplas unidades nos relatórios do checklist
@@ -45,7 +45,7 @@ Change Log
 * Altera métodos de busca dos itens de O.S. do checklist
 
 <a name="v0.0.75"></a>
-## Version [v0.0.75](https://github.com/luizfp/PrologWeb/compare/v0.0.74...v0.0.75) (2018-09-04)
+## Version [v0.0.75](https://github.com/luizfp/PrologWebService/compare/v0.0.74...v0.0.75) (2018-09-04)
 
 ### Features
 * Cria nova function e novos métodos para gerar relatório geral de aferição
@@ -58,7 +58,7 @@ utilizado no arquivo)
 * Corrige criação das alternativas 'tipo outros' do modelo de checklist
 
 <a name="v0.0.74"></a>
-## Version [v0.0.74](https://github.com/luizfp/PrologWeb/compare/v0.0.73...v0.0.74) (2018-08-30)
+## Version [v0.0.74](https://github.com/luizfp/PrologWebService/compare/v0.0.73...v0.0.74) (2018-08-30)
 
 ### Features
 * Cria funcionalidade para permitir a aferição avulsa de pneus em estoque
@@ -92,7 +92,7 @@ alterações realizadas na parte de pneus (principalmente ligadas a sincronia de
 * Corrige parse do BigDecimal no import da produtividade da Raízen para diferentes tipos de arquivo importados (XLSX ou CSV)
 
 <a name="v0.0.73"></a>
-## Version [v0.0.73](https://github.com/luizfp/PrologWeb/compare/v0.0.72...v0.0.73) (2018-08-13)
+## Version [v0.0.73](https://github.com/luizfp/PrologWebService/compare/v0.0.72...v0.0.73) (2018-08-13)
 
 ### Features
 * Cria novo método no Resource para busca dos itens de OS do checklist
@@ -108,13 +108,13 @@ alterações realizadas na parte de pneus (principalmente ligadas a sincronia de
 * Corrige parse do BigDecimal no import da produtividade da Raízen
 
 <a name="v0.0.72"></a>
-## Version [v0.0.72](https://github.com/luizfp/PrologWeb/compare/v0.0.71...v0.0.72) (2018-08-05)
+## Version [v0.0.72](https://github.com/luizfp/PrologWebService/compare/v0.0.71...v0.0.72) (2018-08-05)
 
 ### Features
 * Cria produtividade da Raízen
 
 <a name="v0.0.71"></a>
-## Version [v0.0.71](https://github.com/luizfp/PrologWeb/compare/v0.0.70...v0.0.71) (2018-07-31)
+## Version [v0.0.71](https://github.com/luizfp/PrologWebService/compare/v0.0.70...v0.0.71) (2018-07-31)
 
 ### Features
 * Cria novo método para buscar todos os checklists completos
@@ -128,14 +128,14 @@ alterações realizadas na parte de pneus (principalmente ligadas a sincronia de
 * Corrige cálculo das horas noturnas no relatório de folha de ponto do controle de jornada
 
 <a name="v0.0.70"></a>
-## Version [v0.0.70](https://github.com/luizfp/PrologWeb/compare/v0.0.69...v0.0.70) (2018-07-29)
+## Version [v0.0.70](https://github.com/luizfp/PrologWebService/compare/v0.0.69...v0.0.70) (2018-07-29)
 
 ### Features
 * Cria relatório com o tempo total por tipo de marcação no controle de jornada
 * Cálcula horas noturnas no relatório de folha de ponto
 
 <a name="v0.0.69"></a>
-## Version [v0.0.69](https://github.com/luizfp/PrologWeb/compare/v0.0.68...v0.0.69) (2018-07-19)
+## Version [v0.0.69](https://github.com/luizfp/PrologWebService/compare/v0.0.68...v0.0.69) (2018-07-19)
 
 ### Features
 * Cria validator para o insert do Modelo de Quiz
@@ -150,7 +150,7 @@ alterações realizadas na parte de pneus (principalmente ligadas a sincronia de
 * Corrige update da banda de um pneu
 
 <a name="v0.0.68"></a>
-## Version [v0.0.68](https://github.com/luizfp/PrologWeb/compare/v0.0.67...v0.0.68) (2018-07-14)
+## Version [v0.0.68](https://github.com/luizfp/PrologWebService/compare/v0.0.67...v0.0.68) (2018-07-14)
 
 ### Features
 * Cria error code específico para versão do app bloqueada
@@ -168,14 +168,14 @@ alterações realizadas na parte de pneus (principalmente ligadas a sincronia de
 * Corrige query que busca a quantidade de serviços em aberto na listagem de serviços
 
 <a name="v0.0.67"></a>
-## Version [v0.0.67](https://github.com/luizfp/PrologWeb/compare/v0.0.66...v0.0.67) (2018-07-09)
+## Version [v0.0.67](https://github.com/luizfp/PrologWebService/compare/v0.0.66...v0.0.67) (2018-07-09)
 
 ### Bug Fixes
 * Remove uso de anotação @NotNull da developerMessage na ProLogException
 * Verifica se matrícula ambev ou da transportadora são nulas antes de setar no objeto Colaborador
 
 <a name="v0.0.66"></a>
-## Version [v0.0.66](https://github.com/luizfp/PrologWeb/compare/v0.0.65...v0.0.66) (2018-07-04)
+## Version [v0.0.66](https://github.com/luizfp/PrologWebService/compare/v0.0.65...v0.0.66) (2018-07-04)
 
 ### Refactors
 * Remove utilização da tabela UNIDADE_FUNCAO do servidor
@@ -184,7 +184,7 @@ alterações realizadas na parte de pneus (principalmente ligadas a sincronia de
 * Lida com novo status no prontuário do condutor
 
 <a name="v0.0.65"></a>
-## Version [v0.0.65](https://github.com/luizfp/PrologWeb/compare/v0.0.64...v0.0.65) (2018-07-03)
+## Version [v0.0.65](https://github.com/luizfp/PrologWebService/compare/v0.0.64...v0.0.65) (2018-07-03)
 
 ### Features
 * Cria back end para salvar mensagens de contato de possíveis clientes
@@ -214,7 +214,7 @@ alterações realizadas na parte de pneus (principalmente ligadas a sincronia de
 de pneus que não estão na primeira vida;
 
 <a name="v0.0.64"></a>
-## Version [v0.0.64](https://github.com/luizfp/PrologWeb/compare/v0.0.63...v0.0.64) (2018-06-13)
+## Version [v0.0.64](https://github.com/luizfp/PrologWebService/compare/v0.0.63...v0.0.64) (2018-06-13)
 
 ### Refactor
 * Remove JOIN não necessário na busca de uma aferição por código
@@ -225,7 +225,7 @@ de pneus que não estão na primeira vida;
 * Melhora fluxo de lançamento de exceções e propagação nos services
 
 <a name="v0.0.63"></a>
-## Version [v0.0.63](https://github.com/luizfp/PrologWeb/compare/v0.0.62...v0.0.63) (2018-06-05)
+## Version [v0.0.63](https://github.com/luizfp/PrologWebService/compare/v0.0.62...v0.0.63) (2018-06-05)
 
 ### Features
 * Permite ativar/inativar um modelo de checklist
@@ -239,7 +239,7 @@ de pneus que não estão na primeira vida;
 * Corrige busca de uma aferição por código removendo comparação de código de unidade com a tabela `PNEU`
 
 <a name="v0.0.62"></a>
-## Version [v0.0.62](https://github.com/luizfp/PrologWeb/compare/v0.0.61...v0.0.62) (2018-06-03)
+## Version [v0.0.62](https://github.com/luizfp/PrologWebService/compare/v0.0.61...v0.0.62) (2018-06-03)
 
 ### Features
 * Cria validador para o insert do pneu
@@ -255,7 +255,7 @@ de pneus que não estão na primeira vida;
 * Corrige busca das aferições
 
 <a name="v0.0.61"></a>
-## Version [v0.0.61](https://github.com/luizfp/PrologWeb/compare/v0.0.60...v0.0.61) (2018-05-22)
+## Version [v0.0.61](https://github.com/luizfp/PrologWebService/compare/v0.0.60...v0.0.61) (2018-05-22)
 
 ### Refactors
 * Altera pasta de salvamento das imagens do checklist
@@ -266,7 +266,7 @@ de pneus que não estão na primeira vida;
 * Corrige busca da quantidade de pneus com pressão incorreta (dashboard)
 
 <a name="v0.0.60"></a>
-## Version [v0.0.60](https://github.com/luizfp/PrologWeb/compare/v0.0.59...v0.0.60) (2018-05-17)
+## Version [v0.0.60](https://github.com/luizfp/PrologWebService/compare/v0.0.59...v0.0.60) (2018-05-17)
 
 ### Refactors
 * Adiciona código do colaborador na criação do objeto na `ColaboradorDaoImpl`
@@ -275,13 +275,13 @@ de pneus que não estão na primeira vida;
 * Seta credenciais da Amazon ao logar usuário caso ele tenha permissão de cadastro de pneu
 
 <a name="v0.0.59"></a>
-## Version [v0.0.59](https://github.com/luizfp/PrologWeb/compare/v0.0.58...v0.0.59) (2018-05-15)
+## Version [v0.0.59](https://github.com/luizfp/PrologWebService/compare/v0.0.58...v0.0.59) (2018-05-15)
 
 ### Bug Fixes
 * Corrige busca do cronograma da aferição na integração com a Avilan
 
 <a name="v0.0.58"></a>
-## Version [v0.0.58](https://github.com/luizfp/PrologWeb/compare/v0.0.57...v0.0.58) (2018-05-15)
+## Version [v0.0.58](https://github.com/luizfp/PrologWebService/compare/v0.0.57...v0.0.58) (2018-05-15)
 
 ### Features
 * Cria método para buscar um tipo de intervalo específico
@@ -302,7 +302,7 @@ de pneus que não estão na primeira vida;
 * Altera busca dos prontuários dos condutores para levar em conta apenas colaboradores ativos
 
 <a name="v0.0.57"></a>
-## Version [v0.0.57](https://github.com/luizfp/PrologWeb/compare/v0.0.56...v0.0.57) (2018-05-08)
+## Version [v0.0.57](https://github.com/luizfp/PrologWebService/compare/v0.0.56...v0.0.57) (2018-05-08)
 
 ### Features
 * Permite importar arquivos XLSX, além de CSV, para a função de Escala Diária
