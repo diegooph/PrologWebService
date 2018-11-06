@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.78"></a>
-## Version [v0.0.78](https://github.com/luizfp/PrologWebService/compare/v0.0.77...v0.0.78) (release-data) [unreleased]
+## Version [v0.0.78](https://github.com/luizfp/PrologWebService/compare/v0.0.77...v0.0.78) (2018-11-06)
 
 ### Features
 * Cria nova function e novos métodos para gerar relatório de listagem de modelos de checklist
