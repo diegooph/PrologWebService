@@ -10,9 +10,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class NovaAfericao {
     private Restricao restricao;
-
     private double variacaoAceitaSulcoMenorMilimetros;
-
     private double variacaoAceitaSulcoMaiorMilimetros;
 
     @Exclude

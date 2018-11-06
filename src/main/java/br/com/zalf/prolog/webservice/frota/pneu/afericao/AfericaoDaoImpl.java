@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.model.ConfiguracaoTipoVeiculoAferivel;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuConverter;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
@@ -106,7 +105,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             novaAfericao.setVeiculo(veiculo);
 
             // Configurações/parametrizações necessárias para a aferição.
-            final ConfiguracaoNovaAfericao configuracao = getConfiguracaoNovaAfericao(conn, placa);
+            final ConfiguracaoNovaAfericaoPlaca configuracao = getConfiguracaoNovaAfericaoPlaca(conn, placa);
             novaAfericao.setRestricao(Restricao.createRestricaoFrom(configuracao));
             novaAfericao.setDeveAferirEstepes(configuracao.isPodeAferirEstepe());
             novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(configuracao.getVariacaoAceitaSulcoMenorMilimetros());
@@ -134,8 +133,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             rSet = stmt.executeQuery();
             final NovaAfericaoAvulsa novaAfericao = new NovaAfericaoAvulsa();
             if (rSet.next()) {
-                novaAfericao.setRestricao(getRestricaoByCodUnidade(conn, codUnidade));
+                final ConfiguracaoNovaAfericao config = getConfiguracaoNovaAfericaoAvulsa(conn, codPneu);
+                novaAfericao.setRestricao(Restricao.createRestricaoFrom(config));
                 novaAfericao.setPneuParaAferir(createPneuAfericaoAvulsa(rSet));
+                novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(config.getVariacaoAceitaSulcoMenorMilimetros());
+                novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(config.getVariacaoAceitaSulcoMaiorMilimetros());
             }
             return novaAfericao;
         } finally {
@@ -268,7 +270,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_PLACAS_PAGINADA(?, ?, ?, ?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_PLACAS_PAGINADA(?, ?, ?, ?, ?, ?," +
+                    " ?, ?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt.setLong(1, codUnidade);
 
@@ -310,7 +313,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_AVULSAS_PAGINADA(?, ?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_AVULSAS_PAGINADA(?, ?, ?, ?, ?, " +
+                    "?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, dataInicial);
@@ -406,7 +410,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         Connection conn = null;
         try {
             conn = getConnection();
-            return getConfiguracaoNovaAfericao(conn, placa);
+            return getConfiguracaoNovaAfericaoPlaca(conn, placa);
         } finally {
             closeConnection(conn);
         }
@@ -433,29 +437,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private ConfiguracaoTipoVeiculoAferivel getConfiguracoesNovaAfericaoPlaca(@NotNull final String placa)
+    private ConfiguracaoNovaAfericaoPlaca getConfiguracaoNovaAfericaoPlaca(@NotNull final Connection conn,
+                                                                           @NotNull final String placa)
             throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIGURACOES_AFERICAO_BY_PLACA(?);");
-            stmt.setString(1, placa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return createConfiguracaoTipoAfericao(rSet);
-            } else {
-                throw new Throwable("Dados de configurações de aferição não encontrados para a placa: " + placa);
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    private ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final Connection conn,
-                                                                 @NotNull final String placa) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -463,7 +447,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return createConfiguracaoNovaAfericao(rSet);
+                return createConfiguracaoNovaAfericaoPlaca(rSet);
             } else {
                 throw new IllegalStateException("Dados de configurações de aferição não encontrados para a placa: "
                         + placa);
@@ -474,8 +458,30 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private ConfiguracaoNovaAfericao createConfiguracaoNovaAfericao(@NotNull final ResultSet rSet) throws SQLException {
-        final ConfiguracaoNovaAfericao config = new ConfiguracaoNovaAfericao();
+    private ConfiguracaoNovaAfericaoAvulsa getConfiguracaoNovaAfericaoAvulsa(@NotNull final Connection conn,
+                                                                             @NotNull final Long codPneu)
+            throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIGURACOES_NOVA_AFERICAO_AVULSA(?);");
+            stmt.setLong(1, codPneu);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createConfiguracaoNovaAfericaoAvulsa(rSet);
+            } else {
+                throw new IllegalStateException("Dados de configurações de aferição não encontrados para o pneu: "
+                        + codPneu);
+            }
+        } finally {
+            closeConnection(null, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private ConfiguracaoNovaAfericaoPlaca createConfiguracaoNovaAfericaoPlaca(@NotNull final ResultSet rSet)
+            throws SQLException {
+        final ConfiguracaoNovaAfericaoPlaca config = new ConfiguracaoNovaAfericaoPlaca();
         config.setSulcoMinimoDescarte(rSet.getDouble("SULCO_MINIMO_DESCARTE"));
         config.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
         config.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
@@ -486,6 +492,22 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
         config.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
         config.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
+        config.setVariacaoAceitaSulcoMenorMilimetros(rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"));
+        config.setVariacaoAceitaSulcoMaiorMilimetros(rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
+        config.setUsaDefaultProLog(rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"));
+        return config;
+    }
+
+    @NotNull
+    private ConfiguracaoNovaAfericaoAvulsa createConfiguracaoNovaAfericaoAvulsa(@NotNull final ResultSet rSet)
+            throws SQLException {
+        final ConfiguracaoNovaAfericaoAvulsa config = new ConfiguracaoNovaAfericaoAvulsa();
+        config.setSulcoMinimoDescarte(rSet.getDouble("SULCO_MINIMO_DESCARTE"));
+        config.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
+        config.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
+        config.setToleranciaInspecao(rSet.getDouble("TOLERANCIA_INSPECAO"));
+        config.setPeriodoDiasAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));
+        config.setPeriodoDiasAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
         config.setVariacaoAceitaSulcoMenorMilimetros(rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"));
         config.setVariacaoAceitaSulcoMaiorMilimetros(rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
         config.setUsaDefaultProLog(rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"));
@@ -512,17 +534,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             pneuAvulso.setPlacaAplicadoQuandoAferido(rSet.getString("PLACA_VEICULO_ULTIMA_AFERICAO"));
         }
         return pneuAvulso;
-    }
-
-    @NotNull
-    private ConfiguracaoTipoVeiculoAferivel createConfiguracaoTipoAfericao(
-            @NotNull final ResultSet rSet) throws Throwable {
-        final ConfiguracaoTipoVeiculoAferivel config = new ConfiguracaoTipoVeiculoAferivel();
-        config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
-        config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
-        config.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
-        config.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
-        return config;
     }
 
     @NotNull

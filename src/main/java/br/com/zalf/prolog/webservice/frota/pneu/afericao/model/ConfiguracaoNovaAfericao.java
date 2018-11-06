@@ -7,23 +7,19 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ConfiguracaoNovaAfericao {
-
+public abstract class ConfiguracaoNovaAfericao {
     private double sulcoMinimoDescarte;
     private double sulcoMinimoRecape;
     private double toleranciaInspecao;
     private double toleranciaCalibragem;
     private int periodoDiasAfericaoSulco;
     private int periodoDiasAfericaoPressao;
-    private boolean podeAferirSulco;
-    private boolean podeAferirPressao;
-    private boolean podeAferirSulcoPressao;
-    private boolean podeAferirEstepe;
     private double variacaoAceitaSulcoMenorMilimetros;
     private double variacaoAceitaSulcoMaiorMilimetros;
     private boolean usaDefaultProLog;
 
     public ConfiguracaoNovaAfericao() {
+
     }
 
     public double getSulcoMinimoDescarte() {
@@ -72,38 +68,6 @@ public class ConfiguracaoNovaAfericao {
 
     public void setPeriodoDiasAfericaoPressao(final int periodoDiasAfericaoPressao) {
         this.periodoDiasAfericaoPressao = periodoDiasAfericaoPressao;
-    }
-
-    public boolean isPodeAferirSulco() {
-        return podeAferirSulco;
-    }
-
-    public void setPodeAferirSulco(final boolean podeAferirSulco) {
-        this.podeAferirSulco = podeAferirSulco;
-    }
-
-    public boolean isPodeAferirPressao() {
-        return podeAferirPressao;
-    }
-
-    public void setPodeAferirPressao(final boolean podeAferirPressao) {
-        this.podeAferirPressao = podeAferirPressao;
-    }
-
-    public boolean isPodeAferirSulcoPressao() {
-        return podeAferirSulcoPressao;
-    }
-
-    public void setPodeAferirSulcoPressao(final boolean podeAferirSulcoPressao) {
-        this.podeAferirSulcoPressao = podeAferirSulcoPressao;
-    }
-
-    public boolean isPodeAferirEstepe() {
-        return podeAferirEstepe;
-    }
-
-    public void setPodeAferirEstepe(final boolean podeAferirEstepe) {
-        this.podeAferirEstepe = podeAferirEstepe;
     }
 
     public double getVariacaoAceitaSulcoMenorMilimetros() {
