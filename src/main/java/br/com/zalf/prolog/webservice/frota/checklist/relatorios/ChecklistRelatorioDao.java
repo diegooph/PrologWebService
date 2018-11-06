@@ -71,4 +71,20 @@ public interface ChecklistRelatorioDao {
                                                @NotNull final String placa,
                                                @NotNull final LocalDate dataInicial,
                                                @NotNull final LocalDate dataFinal) throws Throwable;
+
+    void getListagemModelosChecklistCsv(@NotNull final OutputStream outputStream,
+                                        @NotNull final List<Long> codUnidades) throws Throwable;
+
+    @NotNull
+    Report getListagemModelosChecklistReport(@NotNull final List<Long> codUnidades) throws Throwable;
+
+    void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
+                                    @NotNull final List<Long> codUnidades,
+                                    @NotNull final String dataInicial,
+                                    @NotNull final String dataFinal) throws Throwable;
+
+    @NotNull
+    Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
+                                         @NotNull final String dataInicial,
+                                         @NotNull final String dataFinal) throws Throwable;
 }

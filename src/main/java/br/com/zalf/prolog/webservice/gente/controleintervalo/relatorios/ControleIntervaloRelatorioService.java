@@ -23,27 +23,27 @@ public class ControleIntervaloRelatorioService {
     private ControleIntervaloRelatoriosDao dao = Injection.provideControleIntervaloRelatoriosDao();
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
-    public void getIntervalosCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
+    public void getMarcacoesDiariasCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
         try {
-            dao.getIntervalosCsv(out, codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
+            dao.getMarcacoesDiariasCsv(out, codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os intervalos realizados (CSV). \n" +
                     "codUnidade: %d \n" +
                     "cpf: %s \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+                    "dataInicial: %d \n" +
+                    "dataFinal: %d", codUnidade, cpf, dataInicial, dataFinal), e);
         }
     }
 
-    public Report getIntervalosReport(Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
+    public Report getMarcacoesDiariasReport(Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
         try {
-            return dao.getIntervalosReport(codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
-        } catch (SQLException | IOException e) {
+            return dao.getMarcacoesDiariasReport(codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
+        } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os intervalos realizados (REPORT). \n" +
                     "codUnidade: %d \n" +
                     "cpf: %s \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+                    "dataInicial: %d \n" +
+                    "dataFinal: %d", codUnidade, cpf, dataInicial, dataFinal), e);
             return null;
         }
     }

@@ -37,7 +37,7 @@ public final class ControleIntervaloResource {
      */
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
+//    @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             IntervaloMarcacao intervaloMarcacao) {

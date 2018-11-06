@@ -31,7 +31,7 @@ public interface ControleIntervaloRelatoriosDao {
      * @throws SQLException
      * @throws IOException
      */
-    void getIntervalosCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+    void getMarcacoesDiariasCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
             throws SQLException, IOException;
 
     /**
@@ -46,8 +46,8 @@ public interface ControleIntervaloRelatoriosDao {
      * @throws IOException
      */
     @NotNull
-    Report getIntervalosReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
-            throws SQLException, IOException;
+    Report getMarcacoesDiariasReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+            throws SQLException;
 
     /**
      * Relatório que estratifica todos os mapas, seus colaboradores e intervalos realizados por cada um
