@@ -366,7 +366,7 @@ public interface RelatorioPneuDao {
      * de cada pneu.
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      */
-    List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws SQLException;
+    List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws Throwable;
 
     /**
      * Método que busca a quantidade de pneus descartados devido ao mesmo {@link MotivoDescarte}.

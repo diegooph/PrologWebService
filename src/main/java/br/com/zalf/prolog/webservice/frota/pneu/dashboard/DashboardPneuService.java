@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalC
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import org.jetbrains.annotations.NotNull;
 
@@ -143,15 +144,18 @@ public final class DashboardPneuService {
     }
 
     public ScatterChartComponent getMenorSulcoEPressaoPneu(@NotNull final Integer codComponente,
-                                                           @NotNull final List<Long> codUnidades) {
+                                                           @NotNull final List<Long> codUnidades)
+            throws ProLogException {
         try {
             return DashboardPneuComponentsCreator.createMenorSulcoEPressaoPneus(
                     dashDao.getComponenteByCodigo(codComponente),
                     relatorioDao.getMenorSulcoEPressaoPneus(codUnidades));
-        } catch (SQLException e){
+        } catch (final Throwable e){
             Log.e(TAG, String.format("Erro ao buscar o menor sulco de cada pneu. \n" +
                     "unidades: %s", codUnidades.toString()), e);
-            throw new RuntimeException(e);
+            throw Injection.provideProLogExceptionHandler().map(
+                    e,
+                    "Erro ao buscar componente da dashboard, tente novamente");
         }
     }
 

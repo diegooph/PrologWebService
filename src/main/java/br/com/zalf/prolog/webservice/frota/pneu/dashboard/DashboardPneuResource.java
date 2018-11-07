@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalC
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -82,7 +83,8 @@ public final class DashboardPneuResource {
     @GET
     @Path("menor-sulco-e-pressao-pneus/{codComponente}")
     public ScatterChartComponent getMenorSulcoEPressaoPneu(@PathParam("codComponente") Integer codComponente,
-                                                           @QueryParam("codUnidades") List<Long> codUnidades) {
+                                                           @QueryParam("codUnidades") List<Long> codUnidades)
+            throws ProLogException {
         return service.getMenorSulcoEPressaoPneu(codComponente, codUnidades);
     }
 
