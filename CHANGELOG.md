@@ -4,6 +4,8 @@ Change Log
 <a name="v0.0.79"></a>
 ## Version [v0.0.79](https://github.com/luizfp/PrologWebService/compare/v0.0.78...v0.0.79) (release-date) [unreleased]
 
+### Refactors
+* Adiciona infos extras no gráfico de scatter dos pneus com menor sulco e pressão da dashboard
 
 <a name="v0.0.78"></a>
 ## Version [v0.0.78](https://github.com/luizfp/PrologWebService/compare/v0.0.77...v0.0.78) (2018-11-06)
