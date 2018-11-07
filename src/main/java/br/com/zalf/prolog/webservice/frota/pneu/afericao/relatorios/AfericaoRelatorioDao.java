@@ -15,29 +15,48 @@ import java.util.List;
 public interface AfericaoRelatorioDao {
 
     /**
+     * Método para buscar o relatório de cronograma das aferições de placas em CSV.
+     *
+     * @param out         Streaming onde os dados serão escritos.
+     * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    void getCronogramaAfericoesPlacasCsv(@NotNull final OutputStream out,
+                                         @NotNull final List<Long> codUnidades) throws Throwable;
+
+    /**
+     * Método para buscar o relatório de cronograma das aferições de placas em formato {@link Report report}.
+     *
+     * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    Report getCronogramaAfericoesPlacasReport(@NotNull final List<Long> codUnidades) throws Throwable;
+
+    /**
      * Método para gerar um relatório contendo todos os dados de aferições realizadas em arquivo CSV.
      *
-     * @param out         - Streaming onde os dados serão escritos.
-     * @param codUnidades - Códigos das unidades pela quais as informações serão filtradas.
-     * @param dataInicial - Data inicial do período de filtro.
-     * @param dataFinal   - Data final do período de filtro.
-     * @throws Throwable - Se algum erro ocorrer.
+     * @param out         Streaming onde os dados serão escritos.
+     * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
+     * @param dataInicial Data inicial do período de filtro.
+     * @param dataFinal   Data final do período de filtro.
+     * @throws Throwable Se algum erro ocorrer.
      */
     void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
-                                   @NotNull final List<Long> codUnidades,
-                                   @NotNull final LocalDate dataInicial,
-                                   @NotNull final LocalDate dataFinal) throws Throwable;
+                                    @NotNull final List<Long> codUnidades,
+                                    @NotNull final LocalDate dataInicial,
+                                    @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método para gerar um relatório contendo todos os dados de aferições realizadas em formato {@link Report report}.
      *
-     * @param codUnidades - Códigos das unidades pela quais as informações serão filtradas.
-     * @param dataInicial - Data inicial do período de filtro.
-     * @param dataFinal   - Data final do período de filtro.
-     * @throws Throwable - Se algum erro ocorrer.
+     * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
+     * @param dataInicial Data inicial do período de filtro.
+     * @param dataFinal   Data final do período de filtro.
+     * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
     Report getDadosGeraisAfericoesReport(@NotNull final List<Long> codUnidades,
-                                        @NotNull final LocalDate dataInicial,
-                                        @NotNull final LocalDate dataFinal) throws Throwable;
+                                         @NotNull final LocalDate dataInicial,
+                                         @NotNull final LocalDate dataFinal) throws Throwable;
 }

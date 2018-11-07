@@ -25,8 +25,44 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
 
     @Override
+    public void getCronogramaAfericoesPlacasCsv(@NotNull final OutputStream out,
+                                                @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getCronogramaAfericoesPlacasStmt(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(out)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getCronogramaAfericoesPlacasReport(@NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getCronogramaAfericoesPlacasStmt(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     public void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
-                                           @NotNull final List<Long> codUnidade,
+                                           @NotNull final List<Long> codUnidades,
                                            @NotNull final LocalDate dataInicial,
                                            @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -34,7 +70,7 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisAfericoesStmt(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getDadosGeraisAfericoesStmt(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(out)
@@ -62,6 +98,15 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    private PreparedStatement getCronogramaAfericoesPlacasStmt(@NotNull final Connection conn,
+                                                               @NotNull final List<Long> codUnidades) throws Throwable {
+        final PreparedStatement stmt =
+                conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_CRONOGRAMA_AFERICOES_PLACAS(?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        return stmt;
     }
 
     @NotNull

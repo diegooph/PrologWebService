@@ -15,7 +15,6 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppV
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -32,27 +31,19 @@ import java.util.List;
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class RelatorioPneuResource {
-    @NotNull
-    private final RelatorioPneuService service = new RelatorioPneuService();
-
-    @NotNull
-    private final AfericaoRelatorioService afericoesRelatorioService = new AfericaoRelatorioService();
-
-    @NotNull
-    private final MovimentacaoRelatorioService movimentacoesRelatorioService = new MovimentacaoRelatorioService();
 
     @GET
     @Path("/km-rodado-por-pneu-por-vida/csv")
     public StreamingOutput getKmRodadoPorPneuPorVidaCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
-        return outputStream -> service.getKmRodadoPorPneuPorVidaCsv(outputStream, codUnidades);
+        return outputStream -> new RelatorioPneuService().getKmRodadoPorPneuPorVidaCsv(outputStream, codUnidades);
     }
 
     @GET
     @Path("/km-rodado-por-pneu-por-vida/report")
     public Report getKmRodadoPorPneuPorVidaReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades)
             throws ProLogException {
-        return service.getKmRodadoPorPneuPorVidaReport(codUnidades);
+        return new RelatorioPneuService().getKmRodadoPorPneuPorVidaReport(codUnidades);
     }
 
     @GET
@@ -61,7 +52,7 @@ public class RelatorioPneuResource {
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) {
-        return outputStream -> service.getAfericoesAvulsasCsv(outputStream, codUnidades, dataInicial, dataFinal);
+        return outputStream -> new RelatorioPneuService().getAfericoesAvulsasCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -69,7 +60,7 @@ public class RelatorioPneuResource {
     public Report getAfericoesAvulsasReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                             @QueryParam("dataInicial") @Required final String dataInicial,
                                             @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
-        return service.getAfericoesAvulsasReport(codUnidades, dataInicial, dataFinal);
+        return new RelatorioPneuService().getAfericoesAvulsasReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -77,7 +68,7 @@ public class RelatorioPneuResource {
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public List<Faixa> getQtdPneusByFaixaSulco(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                @QueryParam("status") @Required final List<String> status) {
-        return service.getQtdPneusByFaixaSulco(codUnidades, status);
+        return new RelatorioPneuService().getQtdPneusByFaixaSulco(codUnidades, status);
     }
 
     @GET
@@ -87,7 +78,7 @@ public class RelatorioPneuResource {
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) throws RuntimeException {
-        return outputStream -> service.getPrevisaoTrocaEstratificadoCsv(outputStream, codUnidades, dataInicial, dataFinal);
+        return outputStream -> new RelatorioPneuService().getPrevisaoTrocaEstratificadoCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -96,7 +87,7 @@ public class RelatorioPneuResource {
     public Report getPrevisaoTrocaEstratificadoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                       @QueryParam("dataInicial") @Required final String dataInicial,
                                                       @QueryParam("dataFinal") @Required final String dataFinal) {
-        return service.getPrevisaoTrocaEstratificadoReport(codUnidades, dataInicial, dataFinal);
+        return new RelatorioPneuService().getPrevisaoTrocaEstratificadoReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -106,7 +97,7 @@ public class RelatorioPneuResource {
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) throws RuntimeException {
-        return outputStream -> service.getPrevisaoTrocaConsolidadoCsv(outputStream, codUnidades, dataInicial, dataFinal);
+        return outputStream -> new RelatorioPneuService().getPrevisaoTrocaConsolidadoCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -115,7 +106,7 @@ public class RelatorioPneuResource {
     public Report getPrevisaoTrocaConsolidadoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                     @QueryParam("dataInicial") @Required final String dataInicial,
                                                     @QueryParam("dataFinal") @Required final String dataFinal) {
-        return service.getPrevisaoTrocaConsolidadoReport(codUnidades, dataInicial, dataFinal);
+        return new RelatorioPneuService().getPrevisaoTrocaConsolidadoReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -125,7 +116,7 @@ public class RelatorioPneuResource {
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) throws RuntimeException {
-        return outputStream -> service.getAderenciaPlacasCsv(outputStream, codUnidades, dataInicial, dataFinal);
+        return outputStream -> new RelatorioPneuService().getAderenciaPlacasCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -133,7 +124,7 @@ public class RelatorioPneuResource {
     public Report getAderenciaPlacasReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                            @QueryParam("dataInicial") @Required final String dataInicial,
                                            @QueryParam("dataFinal") @Required final String dataFinal) {
-        return service.getAderenciaPlacasReport(codUnidades, dataInicial, dataFinal);
+        return new RelatorioPneuService().getAderenciaPlacasReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -141,7 +132,7 @@ public class RelatorioPneuResource {
     public Report getPneusDescartadosReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                             @QueryParam("dataInicial") @Required final String dataInicial,
                                             @QueryParam("dataFinal") @Required final String dataFinal) {
-        return service.getPneusDescartadosReport(codUnidades, dataInicial, dataFinal);
+        return new RelatorioPneuService().getPneusDescartadosReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -150,7 +141,7 @@ public class RelatorioPneuResource {
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) throws RuntimeException {
-        return outputStream -> service.getPneusDescartadosCsv(outputStream, codUnidades, dataInicial, dataFinal);
+        return outputStream -> new RelatorioPneuService().getPneusDescartadosCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -158,14 +149,14 @@ public class RelatorioPneuResource {
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public StreamingOutput getDadosUltimaAfericaoCsv(@QueryParam("codUnidades") @Required final List<Long> codUnidades)
             throws RuntimeException {
-        return outputStream -> service.getDadosUltimaAfericaoCsv(outputStream, codUnidades);
+        return outputStream -> new RelatorioPneuService().getDadosUltimaAfericaoCsv(outputStream, codUnidades);
     }
 
     @GET
     @Path("/dados-ultima-afericao/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public Report getDadosUltimaAfericaoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades) {
-        return service.getDadosUltimaAfericaoReport(codUnidades);
+        return new RelatorioPneuService().getDadosUltimaAfericaoReport(codUnidades);
     }
 
     @GET
@@ -173,7 +164,7 @@ public class RelatorioPneuResource {
     public StreamingOutput getResumoGeralPneusCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("status-pneu") @Optional final String status) throws RuntimeException {
-        return outputStream -> service.getResumoGeralPneusCsv(outputStream, codUnidades, status);
+        return outputStream -> new RelatorioPneuService().getResumoGeralPneusCsv(outputStream, codUnidades, status);
     }
 
     @GET
@@ -181,7 +172,7 @@ public class RelatorioPneuResource {
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public Report getResumoGeralPneusReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                             @QueryParam("status-pneu") @Optional final String status) {
-        return service.getResumoGeralPneusReport(codUnidades, status);
+        return new RelatorioPneuService().getResumoGeralPneusReport(codUnidades, status);
     }
 
     @GET
@@ -191,7 +182,7 @@ public class RelatorioPneuResource {
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) {
-        return outputStream -> afericoesRelatorioService.getDadosGeraisAfericoesCsv(
+        return outputStream -> new AfericaoRelatorioService().getDadosGeraisAfericoesCsv(
                 outputStream,
                 codUnidades,
                 dataInicial,
@@ -204,7 +195,24 @@ public class RelatorioPneuResource {
                                                 @QueryParam("dataInicial") @Required final String dataInicial,
                                                 @QueryParam("dataFinal") @Required final String dataFinal)
             throws ProLogException {
-        return afericoesRelatorioService.getDadosGeraisAfericoesReport(codUnidades, dataInicial, dataFinal);
+        return new AfericaoRelatorioService().getDadosGeraisAfericoesReport(codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Produces("application/csv")
+    @Path("/cronograma-afericoes-placas/csv")
+    public StreamingOutput getCronogramaAfericoesPlacasCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
+        return outputStream -> new AfericaoRelatorioService().getCronogramaAfericoesPlacasCsv(
+                outputStream,
+                codUnidades);
+    }
+
+    @GET
+    @Path("/cronograma-afericoes-placas/report")
+    public Report getCronogramaAfericoesPlacasReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades)
+            throws ProLogException {
+        return new AfericaoRelatorioService().getCronogramaAfericoesPlacasReport(codUnidades);
     }
 
     @GET
@@ -214,7 +222,7 @@ public class RelatorioPneuResource {
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) {
-        return outputStream -> movimentacoesRelatorioService.getDadosGeraisMovimentacoesCsv(
+        return outputStream -> new MovimentacaoRelatorioService().getDadosGeraisMovimentacoesCsv(
                 outputStream,
                 codUnidades,
                 dataInicial,
@@ -227,7 +235,7 @@ public class RelatorioPneuResource {
                                                     @QueryParam("dataInicial") @Required final String dataInicial,
                                                     @QueryParam("dataFinal") @Required final String dataFinal)
             throws ProLogException {
-        return movimentacoesRelatorioService.getDadosGeraisMovimentacoesReport(codUnidades, dataInicial, dataFinal);
+        return new MovimentacaoRelatorioService().getDadosGeraisMovimentacoesReport(codUnidades, dataInicial, dataFinal);
     }
 
     /**
@@ -306,7 +314,7 @@ public class RelatorioPneuResource {
     @Deprecated
     public List<Faixa> DEPRECATED_GET_QTD_PNEUS_BY_FAIXA_PRESSAO(@QueryParam("codUnidades") List<String> codUnidades,
                                                                  @QueryParam("status") List<String> status) {
-        return service.getQtPneusByFaixaPressao(codUnidades, status);
+        return new RelatorioPneuService().getQtPneusByFaixaPressao(codUnidades, status);
     }
 
     @GET
@@ -316,7 +324,7 @@ public class RelatorioPneuResource {
     public List<Aderencia> DEPRECATED_GET_ADERENCIA_BY_UNIDADE(@PathParam("ano") int ano,
                                                                @PathParam("mes") int mes,
                                                                @PathParam("codUnidade") Long codUnidade) {
-        return service.getAderenciaByUnidade(ano, mes, codUnidade);
+        return new RelatorioPneuService().getAderenciaByUnidade(ano, mes, codUnidade);
     }
 
     /**
