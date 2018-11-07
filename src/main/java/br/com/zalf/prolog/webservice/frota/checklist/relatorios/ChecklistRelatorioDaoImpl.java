@@ -316,8 +316,8 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @Override
     public void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
                                            @NotNull final List<Long> codUnidades,
-                                           @NotNull final String dataInicial,
-                                           @NotNull final String dataFinal,
+                                           @NotNull final LocalDate dataInicial,
+                                           @NotNull final LocalDate dataFinal,
                                            @NotNull final int codColaborador,
                                            @NotNull final String placa) throws Throwable {
         Connection conn = null;
@@ -337,8 +337,8 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     @Override
     public Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
-                                                @NotNull final String dataInicial,
-                                                @NotNull final String dataFinal,
+                                                @NotNull final LocalDate dataInicial,
+                                                @NotNull final LocalDate dataFinal,
                                                 @NotNull final int codColaborador,
                                                 @NotNull final String placa) throws Throwable {
         Connection conn = null;
@@ -357,8 +357,8 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     private PreparedStatement getDadosGeraisChecklistStatement(@NotNull final Connection conn,
                                                                @NotNull final List<Long> codUnidades,
-                                                               @NotNull final String dataInicial,
-                                                               @NotNull final String dataFinal,
+                                                               @NotNull final LocalDate dataInicial,
+                                                               @NotNull final LocalDate dataFinal,
                                                                @NotNull final int codColaborador,
                                                                @NotNull final String placa)
             throws Throwable {
@@ -367,8 +367,9 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
-        stmt.setInt(4, codColaborador);
-        stmt.setString(5, placa);
+        stmt.setString(4, placa);
+        stmt.setInt(5, codColaborador);
+
 
         return stmt;
     }

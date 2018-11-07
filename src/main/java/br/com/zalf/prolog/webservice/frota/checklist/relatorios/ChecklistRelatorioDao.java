@@ -87,15 +87,15 @@ public interface ChecklistRelatorioDao {
 
     void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
                                     @NotNull final List<Long> codUnidades,
-                                    @NotNull final String dataInicial,
-                                    @NotNull final String dataFinal,
+                                    @NotNull final LocalDate dataInicial,
+                                    @NotNull final LocalDate dataFinal,
                                     @NotNull final int codColaborador,
                                     @NotNull final String placa) throws Throwable;
 
     @NotNull
     Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
-                                         @NotNull final String dataInicial,
-                                         @NotNull final String dataFinal,
+                                         @NotNull final LocalDate dataInicial,
+                                         @NotNull final LocalDate dataFinal,
                                          @NotNull final int codColaborador,
                                          @NotNull final String placa) throws Throwable;
 }
