@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosMenos130;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +27,40 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
 
     public ChecklistRelatorioDaoImpl() {
 
+    }
+
+    @NotNull
+    @Override
+    public List<ChecksRealizadosMenos130> getChecksRealizadosMenos130(@NotNull List<Long> codUnidades,
+                                                                      @NotNull final int tempoRealizacao,
+                                                                      @NotNull final int diasRetroativosParaBuscar)
+            throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "FUNC_CHECKLIST_RELATORIO_CHECKS_REALIZADOS_EM_MENOS_DE_1_30(?, ?, ?, ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setInt(2, tempoRealizacao);
+            stmt.setObject(3, Now.localDateUtc());
+            stmt.setInt(4, diasRetroativosParaBuscar);
+
+            rSet = stmt.executeQuery();
+            final List<ChecksRealizadosMenos130> checksRealizadosMenos130 = new ArrayList<>();
+            while (rSet.next()) {
+                checksRealizadosMenos130.add(
+                        new ChecksRealizadosMenos130(
+                                rSet.getString("UNIDADE"),
+                                rSet.getString("NOME"),
+                                rSet.getInt("QUANTIDADE CHECKLISTS REALIZADOS MENOS 1:30"),
+                                rSet.getInt("QUANTIDADE CHECKLISTS REALIZADOS ÚLTIMOS 30 DIAS")));
+            }
+            return checksRealizadosMenos130;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @NotNull

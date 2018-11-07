@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosMenos130;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +13,12 @@ import java.util.List;
  * Created by luiz on 25/04/17.
  */
 public interface ChecklistRelatorioDao {
+
+    @NotNull
+    List<ChecksRealizadosMenos130> getChecksRealizadosMenos130(@NotNull final List<Long> codUnidades,
+                                                               @NotNull final int tempoRealizacao,
+                                                               @NotNull final int diasRetroativosParaBuscar)
+            throws Throwable;
 
     @NotNull
     List<QuantidadeChecklists> getQtdChecklistsRealizadosByTipo(@NotNull final List<Long> codUnidades,

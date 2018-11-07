@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.dashboard;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.line.*;
+import br.com.zalf.prolog.webservice.dashboard.components.table.*;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosMenos130;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,5 +93,34 @@ final class DashboardChecklistComponentsCreator {
                 .withLinesOrientation(LinesOrientation.HORIZONTAL)
                 .withInformacoesPontos(informacoesPontos)
                 .build();
+    }
+
+
+    @NotNull
+    static TableComponent createChecksRealizadosMenos130(
+            @NotNull final ComponentDataHolder component,
+            @NotNull final List<ChecksRealizadosMenos130> checksRealizadosMenos130) {
+        // Header.
+        final List<TableItemHeader> itemHeaders = new ArrayList<>(4);
+        itemHeaders.add(new TableItemHeader("Unidade", null));
+        itemHeaders.add(new TableItemHeader("Nome", null));
+        itemHeaders.add(new TableItemHeader("Quantidade Checklists Realizados Menos de 1:30", null));
+        itemHeaders.add(new TableItemHeader("Quantidade Checklists Realizados Últimos 30 Dias", null));
+        final TableHeader tableHeader = new TableHeader(itemHeaders);
+
+        // Linhas.
+        final List<TableLine> lines = new ArrayList<>();
+        checksRealizadosMenos130.forEach(checksRealizados -> {
+            // Colunas.
+            final List<TableColumn> columns = new ArrayList<>(4);
+            columns.add(new TableColumn(checksRealizados.getnomeUnidade()));
+            columns.add(new TableColumn(checksRealizados.getNomeColaborador()));
+            columns.add(new TableColumn(String.valueOf(checksRealizados.getQtdChecksRealizadosEmMenosDe130())));
+            columns.add(new TableColumn(String.valueOf(checksRealizados.getQtdChecksRealizadosUltimos30Dias())));
+            lines.add(new TableLine(columns));
+        });
+
+        final TableData tableData = new TableData(lines);
+        return TableComponent.createDefault(component, tableHeader, tableData);
     }
 }

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.dashboard;
 
 import br.com.zalf.prolog.webservice.dashboard.components.charts.line.HorizontalLineChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -29,5 +30,13 @@ public final class DashboardChecklistResource {
             @PathParam("codComponente") Integer codComponente,
             @QueryParam("codUnidades") List<Long> codUnidades) throws ProLogException {
         return service.getQtdChecklistsUltimos30DiasByTipo(codComponente, codUnidades);
+    }
+
+    @GET
+    @Path("/quantidade_checks_realizados_menos_de_1_30/{codComponente}")
+    public TableComponent getPlacasMaiorQtdItensOsAbertos(
+            @PathParam("codComponente") final Integer codComponente,
+            @QueryParam("codUnidades") final List<Long> codUnidades) throws ProLogException {
+        return service.getChecksRealizadosMenos130(codComponente, codUnidades);
     }
 }
