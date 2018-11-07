@@ -222,10 +222,10 @@ class ChecklistRelatorioService {
     Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
                                          @NotNull final String dataInicial,
                                          @NotNull final String dataFinal,
-                                         @NotNull final String nomeColaborador,
+                                         @NotNull final int codColaborador,
                                          @NotNull final String placa) throws ProLogException {
         try {
-            return dao.getDadosGeraisChecklistReport(codUnidades, dataInicial, dataFinal, nomeColaborador, placa);
+            return dao.getDadosGeraisChecklistReport(codUnidades, dataInicial, dataFinal, codColaborador, placa);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de dados dos checklists (REPORT)", e);
             throw exceptionHandler.map(e,
@@ -238,7 +238,7 @@ class ChecklistRelatorioService {
                                     @NotNull final List<Long> codUnidades,
                                     @NotNull final String dataInicial,
                                     @NotNull final String dataFinal,
-                                    @NotNull final String nomeColaborador,
+                                    @NotNull final int codColaborador,
                                     @NotNull final String placa) {
         try {
             dao.getDadosGeraisChecklistCsv(
@@ -246,7 +246,7 @@ class ChecklistRelatorioService {
                     codUnidades,
                     dataInicial,
                     dataFinal,
-                    nomeColaborador,
+                    codColaborador,
                     placa);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de dados gerais dos checklists (CSV)", e);

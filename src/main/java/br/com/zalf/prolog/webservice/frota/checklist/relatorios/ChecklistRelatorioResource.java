@@ -132,9 +132,9 @@ public class ChecklistRelatorioResource {
     public Report getDadosGeraisChecklistReport(@QueryParam("codUnidades") List<Long> codUnidades,
                                                 @QueryParam("dataInicial") String dataInicial,
                                                 @QueryParam("dataFinal") String dataFinal,
-                                                @QueryParam("nomeColaborador") String nomeColaborador,
+                                                @QueryParam("codColaborador") int codColaborador,
                                                 @QueryParam("placa") String placa) throws ProLogException {
-        return service.getDadosGeraisChecklistReport(codUnidades, dataInicial, dataFinal, nomeColaborador, placa);
+        return service.getDadosGeraisChecklistReport(codUnidades, dataInicial, dataFinal, codColaborador, placa);
     }
 
     @GET
@@ -143,9 +143,9 @@ public class ChecklistRelatorioResource {
     public StreamingOutput getDadosGeraisChecklistCsv(@QueryParam("codUnidades") List<Long> codUnidades,
                                                       @QueryParam("dataInicial") String dataInicial,
                                                       @QueryParam("dataFinal") String dataFinal,
-                                                      @QueryParam("nomeColaborador") String nomeColaborador,
+                                                      @QueryParam("codColaborador") int codColaborador,
                                                       @QueryParam("placa") String placa) {
         return outputStream -> service.getDadosGeraisChecklistCsv(outputStream, codUnidades, dataInicial, dataFinal,
-                nomeColaborador, placa);
+                codColaborador, placa);
     }
 }

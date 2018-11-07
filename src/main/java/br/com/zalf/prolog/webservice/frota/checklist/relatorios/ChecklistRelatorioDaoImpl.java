@@ -318,14 +318,14 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                                            @NotNull final List<Long> codUnidades,
                                            @NotNull final String dataInicial,
                                            @NotNull final String dataFinal,
-                                           @NotNull final String nomeColaborador,
+                                           @NotNull final int codColaborador,
                                            @NotNull final String placa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, dataInicial, dataFinal, nomeColaborador, placa);
+            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, dataInicial, dataFinal, codColaborador, placa);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
@@ -339,14 +339,14 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     public Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
                                                 @NotNull final String dataInicial,
                                                 @NotNull final String dataFinal,
-                                                @NotNull final String nomeColaborador,
+                                                @NotNull final int codColaborador,
                                                 @NotNull final String placa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, dataInicial, dataFinal, nomeColaborador, placa);
+            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, dataInicial, dataFinal, codColaborador, placa);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -359,7 +359,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                                                                @NotNull final List<Long> codUnidades,
                                                                @NotNull final String dataInicial,
                                                                @NotNull final String dataFinal,
-                                                               @NotNull final String nomeColaborador,
+                                                               @NotNull final int codColaborador,
                                                                @NotNull final String placa)
             throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
@@ -367,7 +367,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
-        stmt.setString(4, nomeColaborador);
+        stmt.setInt(4, codColaborador);
         stmt.setString(5, placa);
 
         return stmt;

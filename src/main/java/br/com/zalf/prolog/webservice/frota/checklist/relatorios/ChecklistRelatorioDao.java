@@ -89,13 +89,13 @@ public interface ChecklistRelatorioDao {
                                     @NotNull final List<Long> codUnidades,
                                     @NotNull final String dataInicial,
                                     @NotNull final String dataFinal,
-                                    @NotNull final String nomeColaborador,
+                                    @NotNull final int codColaborador,
                                     @NotNull final String placa) throws Throwable;
 
     @NotNull
     Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
                                          @NotNull final String dataInicial,
                                          @NotNull final String dataFinal,
-                                         @NotNull final String nomeColaborador,
+                                         @NotNull final int codColaborador,
                                          @NotNull final String placa) throws Throwable;
 }
