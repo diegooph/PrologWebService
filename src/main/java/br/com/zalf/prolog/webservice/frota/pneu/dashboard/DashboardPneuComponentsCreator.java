@@ -227,11 +227,18 @@ final class DashboardPneuComponentsCreator {
     static ScatterChartComponent createMenorSulcoEPressaoPneus(@NotNull final ComponentDataHolder component,
                                                                @NotNull final List<SulcoPressao> valores) {
         final List<ScatterEntry> entries = new ArrayList<>(valores.size());
-        valores.forEach(sulcoPressao -> entries.add(ScatterEntry.create(
-                sulcoPressao.getValorPressao(),
-                String.valueOf(sulcoPressao.getValorPressao()),
-                sulcoPressao.getValorSulco(),
-                String.valueOf(sulcoPressao.getValorSulco()))));
+        for (final SulcoPressao sulcoPressao : valores) {
+            final String infoEntry = String.format("Pneu: %s\nSulco: %s\nPressão: %s",
+                    sulcoPressao.getCodPneuCliente(),
+                    String.valueOf(sulcoPressao.getValorPressao()),
+                    String.valueOf(sulcoPressao.getValorSulco()));
+            entries.add(ScatterEntry.create(
+                    sulcoPressao.getValorPressao(),
+                    String.valueOf(sulcoPressao.getValorPressao()),
+                    sulcoPressao.getValorSulco(),
+                    String.valueOf(sulcoPressao.getValorSulco()),
+                    infoEntry));
+        }
 
         final ScatterGroup group = new ScatterGroup(entries, "Pneus", Color.fromHex("#C12552"));
         final List<ScatterGroup> groups = new ArrayList<>(1);

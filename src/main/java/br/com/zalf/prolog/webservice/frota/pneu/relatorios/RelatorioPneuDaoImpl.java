@@ -677,17 +677,13 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         final List<SulcoPressao> valores = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  TRUNC(P.PRESSAO_ATUAL::NUMERIC, 2) AS PRESSAO_ATUAL, " +
-                    "  TRUNC(LEAST(P.ALTURA_SULCO_INTERNO, P.ALTURA_SULCO_EXTERNO, " +
-                    "              P.ALTURA_SULCO_CENTRAL_EXTERNO, P.ALTURA_SULCO_CENTRAL_INTERNO)::NUMERIC, 2) AS MENOR_SULCO " +
-                    "FROM PNEU P " +
-                    "WHERE P.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
-                    "ORDER BY MENOR_SULCO ASC;");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_MENOR_SULCO_E_PRESSAO_PNEUS(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 valores.add(new SulcoPressao(
+                        rSet.getLong("COD_PNEU"),
+                        rSet.getString("COD_PNEU_CLIENTE"),
                         rSet.getDouble("MENOR_SULCO"),
                         rSet.getDouble("PRESSAO_ATUAL")));
             }
