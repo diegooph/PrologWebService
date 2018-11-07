@@ -11,7 +11,9 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.closeConnection;
@@ -104,8 +106,9 @@ public class AfericaoRelatorioDaoImpl implements AfericaoRelatorioDao {
     private PreparedStatement getCronogramaAfericoesPlacasStmt(@NotNull final Connection conn,
                                                                @NotNull final List<Long> codUnidades) throws Throwable {
         final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_CRONOGRAMA_AFERICOES_PLACAS(?);");
+                conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_CRONOGRAMA_AFERICOES_PLACAS(?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
         return stmt;
     }
 
