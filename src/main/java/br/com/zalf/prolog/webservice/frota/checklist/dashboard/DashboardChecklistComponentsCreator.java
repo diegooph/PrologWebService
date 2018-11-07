@@ -103,9 +103,9 @@ final class DashboardChecklistComponentsCreator {
         // Header.
         final List<TableItemHeader> itemHeaders = new ArrayList<>(4);
         itemHeaders.add(new TableItemHeader("Unidade", null));
-        itemHeaders.add(new TableItemHeader("Nome", null));
-        itemHeaders.add(new TableItemHeader("Quantidade Checklists Realizados Menos de 1:30", null));
-        itemHeaders.add(new TableItemHeader("Quantidade Checklists Realizados Últimos 30 Dias", null));
+        itemHeaders.add(new TableItemHeader("Colaborador", null));
+        itemHeaders.add(new TableItemHeader("Checks com menos de 1:30", null));
+        itemHeaders.add(new TableItemHeader("Checks nos últimos 30 dias", null));
         final TableHeader tableHeader = new TableHeader(itemHeaders);
 
         // Linhas.
