@@ -669,6 +669,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return resultados;
     }
 
+    @NotNull
     @Override
     public List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
