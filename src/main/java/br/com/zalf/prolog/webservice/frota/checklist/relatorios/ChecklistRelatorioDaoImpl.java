@@ -318,8 +318,8 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                                            @NotNull final List<Long> codUnidades,
                                            @NotNull final LocalDate dataInicial,
                                            @NotNull final LocalDate dataFinal,
-                                           @NotNull final int codColaborador,
-                                           @NotNull final String placa) throws Throwable {
+                                           final Integer codColaborador,
+                                           final String placa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -339,8 +339,8 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     public Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
                                                 @NotNull final LocalDate dataInicial,
                                                 @NotNull final LocalDate dataFinal,
-                                                @NotNull final int codColaborador,
-                                                @NotNull final String placa) throws Throwable {
+                                                final Integer codColaborador,
+                                                final String placa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -359,8 +359,8 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                                                                @NotNull final List<Long> codUnidades,
                                                                @NotNull final LocalDate dataInicial,
                                                                @NotNull final LocalDate dataFinal,
-                                                               @NotNull final int codColaborador,
-                                                               @NotNull final String placa)
+                                                               final Integer codColaborador,
+                                                               final String placa)
             throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_RELATORIO_DADOS_GERAIS(?,?,?,?,?);");

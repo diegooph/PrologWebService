@@ -222,8 +222,8 @@ class ChecklistRelatorioService {
     Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
                                          @NotNull final String dataInicial,
                                          @NotNull final String dataFinal,
-                                         @NotNull final int codColaborador,
-                                         @NotNull final String placa) throws ProLogException {
+                                         final Integer codColaborador,
+                                         final String placa) throws ProLogException {
         try {
             return dao.getDadosGeraisChecklistReport(
                     codUnidades,
@@ -243,8 +243,8 @@ class ChecklistRelatorioService {
                                     @NotNull final List<Long> codUnidades,
                                     @NotNull final String dataInicial,
                                     @NotNull final String dataFinal,
-                                    @NotNull final int codColaborador,
-                                    @NotNull final String placa) {
+                                    final Integer codColaborador,
+                                    final String placa) {
         try {
             dao.getDadosGeraisChecklistCsv(
                     outputStream,
