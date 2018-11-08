@@ -368,7 +368,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
         stmt.setString(4, placa);
-        stmt.setInt(5, codColaborador);
+        stmt.setObject (5, codColaborador);
 
 
         return stmt;
