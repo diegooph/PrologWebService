@@ -20,6 +20,31 @@ public class AfericaoRelatorioService {
     @NotNull
     private AfericaoRelatorioDao dao = Injection.provideAfericaoRelatorioDao();
 
+    public void getCronogramaAfericoesPlacasCsv(@NotNull final OutputStream out,
+                                           @NotNull final List<Long> codUnidades) {
+        try {
+            dao.getCronogramaAfericoesPlacasCsv(
+                    out,
+                    codUnidades);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao gerar relatório do cronograma de aferições (CSV)", throwable);
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    @NotNull
+    public Report getCronogramaAfericoesPlacasReport(@NotNull final List<Long> codUnidades) throws ProLogException {
+        try {
+            return dao.getCronogramaAfericoesPlacasReport(
+                    codUnidades);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao gerar relatório do cronograma de aferições  (REPORT)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
     public void getDadosGeraisAfericoesCsv(@NotNull final OutputStream out,
                                            @NotNull final List<Long> codUnidades,
                                            @NotNull final String dataInicial,
@@ -31,7 +56,7 @@ public class AfericaoRelatorioService {
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao gerar relatório das aferições (CSV)", throwable);
+            Log.e(TAG, "Erro ao gerar relatório de dados gerais das aferições (CSV)", throwable);
             throw new RuntimeException(throwable);
         }
     }
@@ -46,7 +71,7 @@ public class AfericaoRelatorioService {
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao gerar relatório das aferições (REPORT)", throwable);
+            Log.e(TAG, "Erro ao gerar relatório de dados gerais das aferições (REPORT)", throwable);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao gerar relatório, tente novamente");
