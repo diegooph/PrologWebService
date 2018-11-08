@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -374,7 +373,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         return stmt;
     }
 
-
+    @NotNull
     private PreparedStatement getListagemModelosChecklistStatement(@NotNull final Connection conn,
                                                                    @NotNull final List<Long> codUnidades)
             throws Throwable {
