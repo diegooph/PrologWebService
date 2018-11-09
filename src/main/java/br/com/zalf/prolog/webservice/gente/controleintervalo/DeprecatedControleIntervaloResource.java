@@ -74,7 +74,7 @@ public class DeprecatedControleIntervaloResource {
     @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/abertos/{cpf}/{codTipoIntervalo}")
     public Intervalo getIntervaloAberto(@PathParam("cpf") Long cpf,
-                                        @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Exception {
+                                        @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Throwable {
         final Long codUnidade = new ColaboradorService().getCodUnidadeByCpf(cpf);
         return toIntervalo(service.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoInvervalo));
     }

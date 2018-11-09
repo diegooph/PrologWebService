@@ -41,7 +41,6 @@ public final class ControleIntervaloResource {
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             IntervaloMarcacao intervaloMarcacao) {
-
         return service.insertMarcacaoIntervalo(versaoDadosIntervalo, intervaloMarcacao);
     }
 
@@ -64,7 +63,7 @@ public final class ControleIntervaloResource {
     @Path("/abertos/{codUnidade}/{cpf}/{codTipoIntervalo}")
     public IntervaloMarcacao getIntervaloAberto(@PathParam("codUnidade") Long codUnidade,
                                                 @PathParam("cpf") Long cpf,
-                                                @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Exception {
+                                                @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Throwable {
         return service.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoInvervalo);
     }
 

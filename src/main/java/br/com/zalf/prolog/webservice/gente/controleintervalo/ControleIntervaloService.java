@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.novo.ControleJornadaDaoNovo;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +24,8 @@ public class ControleIntervaloService {
 
     private static final String TAG = ControleIntervaloService.class.getSimpleName();
     private ControleIntervaloDao dao = Injection.provideControleJornadaDao();
+    @NotNull
+    private final ControleJornadaDaoNovo daoNova = Injection.provideControleJornadaDaoNovo();
 
     public List<TipoMarcacao> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
         try {
@@ -46,10 +49,10 @@ public class ControleIntervaloService {
         }
     }
 
-    public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(Long codUnidade, Long cpf, Long codTipoIntervalo) throws Exception {
+    public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(Long codUnidade, Long cpf, Long codTipoIntervalo) throws Throwable {
         try {
-            return dao.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoIntervalo);
-        } catch (Exception e) {
+            return daoNova.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoIntervalo);
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar os intervalos em abertos de um colaborador. \n" +
                     "cpf: %d", cpf), e);
             throw e;
@@ -68,9 +71,9 @@ public class ControleIntervaloService {
             } else {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
             }
-            dao.insertMarcacaoIntervalo(intervaloMarcacao);
-            return ResponseIntervalo.ok(null,"Intervalo inserido com sucesso", estadoVersaoIntervalo);
-        } catch (SQLException e) {
+            daoNova.insertMarcacaoIntervalo(intervaloMarcacao);
+            return ResponseIntervalo.ok("Intervalo inserido com sucesso", estadoVersaoIntervalo);
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao inserir ou atualizar um intervalo. \n" +
                     "versaoDadosIntervalo: %d", versaoDadosIntervalo), e);
             return ResponseIntervalo.error("Erro ao inserir intervalo", estadoVersaoIntervalo);

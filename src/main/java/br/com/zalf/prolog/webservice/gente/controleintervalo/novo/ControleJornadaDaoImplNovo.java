@@ -66,7 +66,7 @@ public class ControleJornadaDaoImplNovo extends DatabaseConnection implements Co
     public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(
             @NotNull final Long codUnidade,
             @NotNull final Long cpfColaborador,
-            @NotNull final Long codTipoIntervalo) throws SQLException {
+            @NotNull final Long codTipoIntervalo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

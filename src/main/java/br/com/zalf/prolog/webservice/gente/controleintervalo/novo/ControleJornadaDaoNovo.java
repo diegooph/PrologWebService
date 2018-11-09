@@ -42,7 +42,7 @@ public interface ControleJornadaDaoNovo {
     @Nullable
     IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
                                                         @NotNull final Long cpfColaborador,
-                                                        @NotNull final Long codTipoIntervalo) throws SQLException;
+                                                        @NotNull final Long codTipoIntervalo) throws Throwable;
 
     /**
      * Método utilizado para inserir ó código de uma marcação na tabela de INICIO ou FIM
