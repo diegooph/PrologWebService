@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
@@ -209,7 +209,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             stmt.setString(6, zoneId.getId());
             rSet = stmt.executeQuery();
 
-            final ControleJornadaDao dao = Injection.provideControleJornadaDao();
+            final ControleIntervaloDao dao = Injection.provideControleJornadaDao();
             return ControleJornadaRelatorioConverter.createFolhaPontoRelatorio(
                     rSet,
                     dao.getTiposIntervalosByUnidade(codUnidade, true, false),
@@ -272,7 +272,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             conn = getConnection();
             stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            final ControleJornadaDao dao = Injection.provideControleJornadaDao();
+            final ControleIntervaloDao dao = Injection.provideControleJornadaDao();
             new CsvWriter
                     .Builder(out)
                     .withCsvReport(new RelatorioTotaisPorTipoIntervalo(

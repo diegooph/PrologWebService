@@ -1,6 +1,6 @@
 package test.gente.controlejornada;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaService;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
@@ -40,7 +40,6 @@ public class ControleJornadaRelatorioTest extends BaseTest {
     private static final String TODOS_COLABORADORES = "%";
     private static final String DATA_HORA_INICIO = "2018-01-01T10:00:00";
     private static final String DATA_HORA_FIM = "2018-01-06T10:00:00";
-    private static final Integer VERSION_APP_TEST = 10;
 
     @Override
     public void initialize() {
@@ -61,7 +60,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
 
     @Test
     public void testCalculoHorasPorTipoMarcacao() throws Throwable {
-        final ControleJornadaService intervaloService = new ControleJornadaService();
+        final ControleIntervaloService intervaloService = new ControleIntervaloService();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
         final List<TipoMarcacao> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
@@ -83,22 +82,22 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         // Total: 34 horas ou 2040 minutos (fim marcação - inicio filtro)
         marcacaoInicio = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 4, 10, 0, 0), MARCACAO_INICIO);
         marcacaoFim = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 6, 10, 0, 0), MARCACAO_FIM);
-        intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio, VERSION_APP_TEST);
-        intervaloService.insertMarcacaoIntervalo(1, marcacaoFim, VERSION_APP_TEST);
+        intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio);
+        intervaloService.insertMarcacaoIntervalo(1, marcacaoFim);
 
         // Caso 2) DENTRO -> DENTRO
         // Total: 702 minutos (fim marcação - início marcação)
         marcacaoInicio = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 6, 10, 35, 0), MARCACAO_INICIO);
         marcacaoFim = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 6, 22, 17, 0), MARCACAO_FIM);
-        intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio, VERSION_APP_TEST);
-        intervaloService.insertMarcacaoIntervalo(1, marcacaoFim, VERSION_APP_TEST);
+        intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio);
+        intervaloService.insertMarcacaoIntervalo(1, marcacaoFim);
 
         // Caso 3) DENTRO -> DEPOIS
         // Total: 4699 minutos (fim filtro - início marcação)
         marcacaoInicio = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 7, 17, 40, 0), MARCACAO_INICIO);
         marcacaoFim = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 11, 18, 0, 0), MARCACAO_FIM);
-        intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio, VERSION_APP_TEST);
-        intervaloService.insertMarcacaoIntervalo(1, marcacaoFim, VERSION_APP_TEST);
+        intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio);
+        intervaloService.insertMarcacaoIntervalo(1, marcacaoFim);
 
         // Caso 4) Tem um teste específico.
 
@@ -124,7 +123,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
 
     @Test
     public void testCalculoHorasPorTipoMarcacao_InicoAntesFiltroFimDepoisFiltro() throws Throwable {
-        final ControleJornadaService intervaloService = new ControleJornadaService();
+        final ControleIntervaloService intervaloService = new ControleIntervaloService();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
         final List<TipoMarcacao> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
@@ -143,8 +142,8 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         // Total: 2879 minutos (fim filtro - início filtro)
         marcacaoInicio = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 5, 21, 30, 30), MARCACAO_INICIO);
         marcacaoFim = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 12, 23, 59, 1), MARCACAO_FIM);
-        intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio, VERSION_APP_TEST);
-        intervaloService.insertMarcacaoIntervalo(1, marcacaoFim, VERSION_APP_TEST);
+        intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio);
+        intervaloService.insertMarcacaoIntervalo(1, marcacaoFim);
 
         final List<FolhaPontoRelatorio> relatorios = service.getFolhaPontoRelatorio(
                 COD_UNIDADE,

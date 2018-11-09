@@ -10,8 +10,8 @@ import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaService;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -139,11 +139,11 @@ public class ColaboradorService {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             }
 
-            final ControleJornadaService intervaloService = new ControleJornadaService();
+            final ControleIntervaloService intervaloService = new ControleIntervaloService();
             final IntervaloOfflineSupport intervaloOfflineSupport = intervaloService.getIntervaloOfflineSupport(
-                    this,
+                    loginRequest.getVersaoDadosIntervalo(),
                     colaborador.getUnidade().getCodigo(),
-                    loginRequest.getVersaoDadosIntervalo());
+                    this);
             loginHolder.setIntervaloOfflineSupport(intervaloOfflineSupport);
 
         } catch (SQLException | AmazonCredentialsException e) {
@@ -184,7 +184,7 @@ public class ColaboradorService {
 
             // Se usuário tem acesso a marcação de intervalo, precisamos setar os tipos de intervalo também.
             if (colaborador.getVisao().hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)) {
-                final ControleJornadaDao dao = Injection.provideControleJornadaDao();
+                final ControleIntervaloDao dao = Injection.provideControleJornadaDao();
                 final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(
                         colaborador.getUnidade().getCodigo(),
                         true,
