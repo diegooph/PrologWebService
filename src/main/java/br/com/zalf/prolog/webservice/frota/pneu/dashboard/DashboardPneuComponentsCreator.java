@@ -230,8 +230,8 @@ final class DashboardPneuComponentsCreator {
         for (final SulcoPressao sulcoPressao : valores) {
             final String infoEntry = String.format("Pneu: %s\nSulco: %s\nPressão: %s",
                     sulcoPressao.getCodPneuCliente(),
-                    String.valueOf(sulcoPressao.getValorPressao()),
-                    String.valueOf(sulcoPressao.getValorSulco()));
+                    String.valueOf(sulcoPressao.getValorSulco()),
+                    String.valueOf(sulcoPressao.getValorPressao()));
             entries.add(ScatterEntry.create(
                     sulcoPressao.getValorPressao(),
                     String.valueOf(sulcoPressao.getValorPressao()),
