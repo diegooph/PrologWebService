@@ -51,10 +51,10 @@ class ControleJornadaServiceNovo {
     @Nullable
     IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
                                                         @NotNull final Long cpfColaborador,
-                                                        @NotNull final Long codTipoIntervalo) throws Exception {
+                                                        @NotNull final Long codTipoIntervalo) throws Throwable {
         try {
             return dao.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpfColaborador, codTipoIntervalo);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar os intervalos em abertos de um colaborador. \n" +
                     "cpfColaborador: %d \n" +
                     "codTipoIntervalo: %d", cpfColaborador, codTipoIntervalo), e);

@@ -57,7 +57,7 @@ public class ControleJornadaResourceNovo {
     @Path("/em-andamento/{codUnidade}/{cpf}/{codTipoIntervalo}")
     public IntervaloMarcacao getIntervaloAberto(@PathParam("codUnidade") Long codUnidade,
                                                 @PathParam("cpf") Long cpf,
-                                                @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Exception {
+                                                @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Throwable {
         return service.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoInvervalo);
     }
 }
