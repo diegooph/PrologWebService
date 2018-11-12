@@ -1,14 +1,18 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaResource;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloResource;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DeprecatedControleIntervaloResource;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.novo.ControleJornadaResourceNovo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Classe utilizada para retornar informações das marcações que são sincronizadas através dos métodos
  * de inserção de marcações.
- * * {@link ControleJornadaResource#insertIntervalo(long, Integer, IntervaloMarcacao)}.
+ * * {@link ControleIntervaloResource#insertIntervalo(long, IntervaloMarcacao)}.
+ * * {@link DeprecatedControleIntervaloResource#insertIntervalo(long, Intervalo)}.
+ * * {@link ControleJornadaResourceNovo#insertIntervalo(long, Integer, IntervaloMarcacao)}.
  *
  * O seu {@link #status} é referente ao insert do próprio {@link Intervalo}:
  * * status {@link #OK} significa inserido com sucesso;
@@ -23,6 +27,15 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class ResponseIntervalo extends ResponseWithCod {
     private EstadoVersaoIntervalo estadoVersaoIntervalo;
+
+    public static ResponseIntervalo ok(@NotNull final String msg,
+                                       @NotNull final EstadoVersaoIntervalo estadoVersaoIntervalo) {
+        final ResponseIntervalo r = new ResponseIntervalo();
+        r.estadoVersaoIntervalo = estadoVersaoIntervalo;
+        r.setStatus(OK);
+        r.setMsg(msg);
+        return r;
+    }
 
     public static ResponseIntervalo ok(@NotNull final Long codigo,
                                        @NotNull final String msg,

@@ -77,14 +77,16 @@ import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleJornadaDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjusteDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.ControleJornadaAjusteDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa.JustificativaAjusteDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ajustes.justificativa.JustificativaAjusteDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.novo.ControleJornadaDaoImplNovo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.novo.ControleJornadaDaoNovo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleJornadaRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleJornadaRelatoriosDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
@@ -259,8 +261,13 @@ public final class Injection {
     }
 
     @NotNull
-    public static ControleJornadaDao provideControleJornadaDao() {
-        return new ControleJornadaDaoImpl();
+    public static ControleIntervaloDao provideControleJornadaDao() {
+        return new ControleIntervaloDaoImpl();
+    }
+
+    @NotNull
+    public static ControleJornadaDaoNovo provideControleJornadaDaoNovo() {
+        return new ControleJornadaDaoImplNovo();
     }
 
     @NotNull

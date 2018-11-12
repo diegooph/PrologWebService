@@ -3,17 +3,15 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.*;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,17 +22,12 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@DebugLog
 @Path("/controle-intervalos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@AppVersionCodeHandler(
-        targetVersionCode = 60,
-        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-public final class ControleJornadaResource {
-    @NotNull
-    private final ControleJornadaService service = new ControleJornadaService();
+public final class ControleIntervaloResource {
+
+    private final ControleIntervaloService service = new ControleIntervaloService();
 
     /**
      * O motivo deste método não necessitar nem da permissão de marcacão de intervalo, é que se um colaborador que antes
@@ -44,12 +37,11 @@ public final class ControleJornadaResource {
      */
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
+//    @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
-            @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) Integer versaoApp,
             IntervaloMarcacao intervaloMarcacao) {
-        return service.insertMarcacaoIntervalo(versaoDadosIntervalo, intervaloMarcacao, versaoApp);
+        return service.insertMarcacaoIntervalo(versaoDadosIntervalo, intervaloMarcacao);
     }
 
     /**
@@ -62,7 +54,7 @@ public final class ControleJornadaResource {
     public IntervaloOfflineSupport getIntervaloOfflineSupport(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             @PathParam("codUnidade") Long codUnidade) {
-        return service.getIntervaloOfflineSupport(new ColaboradorService(), codUnidade, versaoDadosIntervalo);
+        return service.getIntervaloOfflineSupport(versaoDadosIntervalo, codUnidade, new ColaboradorService());
     }
 
     @GET
@@ -71,7 +63,7 @@ public final class ControleJornadaResource {
     @Path("/abertos/{codUnidade}/{cpf}/{codTipoIntervalo}")
     public IntervaloMarcacao getIntervaloAberto(@PathParam("codUnidade") Long codUnidade,
                                                 @PathParam("cpf") Long cpf,
-                                                @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Exception {
+                                                @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Throwable {
         return service.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoInvervalo);
     }
 
@@ -99,7 +91,7 @@ public final class ControleJornadaResource {
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/{codTipoIntervalo}")
     public TipoMarcacao getTipoIntervalo(@PathParam("codUnidade") @Required final Long codUnidade,
-                                         @PathParam("codTipoIntervalo") @Required final Long codTipoIntervalo) {
+                                          @PathParam("codTipoIntervalo") @Required final Long codTipoIntervalo) {
         return service.getTipoIntervalo(codUnidade, codTipoIntervalo);
     }
 
@@ -111,7 +103,7 @@ public final class ControleJornadaResource {
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/resumidos")
     public List<TipoMarcacao> getTiposIntervalosResumidos(@Required @PathParam("codUnidade") Long codUnidade,
-                                                          @Optional @QueryParam("apenasAtivos")
+                                                           @Optional @QueryParam("apenasAtivos")
                                                            @DefaultValue("true") boolean apenasAtivos) {
         return service.getTiposIntervalos(codUnidade, apenasAtivos, false);
     }
@@ -124,7 +116,7 @@ public final class ControleJornadaResource {
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/completos")
     public List<TipoMarcacao> getTiposIntervalosCompletos(@Required @PathParam("codUnidade") Long codUnidade,
-                                                          @Optional @QueryParam("apenasAtivos")
+                                                           @Optional @QueryParam("apenasAtivos")
                                                            @DefaultValue("true") boolean apenasAtivos) {
         return service.getTiposIntervalos(codUnidade, apenasAtivos, true);
     }
