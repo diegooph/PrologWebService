@@ -3,12 +3,11 @@ package test;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.ConfiguracaoAfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoTipoVeiculoAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.model.ConfiguracaoTipoVeiculoAferivel;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +23,10 @@ public class ConfiguracaoAfericaoTest extends BaseTest {
     }
 
     @Test
-    public void testInsertConfiguracoesTipoAfericao() throws SQLException {
+    public void testInsertConfiguracoesTipoAfericao() throws Throwable {
         final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
-        final List<ConfiguracaoTipoVeiculoAfericao> configs = new ArrayList<>();
-        final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
+        final List<ConfiguracaoTipoVeiculoAferivel> configs = new ArrayList<>();
+        final ConfiguracaoTipoVeiculoAferivel config = new ConfiguracaoTipoVeiculoAferivel();
         config.setCodUnidade(5L);
         final TipoVeiculo tipoVeiculo = new TipoVeiculo();
         tipoVeiculo.setCodigo(13L);
@@ -37,28 +36,28 @@ public class ConfiguracaoAfericaoTest extends BaseTest {
         config.setPodeAferirSulcoPressao(false);
         config.setPodeAferirEstepe(true);
         configs.add(config);
-        dao.insertOrUpdateConfiguracao(5L, configs);
+        dao.insertOrUpdateConfiguracoesTiposVeiculosAferiveis(5L, configs);
 
-        List<ConfiguracaoTipoVeiculoAfericao> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
-
-        System.out.println(GsonUtils.getGson().toJson(configuracoes));
-        Assert.assertFalse(configuracoes.isEmpty());
-    }
-
-    @Test
-    public void testGetConfiguracoesTipoAfericao() throws SQLException {
-        final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
-        List<ConfiguracaoTipoVeiculoAfericao> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
+        List<ConfiguracaoTipoVeiculoAferivel> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
 
         System.out.println(GsonUtils.getGson().toJson(configuracoes));
         Assert.assertFalse(configuracoes.isEmpty());
     }
 
     @Test
-    public void testUpdateAndGetConfiguracoesTipoAfericao() throws SQLException {
+    public void testGetConfiguracoesTipoAfericao() throws Throwable {
         final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
-        final List<ConfiguracaoTipoVeiculoAfericao> configs = new ArrayList<>();
-        final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
+        List<ConfiguracaoTipoVeiculoAferivel> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
+
+        System.out.println(GsonUtils.getGson().toJson(configuracoes));
+        Assert.assertFalse(configuracoes.isEmpty());
+    }
+
+    @Test
+    public void testUpdateAndGetConfiguracoesTipoAfericao() throws Throwable {
+        final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
+        final List<ConfiguracaoTipoVeiculoAferivel> configs = new ArrayList<>();
+        final ConfiguracaoTipoVeiculoAferivel config = new ConfiguracaoTipoVeiculoAferivel();
         config.setCodUnidade(5L);
         final TipoVeiculo tipoVeiculo = new TipoVeiculo();
         tipoVeiculo.setCodigo(63L);
@@ -68,19 +67,19 @@ public class ConfiguracaoAfericaoTest extends BaseTest {
         config.setPodeAferirSulcoPressao(true);
         config.setPodeAferirEstepe(false);
         configs.add(config);
-        dao.insertOrUpdateConfiguracao(5L, configs);
+        dao.insertOrUpdateConfiguracoesTiposVeiculosAferiveis(5L, configs);
 
-        List<ConfiguracaoTipoVeiculoAfericao> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
+        List<ConfiguracaoTipoVeiculoAferivel> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
 
         System.out.println(GsonUtils.getGson().toJson(configuracoes));
         Assert.assertFalse(configuracoes.isEmpty());
     }
 
     @Test
-    public void testUpdateSameConfiguracoesTipoAfericao() throws SQLException {
+    public void testUpdateSameConfiguracoesTipoAfericao() throws Throwable {
         final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
-        final List<ConfiguracaoTipoVeiculoAfericao> configs = new ArrayList<>();
-        final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
+        final List<ConfiguracaoTipoVeiculoAferivel> configs = new ArrayList<>();
+        final ConfiguracaoTipoVeiculoAferivel config = new ConfiguracaoTipoVeiculoAferivel();
         config.setCodUnidade(5L);
         final TipoVeiculo tipoVeiculo = new TipoVeiculo();
         tipoVeiculo.setCodigo(63L);
@@ -90,9 +89,9 @@ public class ConfiguracaoAfericaoTest extends BaseTest {
         config.setPodeAferirSulcoPressao(false);
         config.setPodeAferirEstepe(false);
         configs.add(config);
-        dao.insertOrUpdateConfiguracao(5L, configs);
+        dao.insertOrUpdateConfiguracoesTiposVeiculosAferiveis(5L, configs);
 
-        List<ConfiguracaoTipoVeiculoAfericao> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
+        List<ConfiguracaoTipoVeiculoAferivel> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
 
         System.out.println(GsonUtils.getGson().toJson(configuracoes));
         Assert.assertFalse(configuracoes.isEmpty());

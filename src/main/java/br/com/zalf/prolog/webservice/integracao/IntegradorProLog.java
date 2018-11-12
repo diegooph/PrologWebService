@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
@@ -25,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -92,6 +90,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         }
 
         return afericaoDao.getRestricaoByCodUnidade(codUnidade);
+    }
+
+    @NotNull
+    @Override
+    public ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final String placa) throws Throwable {
+        if (afericaoDao == null) {
+            afericaoDao = Injection.provideAfericaoDao();
+        }
+
+        return afericaoDao.getConfiguracaoNovaAfericao(placa);
     }
 
     @NotNull

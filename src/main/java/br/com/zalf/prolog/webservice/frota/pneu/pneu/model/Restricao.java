@@ -1,8 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
-
-import java.util.List;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoNovaAfericao;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by jean on 10/06/16.
@@ -17,6 +16,18 @@ public class Restricao {
     private int periodoDiasAfericaoSulco;
 
     public Restricao() {
+    }
+
+    @NotNull
+    public static Restricao createRestricaoFrom(@NotNull final ConfiguracaoNovaAfericao configuracao) {
+        final Restricao restricao = new Restricao();
+        restricao.setToleranciaCalibragem(configuracao.getToleranciaCalibragem());
+        restricao.setToleranciaInspecao(configuracao.getToleranciaInspecao());
+        restricao.setSulcoMinimoRecape(configuracao.getSulcoMinimoRecape());
+        restricao.setSulcoMinimoDescarte(configuracao.getSulcoMinimoDescarte());
+        restricao.setPeriodoDiasAfericaoPressao(configuracao.getPeriodoDiasAfericaoPressao());
+        restricao.setPeriodoDiasAfericaoSulco(configuracao.getPeriodoDiasAfericaoSulco());
+        return restricao;
     }
 
     public int getPeriodoDiasAfericaoPressao() {

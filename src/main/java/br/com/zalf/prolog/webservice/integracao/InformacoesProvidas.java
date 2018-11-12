@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoNovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
@@ -19,6 +20,9 @@ public interface InformacoesProvidas {
 
     @NotNull
     Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Throwable;
+
+    @NotNull
+    ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final String placa) throws Throwable;
 
     @NotNull
     Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama) throws Exception;
