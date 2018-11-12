@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +65,7 @@ public class AuthenticationManager {
         }
 
         @Override
-        public Boolean load(String token) throws Exception {
+        public Boolean load(@NotNull final String token) {
             return autenticacaoService.verifyIfTokenExists(token, true);
         }
     }

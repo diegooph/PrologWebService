@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.Authenticator;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.AuthenticatorFactory;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Priority;
 import javax.ws.rs.NotAuthorizedException;
@@ -14,7 +15,6 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 import java.lang.reflect.Method;
 
 @Secured
@@ -27,7 +27,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
     ResourceInfo resourceInfo;
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
         // Get the HTTP Authorization header from the request
         final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
@@ -42,15 +42,15 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
             authType = AuthType.BASIC;
         } else if (authorizationHeader.startsWith("Bearer ")) {
             authType = AuthType.BEARER;
+        } else if (authorizationHeader.startsWith("Token ")) {
+            authType = AuthType.TOKEN;
         } else {
             throw new NotAuthorizedException("Authorization header must be provided!");
         }
 
-        final String value =  authorizationHeader.substring(authType.value().length()).trim();
-        final Authenticator authenticator = AuthenticatorFactory.createAuthenticator(
-                authType,
-                new AutenticacaoService());
-
+        final String value = authorizationHeader.substring(authType.value().length()).trim();
+        final Authenticator authenticator = AuthenticatorFactory
+                .createAuthenticator(authType, new AutenticacaoService());
         final Method resourceMethod = resourceInfo.getResourceMethod();
         final Secured methodAnnot = resourceMethod.getAnnotation(Secured.class);
         if (methodAnnot != null) {
@@ -74,7 +74,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         }
     }
 
-    private void ensureCorrectAuthType(Secured methodAnnot, AuthType headerAuthType) {
+    private void ensureCorrectAuthType(@NotNull final Secured methodAnnot, @NotNull final AuthType headerAuthType) {
         final AuthType[] permitedAuthTypes = methodAnnot.authTypes();
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < permitedAuthTypes.length; i++) {

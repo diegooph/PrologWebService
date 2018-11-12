@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.interceptors.auth.authenticator;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.NotAuthorizedException;
 

@@ -58,6 +58,15 @@ public class AutenticacaoService {
         }
     }
 
+    public boolean verifyIfTokenMarcacaoExists(@NotNull final String tokenMarcacaoJornada) {
+        try {
+            return dao.verifyIfTokenMarcacaoExists(tokenMarcacaoJornada);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao verificar se o tokenMarcacaoJornada existe: %s", tokenMarcacaoJornada), e);
+            return false;
+        }
+    }
+
     public boolean userHasPermission(@NotNull final String token,
                                      @NotNull final int[] permissions,
                                      final boolean needsToHaveAllPermissions,

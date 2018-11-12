@@ -96,6 +96,12 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
     }
 
     @Override
+    public boolean verifyIfTokenMarcacaoExists(@NotNull final String tokenMarcacaoJornada) throws SQLException {
+        // TODO - Implementar SQL de validação;
+        return false;
+    }
+
+    @Override
     public boolean userHasPermission(@NotNull final String token,
                                      @NotNull final int[] permissions,
                                      final boolean needsToHaveAllPermissions,
