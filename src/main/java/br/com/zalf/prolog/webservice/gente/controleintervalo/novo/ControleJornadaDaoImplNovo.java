@@ -296,16 +296,15 @@ public class ControleJornadaDaoImplNovo extends DatabaseConnection implements Co
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT CODIGO " +
-                    "FROM MARCACAO_VINCULO_INICIO_FIM " +
-                    "WHERE COD_MARCACAO_INICIO = ?;");
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT CODIGO FROM MARCACAO_VINCULO_INICIO_FIM " +
+                    "WHERE COD_MARCACAO_INICIO = ?) AS EXISTE_INCONSISTENCIA;");
             stmt.setLong(1, codMarcacao);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 // Se o CODIGO <= 0 então não existe inconsistência para a marcação.
-                return rSet.getLong("CODIGO") > 0;
+                return rSet.getBoolean("EXISTE_INCONSISTENCIA");
             } else {
-                throw new SQLException("Erro ao verificar se uma marcação " + codMarcacao + " possui inconsistência");
+                throw new SQLException("Erro ao verificar se a marcação " + codMarcacao + " possui inconsistência");
             }
         } finally {
             close(rSet, stmt);
