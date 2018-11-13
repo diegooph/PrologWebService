@@ -168,53 +168,53 @@ public class ControleJornadaDaoImplNovo extends DatabaseConnection implements Co
                 1.3 --> Retorna o código;
                 1.4 --> FIM DO PROCESSO;
             2 --> intervaloMarcacao é de FIM
-                2.1 --> Marcação possuí código de vínculo
-                    2.1.1 --> Insere marcação na tabela Intervalo.
-                    2.1.2 --> Insere codMarcacao na tabela MARCACAO_FIM.
-                    2.1.3 --> O código de vínculo possuí outra marcação associada
-                        2.1.3.1 --> Insere códigos na Tabela Inconsistência.
-                        2.1.3.2 --> FIM DO PROCESSO;
-                    2.1.4 --> O código de vínculo não possuí outra marcação associada
-                        2.1.4.1 --> Insere codMarcacao e codMarcacaoVinculada na tabela VINCULO_INICIO_FIM.
-                        2.1.4.2 --> FIM DO PROCESSO;
-                2.2 --> Marcação não possuí código de vínculo
-                    2.2.1 --> Busca codMarcacaoInicio com base no algoritmo de matching de marcações
-                    2.2.2 --> CodMarcacaoInicio encontrado
-                        2.2.2.1 --> Insere marcação na tabela Intervalo.
-                        2.2.2.2 --> Insere codMarcacao na tabela MARCACAO_FIM.
-                        2.2.2.3 --> O código de vínculo possuí outra marcação associada
-                            2.2.2.3.1 --> Insere códigos na Tabela Inconsistência.
-                            2.2.2.3.2 --> FIM DO PROCESSO;
-                        2.2.2.4 --> O código de vínculo não possuí outra marcação associada
-                            2.2.2.4.1 --> Insere codMarcacao e codMarcacaoVinculada na tabela VINCULO_INICIO_FIM.
-                            2.2.2.4.2 --> FIM DO PROCESSO;
-                    2.2.3 --> CodMarcacaoInicio não encontrado
-                        2.2.2.1 --> Insere marcação na tabela Intervalo.
-                        2.2.2.2 --> Insere codMarcacao na tabela MARCACAO_FIM.
-                        2.2.2.3 --> FIM DO PROCESSO;
-                    2.2.4 --> Retorna o código;
-                    2.2.5 --> FIM DO PROCESSO;
+                2.1 --> Insere marcação na tabela Intervalo.
+                2.2 --> Insere codMarcacao na tabela MARCACAO_FIM.
+                2.3 --> Marcação possuí código de vínculo
+                    2.3.1 --> O código de vínculo possuí outra marcação associada
+                        2.3.1.1 --> Insere códigos na Tabela Inconsistência.
+                        2.3.1.2 --> FIM DO PROCESSO;
+                    2.3.2 --> O código de vínculo não possuí outra marcação associada
+                        2.3.2.1 --> Insere codMarcacao e codMarcacaoVinculada na tabela VINCULO_INICIO_FIM.
+                        2.3.2.2 --> FIM DO PROCESSO;
+                2.4 --> Marcação não possuí código de vínculo
+                    2.4.1 --> Busca codMarcacaoInicio com base no algoritmo de matching de marcações
+                    2.4.2 --> CodMarcacaoInicio encontrado
+                        2.4.2.1 --> O código de vínculo possuí outra marcação associada
+                            2.4.2.1.1 --> Insere códigos na Tabela Inconsistência.
+                            2.4.2.1.2 --> FIM DO PROCESSO;
+                        2.4.2.2 --> O código de vínculo não possuí outra marcação associada
+                            2.4.2.2.1 --> Insere codMarcacao e codMarcacaoVinculada na tabela VINCULO_INICIO_FIM.
+                            2.4.2.2.2 --> FIM DO PROCESSO;
+                    2.4.3 --> CodMarcacaoInicio não encontrado
+                        2.4.3.1 --> FIM DO PROCESSO;
+                    2.4.4 --> Retorna o código;
+                    2.4.5 --> FIM DO PROCESSO;
          */
         if (intervaloMarcacao.isInicio()) {
             final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
             insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_INICIO);
             return codMarcacaoInserida;
         } else {
-            final Long codMarcacaoVinculada = intervaloMarcacao.getCodMarcacaoVinculada() != null
-                    ? intervaloMarcacao.getCodMarcacaoVinculada()
-                    : buscaMarcacaoInicioVinculo(
-                    conn,
-                    intervaloMarcacao.getCodUnidade(),
-                    intervaloMarcacao.getCodTipoIntervalo(),
-                    intervaloMarcacao.getCpfColaborador());
+            final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
+            insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
+
+            final Long codMarcacaoVinculada;
+            if (intervaloMarcacao.getCodMarcacaoVinculada() != null && intervaloMarcacao.getCodMarcacaoVinculada() > 0) {
+                codMarcacaoVinculada = intervaloMarcacao.getCodMarcacaoVinculada();
+            } else {
+                codMarcacaoVinculada = buscaMarcacaoInicioVinculo(
+                        conn,
+                        intervaloMarcacao.getCodUnidade(),
+                        intervaloMarcacao.getCodTipoIntervalo(),
+                        intervaloMarcacao.getCpfColaborador());
+            }
+
             if (codMarcacaoVinculada != null && codMarcacaoVinculada > 0) {
-                final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
-                insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
-                insertInconsistenciaOrVinculo(conn, codMarcacaoVinculada, codMarcacaoInserida);
+                insertInconsistenciaOuVinculo(conn, codMarcacaoVinculada, codMarcacaoInserida);
                 return codMarcacaoInserida;
             } else {
-                final Long codMarcacaoInserida = insertMarcacao(conn, intervaloMarcacao);
-                insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, TipoInicioFim.MARCACAO_FIM);
+                // Marcação de fim avulsa, não precisa criar vínculo.
                 return codMarcacaoInserida;
             }
         }
@@ -281,39 +281,39 @@ public class ControleJornadaDaoImplNovo extends DatabaseConnection implements Co
         }
     }
 
-    private void insertInconsistenciaOrVinculo(@NotNull final Connection conn,
+    private void insertInconsistenciaOuVinculo(@NotNull final Connection conn,
                                                @NotNull final Long codMarcacaoVinculada,
                                                @NotNull final Long codMarcacaoInserida) throws Throwable {
-        if (marcacaoPossuiInconsistencia(conn, codMarcacaoVinculada)) {
-            insereMarcacaoInconsistenteSeExistir(conn, codMarcacaoVinculada, codMarcacaoInserida);
+        if (marcacaoInicioJaPossuiVinculo(conn, codMarcacaoVinculada)) {
+            insereMarcacaoInconsistente(conn, codMarcacaoVinculada, codMarcacaoInserida);
         } else {
             insereVinculoInicioFim(conn, codMarcacaoVinculada, codMarcacaoInserida);
         }
     }
 
-    private boolean marcacaoPossuiInconsistencia(@NotNull final Connection conn,
-                                                 @NotNull final Long codMarcacao) throws SQLException {
+    private boolean marcacaoInicioJaPossuiVinculo(@NotNull final Connection conn,
+                                                  @NotNull final Long codMarcacaoInicio) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT EXISTS(SELECT CODIGO FROM MARCACAO_VINCULO_INICIO_FIM " +
                     "WHERE COD_MARCACAO_INICIO = ?) AS EXISTE_INCONSISTENCIA;");
-            stmt.setLong(1, codMarcacao);
+            stmt.setLong(1, codMarcacaoInicio);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 // Se o CODIGO <= 0 então não existe inconsistência para a marcação.
                 return rSet.getBoolean("EXISTE_INCONSISTENCIA");
             } else {
-                throw new SQLException("Erro ao verificar se a marcação " + codMarcacao + " possui inconsistência");
+                throw new SQLException("Erro ao verificar se a marcação " + codMarcacaoInicio + " possui inconsistência");
             }
         } finally {
             close(rSet, stmt);
         }
     }
 
-    private void insereMarcacaoInconsistenteSeExistir(@NotNull final Connection conn,
-                                                      @NotNull final Long codMarcacaoVinculada,
-                                                      @NotNull final Long codMarcacaoInserida) throws SQLException {
+    private void insereMarcacaoInconsistente(@NotNull final Connection conn,
+                                             @NotNull final Long codMarcacaoVinculada,
+                                             @NotNull final Long codMarcacaoInserida) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
