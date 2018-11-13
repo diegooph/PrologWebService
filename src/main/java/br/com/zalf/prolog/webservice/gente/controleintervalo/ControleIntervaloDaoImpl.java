@@ -17,6 +17,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 08/03/2018
@@ -318,7 +319,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     @Override
-    public VersaoDadosMarcacao getVersaoDadosIntervaloByUnidade(
+    public Optional<VersaoDadosMarcacao> getVersaoDadosIntervaloByUnidade(
             @NotNull final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -330,10 +331,9 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return createVersaoDadosMarcacao(rSet);
+                return Optional.of(createVersaoDadosMarcacao(rSet));
             } else {
-                throw new SQLException("Não foi possível buscar a versão de dados e token de sincronização " +
-                        "para a unidade: " + codUnidade);
+                return Optional.empty();
             }
         } finally {
             close(conn, stmt, rSet);

@@ -32,8 +32,9 @@ class ControleJornadaServiceNovo {
         intervaloMarcacao.setVersaoAppMomentoSincronizacao(versaoAppMomentoSincronizacao);
         EstadoVersaoIntervalo estadoVersaoIntervalo = null;
         try {
+            @SuppressWarnings("ConstantConditions")
             final VersaoDadosMarcacao versaoDados =
-                    daoAntiga.getVersaoDadosIntervaloByUnidade(intervaloMarcacao.getCodUnidade());
+                    daoAntiga.getVersaoDadosIntervaloByUnidade(intervaloMarcacao.getCodUnidade()).get();
             estadoVersaoIntervalo = versaoDadosIntervalo < versaoDados.getVersaoDadosBanco()
                     ? EstadoVersaoIntervalo.VERSAO_DESATUALIZADA
                     : EstadoVersaoIntervalo.VERSAO_ATUALIZADA;

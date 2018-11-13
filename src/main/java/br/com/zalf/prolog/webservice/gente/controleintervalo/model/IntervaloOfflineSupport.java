@@ -18,16 +18,14 @@ public class IntervaloOfflineSupport {
     @Nullable
     private Long versaoDadosIntervalo;
 
+    @Nullable
+    private String tokenSincronizacaoMarcacao;
+
     @NotNull
     private EstadoVersaoIntervalo estadoVersaoIntervalo;
 
-    @NotNull
-    private String tokenSincronizacaoMarcacao;
-
-    public IntervaloOfflineSupport(@NotNull final EstadoVersaoIntervalo estadoVersaoIntervalo,
-                                   @NotNull final String tokenSincronizacaoMarcacao) {
+    public IntervaloOfflineSupport(@NotNull final EstadoVersaoIntervalo estadoVersaoIntervalo) {
         this.estadoVersaoIntervalo = estadoVersaoIntervalo;
-        this.tokenSincronizacaoMarcacao = tokenSincronizacaoMarcacao;
     }
 
     public List<Colaborador> getColaboradores() {

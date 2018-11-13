@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 08/03/2018
@@ -55,5 +56,5 @@ public interface ControleIntervaloDao {
                                         @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
     @NotNull
-    VersaoDadosMarcacao getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
+    Optional<VersaoDadosMarcacao> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
 }

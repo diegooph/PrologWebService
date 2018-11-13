@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Zart on 19/08/2017.
@@ -63,8 +64,8 @@ public class ControleIntervaloService {
         try {
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             // Temos certeza que existira no banco, se não existir, então melhor dar erro.
-            @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
-            final VersaoDadosMarcacao versaoDados = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
+            @SuppressWarnings("ConstantConditions")
+            final VersaoDadosMarcacao versaoDados = dao.getVersaoDadosIntervaloByUnidade(codUnidade).get();
             if (versaoDadosIntervalo < versaoDados.getVersaoDadosBanco()) {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
             } else {
@@ -147,8 +148,7 @@ public class ControleIntervaloService {
                     codUnidade,
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO);
             final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
-            final VersaoDadosMarcacao versaoDados = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
-            final Long versaoDadosBanco = versaoDados.getVersaoDadosBanco();
+            final Optional<VersaoDadosMarcacao> versaoDados = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 
             // Isso é algo importante para se destacar: se ao buscarmos a versão dos dados de intervalo para uma unidade
@@ -156,9 +156,10 @@ public class ControleIntervaloService {
             // funcionalidade, o que faz sentido. Além disso, poupamos uma nova requisição ao banco, agilizando o login.
             // Porém, para isso funcionar bem, o ProLog deve garantir que se existe alguém de uma unidade com permissão de
             // marcação de intervalo, DEVE existir para essa unidade um valor de versão dos dados.
-            if (versaoDadosBanco == null) {
+            if (!versaoDados.isPresent()) {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.UNIDADE_SEM_USO_INTERVALO;
             } else {
+                final Long versaoDadosBanco = versaoDados.get().getVersaoDadosBanco();
                 // Se a unidade tem uma versão dos dados de intervalo no banco, nós precisamos comparar com a versão que
                 // o App enviou.
                 if (versaoDadosApp != null && versaoDadosApp.equals(versaoDadosBanco)) {
@@ -178,13 +179,14 @@ public class ControleIntervaloService {
                 }
             }
             // Criamos o objeto.
-            intervaloOfflineSupport = new IntervaloOfflineSupport(
-                    estadoVersaoIntervalo,
-                    versaoDados.getTokenSincronizacaoMarcacao());
+            intervaloOfflineSupport = new IntervaloOfflineSupport(estadoVersaoIntervalo);
             intervaloOfflineSupport.setColaboradores(colaboradores);
             intervaloOfflineSupport.setTiposIntervalo(tiposIntervalo);
             intervaloOfflineSupport.setEstadoVersaoIntervalo(estadoVersaoIntervalo);
-            intervaloOfflineSupport.setVersaoDadosIntervalo(versaoDadosBanco);
+            if (versaoDados.isPresent()) {
+                intervaloOfflineSupport.setVersaoDadosIntervalo(versaoDados.get().getVersaoDadosBanco());
+                intervaloOfflineSupport.setTokenSincronizacaoMarcacao(versaoDados.get().getTokenSincronizacaoMarcacao());
+            }
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o IntervaloOfflineSupport. \n" +
                     "codUnidade: %d \n" +
