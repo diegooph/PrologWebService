@@ -7,6 +7,7 @@ Change Log
 ### Features
 * Cria relatório do cronograma das aferições de placas
 * Altera busca de uma nova aferição para incluir parâmetros definidos pelo cliente para exibição de alerta de sulco
+* Cria componente para a Dashboard que mostra os checklists realizados em menos de 1 minuto e 30 segundos
 
 ### Refactors
 * Adiciona infos extras no gráfico de scatter dos pneus com menor sulco e pressão da dashboard
