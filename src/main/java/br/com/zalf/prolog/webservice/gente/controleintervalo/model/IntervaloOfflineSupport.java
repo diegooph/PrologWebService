@@ -21,8 +21,13 @@ public class IntervaloOfflineSupport {
     @NotNull
     private EstadoVersaoIntervalo estadoVersaoIntervalo;
 
-    public IntervaloOfflineSupport(@NotNull EstadoVersaoIntervalo estadoVersaoIntervalo) {
+    @NotNull
+    private String tokenSincronizacaoMarcacao;
+
+    public IntervaloOfflineSupport(@NotNull final EstadoVersaoIntervalo estadoVersaoIntervalo,
+                                   @NotNull final String tokenSincronizacaoMarcacao) {
         this.estadoVersaoIntervalo = estadoVersaoIntervalo;
+        this.tokenSincronizacaoMarcacao = tokenSincronizacaoMarcacao;
     }
 
     public List<Colaborador> getColaboradores() {
@@ -55,5 +60,13 @@ public class IntervaloOfflineSupport {
 
     public void setEstadoVersaoIntervalo(EstadoVersaoIntervalo estadoVersaoIntervalo) {
         this.estadoVersaoIntervalo = estadoVersaoIntervalo;
+    }
+
+    public String getTokenSincronizacaoMarcacao() {
+        return tokenSincronizacaoMarcacao;
+    }
+
+    public void setTokenSincronizacaoMarcacao(final String tokenSincronizacaoMarcacao) {
+        this.tokenSincronizacaoMarcacao = tokenSincronizacaoMarcacao;
     }
 }

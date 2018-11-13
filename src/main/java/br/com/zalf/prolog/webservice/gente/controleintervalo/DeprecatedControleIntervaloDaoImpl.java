@@ -266,7 +266,11 @@ public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection imple
     @Override
     @NotNull
     public Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
-        return new ControleIntervaloDaoImpl().getVersaoDadosIntervaloByUnidade(codUnidade);
+        final VersaoDadosMarcacao versaoDados =
+                new ControleIntervaloDaoImpl().getVersaoDadosIntervaloByUnidade(codUnidade);
+        return versaoDados.getVersaoDadosBanco() != null
+                ? Optional.of(versaoDados.getVersaoDadosBanco())
+                : Optional.empty();
     }
 
     @Deprecated

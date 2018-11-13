@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDa
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.EstadoVersaoIntervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.VersaoDadosMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,10 +32,9 @@ class ControleJornadaServiceNovo {
         intervaloMarcacao.setVersaoAppMomentoSincronizacao(versaoAppMomentoSincronizacao);
         EstadoVersaoIntervalo estadoVersaoIntervalo = null;
         try {
-            @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
-            final Long versaoDadosBanco =
-                    daoAntiga.getVersaoDadosIntervaloByUnidade(intervaloMarcacao.getCodUnidade()).get();
-            estadoVersaoIntervalo = versaoDadosIntervalo < versaoDadosBanco
+            final VersaoDadosMarcacao versaoDados =
+                    daoAntiga.getVersaoDadosIntervaloByUnidade(intervaloMarcacao.getCodUnidade());
+            estadoVersaoIntervalo = versaoDadosIntervalo < versaoDados.getVersaoDadosBanco()
                     ? EstadoVersaoIntervalo.VERSAO_DESATUALIZADA
                     : EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
             final Long codIntervalo = dao.insertMarcacaoIntervalo(intervaloMarcacao);

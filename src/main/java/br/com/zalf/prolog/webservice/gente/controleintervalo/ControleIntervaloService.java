@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Zart on 19/08/2017.
@@ -65,8 +64,8 @@ public class ControleIntervaloService {
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             // Temos certeza que existira no banco, se não existir, então melhor dar erro.
             @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
-            final Long versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade).get();
-            if (versaoDadosIntervalo < versaoDadosBanco) {
+            final VersaoDadosMarcacao versaoDados = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
+            if (versaoDadosIntervalo < versaoDados.getVersaoDadosBanco()) {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
             } else {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
@@ -142,13 +141,14 @@ public class ControleIntervaloService {
     public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
                                                               Long codUnidade,
                                                               ColaboradorService colaboradorService) {
-        IntervaloOfflineSupport intervaloOfflineSupport = null;
+        IntervaloOfflineSupport intervaloOfflineSupport;
         try {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
                     codUnidade,
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO);
             final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
-            final Optional<Long> versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
+            final VersaoDadosMarcacao versaoDados = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
+            final Long versaoDadosBanco = versaoDados.getVersaoDadosBanco();
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 
             // Isso é algo importante para se destacar: se ao buscarmos a versão dos dados de intervalo para uma unidade
@@ -156,31 +156,35 @@ public class ControleIntervaloService {
             // funcionalidade, o que faz sentido. Além disso, poupamos uma nova requisição ao banco, agilizando o login.
             // Porém, para isso funcionar bem, o ProLog deve garantir que se existe alguém de uma unidade com permissão de
             // marcação de intervalo, DEVE existir para essa unidade um valor de versão dos dados.
-            if (!versaoDadosBanco.isPresent()) {
+            if (versaoDadosBanco == null) {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.UNIDADE_SEM_USO_INTERVALO;
             } else {
                 // Se a unidade tem uma versão dos dados de intervalo no banco, nós precisamos comparar com a versão que
                 // o App enviou.
-                if (versaoDadosApp != null && versaoDadosApp.equals(versaoDadosBanco.get())) {
+                if (versaoDadosApp != null && versaoDadosApp.equals(versaoDadosBanco)) {
                     // Se a versão está atualizada não precisamos setar mais nada no IntervaloOfflineSupport.
                     estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
                 } else {
-                    if (versaoDadosApp != null && versaoDadosApp > versaoDadosBanco.get()) {
+                    if (versaoDadosApp != null && versaoDadosApp > versaoDadosBanco) {
                         // Isso nunca deveria acontecer! Porém, para não impedirmos o login do usuário, vamos retornar
                         // como se sua versão estivesse desatualizada e mandar os dados que temos.
                         Log.e(TAG, "Erro versão dados intervalo",
-                                new IllegalStateException("Versão dos dados do app (" + versaoDadosApp + ") não pode ser " +
-                                        "maior do que a versão dos dados no banco(" + versaoDadosBanco.get() + ")!"));
+                                new IllegalStateException("Versão dos dados do app ("
+                                        + versaoDadosApp + ") não pode ser " +
+                                        "maior do que a versão dos dados no banco("
+                                        + versaoDadosBanco + ")!"));
                     }
                     estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
                 }
             }
             // Criamos o objeto.
-            intervaloOfflineSupport = new IntervaloOfflineSupport(estadoVersaoIntervalo);
+            intervaloOfflineSupport = new IntervaloOfflineSupport(
+                    estadoVersaoIntervalo,
+                    versaoDados.getTokenSincronizacaoMarcacao());
             intervaloOfflineSupport.setColaboradores(colaboradores);
             intervaloOfflineSupport.setTiposIntervalo(tiposIntervalo);
             intervaloOfflineSupport.setEstadoVersaoIntervalo(estadoVersaoIntervalo);
-            versaoDadosBanco.ifPresent(intervaloOfflineSupport::setVersaoDadosIntervalo);
+            intervaloOfflineSupport.setVersaoDadosIntervalo(versaoDadosBanco);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o IntervaloOfflineSupport. \n" +
                     "codUnidade: %d \n" +

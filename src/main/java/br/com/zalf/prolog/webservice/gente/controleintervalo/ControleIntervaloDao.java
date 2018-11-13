@@ -3,13 +3,13 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.VersaoDadosMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created on 08/03/2018
@@ -55,5 +55,5 @@ public interface ControleIntervaloDao {
                                         @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
     @NotNull
-    Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
+    VersaoDadosMarcacao getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
 }

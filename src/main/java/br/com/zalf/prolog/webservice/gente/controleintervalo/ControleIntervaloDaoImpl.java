@@ -17,7 +17,6 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created on 08/03/2018
@@ -130,7 +129,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             stmt.setLong(4, limit);
             stmt.setLong(5, offset);
             rSet = stmt.executeQuery();
-            while (rSet.next()){
+            while (rSet.next()) {
                 intervalos.add(createIntervaloAgrupado(rSet));
             }
         } finally {
@@ -223,8 +222,8 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     @NotNull
     @Override
     public List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
-                                                           final boolean apenasAtivos,
-                                                           final boolean withCargos)
+                                                          final boolean apenasAtivos,
+                                                          final boolean withCargos)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -248,7 +247,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     @NotNull
     @Override
     public TipoMarcacao getTipoIntervalo(@NotNull final Long codUnidade,
-                                          @NotNull final Long codTipoIntervalo) throws SQLException {
+                                         @NotNull final Long codTipoIntervalo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -319,22 +318,34 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     @Override
-    public Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
+    public VersaoDadosMarcacao getVersaoDadosIntervaloByUnidade(
+            @NotNull final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT VERSAO_DADOS FROM INTERVALO_UNIDADE WHERE COD_UNIDADE = ?;");
+            stmt = conn.prepareStatement("SELECT VERSAO_DADOS, TOKEN_SINCRONIZACAO_MARCACAO " +
+                    "FROM INTERVALO_UNIDADE WHERE COD_UNIDADE = ?;");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return Optional.of(rSet.getLong("VERSAO_DADOS"));
+                return createVersaoDadosMarcacao(rSet);
+            } else {
+                throw new SQLException("Não foi possível buscar a versão de dados e token de sincronização " +
+                        "para a unidade: " + codUnidade);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
-        return Optional.empty();
+    }
+
+    @NotNull
+    private VersaoDadosMarcacao createVersaoDadosMarcacao(@NotNull final ResultSet rSet) throws SQLException {
+        final VersaoDadosMarcacao versaoDados = new VersaoDadosMarcacao();
+        versaoDados.setVersaoDadosBanco(rSet.getLong("VERSAO_DADOS"));
+        versaoDados.setTokenSincronizacaoMarcacao(rSet.getString("TOKEN_SINCRONIZACAO_MARCACAO"));
+        return versaoDados;
     }
 
     private boolean marcacaoIntervaloJaExiste(@NotNull final IntervaloMarcacao intervaloMarcacao,
@@ -505,8 +516,8 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     private TipoMarcacao createTipoInvervalo(@NotNull final ResultSet rSet,
-                                              final boolean withCargos,
-                                              @NotNull final Connection conn) throws SQLException {
+                                             final boolean withCargos,
+                                             @NotNull final Connection conn) throws SQLException {
         final TipoMarcacao tipoIntervalo = new TipoMarcacao();
         tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
         tipoIntervalo.setCodigoPorUnidade(rSet.getLong("CODIGO_TIPO_INTERVALO_POR_UNIDADE"));
