@@ -43,7 +43,7 @@ public class ControleJornadaResourceNovo {
      */
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
+    @Secured(authTypes = AuthType.TOKEN, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) Integer versaoApp,
@@ -53,7 +53,8 @@ public class ControleJornadaResourceNovo {
 
     @GET
     @UsedBy(platforms = Platform.ANDROID)
-    @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
+    @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC, AuthType.TOKEN},
+            permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/em-andamento/{codUnidade}/{cpf}/{codTipoIntervalo}")
     public IntervaloMarcacao getIntervaloAberto(@PathParam("codUnidade") Long codUnidade,
                                                 @PathParam("cpf") Long cpf,

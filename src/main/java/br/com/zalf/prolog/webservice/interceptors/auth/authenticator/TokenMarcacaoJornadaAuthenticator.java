@@ -25,7 +25,7 @@ public final class TokenMarcacaoJornadaAuthenticator extends ProLogAuthenticator
                          final boolean considerOnlyActiveUsers) throws NotAuthorizedException {
         Log.d(TAG, "Token: " + value);
         if (!service.verifyIfTokenMarcacaoExists(value)) {
-            throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+            throw new NotAuthorizedException("Token não existe no banco de dados: " + value);
         }
     }
 }

@@ -96,9 +96,25 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
     }
 
     @Override
-    public boolean verifyIfTokenMarcacaoExists(@NotNull final String tokenMarcacaoJornada) throws SQLException {
-        // TODO - Implementar SQL de validação;
-        return false;
+    public boolean verifyIfTokenMarcacaoExists(@NotNull final String tokenMarcacao) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT TOKEN_SINCRONIZACAO_MARCACAO " +
+                    " FROM INTERVALO_UNIDADE WHERE TOKEN_SINCRONIZACAO_MARCACAO = ?) AS EXISTE_TOKEN;");
+            stmt.setString(1, tokenMarcacao);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("EXISTE_TOKEN");
+            } else {
+                throw new SQLException(
+                        "Não foi possível verifica a existencia do token de sincronia de marcação: " + tokenMarcacao);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @Override
