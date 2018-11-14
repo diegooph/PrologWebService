@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ConsertoMultiplosItensOs;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto.ConsertoMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.OrdemServico;

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum PrioridadePergunta implements PieSlice {
+public enum PrioridadeAlternativa implements PieSlice {
     CRITICA("CRITICA") {
         @NotNull
         @Override
@@ -53,7 +53,7 @@ public enum PrioridadePergunta implements PieSlice {
     @NotNull
     private final String stringRepresentation;
 
-    PrioridadePergunta(@NotNull String stringRepresentation) {
+    PrioridadeAlternativa(@NotNull String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 
@@ -67,11 +67,11 @@ public enum PrioridadePergunta implements PieSlice {
         return asString();
     }
 
-    public static PrioridadePergunta fromString(String text) throws IllegalArgumentException {
+    public static PrioridadeAlternativa fromString(String text) throws IllegalArgumentException {
         if (text != null) {
-            for (final PrioridadePergunta prioridadePergunta : PrioridadePergunta.values()) {
-                if (text.equalsIgnoreCase(prioridadePergunta.stringRepresentation)) {
-                    return prioridadePergunta;
+            for (final PrioridadeAlternativa prioridadeAlternativa : PrioridadeAlternativa.values()) {
+                if (text.equalsIgnoreCase(prioridadeAlternativa.stringRepresentation)) {
+                    return prioridadeAlternativa;
                 }
             }
         }

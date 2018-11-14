@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto;
 
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
 import com.google.gson.annotations.SerializedName;

@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadePergunta;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.PlacaItensOsAbertos;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +57,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
 
     @NotNull
     @Override
-    public Map<PrioridadePergunta, Integer> getQtdItensOsByPrioridade(
+    public Map<PrioridadeAlternativa, Integer> getQtdItensOsByPrioridade(
             @NotNull final List<Long> codUnidades,
             @NotNull final ItemOrdemServico.Status statusItensContagem) throws Throwable {
         Connection conn = null;
@@ -70,10 +70,10 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setString(2, statusItensContagem.asString());
             rSet = stmt.executeQuery();
-            final Map<PrioridadePergunta, Integer> qtdItensOs = new LinkedHashMap<>();
+            final Map<PrioridadeAlternativa, Integer> qtdItensOs = new LinkedHashMap<>();
             while (rSet.next()) {
                 qtdItensOs.put(
-                        PrioridadePergunta.fromString(rSet.getString("PRIORIDADE")),
+                        PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE")),
                         rSet.getInt("QUANTIDADE"));
             }
             return qtdItensOs;

@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ConsertoMultiplosItensOs;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto.ConsertoMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.OrdemServico;

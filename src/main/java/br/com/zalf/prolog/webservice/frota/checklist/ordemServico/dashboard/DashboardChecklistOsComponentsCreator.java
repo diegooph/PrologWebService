@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieData;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.SliceValueMode;
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadePergunta;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.PlacaItensOsAbertos;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ final class DashboardChecklistOsComponentsCreator {
     @NotNull
     static PieChartComponent createQtdItensOsByPrioridade(
             @NotNull final ComponentDataHolder component,
-            @NotNull final Map<PrioridadePergunta, Integer> itensOsPrioridade) {
+            @NotNull final Map<PrioridadeAlternativa, Integer> itensOsPrioridade) {
         final List<PieEntry> entries = new ArrayList<>(itensOsPrioridade.size());
         itensOsPrioridade.forEach((statusPneu, integer) -> entries.add(PieEntry.create(
                 statusPneu.getSliceDescription(),

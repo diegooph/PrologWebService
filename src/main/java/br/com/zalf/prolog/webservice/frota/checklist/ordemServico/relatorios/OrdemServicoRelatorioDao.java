@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadePergunta;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.PlacaItensOsAbertos;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +21,8 @@ public interface OrdemServicoRelatorioDao {
                                                               final int qtdPlacasParaBuscar) throws Throwable;
 
     @NotNull
-    Map<PrioridadePergunta, Integer> getQtdItensOsByPrioridade(@NotNull final List<Long> codUnidades,
-                                                               @NotNull final ItemOrdemServico.Status statusItensContagem)
+    Map<PrioridadeAlternativa, Integer> getQtdItensOsByPrioridade(@NotNull final List<Long> codUnidades,
+                                                                  @NotNull final ItemOrdemServico.Status statusItensContagem)
             throws Throwable;
 
     void getItensMaiorQuantidadeNokCsv(@NotNull final OutputStream outputStream,
