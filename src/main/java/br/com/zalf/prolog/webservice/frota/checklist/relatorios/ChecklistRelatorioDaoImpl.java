@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosMenos130;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosAbaixoTempoEspecifico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,33 +30,33 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
 
     @NotNull
     @Override
-    public List<ChecksRealizadosMenos130> getChecksRealizadosMenos130(@NotNull List<Long> codUnidades,
-                                                                      @NotNull final int tempoRealizacao,
-                                                                      @NotNull final int diasRetroativosParaBuscar)
-            throws Throwable {
+    public List<ChecksRealizadosAbaixoTempoEspecifico> getQtdChecksRealizadosAbaixoTempoEspecifico(
+            @NotNull List<Long> codUnidades,
+            @NotNull final int tempoRealizacao,
+            @NotNull final int diasRetroativosParaBuscar) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_CHECKLIST_RELATORIO_CHECKS_REALIZADOS_EM_MENOS_DE_1_30(?, ?, ?, ?);");
+                    "FUNC_CHECKLIST_RELATORIO_CHECKS_REALIZADOS_ABAIXO_TEMPO_DEFINIDO(?, ?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setInt(2, tempoRealizacao);
             stmt.setObject(3, Now.localDateUtc());
             stmt.setInt(4, diasRetroativosParaBuscar);
 
             rSet = stmt.executeQuery();
-            final List<ChecksRealizadosMenos130> checksRealizadosMenos130 = new ArrayList<>();
+            final List<ChecksRealizadosAbaixoTempoEspecifico> checksRealizadosAbaixoTempoEspecifico = new ArrayList<>();
             while (rSet.next()) {
-                checksRealizadosMenos130.add(
-                        new ChecksRealizadosMenos130(
+                checksRealizadosAbaixoTempoEspecifico.add(
+                        new ChecksRealizadosAbaixoTempoEspecifico(
                                 rSet.getString("UNIDADE"),
                                 rSet.getString("NOME"),
-                                rSet.getInt("QUANTIDADE CHECKLISTS REALIZADOS MENOS 1:30"),
-                                rSet.getInt("QUANTIDADE CHECKLISTS REALIZADOS ÚLTIMOS 30 DIAS")));
+                                rSet.getInt("QUANTIDADE CHECKLISTS REALIZADOS ABAIXO TEMPO ESPECIFICO"),
+                                rSet.getInt("QUANTIDADE CHECKLISTS REALIZADOS")));
             }
-            return checksRealizadosMenos130;
+            return checksRealizadosAbaixoTempoEspecifico;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -367,7 +367,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
         stmt.setString(4, placa);
-        stmt.setObject (5, codColaborador);
+        stmt.setObject(5, codColaborador);
 
 
         return stmt;

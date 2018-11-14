@@ -43,13 +43,13 @@ public final class DashboardChecklistService {
     }
 
     @NotNull
-    TableComponent getChecksRealizadosMenos130(
+    TableComponent getChecksRealizadosAbaixo130(
             @NotNull final Integer codComponente,
             @NotNull final List<Long> codUnidades) throws ProLogException {
         try {
-            return DashboardChecklistComponentsCreator.createChecksRealizadosMenos130(
+            return DashboardChecklistComponentsCreator.createChecksRealizadosAbaixo130(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getChecksRealizadosMenos130(codUnidades, 91000, 30));
+                    relatorioDao.getQtdChecksRealizadosAbaixoTempoEspecifico(codUnidades, 91000, 30));
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar os checklists realizados em menos de 1:30 para as " +
                     "unidades %s", codUnidades.toString()), throwable);

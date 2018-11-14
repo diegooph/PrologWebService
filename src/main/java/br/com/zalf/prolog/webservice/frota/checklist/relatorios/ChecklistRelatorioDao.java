@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosMenos130;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosAbaixoTempoEspecifico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,9 +15,9 @@ import java.util.List;
 public interface ChecklistRelatorioDao {
 
     @NotNull
-    List<ChecksRealizadosMenos130> getChecksRealizadosMenos130(@NotNull final List<Long> codUnidades,
-                                                               @NotNull final int tempoRealizacao,
-                                                               @NotNull final int diasRetroativosParaBuscar)
+    List<ChecksRealizadosAbaixoTempoEspecifico> getQtdChecksRealizadosAbaixoTempoEspecifico(@NotNull final List<Long> codUnidades,
+                                                                                            @NotNull final int tempoRealizacao,
+                                                                                            @NotNull final int diasRetroativosParaBuscar)
             throws Throwable;
 
     @NotNull
@@ -89,8 +89,8 @@ public interface ChecklistRelatorioDao {
                                     @NotNull final List<Long> codUnidades,
                                     @NotNull final LocalDate dataInicial,
                                     @NotNull final LocalDate dataFinal,
-                                     final Integer codColaborador,
-                                     final String placa) throws Throwable;
+                                    final Integer codColaborador,
+                                    final String placa) throws Throwable;
 
     @NotNull
     Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,

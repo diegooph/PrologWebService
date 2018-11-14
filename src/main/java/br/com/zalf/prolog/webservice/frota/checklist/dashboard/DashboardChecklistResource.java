@@ -33,10 +33,10 @@ public final class DashboardChecklistResource {
     }
 
     @GET
-    @Path("/quantidade-checks-realizados-menos-de-1-30/{codComponente}")
-    public TableComponent getChecksRealizadosMenos130(
+    @Path("/quantidade-checks-realizados-abaixo-de-1-30/{codComponente}")
+    public TableComponent getChecksRealizadosAbaixo130(
             @PathParam("codComponente") final Integer codComponente,
             @QueryParam("codUnidades") final List<Long> codUnidades) throws ProLogException {
-        return service.getChecksRealizadosMenos130(codComponente, codUnidades);
+        return service.getChecksRealizadosAbaixo130(codComponente, codUnidades);
     }
 }

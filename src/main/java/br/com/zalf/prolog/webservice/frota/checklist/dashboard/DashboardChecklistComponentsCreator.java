@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.line.*;
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosMenos130;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosAbaixoTempoEspecifico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
 
@@ -97,9 +97,9 @@ final class DashboardChecklistComponentsCreator {
 
 
     @NotNull
-    static TableComponent createChecksRealizadosMenos130(
+    static TableComponent createChecksRealizadosAbaixo130(
             @NotNull final ComponentDataHolder component,
-            @NotNull final List<ChecksRealizadosMenos130> checksRealizadosMenos130) {
+            @NotNull final List<ChecksRealizadosAbaixoTempoEspecifico> checksRealizadosAbaixo130) {
         // Header.
         final List<TableItemHeader> itemHeaders = new ArrayList<>(4);
         itemHeaders.add(new TableItemHeader("Unidade", null));
@@ -110,13 +110,13 @@ final class DashboardChecklistComponentsCreator {
 
         // Linhas.
         final List<TableLine> lines = new ArrayList<>();
-        checksRealizadosMenos130.forEach(checksRealizados -> {
+        checksRealizadosAbaixo130.forEach(checksRealizados -> {
             // Colunas.
             final List<TableColumn> columns = new ArrayList<>(4);
             columns.add(new TableColumn(checksRealizados.getnomeUnidade()));
             columns.add(new TableColumn(checksRealizados.getNomeColaborador()));
-            columns.add(new TableColumn(String.valueOf(checksRealizados.getQtdChecksRealizadosEmMenosDe130())));
-            columns.add(new TableColumn(String.valueOf(checksRealizados.getQtdChecksRealizadosUltimos30Dias())));
+            columns.add(new TableColumn(String.valueOf(checksRealizados.getQtdChecksRealizadosAbaixoTempoEspecifico())));
+            columns.add(new TableColumn(String.valueOf(checksRealizados.getQtdChecksRealizados())));
             lines.add(new TableLine(columns));
         });
 
