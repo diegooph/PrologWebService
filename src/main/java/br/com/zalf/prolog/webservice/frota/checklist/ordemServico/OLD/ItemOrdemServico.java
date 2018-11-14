@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
  *
  * Created by jean on 25/07/16.
  */
+@Deprecated
 public class ItemOrdemServico {
 
     public enum Status{

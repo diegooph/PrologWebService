@@ -1,10 +1,11 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 /**
  * Created by jean on 09/03/16.
  */
+@Deprecated
 public class ManutencaoHolder {
 
     private Veiculo veiculo;

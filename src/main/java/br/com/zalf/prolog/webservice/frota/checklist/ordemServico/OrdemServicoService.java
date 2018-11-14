@@ -5,9 +5,9 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ConsertoMultiplosItensOs;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ManutencaoHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ManutencaoHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.OrdemServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
