@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao;
 
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao;
 
 /**
  * Created on 09/11/18
