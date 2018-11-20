@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDateTime;
 
 /**
@@ -17,6 +19,18 @@ public final class OrdemServicoListagem {
 
     public OrdemServicoListagem() {
 
+    }
+
+    @NotNull
+    public static OrdemServicoListagem createDummy() {
+        final OrdemServicoListagem ordem = new OrdemServicoListagem();
+        ordem.setCodOrdemServico(1L);
+        ordem.setCodUnidadeOrdemServico(5L);
+        ordem.setPlacaVeiculo("AAA1234");
+        ordem.setDataHoraAbertura(LocalDateTime.now());
+        ordem.setQtdItensAbertos(10);
+        ordem.setQtdItensAbertos(3);
+        return ordem;
     }
 
     public Long getCodOrdemServico() {

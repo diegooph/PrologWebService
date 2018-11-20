@@ -1,6 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao;
 
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item.ItemOrdemServicoAberto;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item.ItemOrdemServicoFechado;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,10 +20,13 @@ public abstract class OrdemServicoVisualizacao {
     private String placaVeiculo;
     private LocalDateTime dataHoraAbertura;
     private List<ItemOrdemServicoVisualizacao> itens;
-    // TODO - Criar tipo para serialização
 
-    public OrdemServicoVisualizacao() {
+    @Exclude
+    @NotNull
+    private final String tipo;
 
+    public OrdemServicoVisualizacao(@NotNull final String tipo) {
+        this.tipo = tipo;
     }
 
     public Long getCodOrdemServico() {
@@ -51,5 +59,13 @@ public abstract class OrdemServicoVisualizacao {
 
     public void setItens(final List<ItemOrdemServicoVisualizacao> itens) {
         this.itens = itens;
+    }
+
+    @NotNull
+    public static RuntimeTypeAdapterFactory<OrdemServicoVisualizacao> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(OrdemServicoVisualizacao.class, "tipo")
+                .registerSubtype(OrdemServicoAbertaVisualizacao.class, OrdemServicoAbertaVisualizacao.TIPO_SERIALIZACAO)
+                .registerSubtype(OrdemServicoFechadaVisualizacao.class, OrdemServicoFechadaVisualizacao.TIPO_SERIALIZACAO);
     }
 }

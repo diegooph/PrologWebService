@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item;
 
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.StatusItemOrdemServico;
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -13,8 +16,6 @@ import java.time.LocalDateTime;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public abstract class ItemOrdemServicoVisualizacao {
-    // TODO: criar tipo para serialização.
-
     /**
      * Código sequencial do item.
      */
@@ -57,8 +58,12 @@ public abstract class ItemOrdemServicoVisualizacao {
      */
     private int qtdApontamentos;
 
-    public ItemOrdemServicoVisualizacao() {
+    @Exclude
+    @NotNull
+    private final String tipo;
 
+    public ItemOrdemServicoVisualizacao(@NotNull final String tipo) {
+        this.tipo = tipo;
     }
 
     public Long getCodigo() {
@@ -131,5 +136,13 @@ public abstract class ItemOrdemServicoVisualizacao {
 
     public void setQtdApontamentos(final int qtdApontamentos) {
         this.qtdApontamentos = qtdApontamentos;
+    }
+
+    @NotNull
+    public static RuntimeTypeAdapterFactory<ItemOrdemServicoVisualizacao> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(ItemOrdemServicoVisualizacao.class, "tipo")
+                .registerSubtype(ItemOrdemServicoAberto.class, ItemOrdemServicoAberto.TIPO_SERIALIZACAO)
+                .registerSubtype(ItemOrdemServicoFechado.class, ItemOrdemServicoFechado.TIPO_SERIALIZACAO);
     }
 }

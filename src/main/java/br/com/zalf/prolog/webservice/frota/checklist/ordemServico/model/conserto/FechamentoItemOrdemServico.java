@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto;
 
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item.ItemOrdemServicoAberto;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +19,19 @@ public final class FechamentoItemOrdemServico {
 
     public FechamentoItemOrdemServico() {
 
+    }
+
+    @NotNull
+    public static FechamentoItemOrdemServico createDummy() {
+        final FechamentoItemOrdemServico fechamento = new FechamentoItemOrdemServico();
+        fechamento.setPlacaVeiculo("AAA1234");
+        fechamento.setKmAtualVeiculo(12345);
+        final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
+        itens.add(ItemOrdemServicoAberto.createDummy());
+        itens.add(ItemOrdemServicoAberto.createDummy());
+        itens.add(ItemOrdemServicoAberto.createDummy());
+        fechamento.setItens(itens);
+        return fechamento;
     }
 
     public String getPlacaVeiculo() {

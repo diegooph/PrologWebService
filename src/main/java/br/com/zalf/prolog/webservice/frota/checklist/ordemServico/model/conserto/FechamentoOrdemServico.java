@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto;
 
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.OrdemServicoAbertaVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.OrdemServicoVisualizacao;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 14/11/18
@@ -14,6 +16,15 @@ public final class FechamentoOrdemServico {
 
     public FechamentoOrdemServico() {
 
+    }
+
+    @NotNull
+    public static FechamentoOrdemServico createDummy() {
+        final FechamentoOrdemServico fechamento = new FechamentoOrdemServico();
+        fechamento.setPlacaVeiculo("AAA1234");
+        fechamento.setKmAtualVeiculo(12345);
+        fechamento.setOrdemServico(OrdemServicoAbertaVisualizacao.createDummy());
+        return fechamento;
     }
 
     public String getPlacaVeiculo() {

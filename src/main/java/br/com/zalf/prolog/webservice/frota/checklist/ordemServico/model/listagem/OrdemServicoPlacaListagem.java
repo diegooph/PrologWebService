@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 09/11/18
  *
@@ -13,6 +15,16 @@ public final class OrdemServicoPlacaListagem {
 
     public OrdemServicoPlacaListagem() {
 
+    }
+
+    @NotNull
+    public static OrdemServicoPlacaListagem createDummy() {
+        final OrdemServicoPlacaListagem ordem = new OrdemServicoPlacaListagem();
+        ordem.setPlacaVeiculo("AAA1234");
+        ordem.setQtdBaixa(3);
+        ordem.setQtdAlta(1);
+        ordem.setQtdCritica(7);
+        return ordem;
     }
 
     public String getPlacaVeiculo() {

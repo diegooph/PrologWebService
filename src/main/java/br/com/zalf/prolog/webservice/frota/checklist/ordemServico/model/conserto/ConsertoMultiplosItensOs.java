@@ -2,8 +2,10 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.consert
 
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConsertoMultiplosItensOs {
@@ -46,6 +48,23 @@ public class ConsertoMultiplosItensOs {
 
     public ConsertoMultiplosItensOs() {
 
+    }
+
+    @NotNull
+    public static ConsertoMultiplosItensOs createDummy() {
+        final ConsertoMultiplosItensOs conserto = new ConsertoMultiplosItensOs();
+        conserto.setCpfColaboradorConserto(12345678987L);
+        conserto.setPlacaVeiculo("AAA1234");
+        conserto.setDuracaoRealizacaoConserto(Duration.ofMinutes(10));
+        conserto.setKmVeiculoConserto(234000);
+        conserto.setFeedbackResolucao("Tudo resolvido!");
+        conserto.setCodUnidadeItensOs(5L);
+        final List<Long> codItens = new ArrayList<>();
+        codItens.add(1L);
+        codItens.add(2L);
+        codItens.add(3L);
+        conserto.setCodigosItens(codItens);
+        return conserto;
     }
 
     public Long getCodUnidadeItensOs() {

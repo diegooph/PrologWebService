@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 09/11/18
  *
@@ -12,6 +14,15 @@ public final class PerguntaItemOrdemServico {
 
     public PerguntaItemOrdemServico() {
 
+    }
+
+    @NotNull
+    public static PerguntaItemOrdemServico createDummy() {
+        final PerguntaItemOrdemServico pergunta = new PerguntaItemOrdemServico();
+        pergunta.setCodPergunta(123L);
+        pergunta.setDescricao("Teste Pergunta");
+        pergunta.setAlternativaMarcada(AlternativaItemOrdemServico.createDummy());
+        return pergunta;
     }
 
     public Long getCodPergunta() {

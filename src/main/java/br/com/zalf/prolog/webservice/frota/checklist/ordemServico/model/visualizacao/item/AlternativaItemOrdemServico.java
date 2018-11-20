@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 09/11/18
@@ -14,6 +15,15 @@ public final class AlternativaItemOrdemServico {
 
     public AlternativaItemOrdemServico() {
 
+    }
+
+    @NotNull
+    public static AlternativaItemOrdemServico createDummy() {
+        final AlternativaItemOrdemServico alternativa = new AlternativaItemOrdemServico();
+        alternativa.setCodAlteranativa(24345L);
+        alternativa.setDescricao("Teste Alternativa");
+        alternativa.setPrioridade(PrioridadeAlternativa.CRITICA);
+        return alternativa;
     }
 
     public Long getCodAlteranativa() {
