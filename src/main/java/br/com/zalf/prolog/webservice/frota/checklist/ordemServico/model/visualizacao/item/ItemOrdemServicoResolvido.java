@@ -13,7 +13,7 @@ import java.time.temporal.ChronoUnit;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ItemOrdemServicoFechado extends ItemOrdemServicoVisualizacao {
+public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizacao {
     public static final String TIPO_SERIALIZACAO = "ITEM_FECHADO";
 
     private Long codColaboradorFechamento;
@@ -23,21 +23,21 @@ public final class ItemOrdemServicoFechado extends ItemOrdemServicoVisualizacao 
     @SerializedName("tempoConsertoEmSegundos")
     private Duration tempoConserto;
 
-    public ItemOrdemServicoFechado() {
+    public ItemOrdemServicoResolvido() {
         super(TIPO_SERIALIZACAO);
     }
 
     @NotNull
-    public static ItemOrdemServicoFechado createDummy() {
-        final ItemOrdemServicoFechado item = new ItemOrdemServicoFechado();
+    public static ItemOrdemServicoResolvido createDummy() {
+        final ItemOrdemServicoResolvido item = new ItemOrdemServicoResolvido();
         item.setCodigo(1L);
         item.setCodOrdemServico(2L);
         item.setCodUnidadeItemOrdemServico(5L);
         item.setPergunta(PerguntaItemOrdemServico.createDummy());
         item.setDataHoraPrimeiroApontamento(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
         item.setStatus(StatusItemOrdemServico.PENDENTE);
-        item.setPrazoConsertoItem(Duration.ofMinutes(42));
-        item.setPrazoRestanteConsertoItem(Duration.ofMinutes(20));
+        item.setPrazoResolucaoItem(Duration.ofMinutes(42));
+        item.setPrazoRestanteResolucaoItem(Duration.ofMinutes(20));
         item.setQtdApontamentos(10);
 
         // Fechado.

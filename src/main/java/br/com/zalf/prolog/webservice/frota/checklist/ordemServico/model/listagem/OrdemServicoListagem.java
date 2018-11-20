@@ -14,8 +14,8 @@ public final class OrdemServicoListagem {
     private Long codUnidadeOrdemServico;
     private String placaVeiculo;
     private LocalDateTime dataHoraAbertura;
-    private int qtdItensAbertos;
-    private int qtdItensFechados;
+    private int qtdItensPendentes;
+    private int qtdItensResolvidos;
 
     public OrdemServicoListagem() {
 
@@ -28,8 +28,8 @@ public final class OrdemServicoListagem {
         ordem.setCodUnidadeOrdemServico(5L);
         ordem.setPlacaVeiculo("AAA1234");
         ordem.setDataHoraAbertura(LocalDateTime.now());
-        ordem.setQtdItensAbertos(10);
-        ordem.setQtdItensAbertos(3);
+        ordem.setQtdItensPendentes(10);
+        ordem.setQtdItensPendentes(3);
         return ordem;
     }
 
@@ -65,19 +65,19 @@ public final class OrdemServicoListagem {
         this.dataHoraAbertura = dataHoraAbertura;
     }
 
-    public int getQtdItensAbertos() {
-        return qtdItensAbertos;
+    public int getQtdItensPendentes() {
+        return qtdItensPendentes;
     }
 
-    public void setQtdItensAbertos(final int qtdItensAbertos) {
-        this.qtdItensAbertos = qtdItensAbertos;
+    public void setQtdItensPendentes(final int qtdItensPendentes) {
+        this.qtdItensPendentes = qtdItensPendentes;
     }
 
-    public int getQtdItensFechados() {
-        return qtdItensFechados;
+    public int getQtdItensResolvidos() {
+        return qtdItensResolvidos;
     }
 
-    public void setQtdItensFechados(final int qtdItensFechados) {
-        this.qtdItensFechados = qtdItensFechados;
+    public void setQtdItensResolvidos(final int qtdItensResolvidos) {
+        this.qtdItensResolvidos = qtdItensResolvidos;
     }
 }

@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto.ConsertoMultiplosItensOs;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ConsertoMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto.FechamentoItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto.FechamentoOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoListagem;

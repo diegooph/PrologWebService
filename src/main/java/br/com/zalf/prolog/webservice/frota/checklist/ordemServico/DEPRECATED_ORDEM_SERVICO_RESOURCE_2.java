@@ -6,37 +6,34 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ConsertoMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.OrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ConsertoMultiplosItensOs;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
- * Created on 20/11/18
- *
- * @author Luiz Felipe (https://github.com/luizfp)
+ * Created by jean on 11/08/16.
  */
 @DebugLog
 @Path("/checklist/ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class OrdemServicoResource {
-    @NotNull
+@Deprecated
+public class DEPRECATED_ORDEM_SERVICO_RESOURCE_2 {
     private final OrdemServicoService service = new OrdemServicoService();
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    @Path("/conserto-item")
+    @Path("/itens/conserto")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
-    public Response consertoItem(ItemOrdemServico item) throws ProLogException {
+    public Response consertaItem(ItemOrdemServico item) throws ProLogException {
         service.consertaItem(item);
         return Response.ok("Item consertado com sucesso");
     }

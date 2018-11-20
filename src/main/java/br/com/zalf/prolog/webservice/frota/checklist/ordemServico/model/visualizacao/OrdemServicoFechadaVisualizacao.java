@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao;
 
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item.ItemOrdemServicoAberto;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item.ItemOrdemServicoPendente;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ public final class OrdemServicoFechadaVisualizacao extends OrdemServicoVisualiza
         ordemAberta.setPlacaVeiculo("AAA1234");
         ordemAberta.setDataHoraAbertura(LocalDateTime.now());
         final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
-        itens.add(ItemOrdemServicoAberto.createDummy());
+        itens.add(ItemOrdemServicoPendente.createDummy());
         ordemAberta.setItens(itens);
         return ordemAberta;
     }

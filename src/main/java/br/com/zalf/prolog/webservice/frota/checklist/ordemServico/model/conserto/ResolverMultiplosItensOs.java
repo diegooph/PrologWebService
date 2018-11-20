@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.conserto;
 
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,31 +7,36 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConsertoMultiplosItensOs {
+/**
+ * Created on 20/11/18
+ *
+ * @author Luiz Felipe (https://github.com/luizfp)
+ */
+public final class ResolverMultiplosItensOs {
 
     /**
-     * Quem está realizando o conserto.
+     * Quem está resolvendo o item.
      */
-    private Long cpfColaboradorConserto;
+    private Long cpfColaboradorResolucao;
 
     /**
-     * A placa do veículo da qual os itens fechados pertencem.
+     * A placa do veículo da qual os itens resolvidos pertencem.
      */
     private String placaVeiculo;
 
     /**
-     * Duração do consertado.
+     * Duração da resolução dos itens.
      */
-    @SerializedName("duracaoRealizacaoConsertoEmSegundos")
-    private Duration duracaoRealizacaoConserto;
+    @SerializedName("duracaoResolucaoItensEmSegundos")
+    private Duration duracaoResolucaoItens;
 
     /**
-     * Km do veículo no momento em que o item foi consertado.
+     * Km do veículo no momento em que os itens foram resolvidos.
      */
-    private long kmVeiculoConserto;
+    private long kmVeiculoResolucao;
 
     /**
-     * Observação sobre o conserto.
+     * Observação sobre a resolução.
      */
     private String feedbackResolucao;
 
@@ -42,21 +46,21 @@ public class ConsertoMultiplosItensOs {
     private Long codUnidadeItensOs;
 
     /**
-     * Códigos dos {@link ItemOrdemServico itens} que serão fechados.
+     * Códigos itens que serão resolvidos.
      */
     private List<Long> codigosItens;
 
-    public ConsertoMultiplosItensOs() {
+    public ResolverMultiplosItensOs() {
 
     }
 
     @NotNull
-    public static ConsertoMultiplosItensOs createDummy() {
-        final ConsertoMultiplosItensOs conserto = new ConsertoMultiplosItensOs();
-        conserto.setCpfColaboradorConserto(12345678987L);
+    public static ResolverMultiplosItensOs createDummy() {
+        final ResolverMultiplosItensOs conserto = new ResolverMultiplosItensOs();
+        conserto.setCpfColaboradorResolucao(12345678987L);
         conserto.setPlacaVeiculo("AAA1234");
-        conserto.setDuracaoRealizacaoConserto(Duration.ofMinutes(10));
-        conserto.setKmVeiculoConserto(234000);
+        conserto.setDuracaoResolucaoItens(Duration.ofMinutes(10));
+        conserto.setKmVeiculoResolucao(234000);
         conserto.setFeedbackResolucao("Tudo resolvido!");
         conserto.setCodUnidadeItensOs(5L);
         final List<Long> codItens = new ArrayList<>();
@@ -83,28 +87,28 @@ public class ConsertoMultiplosItensOs {
         this.placaVeiculo = placaVeiculo;
     }
 
-    public Long getCpfColaboradorConserto() {
-        return cpfColaboradorConserto;
+    public Long getCpfColaboradorResolucao() {
+        return cpfColaboradorResolucao;
     }
 
-    public void setCpfColaboradorConserto(final Long cpfColaboradorConserto) {
-        this.cpfColaboradorConserto = cpfColaboradorConserto;
+    public void setCpfColaboradorResolucao(final Long cpfColaboradorResolucao) {
+        this.cpfColaboradorResolucao = cpfColaboradorResolucao;
     }
 
-    public Duration getDuracaoRealizacaoConserto() {
-        return duracaoRealizacaoConserto;
+    public Duration getDuracaoResolucaoItens() {
+        return duracaoResolucaoItens;
     }
 
-    public void setDuracaoRealizacaoConserto(final Duration duracaoRealizacaoConserto) {
-        this.duracaoRealizacaoConserto = duracaoRealizacaoConserto;
+    public void setDuracaoResolucaoItens(final Duration duracaoResolucaoItens) {
+        this.duracaoResolucaoItens = duracaoResolucaoItens;
     }
 
-    public long getKmVeiculoConserto() {
-        return kmVeiculoConserto;
+    public long getKmVeiculoResolucao() {
+        return kmVeiculoResolucao;
     }
 
-    public void setKmVeiculoConserto(final long kmVeiculoConserto) {
-        this.kmVeiculoConserto = kmVeiculoConserto;
+    public void setKmVeiculoResolucao(final long kmVeiculoResolucao) {
+        this.kmVeiculoResolucao = kmVeiculoResolucao;
     }
 
     public String getFeedbackResolucao() {

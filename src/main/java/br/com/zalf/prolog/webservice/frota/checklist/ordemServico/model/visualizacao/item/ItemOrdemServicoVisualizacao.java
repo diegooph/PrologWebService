@@ -42,16 +42,16 @@ public abstract class ItemOrdemServicoVisualizacao {
     private StatusItemOrdemServico status;
 
     /**
-     * Prazo para conserto do item.
+     * Prazo para a resolução do item.
      */
-    @SerializedName("prazoConsertoItemEmSegundos")
-    private Duration prazoConsertoItem;
+    @SerializedName("prazoResolucaoItemEmSegundos")
+    private Duration prazoResolucaoItem;
 
     /**
-     * Prazo restante para consertar o item, baseado na sua {@link PrioridadeAlternativa prioridade}.
+     * Prazo restante para resolver o item, baseado na sua {@link PrioridadeAlternativa prioridade}.
      */
-    @SerializedName("prazoRestanteConsertoItemEmSegundos")
-    private Duration prazoRestanteConsertoItem;
+    @SerializedName("prazoRestanteResolucaoItemEmSegundos")
+    private Duration prazoRestanteResolucaoItem;
 
     /**
      * Quantidade de apontamentos que um item tem.
@@ -114,20 +114,20 @@ public abstract class ItemOrdemServicoVisualizacao {
         this.status = status;
     }
 
-    public Duration getPrazoConsertoItem() {
-        return prazoConsertoItem;
+    public Duration getPrazoResolucaoItem() {
+        return prazoResolucaoItem;
     }
 
-    public void setPrazoConsertoItem(final Duration prazoConsertoItem) {
-        this.prazoConsertoItem = prazoConsertoItem;
+    public void setPrazoResolucaoItem(final Duration prazoResolucaoItem) {
+        this.prazoResolucaoItem = prazoResolucaoItem;
     }
 
-    public Duration getPrazoRestanteConsertoItem() {
-        return prazoRestanteConsertoItem;
+    public Duration getPrazoRestanteResolucaoItem() {
+        return prazoRestanteResolucaoItem;
     }
 
-    public void setPrazoRestanteConsertoItem(final Duration prazoRestanteConsertoItem) {
-        this.prazoRestanteConsertoItem = prazoRestanteConsertoItem;
+    public void setPrazoRestanteResolucaoItem(final Duration prazoRestanteResolucaoItem) {
+        this.prazoRestanteResolucaoItem = prazoRestanteResolucaoItem;
     }
 
     public int getQtdApontamentos() {
@@ -142,7 +142,7 @@ public abstract class ItemOrdemServicoVisualizacao {
     public static RuntimeTypeAdapterFactory<ItemOrdemServicoVisualizacao> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
                 .of(ItemOrdemServicoVisualizacao.class, "tipo")
-                .registerSubtype(ItemOrdemServicoAberto.class, ItemOrdemServicoAberto.TIPO_SERIALIZACAO)
-                .registerSubtype(ItemOrdemServicoFechado.class, ItemOrdemServicoFechado.TIPO_SERIALIZACAO);
+                .registerSubtype(ItemOrdemServicoPendente.class, ItemOrdemServicoPendente.TIPO_SERIALIZACAO)
+                .registerSubtype(ItemOrdemServicoResolvido.class, ItemOrdemServicoResolvido.TIPO_SERIALIZACAO);
     }
 }
