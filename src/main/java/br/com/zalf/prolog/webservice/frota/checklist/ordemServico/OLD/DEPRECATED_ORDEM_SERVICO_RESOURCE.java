@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
@@ -7,9 +7,6 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.error.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ManutencaoHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.OrdemServico;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -32,7 +29,7 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE {
     @POST
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/consertaItem/{placa}")
-    @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
+    @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
     public Response consertaItem(ItemOrdemServico item,
                                  @PathParam("placa") String placa) throws ProLogException {
         throw new VersaoAppBloqueadaException(ERROR_MESSAGE);
@@ -43,7 +40,7 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE {
     @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     public List<OrdemServico> getOs(@PathParam("codUnidade") Long codUnidade,
                                     @PathParam("tipoVeiculo") String tipoVeiculo,
                                     @PathParam("placa") String placa,
@@ -58,7 +55,7 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE {
     @Path("/manutencao/{placa}/{status}/{prioridade}")
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     public List<ItemOrdemServico> getItensOsManutencaoHolder(@PathParam("placa") @Required String placa,
                                                              @PathParam("status") @Required String status,
                                                              @PathParam("prioridade") @Required String prioridade,
@@ -73,7 +70,7 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE {
     @Path("/itens")
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required String placa)
             throws ProLogException {
         throw new VersaoAppBloqueadaException(ERROR_MESSAGE);
@@ -84,7 +81,7 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE {
     @Path("/{codOs}/unidades/{codUnidade}/itens")
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     public List<ItemOrdemServico> getItensOrdemServico(@PathParam("codOs") @Required Long codOs,
                                                        @PathParam("codUnidade") @Required Long codUnidade,
                                                        @QueryParam("statusItemOs") @Optional String statusItemOs)
@@ -97,7 +94,7 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE {
     @Path("/manutencao/{codUnidade}")
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("codUnidade") @Required Long codUnidade,
                                                             @QueryParam("codTipoVeiculo") @Optional Long codTipoVeiculo,
                                                             @QueryParam("placaVeiculo") @Optional String placaVeiculo,
@@ -117,7 +114,7 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE {
     @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     @Deprecated
     public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("codUnidade") Long codUnidade,
                                                             @PathParam("tipoVeiculo") String codTipo,

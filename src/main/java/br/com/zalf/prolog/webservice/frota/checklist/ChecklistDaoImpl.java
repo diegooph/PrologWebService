@@ -7,7 +7,8 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_2;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +36,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        final OrdemServicoDao osDao = Injection.provideOrdemServicoDao();
+        final DEPRECATED_ORDEM_SERVICO_DAO_2 osDao = new DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2();
         try {
             conn = getConnection();
             conn.setAutoCommit(false);

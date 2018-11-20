@@ -86,7 +86,7 @@ public final class Pilares {
                 }
 
                 public static final int VISUALIZAR = 12;
-                public static final int CONSERTAR_ITEM = 13;
+                public static final int RESOLVER_ITEM = 13;
             }
 
             public final class Pneu {

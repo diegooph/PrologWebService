@@ -1,128 +1,102 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
-import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ConsertoMultiplosItensOs;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ManutencaoHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.OrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.StatusItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.StatusOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.QtdItensPlacaListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.HolderResolucaoItensOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.HolderResolucaoOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.ResolverItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.ResolverMultiplosItensOs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Created by jean on 11/08/16.
- * Classe OrdemServicoService responsavel por comunicar-se com a interface DAO
+ * Created on 20/11/18
+ *
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class OrdemServicoService {
+public final class OrdemServicoService {
     private static final String TAG = OrdemServicoService.class.getSimpleName();
     @NotNull
     private final OrdemServicoDao dao = Injection.provideOrdemServicoDao();
 
-    public List<OrdemServico> getOs(String placa, String status, Long codUnidade,
-                                    String tipoVeiculo, Integer limit, Long offset) throws ProLogException {
+    @NotNull
+    public List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
+                                                              @Nullable final Long codTipoVeiculo,
+                                                              @Nullable final String placaVeiculo,
+                                                              @Nullable final StatusOrdemServico statusOrdemServico,
+                                                              @Nullable final Integer limit,
+                                                              @Nullable final Integer offset) throws ProLogException {
         try {
-            return dao.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
-        } catch (final Throwable throwable) {
-            Log.e(TAG, String.format("Erro ao buscar as OS. \n" +
-                    "Placa: %s \n" +
-                    "Status: %s \n" +
-                    "codUnidade: %d \n" +
-                    "tipoVeiculo: %s \n" +
-                    "limit: %d \n" +
-                    "offset: %d", placa, status, codUnidade, tipoVeiculo, limit, offset), throwable);
-            throw Injection.provideProLogExceptionHandler().map(throwable, "Erro ao buscar ordens de serviços");
-        }
-    }
-
-    void consertaItem(@NotNull final ItemOrdemServico item) throws ProLogException {
-        try {
-            dao.consertaItem(item);
-        } catch (final Throwable throwable) {
-            Log.e(TAG, String.format("Erro ao consertar o item\n" +
-                    "Código: %d", item.getCodigo()), throwable);
-            throw Injection.provideProLogExceptionHandler().map(
-                    throwable,
-                    "Erro ao consertar o item, tente novamente");
-        }
-    }
-
-    void consertaItens(@NotNull final ConsertoMultiplosItensOs itensConserto) throws ProLogException {
-        try {
-            dao.consertaItens(itensConserto);
-        } catch (final Throwable throwable) {
-            final String errorMessage = "Erro ao consertar os itens";
-            Log.e(TAG, errorMessage, throwable);
-            throw Injection.provideProLogExceptionHandler().map(
-                    throwable,
-                    errorMessage);
+            return dao.getOrdemServicoListagem(codUnidade, codTipoVeiculo, placaVeiculo, statusOrdemServico, limit, offset);
+        } catch (final Throwable t) {
+            return null;
         }
     }
 
     @NotNull
-    List<ManutencaoHolder> getResumoManutencaoHolder(@NotNull final Long codUnidade,
-                                                     @Nullable final Long codTipoVeiculo,
-                                                     @Nullable final String placaVeiculo,
-                                                     final boolean itensEmAberto,
-                                                     final int limit,
-                                                     final int offset) throws ProLogException {
+    public List<QtdItensPlacaListagem> getQtdItensPlacaListagem(
+            @NotNull final Long codUnidade,
+            @Nullable final Long codTipoVeiculo,
+            @Nullable final String placaVeiculo,
+            @Nullable final StatusItemOrdemServico statusItemOrdemServico,
+            final int limit,
+            final int offset) throws ProLogException {
         try {
-            return dao.getResumoManutencaoHolder(codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit,
-                    offset);
-        } catch (final Throwable throwable) {
-            Log.e(TAG, String.format("Erro ao a quantidade de itens de OS do checklist.\n" +
-                    "codUnidade: %d\n" +
-                    "codTipoVeiculo: %d\n" +
-                    "Placa: %s\n" +
-                    "Itens em aberto: %b\n" +
-                    "limit: %d\n" +
-                    "offset: %d\n", codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit, offset), throwable);
-            throw Injection.provideProLogExceptionHandler().map(
-                    throwable,
-                    "Erro ao buscar os itens de ordem de serviço, tente novamente");
-        }
-    }
-
-    @NotNull
-    List<ItemOrdemServico> getItensOsManutencaoHolder(@NotNull final String placa,
-                                                      @NotNull final String statusItens,
-                                                      @Nullable final String prioridadeItens,
-                                                      @Nullable final Integer limit,
-                                                      @Nullable final Long offset) throws ProLogException {
-        try {
-            return dao.getItensOs(
-                    placa,
-                    statusItens,
-                    prioridadeItens == null ? Filtros.getFiltroTodos() : prioridadeItens,
+            return dao.getQtdItensPlacaListagem(
+                    codUnidade,
+                    codTipoVeiculo,
+                    placaVeiculo,
+                    statusItemOrdemServico,
                     limit,
                     offset);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar os itens de uma OS. \n" +
-                    "placa: %s \n" +
-                    "statusItens: %s \n" +
-                    "limit: %d \n" +
-                    "offset: %d \n" +
-                    "prioridadeItens: %s", placa, statusItens, limit, offset, prioridadeItens), e);
-            throw Injection.provideProLogExceptionHandler().map(e, "Erro ao buscar os itens de O.S.");
+        } catch (final Throwable t) {
+            return null;
         }
     }
 
     @NotNull
-    List<ItemOrdemServico> getItensOs(@NotNull final Long codOs,
-                                      @NotNull final Long codUnidade,
-                                      @Nullable final String statusItemOs) throws ProLogException {
+    public HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codUnidade,
+                                                                      @NotNull final Long codOrdemServico)
+            throws ProLogException {
         try {
-            return dao.getItensOs(codOs, codUnidade, statusItemOs);
-        } catch (Throwable e) {
-            Log.e(TAG, String.format("Erro ao buscar os itens de uma OS.\n" +
-                    "codOs: %d\n" +
-                    "codUnidade: %d\n" +
-                    "statusItemOs: %s\n", codOs, codUnidade, statusItemOs), e);
-            throw Injection.provideProLogExceptionHandler().map(e, "Erro ao buscar os itens de O.S.");
+            return dao.getHolderResolucaoOrdemServico(codUnidade, codOrdemServico);
+        } catch (final Throwable t) {
+            return null;
+        }
+    }
+
+    @NotNull
+    public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
+            @NotNull final String placaVeiculo,
+            @NotNull final PrioridadeAlternativa prioridade) throws ProLogException {
+        try {
+            return dao.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridade);
+        } catch (final Throwable t) {
+            return null;
+        }
+    }
+
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws ProLogException {
+        try {
+            dao.resolverItem(item);
+        } catch (final Throwable t) {
+
+        }
+    }
+
+
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
+        try {
+            dao.resolverItens(itensResolucao);
+        } catch (final Throwable t) {
+
         }
     }
 }

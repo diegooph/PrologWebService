@@ -6,10 +6,15 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ManutencaoHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.OrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ConsertoMultiplosItensOs;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.StatusItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.StatusOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.QtdItensPlacaListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.HolderResolucaoItensOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.HolderResolucaoOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.ResolverItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -28,84 +33,94 @@ import java.util.List;
 @Path("/checklist/ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class OrdemServicoResource {
+public final class OrdemServicoResource {
     @NotNull
     private final OrdemServicoService service = new OrdemServicoService();
 
+
+    @GET
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/listagem")
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
+    public List<OrdemServicoListagem> getOrdemServicoListagem(
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
+            @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
+            @QueryParam("statusOrdemServico") @Optional final StatusOrdemServico statusOrdemServico,
+            @QueryParam("limit") @Optional final Integer limit,
+            @QueryParam("offset") @Optional final Integer offset) throws ProLogException {
+        return service.getOrdemServicoListagem(
+                codUnidade,
+                codTipoVeiculo,
+                placaVeiculo,
+                statusOrdemServico,
+                limit,
+                offset);
+    }
+
+    @GET
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/listagem-qtd-itens-placa")
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
+    public List<QtdItensPlacaListagem> getOrdemServicoListagemPlacas(
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
+            @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
+            @QueryParam("statusItemOrdemServico") @Optional final StatusItemOrdemServico statusItemOrdemServico,
+            @QueryParam("limit") @Optional final int limit,
+            @QueryParam("offset") @Optional final int offset) throws ProLogException {
+        return service.getQtdItensPlacaListagem(
+                codUnidade,
+                codTipoVeiculo,
+                placaVeiculo,
+                statusItemOrdemServico,
+                limit,
+                offset);
+    }
+
+    @GET
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/resolucao-ordem-servico")
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
+    public HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("codOrdemServico") @Required final Long codOrdemServico) throws ProLogException {
+        return service.getHolderResolucaoOrdemServico(codUnidade, codOrdemServico);
+    }
+
+    @GET
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/resolucao-itens-ordem-servico")
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
+    public HolderResolucaoItensOrdemServico getHolderResolucaoOrdemServico(
+            @QueryParam("placaVeiculo") @Required final String placaVeiculo,
+            @QueryParam("prioridade") @Required final PrioridadeAlternativa prioridadeAlternativa) throws ProLogException {
+        return service.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridadeAlternativa);
+    }
+
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    @Path("/conserto-item")
-    @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
-    public Response consertoItem(ItemOrdemServico item) throws ProLogException {
-        service.consertaItem(item);
-        return Response.ok("Item consertado com sucesso");
+    @Path("/resolver-item")
+    @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
+    public Response resolverItem(ResolverItemOrdemServico item) throws ProLogException {
+        service.resolverItem(item);
+        return Response.ok("Item resolvido com sucesso");
     }
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    @Path("/itens/conserto-multiplos")
-    @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
-    public Response consertaItens(ConsertoMultiplosItensOs itensConserto) throws ProLogException {
-        service.consertaItens(itensConserto);
-        return Response.ok("Itens consertados com sucesso");
-    }
-
-    @GET
-    @UsedBy(platforms = Platform.ANDROID)
-    @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
-    @Secured(permissions = {
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
-    public List<OrdemServico> getOs(@PathParam("codUnidade") Long codUnidade,
-                                    @PathParam("tipoVeiculo") String tipoVeiculo,
-                                    @PathParam("placa") String placa,
-                                    @PathParam("status") String status,
-                                    @QueryParam("limit") Integer limit,
-                                    @QueryParam("offset") Long offset) throws Throwable {
-        return service.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
-    }
-
-    @GET
-    @UsedBy(platforms = Platform.ANDROID)
-    @Path("/itens")
-    @Secured(permissions = {
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
-    public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required String placa,
-                                                       @QueryParam("status-itens") @Required String statusItens,
-                                                       @QueryParam("prioridade-itens") @Optional String prioridade,
-                                                       @QueryParam("limit") @Optional Integer limit,
-                                                       @QueryParam("offset") @Optional Long offset)
-            throws ProLogException {
-        return service.getItensOsManutencaoHolder(placa, statusItens, prioridade, limit, offset);
-    }
-
-    @GET
-    @UsedBy(platforms = Platform.ANDROID)
-    @Path("/{codOs}/unidades/{codUnidade}/itens")
-    @Secured(permissions = {
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
-    public List<ItemOrdemServico> getItensOrdemServico(@PathParam("codOs") @Required Long codOs,
-                                                       @PathParam("codUnidade") @Required Long codUnidade,
-                                                       @QueryParam("statusItemOs") @Optional String statusItemOs)
-            throws ProLogException {
-        return service.getItensOs(codOs, codUnidade, statusItemOs);
-    }
-
-    @GET
-    @UsedBy(platforms = Platform.ANDROID)
-    @Path("/manutencao/{codUnidade}")
-    @Secured(permissions = {
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
-    public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("codUnidade") @Required Long codUnidade,
-                                                            @QueryParam("codTipoVeiculo") @Optional Long codTipoVeiculo,
-                                                            @QueryParam("placaVeiculo") @Optional String placaVeiculo,
-                                                            @QueryParam("itensEmAberto") @Required Boolean itensEmAberto,
-                                                            @QueryParam("limit") @Required int limit,
-                                                            @QueryParam("offset") @Required int offset)
-            throws ProLogException {
-        return service.getResumoManutencaoHolder(codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit, offset);
+    @Path("/resolver-multiplos-itens")
+    @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
+    public Response resolverItens(ResolverMultiplosItensOs itensResolucao) throws ProLogException {
+        service.resolverItens(itensResolucao);
+        return Response.ok("Itens resolvidos com sucesso");
     }
 }

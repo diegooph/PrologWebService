@@ -9,18 +9,18 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class FechamentoOrdemServico {
+public final class HolderResolucaoOrdemServico {
     private String placaVeiculo;
     private long kmAtualVeiculo;
     private OrdemServicoVisualizacao ordemServico;
 
-    public FechamentoOrdemServico() {
+    public HolderResolucaoOrdemServico() {
 
     }
 
     @NotNull
-    public static FechamentoOrdemServico createDummy() {
-        final FechamentoOrdemServico fechamento = new FechamentoOrdemServico();
+    public static HolderResolucaoOrdemServico createDummy() {
+        final HolderResolucaoOrdemServico fechamento = new HolderResolucaoOrdemServico();
         fechamento.setPlacaVeiculo("AAA1234");
         fechamento.setKmAtualVeiculo(12345);
         fechamento.setOrdemServico(OrdemServicoAbertaVisualizacao.createDummy());

@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 09/11/18
  *
@@ -14,6 +16,17 @@ public final class ResolverItemOrdemServico {
 
     public ResolverItemOrdemServico() {
 
+    }
+
+    @NotNull
+    public static ResolverItemOrdemServico createDummy() {
+        final ResolverItemOrdemServico resolverItem = new ResolverItemOrdemServico();
+        resolverItem.setCodColaboradoResolucao(123L);
+        resolverItem.setCodItemResolvido(1L);
+        resolverItem.setFeedbackResolucao("Resolvido!");
+        resolverItem.setPlacaVeiculo("AAA1234");
+        resolverItem.setKmColetadoVeiculo(1234L);
+        return resolverItem;
     }
 
     public Long getCodColaboradoResolucao() {

@@ -12,18 +12,18 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class FechamentoItemOrdemServico {
+public final class HolderResolucaoItensOrdemServico {
     private String placaVeiculo;
     private long kmAtualVeiculo;
     private List<ItemOrdemServicoVisualizacao> itens;
 
-    public FechamentoItemOrdemServico() {
+    public HolderResolucaoItensOrdemServico() {
 
     }
 
     @NotNull
-    public static FechamentoItemOrdemServico createDummy() {
-        final FechamentoItemOrdemServico fechamento = new FechamentoItemOrdemServico();
+    public static HolderResolucaoItensOrdemServico createDummy() {
+        final HolderResolucaoItensOrdemServico fechamento = new HolderResolucaoItensOrdemServico();
         fechamento.setPlacaVeiculo("AAA1234");
         fechamento.setKmAtualVeiculo(12345);
         final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();

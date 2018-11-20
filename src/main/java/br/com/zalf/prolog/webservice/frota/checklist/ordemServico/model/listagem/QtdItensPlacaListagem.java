@@ -7,19 +7,19 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class OrdemServicoPlacaListagem {
+public final class QtdItensPlacaListagem {
     private String placaVeiculo;
     private int qtdCritica;
     private int qtdAlta;
     private int qtdBaixa;
 
-    public OrdemServicoPlacaListagem() {
+    public QtdItensPlacaListagem() {
 
     }
 
     @NotNull
-    public static OrdemServicoPlacaListagem createDummy() {
-        final OrdemServicoPlacaListagem ordem = new OrdemServicoPlacaListagem();
+    public static QtdItensPlacaListagem createDummy() {
+        final QtdItensPlacaListagem ordem = new QtdItensPlacaListagem();
         ordem.setPlacaVeiculo("AAA1234");
         ordem.setQtdBaixa(3);
         ordem.setQtdAlta(1);
