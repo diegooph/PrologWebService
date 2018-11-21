@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
+import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import com.google.common.base.Preconditions;

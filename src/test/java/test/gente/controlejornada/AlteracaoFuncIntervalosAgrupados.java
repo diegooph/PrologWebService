@@ -2,10 +2,10 @@ package test.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Localizacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;

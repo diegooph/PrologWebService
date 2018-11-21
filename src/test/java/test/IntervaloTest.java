@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;

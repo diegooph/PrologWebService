@@ -1,13 +1,13 @@
 package test.gente.controlejornada;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleJornadaRelatorioService;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.FolhaPontoRelatorio;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.FolhaPontoTipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleIntervaloService;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioService;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.FolhaPontoTipoIntervalo;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import test.BaseTest;
@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim.MARCACAO_FIM;
-import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoInicioFim.MARCACAO_INICIO;
+import static br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim.MARCACAO_FIM;
+import static br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim.MARCACAO_INICIO;
 import static org.junit.Assert.*;
 
 /**

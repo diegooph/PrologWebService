@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
 
 /**
  * Created on 14/05/2018
