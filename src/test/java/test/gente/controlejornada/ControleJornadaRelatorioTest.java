@@ -1,6 +1,6 @@
 package test.gente.controlejornada;
 
-import br.com.zalf.prolog.webservice.gente.controlejornada.ControleIntervaloService;
+import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
@@ -60,7 +60,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
 
     @Test
     public void testCalculoHorasPorTipoMarcacao() throws Throwable {
-        final ControleIntervaloService intervaloService = new ControleIntervaloService();
+        final DeprecatedControleIntervaloService_2 intervaloService = new DeprecatedControleIntervaloService_2();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
         final List<TipoMarcacao> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
@@ -123,7 +123,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
 
     @Test
     public void testCalculoHorasPorTipoMarcacao_InicoAntesFiltroFimDepoisFiltro() throws Throwable {
-        final ControleIntervaloService intervaloService = new ControleIntervaloService();
+        final DeprecatedControleIntervaloService_2 intervaloService = new DeprecatedControleIntervaloService_2();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
         final List<TipoMarcacao> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);

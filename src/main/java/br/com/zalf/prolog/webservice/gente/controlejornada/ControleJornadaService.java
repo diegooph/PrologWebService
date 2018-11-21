@@ -1,8 +1,8 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.novo;
+package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.gente.controlejornada.ControleIntervaloDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDao_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.EstadoVersaoIntervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.ResponseIntervalo;
@@ -14,13 +14,13 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-class ControleJornadaServiceNovo {
+class ControleJornadaService {
     @NotNull
-    private static final String TAG = ControleJornadaServiceNovo.class.getSimpleName();
+    private static final String TAG = ControleJornadaService.class.getSimpleName();
     @NotNull
-    private ControleIntervaloDao daoAntiga = Injection.provideControleJornadaDao();
+    private DeprecatedControleIntervaloDao_2 daoAntiga = Injection.provideControleJornadaDao();
     @NotNull
-    private final ControleJornadaDaoNovo dao = Injection.provideControleJornadaDaoNovo();
+    private final ControleJornadaDao dao = Injection.provideControleJornadaDaoNovo();
 
     @SuppressWarnings("Duplicates")
     @NotNull

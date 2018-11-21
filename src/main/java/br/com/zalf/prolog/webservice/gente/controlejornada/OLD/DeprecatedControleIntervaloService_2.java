@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada;
+package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
-import br.com.zalf.prolog.webservice.gente.controlejornada.novo.ControleJornadaDaoNovo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,12 +20,13 @@ import java.util.Optional;
 /**
  * Created by Zart on 19/08/2017.
  */
-public class ControleIntervaloService {
+@Deprecated
+public class DeprecatedControleIntervaloService_2 {
 
-    private static final String TAG = ControleIntervaloService.class.getSimpleName();
-    private ControleIntervaloDao dao = Injection.provideControleJornadaDao();
+    private static final String TAG = DeprecatedControleIntervaloService_2.class.getSimpleName();
+    private DeprecatedControleIntervaloDao_2 dao = Injection.provideControleJornadaDao();
     @NotNull
-    private final ControleJornadaDaoNovo daoNova = Injection.provideControleJornadaDaoNovo();
+    private final ControleJornadaDao daoNova = Injection.provideControleJornadaDaoNovo();
 
     public List<TipoMarcacao> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
         try {
@@ -194,7 +195,7 @@ public class ControleIntervaloService {
     @Deprecated
     public Long iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) {
         try {
-            return new DeprecatedControleIntervaloDaoImpl().iniciaIntervalo(codUnidade, cpf, codTipo);
+            return new DeprecatedControleIntervaloDaoImpl_1().iniciaIntervalo(codUnidade, cpf, codTipo);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao iniciar o intervalo. \n" +
                     "codUnidade: %d \n" +
@@ -207,7 +208,7 @@ public class ControleIntervaloService {
     @Deprecated
     public boolean insereFinalizacaoIntervalo(Intervalo intervalo, Long codUnidade) {
         try {
-            return new DeprecatedControleIntervaloDaoImpl().insereFinalizacaoIntervalo(intervalo, codUnidade);
+            return new DeprecatedControleIntervaloDaoImpl_1().insereFinalizacaoIntervalo(intervalo, codUnidade);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao inserir uma finalização de intevalo. \n" +
                     "codUnidade: %d", codUnidade), e);

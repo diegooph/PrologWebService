@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada;
+package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
@@ -25,9 +25,10 @@ import java.util.List;
 @Path("/controle-intervalos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class ControleIntervaloResource {
+@Deprecated
+public final class DeprecatedControleIntervaloResource_2 {
 
-    private final ControleIntervaloService service = new ControleIntervaloService();
+    private final DeprecatedControleIntervaloService_2 service = new DeprecatedControleIntervaloService_2();
 
     /**
      * O motivo deste método não necessitar nem da permissão de marcacão de intervalo, é que se um colaborador que antes

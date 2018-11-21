@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.novo;
+package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
@@ -26,7 +26,7 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @SuppressWarnings("Duplicates")
-public class ControleJornadaDaoImplNovo extends DatabaseConnection implements ControleJornadaDaoNovo {
+public class ControleJornadaDaoImpl extends DatabaseConnection implements ControleJornadaDao {
 
     @NotNull
     @Override

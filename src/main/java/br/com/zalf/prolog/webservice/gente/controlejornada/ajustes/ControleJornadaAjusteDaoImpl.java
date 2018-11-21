@@ -17,7 +17,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.histori
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.inconsistencias.MarcacaoInconsistencia;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.inconsistencias.TipoInconsistenciaMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
-import br.com.zalf.prolog.webservice.gente.controlejornada.novo.ControleJornadaDaoNovo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,7 +104,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             final Long codMarcacaoInserida = insereMarcacaoAjusteAdicao(conn, tokenResponsavelAjuste, marcacaoAjuste,
                     zoneId);
             final TipoInicioFim tipoInicioFim = marcacaoAjuste.getTipoInicioFim();
-            final ControleJornadaDaoNovo controleIntervaloDao = Injection.provideControleJornadaDaoNovo();
+            final ControleJornadaDao controleIntervaloDao = Injection.provideControleJornadaDaoNovo();
             controleIntervaloDao.insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, tipoInicioFim);
             final Long codMarcacaoInicio = tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)
                     ? codMarcacaoInserida
@@ -140,7 +140,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             conn.setAutoCommit(false);
             final ResultInsertInicioFim codigos =
                     insereMarcacaoAjusteAdicaoInicioFim(conn, tokenResponsavelAjuste, marcacaoAjuste);
-            final ControleJornadaDaoNovo controleIntervaloDao = Injection.provideControleJornadaDaoNovo();
+            final ControleJornadaDao controleIntervaloDao = Injection.provideControleJornadaDaoNovo();
             controleIntervaloDao
                     .insereMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoInicio(), TipoInicioFim.MARCACAO_INICIO);
             controleIntervaloDao

@@ -10,8 +10,8 @@ import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.gente.controlejornada.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.ControleIntervaloService;
+import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDao_2;
+import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -139,7 +139,7 @@ public class ColaboradorService {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             }
 
-            final ControleIntervaloService intervaloService = new ControleIntervaloService();
+            final DeprecatedControleIntervaloService_2 intervaloService = new DeprecatedControleIntervaloService_2();
             final IntervaloOfflineSupport intervaloOfflineSupport = intervaloService.getIntervaloOfflineSupport(
                     loginRequest.getVersaoDadosIntervalo(),
                     colaborador.getUnidade().getCodigo(),
@@ -184,7 +184,7 @@ public class ColaboradorService {
 
             // Se usuário tem acesso a marcação de intervalo, precisamos setar os tipos de intervalo também.
             if (colaborador.getVisao().hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)) {
-                final ControleIntervaloDao dao = Injection.provideControleJornadaDao();
+                final DeprecatedControleIntervaloDao_2 dao = Injection.provideControleJornadaDao();
                 final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(
                         colaborador.getUnidade().getCodigo(),
                         true,

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.novo;
+package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
@@ -16,7 +16,7 @@ import java.sql.SQLException;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public interface ControleJornadaDaoNovo {
+public interface ControleJornadaDao {
     /**
      * Método utilizado para salvar no Banco de Dados uma Marcação.
      *

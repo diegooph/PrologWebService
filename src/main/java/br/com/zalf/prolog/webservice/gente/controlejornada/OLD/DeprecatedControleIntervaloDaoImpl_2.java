@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada;
+package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,9 +25,10 @@ import java.util.Optional;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ControleIntervaloDaoImpl extends DatabaseConnection implements ControleIntervaloDao {
+@Deprecated
+public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnection implements DeprecatedControleIntervaloDao_2 {
 
-    public ControleIntervaloDaoImpl() {
+    public DeprecatedControleIntervaloDaoImpl_2() {
 
     }
 

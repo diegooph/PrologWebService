@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.novo;
+package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
@@ -31,9 +31,9 @@ import javax.ws.rs.core.MediaType;
         targetVersionCode = 60,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-public class ControleJornadaResourceNovo {
+public class ControleJornadaResource {
     @NotNull
-    private final ControleJornadaServiceNovo service = new ControleJornadaServiceNovo();
+    private final ControleJornadaService service = new ControleJornadaService();
 
     /**
      * O motivo deste método não necessitar nem da permissão de marcacão de intervalo, é que se um colaborador que antes

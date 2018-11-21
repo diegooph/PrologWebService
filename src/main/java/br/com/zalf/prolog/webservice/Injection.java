@@ -77,16 +77,16 @@ import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controlejornada.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.ControleIntervaloDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDao_2;
+import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDaoImpl_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteDao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa.JustificativaAjusteDao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa.JustificativaAjusteDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controlejornada.novo.ControleJornadaDaoImplNovo;
-import br.com.zalf.prolog.webservice.gente.controlejornada.novo.ControleJornadaDaoNovo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatoriosDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
@@ -261,13 +261,13 @@ public final class Injection {
     }
 
     @NotNull
-    public static ControleIntervaloDao provideControleJornadaDao() {
-        return new ControleIntervaloDaoImpl();
+    public static DeprecatedControleIntervaloDao_2 provideControleJornadaDao() {
+        return new DeprecatedControleIntervaloDaoImpl_2();
     }
 
     @NotNull
-    public static ControleJornadaDaoNovo provideControleJornadaDaoNovo() {
-        return new ControleJornadaDaoImplNovo();
+    public static ControleJornadaDao provideControleJornadaDaoNovo() {
+        return new ControleJornadaDaoImpl();
     }
 
     @NotNull

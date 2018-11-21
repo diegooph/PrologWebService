@@ -1,5 +1,6 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada;
+package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
+import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import com.sun.istack.internal.NotNull;
@@ -12,7 +13,7 @@ import java.util.Optional;
  * Created by Zart on 18/08/2017.
  */
 @Deprecated
-public interface DeprecatedControleIntervaloDao {
+public interface DeprecatedControleIntervaloDao_1 {
 
     List<TipoMarcacao> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException;
 

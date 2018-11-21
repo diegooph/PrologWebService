@@ -1,5 +1,6 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada;
+package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
+import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
@@ -16,7 +17,8 @@ import java.util.Optional;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public interface ControleIntervaloDao {
+@Deprecated
+public interface DeprecatedControleIntervaloDao_2 {
 
     void insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException;
 
