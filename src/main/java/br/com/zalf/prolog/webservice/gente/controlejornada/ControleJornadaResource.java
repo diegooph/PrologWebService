@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.ResponseIntervalo;
@@ -18,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created on 08/11/18.
@@ -56,10 +60,39 @@ public class ControleJornadaResource {
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/marcacao-em-andamento")
-    public IntervaloMarcacao getIntervaloAberto(
+    public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(
             @QueryParam("codUnidade") @Required Long codUnidade,
             @QueryParam("cpf") @Required Long cpf,
-            @QueryParam("codTipoIntervalo") @Required Long codTipoInvervalo) throws Throwable {
+            @QueryParam("codTipoIntervalo") @Required Long codTipoInvervalo) throws ProLogException {
         return service.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoInvervalo);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = {
+            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
+            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
+            Pilares.Gente.Intervalo.AJUSTE_MARCACOES,
+            Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
+    @Path("/marcacoes")
+    public List<Intervalo> getIntervalosColaborador(@QueryParam("codUnidade") @Required Long codUnidade,
+                                                    @QueryParam("cpf") @Required Long cpf,
+                                                    @QueryParam("codTipoIntervalo") @Required String codTipo,
+                                                    @QueryParam("limit") @Required long limit,
+                                                    @QueryParam("offset") @Required long offset) throws ProLogException {
+        return service.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
+    }
+
+    /**
+     * Essa busca só é feita no app caso exista algum usuário logado, então podemos deixar o authType apenas como BEARER.
+     */
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured(authTypes = AuthType.BEARER, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
+    @Path("/offline-support")
+    public IntervaloOfflineSupport getIntervaloOfflineSupport(
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
+            @QueryParam("codUnidade") Long codUnidade) throws ProLogException {
+        return service.getIntervaloOfflineSupport(versaoDadosIntervalo, codUnidade, new ColaboradorService());
     }
 }

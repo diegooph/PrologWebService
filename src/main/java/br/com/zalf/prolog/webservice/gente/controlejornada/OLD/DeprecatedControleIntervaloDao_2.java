@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +26,6 @@ public interface DeprecatedControleIntervaloDao_2 {
                                                         @NotNull final Long cpf,
                                                         @NotNull final Long codTipoIntervalo) throws SQLException;
 
-    @Nonnull
     @NotNull
     List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
                                                      @NotNull final Long cpf,

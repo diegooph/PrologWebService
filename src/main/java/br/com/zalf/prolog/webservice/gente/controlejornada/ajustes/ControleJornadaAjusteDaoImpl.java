@@ -104,7 +104,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             final Long codMarcacaoInserida = insereMarcacaoAjusteAdicao(conn, tokenResponsavelAjuste, marcacaoAjuste,
                     zoneId);
             final TipoInicioFim tipoInicioFim = marcacaoAjuste.getTipoInicioFim();
-            final ControleJornadaDao controleIntervaloDao = Injection.provideControleJornadaDaoNovo();
+            final ControleJornadaDao controleIntervaloDao = Injection.provideControleJornadaDao();
             controleIntervaloDao.insereMarcacaoInicioOuFim(conn, codMarcacaoInserida, tipoInicioFim);
             final Long codMarcacaoInicio = tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)
                     ? codMarcacaoInserida
@@ -140,7 +140,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             conn.setAutoCommit(false);
             final ResultInsertInicioFim codigos =
                     insereMarcacaoAjusteAdicaoInicioFim(conn, tokenResponsavelAjuste, marcacaoAjuste);
-            final ControleJornadaDao controleIntervaloDao = Injection.provideControleJornadaDaoNovo();
+            final ControleJornadaDao controleIntervaloDao = Injection.provideControleJornadaDao();
             controleIntervaloDao
                     .insereMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoInicio(), TipoInicioFim.MARCACAO_INICIO);
             controleIntervaloDao

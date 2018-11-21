@@ -24,9 +24,9 @@ import java.util.Optional;
 public class DeprecatedControleIntervaloService_2 {
 
     private static final String TAG = DeprecatedControleIntervaloService_2.class.getSimpleName();
-    private DeprecatedControleIntervaloDao_2 dao = Injection.provideControleJornadaDao();
+    private DeprecatedControleIntervaloDao_2 dao = new DeprecatedControleIntervaloDaoImpl_2();
     @NotNull
-    private final ControleJornadaDao daoNova = Injection.provideControleJornadaDaoNovo();
+    private final ControleJornadaDao daoNova = Injection.provideControleJornadaDao();
 
     public List<TipoMarcacao> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
         try {
@@ -139,6 +139,7 @@ public class DeprecatedControleIntervaloService_2 {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @NotNull
     public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
                                                               Long codUnidade,
