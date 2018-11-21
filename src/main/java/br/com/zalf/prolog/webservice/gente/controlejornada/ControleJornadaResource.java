@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
@@ -24,7 +25,7 @@ import javax.ws.rs.core.MediaType;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @DebugLog
-@Path("/controle-jornada-marcacao")
+@Path("/controle-jornada")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
@@ -54,10 +55,11 @@ public class ControleJornadaResource {
     @GET
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
-    @Path("/em-andamento/{codUnidade}/{cpf}/{codTipoIntervalo}")
-    public IntervaloMarcacao getIntervaloAberto(@PathParam("codUnidade") Long codUnidade,
-                                                @PathParam("cpf") Long cpf,
-                                                @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Throwable {
+    @Path("/marcacao-em-andamento")
+    public IntervaloMarcacao getIntervaloAberto(
+            @QueryParam("codUnidade") @Required Long codUnidade,
+            @QueryParam("cpf") @Required Long cpf,
+            @QueryParam("codTipoIntervalo") @Required Long codTipoInvervalo) throws Throwable {
         return service.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoInvervalo);
     }
 }
