@@ -1,12 +1,13 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
+package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
-import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.VersaoDadosMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +17,7 @@ import java.util.Optional;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Deprecated
-public interface DeprecatedControleIntervaloDao_2 {
+public interface ControleIntervaloDao {
 
     void insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException;
 
@@ -26,6 +26,7 @@ public interface DeprecatedControleIntervaloDao_2 {
                                                         @NotNull final Long cpf,
                                                         @NotNull final Long codTipoIntervalo) throws SQLException;
 
+    @Nonnull
     @NotNull
     List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
                                                      @NotNull final Long cpf,
@@ -55,5 +56,5 @@ public interface DeprecatedControleIntervaloDao_2 {
                                         @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
     @NotNull
-    Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
+    Optional<VersaoDadosMarcacao> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
 }

@@ -1,15 +1,19 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum AuthType {
     BASIC("Basic"),
     BEARER("Bearer");
 
+    @NotNull
     private final String value;
 
-    AuthType(String value) {
+    AuthType(@NotNull final String value) {
         this.value = value;
     }
 
+    @NotNull
     public String value() {
         return value;
     }

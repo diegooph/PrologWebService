@@ -1,14 +1,14 @@
 package br.com.zalf.prolog.webservice.interceptors.auth.authenticator;
 
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.NotAuthorizedException;
 import java.util.Base64;
 
 public final class BasicAuthenticator extends ProLogAuthenticator {
 
-    BasicAuthenticator(AutenticacaoService service) {
+    BasicAuthenticator(@NotNull final AutenticacaoService service) {
         super(service);
     }
 

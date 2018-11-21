@@ -1,10 +1,9 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
+package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
@@ -18,13 +17,13 @@ import java.util.Optional;
  * Created by Zart on 18/08/2017.
  */
 @Deprecated
-public class DeprecatedControleIntervaloDaoImpl_1 extends DatabaseConnection implements DeprecatedControleIntervaloDao_1 {
+public class DeprecatedControleIntervaloDaoImpl extends DatabaseConnection implements DeprecatedControleIntervaloDao {
 
-    private static final String TAG = DeprecatedControleIntervaloDaoImpl_1.class.getSimpleName();
+    private static final String TAG = DeprecatedControleIntervaloDaoImpl.class.getSimpleName();
 
     @Override
     public List<TipoMarcacao> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
-        return new DeprecatedControleIntervaloDaoImpl_2().getTiposIntervalosByUnidade(codUnidade, true, withCargos);
+        return new ControleIntervaloDaoImpl().getTiposIntervalosByUnidade(codUnidade, true, withCargos);
     }
 
     @Override
@@ -108,19 +107,19 @@ public class DeprecatedControleIntervaloDaoImpl_1 extends DatabaseConnection imp
     @Override
     public Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                                     @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        return new DeprecatedControleIntervaloDaoImpl_2().insertTipoIntervalo(tipoIntervalo, listener);
+        return new ControleIntervaloDaoImpl().insertTipoIntervalo(tipoIntervalo, listener);
     }
 
     @Override
     public void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                                     @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        new DeprecatedControleIntervaloDaoImpl_2().updateTipoIntervalo(tipoIntervalo, listener);
+        new ControleIntervaloDaoImpl().updateTipoIntervalo(tipoIntervalo, listener);
     }
 
     @Override
     public void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
                                       @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        new DeprecatedControleIntervaloDaoImpl_2().updateStatusAtivoTipoIntervalo(codUnidade, codTipoIntervalo, null, listener);
+        new ControleIntervaloDaoImpl().updateStatusAtivoTipoIntervalo(codUnidade, codTipoIntervalo, null, listener);
     }
 
     @Override
@@ -267,7 +266,9 @@ public class DeprecatedControleIntervaloDaoImpl_1 extends DatabaseConnection imp
     @Override
     @NotNull
     public Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
-        return new DeprecatedControleIntervaloDaoImpl_2().getVersaoDadosIntervaloByUnidade(codUnidade);
+        final Optional<VersaoDadosMarcacao> versaoDados =
+                new ControleIntervaloDaoImpl().getVersaoDadosIntervaloByUnidade(codUnidade);
+        return versaoDados.map(VersaoDadosMarcacao::getVersaoDadosBanco);
     }
 
     @Deprecated

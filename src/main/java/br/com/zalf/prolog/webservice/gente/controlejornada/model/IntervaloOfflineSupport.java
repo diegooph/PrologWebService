@@ -18,10 +18,13 @@ public class IntervaloOfflineSupport {
     @Nullable
     private Long versaoDadosIntervalo;
 
+    @Nullable
+    private String tokenSincronizacaoMarcacao;
+
     @NotNull
     private EstadoVersaoIntervalo estadoVersaoIntervalo;
 
-    public IntervaloOfflineSupport(@NotNull EstadoVersaoIntervalo estadoVersaoIntervalo) {
+    public IntervaloOfflineSupport(@NotNull final EstadoVersaoIntervalo estadoVersaoIntervalo) {
         this.estadoVersaoIntervalo = estadoVersaoIntervalo;
     }
 
@@ -55,5 +58,13 @@ public class IntervaloOfflineSupport {
 
     public void setEstadoVersaoIntervalo(EstadoVersaoIntervalo estadoVersaoIntervalo) {
         this.estadoVersaoIntervalo = estadoVersaoIntervalo;
+    }
+
+    public String getTokenSincronizacaoMarcacao() {
+        return tokenSincronizacaoMarcacao;
+    }
+
+    public void setTokenSincronizacaoMarcacao(final String tokenSincronizacaoMarcacao) {
+        this.tokenSincronizacaoMarcacao = tokenSincronizacaoMarcacao;
     }
 }
