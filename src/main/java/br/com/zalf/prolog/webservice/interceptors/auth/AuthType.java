@@ -4,8 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 public enum AuthType {
     BASIC("Basic"),
-    BEARER("Bearer"),
-    TOKEN("Token");
+    BEARER("Bearer");
 
     @NotNull
     private final String value;
