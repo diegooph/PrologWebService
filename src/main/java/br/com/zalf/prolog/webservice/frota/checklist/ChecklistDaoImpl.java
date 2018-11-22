@@ -7,8 +7,8 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_2;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_2;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 
