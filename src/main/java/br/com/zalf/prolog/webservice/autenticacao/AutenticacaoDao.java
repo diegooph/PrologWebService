@@ -56,15 +56,6 @@ public interface AutenticacaoDao {
                                final boolean apenasUsuariosAtivos) throws SQLException;
 
     /**
-     * Método específico para validar o Token de autenticação para sincronização de marcacões de jornada.
-     *
-     * @param tokenMarcacaoJornada Token de sincronização de Marcações de Jornada.
-     * @return Valor booleano que representa se o usuário está apto a sincronizar os dados.
-     * @throws SQLException Caso não seja possível verificar a existência do Token no banco de dados.
-     */
-    boolean verifyIfTokenMarcacaoExists(@NotNull final String tokenMarcacaoJornada) throws SQLException;
-
-    /**
      * Verifica se o usuário tem as permissões necessárias para acessar determinada função.
      *
      * @param token                     O Token do usuário.

@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.DadosMarcacaoUnidade;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
@@ -272,7 +273,7 @@ public class DeprecatedControleIntervaloDaoImpl_1 extends DatabaseConnection imp
     @NotNull
     public Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
         final Optional<DadosMarcacaoUnidade> versaoDados =
-                new DeprecatedControleIntervaloDaoImpl_2().getDadosMarcacaoUnidade(codUnidade);
+                new ControleJornadaDaoImpl().getDadosMarcacaoUnidade(codUnidade);
         return versaoDados.map(DadosMarcacaoUnidade::getVersaoDadosBanco);
     }
 

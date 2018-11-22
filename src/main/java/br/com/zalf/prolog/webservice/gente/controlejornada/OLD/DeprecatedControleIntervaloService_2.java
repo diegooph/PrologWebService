@@ -66,7 +66,7 @@ public class DeprecatedControleIntervaloService_2 {
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             // Temos certeza que existira no banco, se não existir, então melhor dar erro.
             @SuppressWarnings("ConstantConditions")
-            final DadosMarcacaoUnidade versaoDados = dao.getDadosMarcacaoUnidade(codUnidade).get();
+            final DadosMarcacaoUnidade versaoDados = daoNova.getDadosMarcacaoUnidade(codUnidade).get();
             if (versaoDadosIntervalo < versaoDados.getVersaoDadosBanco()) {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
             } else {
@@ -83,8 +83,8 @@ public class DeprecatedControleIntervaloService_2 {
 
     public List<Intervalo> getMarcacoesIntervaloColaborador(Long codUnidade, Long cpf, String codTipo, long limit, long offset) {
         try {
-            return dao.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
-        } catch (SQLException e) {
+            return daoNova.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar os intervalos de um colaborador. \n" +
                     "cpf: %s \n" +
                     "codTipo: %s \n" +
@@ -150,7 +150,7 @@ public class DeprecatedControleIntervaloService_2 {
                     codUnidade,
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO);
             final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
-            final Optional<DadosMarcacaoUnidade> versaoDados = dao.getDadosMarcacaoUnidade(codUnidade);
+            final Optional<DadosMarcacaoUnidade> versaoDados = daoNova.getDadosMarcacaoUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 
             // Isso é algo importante para se destacar: se ao buscarmos a versão dos dados de intervalo para uma unidade
@@ -189,10 +189,10 @@ public class DeprecatedControleIntervaloService_2 {
                 intervaloOfflineSupport.setVersaoDadosIntervalo(versaoDados.get().getVersaoDadosBanco());
                 intervaloOfflineSupport.setTokenSincronizacaoMarcacao(versaoDados.get().getTokenSincronizacaoMarcacao());
             }
-        } catch (SQLException e) {
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar o IntervaloOfflineSupport. \n" +
                     "codUnidade: %d \n" +
-                    "versaoDadosApp: %d \n", codUnidade, versaoDadosApp), e);
+                    "versaoDadosApp: %d \n", codUnidade, versaoDadosApp), t);
             throw new RuntimeException("Erro ao criar IntervaoOfflineSupport");
         }
 

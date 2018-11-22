@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -15,10 +14,8 @@ import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created on 08/03/2018
@@ -106,39 +103,6 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
             closeConnection(conn, stmt, rSet);
         }
         return null;
-    }
-
-    @NotNull
-    @Override
-    public List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
-                                                            @NotNull final Long cpf,
-                                                            @NotNull final String codTipo,
-                                                            final long limit,
-                                                            final long offset) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<Intervalo> intervalos = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_GET_MARCACOES_COLABORADOR(?, ?, ?, ?, ?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, cpf);
-            if (codTipo.equals("%")) {
-                stmt.setNull(3, Types.BIGINT);
-            } else {
-                stmt.setLong(3, Long.valueOf(codTipo));
-            }
-            stmt.setLong(4, limit);
-            stmt.setLong(5, offset);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                intervalos.add(createIntervaloAgrupado(rSet));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return intervalos;
     }
 
     @NotNull
@@ -319,37 +283,6 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
         }
     }
 
-    @NotNull
-    @Override
-    public Optional<DadosMarcacaoUnidade> getDadosMarcacaoUnidade(
-            @NotNull final Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT VERSAO_DADOS, TOKEN_SINCRONIZACAO_MARCACAO " +
-                    "FROM INTERVALO_UNIDADE WHERE COD_UNIDADE = ?;");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return Optional.of(createVersaoDadosMarcacao(rSet));
-            } else {
-                return Optional.empty();
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    private DadosMarcacaoUnidade createVersaoDadosMarcacao(@NotNull final ResultSet rSet) throws SQLException {
-        final DadosMarcacaoUnidade versaoDados = new DadosMarcacaoUnidade();
-        versaoDados.setVersaoDadosBanco(rSet.getLong("VERSAO_DADOS"));
-        versaoDados.setTokenSincronizacaoMarcacao(rSet.getString("TOKEN_SINCRONIZACAO_MARCACAO"));
-        return versaoDados;
-    }
-
     private boolean marcacaoIntervaloJaExiste(@NotNull final IntervaloMarcacao intervaloMarcacao,
                                               @NotNull final Connection conn) throws SQLException {
 
@@ -408,62 +341,6 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
         } finally {
             closeStatement(stmt);
         }
-    }
-
-    @NotNull
-    private Intervalo createIntervaloAgrupado(@NotNull final ResultSet rSet) throws SQLException {
-        final Intervalo intervalo = new Intervalo();
-
-        final Colaborador colaborador = new Colaborador();
-        colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
-        intervalo.setColaborador(colaborador);
-
-        // TODO: Recuperar nome do tipo de intervalo.
-        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
-        tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
-        tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
-        intervalo.setTipo(tipoIntervalo);
-
-        intervalo.setDataHoraInicio(rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class));
-        intervalo.setDataHoraFim(rSet.getObject("DATA_HORA_FIM", LocalDateTime.class));
-        final String fonteDataHoraInicio = rSet.getString("FONTE_DATA_HORA_INICIO");
-        if (!rSet.wasNull()) {
-            intervalo.setFonteDataHoraInicio(FonteDataHora.fromString(fonteDataHoraInicio));
-        }
-        final String fonteDataHoraFim = rSet.getString("FONTE_DATA_HORA_FIM");
-        if (!rSet.wasNull()) {
-            intervalo.setFonteDataHoraFim(FonteDataHora.fromString(fonteDataHoraFim));
-        }
-        intervalo.setJustificativaTempoRecomendado(rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
-        intervalo.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
-
-        final String latitudeInicio = rSet.getString("LATITUDE_MARCACAO_INICIO");
-        if (!rSet.wasNull()) {
-            final Localizacao localizacao = new Localizacao();
-            localizacao.setLatitude(latitudeInicio);
-            localizacao.setLongitude(rSet.getString("LONGITUDE_MARCACAO_INICIO"));
-            intervalo.setLocalizacaoInicio(localizacao);
-        }
-
-        final String latitudeFim = rSet.getString("LATITUDE_MARCACAO_FIM");
-        if (!rSet.wasNull()) {
-            final Localizacao localizacao = new Localizacao();
-            localizacao.setLatitude(latitudeFim);
-            localizacao.setLongitude(rSet.getString("LONGITUDE_MARCACAO_FIM"));
-            intervalo.setLocalizacaoFim(localizacao);
-        }
-
-        // Cálculo do tempo decorrido.
-        final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
-        final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
-        if (dataHoraInicio != null && dataHoraFim != null) {
-            intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(dataHoraInicio, dataHoraFim))));
-        } else if (dataHoraFim == null) {
-            // TODO: Precisamos trocar esse cálculo para contecer no app.
-//            intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(dataHoraInicio, dataHoraFim))));
-        }
-
-        return intervalo;
     }
 
     private void associaCargosTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,

@@ -8,6 +8,7 @@ import java.util.List;
 
 public class IntervaloOfflineSupport {
     public static final String HEADER_NAME_VERSAO_DADOS_INTERVALO = "ProLog-Versao-Dados-Intervalo";
+    public static final String HEADER_NAME_TOKEN_MARCACAO = "ProLog-Token-Marcacao";
 
     @Nullable
     private List<Colaborador> colaboradores;

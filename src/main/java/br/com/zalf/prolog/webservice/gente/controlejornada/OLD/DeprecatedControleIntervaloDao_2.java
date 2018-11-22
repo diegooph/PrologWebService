@@ -1,17 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.DadosMarcacaoUnidade;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created on 08/03/2018
@@ -27,14 +23,6 @@ public interface DeprecatedControleIntervaloDao_2 {
     IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
                                                         @NotNull final Long cpf,
                                                         @NotNull final Long codTipoIntervalo) throws SQLException;
-
-    @Nonnull
-    @NotNull
-    List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
-                                                     @NotNull final Long cpf,
-                                                     @NotNull final String codTipo,
-                                                     final long limit,
-                                                     final long offset) throws SQLException;
 
     @NotNull
     Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
@@ -56,7 +44,4 @@ public interface DeprecatedControleIntervaloDao_2 {
                                         @NotNull final Long codTipoIntervalo,
                                         @NotNull final TipoMarcacao tipoIntervalo,
                                         @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
-
-    @NotNull
-    Optional<DadosMarcacaoUnidade> getDadosMarcacaoUnidade(@NotNull final Long codUnidade) throws SQLException;
 }

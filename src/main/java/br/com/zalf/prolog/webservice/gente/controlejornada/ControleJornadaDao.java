@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.DadosMarcacaoUnidade;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
@@ -9,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 08/11/18.
@@ -37,7 +39,7 @@ public interface ControleJornadaDao {
      * @param cpfColaborador   CPF do {@link Colaborador} que realizou a marcação.
      * @param codTipoIntervalo Código do tipo {@link Intervalo} que será buscado.
      * @return Um {@link IntervaloMarcacao} caso existir ou null.
-     * @throws SQLException Se algum erro ocorrer na busca da marcação em andamento.
+     * @throws Throwable Se algum erro ocorrer na busca da marcação em andamento.
      */
     @Nullable
     IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
@@ -69,4 +71,23 @@ public interface ControleJornadaDao {
     void insereVinculoInicioFim(@NotNull final Connection conn,
                                 @NotNull final Long codMarcacaoInicio,
                                 @NotNull final Long codMarcacaoFim) throws Throwable;
+
+    @NotNull
+    List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
+                                                     @NotNull final Long cpf,
+                                                     @NotNull final String codTipo,
+                                                     final long limit,
+                                                     final long offset) throws Throwable;
+
+    /**
+     * Método específico para validar o Token de autenticação para sincronização de marcacões de jornada.
+     *
+     * @param tokenMarcacaoJornada Token de sincronização de Marcações de Jornada.
+     * @return Valor booleano que representa se o usuário está apto a sincronizar os dados.
+     * @throws Throwable Caso não seja possível verificar a existência do Token no banco de dados.
+     */
+    boolean verifyIfTokenMarcacaoExists(@NotNull final String tokenMarcacaoJornada) throws Throwable;
+
+    @NotNull
+    Optional<DadosMarcacaoUnidade> getDadosMarcacaoUnidade(@NotNull final Long codUnidade) throws Throwable;
 }

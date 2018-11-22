@@ -48,43 +48,41 @@ public class ControleJornadaResource {
      */
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) String tokenMarcacao,
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) Integer versaoApp,
-            IntervaloMarcacao intervaloMarcacao) {
-        return service.insertMarcacaoIntervalo(versaoDadosIntervalo, intervaloMarcacao, versaoApp);
+            IntervaloMarcacao intervaloMarcacao) throws ProLogException {
+        return service.insertMarcacaoIntervalo(tokenMarcacao, versaoDadosIntervalo, intervaloMarcacao, versaoApp);
     }
 
     @GET
     @UsedBy(platforms = Platform.ANDROID)
-    @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/marcacao-em-andamento")
     public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) String tokenMarcacao,
             @QueryParam("codUnidade") @Required Long codUnidade,
             @QueryParam("cpf") @Required Long cpf,
             @QueryParam("codTipoIntervalo") @Required Long codTipoInvervalo) throws ProLogException {
-        return service.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoInvervalo);
+        return service.getUltimaMarcacaoInicioNaoFechada(tokenMarcacao, codUnidade, cpf, codTipoInvervalo);
     }
 
     @GET
     @UsedBy(platforms = Platform.ANDROID)
-    @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = {
-            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
-            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.AJUSTE_MARCACOES,
-            Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
     @Path("/marcacoes")
-    public List<Intervalo> getIntervalosColaborador(@QueryParam("codUnidade") @Required Long codUnidade,
-                                                    @QueryParam("cpf") @Required Long cpf,
-                                                    @QueryParam("codTipoIntervalo") @Required String codTipo,
-                                                    @QueryParam("limit") @Required long limit,
-                                                    @QueryParam("offset") @Required long offset) throws ProLogException {
-        return service.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
+    public List<Intervalo> getMarcacoesColaborador(
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) String tokenMarcacao,
+            @QueryParam("codUnidade") @Required Long codUnidade,
+            @QueryParam("cpf") @Required Long cpf,
+            @QueryParam("codTipoIntervalo") @Required String codTipo,
+            @QueryParam("limit") @Required long limit,
+            @QueryParam("offset") @Required long offset) throws ProLogException {
+        return service.getMarcacoesColaborador(tokenMarcacao, codUnidade, cpf, codTipo, limit, offset);
     }
 
     /**
-     * Essa busca só é feita no app caso exista algum usuário logado, então podemos deixar o authType apenas como BEARER.
+     * Essa busca só é feita no app caso exista algum usuário logado, então podemos deixar usando o @Secured como
+     * BEARER e não precisa autenticar pelo Token da Marcação.
      */
     @GET
     @UsedBy(platforms = Platform.ANDROID)
@@ -95,4 +93,6 @@ public class ControleJornadaResource {
             @QueryParam("codUnidade") Long codUnidade) throws ProLogException {
         return service.getIntervaloOfflineSupport(versaoDadosIntervalo, codUnidade, new ColaboradorService());
     }
+
+
 }
