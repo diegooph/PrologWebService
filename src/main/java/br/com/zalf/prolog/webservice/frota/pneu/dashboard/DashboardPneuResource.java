@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -101,5 +102,13 @@ public final class DashboardPneuResource {
     public TableComponent getQuantidadePneusDescartadosPorMotivo(@PathParam("codComponente") Integer codComponente,
                                                                  @QueryParam("codUnidades") List<Long> codUnidades) {
         return service.getQuantidadePneusDescartadosPorMotivo(codComponente, codUnidades);
+    }
+
+    @GET
+    @Path("/quantidade-dias-afericoes-vencidas/{codComponente}")
+    public TableComponent getQtdDiasAfericoesVencidas(
+            @PathParam("codComponente") final Integer codComponente,
+            @QueryParam("codUnidades") final List<Long> codUnidades) throws ProLogException {
+        return service.getQtdDiasAfericoesVencidas(codComponente, codUnidades);
     }
 }

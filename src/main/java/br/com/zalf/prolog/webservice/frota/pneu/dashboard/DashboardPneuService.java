@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.Scatter
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,6 +28,7 @@ public final class DashboardPneuService {
     private static final String TAG = DashboardPneuService.class.getSimpleName();
     private final DashboardDao dashDao = Injection.provideDashboardDao();
     private final RelatorioPneuDao relatorioDao = Injection.provideRelatorioPneuDao();
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     public PieChartComponent getQtdPneusByStatus(@NotNull final Integer codComponente,
                                                  @NotNull final List<Long> codUnidades) {
@@ -150,7 +152,7 @@ public final class DashboardPneuService {
             return DashboardPneuComponentsCreator.createMenorSulcoEPressaoPneus(
                     dashDao.getComponenteByCodigo(codComponente),
                     relatorioDao.getMenorSulcoEPressaoPneus(codUnidades));
-        } catch (final Throwable e){
+        } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar o menor sulco de cada pneu. \n" +
                     "unidades: %s", codUnidades.toString()), e);
             throw Injection.provideProLogExceptionHandler().map(
@@ -183,6 +185,20 @@ public final class DashboardPneuService {
                     "Erro ao buscar a quantidade de pneus descartados por motivo para as unidades: " + codUnidades,
                     ex);
             throw new RuntimeException(ex);
+        }
+    }
+
+    @NotNull
+    public TableComponent getQtdDiasAfericoesVencidas(@NotNull final Integer codComponente,
+                                                      @NotNull final List<Long> codUnidades) throws ProLogException {
+        try {
+            return DashboardPneuComponentsCreator.createQtdDiasAfericoesVencidas(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getQtdAfericoesVencidas(codUnidades));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar há quantos dias as aferições estão vencidas das " +
+                    "unidades %s", codUnidades.toString()), throwable);
+            throw exceptionHandler.map(throwable, "Erro ao buscar há quantos dias as aferições estão vencidas");
         }
     }
 }

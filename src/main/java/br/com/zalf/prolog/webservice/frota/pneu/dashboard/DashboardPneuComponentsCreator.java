@@ -20,6 +20,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.Scatter
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterGroup;
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.QtdDiasAfericoesVencidas;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
@@ -329,6 +330,34 @@ final class DashboardPneuComponentsCreator {
 
         // Linhas.
         final List<TableLine> lines = TableComponent.createLinesFromMap(qtdMotivosDescarte);
+
+        final TableData tableData = new TableData(lines);
+        return TableComponent.createDefault(component, tableHeader, tableData);
+    }
+
+    @NotNull
+    static TableComponent createQtdDiasAfericoesVencidas(
+            @NotNull final ComponentDataHolder component,
+            @NotNull final List<QtdDiasAfericoesVencidas> qtdDiasAfericoesVencidas) {
+        // Header.
+        final List<TableItemHeader> itemHeaders = new ArrayList<>(4);
+        itemHeaders.add(new TableItemHeader("Unidade", null));
+        itemHeaders.add(new TableItemHeader("Placa", null));
+        itemHeaders.add(new TableItemHeader("Qtd dias vencidos - sulco", null));
+        itemHeaders.add(new TableItemHeader("Qtd dias vencidos - pressão", null));
+        final TableHeader tableHeader = new TableHeader(itemHeaders);
+
+        // Linhas.
+        final List<TableLine> lines = new ArrayList<>();
+        qtdDiasAfericoesVencidas.forEach(afericoesVencidas -> {
+            // Colunas.
+            final List<TableColumn> columns = new ArrayList<>(4);
+            columns.add(new TableColumn(afericoesVencidas.getNomeUnidade()));
+            columns.add(new TableColumn(afericoesVencidas.getPlacaVeiculo()));
+            columns.add(new TableColumn(String.valueOf(afericoesVencidas.getQtdDiasAfericaoSulcoVencido())));
+            columns.add(new TableColumn(String.valueOf(afericoesVencidas.getQtdDiasAfericaoPressaoVencida())));
+            lines.add(new TableLine(columns));
+        });
 
         final TableData tableData = new TableData(lines);
         return TableComponent.createDefault(component, tableHeader, tableData);

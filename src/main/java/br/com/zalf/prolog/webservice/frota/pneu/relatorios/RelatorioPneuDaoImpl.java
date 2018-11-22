@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.QtdDiasAfericoesVencidas;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
@@ -754,6 +755,35 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             closeConnection(conn, stmt, rSet);
         }
         return motivosDescarte;
+    }
+
+    @NotNull
+    @Override
+    public List<QtdDiasAfericoesVencidas> getQtdAfericoesVencidas(@NotNull List<Long> codUnidades) throws Throwable {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rSet = null;
+            try {
+                conn = getConnection();
+                stmt = conn.prepareStatement("SELECT * FROM " +
+                        "FUNC_AFERICAO_RELATORIO_QTD_DIAS_AFERICAO_VENCIDA(?, ?);");
+                stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+                stmt.setObject(2, Now.localDateTimeUtc());
+
+                rSet = stmt.executeQuery();
+                final List<QtdDiasAfericoesVencidas> qtdDiasAfericoesVencidas = new ArrayList<>();
+                while (rSet.next()) {
+                    qtdDiasAfericoesVencidas.add(
+                            new QtdDiasAfericoesVencidas(
+                                    rSet.getString("UNIDADE"),
+                                    rSet.getString("PLACA"),
+                                    rSet.getInt("QTD DIAS SEM AFERIR SULCO"),
+                                    rSet.getInt("QTD DIAS SEM AFERIR PRSSAO")));
+                }
+                return qtdDiasAfericoesVencidas;
+            } finally {
+                closeConnection(conn, stmt, rSet);
+            }
     }
 
     @NotNull
