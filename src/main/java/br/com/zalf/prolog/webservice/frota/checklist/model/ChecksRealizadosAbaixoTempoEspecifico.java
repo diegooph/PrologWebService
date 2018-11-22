@@ -26,7 +26,7 @@ public final class ChecksRealizadosAbaixoTempoEspecifico {
     }
 
     @NotNull
-    public String getnomeUnidade() {
+    public String getNomeUnidade() {
         return nomeUnidade;
     }
 

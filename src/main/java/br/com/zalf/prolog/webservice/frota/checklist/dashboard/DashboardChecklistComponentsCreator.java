@@ -113,7 +113,7 @@ final class DashboardChecklistComponentsCreator {
         checksRealizadosAbaixo130.forEach(checksRealizados -> {
             // Colunas.
             final List<TableColumn> columns = new ArrayList<>(4);
-            columns.add(new TableColumn(checksRealizados.getnomeUnidade()));
+            columns.add(new TableColumn(checksRealizados.getNomeUnidade()));
             columns.add(new TableColumn(checksRealizados.getNomeColaborador()));
             columns.add(new TableColumn(String.valueOf(checksRealizados.getQtdChecksRealizadosAbaixoTempoEspecifico())));
             columns.add(new TableColumn(String.valueOf(checksRealizados.getQtdChecksRealizados())));
