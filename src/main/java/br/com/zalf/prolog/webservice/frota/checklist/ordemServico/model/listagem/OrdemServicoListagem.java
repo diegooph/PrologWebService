@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem;
 
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -9,7 +11,7 @@ import java.time.LocalDateTime;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class OrdemServicoListagem {
+public abstract class OrdemServicoListagem {
     private Long codOrdemServico;
     private Long codUnidadeOrdemServico;
     private String placaVeiculo;
@@ -17,20 +19,12 @@ public final class OrdemServicoListagem {
     private int qtdItensPendentes;
     private int qtdItensResolvidos;
 
-    public OrdemServicoListagem() {
-
-    }
-
     @NotNull
-    public static OrdemServicoListagem createDummy() {
-        final OrdemServicoListagem ordem = new OrdemServicoListagem();
-        ordem.setCodOrdemServico(1L);
-        ordem.setCodUnidadeOrdemServico(5L);
-        ordem.setPlacaVeiculo("AAA1234");
-        ordem.setDataHoraAbertura(LocalDateTime.now());
-        ordem.setQtdItensPendentes(10);
-        ordem.setQtdItensPendentes(3);
-        return ordem;
+    @Exclude
+    private final String tipo;
+
+    public OrdemServicoListagem(@NotNull final String tipo) {
+        this.tipo = tipo;
     }
 
     public Long getCodOrdemServico() {
@@ -79,5 +73,13 @@ public final class OrdemServicoListagem {
 
     public void setQtdItensResolvidos(final int qtdItensResolvidos) {
         this.qtdItensResolvidos = qtdItensResolvidos;
+    }
+
+    @NotNull
+    public static RuntimeTypeAdapterFactory<OrdemServicoListagem> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(OrdemServicoListagem.class, "tipo")
+                .registerSubtype(OrdemServicoAbertaListagem.class, OrdemServicoAbertaListagem.TIPO_SERIALIZACAO)
+                .registerSubtype(OrdemServicoFechadaListagem.class, OrdemServicoFechadaListagem.TIPO_SERIALIZACAO);
     }
 }

@@ -49,8 +49,8 @@ public final class OrdemServicoResource {
             @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
             @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
             @QueryParam("statusOrdemServico") @Optional final StatusOrdemServico statusOrdemServico,
-            @QueryParam("limit") @Optional final Integer limit,
-            @QueryParam("offset") @Optional final Integer offset) throws ProLogException {
+            @QueryParam("limit") @Required final int limit,
+            @QueryParam("offset") @Required final int offset) throws ProLogException {
         return service.getOrdemServicoListagem(
                 codUnidade,
                 codTipoVeiculo,

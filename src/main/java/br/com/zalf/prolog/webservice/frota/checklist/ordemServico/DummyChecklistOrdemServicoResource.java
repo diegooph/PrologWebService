@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoAbertaListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoFechadaListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.QtdItensPlacaListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.HolderResolucaoItensOrdemServico;
@@ -31,11 +33,22 @@ public class DummyChecklistOrdemServicoResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/checklist-ordem-servico-listagem-list")
-    public List<OrdemServicoListagem> getOrdemServicoListagem() {
+    @Path("/checklist-ordem-servico-abertas-listagem-list")
+    public List<OrdemServicoListagem> getOrdemServicoAbertaListagem() {
         final List<OrdemServicoListagem> ordens = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            ordens.add(OrdemServicoListagem.createDummy());
+            ordens.add(OrdemServicoAbertaListagem.createDummy());
+        }
+        return ordens;
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/checklist-ordem-servico-fechadas-listagem-list")
+    public List<OrdemServicoListagem> getOrdemServicoFechadaListagem() {
+        final List<OrdemServicoListagem> ordens = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            ordens.add(OrdemServicoFechadaListagem.createDummy());
         }
         return ordens;
     }

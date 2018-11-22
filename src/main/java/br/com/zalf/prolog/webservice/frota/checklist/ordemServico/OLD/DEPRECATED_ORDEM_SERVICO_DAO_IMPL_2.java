@@ -12,7 +12,6 @@ import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoConverter;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
@@ -181,7 +180,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
             stmt.setString(6, tipoVeiculo);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                final OrdemServico os = OrdemServicoConverter.createOrdemServicoSemItens(rSet);
+                final OrdemServico os = DeprecatedOrdemServicoConverter.createOrdemServicoSemItens(rSet);
                 os.setItens(getItensOs(os.getVeiculo().getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                 oss.add(os);
             }
@@ -218,7 +217,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
             StatementUtils.bindValueOrNull(stmt, 5, limit, SqlType.INTEGER);
             StatementUtils.bindValueOrNull(stmt, 6, offset, SqlType.BIGINT);
             rSet = stmt.executeQuery();
-            return OrdemServicoConverter.createItensOrdemServico(rSet);
+            return DeprecatedOrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -246,7 +245,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
                 stmt.setString(3, ItemOrdemServico.Status.fromString(statusItemOs).asString());
             }
             rSet = stmt.executeQuery();
-            return OrdemServicoConverter.createItensOrdemServico(rSet);
+            return DeprecatedOrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -280,7 +279,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
             stmt.setString(3, placa);
             stmt.setDate(4, DateUtils.toSqlDate(untilDate));
             rSet = stmt.executeQuery();
-            return OrdemServicoConverter.createItensOrdemServico(rSet);
+            return DeprecatedOrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -524,7 +523,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
             stmt.setString(3, placa);
             stmt.setString(4, status);
             rSet = stmt.executeQuery();
-            return OrdemServicoConverter.createItensOrdemServico(rSet);
+            return DeprecatedOrdemServicoConverter.createItensOrdemServico(rSet);
         } finally {
             closeConnection(null, stmt, rSet);
         }

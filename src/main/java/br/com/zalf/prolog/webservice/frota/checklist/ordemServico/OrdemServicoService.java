@@ -32,8 +32,8 @@ public final class OrdemServicoService {
                                                               @Nullable final Long codTipoVeiculo,
                                                               @Nullable final String placaVeiculo,
                                                               @Nullable final StatusOrdemServico statusOrdemServico,
-                                                              @Nullable final Integer limit,
-                                                              @Nullable final Integer offset) throws ProLogException {
+                                                              final int limit,
+                                                              final int offset) throws ProLogException {
         try {
             return dao.getOrdemServicoListagem(
                     codUnidade,

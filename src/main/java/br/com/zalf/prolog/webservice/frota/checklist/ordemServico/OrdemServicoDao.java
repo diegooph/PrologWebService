@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -31,25 +30,29 @@ public interface OrdemServicoDao {
      * @param checklist  um checklist
      * @param conn       conexão do banco
      * @param codUnidade código da unidade
-     * @throws SQLException se ocorrer erro no banco
+     * @throws Throwable se ocorrer algum erro.
      */
-    void insertItemOs(@NotNull final Connection conn,
-                      @NotNull final Long codUnidade,
-                      @NotNull final Checklist checklist) throws Throwable;
+    void criarItemOrdemServico(@NotNull final Connection conn,
+                               @NotNull final Long codUnidade,
+                               @NotNull final Checklist checklist) throws Throwable;
 
     /**
      * Busca as ordens de serviços.
+     *
+     * @throws Throwable se ocorrer algum erro.
      **/
     @NotNull
     List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
                                                        @Nullable final Long tipoVeiculo,
                                                        @Nullable final String placa,
                                                        @Nullable final StatusOrdemServico statusOrdemServico,
-                                                       @Nullable final Integer limit,
-                                                       @Nullable final Integer offset) throws Throwable;
+                                                       final int limit,
+                                                       final int offset) throws Throwable;
 
     /**
      * Busca a lista de itens agrupados por placa e criticidade.
+     *
+     * @throws Throwable se ocorrer algum erro.
      */
     @NotNull
     List<QtdItensPlacaListagem> getQtdItensPlacaListagem(@NotNull final Long codUnidade,
@@ -61,6 +64,8 @@ public interface OrdemServicoDao {
 
     /**
      * Busca os itens de Ordens de Serviços utilizando, opcionalmente, limit e offset.
+     *
+     * @throws Throwable se ocorrer algum erro.
      */
     @NotNull
     HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codUnidade,

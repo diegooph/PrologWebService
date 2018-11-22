@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.StatusItemOrdemServico;
@@ -14,20 +16,25 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 20/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class OrdemServicoDaoImpl implements OrdemServicoDao {
+public final class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServicoDao {
 
     @Override
-    public void insertItemOs(@NotNull final Connection conn,
-                             @NotNull final Long codUnidade,
-                             @NotNull final Checklist checklist) throws Throwable {
-
+    public void criarItemOrdemServico(@NotNull final Connection conn,
+                                      @NotNull final Long codUnidade,
+                                      @NotNull final Checklist checklist) throws Throwable {
+        throw new UnsupportedOperationException("Ainda não implementado");
     }
 
     @NotNull
@@ -36,9 +43,33 @@ public final class OrdemServicoDaoImpl implements OrdemServicoDao {
                                                               @Nullable final Long tipoVeiculo,
                                                               @Nullable final String placa,
                                                               @Nullable final StatusOrdemServico statusOrdemServico,
-                                                              @Nullable final Integer limit,
-                                                              @Nullable final Integer offset) throws Throwable {
-        return null;
+                                                              final int limit,
+                                                              final int offset) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_OS_LISTAGEM(?, ?, ?, ?, ?, ?)");
+            stmt.setLong(1, codUnidade);
+            bindValueOrNull(stmt, 2, tipoVeiculo, SqlType.BIGINT);
+            bindValueOrNull(stmt, 3, placa, SqlType.TEXT);
+            if (statusOrdemServico != null) {
+                stmt.setString(4, statusOrdemServico.asString());
+            } else {
+                stmt.setNull(4, SqlType.TEXT.asIntTypeJava());
+            }
+            stmt.setInt(5, limit);
+            stmt.setInt(6, offset);
+            rSet = stmt.executeQuery();
+            final List<OrdemServicoListagem> ordens = new ArrayList<>();
+            while (rSet.next()) {
+                ordens.add(OrdemServicoConverter.createOrdemServicoListagem(rSet));
+            }
+            return ordens;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @NotNull

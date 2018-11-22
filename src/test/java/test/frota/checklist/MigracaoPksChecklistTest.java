@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.OrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoConverter;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OLD.DeprecatedOrdemServicoConverter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
@@ -349,7 +349,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
             final List<OrdemServico> ordens = new ArrayList<>();
             if (rSet.next()) {
                 do {
-                    final OrdemServico os = OrdemServicoConverter.createOrdemServicoSemItens(rSet);
+                    final OrdemServico os = DeprecatedOrdemServicoConverter.createOrdemServicoSemItens(rSet);
                     os.setItens(getItensOs(conn, os.getVeiculo().getPlaca(), os.getCodigo(), rSet.getLong("COD_UNIDADE")));
                     ordens.add(os);
                 } while (rSet.next());
@@ -428,7 +428,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
             stmt.setString(2, String.valueOf(codUnidade));
             stmt.setString(3, placa);
             rSet = stmt.executeQuery();
-            final List<ItemOrdemServico> itensOrdemServico = OrdemServicoConverter.createItensOrdemServico(rSet);
+            final List<ItemOrdemServico> itensOrdemServico = DeprecatedOrdemServicoConverter.createItensOrdemServico(rSet);
             // Como as buscas são feitas em tempos diferentes, a comparação desse atributo nunca estava batendo,
             // por isso vamos setar para null.
             for (final ItemOrdemServico item : itensOrdemServico) {
