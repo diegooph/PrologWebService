@@ -32,6 +32,7 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  * Created by jean on 10/08/16.
  */
 @SuppressWarnings("Duplicates")
+@Deprecated
 public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection implements DEPRECATED_ORDEM_SERVICO_DAO_2 {
     /**
      * Busca os itens de uma ou mais OS, respeitando os parâmetros de filtro,

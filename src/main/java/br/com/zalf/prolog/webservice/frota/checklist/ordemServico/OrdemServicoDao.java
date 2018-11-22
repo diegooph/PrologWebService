@@ -56,7 +56,6 @@ public interface OrdemServicoDao {
      */
     @NotNull
     List<QtdItensPlacaListagem> getQtdItensPlacaListagem(@NotNull final Long codUnidade,
-                                                         @Nullable final Long codTipoVeiculo,
                                                          @Nullable final String placaVeiculo,
                                                          @Nullable final StatusItemOrdemServico statusItemOrdemServico,
                                                          final int limit,

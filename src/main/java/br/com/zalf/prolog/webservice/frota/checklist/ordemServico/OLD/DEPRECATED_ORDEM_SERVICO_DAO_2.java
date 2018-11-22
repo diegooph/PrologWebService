@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Created by didi on 9/16/16.
  */
+@Deprecated
 public interface DEPRECATED_ORDEM_SERVICO_DAO_2 {
 
     /**

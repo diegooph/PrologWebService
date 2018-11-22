@@ -53,7 +53,6 @@ public final class OrdemServicoService {
     @NotNull
     public List<QtdItensPlacaListagem> getQtdItensPlacaListagem(
             @NotNull final Long codUnidade,
-            @Nullable final Long codTipoVeiculo,
             @Nullable final String placaVeiculo,
             @Nullable final StatusItemOrdemServico statusItemOrdemServico,
             final int limit,
@@ -61,7 +60,6 @@ public final class OrdemServicoService {
         try {
             return dao.getQtdItensPlacaListagem(
                     codUnidade,
-                    codTipoVeiculo,
                     placaVeiculo,
                     statusItemOrdemServico,
                     limit,

@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.StatusOr
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoAbertaListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoFechadaListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.QtdItensPlacaListagem;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -39,5 +40,15 @@ public final class OrdemServicoConverter {
         ordem.setQtdItensPendentes(rSet.getInt("QTD_ITENS_PENDENTES"));
         ordem.setQtdItensPendentes(rSet.getInt("QTD_ITENS_RESOLVIDOS"));
         return ordem;
+    }
+
+    @NotNull
+    static QtdItensPlacaListagem createQtdItensPlacaListagem(@NotNull final ResultSet rSet) throws Throwable {
+        final QtdItensPlacaListagem qtdItens = new QtdItensPlacaListagem();
+        qtdItens.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
+        qtdItens.setQtdBaixa(rSet.getInt("QTD_ITENS_PRIORIDADE_BAIXA"));
+        qtdItens.setQtdAlta(rSet.getInt("QTD_ITENS_PRIORIDADE_ALTA"));
+        qtdItens.setQtdCritica(rSet.getInt("QTD_ITENS_PRIORIDADE_CRITICA"));
+        return qtdItens;
     }
 }

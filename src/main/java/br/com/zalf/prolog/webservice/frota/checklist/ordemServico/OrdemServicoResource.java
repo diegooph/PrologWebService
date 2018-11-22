@@ -68,14 +68,12 @@ public final class OrdemServicoResource {
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     public List<QtdItensPlacaListagem> getOrdemServicoListagemPlacas(
             @QueryParam("codUnidade") @Required final Long codUnidade,
-            @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
             @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
             @QueryParam("statusItemOrdemServico") @Optional final StatusItemOrdemServico statusItemOrdemServico,
-            @QueryParam("limit") @Optional final int limit,
-            @QueryParam("offset") @Optional final int offset) throws ProLogException {
+            @QueryParam("limit") @Required final int limit,
+            @QueryParam("offset") @Required final int offset) throws ProLogException {
         return service.getQtdItensPlacaListagem(
                 codUnidade,
-                codTipoVeiculo,
                 placaVeiculo,
                 statusItemOrdemServico,
                 limit,

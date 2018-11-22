@@ -76,12 +76,35 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @Override
     public List<QtdItensPlacaListagem> getQtdItensPlacaListagem(
             @NotNull final Long codUnidade,
-            @Nullable final Long codTipoVeiculo,
             @Nullable final String placaVeiculo,
             @Nullable final StatusItemOrdemServico statusItemOrdemServico,
             final int limit,
             final int offset) throws Throwable {
-        return null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_CHECKLIST_OS_GET_QTD_ITENS_PLACA_LISTAGEM(?, ?, ?, ?, ?)");
+            stmt.setLong(1, codUnidade);
+            bindValueOrNull(stmt, 2, placaVeiculo, SqlType.TEXT);
+            if (statusItemOrdemServico != null) {
+                stmt.setString(3, statusItemOrdemServico.asString());
+            } else {
+                stmt.setNull(3, SqlType.TEXT.asIntTypeJava());
+            }
+            stmt.setInt(4, limit);
+            stmt.setInt(5, offset);
+            rSet = stmt.executeQuery();
+            final List<QtdItensPlacaListagem> ordens = new ArrayList<>();
+            while (rSet.next()) {
+                ordens.add(OrdemServicoConverter.createQtdItensPlacaListagem(rSet));
+            }
+            return ordens;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @NotNull
