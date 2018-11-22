@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.StatusItemOrdemServico;
@@ -34,9 +35,18 @@ public final class OrdemServicoService {
                                                               @Nullable final Integer limit,
                                                               @Nullable final Integer offset) throws ProLogException {
         try {
-            return dao.getOrdemServicoListagem(codUnidade, codTipoVeiculo, placaVeiculo, statusOrdemServico, limit, offset);
+            return dao.getOrdemServicoListagem(
+                    codUnidade,
+                    codTipoVeiculo,
+                    placaVeiculo,
+                    statusOrdemServico,
+                    limit,
+                    offset);
         } catch (final Throwable t) {
-            return null;
+            Log.e(TAG, "Erro ao buscar ordens de serviço para a unidade: " + codUnidade, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao realizar busca, tente novamente");
         }
     }
 
@@ -57,7 +67,10 @@ public final class OrdemServicoService {
                     limit,
                     offset);
         } catch (final Throwable t) {
-            return null;
+            Log.e(TAG, "Erro ao buscar quantidade de itens de O.S. para a unidade: " + codUnidade, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao realizar busca, tente novamente");
         }
     }
 
@@ -68,7 +81,10 @@ public final class OrdemServicoService {
         try {
             return dao.getHolderResolucaoOrdemServico(codUnidade, codOrdemServico);
         } catch (final Throwable t) {
-            return null;
+            Log.e(TAG, "Erro ao buscar holder de resolução das ordens de serviços para a unidade: " + codUnidade, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao realizar busca, tente novamente");
         }
     }
 
@@ -87,7 +103,10 @@ public final class OrdemServicoService {
         try {
             dao.resolverItem(item);
         } catch (final Throwable t) {
-
+            Log.e(TAG, "Erro ao resolver item", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao resolver item, tente novamente");
         }
     }
 
@@ -96,7 +115,10 @@ public final class OrdemServicoService {
         try {
             dao.resolverItens(itensResolucao);
         } catch (final Throwable t) {
-
+            Log.e(TAG, "Erro ao resolver itens", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao resolver itens, tente novamente");
         }
     }
 }
