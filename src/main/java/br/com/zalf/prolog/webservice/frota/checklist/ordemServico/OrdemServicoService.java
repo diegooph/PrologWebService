@@ -95,7 +95,10 @@ public final class OrdemServicoService {
         try {
             return dao.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridade);
         } catch (final Throwable t) {
-            return null;
+            Log.e(TAG, "Erro ao buscar holder de resolução de itens de O.S. para a placa: " + placaVeiculo, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao realizar busca, tente novamente");
         }
     }
 
