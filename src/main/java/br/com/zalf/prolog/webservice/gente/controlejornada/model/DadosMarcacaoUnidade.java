@@ -1,11 +1,11 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controlejornada.model;
 
 /**
  * Created on 13/11/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class VersaoDadosMarcacao {
+public final class DadosMarcacaoUnidade {
     /**
      * Atributo utilizado para guardar a versão em que os dados de Marcações se encontram,
      * para a unidade.
@@ -18,7 +18,7 @@ public final class VersaoDadosMarcacao {
      */
     private String tokenSincronizacaoMarcacao;
 
-    public VersaoDadosMarcacao() {
+    public DadosMarcacaoUnidade() {
 
     }
 

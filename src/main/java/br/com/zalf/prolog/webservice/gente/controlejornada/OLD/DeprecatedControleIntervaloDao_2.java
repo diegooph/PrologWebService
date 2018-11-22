@@ -1,9 +1,10 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo;
+package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMarcacao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.VersaoDadosMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.DadosMarcacaoUnidade;
+import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,8 @@ import java.util.Optional;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public interface ControleIntervaloDao {
+@Deprecated
+public interface DeprecatedControleIntervaloDao_2 {
 
     void insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException;
 
@@ -56,5 +58,5 @@ public interface ControleIntervaloDao {
                                         @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
     @NotNull
-    Optional<VersaoDadosMarcacao> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
+    Optional<DadosMarcacaoUnidade> getDadosMarcacaoUnidade(@NotNull final Long codUnidade) throws SQLException;
 }

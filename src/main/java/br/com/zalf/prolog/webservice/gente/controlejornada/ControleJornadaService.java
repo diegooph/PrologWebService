@@ -40,7 +40,7 @@ class ControleJornadaService {
         try {
             @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
             final Long versaoDadosBanco =
-                    daoAntiga.getVersaoDadosIntervaloByUnidade(intervaloMarcacao.getCodUnidade()).get();
+                    daoAntiga.getDadosMarcacaoUnidade(intervaloMarcacao.getCodUnidade()).get().getVersaoDadosBanco();
             estadoVersaoIntervalo = versaoDadosIntervalo < versaoDadosBanco
                     ? EstadoVersaoIntervalo.VERSAO_DESATUALIZADA
                     : EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
@@ -94,13 +94,12 @@ class ControleJornadaService {
     public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
                                                               Long codUnidade,
                                                               ColaboradorService colaboradorService) throws ProLogException {
-        IntervaloOfflineSupport intervaloOfflineSupport = null;
         try {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
                     codUnidade,
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO);
             final List<TipoMarcacao> tiposIntervalo = daoAntiga.getTiposIntervalosByUnidade(codUnidade,  true, true);
-            final Optional<Long> versaoDadosBanco = daoAntiga.getVersaoDadosIntervaloByUnidade(codUnidade);
+            final Optional<DadosMarcacaoUnidade> dadosMarcacaoUnidade = daoAntiga.getDadosMarcacaoUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 
             // Isso é algo importante para se destacar: se ao buscarmos a versão dos dados de intervalo para uma unidade
@@ -108,31 +107,36 @@ class ControleJornadaService {
             // funcionalidade, o que faz sentido. Além disso, poupamos uma nova requisição ao banco, agilizando o login.
             // Porém, para isso funcionar bem, o ProLog deve garantir que se existe alguém de uma unidade com permissão de
             // marcação de intervalo, DEVE existir para essa unidade um valor de versão dos dados.
-            if (!versaoDadosBanco.isPresent()) {
+            if (!dadosMarcacaoUnidade.isPresent()) {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.UNIDADE_SEM_USO_INTERVALO;
             } else {
                 // Se a unidade tem uma versão dos dados de intervalo no banco, nós precisamos comparar com a versão que
                 // o App enviou.
-                if (versaoDadosApp != null && versaoDadosApp.equals(versaoDadosBanco.get())) {
+                final Long versaoDadosWs = dadosMarcacaoUnidade.get().getVersaoDadosBanco();
+                if (versaoDadosApp != null && versaoDadosApp.equals(versaoDadosWs)) {
                     // Se a versão está atualizada não precisamos setar mais nada no IntervaloOfflineSupport.
                     estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
                 } else {
-                    if (versaoDadosApp != null && versaoDadosApp > versaoDadosBanco.get()) {
+                    if (versaoDadosApp != null && versaoDadosApp > versaoDadosWs) {
                         // Isso nunca deveria acontecer! Porém, para não impedirmos o login do usuário, vamos retornar
                         // como se sua versão estivesse desatualizada e mandar os dados que temos.
                         Log.e(TAG, "Erro versão dados intervalo",
                                 new IllegalStateException("Versão dos dados do app (" + versaoDadosApp + ") não pode ser " +
-                                        "maior do que a versão dos dados no banco(" + versaoDadosBanco.get() + ")!"));
+                                        "maior do que a versão dos dados no banco(" + dadosMarcacaoUnidade.get() + ")!"));
                     }
                     estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
                 }
             }
             // Criamos o objeto.
-            intervaloOfflineSupport = new IntervaloOfflineSupport(estadoVersaoIntervalo);
+            final IntervaloOfflineSupport intervaloOfflineSupport = new IntervaloOfflineSupport(estadoVersaoIntervalo);
             intervaloOfflineSupport.setColaboradores(colaboradores);
             intervaloOfflineSupport.setTiposIntervalo(tiposIntervalo);
             intervaloOfflineSupport.setEstadoVersaoIntervalo(estadoVersaoIntervalo);
-            versaoDadosBanco.ifPresent(intervaloOfflineSupport::setVersaoDadosIntervalo);
+            dadosMarcacaoUnidade.ifPresent(d -> {
+                intervaloOfflineSupport.setVersaoDadosIntervalo(d.getVersaoDadosBanco());
+                intervaloOfflineSupport.setTokenSincronizacaoMarcacao(d.getTokenSincronizacaoMarcacao());
+            });
+            return intervaloOfflineSupport;
         } catch (final SQLException t) {
             Log.e(TAG, String.format("Erro ao buscar o IntervaloOfflineSupport.\n" +
                     "codUnidade: %d \n" +
@@ -141,7 +145,5 @@ class ControleJornadaService {
                     t,
                     "Erro ao buscar informações, tente novamente");
         }
-
-        return intervaloOfflineSupport;
     }
 }

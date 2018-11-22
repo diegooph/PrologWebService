@@ -21,8 +21,6 @@ public final class AuthenticatorFactory {
                 return new BasicAuthenticator(service);
             case BEARER:
                 return new BearerAuthenticator(service);
-            case TOKEN:
-                return new TokenMarcacaoJornadaAuthenticator(service);
             default:
                 throw new IllegalArgumentException();
         }

@@ -8,8 +8,8 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,7 +66,7 @@ public class DeprecatedControleIntervaloService_2 {
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             // Temos certeza que existira no banco, se não existir, então melhor dar erro.
             @SuppressWarnings("ConstantConditions")
-            final VersaoDadosMarcacao versaoDados = dao.getVersaoDadosIntervaloByUnidade(codUnidade).get();
+            final DadosMarcacaoUnidade versaoDados = dao.getDadosMarcacaoUnidade(codUnidade).get();
             if (versaoDadosIntervalo < versaoDados.getVersaoDadosBanco()) {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
             } else {
@@ -150,7 +150,7 @@ public class DeprecatedControleIntervaloService_2 {
                     codUnidade,
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO);
             final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
-            final Optional<VersaoDadosMarcacao> versaoDados = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
+            final Optional<DadosMarcacaoUnidade> versaoDados = dao.getDadosMarcacaoUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 
             // Isso é algo importante para se destacar: se ao buscarmos a versão dos dados de intervalo para uma unidade

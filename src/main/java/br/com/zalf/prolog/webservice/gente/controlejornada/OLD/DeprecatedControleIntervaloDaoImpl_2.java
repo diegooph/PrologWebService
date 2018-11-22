@@ -321,7 +321,7 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
 
     @NotNull
     @Override
-    public Optional<VersaoDadosMarcacao> getVersaoDadosIntervaloByUnidade(
+    public Optional<DadosMarcacaoUnidade> getDadosMarcacaoUnidade(
             @NotNull final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -343,8 +343,8 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
     }
 
     @NotNull
-    private VersaoDadosMarcacao createVersaoDadosMarcacao(@NotNull final ResultSet rSet) throws SQLException {
-        final VersaoDadosMarcacao versaoDados = new VersaoDadosMarcacao();
+    private DadosMarcacaoUnidade createVersaoDadosMarcacao(@NotNull final ResultSet rSet) throws SQLException {
+        final DadosMarcacaoUnidade versaoDados = new DadosMarcacaoUnidade();
         versaoDados.setVersaoDadosBanco(rSet.getLong("VERSAO_DADOS"));
         versaoDados.setTokenSincronizacaoMarcacao(rSet.getString("TOKEN_SINCRONIZACAO_MARCACAO"));
         return versaoDados;
