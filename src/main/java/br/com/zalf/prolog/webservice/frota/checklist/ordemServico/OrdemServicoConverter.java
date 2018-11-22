@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoFechadaListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.OrdemServicoListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.listagem.QtdItensPlacaListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.HolderResolucaoItensOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao.HolderResolucaoOrdemServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -50,5 +52,19 @@ public final class OrdemServicoConverter {
         qtdItens.setQtdAlta(rSet.getInt("QTD_ITENS_PRIORIDADE_ALTA"));
         qtdItens.setQtdCritica(rSet.getInt("QTD_ITENS_PRIORIDADE_CRITICA"));
         return qtdItens;
+    }
+
+    @NotNull
+    static HolderResolucaoOrdemServico createHolderResolucaoOrdemServico(@NotNull final ResultSet rSet)
+            throws Throwable {
+        // TODO
+        return null;
+    }
+
+    @NotNull
+    static HolderResolucaoItensOrdemServico createHolderResolucaoItensOrdemServico(@NotNull final ResultSet rSet)
+            throws Throwable {
+        // TODO
+        return null;
     }
 }

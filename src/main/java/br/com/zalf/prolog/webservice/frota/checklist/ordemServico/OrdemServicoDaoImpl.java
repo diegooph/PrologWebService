@@ -118,7 +118,23 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     public HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(
             @NotNull final Long codUnidade,
             @NotNull final Long codOrdemServico) throws Throwable {
-        return null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ORDEM_SERVICO_RESOLUCAO(?, ?)");
+            stmt.setLong(1, codOrdemServico);
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return OrdemServicoConverter.createHolderResolucaoOrdemServico(rSet);
+            } else {
+                throw new IllegalStateException("Erro ao buscar resolução de ordem de serviço");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @NotNull
@@ -126,7 +142,23 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
             @NotNull final String placaVeiculo,
             @NotNull final PrioridadeAlternativa prioridade) throws Throwable {
-        return null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?)");
+            stmt.setString(1, placaVeiculo);
+            stmt.setString(2, prioridade.asString());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return OrdemServicoConverter.createHolderResolucaoItensOrdemServico(rSet);
+            } else {
+                throw new IllegalStateException("Erro ao buscar resolução de itens de ordem de serviço");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @Override
