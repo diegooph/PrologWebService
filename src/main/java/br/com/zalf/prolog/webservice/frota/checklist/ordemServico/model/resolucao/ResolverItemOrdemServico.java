@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.resolucao;
 
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+
+import java.time.Duration;
 
 /**
  * Created on 09/11/18
@@ -8,11 +11,24 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ResolverItemOrdemServico {
-    private Long codColaboradoResolucao;
+    private Long cpfColaboradoResolucao;
     private Long codItemResolvido;
     private String feedbackResolucao;
     private String placaVeiculo;
     private long kmColetadoVeiculo;
+
+    /**
+     * Duração da resolução dos itens.
+     */
+    @SerializedName("duracaoResolucaoItemEmSegundos")
+    private Duration duracaoResolucaoItem;
+
+    private Long codOrdemServico;
+
+    /**
+     * O código da unidade da qual os itens de O.S. pertencem.
+     */
+    private Long codUnidadeOrdemServico;
 
     public ResolverItemOrdemServico() {
 
@@ -21,20 +37,22 @@ public final class ResolverItemOrdemServico {
     @NotNull
     public static ResolverItemOrdemServico createDummy() {
         final ResolverItemOrdemServico resolverItem = new ResolverItemOrdemServico();
-        resolverItem.setCodColaboradoResolucao(123L);
+        resolverItem.setCpfColaboradoResolucao(12345678987L);
         resolverItem.setCodItemResolvido(1L);
         resolverItem.setFeedbackResolucao("Resolvido!");
+        resolverItem.setDuracaoResolucaoItem(Duration.ofMinutes(10));
+        resolverItem.setCodUnidadeOrdemServico(5L);
         resolverItem.setPlacaVeiculo("AAA1234");
         resolverItem.setKmColetadoVeiculo(1234L);
         return resolverItem;
     }
 
-    public Long getCodColaboradoResolucao() {
-        return codColaboradoResolucao;
+    public Long getCpfColaboradoResolucao() {
+        return cpfColaboradoResolucao;
     }
 
-    public void setCodColaboradoResolucao(final Long codColaboradoResolucao) {
-        this.codColaboradoResolucao = codColaboradoResolucao;
+    public void setCpfColaboradoResolucao(final Long cpfColaboradoResolucao) {
+        this.cpfColaboradoResolucao = cpfColaboradoResolucao;
     }
 
     public Long getCodItemResolvido() {
@@ -67,5 +85,29 @@ public final class ResolverItemOrdemServico {
 
     public void setKmColetadoVeiculo(final long kmColetadoVeiculo) {
         this.kmColetadoVeiculo = kmColetadoVeiculo;
+    }
+
+    public Duration getDuracaoResolucaoItem() {
+        return duracaoResolucaoItem;
+    }
+
+    public void setDuracaoResolucaoItem(final Duration duracaoResolucaoItem) {
+        this.duracaoResolucaoItem = duracaoResolucaoItem;
+    }
+
+    public Long getCodOrdemServico() {
+        return codOrdemServico;
+    }
+
+    public void setCodOrdemServico(final Long codOrdemServico) {
+        this.codOrdemServico = codOrdemServico;
+    }
+
+    public Long getCodUnidadeOrdemServico() {
+        return codUnidadeOrdemServico;
+    }
+
+    public void setCodUnidadeOrdemServico(final Long codUnidadeOrdemServico) {
+        this.codUnidadeOrdemServico = codUnidadeOrdemServico;
     }
 }

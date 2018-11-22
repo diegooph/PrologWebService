@@ -33,7 +33,7 @@ public final class ResolverMultiplosItensOs {
     /**
      * Km do veículo no momento em que os itens foram resolvidos.
      */
-    private long kmVeiculoResolucao;
+    private long kmColetadoVeiculo;
 
     /**
      * Observação sobre a resolução.
@@ -43,7 +43,7 @@ public final class ResolverMultiplosItensOs {
     /**
      * O código da unidade da qual os itens de O.S. pertencem.
      */
-    private Long codUnidadeItensOs;
+    private Long codUnidadeOrdemServico;
 
     /**
      * Códigos itens que serão resolvidos.
@@ -56,27 +56,27 @@ public final class ResolverMultiplosItensOs {
 
     @NotNull
     public static ResolverMultiplosItensOs createDummy() {
-        final ResolverMultiplosItensOs conserto = new ResolverMultiplosItensOs();
-        conserto.setCpfColaboradorResolucao(12345678987L);
-        conserto.setPlacaVeiculo("AAA1234");
-        conserto.setDuracaoResolucaoItens(Duration.ofMinutes(10));
-        conserto.setKmVeiculoResolucao(234000);
-        conserto.setFeedbackResolucao("Tudo resolvido!");
-        conserto.setCodUnidadeItensOs(5L);
+        final ResolverMultiplosItensOs resolverItens = new ResolverMultiplosItensOs();
+        resolverItens.setCpfColaboradorResolucao(12345678987L);
+        resolverItens.setPlacaVeiculo("AAA1234");
+        resolverItens.setDuracaoResolucaoItens(Duration.ofMinutes(10));
+        resolverItens.setKmColetadoVeiculo(234000);
+        resolverItens.setFeedbackResolucao("Tudo resolvido!");
+        resolverItens.setCodUnidadeOrdemServico(5L);
         final List<Long> codItens = new ArrayList<>();
         codItens.add(1L);
         codItens.add(2L);
         codItens.add(3L);
-        conserto.setCodigosItens(codItens);
-        return conserto;
+        resolverItens.setCodigosItens(codItens);
+        return resolverItens;
     }
 
-    public Long getCodUnidadeItensOs() {
-        return codUnidadeItensOs;
+    public Long getCodUnidadeOrdemServico() {
+        return codUnidadeOrdemServico;
     }
 
-    public void setCodUnidadeItensOs(final Long codUnidadeItensOs) {
-        this.codUnidadeItensOs = codUnidadeItensOs;
+    public void setCodUnidadeOrdemServico(final Long codUnidadeOrdemServico) {
+        this.codUnidadeOrdemServico = codUnidadeOrdemServico;
     }
 
     public String getPlacaVeiculo() {
@@ -103,12 +103,12 @@ public final class ResolverMultiplosItensOs {
         this.duracaoResolucaoItens = duracaoResolucaoItens;
     }
 
-    public long getKmVeiculoResolucao() {
-        return kmVeiculoResolucao;
+    public long getKmColetadoVeiculo() {
+        return kmColetadoVeiculo;
     }
 
-    public void setKmVeiculoResolucao(final long kmVeiculoResolucao) {
-        this.kmVeiculoResolucao = kmVeiculoResolucao;
+    public void setKmColetadoVeiculo(final long kmColetadoVeiculo) {
+        this.kmColetadoVeiculo = kmColetadoVeiculo;
     }
 
     public String getFeedbackResolucao() {

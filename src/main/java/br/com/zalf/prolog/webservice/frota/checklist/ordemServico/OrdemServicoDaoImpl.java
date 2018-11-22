@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -130,7 +131,46 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
 
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
-
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
+                    "  CPF_MECANICO = ?, " +
+                    "  TEMPO_REALIZACAO = ?, " +
+                    "  KM = ?, " +
+                    "  STATUS_RESOLUCAO = ?, " +
+                    "  DATA_HORA_CONSERTO = ?, " +
+                    "  FEEDBACK_CONSERTO = ? " +
+                    "WHERE COD_UNIDADE = ? " +
+                    "      AND CODIGO = ? " +
+                    "      AND DATA_HORA_CONSERTO IS NULL;");
+            final Long cpf = item.getCpfColaboradoResolucao();
+            stmt.setLong(1, cpf);
+            stmt.setLong(2, item.getDuracaoResolucaoItem().toMillis());
+            stmt.setLong(3, item.getKmColetadoVeiculo());
+            stmt.setString(4, StatusItemOrdemServico.RESOLVIDO.asString());
+            stmt.setObject(5, OffsetDateTime.now(Clock.systemUTC()));
+            stmt.setString(6, item.getFeedbackResolucao().trim());
+            stmt.setLong(7, item.getCodUnidadeOrdemServico());
+            stmt.setLong(8, item.getCodItemResolvido());
+            if (stmt.executeUpdate() > 0) {
+                updateStatusOs(conn, item.getCodOrdemServico(), item.getCodUnidadeOrdemServico());
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+                veiculoDao.updateKmByPlaca(item.getPlacaVeiculo(), item.getKmColetadoVeiculo(), conn);
+                conn.commit();
+            } else {
+                throw new SQLException("Erro ao resolver o item");
+            }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
     }
 
     @Override
@@ -151,20 +191,20 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             final OffsetDateTime now = OffsetDateTime.now(Clock.systemUTC());
             stmt.setLong(1, itensResolucao.getCpfColaboradorResolucao());
             stmt.setLong(2, itensResolucao.getDuracaoResolucaoItens().toMillis());
-            stmt.setLong(3, itensResolucao.getKmVeiculoResolucao());
+            stmt.setLong(3, itensResolucao.getKmColetadoVeiculo());
             stmt.setString(4, StatusItemOrdemServico.RESOLVIDO.asString());
             stmt.setObject(5, now);
             stmt.setString(6, itensResolucao.getFeedbackResolucao().trim());
-            stmt.setLong(7, itensResolucao.getCodUnidadeItensOs());
+            stmt.setLong(7, itensResolucao.getCodUnidadeOrdemServico());
             stmt.setArray(8, PostgresUtils.listToArray(conn, SqlType.BIGINT, itensResolucao.getCodigosItens()));
             if (stmt.executeUpdate() == itensResolucao.getCodigosItens().size()) {
                 fechaOrdensServicosComBaseItens(
                         conn,
-                        itensResolucao.getCodUnidadeItensOs(),
+                        itensResolucao.getCodUnidadeOrdemServico(),
                         itensResolucao.getCodigosItens(),
                         now);
                 final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(itensResolucao.getPlacaVeiculo(), itensResolucao.getKmVeiculoResolucao(), conn);
+                veiculoDao.updateKmByPlaca(itensResolucao.getPlacaVeiculo(), itensResolucao.getKmColetadoVeiculo(), conn);
                 conn.commit();
             } else {
                 throw new IllegalStateException("Erro ao marcar os itens como resolvidos: "
@@ -226,6 +266,33 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         } finally {
             closeStatement(stmt);
             closeResultSet(rSet);
+        }
+    }
+
+    private void updateStatusOs(@NotNull final Connection conn,
+                                @NotNull final Long codOs,
+                                @NotNull final Long codUnidadeOs) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO SET " +
+                    "  STATUS = ?, " +
+                    "  DATA_HORA_FECHAMENTO = ? " +
+                    "WHERE COD_UNIDADE = ? " +
+                    "      AND CODIGO = ? " +
+                    "      AND (SELECT COUNT(*) FROM CHECKLIST_ORDEM_SERVICO_ITENS " +
+                    "WHERE COD_UNIDADE = ? " +
+                    "      AND COD_OS = ? " +
+                    "      AND STATUS_RESOLUCAO = ?) = 0;");
+            stmt.setString(1, StatusOrdemServico.FECHADA.asString());
+            stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
+            stmt.setLong(3, codUnidadeOs);
+            stmt.setLong(4, codOs);
+            stmt.setLong(5, codUnidadeOs);
+            stmt.setLong(6, codOs);
+            stmt.setString(7, StatusItemOrdemServico.PENDENTE.asString());
+            stmt.execute();
+        } finally {
+            closeStatement(stmt);
         }
     }
 }
