@@ -41,7 +41,7 @@ public final class JustificativaAjusteResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured()
     @Path("/")
-    public AbstractResponse adicionarMarcacaoAjuste(
+    public AbstractResponse insertJustificativaAjuste(
             @HeaderParam("Authorization") String userToken,
             @NotNull final JustificativaAjuste justificativaAjuste) throws ProLogException {
         return service.insertJustificativaAjuste(userToken, justificativaAjuste);
