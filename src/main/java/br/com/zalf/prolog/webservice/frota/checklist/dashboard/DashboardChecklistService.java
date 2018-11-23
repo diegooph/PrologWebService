@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.line.HorizontalLineChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.checklist.relatorios.ChecklistRelatorioDao;
@@ -38,6 +39,21 @@ public final class DashboardChecklistService {
                     "Erro ao buscar a quantidade de checklists realizados para as unidades: " + codUnidades,
                     throwable);
             throw exceptionHandler.map(throwable, "Erro ao buscar a quantidade de checklists realizados");
+        }
+    }
+
+    @NotNull
+    TableComponent getChecksRealizadosAbaixo130(
+            @NotNull final Integer codComponente,
+            @NotNull final List<Long> codUnidades) throws ProLogException {
+        try {
+            return DashboardChecklistComponentsCreator.createChecksRealizadosAbaixo130(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getQtdChecksRealizadosAbaixoTempoEspecifico(codUnidades, 91000, 30));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar os checklists realizados em menos de 1:30 para as " +
+                    "unidades %s", codUnidades.toString()), throwable);
+            throw exceptionHandler.map(throwable, "Erro ao buscar checklists realizados em menos de 1:30");
         }
     }
 }

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.QtdDiasAfericoesVencidas;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -359,14 +360,15 @@ public interface RelatorioPneuDao {
     int getQtdPneusPressaoIncorreta(@NotNull final List<Long> codUnidades) throws SQLException;
 
     /**
-     * Método que busca, para cada {@link Pneu}, o menor sulco e a menor pressão nele presente.
+     * Método que busca, para cada {@link Pneu pneu}, o menor sulco e a pressão que ele possui.
      *
-     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
-     * @return - Um {@link List} de {@link SulcoPressao} contendo o menor sulco e a menor pressão
-     * de cada pneu.
-     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     * @param codUnidades Uma {@link List<Long> lista} de códigos das {@link Unidade unidades} pelas quais queremos
+     *                    filtrar.
+     * @return Uma {@link List lista} de {@link SulcoPressao} contendo o menor sulco e a pressão de cada pneu.
+     * @throws Throwable Se qualquer erro acontecer.
      */
-    List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws SQLException;
+    @NotNull
+    List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws Throwable;
 
     /**
      * Método que busca a quantidade de pneus descartados devido ao mesmo {@link MotivoDescarte}.
@@ -377,4 +379,14 @@ public interface RelatorioPneuDao {
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      */
     Map<String, Integer> getQtdPneusDescartadosPorMotivo(@NotNull final List<Long> codUnidades) throws SQLException;
+
+    /**
+     * *Método que busca a quantidade de dias que uma aferição venceu.
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return Uma {@link List lista} de {@link QtdDiasAfericoesVencidas}
+     * @throws Throwable Se qualquer erro acontecer.
+     */
+    @NotNull
+    List<QtdDiasAfericoesVencidas> getQtdAfericoesVencidas(@NotNull final List<Long> codUnidades)
+            throws Throwable;
 }

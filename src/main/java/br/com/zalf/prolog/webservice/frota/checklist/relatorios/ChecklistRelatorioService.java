@@ -221,9 +221,16 @@ class ChecklistRelatorioService {
     @NotNull
     Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
                                          @NotNull final String dataInicial,
-                                         @NotNull final String dataFinal) throws ProLogException {
+                                         @NotNull final String dataFinal,
+                                         final Integer codColaborador,
+                                         final String placa) throws ProLogException {
         try {
-            return dao.getDadosGeraisChecklistReport(codUnidades, dataInicial, dataFinal);
+            return dao.getDadosGeraisChecklistReport(
+                    codUnidades,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal),
+                    codColaborador,
+                    placa);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de dados dos checklists (REPORT)", e);
             throw exceptionHandler.map(e,
@@ -235,13 +242,17 @@ class ChecklistRelatorioService {
     void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
                                     @NotNull final List<Long> codUnidades,
                                     @NotNull final String dataInicial,
-                                    @NotNull final String dataFinal) {
+                                    @NotNull final String dataFinal,
+                                    final Integer codColaborador,
+                                    final String placa) {
         try {
             dao.getDadosGeraisChecklistCsv(
                     outputStream,
                     codUnidades,
-                    dataInicial,
-                    dataFinal);
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal),
+                    codColaborador,
+                    placa);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de dados gerais dos checklists (CSV)", e);
             throw new RuntimeException(e);

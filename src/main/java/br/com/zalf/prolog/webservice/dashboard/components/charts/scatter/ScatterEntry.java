@@ -9,36 +9,42 @@ import org.jetbrains.annotations.NotNull;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class ScatterEntry extends Entry {
-    private double x;
+    private final double x;
     @NotNull
-    private String representacaoX;
-    private double y;
+    private final String representacaoX;
+    private final double y;
     @NotNull
-    private String representacaoY;
+    private final String representacaoY;
 
+    /**
+     * A ideia é que essa info seja exibida quando o usuário clicar em um ponto do gráfico.
+     */
+    @NotNull
+    private final String infoEntry;
+
+    @NotNull
     public static ScatterEntry create(final double x,
                                       @NotNull final String representacaoX,
                                       final double y,
-                                      @NotNull final String representacaoY) {
-        return new ScatterEntry(x, representacaoX, y, representacaoY);
+                                      @NotNull final String representacaoY,
+                                      @NotNull final String infoEntry) {
+        return new ScatterEntry(x, representacaoX, y, representacaoY, infoEntry);
     }
 
     private ScatterEntry(final double x,
                          @NotNull final String representacaoX,
                          final double y,
-                         @NotNull final String representacaoY) {
+                         @NotNull final String representacaoY,
+                         @NotNull final String infoEntry) {
         this.x = x;
         this.representacaoX = representacaoX;
         this.y = y;
         this.representacaoY = representacaoY;
+        this.infoEntry = infoEntry;
     }
 
     public double getX() {
         return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
     }
 
     @NotNull
@@ -46,16 +52,8 @@ public class ScatterEntry extends Entry {
         return representacaoX;
     }
 
-    public void setRepresentacaoX(@NotNull String representacaoX) {
-        this.representacaoX = representacaoX;
-    }
-
     public double getY() {
         return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     @NotNull
@@ -63,17 +61,8 @@ public class ScatterEntry extends Entry {
         return representacaoY;
     }
 
-    public void setRepresentacaoY(@NotNull String representacaoY) {
-        this.representacaoY = representacaoY;
-    }
-
-    @Override
-    public String toString() {
-        return "ScatterEntry{" +
-                "x=" + x +
-                ", representacaoX='" + representacaoX + '\'' +
-                ", y=" + y +
-                ", representacaoY='" + representacaoY + '\'' +
-                '}';
+    @NotNull
+    public String getInfoEntry() {
+        return infoEntry;
     }
 }

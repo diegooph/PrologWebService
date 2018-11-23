@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
+package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 
@@ -7,8 +7,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ConfiguracaoTipoVeiculoAfericao {
-
+public final class ConfiguracaoTipoVeiculoAferivel {
     private Long codigo;
     private long codUnidade;
     private TipoVeiculo tipoVeiculo;
@@ -17,7 +16,8 @@ public class ConfiguracaoTipoVeiculoAfericao {
     private boolean podeAferirSulcoPressao;
     private boolean podeAferirEstepe;
 
-    public ConfiguracaoTipoVeiculoAfericao() {
+    public ConfiguracaoTipoVeiculoAferivel() {
+
     }
 
     public Long getCodigo() {

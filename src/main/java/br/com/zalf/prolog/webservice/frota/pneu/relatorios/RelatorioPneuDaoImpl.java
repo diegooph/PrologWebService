@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.QtdDiasAfericoesVencidas;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
@@ -669,25 +670,22 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return resultados;
     }
 
+    @NotNull
     @Override
-    public List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws SQLException {
+    public List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<SulcoPressao> valores = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  TRUNC(P.PRESSAO_ATUAL::NUMERIC, 2) AS PRESSAO_ATUAL, " +
-                    "  TRUNC(LEAST(P.ALTURA_SULCO_INTERNO, P.ALTURA_SULCO_EXTERNO, " +
-                    "              P.ALTURA_SULCO_CENTRAL_EXTERNO, P.ALTURA_SULCO_CENTRAL_INTERNO)::NUMERIC, 2) AS MENOR_SULCO " +
-                    "FROM PNEU P " +
-                    "WHERE P.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
-                    "ORDER BY MENOR_SULCO ASC;");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_MENOR_SULCO_E_PRESSAO_PNEUS(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 valores.add(new SulcoPressao(
+                        rSet.getLong("COD_PNEU"),
+                        rSet.getString("COD_PNEU_CLIENTE"),
                         rSet.getDouble("MENOR_SULCO"),
                         rSet.getDouble("PRESSAO_ATUAL")));
             }
@@ -757,6 +755,35 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             closeConnection(conn, stmt, rSet);
         }
         return motivosDescarte;
+    }
+
+    @NotNull
+    @Override
+    public List<QtdDiasAfericoesVencidas> getQtdAfericoesVencidas(@NotNull List<Long> codUnidades) throws Throwable {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rSet = null;
+            try {
+                conn = getConnection();
+                stmt = conn.prepareStatement("SELECT * FROM " +
+                        "FUNC_AFERICAO_RELATORIO_QTD_DIAS_VENCIDOS(?, ?);");
+                stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+                stmt.setObject(2, Now.localDateTimeUtc());
+
+                rSet = stmt.executeQuery();
+                final List<QtdDiasAfericoesVencidas> qtdDiasAfericoesVencidas = new ArrayList<>();
+                while (rSet.next()) {
+                    qtdDiasAfericoesVencidas.add(
+                            new QtdDiasAfericoesVencidas(
+                                    rSet.getString("UNIDADE"),
+                                    rSet.getString("PLACA"),
+                                    rSet.getInt("QTD DIAS SEM AFERIR SULCO"),
+                                    rSet.getInt("QTD DIAS SEM AFERIR PRSSAO")));
+                }
+                return qtdDiasAfericoesVencidas;
+            } finally {
+                closeConnection(conn, stmt, rSet);
+            }
     }
 
     @NotNull

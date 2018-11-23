@@ -41,8 +41,8 @@ public interface AfericaoDao {
     /**
      * Busca objeto contendo informações necessárias para se iniciar uma aferição avulsa do {@link Pneu}.
      *
-     * @param codUnidade Código da {@link Unidade}.
-     * @param codPneu Código do {@link Pneu} que será aferido.
+     * @param codUnidade                  Código da {@link Unidade}.
+     * @param codPneu                     Código do {@link Pneu} que será aferido.
      * @param tipoMedicaoColetadaAfericao Tipo da medição que será realizada.
      * @return Obejto {@link NovaAfericaoAvulsa} contendo as informações para a Afericão.
      * @throws Throwable Se ocorrer erro no banco.
@@ -165,4 +165,14 @@ public interface AfericaoDao {
      */
     @NotNull
     Afericao getByCod(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable;
+
+    /**
+     * Método utilizado para buscar as configurações de aferição para uma {@code placa} de específica.
+     *
+     * @param placa Placa para qual as configurações serão buscadas.
+     * @return {@link ConfiguracaoNovaAfericao} contendo os atributos de configuração.
+     * @throws Throwable Se algum erro no processo ocorrer.
+     */
+    @NotNull
+    ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final String placa) throws Throwable;
 }

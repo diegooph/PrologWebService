@@ -220,27 +220,47 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
     @NotNull
     @Override
+    public Veiculo getVeiculoByPlaca(@NotNull final Connection conn,
+                                     @NotNull final String placa,
+                                     final boolean withPneus) throws Throwable {
+        return internalGetVeiculoByPlaca(conn, placa, withPneus);
+    }
+
+    @NotNull
+    @Override
     public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws SQLException {
         Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
+            return internalGetVeiculoByPlaca(conn, placa, withPneus);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    @NotNull
+    private Veiculo internalGetVeiculoByPlaca(@NotNull final Connection conn,
+                                              @NotNull final String placa,
+                                              final boolean withPneus) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
             stmt = conn.prepareStatement(VEICULOS_BY_PLACA);
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Veiculo veiculo = createVeiculo(rSet);
                 if (withPneus) {
+                    final PneuDao pneuDao = Injection.providePneuDao();
                     veiculo.setListPneus(pneuDao.getPneusByPlaca(placa));
                 }
                 return veiculo;
+            } else {
+                throw new IllegalStateException("Erro ao buscar veículo com a placa: " + placa);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(null, stmt, rSet);
         }
-        return new Veiculo();
     }
 
     @Override

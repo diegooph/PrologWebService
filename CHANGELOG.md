@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+<a name="v0.0.79"></a>
+## Version [v0.0.79](https://github.com/luizfp/PrologWebService/compare/v0.0.78...v0.0.79) (2018-11-23)
+
+### Features
+* Cria relatório do cronograma das aferições de placas
+* Altera busca de uma nova aferição para incluir parâmetros definidos pelo cliente para exibição de alerta de sulco
+* Cria componente para a Dashboard que mostra os checklists realizados em menos de 1 minuto e 30 segundos
+* Adiciona filtros ao relatório de dados gerais
+* Cria componente para a Dashboard que mostra a quantidade de dias que as aferições estão vencidas
+
+### Refactors
+* Adiciona infos extras no gráfico de scatter dos pneus com menor sulco e pressão da dashboard
+
 <a name="v0.0.78"></a>
 ## Version [v0.0.78](https://github.com/luizfp/PrologWebService/compare/v0.0.77...v0.0.78) (2018-11-06)
 
