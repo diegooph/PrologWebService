@@ -80,9 +80,9 @@ public final class OrdemServicoConverter {
         holder.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         holder.setKmAtualVeiculo(rSet.getLong("KM_ATUAL_VEICULO"));
         final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
-        while (rSet.next()) {
+        do {
             itens.add(createItemOrdemServicoVisualizacao(rSet));
-        }
+        } while (rSet.next());
         holder.setItens(itens);
         return holder;
     }
@@ -105,9 +105,9 @@ public final class OrdemServicoConverter {
         ordem.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         ordem.setDataHoraAbertura(rSet.getObject("DATA_HORA_ABERTURA_OS", LocalDateTime.class));
         final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
-        while (rSet.next()) {
+        do {
             itens.add(createItemOrdemServicoVisualizacao(rSet));
-        }
+        } while (rSet.next());
         ordem.setItens(itens);
         return ordem;
     }
@@ -123,7 +123,6 @@ public final class OrdemServicoConverter {
         } else {
             item = new ItemOrdemServicoResolvido();
             final ItemOrdemServicoResolvido resolvido = (ItemOrdemServicoResolvido) item;
-            // TODO: Fazer function retornar isso.
             resolvido.setCodColaboradorResolucao(rSet.getLong("COD_COLABORADOR_RESOLUCAO"));
             resolvido.setNomeColaboradorResolucao(rSet.getString("NOME_COLABORADOR_RESOLUCAO"));
             resolvido.setDataHoraResolucao(rSet.getObject("DATA_HORA_RESOLUCAO", LocalDateTime.class));

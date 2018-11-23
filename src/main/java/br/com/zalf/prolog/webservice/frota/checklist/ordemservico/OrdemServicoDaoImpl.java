@@ -116,16 +116,17 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @NotNull
     @Override
     public HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codOrdemServico) throws Throwable {
+            @NotNull final Long codOrdemServico,
+            @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ORDEM_SERVICO_RESOLUCAO(?, ?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ORDEM_SERVICO_RESOLUCAO(?, ?, ?)");
             stmt.setLong(1, codOrdemServico);
             stmt.setLong(2, codUnidade);
+            stmt.setObject(3, OffsetDateTime.now(Clock.systemUTC()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return OrdemServicoConverter.createHolderResolucaoOrdemServico(rSet);
@@ -147,9 +148,10 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?)");
             stmt.setString(1, placaVeiculo);
             stmt.setString(2, prioridade.asString());
+            stmt.setObject(3, OffsetDateTime.now(Clock.systemUTC()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return OrdemServicoConverter.createHolderResolucaoItensOrdemServico(rSet);

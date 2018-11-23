@@ -87,9 +87,9 @@ public final class OrdemServicoResource {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     public HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(
-            @QueryParam("codUnidade") @Required final Long codUnidade,
-            @QueryParam("codOrdemServico") @Required final Long codOrdemServico) throws ProLogException {
-        return service.getHolderResolucaoOrdemServico(codUnidade, codOrdemServico);
+            @QueryParam("codUnidade") @Required final Long codOrdemServico,
+            @QueryParam("codOrdemServico") @Required final Long codUnidade) throws ProLogException {
+        return service.getHolderResolucaoOrdemServico(codOrdemServico, codUnidade);
     }
 
     @GET

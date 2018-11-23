@@ -67,8 +67,8 @@ public interface OrdemServicoDao {
      * @throws Throwable se ocorrer algum erro.
      */
     @NotNull
-    HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codUnidade,
-                                                               @NotNull final Long codOrdemServico) throws Throwable;
+    HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codOrdemServico,
+                                                               @NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
     HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
