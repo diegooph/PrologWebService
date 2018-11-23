@@ -16,12 +16,12 @@ import java.time.temporal.ChronoUnit;
 public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizacao {
     public static final String TIPO_SERIALIZACAO = "ITEM_FECHADO";
 
-    private Long codColaboradorFechamento;
-    private String nomeColaboradorFechamento;
-    private LocalDateTime dataHoraFechamento;
-    private String feedbackFechamento;
-    @SerializedName("tempoConsertoEmSegundos")
-    private Duration tempoConserto;
+    private Long codColaboradorResolucao;
+    private String nomeColaboradorResolucao;
+    private LocalDateTime dataHoraResolucao;
+    private String feedbackResolucao;
+    @SerializedName("duracaoResolucaoEmSegundos")
+    private Duration duracaoResolucao;
 
     public ItemOrdemServicoResolvido() {
         super(TIPO_SERIALIZACAO);
@@ -35,57 +35,57 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
         item.setCodUnidadeItemOrdemServico(5L);
         item.setPergunta(PerguntaItemOrdemServico.createDummy());
         item.setDataHoraPrimeiroApontamento(LocalDateTime.now().minus(30, ChronoUnit.DAYS));
-        item.setStatus(StatusItemOrdemServico.PENDENTE);
+        item.setStatus(StatusItemOrdemServico.RESOLVIDO);
         item.setPrazoResolucaoItem(Duration.ofMinutes(42));
         item.setPrazoRestanteResolucaoItem(Duration.ofMinutes(20));
         item.setQtdApontamentos(10);
 
-        // Fechado.
-        item.setCodColaboradorFechamento(10L);
-        item.setNomeColaboradorFechamento("ProLoggerson");
-        item.setDataHoraFechamento(LocalDateTime.now());
-        item.setFeedbackFechamento("Feedback Fechamento");
-        item.setTempoConserto(Duration.ofMinutes(10));
+        // Resolvido.
+        item.setCodColaboradorResolucao(10L);
+        item.setNomeColaboradorResolucao("ProLoggerson");
+        item.setDataHoraResolucao(LocalDateTime.now());
+        item.setFeedbackResolucao("Feedback Fechamento");
+        item.setDuracaoResolucao(Duration.ofMinutes(10));
         return item;
     }
 
-    public Long getCodColaboradorFechamento() {
-        return codColaboradorFechamento;
+    public Long getCodColaboradorResolucao() {
+        return codColaboradorResolucao;
     }
 
-    public void setCodColaboradorFechamento(final Long codColaboradorFechamento) {
-        this.codColaboradorFechamento = codColaboradorFechamento;
+    public void setCodColaboradorResolucao(final Long codColaboradorResolucao) {
+        this.codColaboradorResolucao = codColaboradorResolucao;
     }
 
-    public String getNomeColaboradorFechamento() {
-        return nomeColaboradorFechamento;
+    public String getNomeColaboradorResolucao() {
+        return nomeColaboradorResolucao;
     }
 
-    public void setNomeColaboradorFechamento(final String nomeColaboradorFechamento) {
-        this.nomeColaboradorFechamento = nomeColaboradorFechamento;
+    public void setNomeColaboradorResolucao(final String nomeColaboradorResolucao) {
+        this.nomeColaboradorResolucao = nomeColaboradorResolucao;
     }
 
-    public LocalDateTime getDataHoraFechamento() {
-        return dataHoraFechamento;
+    public LocalDateTime getDataHoraResolucao() {
+        return dataHoraResolucao;
     }
 
-    public void setDataHoraFechamento(final LocalDateTime dataHoraFechamento) {
-        this.dataHoraFechamento = dataHoraFechamento;
+    public void setDataHoraResolucao(final LocalDateTime dataHoraResolucao) {
+        this.dataHoraResolucao = dataHoraResolucao;
     }
 
-    public String getFeedbackFechamento() {
-        return feedbackFechamento;
+    public String getFeedbackResolucao() {
+        return feedbackResolucao;
     }
 
-    public void setFeedbackFechamento(final String feedbackFechamento) {
-        this.feedbackFechamento = feedbackFechamento;
+    public void setFeedbackResolucao(final String feedbackResolucao) {
+        this.feedbackResolucao = feedbackResolucao;
     }
 
-    public Duration getTempoConserto() {
-        return tempoConserto;
+    public Duration getDuracaoResolucao() {
+        return duracaoResolucao;
     }
 
-    public void setTempoConserto(final Duration tempoConserto) {
-        this.tempoConserto = tempoConserto;
+    public void setDuracaoResolucao(final Duration tempoResolucao) {
+        this.duracaoResolucao = tempoResolucao;
     }
 }

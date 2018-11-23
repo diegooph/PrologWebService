@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoAbertaListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoFechadaListagem;
@@ -7,10 +9,17 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.QtdItensPlacaListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoItensOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.OrdemServicoAbertaVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.OrdemServicoFechadaVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.OrdemServicoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 22/11/18
@@ -57,14 +66,103 @@ public final class OrdemServicoConverter {
     @NotNull
     static HolderResolucaoOrdemServico createHolderResolucaoOrdemServico(@NotNull final ResultSet rSet)
             throws Throwable {
-        // TODO
-        return null;
+        final HolderResolucaoOrdemServico holder = new HolderResolucaoOrdemServico();
+        holder.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
+        holder.setKmAtualVeiculo(rSet.getLong("KM_ATUAL_VEICULO"));
+        holder.setOrdemServico(createOrdemServicoVisualizacao(rSet));
+        return holder;
     }
 
     @NotNull
     static HolderResolucaoItensOrdemServico createHolderResolucaoItensOrdemServico(@NotNull final ResultSet rSet)
             throws Throwable {
-        // TODO
-        return null;
+        final HolderResolucaoItensOrdemServico holder = new HolderResolucaoItensOrdemServico();
+        holder.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
+        holder.setKmAtualVeiculo(rSet.getLong("KM_ATUAL_VEICULO"));
+        final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
+        while (rSet.next()) {
+            itens.add(createItemOrdemServicoVisualizacao(rSet));
+        }
+        holder.setItens(itens);
+        return holder;
+    }
+
+    @NotNull
+    private static OrdemServicoVisualizacao createOrdemServicoVisualizacao(@NotNull final ResultSet rSet)
+            throws Throwable {
+        final StatusOrdemServico status =
+                StatusOrdemServico.fromString(rSet.getString("STATUS_OS"));
+        final OrdemServicoVisualizacao ordem;
+        if (status.equals(StatusOrdemServico.ABERTA)) {
+            ordem = new OrdemServicoAbertaVisualizacao();
+        } else {
+            ordem = new OrdemServicoFechadaVisualizacao();
+            ((OrdemServicoFechadaVisualizacao) ordem)
+                    .setDataHoraFechamento(rSet.getObject("DATA_HORA_FECHAMENTO_OS", LocalDateTime.class));
+        }
+
+        ordem.setCodOrdemServico(rSet.getLong("COD_OS"));
+        ordem.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
+        ordem.setDataHoraAbertura(rSet.getObject("DATA_HORA_ABERTURA_OS", LocalDateTime.class));
+        final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
+        while (rSet.next()) {
+            itens.add(createItemOrdemServicoVisualizacao(rSet));
+        }
+        ordem.setItens(itens);
+        return ordem;
+    }
+
+    @NotNull
+    private static ItemOrdemServicoVisualizacao createItemOrdemServicoVisualizacao(@NotNull final ResultSet rSet)
+            throws Throwable {
+        final StatusItemOrdemServico status =
+                StatusItemOrdemServico.fromString(rSet.getString("STATUS_ITEM_OS"));
+        final ItemOrdemServicoVisualizacao item;
+        if (status.equals(StatusItemOrdemServico.PENDENTE)) {
+            item = new ItemOrdemServicoPendente();
+        } else {
+            item = new ItemOrdemServicoResolvido();
+            final ItemOrdemServicoResolvido resolvido = (ItemOrdemServicoResolvido) item;
+            // TODO: Fazer function retornar isso.
+            resolvido.setCodColaboradorResolucao(rSet.getLong("COD_COLABORADOR_RESOLUCAO"));
+            resolvido.setNomeColaboradorResolucao(rSet.getString("NOME_COLABORADOR_RESOLUCAO"));
+            resolvido.setDataHoraResolucao(rSet.getObject("DATA_HORA_RESOLUCAO", LocalDateTime.class));
+            resolvido.setFeedbackResolucao(rSet.getString("FEEDBACK_RESOLUCAO"));
+            resolvido.setDuracaoResolucao(Duration.ofMinutes(rSet.getLong("DURACAO_RESOLUCAO_MINUTOS")));
+        }
+        item.setStatus(status);
+        item.setCodigo(rSet.getLong("COD_ITEM_OS"));
+        item.setCodOrdemServico(rSet.getLong("COD_OS"));
+        item.setCodUnidadeItemOrdemServico(rSet.getLong("COD_UNIDADE_ITEM_OS"));
+        item.setPergunta(createPerguntaItemOrdemServico(rSet));
+        final LocalDateTime dataHoraPrimeiroApontamentoItem =
+                rSet.getObject("DATA_HORA_PRIMEIRO_APONTAMENTO_ITEM", LocalDateTime.class);
+        item.setDataHoraPrimeiroApontamento(dataHoraPrimeiroApontamentoItem);
+        item.setPrazoResolucaoItem(Duration.ofHours(rSet.getInt("PRAZO_RESOLUCAO_ITEM_HORAS")));
+        final Duration prazoRestanteResolucao = Duration.ofMinutes(
+                rSet.getLong("PRAZO_RESTANTE_RESOLUCAO_ITEM_MINUTOS"));
+        item.setPrazoRestanteResolucaoItem(prazoRestanteResolucao);
+        item.setQtdApontamentos(rSet.getInt("QTD_APONTAMENTOS"));
+        return item;
+    }
+
+    @NotNull
+    private static PerguntaItemOrdemServico createPerguntaItemOrdemServico(@NotNull final ResultSet rSet)
+            throws Throwable {
+        final PerguntaItemOrdemServico pergunta = new PerguntaItemOrdemServico();
+        pergunta.setCodPergunta(rSet.getLong("COD_PERGUNTA"));
+        pergunta.setDescricao(rSet.getString("DESCRICAO_PERGUNTA"));
+        pergunta.setAlternativaMarcada(createAlternativaItemOrdemServico(rSet));
+        return pergunta;
+    }
+
+    @NotNull
+    private static AlternativaItemOrdemServico createAlternativaItemOrdemServico(@NotNull final ResultSet rSet)
+            throws Throwable {
+        final AlternativaItemOrdemServico alternativa = new AlternativaItemOrdemServico();
+        alternativa.setCodAlteranativa(rSet.getLong("COD_ALTERNATIVA"));
+        alternativa.setDescricao(rSet.getString("DESCRICAO_ALTERNATIVA"));
+        alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
+        return alternativa;
     }
 }
