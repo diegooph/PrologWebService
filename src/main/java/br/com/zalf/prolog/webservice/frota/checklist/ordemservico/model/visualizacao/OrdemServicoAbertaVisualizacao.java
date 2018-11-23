@@ -14,7 +14,7 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class OrdemServicoAbertaVisualizacao extends OrdemServicoVisualizacao {
-    public static final String TIPO_SERIALIZACAO = "ORDEM_SERVICO_ABERTA";
+    static final String TIPO_SERIALIZACAO = "ORDEM_SERVICO_ABERTA";
 
     public OrdemServicoAbertaVisualizacao() {
         super(TIPO_SERIALIZACAO);

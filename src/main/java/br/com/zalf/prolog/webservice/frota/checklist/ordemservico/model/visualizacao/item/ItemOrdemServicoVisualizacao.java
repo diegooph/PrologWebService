@@ -66,6 +66,14 @@ public abstract class ItemOrdemServicoVisualizacao {
         this.tipo = tipo;
     }
 
+    @NotNull
+    public static RuntimeTypeAdapterFactory<ItemOrdemServicoVisualizacao> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(ItemOrdemServicoVisualizacao.class, "tipo")
+                .registerSubtype(ItemOrdemServicoPendente.class, ItemOrdemServicoPendente.TIPO_SERIALIZACAO)
+                .registerSubtype(ItemOrdemServicoResolvido.class, ItemOrdemServicoResolvido.TIPO_SERIALIZACAO);
+    }
+
     public Long getCodigo() {
         return codigo;
     }
@@ -136,13 +144,5 @@ public abstract class ItemOrdemServicoVisualizacao {
 
     public void setQtdApontamentos(final int qtdApontamentos) {
         this.qtdApontamentos = qtdApontamentos;
-    }
-
-    @NotNull
-    public static RuntimeTypeAdapterFactory<ItemOrdemServicoVisualizacao> provideTypeAdapterFactory() {
-        return RuntimeTypeAdapterFactory
-                .of(ItemOrdemServicoVisualizacao.class, "tipo")
-                .registerSubtype(ItemOrdemServicoPendente.class, ItemOrdemServicoPendente.TIPO_SERIALIZACAO)
-                .registerSubtype(ItemOrdemServicoResolvido.class, ItemOrdemServicoResolvido.TIPO_SERIALIZACAO);
     }
 }

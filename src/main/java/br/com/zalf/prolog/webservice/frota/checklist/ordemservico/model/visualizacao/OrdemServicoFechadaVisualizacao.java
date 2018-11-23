@@ -14,7 +14,7 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class OrdemServicoFechadaVisualizacao extends OrdemServicoVisualizacao {
-    public static final String TIPO_SERIALIZACAO = "ORDEM_SERVICO_FECHADA";
+    static final String TIPO_SERIALIZACAO = "ORDEM_SERVICO_FECHADA";
 
     private LocalDateTime dataHoraFechamento;
 

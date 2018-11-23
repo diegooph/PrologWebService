@@ -40,10 +40,11 @@ public final class ResolverItemOrdemServico {
         resolverItem.setCpfColaboradoResolucao(12345678987L);
         resolverItem.setCodItemResolvido(1L);
         resolverItem.setFeedbackResolucao("Resolvido!");
-        resolverItem.setDuracaoResolucaoItem(Duration.ofMinutes(10));
-        resolverItem.setCodUnidadeOrdemServico(5L);
         resolverItem.setPlacaVeiculo("AAA1234");
         resolverItem.setKmColetadoVeiculo(1234L);
+        resolverItem.setDuracaoResolucaoItem(Duration.ofMinutes(10));
+        resolverItem.setCodOrdemServico(10L);
+        resolverItem.setCodUnidadeOrdemServico(5L);
         return resolverItem;
     }
 

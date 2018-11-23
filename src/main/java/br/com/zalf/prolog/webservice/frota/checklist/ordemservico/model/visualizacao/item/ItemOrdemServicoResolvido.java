@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizacao {
-    public static final String TIPO_SERIALIZACAO = "ITEM_FECHADO";
+    static final String TIPO_SERIALIZACAO = "ITEM_RESOLVIDO";
 
     private Long codColaboradorResolucao;
     private String nomeColaboradorResolucao;

@@ -13,7 +13,7 @@ import java.time.temporal.ChronoUnit;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ItemOrdemServicoPendente extends ItemOrdemServicoVisualizacao {
-    public static final String TIPO_SERIALIZACAO = "ITEM_RESOLVIDO";
+    static final String TIPO_SERIALIZACAO = "ITEM_PENDENTE";
 
     public ItemOrdemServicoPendente() {
         super(TIPO_SERIALIZACAO);

@@ -19,12 +19,12 @@ public final class QtdItensPlacaListagem {
 
     @NotNull
     public static QtdItensPlacaListagem createDummy() {
-        final QtdItensPlacaListagem ordem = new QtdItensPlacaListagem();
-        ordem.setPlacaVeiculo("AAA1234");
-        ordem.setQtdBaixa(3);
-        ordem.setQtdAlta(1);
-        ordem.setQtdCritica(7);
-        return ordem;
+        final QtdItensPlacaListagem listagem = new QtdItensPlacaListagem();
+        listagem.setPlacaVeiculo("AAA1234");
+        listagem.setQtdCritica(7);
+        listagem.setQtdAlta(1);
+        listagem.setQtdBaixa(3);
+        return listagem;
     }
 
     public String getPlacaVeiculo() {

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
+import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoAbertaListagem;
@@ -35,6 +36,7 @@ public class DummyChecklistOrdemServicoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/checklist-ordem-servico-abertas-listagem-list")
     public List<OrdemServicoListagem> getOrdemServicoAbertaListagem() {
+        ensureDebugEnviroment();
         final List<OrdemServicoListagem> ordens = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             ordens.add(OrdemServicoAbertaListagem.createDummy());
@@ -46,6 +48,7 @@ public class DummyChecklistOrdemServicoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/checklist-ordem-servico-fechadas-listagem-list")
     public List<OrdemServicoListagem> getOrdemServicoFechadaListagem() {
+        ensureDebugEnviroment();
         final List<OrdemServicoListagem> ordens = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             ordens.add(OrdemServicoFechadaListagem.createDummy());
@@ -57,6 +60,7 @@ public class DummyChecklistOrdemServicoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/checklist-ordem-servico-listagem-placa-list")
     public List<QtdItensPlacaListagem> getOrdemServicoPlacaListagem() {
+        ensureDebugEnviroment();
         final List<QtdItensPlacaListagem> ordens = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             ordens.add(QtdItensPlacaListagem.createDummy());
@@ -68,6 +72,7 @@ public class DummyChecklistOrdemServicoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/checklist-ordem-servico-holder-resolucao")
     public HolderResolucaoOrdemServico getHolderResolucaoOrdemServico() {
+        ensureDebugEnviroment();
         return HolderResolucaoOrdemServico.createDummy();
     }
 
@@ -75,6 +80,7 @@ public class DummyChecklistOrdemServicoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/checklist-ordem-servico-holder-resolucao-itens")
     public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico() {
+        ensureDebugEnviroment();
         return HolderResolucaoItensOrdemServico.createDummy();
     }
 
@@ -82,6 +88,7 @@ public class DummyChecklistOrdemServicoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/checklist-ordem-servico-resolver-multiplos-itens")
     public ResolverMultiplosItensOs getResolverMultiplosItensOs() {
+        ensureDebugEnviroment();
         return ResolverMultiplosItensOs.createDummy();
     }
 
@@ -89,6 +96,13 @@ public class DummyChecklistOrdemServicoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/checklist-ordem-servico-resolver-item")
     public ResolverItemOrdemServico getResolverItemOrdemServico() {
+        ensureDebugEnviroment();
         return ResolverItemOrdemServico.createDummy();
+    }
+
+    private void ensureDebugEnviroment() {
+        if (!BuildConfig.DEBUG) {
+            throw new IllegalStateException("Esse resource só pode ser utilizado em ambientes de testes");
+        }
     }
 }

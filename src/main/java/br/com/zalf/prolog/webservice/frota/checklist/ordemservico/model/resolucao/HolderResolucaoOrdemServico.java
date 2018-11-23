@@ -20,11 +20,11 @@ public final class HolderResolucaoOrdemServico {
 
     @NotNull
     public static HolderResolucaoOrdemServico createDummy() {
-        final HolderResolucaoOrdemServico fechamento = new HolderResolucaoOrdemServico();
-        fechamento.setPlacaVeiculo("AAA1234");
-        fechamento.setKmAtualVeiculo(12345);
-        fechamento.setOrdemServico(OrdemServicoAbertaVisualizacao.createDummy());
-        return fechamento;
+        final HolderResolucaoOrdemServico resolucaoOrdemServico = new HolderResolucaoOrdemServico();
+        resolucaoOrdemServico.setPlacaVeiculo("AAA1234");
+        resolucaoOrdemServico.setKmAtualVeiculo(12345);
+        resolucaoOrdemServico.setOrdemServico(OrdemServicoAbertaVisualizacao.createDummy());
+        return resolucaoOrdemServico;
     }
 
     public String getPlacaVeiculo() {
