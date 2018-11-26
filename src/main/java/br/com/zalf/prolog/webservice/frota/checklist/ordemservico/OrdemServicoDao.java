@@ -96,9 +96,12 @@ public interface OrdemServicoDao {
                                                          final int offset) throws Throwable;
 
     /**
-     * Busca os itens de Ordens de Serviços utilizando, opcionalmente, limit e offset.
+     * Método utilizado para buscar uma Ordem de Serviço para ser fechada.
      *
-     * @throws Throwable se ocorrer algum erro.
+     * @param codOrdemServico Código da Ordem de Serviço.
+     * @param codUnidade      Código da {@link Unidade} que a Ordem de Serviço pertence.
+     * @return Um {@link HolderResolucaoOrdemServico holder} contendo a Ordem de Serviço para o fechamento.
+     * @throws Throwable Caso algum erro acontecer no processo de busca.
      */
     @NotNull
     HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codOrdemServico,

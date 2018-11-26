@@ -72,7 +72,7 @@ public final class OrdemServicoResource {
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
-    public List<QtdItensPlacaListagem> getOrdemServicoListagemPlacas(
+    public List<QtdItensPlacaListagem> getQtdItensPlacaListagem(
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
             @QueryParam("placaVeiculo") @Optional final String placaVeiculo,

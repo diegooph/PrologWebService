@@ -74,13 +74,13 @@ final class OrdemServicoService {
     }
 
     @NotNull
-    public HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codOrdemServico,
-                                                                      @NotNull final Long codUnidade)
-            throws ProLogException {
+    HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codOrdemServico,
+                                                               @NotNull final Long codUnidade) throws ProLogException {
         try {
             return dao.getHolderResolucaoOrdemServico(codOrdemServico, codUnidade);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar holder de resolução das ordens de serviços para a unidade: " + codUnidade, t);
+            Log.e(TAG, "Erro ao buscar holder de resolução das ordens de serviços para a unidade: "
+                    + codUnidade, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao realizar busca, tente novamente");

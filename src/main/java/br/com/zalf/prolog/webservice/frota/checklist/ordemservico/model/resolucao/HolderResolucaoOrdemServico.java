@@ -19,7 +19,7 @@ public final class HolderResolucaoOrdemServico {
     private String placaVeiculo;
 
     /**
-     * Quilometragem do {@link Veiculo} no momento de resolução da Ordem de Serviço.
+     * Quilometragem atual do {@link Veiculo}.
      */
     private long kmAtualVeiculo;
 

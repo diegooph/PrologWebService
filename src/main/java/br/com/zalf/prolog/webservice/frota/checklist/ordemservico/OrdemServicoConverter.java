@@ -41,7 +41,8 @@ final class OrdemServicoConverter {
             ordem = new OrdemServicoAbertaListagem();
         } else {
             ordem = new OrdemServicoFechadaListagem();
-            final LocalDateTime dataHoraFechamento = rSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class);
+            final LocalDateTime dataHoraFechamento =
+                    rSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class);
             ((OrdemServicoFechadaListagem) ordem).setDataHoraFechamento(dataHoraFechamento);
         }
         ordem.setCodOrdemServico(rSet.getLong("COD_OS"));
@@ -64,8 +65,8 @@ final class OrdemServicoConverter {
     }
 
     @NotNull
-    static HolderResolucaoOrdemServico createHolderResolucaoOrdemServico(@NotNull final ResultSet rSet)
-            throws Throwable {
+    static HolderResolucaoOrdemServico createHolderResolucaoOrdemServico(
+            @NotNull final ResultSet rSet) throws Throwable {
         final HolderResolucaoOrdemServico holder = new HolderResolucaoOrdemServico();
         holder.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         holder.setKmAtualVeiculo(rSet.getLong("KM_ATUAL_VEICULO"));
@@ -88,8 +89,8 @@ final class OrdemServicoConverter {
     }
 
     @NotNull
-    private static OrdemServicoVisualizacao createOrdemServicoVisualizacao(@NotNull final ResultSet rSet)
-            throws Throwable {
+    private static OrdemServicoVisualizacao createOrdemServicoVisualizacao(
+            @NotNull final ResultSet rSet) throws Throwable {
         final StatusOrdemServico status =
                 StatusOrdemServico.fromString(rSet.getString("STATUS_OS"));
         final OrdemServicoVisualizacao ordem;
@@ -100,7 +101,6 @@ final class OrdemServicoConverter {
             ((OrdemServicoFechadaVisualizacao) ordem)
                     .setDataHoraFechamento(rSet.getObject("DATA_HORA_FECHAMENTO_OS", LocalDateTime.class));
         }
-
         ordem.setCodOrdemServico(rSet.getLong("COD_OS"));
         ordem.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         ordem.setDataHoraAbertura(rSet.getObject("DATA_HORA_ABERTURA_OS", LocalDateTime.class));
@@ -113,8 +113,8 @@ final class OrdemServicoConverter {
     }
 
     @NotNull
-    private static ItemOrdemServicoVisualizacao createItemOrdemServicoVisualizacao(@NotNull final ResultSet rSet)
-            throws Throwable {
+    private static ItemOrdemServicoVisualizacao createItemOrdemServicoVisualizacao(
+            @NotNull final ResultSet rSet) throws Throwable {
         final StatusItemOrdemServico status =
                 StatusItemOrdemServico.fromString(rSet.getString("STATUS_ITEM_OS"));
         final ItemOrdemServicoVisualizacao item;
@@ -146,8 +146,8 @@ final class OrdemServicoConverter {
     }
 
     @NotNull
-    private static PerguntaItemOrdemServico createPerguntaItemOrdemServico(@NotNull final ResultSet rSet)
-            throws Throwable {
+    private static PerguntaItemOrdemServico createPerguntaItemOrdemServico(
+            @NotNull final ResultSet rSet) throws Throwable {
         final PerguntaItemOrdemServico pergunta = new PerguntaItemOrdemServico();
         pergunta.setCodPergunta(rSet.getLong("COD_PERGUNTA"));
         pergunta.setDescricao(rSet.getString("DESCRICAO_PERGUNTA"));
@@ -156,12 +156,13 @@ final class OrdemServicoConverter {
     }
 
     @NotNull
-    private static AlternativaItemOrdemServico createAlternativaItemOrdemServico(@NotNull final ResultSet rSet)
-            throws Throwable {
+    private static AlternativaItemOrdemServico createAlternativaItemOrdemServico(
+            @NotNull final ResultSet rSet) throws Throwable {
         final AlternativaItemOrdemServico alternativa = new AlternativaItemOrdemServico();
         alternativa.setCodAlteranativa(rSet.getLong("COD_ALTERNATIVA"));
         alternativa.setDescricao(rSet.getString("DESCRICAO_ALTERNATIVA"));
-        alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
+        alternativa.setPrioridade(PrioridadeAlternativa.fromString(
+                rSet.getString("PRIORIDADE_ALTERNATIVA")));
         return alternativa;
     }
 }
