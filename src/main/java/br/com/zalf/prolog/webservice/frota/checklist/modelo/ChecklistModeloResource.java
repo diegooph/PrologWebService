@@ -6,8 +6,6 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;

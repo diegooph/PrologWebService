@@ -1,6 +1,7 @@
-package br.com.zalf.prolog.webservice.frota.checklist.model;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,8 +11,8 @@ import java.util.List;
 /**
  * Created by jean on 24/05/16.
  */
+@Deprecated
 public class ModeloChecklist {
-
     private Long codigo;
     private String nome;
     private Long codUnidade;

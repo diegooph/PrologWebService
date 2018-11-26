@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_2;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -321,7 +322,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                             "  CP.PERGUNTA, " +
                             "  CP.SINGLE_CHOICE, " +
                             "  CAP.CODIGO AS COD_ALTERNATIVA, " +
-                            "  CP.PRIORIDADE, " +
+                            "  CAP.PRIORIDADE, " +
                             "  CAP.ORDEM, " +
                             "  CGI.COD_IMAGEM, " +
                             "  CGI.URL_IMAGEM, " +
