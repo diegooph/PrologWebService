@@ -82,6 +82,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @Override
     public List<QtdItensPlacaListagem> getQtdItensPlacaListagem(
             @NotNull final Long codUnidade,
+            @Nullable final Long codTipoVeiculo,
             @Nullable final String placaVeiculo,
             @Nullable final StatusItemOrdemServico statusItemOrdemServico,
             final int limit,
@@ -92,16 +93,17 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_CHECKLIST_OS_GET_QTD_ITENS_PLACA_LISTAGEM(?, ?, ?, ?, ?)");
+                    "SELECT * FROM FUNC_CHECKLIST_OS_GET_QTD_ITENS_PLACA_LISTAGEM(?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, codUnidade);
-            bindValueOrNull(stmt, 2, placaVeiculo, SqlType.TEXT);
+            bindValueOrNull(stmt, 2, codTipoVeiculo, SqlType.BIGINT);
+            bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
             if (statusItemOrdemServico != null) {
-                stmt.setString(3, statusItemOrdemServico.asString());
+                stmt.setString(4, statusItemOrdemServico.asString());
             } else {
-                stmt.setNull(3, SqlType.TEXT.asIntTypeJava());
+                stmt.setNull(4, SqlType.TEXT.asIntTypeJava());
             }
-            stmt.setInt(4, limit);
-            stmt.setInt(5, offset);
+            stmt.setInt(5, limit);
+            stmt.setInt(6, offset);
             rSet = stmt.executeQuery();
             final List<QtdItensPlacaListagem> ordens = new ArrayList<>();
             while (rSet.next()) {

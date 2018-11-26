@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class OrdemServicoConverter {
+final class OrdemServicoConverter {
 
     private OrdemServicoConverter() {
         throw new IllegalStateException(OrdemServicoConverter.class.getSimpleName() + " cannot be instantiated!");
@@ -57,9 +57,9 @@ public final class OrdemServicoConverter {
     static QtdItensPlacaListagem createQtdItensPlacaListagem(@NotNull final ResultSet rSet) throws Throwable {
         final QtdItensPlacaListagem qtdItens = new QtdItensPlacaListagem();
         qtdItens.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
-        qtdItens.setQtdBaixa(rSet.getInt("QTD_ITENS_PRIORIDADE_BAIXA"));
-        qtdItens.setQtdAlta(rSet.getInt("QTD_ITENS_PRIORIDADE_ALTA"));
         qtdItens.setQtdCritica(rSet.getInt("QTD_ITENS_PRIORIDADE_CRITICA"));
+        qtdItens.setQtdAlta(rSet.getInt("QTD_ITENS_PRIORIDADE_ALTA"));
+        qtdItens.setQtdBaixa(rSet.getInt("QTD_ITENS_PRIORIDADE_BAIXA"));
         return qtdItens;
     }
 

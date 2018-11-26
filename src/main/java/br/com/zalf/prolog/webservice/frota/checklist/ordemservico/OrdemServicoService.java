@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class OrdemServicoService {
+final class OrdemServicoService {
     private static final String TAG = OrdemServicoService.class.getSimpleName();
     @NotNull
     private final OrdemServicoDao dao = Injection.provideOrdemServicoDao();
@@ -51,15 +51,16 @@ public final class OrdemServicoService {
     }
 
     @NotNull
-    public List<QtdItensPlacaListagem> getQtdItensPlacaListagem(
-            @NotNull final Long codUnidade,
-            @Nullable final String placaVeiculo,
-            @Nullable final StatusItemOrdemServico statusItemOrdemServico,
-            final int limit,
-            final int offset) throws ProLogException {
+    List<QtdItensPlacaListagem> getQtdItensPlacaListagem(@NotNull final Long codUnidade,
+                                                         @Nullable final Long codTipoVeiculo,
+                                                         @Nullable final String placaVeiculo,
+                                                         @Nullable final StatusItemOrdemServico statusItemOrdemServico,
+                                                         final int limit,
+                                                         final int offset) throws ProLogException {
         try {
             return dao.getQtdItensPlacaListagem(
                     codUnidade,
+                    codTipoVeiculo,
                     placaVeiculo,
                     statusItemOrdemServico,
                     limit,

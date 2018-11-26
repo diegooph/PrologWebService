@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
@@ -50,12 +51,29 @@ public interface OrdemServicoDao {
                                                        final int offset) throws Throwable;
 
     /**
-     * Busca a lista de itens agrupados por placa e criticidade.
+     * Método utilizado para buscar a quantidade de Itens apontados como Não Ok (NOK) em uma Placa,
+     * agrupando por {@link PrioridadeAlternativa prioridade} do Item. A quantidade de Itens pode ser filtrada
+     * pelo status em que o Item se encontra, podendo ser {@link StatusItemOrdemServico#PENDENTE} ou
+     * {@link StatusItemOrdemServico#RESOLVIDO};
+     * <p>
+     * Para buscar a quantidade de Itens apontados de TODAS os veículos
+     * o parâmetro {@code placa} deve ser <code>NULL</code>.
+     * <p>
+     * Esta busca utiliza paginação, então deve-se explicitar a quantidade de dados que serão buscados
+     * através dos parâmetros {@code limit} e {@code offset}.
      *
-     * @throws Throwable se ocorrer algum erro.
+     * @param codUnidade             Código da {@link Unidade} que os Itens pertencem.
+     * @param codTipoVeiculo         Tipo de Veículo que deseja-se buscar as Ordens de Serviço.
+     * @param placaVeiculo           Placa do Veículo que deseja-se contar os Itens.
+     * @param statusItemOrdemServico Status em que o Item se encontra.
+     * @param limit                  Quantidade de elementos a serem retornados na busca.
+     * @param offset                 Indice a partir do qual a busca será retornada.
+     * @return Lista de {@link List<QtdItensPlacaListagem> quantidade de itens por placa}, seguindo a filtragem.
+     * @throws Throwable Se ocorrer algum erro no processamento dos dados.
      */
     @NotNull
     List<QtdItensPlacaListagem> getQtdItensPlacaListagem(@NotNull final Long codUnidade,
+                                                         @Nullable final Long codTipoVeiculo,
                                                          @Nullable final String placaVeiculo,
                                                          @Nullable final StatusItemOrdemServico statusItemOrdemServico,
                                                          final int limit,
