@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Esta é a classe utilizada para mostrar a Visualização de Ordens de Serviço em Abertas.
+ *
  * Created on 09/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)

@@ -3,20 +3,39 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visuali
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
+ * Esta é a superclasse utilizada para instanciar a Visualização de Ordens de Serviço Abertas ou a
+ * Visualização de Ordens de Serviço Fechadas.
+ *
  * Created on 09/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public abstract class OrdemServicoVisualizacao {
+    /**
+     * Código da Ordem de Serviço.
+     */
     private Long codOrdemServico;
+
+    /**
+     * Placa do {@link Veiculo} a qual a Ordem de Serviço pertence.
+     */
     private String placaVeiculo;
+
+    /**
+     * Data e Hora de abertura da Ordem de Serviço.
+     */
     private LocalDateTime dataHoraAbertura;
+
+    /**
+     * Itens que compõem a Ordem de Serviço.
+     */
     private List<ItemOrdemServicoVisualizacao> itens;
 
     @Exclude

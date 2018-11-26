@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
+ * Esta é a classe utilizada para mostrar a Visualização de Itens Resolvidos de uma Ordem de Serviço.
+ *
  * Created on 09/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)

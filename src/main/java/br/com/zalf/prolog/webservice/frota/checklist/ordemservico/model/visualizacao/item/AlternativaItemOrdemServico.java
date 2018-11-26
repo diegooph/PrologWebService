@@ -1,16 +1,35 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item;
 
+import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Classe que representa a alternativa de uma {@link PerguntaRespostaChecklist}
+ * marcada como Não Ok (NOK) de um Item de uma Ordem de Serviço.
+ *
  * Created on 09/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class AlternativaItemOrdemServico {
+    /**
+     * Código da alternativa marcada como Não Ok (NOK) em uma {@link PerguntaRespostaChecklist}.
+     */
     private Long codAlteranativa;
+
+    /**
+     * Descrição da alternativa marcada como Não Ok (NOK).
+     */
     private String descricao;
+
+    /**
+     * Prioridade que a alternativa marcada como Não Ok (NOK) possui.
+     * A prioridade pode ser:
+     * *{@link PrioridadeAlternativa#CRITICA}.
+     * *{@link PrioridadeAlternativa#ALTA}.
+     * *{@link PrioridadeAlternativa#BAIXA}.
+     */
     private PrioridadeAlternativa prioridade;
 
     public AlternativaItemOrdemServico() {

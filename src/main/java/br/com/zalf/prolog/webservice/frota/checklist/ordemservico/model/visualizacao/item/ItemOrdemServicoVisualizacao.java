@@ -11,6 +11,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
+ * Esta é a superclasse utilizada para instanciar a Visualização de Itens Pendentes de Resolução ou a
+ * Visualização de Itens Resolvidos de uma Ordem de Serviço.
+ *
  * Created on 09/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -31,8 +34,14 @@ public abstract class ItemOrdemServicoVisualizacao {
      */
     private Long codUnidadeItemOrdemServico;
 
+    /**
+     * A {@link PerguntaItemOrdemServico pergunta} que foi apontada como Não Ok (NOK) no Item.
+     */
     private PerguntaItemOrdemServico pergunta;
 
+    /**
+     * Data e Hora da primeira vez que o Item foi apontado como Não Ok (NOK).
+     */
     private LocalDateTime dataHoraPrimeiroApontamento;
 
     /**
@@ -42,19 +51,20 @@ public abstract class ItemOrdemServicoVisualizacao {
     private StatusItemOrdemServico status;
 
     /**
-     * Prazo para a resolução do item.
+     * Prazo, em segundos, para a resolução do Item.
      */
     @SerializedName("prazoResolucaoItemEmSegundos")
     private Duration prazoResolucaoItem;
 
     /**
-     * Prazo restante para resolver o item, baseado na sua {@link PrioridadeAlternativa prioridade}.
+     * Prazo restante, em segundos, para resolver o item.
+     * O prazo de resolução é baseado na {@link PrioridadeAlternativa prioridade} do Item.
      */
     @SerializedName("prazoRestanteResolucaoItemEmSegundos")
     private Duration prazoRestanteResolucaoItem;
 
     /**
-     * Quantidade de apontamentos que um item tem.
+     * Quantidade de vezes que o Item foi apontada como Não Ok (NOK).
      */
     private int qtdApontamentos;
 

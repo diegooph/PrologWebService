@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Esta é a classe utilizada para mostrar a Visualização de Ordens de Serviço Fechadas.
+ *
  * Created on 09/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -16,6 +18,9 @@ import java.util.List;
 public final class OrdemServicoFechadaVisualizacao extends OrdemServicoVisualizacao {
     static final String TIPO_SERIALIZACAO = "ORDEM_SERVICO_FECHADA";
 
+    /**
+     * Data e Hora que a Ordem de Serviço foi fechada.
+     */
     private LocalDateTime dataHoraFechamento;
 
     public OrdemServicoFechadaVisualizacao() {
