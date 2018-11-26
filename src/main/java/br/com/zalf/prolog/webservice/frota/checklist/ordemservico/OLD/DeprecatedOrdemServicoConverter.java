@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
@@ -108,16 +109,17 @@ public final class DeprecatedOrdemServicoConverter {
         pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
         pergunta.setPergunta(rSet.getString("PERGUNTA"));
         pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
-        pergunta.setPrioridade(rSet.getString("PRIORIDADE"));
         return pergunta;
     }
 
+    @SuppressWarnings("Duplicates")
     @NotNull
     @Deprecated
     private static AlternativaChecklist createAlternativa(@NotNull final ResultSet rSet) throws SQLException {
         final AlternativaChecklist alternativa = new AlternativaChecklist();
         alternativa.setCodigo(rSet.getLong("COD_ALTERNATIVA"));
         alternativa.setAlternativa(rSet.getString("ALTERNATIVA"));
+        alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE")));
         if (alternativa.getAlternativa().equals("Outros")) {
             alternativa.setTipo(AlternativaChecklist.TIPO_OUTROS);
             alternativa.setRespostaOutros(rSet.getString("RESPOSTA"));

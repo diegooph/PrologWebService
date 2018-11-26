@@ -216,7 +216,6 @@ public class MigracaoPksChecklistTest extends BaseTest {
         // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
 //        assertEquals(p1.getCodigo(), p2.getCodigo());
         assertEquals(p1.getPergunta(), p2.getPergunta());
-        assertEquals(p1.getPrioridade(), p2.getPrioridade());
         assertEquals(p1.getCodImagem(), p2.getCodImagem());
         assertEquals(p1.getUrl(), p2.getUrl());
         assertEquals(p1.getOrdemExibicao(), p2.getOrdemExibicao());
@@ -244,6 +243,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
         // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
 //        assertEquals(a1.getCodigo(), a2.getCodigo());
         assertEquals(a1.getAlternativa(), a2.getAlternativa());
+        assertEquals(a1.getPrioridade(), a2.getPrioridade());
         assertEquals(a1.getTipo(), a2.getTipo());
         assertEquals(a1.getOrdemExibicao(), a2.getOrdemExibicao());
         assertEquals(a1.getRespostaOutros(), a2.getRespostaOutros());
