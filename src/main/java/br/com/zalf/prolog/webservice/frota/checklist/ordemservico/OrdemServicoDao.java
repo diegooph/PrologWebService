@@ -38,13 +38,29 @@ public interface OrdemServicoDao {
                                @NotNull final Checklist checklist) throws Throwable;
 
     /**
-     * Busca as ordens de serviços.
+     * Método utilizado para buscar a Listagem de Ordens de Serviços.
+     * Este método é utilizado tanto para a busca das Ordens de Serviços Abertas quanto as Fechadas,
+     * o que define qual será buscada é o parâmetro {@code statusOrdemServico} que pode ser
+     * {@link StatusOrdemServico#ABERTA} ou {@link StatusOrdemServico#FECHADA}.
+     * <p>
+     * Para buscar as ordens de serviços de TODOS os veículos o parâmetro {@code placa} deve ser <code>NULL</code>.
+     * O mesmo acontece com o parâmetro {@code tipoVeiculo}.
+     * <p>
+     * Esta busca utiliza paginação, então deve-se explicitar a quantidade de dados que serão buscados
+     * através dos parâmetros {@code limit} e {@code offset}.
      *
-     * @throws Throwable se ocorrer algum erro.
-     **/
+     * @param codUnidade         Código da {@link Unidade} que as Ordens de Serviço pertencem.
+     * @param codTipoVeiculo     Tipo de Veículo que deseja-se buscar as Ordens de Serviço.
+     * @param placa              Placa do Veículo que deseja-se buscar as Ordens de Serviço.
+     * @param statusOrdemServico Status em que a Ordem de Serviço se encontra.
+     * @param limit              Quantidade de elementos a serem retornados na busca.
+     * @param offset             Indice a partir do qual a busca será retornada.
+     * @return Lista de {@link List<OrdemServicoListagem> ordens de serviço}, seguindo a fltragem aplicada.
+     * @throws Throwable Se algum erro no processamento da busca ocorrer.
+     */
     @NotNull
     List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
-                                                       @Nullable final Long tipoVeiculo,
+                                                       @Nullable final Long codTipoVeiculo,
                                                        @Nullable final String placa,
                                                        @Nullable final StatusOrdemServico statusOrdemServico,
                                                        final int limit,

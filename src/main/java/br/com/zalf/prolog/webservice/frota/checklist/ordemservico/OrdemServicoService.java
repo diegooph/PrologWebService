@@ -28,12 +28,12 @@ final class OrdemServicoService {
     private final OrdemServicoDao dao = Injection.provideOrdemServicoDao();
 
     @NotNull
-    public List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
-                                                              @Nullable final Long codTipoVeiculo,
-                                                              @Nullable final String placaVeiculo,
-                                                              @Nullable final StatusOrdemServico statusOrdemServico,
-                                                              final int limit,
-                                                              final int offset) throws ProLogException {
+    List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
+                                                       @Nullable final Long codTipoVeiculo,
+                                                       @Nullable final String placaVeiculo,
+                                                       @Nullable final StatusOrdemServico statusOrdemServico,
+                                                       final int limit,
+                                                       final int offset) throws ProLogException {
         try {
             return dao.getOrdemServicoListagem(
                     codUnidade,

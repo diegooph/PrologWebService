@@ -49,7 +49,7 @@ final class OrdemServicoConverter {
         ordem.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         ordem.setDataHoraAbertura(rSet.getObject("DATA_HORA_ABERTURA", LocalDateTime.class));
         ordem.setQtdItensPendentes(rSet.getInt("QTD_ITENS_PENDENTES"));
-        ordem.setQtdItensPendentes(rSet.getInt("QTD_ITENS_RESOLVIDOS"));
+        ordem.setQtdItensResolvidos(rSet.getInt("QTD_ITENS_RESOLVIDOS"));
         return ordem;
     }
 
