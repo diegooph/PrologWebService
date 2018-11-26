@@ -107,6 +107,14 @@ public interface OrdemServicoDao {
     HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codOrdemServico,
                                                                @NotNull final Long codUnidade) throws Throwable;
 
+    /**
+     * Método utilizado para buscar os Itens de uma Ordem de Serviço para serem resolvidos.
+     *
+     * @param placaVeiculo Placa do Veículo a qual os Itens pertencem.
+     * @param prioridade   Prioridade dos Itens que serão buscados.
+     * @return Um {@link HolderResolucaoItensOrdemServico holder} contendo os Itens que serão resolvidos.
+     * @throws Throwable Se algum erro acontecer na busca dos dados.
+     */
     @NotNull
     HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
             @NotNull final String placaVeiculo,

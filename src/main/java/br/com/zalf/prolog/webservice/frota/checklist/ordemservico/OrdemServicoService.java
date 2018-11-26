@@ -88,7 +88,7 @@ final class OrdemServicoService {
     }
 
     @NotNull
-    public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
+    HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
             @NotNull final String placaVeiculo,
             @NotNull final PrioridadeAlternativa prioridade) throws ProLogException {
         try {

@@ -106,7 +106,7 @@ public final class OrdemServicoResource {
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
-    public HolderResolucaoItensOrdemServico getHolderResolucaoOrdemServico(
+    public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
             @QueryParam("placaVeiculo") @Required final String placaVeiculo,
             @QueryParam("prioridade") @Required final PrioridadeAlternativa prioridadeAlternativa) throws ProLogException {
         return service.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridadeAlternativa);
