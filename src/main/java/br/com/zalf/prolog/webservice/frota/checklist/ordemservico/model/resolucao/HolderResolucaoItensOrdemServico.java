@@ -2,19 +2,34 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluc
 
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoPendente;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Classe que contém informações para resolução de Itens de uma Ordem de Serviço.
+ *
  * Created on 14/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class HolderResolucaoItensOrdemServico {
+    /**
+     * Placa do {@link Veiculo} a qual os Itens que serão resolvidos pertencem.
+     */
     private String placaVeiculo;
+
+    /**
+     * Quilometragem do {@link Veiculo} no momento da resolução dos Itens.
+     */
     private long kmAtualVeiculo;
+
+    /**
+     * Lista de objetos {@link ItemOrdemServicoVisualizacao} cotendo as
+     * informações do Itens que serão resolvidos.
+     */
     private List<ItemOrdemServicoVisualizacao> itens;
 
     public HolderResolucaoItensOrdemServico() {

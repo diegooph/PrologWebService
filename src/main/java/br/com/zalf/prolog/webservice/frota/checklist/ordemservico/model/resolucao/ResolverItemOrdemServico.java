@@ -1,32 +1,59 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 
 /**
+ * Classe que contém as informações do Conserto de um Item de uma Ordem de Serviço.
+ *
  * Created on 09/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ResolverItemOrdemServico {
+    /**
+     * CPF do {@link Colaborador} que resolveu o Item.
+     */
     private Long cpfColaboradoResolucao;
+
+    /**
+     * Código do Item que foi resolvido.
+     */
     private Long codItemResolvido;
+
+    /**
+     * Descrição inserida pelo {@link Colaborador} no momento de resolução do Item.
+     */
     private String feedbackResolucao;
+
+    /**
+     * Placa do {@link Veiculo} a qual o Item resolvido pertence.
+     */
     private String placaVeiculo;
+
+    /**
+     * Quilometragem do {@link Veiculo} no momento de resolução do Item.
+     */
     private long kmColetadoVeiculo;
 
     /**
-     * Duração da resolução dos itens.
+     * Duração da resolução do Item.
      */
     @SerializedName("duracaoResolucaoItemEmSegundos")
     private Duration duracaoResolucaoItem;
 
+    /**
+     * Código da Ordem de Serviço a qual o Item pertence.
+     */
     private Long codOrdemServico;
 
     /**
-     * O código da unidade da qual os itens de O.S. pertencem.
+     * O código da {@link Unidade} da qual o item da Ordem de Serviço pertence.
      */
     private Long codUnidadeOrdemServico;
 

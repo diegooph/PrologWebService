@@ -1,5 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,19 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Classe utilizada para a resolução de múltiplos Itens de uma mesma Ordem de Serviço.
+ *
  * Created on 20/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ResolverMultiplosItensOs {
-
     /**
-     * Quem está resolvendo o item.
+     * CPF do {@link Colaborador} que resolveu os Itens.
      */
     private Long cpfColaboradorResolucao;
 
     /**
-     * A placa do veículo da qual os itens resolvidos pertencem.
+     * Placa do {@link Veiculo} a qual os Itens resolvidos pertencem.
      */
     private String placaVeiculo;
 
@@ -31,22 +35,22 @@ public final class ResolverMultiplosItensOs {
     private Duration duracaoResolucaoItens;
 
     /**
-     * Km do veículo no momento em que os itens foram resolvidos.
+     * Quilometragem do {@link Veiculo} no momento de resolução dos Itens.
      */
     private long kmColetadoVeiculo;
 
     /**
-     * Observação sobre a resolução.
+     * Descrição inserida pelo {@link Colaborador} no momento de resolução dos Itens.
      */
     private String feedbackResolucao;
 
     /**
-     * O código da unidade da qual os itens de O.S. pertencem.
+     * O código da {@link Unidade} da qual os itens da Ordem de Serviço pertencem.
      */
     private Long codUnidadeOrdemServico;
 
     /**
-     * Códigos itens que serão resolvidos.
+     * Códigos dos itens que foram resolvidos.
      */
     private List<Long> codigosItens;
 
