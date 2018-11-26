@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
+ * Esta é a classe utilizada para mostrar a listagem de Ordens de Serviço Fechadas.
+ *
  * Created on 22/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -13,6 +15,9 @@ import java.time.temporal.ChronoUnit;
 public final class OrdemServicoFechadaListagem extends OrdemServicoListagem {
     static final String TIPO_SERIALIZACAO = "ORDEM_SERVICO_FECHADA";
 
+    /**
+     * Data e Hora que a Ordem de Serviço foi fechada.
+     */
     private LocalDateTime dataHoraFechamento;
 
     public OrdemServicoFechadaListagem() {

@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 
 /**
+ * Esta é a classe utilizada para mostrar a listagem de Ordens de Serviço em Abertas.
+ *
  * Created on 22/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
