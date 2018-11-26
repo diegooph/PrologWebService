@@ -113,20 +113,18 @@ public final class OrdemServicoResource {
     }
 
     @POST
-    @UsedBy(platforms = Platform.ANDROID)
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/resolver-item")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
     public Response resolverItem(ResolverItemOrdemServico item) throws ProLogException {
-        service.resolverItem(item);
-        return Response.ok("Item resolvido com sucesso");
+        return service.resolverItem(item);
     }
 
     @POST
-    @UsedBy(platforms = Platform.ANDROID)
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/resolver-multiplos-itens")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
     public Response resolverItens(ResolverMultiplosItensOs itensResolucao) throws ProLogException {
-        service.resolverItens(itensResolucao);
-        return Response.ok("Itens resolvidos com sucesso");
+        return service.resolverItens(itensResolucao);
     }
 }

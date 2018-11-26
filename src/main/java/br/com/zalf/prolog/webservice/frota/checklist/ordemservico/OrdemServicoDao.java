@@ -121,18 +121,18 @@ public interface OrdemServicoDao {
             @NotNull final PrioridadeAlternativa prioridade) throws Throwable;
 
     /**
-     * Resolve um item.
+     * Método responsável por resolver um item de uma Ordem de Serviço.
      *
-     * @param item item resolvido.
-     * @throws Throwable se ocorrer algum erro.
+     * @param item Objeto {@link ResolverItemOrdemServico} contendo as informações da item resolvido.
+     * @throws Throwable Se ocorrer algum erro no processamento das informações.
      */
     void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable;
 
     /**
-     * Resolve múltiplos itens de uma Ordem de Serviço.
+     * Método responsável por resolver múltiplos itens de uma Ordem de Serviço..
      *
-     * @param itensResolucao os itens para resolução.
-     * @throws Throwable se ocorrer algum erro.
+     * @param itensResolucao Objeto {@link ResolverMultiplosItensOs} contendo as informações dos itens resolvidos.
+     * @throws Throwable Se ocorrer algum erro no processamento das informações.
      */
     void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable;
 }

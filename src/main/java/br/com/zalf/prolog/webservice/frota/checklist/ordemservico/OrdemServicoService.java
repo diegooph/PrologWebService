@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
@@ -101,9 +102,11 @@ final class OrdemServicoService {
         }
     }
 
-    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws ProLogException {
+    @NotNull
+    Response resolverItem(@NotNull final ResolverItemOrdemServico item) throws ProLogException {
         try {
             dao.resolverItem(item);
+            return Response.ok("Item resolvido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver item", t);
             throw Injection
@@ -113,9 +116,11 @@ final class OrdemServicoService {
     }
 
 
-    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
+    @NotNull
+    Response resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
         try {
             dao.resolverItens(itensResolucao);
+            return Response.ok("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver itens", t);
             throw Injection
