@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem;
 
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public final class OrdemServicoFechadaListagem extends OrdemServicoListagem {
     private LocalDateTime dataHoraFechamento;
 
     public OrdemServicoFechadaListagem() {
-        super(TIPO_SERIALIZACAO);
+        super(TIPO_SERIALIZACAO, StatusOrdemServico.FECHADA);
     }
 
     @NotNull

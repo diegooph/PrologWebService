@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem;
 
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public final class OrdemServicoAbertaListagem extends OrdemServicoListagem {
     static final String TIPO_SERIALIZACAO = "ORDEM_SERVICO_ABERTA";
 
     public OrdemServicoAbertaListagem() {
-        super(TIPO_SERIALIZACAO);
+        super(TIPO_SERIALIZACAO, StatusOrdemServico.ABERTA);
     }
 
     @NotNull

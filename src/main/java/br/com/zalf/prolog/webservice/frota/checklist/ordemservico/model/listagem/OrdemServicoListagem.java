@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listage
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,12 +48,20 @@ public abstract class OrdemServicoListagem {
      */
     private int qtdItensResolvidos;
 
+    /**
+     * O status atual dessa O.S.
+     */
+    @NotNull
+    private final StatusOrdemServico status;
+
     @NotNull
     @Exclude
     private final String tipo;
 
-    public OrdemServicoListagem(@NotNull final String tipo) {
+    public OrdemServicoListagem(@NotNull final String tipo,
+                                @NotNull final StatusOrdemServico status) {
         this.tipo = tipo;
+        this.status = status;
     }
 
     @NotNull
@@ -109,5 +118,9 @@ public abstract class OrdemServicoListagem {
 
     public void setQtdItensResolvidos(final int qtdItensResolvidos) {
         this.qtdItensResolvidos = qtdItensResolvidos;
+    }
+
+    public StatusOrdemServico getStatus() {
+        return status;
     }
 }
