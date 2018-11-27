@@ -109,9 +109,10 @@ public final class OrdemServicoResource {
     public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
             @QueryParam("placaVeiculo") @Required final String placaVeiculo,
             @QueryParam("prioridade") @Optional final PrioridadeAlternativa prioridade,
+            @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens,
             @QueryParam("limit") @Optional final Integer limit,
             @QueryParam("offset") @Optional final Integer offset) throws ProLogException {
-        return service.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridade, limit, offset);
+        return service.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridade, statusItens, limit, offset);
     }
 
     @POST

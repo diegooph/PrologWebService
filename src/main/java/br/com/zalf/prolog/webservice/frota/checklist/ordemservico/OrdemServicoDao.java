@@ -112,6 +112,7 @@ public interface OrdemServicoDao {
      *
      * @param placaVeiculo Placa do Veículo a qual os Itens pertencem.
      * @param prioridade   Prioridade dos Itens que serão buscados.
+     * @param statusItens  Status dos Itens que serão buscados.
      * @param limit        Quantidade de elementos a serem retornados na busca.
      * @param offset       Indice a partir do qual a busca será retornada.
      * @return Um {@link HolderResolucaoItensOrdemServico holder} contendo os Itens que serão resolvidos.
@@ -121,6 +122,7 @@ public interface OrdemServicoDao {
     HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
             @NotNull final String placaVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
+            @Nullable final StatusItemOrdemServico statusItens,
             @Nullable final Integer limit,
             @Nullable final Integer offset) throws Throwable;
 

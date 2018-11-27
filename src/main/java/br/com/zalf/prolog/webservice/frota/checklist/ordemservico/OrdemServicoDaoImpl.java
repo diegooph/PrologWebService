@@ -142,6 +142,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
             @NotNull final String placaVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
+            @Nullable final StatusItemOrdemServico statusItens,
             @Nullable final Integer limit,
             @Nullable final Integer offset) throws Throwable {
         Connection conn = null;
@@ -149,16 +150,21 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?, ?, ?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?, ?, ?, ?)");
             stmt.setString(1, placaVeiculo);
             if (prioridade != null) {
                 stmt.setString(2, prioridade.asString());
             } else {
                 stmt.setNull(2, Types.VARCHAR);
             }
-            stmt.setObject(3, OffsetDateTime.now(Clock.systemUTC()));
-            bindValueOrNull(stmt, 4, limit, SqlType.INTEGER);
+            if (statusItens != null) {
+                stmt.setString(3, statusItens.asString());
+            } else {
+                stmt.setNull(3, Types.VARCHAR);
+            }
+            stmt.setObject(4, OffsetDateTime.now(Clock.systemUTC()));
             bindValueOrNull(stmt, 5, limit, SqlType.INTEGER);
+            bindValueOrNull(stmt, 6, limit, SqlType.INTEGER);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return OrdemServicoConverter.createHolderResolucaoItensOrdemServico(rSet);
