@@ -18,10 +18,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -144,16 +141,24 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @Override
     public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
             @NotNull final String placaVeiculo,
-            @NotNull final PrioridadeAlternativa prioridade) throws Throwable {
+            @Nullable final PrioridadeAlternativa prioridade,
+            @Nullable final Integer limit,
+            @Nullable final Integer offset) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?, ?, ?)");
             stmt.setString(1, placaVeiculo);
-            stmt.setString(2, prioridade.asString());
+            if (prioridade != null) {
+                stmt.setString(2, prioridade.asString());
+            } else {
+                stmt.setNull(2, Types.VARCHAR);
+            }
             stmt.setObject(3, OffsetDateTime.now(Clock.systemUTC()));
+            bindValueOrNull(stmt, 4, limit, SqlType.INTEGER);
+            bindValueOrNull(stmt, 5, limit, SqlType.INTEGER);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return OrdemServicoConverter.createHolderResolucaoItensOrdemServico(rSet);

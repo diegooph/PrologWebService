@@ -108,8 +108,10 @@ public final class OrdemServicoResource {
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
             @QueryParam("placaVeiculo") @Required final String placaVeiculo,
-            @QueryParam("prioridade") @Required final PrioridadeAlternativa prioridadeAlternativa) throws ProLogException {
-        return service.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridadeAlternativa);
+            @QueryParam("prioridade") @Optional final PrioridadeAlternativa prioridade,
+            @QueryParam("limit") @Optional final Integer limit,
+            @QueryParam("offset") @Optional final Integer offset) throws ProLogException {
+        return service.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridade, limit, offset);
     }
 
     @POST

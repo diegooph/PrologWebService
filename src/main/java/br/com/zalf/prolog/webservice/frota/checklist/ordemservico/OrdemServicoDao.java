@@ -112,13 +112,17 @@ public interface OrdemServicoDao {
      *
      * @param placaVeiculo Placa do Veículo a qual os Itens pertencem.
      * @param prioridade   Prioridade dos Itens que serão buscados.
+     * @param limit        Quantidade de elementos a serem retornados na busca.
+     * @param offset       Indice a partir do qual a busca será retornada.
      * @return Um {@link HolderResolucaoItensOrdemServico holder} contendo os Itens que serão resolvidos.
      * @throws Throwable Se algum erro acontecer na busca dos dados.
      */
     @NotNull
     HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
             @NotNull final String placaVeiculo,
-            @NotNull final PrioridadeAlternativa prioridade) throws Throwable;
+            @Nullable final PrioridadeAlternativa prioridade,
+            @Nullable final Integer limit,
+            @Nullable final Integer offset) throws Throwable;
 
     /**
      * Método responsável por resolver um item de uma Ordem de Serviço.
