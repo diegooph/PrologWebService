@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.line.HorizontalLineChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
@@ -110,5 +111,13 @@ public final class DashboardPneuResource {
             @PathParam("codComponente") final Integer codComponente,
             @QueryParam("codUnidades") final List<Long> codUnidades) throws ProLogException {
         return service.getQtdDiasAfericoesVencidas(codComponente, codUnidades);
+    }
+
+    @GET
+    @Path("/quantidade-afericoes-por-tipo-ultimos-30-dias/{codComponente}")
+    public HorizontalLineChartComponent getQtdAfericoesRealizadasPorDiaByTipo(
+            @PathParam("codComponente") Integer codComponente,
+            @QueryParam("codUnidades") List<Long> codUnidades) throws ProLogException {
+        return service.getQtdAfericoesRealizadasPorDiaByTipoInterval30Days(codComponente, codUnidades);
     }
 }

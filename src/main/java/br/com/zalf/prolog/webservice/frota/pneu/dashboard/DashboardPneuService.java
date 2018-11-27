@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.line.HorizontalLineChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
@@ -199,6 +200,22 @@ public final class DashboardPneuService {
             Log.e(TAG, String.format("Erro ao buscar há quantos dias as aferições estão vencidas das " +
                     "unidades %s", codUnidades.toString()), throwable);
             throw exceptionHandler.map(throwable, "Erro ao buscar há quantos dias as aferições estão vencidas");
+        }
+    }
+
+    @NotNull
+    public HorizontalLineChartComponent getQtdAfericoesRealizadasPorDiaByTipoInterval30Days(@NotNull final Integer codComponente,
+                                                                                            @NotNull final List<Long> codUnidades)
+            throws ProLogException {
+        try {
+            return DashboardPneuComponentsCreator.getQtdAfericoesRealizadasPorDiaByTipoInterval30Days(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getQtdAfericoesRealizadasPorDiaByTipo(codUnidades, 30));
+        } catch (final Throwable throwable) {
+            Log.e(TAG,
+                    "Erro ao buscar a quantidade de aferições realizados para as unidades: " + codUnidades,
+                    throwable);
+            throw exceptionHandler.map(throwable, "Erro ao buscar a quantidade de aferições realizados");
         }
     }
 }

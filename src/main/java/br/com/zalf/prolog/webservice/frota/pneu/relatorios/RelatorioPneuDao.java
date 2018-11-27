@@ -382,11 +382,25 @@ public interface RelatorioPneuDao {
 
     /**
      * *Método que busca a quantidade de dias que uma aferição venceu.
+     *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return Uma {@link List lista} de {@link QtdDiasAfericoesVencidas}
      * @throws Throwable Se qualquer erro acontecer.
      */
     @NotNull
     List<QtdDiasAfericoesVencidas> getQtdAfericoesVencidas(@NotNull final List<Long> codUnidades)
+            throws Throwable;
+
+    /**
+     * *Método que busca a quantidade de aferições realizadas por tipo em um determinado período.
+     *
+     * @param codUnidades               - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param diasRetroativosParaBuscar - dias para buscar.
+     * @return Uma {@link List lista} de {@link QuantidadeAfericao}
+     * @throws Throwable Se qualquer erro acontecer.
+     */
+    @NotNull
+    List<QuantidadeAfericao> getQtdAfericoesRealizadasPorDiaByTipo(@NotNull final List<Long> codUnidades,
+                                                                   final int diasRetroativosParaBuscar)
             throws Throwable;
 }

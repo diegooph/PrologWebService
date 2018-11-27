@@ -21,7 +21,7 @@ public class AfericaoRelatorioService {
     private AfericaoRelatorioDao dao = Injection.provideAfericaoRelatorioDao();
 
     public void getCronogramaAfericoesPlacasCsv(@NotNull final OutputStream out,
-                                           @NotNull final List<Long> codUnidades) {
+                                                @NotNull final List<Long> codUnidades) {
         try {
             dao.getCronogramaAfericoesPlacasCsv(
                     out,
