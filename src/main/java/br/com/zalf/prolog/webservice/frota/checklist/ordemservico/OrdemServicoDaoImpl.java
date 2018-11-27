@@ -115,16 +115,16 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @NotNull
     @Override
     public HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(
-            @NotNull final Long codOrdemServico,
-            @NotNull final Long codUnidade) throws Throwable {
+            @NotNull final Long codUnidade,
+            @NotNull final Long codOrdemServico) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ORDEM_SERVICO_RESOLUCAO(?, ?, ?)");
-            stmt.setLong(1, codOrdemServico);
-            stmt.setLong(2, codUnidade);
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codOrdemServico);
             stmt.setObject(3, OffsetDateTime.now(Clock.systemUTC()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {

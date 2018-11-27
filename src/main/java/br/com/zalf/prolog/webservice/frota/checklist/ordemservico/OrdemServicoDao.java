@@ -104,8 +104,8 @@ public interface OrdemServicoDao {
      * @throws Throwable Caso algum erro acontecer no processo de busca.
      */
     @NotNull
-    HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codOrdemServico,
-                                                               @NotNull final Long codUnidade) throws Throwable;
+    HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codUnidade,
+                                                               @NotNull final Long codOrdemServico) throws Throwable;
 
     /**
      * Método utilizado para buscar os Itens de uma Ordem de Serviço para serem resolvidos.
