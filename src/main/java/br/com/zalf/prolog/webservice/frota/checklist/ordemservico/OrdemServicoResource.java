@@ -33,11 +33,11 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @DebugLog
-@Path("/checklist/ordens-servicos")
+@Path("/checklists/ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
-        targetVersionCode = 62,
+        targetVersionCode = 61,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class OrdemServicoResource {
