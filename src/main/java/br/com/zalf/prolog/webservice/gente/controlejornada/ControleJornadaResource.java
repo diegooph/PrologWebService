@@ -6,10 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.ResponseIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -95,4 +92,11 @@ public class ControleJornadaResource {
     }
 
 
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Path("/dados-marcacao")
+    public DadosMarcacaoUnidade getDadosMarcacaoUnidade(@QueryParam("codUnidade") @Required Long codUnidade)
+            throws ProLogException {
+        return service.getDadosMarcacaoUnidade(codUnidade);
+    }
 }

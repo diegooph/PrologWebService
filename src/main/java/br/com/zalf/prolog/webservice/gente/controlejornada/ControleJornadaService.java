@@ -162,6 +162,21 @@ class ControleJornadaService {
         }
     }
 
+    @NotNull
+    public DadosMarcacaoUnidade getDadosMarcacaoUnidade(@NotNull final Long codUnidade)
+            throws ProLogException {
+        try {
+            // Se não tiver presente, deixamos estourar o erro.
+            //noinspection ConstantConditions
+            return dao.getDadosMarcacaoUnidade(codUnidade).get();
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar dados de marcação para a unidade: %d", codUnidade), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro! Unidade não configurada para controle de jornada");
+        }
+    }
+
     private void ensureValidToken(@NotNull final String tokenMarcacao) throws ProLogException {
         try {
             if (!dao.verifyIfTokenMarcacaoExists(tokenMarcacao)) {
