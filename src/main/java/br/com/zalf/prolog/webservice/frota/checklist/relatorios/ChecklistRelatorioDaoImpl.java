@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosAbaixoTempoEspecifico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
 import java.sql.Connection;
@@ -18,6 +19,8 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created by luiz on 25/04/17.
@@ -315,16 +318,16 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @Override
     public void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
                                            @NotNull final List<Long> codUnidades,
+                                           @Nullable final Long codColaborador,
+                                           @Nullable final String placa,
                                            @NotNull final LocalDate dataInicial,
-                                           @NotNull final LocalDate dataFinal,
-                                           final Integer codColaborador,
-                                           final String placa) throws Throwable {
+                                           @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, dataInicial, dataFinal, codColaborador, placa);
+            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, codColaborador, placa, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
@@ -336,16 +339,16 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     @Override
     public Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
+                                                @Nullable final Long codColaborador,
+                                                @Nullable final String placa,
                                                 @NotNull final LocalDate dataInicial,
-                                                @NotNull final LocalDate dataFinal,
-                                                final Integer codColaborador,
-                                                final String placa) throws Throwable {
+                                                @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, dataInicial, dataFinal, codColaborador, placa);
+            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, codColaborador, placa, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -356,20 +359,18 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     private PreparedStatement getDadosGeraisChecklistStatement(@NotNull final Connection conn,
                                                                @NotNull final List<Long> codUnidades,
+                                                               @Nullable final Long codColaborador,
+                                                               @Nullable final String placa,
                                                                @NotNull final LocalDate dataInicial,
-                                                               @NotNull final LocalDate dataFinal,
-                                                               final Integer codColaborador,
-                                                               final String placa)
+                                                               @NotNull final LocalDate dataFinal)
             throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_RELATORIO_DADOS_GERAIS(?,?,?,?,?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
-        stmt.setString(4, placa);
-        stmt.setObject(5, codColaborador);
-
-
+        bindValueOrNull(stmt, 4, placa, SqlType.TEXT);
+        bindValueOrNull(stmt, 5, codColaborador, SqlType.BIGINT);
         return stmt;
     }
 
