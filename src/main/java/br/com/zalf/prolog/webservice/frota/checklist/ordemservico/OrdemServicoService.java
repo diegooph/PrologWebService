@@ -55,7 +55,7 @@ final class OrdemServicoService {
     List<QtdItensPlacaListagem> getQtdItensPlacaListagem(@NotNull final Long codUnidade,
                                                          @Nullable final Long codTipoVeiculo,
                                                          @Nullable final String placaVeiculo,
-                                                         @Nullable final StatusItemOrdemServico statusItemOrdemServico,
+                                                         @Nullable final StatusItemOrdemServico statusItens,
                                                          final int limit,
                                                          final int offset) throws ProLogException {
         try {
@@ -63,7 +63,7 @@ final class OrdemServicoService {
                     codUnidade,
                     codTipoVeiculo,
                     placaVeiculo,
-                    statusItemOrdemServico,
+                    statusItens,
                     limit,
                     offset);
         } catch (final Throwable t) {

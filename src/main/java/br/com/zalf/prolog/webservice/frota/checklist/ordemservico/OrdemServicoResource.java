@@ -17,9 +17,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,10 +33,10 @@ import java.util.List;
 @Path("/checklists/ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@AppVersionCodeHandler(
-        targetVersionCode = 61,
-        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
+//@AppVersionCodeHandler(
+//        targetVersionCode = 61,
+//        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+//        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class OrdemServicoResource {
     @NotNull
     private final OrdemServicoService service = new OrdemServicoService();
@@ -76,14 +73,14 @@ public final class OrdemServicoResource {
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
             @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
-            @QueryParam("statusItemOrdemServico") @Optional final StatusItemOrdemServico statusItemOrdemServico,
+            @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens,
             @QueryParam("limit") @Required final int limit,
             @QueryParam("offset") @Required final int offset) throws ProLogException {
         return service.getQtdItensPlacaListagem(
                 codUnidade,
                 codTipoVeiculo,
                 placaVeiculo,
-                statusItemOrdemServico,
+                statusItens,
                 limit,
                 offset);
     }

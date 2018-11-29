@@ -81,7 +81,7 @@ public interface OrdemServicoDao {
      * @param codUnidade             Código da {@link Unidade} que os Itens pertencem.
      * @param codTipoVeiculo         Tipo de Veículo que deseja-se buscar as Ordens de Serviço.
      * @param placaVeiculo           Placa do Veículo que deseja-se contar os Itens.
-     * @param statusItemOrdemServico Status em que o Item se encontra.
+     * @param statusItens Status em que o Item se encontra.
      * @param limit                  Quantidade de elementos a serem retornados na busca.
      * @param offset                 Indice a partir do qual a busca será retornada.
      * @return Lista de {@link List<QtdItensPlacaListagem> quantidade de itens por placa}, seguindo a filtragem.
@@ -91,7 +91,7 @@ public interface OrdemServicoDao {
     List<QtdItensPlacaListagem> getQtdItensPlacaListagem(@NotNull final Long codUnidade,
                                                          @Nullable final Long codTipoVeiculo,
                                                          @Nullable final String placaVeiculo,
-                                                         @Nullable final StatusItemOrdemServico statusItemOrdemServico,
+                                                         @Nullable final StatusItemOrdemServico statusItens,
                                                          final int limit,
                                                          final int offset) throws Throwable;
 

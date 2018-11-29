@@ -81,7 +81,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             @NotNull final Long codUnidade,
             @Nullable final Long codTipoVeiculo,
             @Nullable final String placaVeiculo,
-            @Nullable final StatusItemOrdemServico statusItemOrdemServico,
+            @Nullable final StatusItemOrdemServico statusItens,
             final int limit,
             final int offset) throws Throwable {
         Connection conn = null;
@@ -94,8 +94,8 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt.setLong(1, codUnidade);
             bindValueOrNull(stmt, 2, codTipoVeiculo, SqlType.BIGINT);
             bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
-            if (statusItemOrdemServico != null) {
-                stmt.setString(4, statusItemOrdemServico.asString());
+            if (statusItens != null) {
+                stmt.setString(4, statusItens.asString());
             } else {
                 stmt.setNull(4, SqlType.TEXT.asIntTypeJava());
             }
