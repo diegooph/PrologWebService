@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.seguranca.relato.dashboard;
 
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -25,5 +27,13 @@ public final class DashboardRelatoResource {
     public final QuantidadeItemComponent getQtdRelatosRealizadosHoje(@PathParam("codComponente") Integer codComponente,
                                                                      @QueryParam("codUnidades") List<Long> codUnidades) {
         return service.getQtdRelatosRealizadosHoje(codComponente, codUnidades);
+    }
+
+    @GET
+    @Path("/quantidade-relatos-pendentes-por-status-ultimos-30-dias/{codComponente}")
+    public PieChartComponent getQtdRelatosPendentesByStatusInterval30days(
+            @PathParam("codComponente") final Integer codComponente,
+            @QueryParam("codUnidades") final List<Long> codUnidades) throws ProLogException {
+        return service.getQtdRelatosPendentesByStatusInterval30days(codComponente, codUnidades);
     }
 }

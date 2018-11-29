@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.seguranca.relato.relatorio;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.seguranca.relato.model.RelatoPendente;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -23,4 +24,9 @@ public interface RelatoRelatorioDao {
 
 
     int getQtdRelatosRealizadosHoje(@NotNull final List<Long> codUnidades) throws SQLException;
+
+    @NotNull
+    RelatoPendente getQtdRelatosPendentesByStatus(@NotNull final List<Long> codUnidades,
+                                                  @NotNull final int diasRetroativosParaBuscar)
+            throws Throwable;
 }
