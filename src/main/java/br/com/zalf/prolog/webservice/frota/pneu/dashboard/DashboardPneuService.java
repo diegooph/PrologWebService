@@ -190,16 +190,16 @@ public final class DashboardPneuService {
     }
 
     @NotNull
-    public TableComponent getQtdDiasAfericoesVencidas(@NotNull final Integer codComponente,
-                                                      @NotNull final List<Long> codUnidades) throws ProLogException {
+    TableComponent getQtdDiasAfericoesVencidas(@NotNull final Integer codComponente,
+                                               @NotNull final List<Long> codUnidades) throws ProLogException {
         try {
             return DashboardPneuComponentsCreator.createQtdDiasAfericoesVencidas(
                     dashDao.getComponenteByCodigo(codComponente),
                     relatorioDao.getQtdAfericoesVencidas(codUnidades));
-        } catch (final Throwable throwable) {
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar há quantos dias as aferições estão vencidas das " +
-                    "unidades %s", codUnidades.toString()), throwable);
-            throw exceptionHandler.map(throwable, "Erro ao buscar há quantos dias as aferições estão vencidas");
+                    "unidades %s", codUnidades.toString()), t);
+            throw exceptionHandler.map(t, "Erro ao buscar há quantos dias as aferições estão vencidas");
         }
     }
 

@@ -348,8 +348,8 @@ final class DashboardPneuComponentsCreator {
         final List<TableItemHeader> itemHeaders = new ArrayList<>(4);
         itemHeaders.add(new TableItemHeader("Unidade", null));
         itemHeaders.add(new TableItemHeader("Placa", null));
-        itemHeaders.add(new TableItemHeader("Qtd dias vencidos - sulco", null));
-        itemHeaders.add(new TableItemHeader("Qtd dias vencidos - pressão", null));
+        itemHeaders.add(new TableItemHeader("Qtd dias aferição vencida - sulco", null));
+        itemHeaders.add(new TableItemHeader("Qtd dias aferição vencida - pressão", null));
         final TableHeader tableHeader = new TableHeader(itemHeaders);
 
         // Linhas.
