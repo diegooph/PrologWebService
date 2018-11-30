@@ -7,6 +7,7 @@ Change Log
 ### Features
 * Cria componente para a Dashboard que mostra a quantidade de aferições realizadas por dia, separando por tipo, em um 
 intervalo de 30 dias.
+* Cria componente para a Dashboard que mostra a quantidade de relatos pendentes, separando por tipo.
 
 <a name="v0.0.79"></a>
 ## Version [v0.0.79](https://github.com/luizfp/PrologWebService/compare/v0.0.78...v0.0.79) (2018-11-23)
