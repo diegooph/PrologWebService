@@ -26,7 +26,6 @@ public interface RelatoRelatorioDao {
     int getQtdRelatosRealizadosHoje(@NotNull final List<Long> codUnidades) throws SQLException;
 
     @NotNull
-    RelatoPendente getQtdRelatosPendentesByStatus(@NotNull final List<Long> codUnidades,
-                                                  @NotNull final int diasRetroativosParaBuscar)
+    RelatoPendente getQtdRelatosPendentesByStatus(@NotNull final List<Long> codUnidades)
             throws Throwable;
 }

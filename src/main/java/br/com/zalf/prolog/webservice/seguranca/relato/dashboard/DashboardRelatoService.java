@@ -40,13 +40,13 @@ final class DashboardRelatoService {
     }
 
     @NotNull
-    PieChartComponent getQtdRelatosPendentesByStatusInterval30days(
+    PieChartComponent getQtdRelatosPendentesByStatus(
             @NotNull final Integer codComponente,
             @NotNull final List<Long> codUnidades) throws ProLogException {
         try {
-            return DashboardRelatoComponentsCreator.createQtdRelatosPendentesByStatusInterval30days(
+            return DashboardRelatoComponentsCreator.createQtdRelatosPendentesByStatus(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getQtdRelatosPendentesByStatus(codUnidades, 30));
+                    relatorioDao.getQtdRelatosPendentesByStatus(codUnidades));
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de relatos pendentes para as unidades %s",
                     codUnidades.toString()), throwable);

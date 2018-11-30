@@ -85,18 +85,15 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
     @NotNull
     @Override
     public RelatoPendente getQtdRelatosPendentesByStatus(
-            @NotNull final List<Long> codUnidades,
-            @NotNull final int diasRetroativosParaBuscar) throws Throwable {
+            @NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_RELATO_RELATORIO_QTD_RELATOS_PENDENTES_BY_STATUS(?, ?, ?);");
+                    "FUNC_RELATO_RELATORIO_QTD_RELATOS_PENDENTES_BY_STATUS(?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.localDateUtc());
-            stmt.setInt(3, diasRetroativosParaBuscar);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new RelatoPendente(

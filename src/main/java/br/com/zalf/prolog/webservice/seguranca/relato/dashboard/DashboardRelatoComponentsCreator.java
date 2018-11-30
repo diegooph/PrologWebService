@@ -37,7 +37,7 @@ final class DashboardRelatoComponentsCreator {
     }
 
     @NotNull
-    static PieChartComponent createQtdRelatosPendentesByStatusInterval30days(
+    static PieChartComponent createQtdRelatosPendentesByStatus(
             @NotNull final ComponentDataHolder component,
             @NotNull final RelatoPendente qtdRelatosPendentes) {
         final List<PieEntry> entries = new ArrayList<>(2 /* Relatos pendentes. */);

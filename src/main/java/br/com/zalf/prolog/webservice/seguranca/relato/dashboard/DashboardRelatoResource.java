@@ -30,10 +30,10 @@ public final class DashboardRelatoResource {
     }
 
     @GET
-    @Path("/quantidade-relatos-pendentes-por-status-ultimos-30-dias/{codComponente}")
-    public PieChartComponent getQtdRelatosPendentesByStatusInterval30days(
+    @Path("/quantidade-relatos-pendentes-por-status/{codComponente}")
+    public PieChartComponent getQtdRelatosPendentesByStatus(
             @PathParam("codComponente") final Integer codComponente,
             @QueryParam("codUnidades") final List<Long> codUnidades) throws ProLogException {
-        return service.getQtdRelatosPendentesByStatusInterval30days(codComponente, codUnidades);
+        return service.getQtdRelatosPendentesByStatus(codComponente, codUnidades);
     }
 }
