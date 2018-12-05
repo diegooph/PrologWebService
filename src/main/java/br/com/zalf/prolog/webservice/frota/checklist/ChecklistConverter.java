@@ -5,8 +5,9 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.*;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
@@ -276,7 +277,6 @@ public final class ChecklistConverter {
         pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
         pergunta.setUrl(rSet.getString("URL_IMAGEM"));
         pergunta.setCodImagem(rSet.getLong("COD_IMAGEM"));
-        pergunta.setPrioridade(rSet.getString("PRIORIDADE"));
         return pergunta;
     }
 
@@ -285,6 +285,7 @@ public final class ChecklistConverter {
         final AlternativaChecklist alternativa = new AlternativaChecklist();
         alternativa.setCodigo(rSet.getLong("COD_ALTERNATIVA"));
         alternativa.setAlternativa(rSet.getString("ALTERNATIVA"));
+        alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE")));
         if (alternativa.getAlternativa().equals("Outros")) {
             alternativa.setTipo(AlternativaChecklist.TIPO_OUTROS);
             alternativa.setRespostaOutros(rSet.getString("RESPOSTA"));

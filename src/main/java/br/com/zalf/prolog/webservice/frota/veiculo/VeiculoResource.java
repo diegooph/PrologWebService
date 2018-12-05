@@ -113,7 +113,7 @@ public class VeiculoResource {
             Pilares.Frota.Checklist.REALIZAR,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
@@ -133,7 +133,7 @@ public class VeiculoResource {
             Pilares.Frota.Checklist.REALIZAR,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})

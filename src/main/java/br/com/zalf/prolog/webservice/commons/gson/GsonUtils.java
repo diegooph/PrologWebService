@@ -8,6 +8,9 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ResponseImagemChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.OrdemServicoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
@@ -117,6 +120,9 @@ public final class GsonUtils {
         builder.registerTypeAdapterFactory(NovaAfericao.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(Afericao.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(RaizenProdutividadeItem.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(OrdemServicoListagem.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(OrdemServicoVisualizacao.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(ItemOrdemServicoVisualizacao.provideTypeAdapterFactory());
 
         sGson = builder.create();
     }

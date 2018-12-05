@@ -6,9 +6,9 @@ import br.com.zalf.prolog.webservice.frota.checklist.ChecklistConverter;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.OrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoConverter;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.OrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.DeprecatedOrdemServicoConverter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
@@ -216,7 +216,6 @@ public class MigracaoPksChecklistTest extends BaseTest {
         // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
 //        assertEquals(p1.getCodigo(), p2.getCodigo());
         assertEquals(p1.getPergunta(), p2.getPergunta());
-        assertEquals(p1.getPrioridade(), p2.getPrioridade());
         assertEquals(p1.getCodImagem(), p2.getCodImagem());
         assertEquals(p1.getUrl(), p2.getUrl());
         assertEquals(p1.getOrdemExibicao(), p2.getOrdemExibicao());
@@ -244,6 +243,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
         // Como criamos um novo código BIGSERIAL, eles foram alterados, dessa forma não podemos compará-los
 //        assertEquals(a1.getCodigo(), a2.getCodigo());
         assertEquals(a1.getAlternativa(), a2.getAlternativa());
+        assertEquals(a1.getPrioridade(), a2.getPrioridade());
         assertEquals(a1.getTipo(), a2.getTipo());
         assertEquals(a1.getOrdemExibicao(), a2.getOrdemExibicao());
         assertEquals(a1.getRespostaOutros(), a2.getRespostaOutros());
@@ -349,7 +349,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
             final List<OrdemServico> ordens = new ArrayList<>();
             if (rSet.next()) {
                 do {
-                    final OrdemServico os = OrdemServicoConverter.createOrdemServicoSemItens(rSet);
+                    final OrdemServico os = DeprecatedOrdemServicoConverter.createOrdemServicoSemItens(rSet);
                     os.setItens(getItensOs(conn, os.getVeiculo().getPlaca(), os.getCodigo(), rSet.getLong("COD_UNIDADE")));
                     ordens.add(os);
                 } while (rSet.next());
@@ -428,7 +428,7 @@ public class MigracaoPksChecklistTest extends BaseTest {
             stmt.setString(2, String.valueOf(codUnidade));
             stmt.setString(3, placa);
             rSet = stmt.executeQuery();
-            final List<ItemOrdemServico> itensOrdemServico = OrdemServicoConverter.createItensOrdemServico(rSet);
+            final List<ItemOrdemServico> itensOrdemServico = DeprecatedOrdemServicoConverter.createItensOrdemServico(rSet);
             // Como as buscas são feitas em tempos diferentes, a comparação desse atributo nunca estava batendo,
             // por isso vamos setar para null.
             for (final ItemOrdemServico item : itensOrdemServico) {
