@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.entrega.mapa;
 
-import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -547,9 +548,9 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.veicCadDD = linha.get(49).replace(" ", "");
         mapa.kmLaco = Double.parseDouble(linha.get(50).replace(",", "."));
         mapa.kmDeslocamento = Double.parseDouble(linha.get(51).replace(",", "."));
-        //fazer replace
+        // Fazer replace.
         mapa.tempoLaco = toTime(linha.get(52));
-        //fazer replace
+        // Fazer replace.
         mapa.tempoDeslocamento = toTime(linha.get(53));
         mapa.sitMultiCDD = Double.parseDouble(linha.get(54).replace(",", "."));
         mapa.unbOrigem = Integer.parseInt(linha.get(55));
@@ -561,7 +562,12 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.qtNfEntregues = Integer.parseInt(linha.get(61));
         mapa.indDevCx = Double.parseDouble(linha.get(62).replace(",", "."));
         mapa.indDevNf = Double.parseDouble(linha.get(63).replace(",", "."));
-        mapa.fator = Double.parseDouble(linha.get(64).replace(",", "."));
+        mapa.fator = parseOrDefaultIfEmpty(linha.get(64), 1);
+        // Se o fator existir e for 0, setamos para 1 para evitar que alguns cálculos que dividem por fator acabem
+        // quebrando.
+        if (mapa.fator == 0) {
+            mapa.fator = 1;
+        }
         mapa.recarga = linha.get(65).replace(" ", "");
         mapa.hrMatinal = toTime(linha.get(66));
         mapa.hrJornadaLiq = toTime(linha.get(67));
@@ -570,17 +576,13 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         } else {
             mapa.hrMetaJornada = toTime(linha.get(68));
         }
-        mapa.vlBateuJornMot = Double.parseDouble(linha.get(69).replace(",", "."));
-        mapa.vlNaoBateuJornMot = Double.parseDouble(linha.get(70).replace(",", "."));
-        mapa.vlRecargaMot = Double.parseDouble(linha.get(71).replace(",", "."));
-        mapa.vlBateuJornAju = Double.parseDouble(linha.get(72).replace(",", "."));
-        mapa.vlNaoBateuJornAju = Double.parseDouble(linha.get(73).replace(",", "."));
-        if (linha.get(74).trim().isEmpty()) {
-            mapa.vlRecargaAju = 0;
-        } else {
-            mapa.vlRecargaAju = Double.parseDouble(linha.get(74).replace(",", "."));
-        }
-        mapa.vlTotalMapa = Double.parseDouble(linha.get(75).replace(",", "."));
+        mapa.vlBateuJornMot = parseOrDefaultIfEmpty(linha.get(69), 0);
+        mapa.vlNaoBateuJornMot = parseOrDefaultIfEmpty(linha.get(70), 0);
+        mapa.vlRecargaMot = parseOrDefaultIfEmpty(linha.get(71), 0);
+        mapa.vlBateuJornAju = parseOrDefaultIfEmpty(linha.get(72), 0);
+        mapa.vlNaoBateuJornAju = parseOrDefaultIfEmpty(linha.get(73), 0);
+        mapa.vlRecargaAju = parseOrDefaultIfEmpty(linha.get(74), 0);
+        mapa.vlTotalMapa = parseOrDefaultIfEmpty(linha.get(75), 0);
         mapa.qtHlCarregados = Double.parseDouble(linha.get(76).replace(",", "."));
         mapa.qtHlEntregues = Double.parseDouble(linha.get(77).replace(",", "."));
         mapa.indiceDevHl = Double.parseDouble(linha.get(78).replace(",", "."));
@@ -610,13 +612,21 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return mapa;
     }
 
+    private double parseOrDefaultIfEmpty(@NotNull final String value, final double defaultValue) {
+        if (StringUtils.isNullOrEmpty(value.trim())) {
+            return defaultValue;
+        }
+
+        return Double.parseDouble(value.replace(",", "."));
+    }
+
     /**
      * Converte uma string para Date
      *
      * @param data uma String contendo uma data
      * @return um Date
      */
-    private static Date toDate(String data) {
+    private Date toDate(String data) {
         int ano;
         int mes;
         int dia;
