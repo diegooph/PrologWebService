@@ -2,14 +2,14 @@ package br.com.zalf.prolog.webservice.interceptors.auth.authenticator;
 
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.NotAuthorizedException;
 
 public final class BearerAuthenticator extends ProLogAuthenticator {
     private static final String TAG = BearerAuthenticator.class.getSimpleName();
 
-    BearerAuthenticator(AutenticacaoService service) {
+    BearerAuthenticator(@NotNull final AutenticacaoService service) {
         super(service);
     }
 

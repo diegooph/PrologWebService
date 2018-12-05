@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
+import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import com.google.common.base.Preconditions;
@@ -360,10 +360,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
     @NotNull
     @Override
-    public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
-                                                                      @NotNull final Long codUnidade)
-            throws SQLException {
-
+    public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(@NotNull final Long codUnidade,
+                                                                      final int codFuncaoProLog) throws SQLException {
         Preconditions.checkNotNull(codUnidade, "codUnidade não pode ser null!");
 
         Connection conn = null;
@@ -398,7 +396,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 return colaboradores;
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

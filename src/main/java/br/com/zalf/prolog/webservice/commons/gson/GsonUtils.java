@@ -21,15 +21,17 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.QuantidadeServicos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.ModeloVeiculo;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.MarcacaoAjuste;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.inconsistencias.MarcacaoInconsistencia;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.ResponseIntervalo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
@@ -120,6 +122,8 @@ public final class GsonUtils {
         builder.registerTypeAdapterFactory(NovaAfericao.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(Afericao.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(RaizenProdutividadeItem.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(MarcacaoAjuste.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(MarcacaoInconsistencia.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(OrdemServicoListagem.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(OrdemServicoVisualizacao.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(ItemOrdemServicoVisualizacao.provideTypeAdapterFactory());

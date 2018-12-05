@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
@@ -135,7 +135,7 @@ public class IntervaloTest extends DatabaseConnection {
                 intervaloMarcacao.setCodTipoIntervalo(rSet.getLong("COD_TIPO_INTERVALO"));
                 intervaloMarcacao.setDataHoraMaracao(rSet.getObject("DATA_HORA", LocalDateTime.class));
                 intervaloMarcacao.setFonteDataHora(FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA")));
-                intervaloMarcacao.setTipoMarcacaoIntervalo(TipoMarcacaoIntervalo.fromString(rSet.getString("TIPO_MARCACAO")));
+                intervaloMarcacao.setTipoMarcacaoIntervalo(TipoInicioFim.fromString(rSet.getString("TIPO_MARCACAO")));
                 intervaloMarcacao.setJustificativaTempoRecomendado(rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
                 intervaloMarcacao.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
 
@@ -193,7 +193,7 @@ public class IntervaloTest extends DatabaseConnection {
         colaborador.setUnidade(unidade);
         intervalo.setColaborador(colaborador);
 
-        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
         tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
         intervalo.setTipo(tipoIntervalo);
 
@@ -241,7 +241,7 @@ public class IntervaloTest extends DatabaseConnection {
     private static class IntervaloAgrupadoTeste {
         private Long codigoMarcacaoInicio;
         private Long codigoMarcacaoFim;
-        private TipoIntervalo tipo;
+        private TipoMarcacao tipo;
         private LocalDateTime dataHoraInicio;
         private FonteDataHora fonteDataHoraInicio;
         private LocalDateTime dataHoraFim;
@@ -254,15 +254,15 @@ public class IntervaloTest extends DatabaseConnection {
 
         /**
          * Essa justificativa é obrigada a ser fornecida caso o {@link Colaborador} feche o intervalo
-         * com um {@link #tempoDecorrido} <b>maior</b> que o {@link TipoIntervalo#tempoLimiteEstouro} do
-         * {@link TipoIntervalo} ao qual ele é referente.
+         * com um {@link #tempoDecorrido} <b>maior</b> que o {@link TipoMarcacao#tempoLimiteEstouro} do
+         * {@link TipoMarcacao} ao qual ele é referente.
          */
         private String justificativaEstouro;
 
         /**
          * Essa justificativa é obrigada a ser fornecida caso o {@link Colaborador} feche o intervalo
-         * com um {@link #tempoDecorrido} <b>menor</b> que o {@link TipoIntervalo#tempoRecomendado} do
-         * {@link TipoIntervalo} ao qual ele é referente.
+         * com um {@link #tempoDecorrido} <b>menor</b> que o {@link TipoMarcacao#tempoRecomendado} do
+         * {@link TipoMarcacao} ao qual ele é referente.
          */
         private String justificativaTempoRecomendado;
 
@@ -310,11 +310,11 @@ public class IntervaloTest extends DatabaseConnection {
         }
 
 
-        public TipoIntervalo getTipo() {
+        public TipoMarcacao getTipo() {
             return tipo;
         }
 
-        public void setTipo(TipoIntervalo tipo) {
+        public void setTipo(TipoMarcacao tipo) {
             this.tipo = tipo;
         }
 

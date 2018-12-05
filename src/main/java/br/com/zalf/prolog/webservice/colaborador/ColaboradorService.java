@@ -10,10 +10,11 @@ import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDaoImpl_2;
+import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDao_2;
+import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import org.jetbrains.annotations.NotNull;
@@ -139,7 +140,7 @@ public class ColaboradorService {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             }
 
-            final ControleIntervaloService intervaloService = new ControleIntervaloService();
+            final DeprecatedControleIntervaloService_2 intervaloService = new DeprecatedControleIntervaloService_2();
             final IntervaloOfflineSupport intervaloOfflineSupport = intervaloService.getIntervaloOfflineSupport(
                     loginRequest.getVersaoDadosIntervalo(),
                     colaborador.getUnidade().getCodigo(),
@@ -154,10 +155,11 @@ public class ColaboradorService {
         return loginHolder;
     }
 
-    public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
-                                                                      @NotNull final Long codUnidade) {
+    @NotNull
+    public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(@NotNull final Long codUnidade,
+                                                                      final int codFuncaoProLog) {
         try {
-            return dao.getColaboradoresComAcessoFuncaoByUnidade(codFuncaoProLog, codUnidade);
+            return dao.getColaboradoresComAcessoFuncaoByUnidade(codUnidade, codFuncaoProLog);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar colaboradores com acesso a uma determinada " +
                     "função(%d) de uma determinada unidade(%d)", codFuncaoProLog, codUnidade), e);
@@ -183,8 +185,8 @@ public class ColaboradorService {
 
             // Se usuário tem acesso a marcação de intervalo, precisamos setar os tipos de intervalo também.
             if (colaborador.getVisao().hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)) {
-                final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
-                final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(
+                final DeprecatedControleIntervaloDao_2 dao = new DeprecatedControleIntervaloDaoImpl_2();
+                final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(
                         colaborador.getUnidade().getCodigo(),
                         true,
                         true);

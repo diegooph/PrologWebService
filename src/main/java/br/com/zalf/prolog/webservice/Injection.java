@@ -76,12 +76,16 @@ import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatoriosDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
+import br.com.zalf.prolog.webservice.gente.controlejornada.VersaoDadosIntervaloAtualizador;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa.JustificativaAjusteDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa.JustificativaAjusteDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatoriosDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDao;
@@ -254,13 +258,23 @@ public final class Injection {
     }
 
     @NotNull
-    public static ControleIntervaloDao provideControleIntervaloDao() {
-        return new ControleIntervaloDaoImpl();
+    public static ControleJornadaDao provideControleJornadaDao() {
+        return new ControleJornadaDaoImpl();
     }
 
     @NotNull
-    public static ControleIntervaloRelatoriosDao provideControleIntervaloRelatoriosDao() {
-        return new ControleIntervaloRelatorioDaoImpl();
+    public static ControleJornadaAjusteDao provideControleJornadaAjustesDao() {
+        return new ControleJornadaAjusteDaoImpl();
+    }
+
+    @NotNull
+    public static JustificativaAjusteDao provideJustificativaAjusteDao() {
+        return new JustificativaAjusteDaoImpl();
+    }
+
+    @NotNull
+    public static ControleJornadaRelatoriosDao provideControleJornadaRelatoriosDao() {
+        return new ControleJornadaRelatorioDaoImpl();
     }
 
     @NotNull
