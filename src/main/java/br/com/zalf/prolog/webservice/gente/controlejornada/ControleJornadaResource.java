@@ -10,9 +10,6 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,10 +26,6 @@ import java.util.List;
 @Path("/controle-jornada")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@AppVersionCodeHandler(
-        targetVersionCode = 60,
-        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class ControleJornadaResource {
     @NotNull
     private final ControleJornadaService service = new ControleJornadaService();
