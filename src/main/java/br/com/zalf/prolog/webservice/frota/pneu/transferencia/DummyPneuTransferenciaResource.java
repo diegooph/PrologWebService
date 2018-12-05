@@ -4,14 +4,12 @@ import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem.PneuTransferenciaListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao.PneuTransferenciaVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
-import javax.ws.rs.Consumes;
+import javax.ws.rs.*;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +47,14 @@ public class DummyPneuTransferenciaResource {
             transferencias.add(PneuTransferenciaVisualizacao.createDummy());
         }
         return transferencias;
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/pneu-transferencia-realizacao")
+    public PneuTransferenciaRealizacao getPneuTransferenciaRealizacao() {
+        ensureDebugEnviroment();
+        return PneuTransferenciaRealizacao.createDummy();
     }
 
     private void ensureDebugEnviroment() {
