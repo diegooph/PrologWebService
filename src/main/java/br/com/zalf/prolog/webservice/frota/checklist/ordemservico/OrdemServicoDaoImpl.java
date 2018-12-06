@@ -71,7 +71,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             return ordens;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -108,7 +108,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             return ordens;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -133,7 +133,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                 throw new IllegalStateException("Erro ao buscar resolução de ordem de serviço");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -164,7 +164,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             stmt.setObject(4, OffsetDateTime.now(Clock.systemUTC()));
             bindValueOrNull(stmt, 5, limit, SqlType.INTEGER);
-            bindValueOrNull(stmt, 6, limit, SqlType.INTEGER);
+            bindValueOrNull(stmt, 6, offset, SqlType.INTEGER);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return OrdemServicoConverter.createHolderResolucaoItensOrdemServico(rSet);
@@ -172,7 +172,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                 throw new IllegalStateException("Erro ao buscar resolução de itens de ordem de serviço");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -216,7 +216,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             throw t;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt, null);
         }
     }
 
@@ -263,8 +263,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             throw t;
         } finally {
-            closeConnection(conn);
-            closeStatement(stmt);
+            close(conn, stmt);
         }
     }
 
@@ -311,8 +310,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             stmt.executeBatch();
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -339,7 +337,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt.setString(7, StatusItemOrdemServico.PENDENTE.asString());
             stmt.execute();
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 }
