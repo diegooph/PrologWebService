@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistListagem;
@@ -66,7 +67,7 @@ public class ChecklistModeloService {
     public Response updateModeloChecklist(@NotNull final String token,
                                           @NotNull final Long codUnidade,
                                           @NotNull final Long codModelo,
-                                          @NotNull final ModeloChecklistInsercao modeloChecklist) throws Exception {
+                                          @NotNull final ModeloChecklistEdicao modeloChecklist) throws Exception {
         try {
             dao.updateModeloChecklist(TokenCleaner.getOnlyToken(token), codUnidade, codModelo, modeloChecklist);
             return Response.ok("Modelo de checklist atualizado com sucesso");
@@ -89,7 +90,7 @@ public class ChecklistModeloService {
 
     public Response updateStatusAtivo(@NotNull final Long codUnidade,
                                       @NotNull final Long codModelo,
-                                      @NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
+                                      @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
         try {
             dao.updateStatusAtivo(codUnidade, codModelo, modeloChecklist.isAtivo());
             return Response.ok("Modelo de checklist " + (modeloChecklist.isAtivo() ? "ativado" : "inativado"));

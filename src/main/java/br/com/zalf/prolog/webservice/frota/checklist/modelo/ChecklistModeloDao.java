@@ -7,9 +7,10 @@ import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,22 +54,22 @@ public interface ChecklistModeloDao {
                                                    @NotNull final Long codModelo) throws SQLException;
 
     /**
-     * Atualiza um {@link ModeloChecklist} específico. Essa atualização pode ser:
-     * * {@link ModeloChecklist#nome}.
-     * * {@link ModeloChecklist#cargosLiberados}.
-     * * {@link ModeloChecklist#tiposVeiculoLiberados}.
-     * * {@link ModeloChecklist#perguntas}.
+     * Atualiza um {@link ModeloChecklistEdicao} específico. Essa atualização pode ser:
+     * * {@link ModeloChecklistEdicao#nome}.
+     * * {@link ModeloChecklistEdicao#cargosLiberados}.
+     * * {@link ModeloChecklistEdicao#tiposVeiculoLiberados}.
+     * * {@link ModeloChecklistEdicao#perguntas}.
      *
-     * @param token           - Token do usuário que está solicitando a alteração do {@link ModeloChecklist}.
+     * @param token           - Token do usuário que está solicitando a alteração do {@link ModeloChecklistEdicao}.
      * @param unidade         - Código da Unidade.
      * @param codUnidade      - Código do modelo.
-     * @param modeloChecklist - O novo {@link ModeloChecklist} que será inserido.
+     * @param modeloChecklist - O novo {@link ModeloChecklistEdicao} que será inserido.
      * @throws Exception      - Se algum erro ocorrer.
      */
     void updateModeloChecklist(@NotNull final String token,
                                @NotNull final Long unidade,
                                @NotNull final Long codUnidade,
-                               @NotNull final ModeloChecklistInsercao modeloChecklist) throws Exception;
+                               @NotNull final ModeloChecklistEdicao modeloChecklist) throws Exception;
 
     /**
      * Busca as perguntas que compoẽm o checklist.

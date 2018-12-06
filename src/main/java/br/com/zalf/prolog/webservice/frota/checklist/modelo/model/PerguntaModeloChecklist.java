@@ -1,5 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
 
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -7,22 +10,40 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class PerguntaModeloChecklist {
+public abstract class PerguntaModeloChecklist {
     private Long codigo;
     private String descricao;
     private Long codImagem;
     private String urlImagem;
     private int ordemExibicao;
     private boolean singleChoice;
-    private List<AlternativaModeloChecklist> alternativas;
 
-    /**
-     * Quando um modelo de checklist é editado, indica qual foi a operação de edição realizada nessa pergunta.
-     */
-    private AcaoEdicaoPergunta acaoEdicao;
+    @NotNull
+    @Exclude
+    private final String tipo;
 
-    public PerguntaModeloChecklist() {
+    public PerguntaModeloChecklist(@NotNull final String tipo) {
+        this.tipo = tipo;
+    }
 
+    public abstract List<AlternativaModeloChecklist> getAlternativas();
+
+    public abstract void setAlternativas(final List<AlternativaModeloChecklist> alternativas);
+
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(final Long codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(final String descricao) {
+        this.descricao = descricao;
     }
 
     public Long getCodImagem() {
@@ -37,7 +58,7 @@ public final class PerguntaModeloChecklist {
         return urlImagem;
     }
 
-    public void setUrlImagem(String urlImagem) {
+    public void setUrlImagem(final String urlImagem) {
         this.urlImagem = urlImagem;
     }
 
@@ -45,47 +66,15 @@ public final class PerguntaModeloChecklist {
         return ordemExibicao;
     }
 
-    public void setOrdemExibicao(int ordemExibicao) {
+    public void setOrdemExibicao(final int ordemExibicao) {
         this.ordemExibicao = ordemExibicao;
-    }
-
-    public List<AlternativaModeloChecklist> getAlternativas() {
-        return alternativas;
-    }
-
-    public void setAlternativas(List<AlternativaModeloChecklist> alternativas) {
-        this.alternativas = alternativas;
     }
 
     public boolean isSingleChoice() {
         return singleChoice;
     }
 
-    public void setSingleChoice(boolean singleChoice) {
+    public void setSingleChoice(final boolean singleChoice) {
         this.singleChoice = singleChoice;
-    }
-
-    public AcaoEdicaoPergunta getAcaoEdicao() {
-        return acaoEdicao;
-    }
-
-    public void setAcaoEdicao(final AcaoEdicaoPergunta acaoEdicao) {
-        this.acaoEdicao = acaoEdicao;
-    }
-
-    public Long getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(Long codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
     }
 }

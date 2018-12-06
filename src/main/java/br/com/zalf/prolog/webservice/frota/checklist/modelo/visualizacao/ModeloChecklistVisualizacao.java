@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public final class ModeloChecklistVisualizacao {
     private String nome;
     private List<TipoVeiculo> tiposVeiculoLiberados;
     private List<Cargo> cargosLiberados;
-    private List<PerguntaModeloChecklist> perguntas;
+    private List<PerguntaModeloChecklistVisualizacao> perguntas;
     private boolean ativo;
 
     public ModeloChecklistVisualizacao() {
@@ -63,11 +63,11 @@ public final class ModeloChecklistVisualizacao {
         this.cargosLiberados = cargosLiberados;
     }
 
-    public List<PerguntaModeloChecklist> getPerguntas() {
+    public List<PerguntaModeloChecklistVisualizacao> getPerguntas() {
         return perguntas;
     }
 
-    public void setPerguntas(final List<PerguntaModeloChecklist> perguntas) {
+    public void setPerguntas(final List<PerguntaModeloChecklistVisualizacao> perguntas) {
         this.perguntas = perguntas;
     }
 

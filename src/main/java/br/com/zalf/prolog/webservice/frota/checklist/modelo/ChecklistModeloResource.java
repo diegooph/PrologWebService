@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistVisualizacao;
@@ -79,7 +80,7 @@ public class ChecklistModeloResource {
     public Response updateModeloChecklist(@HeaderParam("Authorization") String token,
                                           @PathParam("codUnidade") Long codUnidade,
                                           @PathParam("codModelo") Long codModelo,
-                                          ModeloChecklistInsercao modeloChecklist) throws Exception {
+                                          ModeloChecklistEdicao modeloChecklist) throws Exception {
         return service.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
     }
 
@@ -100,7 +101,7 @@ public class ChecklistModeloResource {
     public Response updateStatus(
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codModelo") @Required final Long codModelo,
-            final ModeloChecklistInsercao modeloChecklist) throws Throwable {
+            final ModeloChecklistEdicao modeloChecklist) throws Throwable {
         return service.updateStatusAtivo(codUnidade, codModelo, modeloChecklist);
     }
 

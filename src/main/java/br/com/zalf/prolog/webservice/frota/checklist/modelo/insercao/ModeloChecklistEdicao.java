@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao;
 
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklistVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklistEdicao;
 
 import java.util.List;
 
@@ -9,15 +9,16 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ModeloChecklistInsercao {
+public final class ModeloChecklistEdicao {
     private Long codigo;
     private String nome;
     private Long codUnidade;
     private List<Long> tiposVeiculoLiberados;
     private List<Long> cargosLiberados;
-    private List<PerguntaModeloChecklistVisualizacao> perguntas;
+    private List<PerguntaModeloChecklistEdicao> perguntas;
+    private boolean ativo;
 
-    public ModeloChecklistInsercao() {
+    public ModeloChecklistEdicao() {
     }
 
     public Long getCodigo() {
@@ -60,11 +61,19 @@ public class ModeloChecklistInsercao {
         this.cargosLiberados = cargosLiberados;
     }
 
-    public List<PerguntaModeloChecklistVisualizacao> getPerguntas() {
+    public List<PerguntaModeloChecklistEdicao> getPerguntas() {
         return perguntas;
     }
 
-    public void setPerguntas(final List<PerguntaModeloChecklistVisualizacao> perguntas) {
+    public void setPerguntas(final List<PerguntaModeloChecklistEdicao> perguntas) {
         this.perguntas = perguntas;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(final boolean ativo) {
+        this.ativo = ativo;
     }
 }

@@ -1,23 +1,28 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
 
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 06/12/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class AlternativaModeloChecklist {
+public abstract class AlternativaModeloChecklist {
     private Long codigo;
     private String descricao;
     private boolean tipoOutros;
     private int ordemExibicao;
     private PrioridadeAlternativa prioridade;
 
-    /**
-     * Quando um modelo de checklist é editado, indica qual foi a operação de edição realizada nessa alternativa.
-     */
-    private AcaoEdicaoAlternativa acaoEdicao;
+    @NotNull
+    @Exclude
+    private final String tipo;
+
+    public AlternativaModeloChecklist(@NotNull final String tipo) {
+        this.tipo = tipo;
+    }
 
     public Long getCodigo() {
         return codigo;
@@ -57,13 +62,5 @@ public final class AlternativaModeloChecklist {
 
     public void setPrioridade(final PrioridadeAlternativa prioridade) {
         this.prioridade = prioridade;
-    }
-
-    public AcaoEdicaoAlternativa getAcaoEdicao() {
-        return acaoEdicao;
-    }
-
-    public void setAcaoEdicao(final AcaoEdicaoAlternativa acaoEdicao) {
-        this.acaoEdicao = acaoEdicao;
     }
 }
