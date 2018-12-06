@@ -32,8 +32,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
                                                         @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
@@ -74,6 +74,77 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    private List<PerguntaModeloChecklist> getPerguntasModeloChecklist(@NotNull final Long codUnidade,
+                                                                      @NotNull final Long codModelo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT " +
+                            "  CP.CODIGO                   AS COD_PERGUNTA," +
+                            "  CGI.COD_IMAGEM              AS COD_IMAGEM," +
+                            "  CGI.URL_IMAGEM              AS URL_IMAGEM," +
+                            "  CP.PERGUNTA                 AS PERGUNTA," +
+                            "  CP.ORDEM                    AS ORDEM_PERGUNTA," +
+                            "  CP.SINGLE_CHOICE            AS SINGLE_CHOICE," +
+                            "  CAP.CODIGO                  AS COD_ALTERNATIVA," +
+                            "  CAP.ALTERNATIVA             AS ALTERNATIVA," +
+                            "  CAP.PRIORIDADE              AS PRIORIDADE," +
+                            "  CAP.ORDEM                   AS ORDEM_ALTERNATIVA," +
+                            "  CAP.ALTERNATIVA_TIPO_OUTROS AS ALTERNATIVA_TIPO_OUTROS " +
+                            "FROM CHECKLIST_PERGUNTAS CP " +
+                            "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP " +
+                            "    ON CP.CODIGO = CAP.COD_PERGUNTA " +
+                            "       AND CAP.COD_UNIDADE = CP.COD_UNIDADE " +
+                            "       AND CAP.COD_CHECKLIST_MODELO = CP.COD_CHECKLIST_MODELO " +
+                            "       AND CAP.STATUS_ATIVO = TRUE " +
+                            "  LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
+                            "    ON CGI.COD_IMAGEM = CP.COD_IMAGEM " +
+                            "WHERE CP.COD_UNIDADE = ? " +
+                            "      AND CP.COD_CHECKLIST_MODELO = ?" +
+                            "      AND CP.STATUS_ATIVO = TRUE " +
+                            "ORDER BY CP.ORDEM, Cp.PERGUNTA, CAP.ORDEM;",
+                    ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModelo);
+            rSet = stmt.executeQuery();
+            return createPerguntaAlternativaModeloChecklist(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    private List<PerguntaModeloChecklist> createPerguntaAlternativaModeloChecklist(
+            @NotNull final ResultSet rSet) throws SQLException {
+        final List<PerguntaModeloChecklist> perguntas = new ArrayList<>();
+        List<AlternativaModeloChecklist> alternativas = new ArrayList<>();
+        PerguntaModeloChecklist pergunta = new PerguntaModeloChecklist();
+        AlternativaModeloChecklist alternativa;
+        if (rSet.first()) {
+            pergunta = createPerguntaModeloChecklist(rSet);
+            alternativa = createAlternativaModeloChecklist(rSet);
+            alternativas.add(alternativa);
+        }
+        while (rSet.next()) {
+            if (rSet.getLong("COD_PERGUNTA") == pergunta.getCodigo()) {
+                alternativa = createAlternativaModeloChecklist(rSet);
+                alternativas.add(alternativa);
+            } else {
+                pergunta.setAlternativas(alternativas);
+                perguntas.add(pergunta);
+                alternativas = new ArrayList<>();
+                pergunta = createPerguntaModeloChecklist(rSet);
+                alternativa = createAlternativaModeloChecklist(rSet);
+                alternativas.add(alternativa);
+            }
+        }
+        pergunta.setAlternativas(alternativas);
+        perguntas.add(pergunta);
+        return perguntas;
     }
 
     @Override
@@ -141,7 +212,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 modeloChecklist.setCodigo(rSet.getLong("COD_MODELO"));
                 modeloChecklist.setNome(rSet.getString("MODELO"));
                 modeloChecklist.setCodUnidade(codUnidade);
-                modeloChecklist.setPerguntas(getPerguntas(codUnidade, codModelo));
+                modeloChecklist.setPerguntas(getPerguntasModeloChecklist(codUnidade, codModelo));
                 modeloChecklist.setTiposVeiculoLiberados(getTipoVeiculoByCodModeloChecklist(codUnidade, codModelo));
                 modeloChecklist.setCargosLiberados(getFuncaoByCodModelo(codUnidade, codModelo));
             }
@@ -631,7 +702,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private List<PerguntaRespostaChecklist> getPerguntasAlternativasProLog() throws SQLException {
+    private List<PerguntaModeloChecklist> getPerguntasAlternativasProLog() throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -657,9 +728,9 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                     "    ON CGI.COD_IMAGEM = CPP.COD_IMAGEM " +
                     "ORDER BY CPP.ORDEM, CPP.PERGUNTA, CAPP.ORDEM;");
             rSet = stmt.executeQuery();
-            return createPerguntasAlternativas(rSet);
+            return createPerguntaAlternativaModeloChecklist(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -756,6 +827,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
+    @Deprecated
     private List<PerguntaRespostaChecklist> createPerguntasAlternativas(
             @NotNull final ResultSet rSet) throws SQLException {
         final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
@@ -786,6 +858,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
+    @Deprecated
     private PerguntaRespostaChecklist createPergunta(@NotNull final ResultSet rSet) throws SQLException {
         final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
         pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
@@ -798,6 +871,19 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
+    private PerguntaModeloChecklist createPerguntaModeloChecklist(@NotNull final ResultSet rSet) throws SQLException {
+        final PerguntaModeloChecklist pergunta = new PerguntaModeloChecklist();
+        pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
+        pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
+        pergunta.setDescricao(rSet.getString("PERGUNTA"));
+        pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
+        pergunta.setCodImagem(rSet.getLong("COD_IMAGEM"));
+        pergunta.setUrlImagem(rSet.getString("URL_IMAGEM"));
+        return pergunta;
+    }
+
+    @NotNull
+    @Deprecated
     private AlternativaChecklist createAlternativa(@NotNull final ResultSet rSet) throws SQLException {
         final AlternativaChecklist alternativa = new AlternativaChecklist();
         alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
@@ -806,6 +892,17 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         if (rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS")) {
             alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
         }
+        return alternativa;
+    }
+
+    @NotNull
+    private AlternativaModeloChecklist createAlternativaModeloChecklist(
+            @NotNull final ResultSet rSet) throws SQLException {
+        final AlternativaModeloChecklist alternativa = new AlternativaModeloChecklist();
+        alternativa.setCodigo(rSet.getLong("COD_ALTERNATIVA"));
+        alternativa.setDescricao(rSet.getString("ALTERNATIVA"));
+        alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE")));
+        alternativa.setTipoOutros(rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"));
         return alternativa;
     }
 
