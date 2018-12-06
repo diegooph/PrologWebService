@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.google.common.annotations.VisibleForTesting;

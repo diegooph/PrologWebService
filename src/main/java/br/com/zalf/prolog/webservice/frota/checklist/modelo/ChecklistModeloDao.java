@@ -5,7 +5,9 @@ import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,12 +20,12 @@ import java.util.List;
 public interface ChecklistModeloDao {
 
     /**
-     * Insere um novo {@link ModeloChecklist} na base de dados.
+     * Insere um novo {@link ModeloChecklistInsercao} na base de dados.
      *
-     * @param modeloChecklist - O {@link ModeloChecklist} a ser inserido.
+     * @param modeloChecklist - O {@link ModeloChecklistInsercao} a ser inserido.
      * @throws SQLException - Caso ocorrer erro no banco.
      */
-    void insertModeloChecklist(@NotNull final ModeloChecklist modeloChecklist) throws SQLException;
+    void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws SQLException;
 
     /**
      * Busca a listagem de {@link ModeloChecklistListagem} da {@link Unidade} filtrado pela {@link FuncaoProLog}.
@@ -63,7 +65,7 @@ public interface ChecklistModeloDao {
     void updateModeloChecklist(@NotNull final String token,
                                @NotNull final Long unidade,
                                @NotNull final Long codUnidade,
-                               @NotNull final ModeloChecklist modeloChecklist) throws Exception;
+                               @NotNull final ModeloChecklistInsercao modeloChecklist) throws Exception;
 
     /**
      * Busca as perguntas que compoẽm o checklist.

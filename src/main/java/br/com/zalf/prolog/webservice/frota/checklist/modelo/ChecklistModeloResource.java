@@ -6,7 +6,9 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -30,7 +32,7 @@ public class ChecklistModeloResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    public Response insertModeloChecklist(ModeloChecklist modeloChecklist) {
+    public Response insertModeloChecklist(ModeloChecklistInsercao modeloChecklist) {
         service.insertModeloChecklist(modeloChecklist);
         return Response.ok("Modelo de checklist inserido com sucesso");
     }
@@ -75,7 +77,7 @@ public class ChecklistModeloResource {
     public Response updateModeloChecklist(@HeaderParam("Authorization") String token,
                                           @PathParam("codUnidade") Long codUnidade,
                                           @PathParam("codModelo") Long codModelo,
-                                          ModeloChecklist modeloChecklist) throws Exception {
+                                          ModeloChecklistInsercao modeloChecklist) throws Exception {
         return service.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
     }
 

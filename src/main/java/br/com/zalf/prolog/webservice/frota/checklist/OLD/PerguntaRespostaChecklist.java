@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.model;
+package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Pergunta;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.AcaoEdicaoPergunta;
@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Created by luiz on 4/16/16.
  */
+@Deprecated
 public class PerguntaRespostaChecklist extends Pergunta {
 
     /**

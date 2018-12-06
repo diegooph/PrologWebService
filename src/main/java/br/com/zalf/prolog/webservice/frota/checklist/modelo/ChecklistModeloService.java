@@ -12,7 +12,9 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +32,7 @@ public class ChecklistModeloService {
     private static final String TAG = ChecklistModeloService.class.getSimpleName();
     private final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
 
-    public void insertModeloChecklist(@NotNull final ModeloChecklist modeloChecklist) {
+    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) {
         try {
             dao.insertModeloChecklist(modeloChecklist);
         } catch (SQLException e) {
@@ -62,7 +64,7 @@ public class ChecklistModeloService {
     public Response updateModeloChecklist(@NotNull final String token,
                                           @NotNull final Long codUnidade,
                                           @NotNull final Long codModelo,
-                                          @NotNull final ModeloChecklist modeloChecklist) throws Exception {
+                                          @NotNull final ModeloChecklistInsercao modeloChecklist) throws Exception {
         try {
             dao.updateModeloChecklist(TokenCleaner.getOnlyToken(token), codUnidade, codModelo, modeloChecklist);
             return Response.ok("Modelo de checklist atualizado com sucesso");

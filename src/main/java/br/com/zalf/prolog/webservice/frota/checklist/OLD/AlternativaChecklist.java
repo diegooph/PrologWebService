@@ -1,11 +1,13 @@
-package br.com.zalf.prolog.webservice.frota.checklist.model;
+package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.AcaoEdicaoAlternativa;
 
 /**
  * Created by Zalf on 07/01/17.
  */
+@Deprecated
 public class AlternativaChecklist extends Alternativa {
 
     /**

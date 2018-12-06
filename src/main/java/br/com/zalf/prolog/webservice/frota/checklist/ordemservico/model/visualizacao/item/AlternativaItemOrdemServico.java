@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item;
 
-import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import org.jetbrains.annotations.NotNull;
 

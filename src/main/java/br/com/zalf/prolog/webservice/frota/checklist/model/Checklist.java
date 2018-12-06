@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.model;
 
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 
 import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
