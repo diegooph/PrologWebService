@@ -44,20 +44,21 @@ public class ChecklistModeloService {
         try {
             dao.insertModeloChecklist(modeloChecklist);
             return Response.ok("Modelo de checklist inserido com sucesso");
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir modelo de checklist", t);
             throw handler.map(t, "Erro ao inserir modelo de checklist, tente novamente");
         }
     }
 
-    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
+    @NotNull
+    List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
             @NotNull final Long codUnidade,
-            @NotNull final String codFuncao) {
+            @NotNull final String codFuncao) throws ProLogException {
         try {
             return dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, codFuncao);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar os modelos de checklist para o cargo " + codFuncao, e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar os modelos de checklist para o cargo " + codFuncao, t);
+            throw handler.map(t, "Erro ao buscar modelos de checklist, tente novamente");
         }
     }
 

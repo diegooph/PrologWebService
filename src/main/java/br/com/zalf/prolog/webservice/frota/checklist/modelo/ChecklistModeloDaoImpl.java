@@ -67,6 +67,50 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         }
     }
 
+    @NotNull
+    @Override
+    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
+            @NotNull final Long codUnidade,
+            @NotNull final String codFuncao) throws SQLException {
+        final List<ModeloChecklistListagem> modelosChecklistListagem = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_LISTAGEM_MODELOS_CHECKLIST(?, ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, codFuncao);
+            rSet = stmt.executeQuery();
+            Set<String> setCargos = new HashSet<>();
+            Set<String> setTiposVeiculos = new HashSet<>();
+            ModeloChecklistListagem modeloChecklistListagem = null;
+            Long codModeloChecklistAnterior = null;
+            while (rSet.next()) {
+                final Long codModeloChecklistAtual = rSet.getLong("COD_MODELO");
+                if (codModeloChecklistAnterior == null) {
+                    codModeloChecklistAnterior = codModeloChecklistAtual;
+                }
+                if (!codModeloChecklistAtual.equals(codModeloChecklistAnterior)) {
+                    modelosChecklistListagem.add(modeloChecklistListagem);
+                    codModeloChecklistAnterior = codModeloChecklistAtual;
+                    setCargos = new HashSet<>();
+                    setTiposVeiculos = new HashSet<>();
+                }
+                setCargos.add(rSet.getString("NOME_CARGO"));
+                setTiposVeiculos.add(rSet.getString("TIPO_VEICULO"));
+                modeloChecklistListagem =
+                        createModeloChecklistListagem(rSet, codModeloChecklistAnterior, setCargos, setTiposVeiculos);
+            }
+            if (codModeloChecklistAnterior != null) {
+                modelosChecklistListagem.add(modeloChecklistListagem);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return modelosChecklistListagem;
+    }
+
     @Override
     @Deprecated
     public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
@@ -151,49 +195,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         } finally {
             close(conn, stmt, rSet);
         }
-    }
-
-    @Override
-    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
-            @NotNull final Long codUnidade,
-            @NotNull final String codFuncao) throws SQLException {
-        final List<ModeloChecklistListagem> modelosChecklistListagem = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        Set<String> setCargos = new HashSet<>();
-        Set<String> setTiposVeiculos = new HashSet<>();
-        ModeloChecklistListagem modeloChecklistListagem = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("select * from func_checklist_get_listagem_modelos_checklist(?, ?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, codFuncao);
-            rSet = stmt.executeQuery();
-            Long codModeloChecklistAnterior = null;
-            while (rSet.next()) {
-                final Long codModeloChecklistAtual = rSet.getLong("COD_MODELO");
-                if (codModeloChecklistAnterior == null) {
-                    codModeloChecklistAnterior = codModeloChecklistAtual;
-                }
-                if (!codModeloChecklistAtual.equals(codModeloChecklistAnterior)) {
-                    modelosChecklistListagem.add(modeloChecklistListagem);
-                    codModeloChecklistAnterior = codModeloChecklistAtual;
-                    setCargos = new HashSet<>();
-                    setTiposVeiculos = new HashSet<>();
-                }
-                setCargos.add(rSet.getString("NOME_CARGO"));
-                setTiposVeiculos.add(rSet.getString("TIPO_VEICULO"));
-                modeloChecklistListagem = createModeloChecklistListagem(rSet, codModeloChecklistAnterior, setCargos,
-                        setTiposVeiculos);
-            }
-            if (codModeloChecklistAnterior != null) {
-                modelosChecklistListagem.add(modeloChecklistListagem);
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return modelosChecklistListagem;
     }
 
     @Override
@@ -676,10 +677,11 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private ModeloChecklistListagem createModeloChecklistListagem(@NotNull final ResultSet rSet,
-                                                                  @NotNull final Long codModeloChecklistAtual,
-                                                                  @NotNull final Set<String> setCargos,
-                                                                  @NotNull final Set<String> setTiposVeiculos) throws SQLException {
+    private ModeloChecklistListagem createModeloChecklistListagem(
+            @NotNull final ResultSet rSet,
+            @NotNull final Long codModeloChecklistAtual,
+            @NotNull final Set<String> setCargos,
+            @NotNull final Set<String> setTiposVeiculos) throws SQLException {
         final ModeloChecklistListagem modeloChecklist = new ModeloChecklistListagem();
         modeloChecklist.setCodigo(codModeloChecklistAtual);
         modeloChecklist.setCodUnidade(rSet.getLong("COD_UNIDADE"));

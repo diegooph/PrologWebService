@@ -26,21 +26,23 @@ public interface ChecklistModeloDao {
      * Insere um novo {@link ModeloChecklistInsercao modelo de checklist} na base de dados.
      *
      * @param modeloChecklist O {@link ModeloChecklistInsercao modelo} contendo as informações para inserir.
-     * @throws SQLException Caso ocorrer algum erro ao salvar os dados.
+     * @throws Throwable Caso ocorrer algum erro ao salvar os dados.
      */
     void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable;
 
     /**
-     * Busca a listagem de {@link ModeloChecklistListagem} da {@link Unidade} filtrado pela {@link FuncaoProLog}.
+     * Busca a listagem de {@link ModeloChecklistListagem modelos de checklist}
+     * da {@link Unidade} filtrando pela {@link FuncaoProLog}.
      *
-     * @param codUnidade - Código da unidade.
-     * @param codFuncao  - Código da função ou "%" para buscar de todas as funções.
-     * @return - Lista de {@link ModeloChecklistListagem} da Unidade.
-     * @throws SQLException - Se ocorrer erro no banco.
+     * @param codUnidade Código da {@link Unidade}.
+     * @param codFuncao  Código da {@link FuncaoProLog} ou "%" para buscar de todas as funções.
+     * @return Lista de {@link ModeloChecklistListagem} da Unidade.
+     * @throws Throwable Se ocorrer algum erro na busca dos dados.
      */
+    @NotNull
     List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
             @NotNull final Long codUnidade,
-            @NotNull final String codFuncao) throws SQLException;
+            @NotNull final String codFuncao) throws Throwable;
 
     /**
      * Busca um modelo de checklist através do {@link ModeloChecklistVisualizacao#getCodigo()} e {@link Unidade#getCodigo()}.
