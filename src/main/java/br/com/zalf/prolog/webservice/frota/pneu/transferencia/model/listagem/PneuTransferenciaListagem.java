@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 05/12/18.
@@ -17,10 +19,15 @@ public class PneuTransferenciaListagem {
     private Long codUnidadeDestino;
     private Long codColaborador;
     private LocalDateTime dataHoraTransferencia;
-    private Long codPneu;
+    private List<Long> codPneu;
     private Sulcos sulcosAtuais;
     private double pressao;
     private int vidaTransferencia;
+    private String nomeUnidadeOrigem;
+    private String nomeUnidadeDestino;
+    private String nomeRegionalOrigem;
+    private String nomeRegionalDestino;
+    private String nomeColaborador;
 
     public Long getCodTransferencia() {
         return codTransferencia;
@@ -62,11 +69,11 @@ public class PneuTransferenciaListagem {
         this.dataHoraTransferencia = dataHoraTransferencia;
     }
 
-    public Long getCodPneu() {
+    public List<Long> getCodPneu() {
         return codPneu;
     }
 
-    public void setCodPneu(Long codPneu) {
+    public void setCodPneu(List<Long> codPneu) {
         this.codPneu = codPneu;
     }
 
@@ -94,6 +101,46 @@ public class PneuTransferenciaListagem {
         this.vidaTransferencia = vidaTransferencia;
     }
 
+    public String getNomeUnidadeOrigem() {
+        return nomeUnidadeOrigem;
+    }
+
+    public void setNomeUnidadeOrigem(String nomeUnidadeOrigem) {
+        this.nomeUnidadeOrigem = nomeUnidadeOrigem;
+    }
+
+    public String getNomeUnidadeDestino() {
+        return nomeUnidadeDestino;
+    }
+
+    public void setNomeUnidadeDestino(String nomeUnidadeDestino) {
+        this.nomeUnidadeDestino = nomeUnidadeDestino;
+    }
+
+    public String getNomeRegionalOrigem() {
+        return nomeRegionalOrigem;
+    }
+
+    public void setNomeRegionalOrigem(String nomeRegionalOrigem) {
+        this.nomeRegionalOrigem = nomeRegionalOrigem;
+    }
+
+    public String getNomeRegionalDestino() {
+        return nomeRegionalDestino;
+    }
+
+    public void setNomeRegionalDestino(String nomeRegionalDestino) {
+        this.nomeRegionalDestino = nomeRegionalDestino;
+    }
+
+    public String getNomeColaborador() {
+        return nomeColaborador;
+    }
+
+    public void setNomeColaborador(String nomeColaborador) {
+        this.nomeColaborador = nomeColaborador;
+    }
+
     @NotNull
     public static PneuTransferenciaListagem createDummy() {
         final PneuTransferenciaListagem transferencia = new PneuTransferenciaListagem();
@@ -102,16 +149,24 @@ public class PneuTransferenciaListagem {
         transferencia.setCodUnidadeDestino(3L);
         transferencia.setCodColaborador(190L);
         transferencia.setDataHoraTransferencia(LocalDateTime.now());
-        transferencia.setCodPneu(1541L);
+        transferencia.setNomeUnidadeOrigem("A");
+        transferencia.setNomeUnidadeDestino("B");
+        transferencia.setNomeRegionalOrigem("Sul");
+        transferencia.setNomeRegionalDestino("Sudeste");
+        transferencia.setNomeColaborador("Gertrudes");
 
-        final Sulcos sulcos = new Sulcos();
-        sulcos.setInterno(13.5);
-        sulcos.setCentralInterno(13.4);
-        sulcos.setCentralExterno(13.3);
-        sulcos.setExterno(12.9);
-        transferencia.setSulcosAtuais(sulcos);
-        transferencia.setPressao(100.5);
-        transferencia.setVidaTransferencia(2);
+        List<Long> codPneus = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            codPneus.add(Long.valueOf(i));
+            final Sulcos sulcos = new Sulcos();
+            sulcos.setInterno(i + 13.5);
+            sulcos.setCentralInterno(i + 13.4);
+            sulcos.setCentralExterno(i + 13.3);
+            sulcos.setExterno(i + 12.9);
+            transferencia.setSulcosAtuais(sulcos);
+            transferencia.setPressao(i + 100.5);
+            transferencia.setVidaTransferencia(i);
+        }
         return transferencia;
     }
 }
