@@ -23,12 +23,12 @@ import java.util.List;
 public interface ChecklistModeloDao {
 
     /**
-     * Insere um novo {@link ModeloChecklistInsercao} na base de dados.
+     * Insere um novo {@link ModeloChecklistInsercao modelo de checklist} na base de dados.
      *
-     * @param modeloChecklist - O {@link ModeloChecklistInsercao} a ser inserido.
-     * @throws SQLException - Caso ocorrer erro no banco.
+     * @param modeloChecklist O {@link ModeloChecklistInsercao modelo} contendo as informações para inserir.
+     * @throws SQLException Caso ocorrer algum erro ao salvar os dados.
      */
-    void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws SQLException;
+    void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable;
 
     /**
      * Busca a listagem de {@link ModeloChecklistListagem} da {@link Unidade} filtrado pela {@link FuncaoProLog}.

@@ -14,6 +14,7 @@ public abstract class AlternativaModeloChecklist {
     private String descricao;
     private boolean tipoOutros;
     private int ordemExibicao;
+    private boolean deveAbrirOrdemServico;
     private PrioridadeAlternativa prioridade;
 
     @NotNull
@@ -54,6 +55,14 @@ public abstract class AlternativaModeloChecklist {
 
     public void setOrdemExibicao(final int ordemExibicao) {
         this.ordemExibicao = ordemExibicao;
+    }
+
+    public boolean isDeveAbrirOrdemServico() {
+        return deveAbrirOrdemServico;
+    }
+
+    public void setDeveAbrirOrdemServico(final boolean deveAbrirOrdemServico) {
+        this.deveAbrirOrdemServico = deveAbrirOrdemServico;
     }
 
     public PrioridadeAlternativa getPrioridade() {

@@ -12,6 +12,8 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
@@ -31,16 +33,20 @@ import java.util.List;
  * Classe ChecklistModeloService responsavel por comunicar-se com a interface DAO
  */
 public class ChecklistModeloService {
-
     private static final String TAG = ChecklistModeloService.class.getSimpleName();
+    @NotNull
     private final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
+    @NotNull
+    private final ProLogExceptionHandler handler = Injection.provideProLogExceptionHandler();
 
-    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) {
+    @NotNull
+    Response insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
         try {
             dao.insertModeloChecklist(modeloChecklist);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inserir modelo de checklist", e);
-            throw new RuntimeException(e);
+            return Response.ok("Modelo de checklist inserido com sucesso");
+        } catch (Throwable t) {
+            Log.e(TAG, "Erro ao inserir modelo de checklist", t);
+            throw handler.map(t, "Erro ao inserir modelo de checklist, tente novamente");
         }
     }
 

@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
@@ -17,6 +18,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import com.google.common.base.Preconditions;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,15 +30,14 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ChecklistModeloResource {
-
+    @NotNull
     private final ChecklistModeloService service = new ChecklistModeloService();
 
     @POST
-    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    public Response insertModeloChecklist(ModeloChecklistInsercao modeloChecklist) {
-        service.insertModeloChecklist(modeloChecklist);
-        return Response.ok("Modelo de checklist inserido com sucesso");
+    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
+    public Response insertModeloChecklist(
+            @Required final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
+        return service.insertModeloChecklist(modeloChecklist);
     }
 
     @GET
