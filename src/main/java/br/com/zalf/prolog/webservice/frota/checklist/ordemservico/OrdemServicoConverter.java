@@ -128,6 +128,7 @@ final class OrdemServicoConverter {
             resolvido.setDataHoraResolucao(rSet.getObject("DATA_HORA_RESOLUCAO", LocalDateTime.class));
             resolvido.setFeedbackResolucao(rSet.getString("FEEDBACK_RESOLUCAO"));
             resolvido.setDuracaoResolucao(Duration.ofMinutes(rSet.getLong("DURACAO_RESOLUCAO_MINUTOS")));
+            resolvido.setKmVeiculoColetadoResolucao(rSet.getLong("KM_VEICULO_COLETADO_RESOLUCAO"));
         }
         item.setStatus(status);
         item.setCodigo(rSet.getLong("COD_ITEM_OS"));
