@@ -67,8 +67,8 @@ public class ChecklistModeloResource {
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}/{codModelo}")
     public ModeloChecklistVisualizacao getModeloChecklist(
-            @PathParam("codUnidade") Long codUnidade,
-            @PathParam("codModelo") Long codModelo) {
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codModelo") @Required final Long codModelo) throws ProLogException {
         return service.getModeloChecklist(codUnidade, codModelo);
     }
 

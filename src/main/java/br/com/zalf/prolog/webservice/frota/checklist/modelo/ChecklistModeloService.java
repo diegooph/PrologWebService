@@ -62,12 +62,14 @@ public class ChecklistModeloService {
         }
     }
 
-    public ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
+    @NotNull
+    ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
+                                                   @NotNull final Long codModelo) throws ProLogException {
         try {
             return dao.getModeloChecklist(codUnidade, codModelo);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar o modelo de checklist " + codModelo, e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar o modelo de checklist " + codModelo, t);
+            throw handler.map(t, "Erro ao buscar modelo de checklist, tente novamente");
         }
     }
 

@@ -45,15 +45,17 @@ public interface ChecklistModeloDao {
             @NotNull final String codFuncao) throws Throwable;
 
     /**
-     * Busca um modelo de checklist através do {@link ModeloChecklistVisualizacao#getCodigo()} e {@link Unidade#getCodigo()}.
+     * Busca um {@link ModeloChecklistVisualizacao modelo de checklist} através do
+     * {@link ModeloChecklistVisualizacao#getCodigo()} e {@link Unidade#getCodigo()}.
      *
-     * @param codUnidade - Código da unidade.
-     * @param codModelo  - Código do modelo.
-     * @return - Um {@link ModeloChecklistVisualizacao}.
-     * @throws SQLException - Se ocorrer erro no bando.
+     * @param codUnidade Código da unidade.
+     * @param codModelo  Código do modelo do checklist.
+     * @return Um {@link ModeloChecklistVisualizacao} com todas as informações.
+     * @throws Throwable Se ocorrer qualquer erro na busca dos dados do modelo de checklist.
      */
+    @NotNull
     ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
-                                                   @NotNull final Long codModelo) throws SQLException;
+                                                   @NotNull final Long codModelo) throws Throwable;
 
     /**
      * Atualiza um {@link ModeloChecklistEdicao} específico. Essa atualização pode ser:

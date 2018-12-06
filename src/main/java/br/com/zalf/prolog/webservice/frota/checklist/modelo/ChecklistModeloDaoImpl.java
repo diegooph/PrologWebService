@@ -53,7 +53,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 insertModeloFuncao(conn, modeloChecklist);
                 insertModeloPerguntas(conn, modeloChecklist);
             } else {
-                throw new SQLException("Não foi possível inserir o modelo de checklist para a unidade : "
+                throw new SQLException("Não foi possível inserir o modelo de checklist para a unidade: "
                         + modeloChecklist.getCodUnidade());
             }
             conn.commit();
@@ -71,7 +71,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     @Override
     public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
             @NotNull final Long codUnidade,
-            @NotNull final String codFuncao) throws SQLException {
+            @NotNull final String codFuncao) throws Throwable {
         final List<ModeloChecklistListagem> modelosChecklistListagem = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -109,6 +109,42 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             close(conn, stmt, rSet);
         }
         return modelosChecklistListagem;
+    }
+
+    @NotNull
+    @Override
+    public ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
+                                                          @NotNull final Long codModelo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT DISTINCT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO "
+                    + "FROM CHECKLIST_MODELO_FUNCAO CMF JOIN CHECKLIST_MODELO CM ON CM.COD_UNIDADE = CMF.COD_UNIDADE "
+                    + "AND CM.CODIGO = CMF.COD_CHECKLIST_MODELO "
+                    + "WHERE CMF.COD_UNIDADE = ? AND CM.CODIGO = ? "
+                    + "ORDER BY MODELO");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModelo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final ModeloChecklistVisualizacao modeloChecklist = new ModeloChecklistVisualizacao();
+                modeloChecklist.setCodigo(rSet.getLong("COD_MODELO"));
+                modeloChecklist.setNome(rSet.getString("MODELO"));
+                modeloChecklist.setCodUnidade(codUnidade);
+                modeloChecklist.setPerguntas(getPerguntasModeloChecklist(codUnidade, codModelo));
+                modeloChecklist.setTiposVeiculoLiberados(getTipoVeiculoByCodModeloChecklist(codUnidade, codModelo));
+                modeloChecklist.setCargosLiberados(getFuncaoByCodModelo(codUnidade, codModelo));
+                return modeloChecklist;
+            } else {
+                throw new SQLException("Não foi possível buscar o modelo de checklist: "
+                        + "unidade: " + codUnidade + "\n"
+                        + "modelo: " + codModelo);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @Override
@@ -155,8 +191,10 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         }
     }
 
-    private List<PerguntaModeloChecklistVisualizacao> getPerguntasModeloChecklist(@NotNull final Long codUnidade,
-                                                                                  @NotNull final Long codModelo) throws SQLException {
+    @NotNull
+    private List<PerguntaModeloChecklistVisualizacao> getPerguntasModeloChecklist(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -195,38 +233,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         } finally {
             close(conn, stmt, rSet);
         }
-    }
-
-    @Override
-    public ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
-                                                          @NotNull final Long codModelo) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        ModeloChecklistVisualizacao modeloChecklist = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO "
-                    + "FROM CHECKLIST_MODELO_FUNCAO CMF JOIN CHECKLIST_MODELO CM ON CM.COD_UNIDADE = CMF.COD_UNIDADE " +
-                    "AND CM.CODIGO = CMF.COD_CHECKLIST_MODELO "
-                    + "WHERE CMF.COD_UNIDADE = ? AND CM.CODIGO = ? "
-                    + "ORDER BY MODELO");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codModelo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                modeloChecklist = new ModeloChecklistVisualizacao();
-                modeloChecklist.setCodigo(rSet.getLong("COD_MODELO"));
-                modeloChecklist.setNome(rSet.getString("MODELO"));
-                modeloChecklist.setCodUnidade(codUnidade);
-                modeloChecklist.setPerguntas(getPerguntasModeloChecklist(codUnidade, codModelo));
-                modeloChecklist.setTiposVeiculoLiberados(getTipoVeiculoByCodModeloChecklist(codUnidade, codModelo));
-                modeloChecklist.setCargosLiberados(getFuncaoByCodModelo(codUnidade, codModelo));
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return modeloChecklist;
     }
 
     @Override
@@ -849,6 +855,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         return perguntas;
     }
 
+    @NotNull
     private List<PerguntaModeloChecklistVisualizacao> createPerguntaAlternativaModeloChecklist(
             @NotNull final ResultSet rSet) throws SQLException {
         final List<PerguntaModeloChecklistVisualizacao> perguntas = new ArrayList<>();
@@ -892,7 +899,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private PerguntaModeloChecklistVisualizacao createPerguntaModeloChecklist(@NotNull final ResultSet rSet) throws SQLException {
+    private PerguntaModeloChecklistVisualizacao createPerguntaModeloChecklist(
+            @NotNull final ResultSet rSet) throws SQLException {
         final PerguntaModeloChecklistVisualizacao pergunta = new PerguntaModeloChecklistVisualizacao();
         pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
         pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
@@ -924,6 +932,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         alternativa.setDescricao(rSet.getString("ALTERNATIVA"));
         alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE")));
         alternativa.setTipoOutros(rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"));
+        alternativa.setDeveAbrirOrdemServico(rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"));
         return alternativa;
     }
 
