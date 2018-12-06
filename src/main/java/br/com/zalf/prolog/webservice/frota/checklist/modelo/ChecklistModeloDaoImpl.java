@@ -7,12 +7,13 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +31,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 
     }
 
+    @Deprecated
     @Override
     public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
                                                         @NotNull final Long codModelo) throws SQLException {
@@ -117,12 +119,12 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public ModeloChecklist getModeloChecklist(@NotNull final Long codUnidade,
-                                              @NotNull final Long codModelo) throws SQLException {
+    public ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
+                                                          @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        ModeloChecklist modeloChecklist = null;
+        ModeloChecklistVisualizacao modeloChecklist = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT DISTINCT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO "
@@ -134,7 +136,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(2, codModelo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                modeloChecklist = new ModeloChecklist();
+                modeloChecklist = new ModeloChecklistVisualizacao();
                 modeloChecklist.setCodigo(rSet.getLong("COD_MODELO"));
                 modeloChecklist.setNome(rSet.getString("MODELO"));
                 modeloChecklist.setCodUnidade(codUnidade);
@@ -228,7 +230,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 
     @NotNull
     @Override
-    public List<ModeloChecklist> getModelosChecklistProLog() throws SQLException {
+    public List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -241,9 +243,9 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                     "FROM CHECKLIST_MODELO_PROLOG CMP " +
                     "WHERE CMP.STATUS_ATIVO = TRUE;");
             rSet = stmt.executeQuery();
-            final List<ModeloChecklist> modelos = new ArrayList<>();
+            final List<ModeloChecklistVisualizacao> modelos = new ArrayList<>();
             while (rSet.next()) {
-                final ModeloChecklist modelo = new ModeloChecklist();
+                final ModeloChecklistVisualizacao modelo = new ModeloChecklistVisualizacao();
                 modelo.setCodigo(rSet.getLong("CODIGO"));
                 modelo.setNome(rSet.getString("NOME"));
                 modelo.setPerguntas(getPerguntasAlternativasProLog());
@@ -251,7 +253,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             }
             return modelos;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

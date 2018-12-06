@@ -8,6 +8,8 @@ import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,14 +42,15 @@ public interface ChecklistModeloDao {
             @NotNull final String codFuncao) throws SQLException;
 
     /**
-     * Busca um modelo de checklist através do {@link ModeloChecklist#getCodigo()} e {@link Unidade#getCodigo()}.
+     * Busca um modelo de checklist através do {@link ModeloChecklistVisualizacao#getCodigo()} e {@link Unidade#getCodigo()}.
      *
      * @param codUnidade - Código da unidade.
      * @param codModelo  - Código do modelo.
-     * @return - Um {@link ModeloChecklist}.
+     * @return - Um {@link ModeloChecklistVisualizacao}.
      * @throws SQLException - Se ocorrer erro no bando.
      */
-    ModeloChecklist getModeloChecklist(@NotNull final Long codUnidade, @NotNull final Long codModelo) throws SQLException;
+    ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
+                                                   @NotNull final Long codModelo) throws SQLException;
 
     /**
      * Atualiza um {@link ModeloChecklist} específico. Essa atualização pode ser:
@@ -94,7 +97,7 @@ public interface ChecklistModeloDao {
      * Busca os modelos de checklists padrões disponibilizados pelo ProLog.
      */
     @NotNull
-    List<ModeloChecklist> getModelosChecklistProLog() throws SQLException;
+    List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws SQLException;
 
     /**
      * Busca a URL das imagens das perguntas.

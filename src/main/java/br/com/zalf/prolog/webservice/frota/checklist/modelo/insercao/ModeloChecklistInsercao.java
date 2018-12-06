@@ -16,6 +16,7 @@ public class ModeloChecklistInsercao {
     private List<Long> tiposVeiculoLiberados;
     private List<Long> cargosLiberados;
     private List<PerguntaModeloChecklist> perguntas;
+    private boolean ativo;
 
     public ModeloChecklistInsercao() {
     }
@@ -66,5 +67,13 @@ public class ModeloChecklistInsercao {
 
     public void setPerguntas(final List<PerguntaModeloChecklist> perguntas) {
         this.perguntas = perguntas;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(final boolean ativo) {
+        this.ativo = ativo;
     }
 }

@@ -4,10 +4,10 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistVisualizacao;
 import org.junit.Assert;
 import org.junit.Test;
 import test.BaseTest;
@@ -28,7 +28,7 @@ public class ChecklistTest extends BaseTest {
 
     @Test
     public void testGetModeloChecklist() throws SQLException {
-        final ModeloChecklist modeloChecklist = dao.getModeloChecklist(5L, 40L);
+        final ModeloChecklistVisualizacao modeloChecklist = dao.getModeloChecklist(5L, 40L);
 
         System.out.println(GsonUtils.getGson().toJson(modeloChecklist));
         Assert.assertNotNull(modeloChecklist);

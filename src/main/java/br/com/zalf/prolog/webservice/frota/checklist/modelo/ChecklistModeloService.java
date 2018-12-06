@@ -12,9 +12,10 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistVisualizacao;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +53,7 @@ public class ChecklistModeloService {
         }
     }
 
-    public ModeloChecklist getModeloChecklist(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
+    public ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
         try {
             return dao.getModeloChecklist(codUnidade, codModelo);
         } catch (SQLException e) {
@@ -87,7 +88,7 @@ public class ChecklistModeloService {
 
     public Response updateStatusAtivo(@NotNull final Long codUnidade,
                                       @NotNull final Long codModelo,
-                                      @NotNull final ModeloChecklist modeloChecklist) throws Throwable {
+                                      @NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
         try {
             dao.updateStatusAtivo(codUnidade, codModelo, modeloChecklist.isAtivo());
             return Response.ok("Modelo de checklist " + (modeloChecklist.isAtivo() ? "ativado" : "inativado"));
@@ -99,7 +100,7 @@ public class ChecklistModeloService {
         return null;
     }
 
-    public List<ModeloChecklist> getModelosChecklistProLog() {
+    public List<ModeloChecklistVisualizacao> getModelosChecklistProLog() {
         try {
             return dao.getModelosChecklistProLog();
         } catch (SQLException e) {

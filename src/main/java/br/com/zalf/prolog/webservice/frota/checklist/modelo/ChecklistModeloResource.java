@@ -6,9 +6,10 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -42,7 +43,8 @@ public class ChecklistModeloResource {
             Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}")
-    public List<ModeloChecklistListagem> getModelosChecklistByCodUnidade(@PathParam("codUnidade") @Required Long codUnidade) {
+    public List<ModeloChecklistListagem> getModelosChecklistByCodUnidade(
+            @PathParam("codUnidade") @Required Long codUnidade) {
         return service.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, "%");
     }
 
@@ -62,7 +64,7 @@ public class ChecklistModeloResource {
             Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}/{codModelo}")
-    public ModeloChecklist getModeloChecklist(
+    public ModeloChecklistVisualizacao getModeloChecklist(
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codModelo") Long codModelo) {
         return service.getModeloChecklist(codUnidade, codModelo);
@@ -98,7 +100,7 @@ public class ChecklistModeloResource {
     public Response updateStatus(
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codModelo") @Required final Long codModelo,
-            final ModeloChecklist modeloChecklist) throws Throwable {
+            final ModeloChecklistInsercao modeloChecklist) throws Throwable {
         return service.updateStatusAtivo(codUnidade, codModelo, modeloChecklist);
     }
 
@@ -106,7 +108,7 @@ public class ChecklistModeloResource {
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/prolog")
-    public List<ModeloChecklist> getModelosChecklistProLog() {
+    public List<ModeloChecklistVisualizacao> getModelosChecklistProLog() {
         return service.getModelosChecklistProLog();
     }
 
