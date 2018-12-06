@@ -123,8 +123,15 @@ public interface OrdemServicoDao {
             @NotNull final String placaVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
             @Nullable final StatusItemOrdemServico statusItens,
-            @Nullable final Integer limit,
-            @Nullable final Integer offset) throws Throwable;
+            final int limit,
+            final int offset) throws Throwable;
+
+    @NotNull
+    HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
+            @Nullable final Long codUnidade,
+            @Nullable final Long codOrdemServico,
+            @Nullable final String placaVeiculo,
+            @Nullable final StatusItemOrdemServico statusItens) throws Throwable;
 
     /**
      * Método responsável por resolver um item de uma Ordem de Serviço.

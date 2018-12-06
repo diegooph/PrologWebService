@@ -143,33 +143,73 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             @NotNull final String placaVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
             @Nullable final StatusItemOrdemServico statusItens,
-            @Nullable final Integer limit,
-            @Nullable final Integer offset) throws Throwable {
+            final int limit,
+            final int offset) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?, ?, ?, ?)");
-            stmt.setString(1, placaVeiculo);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?, ?, ?, ?, ?, ?)");
+            // Código da unidade.
+            stmt.setNull(1, SqlType.BIGINT.asIntTypeJava());
+            // Código da Ordem de Serviço.
+            stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
+            stmt.setString(3, placaVeiculo);
             if (prioridade != null) {
-                stmt.setString(2, prioridade.asString());
+                stmt.setString(4, prioridade.asString());
             } else {
-                stmt.setNull(2, Types.VARCHAR);
+                stmt.setNull(4, Types.VARCHAR);
             }
             if (statusItens != null) {
-                stmt.setString(3, statusItens.asString());
+                stmt.setString(5, statusItens.asString());
             } else {
-                stmt.setNull(3, Types.VARCHAR);
+                stmt.setNull(5, Types.VARCHAR);
             }
-            stmt.setObject(4, OffsetDateTime.now(Clock.systemUTC()));
-            bindValueOrNull(stmt, 5, limit, SqlType.INTEGER);
-            bindValueOrNull(stmt, 6, offset, SqlType.INTEGER);
+            stmt.setObject(6, OffsetDateTime.now(Clock.systemUTC()));
+            bindValueOrNull(stmt, 7, limit, SqlType.INTEGER);
+            bindValueOrNull(stmt, 8, offset, SqlType.INTEGER);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return OrdemServicoConverter.createHolderResolucaoItensOrdemServico(rSet);
             } else {
                 throw new IllegalStateException("Erro ao buscar resolução de itens de ordem de serviço");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
+            @Nullable final Long codUnidade,
+            @Nullable final Long codOrdemServico,
+            @Nullable final String placaVeiculo,
+            @Nullable final StatusItemOrdemServico statusItens) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?, ?, ?, ?, ?, ?)");
+            bindValueOrNull(stmt, 1, codUnidade, SqlType.BIGINT);
+            bindValueOrNull(stmt, 2, codOrdemServico, SqlType.BIGINT);
+            bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
+            stmt.setNull(4, SqlType.TEXT.asIntTypeJava());
+            if (statusItens != null) {
+                stmt.setString(5, statusItens.asString());
+            } else {
+                stmt.setNull(5, Types.VARCHAR);
+            }
+            stmt.setObject(6, OffsetDateTime.now(Clock.systemUTC()));
+            stmt.setNull(7, SqlType.INTEGER.asIntTypeJava());
+            stmt.setNull(8, SqlType.INTEGER.asIntTypeJava());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return OrdemServicoConverter.createHolderResolucaoItensOrdemServico(rSet);
+            } else {
+                throw new IllegalStateException("Erro ao buscar resolução de múltiplos itens de ordem de serviço");
             }
         } finally {
             close(conn, stmt, rSet);
@@ -251,7 +291,8 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         itensResolucao.getCodigosItens(),
                         now);
                 final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(itensResolucao.getPlacaVeiculo(), itensResolucao.getKmColetadoVeiculo(), conn);
+                veiculoDao.updateKmByPlaca(itensResolucao.getPlacaVeiculo(), itensResolucao.getKmColetadoVeiculo(),
+                        conn);
                 conn.commit();
             } else {
                 throw new IllegalStateException("Erro ao marcar os itens como resolvidos: "
