@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Pergunta;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.AcaoEdicaoPergunta;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AcaoEdicaoPergunta;
 
 import java.util.List;
 

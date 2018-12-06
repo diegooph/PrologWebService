@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.modelo;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
 
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 
