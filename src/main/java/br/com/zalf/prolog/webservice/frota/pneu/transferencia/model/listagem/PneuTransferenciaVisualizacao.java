@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.PneusTransferencia;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -12,17 +13,14 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuTransferenciaListagem {
+public class PneuTransferenciaVisualizacao {
 
     private Long codTransferencia;
     private Long codUnidadeOrigem;
     private Long codUnidadeDestino;
     private Long codColaborador;
+    private List<PneusTransferencia> pneus;
     private LocalDateTime dataHoraTransferencia;
-    private List<Long> codPneu;
-    private Sulcos sulcosAtuais;
-    private double pressao;
-    private int vidaTransferencia;
     private String nomeUnidadeOrigem;
     private String nomeUnidadeDestino;
     private String nomeRegionalOrigem;
@@ -69,38 +67,6 @@ public class PneuTransferenciaListagem {
         this.dataHoraTransferencia = dataHoraTransferencia;
     }
 
-    public List<Long> getCodPneu() {
-        return codPneu;
-    }
-
-    public void setCodPneu(List<Long> codPneu) {
-        this.codPneu = codPneu;
-    }
-
-    public Sulcos getSulcosAtuais() {
-        return sulcosAtuais;
-    }
-
-    public void setSulcosAtuais(Sulcos sulcosAtuais) {
-        this.sulcosAtuais = sulcosAtuais;
-    }
-
-    public double getPressao() {
-        return pressao;
-    }
-
-    public void setPressao(double pressao) {
-        this.pressao = pressao;
-    }
-
-    public int getVidaTransferencia() {
-        return vidaTransferencia;
-    }
-
-    public void setVidaTransferencia(int vidaTransferencia) {
-        this.vidaTransferencia = vidaTransferencia;
-    }
-
     public String getNomeUnidadeOrigem() {
         return nomeUnidadeOrigem;
     }
@@ -141,9 +107,17 @@ public class PneuTransferenciaListagem {
         this.nomeColaborador = nomeColaborador;
     }
 
+    public List<PneusTransferencia> getPneus() {
+        return pneus;
+    }
+
+    public void setPneus(List<PneusTransferencia> pneus) {
+        this.pneus = pneus;
+    }
+
     @NotNull
-    public static PneuTransferenciaListagem createDummy() {
-        final PneuTransferenciaListagem transferencia = new PneuTransferenciaListagem();
+    public static PneuTransferenciaVisualizacao createDummy() {
+        final PneuTransferenciaVisualizacao transferencia = new PneuTransferenciaVisualizacao();
         transferencia.setCodTransferencia(101L);
         transferencia.setCodUnidadeOrigem(5L);
         transferencia.setCodUnidadeDestino(3L);
@@ -155,18 +129,21 @@ public class PneuTransferenciaListagem {
         transferencia.setNomeRegionalDestino("Sudeste");
         transferencia.setNomeColaborador("Gertrudes");
 
-        List<Long> codPneus = new ArrayList<>();
+        final List<PneusTransferencia> pneusList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            codPneus.add(Long.valueOf(i));
             final Sulcos sulcos = new Sulcos();
             sulcos.setInterno(i + 13.5);
             sulcos.setCentralInterno(i + 13.4);
             sulcos.setCentralExterno(i + 13.3);
             sulcos.setExterno(i + 12.9);
-            transferencia.setSulcosAtuais(sulcos);
-            transferencia.setPressao(i + 100.5);
-            transferencia.setVidaTransferencia(i);
+            final PneusTransferencia pneusTransferencia = new PneusTransferencia();
+            pneusTransferencia.setCodPneu(Long.valueOf(i));
+            pneusTransferencia.setSulcosAtuais(sulcos);
+            pneusTransferencia.setPressao(i + 100.5);
+            pneusTransferencia.setVidaTransferencia(i);
+            pneusList.add(pneusTransferencia);
         }
+        transferencia.setPneus(pneusList);
         return transferencia;
     }
 }
