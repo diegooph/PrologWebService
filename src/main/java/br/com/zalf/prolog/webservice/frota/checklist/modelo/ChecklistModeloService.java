@@ -86,68 +86,75 @@ public class ChecklistModeloService {
         }
     }
 
-    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
+    @NotNull
+    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
+                                                        @NotNull final Long codModelo) throws ProLogException {
         try {
             return dao.getPerguntas(codUnidade, codModelo);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar perguntas do modelo de checklist " + codModelo, e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar perguntas do modelo de checklist " + codModelo, t);
+            throw handler.map(t, "Erro ao buscar perguntas do modelo de checklist, tente novamente");
         }
     }
 
-    public Response updateStatusAtivo(@NotNull final Long codUnidade,
-                                      @NotNull final Long codModelo,
-                                      @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
+    @NotNull
+    Response updateStatusAtivo(@NotNull final Long codUnidade,
+                               @NotNull final Long codModelo,
+                               @NotNull final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
         try {
             dao.updateStatusAtivo(codUnidade, codModelo, modeloChecklist.isAtivo());
             return Response.ok("Modelo de checklist " + (modeloChecklist.isAtivo() ? "ativado" : "inativado"));
-        } catch (Throwable e) {
-            final String errorMessage = "Erro ao ativar/inativar o modelo de checklist: " + codModelo;
-            Log.e(TAG, errorMessage, e);
-//            throw ProLogExceptionHandler.map(e, errorMessage);
+        } catch (Throwable t) {
+            Log.e(TAG, "Erro ao ativar/inativar o modelo de checklist: " + codModelo, t);
+            throw handler.map(t, "Erro ao ativar/inativar o modelo de checklist, tente novamente");
         }
-        return null;
     }
 
-    public List<ModeloChecklistVisualizacao> getModelosChecklistProLog() {
+    @NotNull
+    List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws ProLogException {
         try {
             return dao.getModelosChecklistProLog();
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar modelos de checklist do ProLog", e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar modelos de checklist do ProLog", t);
+            throw handler.map(t, "Erro ao buscar modelos de checklist do ProLog, tente novamente");
         }
     }
 
-    public List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade, @NotNull final Long codFuncao) {
+    @NotNull
+    public List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade,
+                                               @NotNull final Long codFuncao) throws ProLogException {
         try {
             return dao.getUrlImagensPerguntas(codUnidade, codFuncao);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar as URL das perguntas", e);
-            return null;
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar as URLs das perguntas", t);
+            throw handler.map(t, "Erro ao buscar as URLs das perguntas, tente novamente");
         }
     }
 
-    public Galeria getGaleriaImagensPublicas() {
+    @NotNull
+    Galeria getGaleriaImagensPublicas() throws ProLogException {
         try {
             return dao.getGaleriaImagensPublicas();
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar galeria de imagens publicas", e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar galeria de imagens publicas", t);
+            throw handler.map(t, "Erro ao buscar galeria de imagens publicas, tente novamente");
         }
     }
 
-    public Galeria getGaleriaImagensEmpresa(@NotNull final Long codEmpresa) {
+    @NotNull
+    Galeria getGaleriaImagensEmpresa(@NotNull final Long codEmpresa) throws ProLogException {
         try {
             return dao.getGaleriaImagensEmpresa(codEmpresa);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar galeria de imagens da empresa: " + codEmpresa, e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar galeria de imagens da empresa: " + codEmpresa, t);
+            throw handler.map(t, "Erro ao buscar galeria de imagens da empresa, tente novamente");
         }
     }
 
-    public AbstractResponse insertImagem(@NotNull final Long codEmpresa,
-                                         @NotNull final InputStream fileInputStream,
-                                         @NotNull final FormDataContentDisposition fileDetail) {
+    @NotNull
+    AbstractResponse insertImagem(@NotNull final Long codEmpresa,
+                                  @NotNull final InputStream fileInputStream,
+                                  @NotNull final FormDataContentDisposition fileDetail) {
         try {
             final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
             final ImagemProLog imagemProLog = UploadImageHelper.uploadCompressedImagem(
@@ -155,7 +162,10 @@ public class ChecklistModeloService {
                     AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS,
                     imageType);
             final Long codImagem = dao.insertImagem(codEmpresa, imagemProLog);
-            return ResponseImagemChecklist.ok("Imagem inserida com sucesso!", codImagem, imagemProLog.getUrlImagem());
+            return ResponseImagemChecklist.ok(
+                    "Imagem inserida com sucesso",
+                    codImagem,
+                    imagemProLog.getUrlImagem());
         } catch (FileFormatNotSupportException e) {
             Log.e(TAG, "Arquivo recebido não é uma imagem", e);
             return Response.error(e.getMessage());

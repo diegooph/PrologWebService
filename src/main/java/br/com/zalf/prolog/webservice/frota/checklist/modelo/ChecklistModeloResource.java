@@ -92,8 +92,9 @@ public class ChecklistModeloResource {
             Pilares.Frota.Checklist.Modelo.CADASTRAR,
             Pilares.Frota.Checklist.REALIZAR})
     @Path("/perguntas/{codUnidade}/{codModelo}")
-    public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade,
-                                                        @PathParam("codModelo") Long codModelo) {
+    public List<PerguntaRespostaChecklist> getPerguntas(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codModelo") @Required final Long codModelo) throws ProLogException {
         return service.getPerguntas(codUnidade, codModelo);
     }
 
@@ -103,15 +104,14 @@ public class ChecklistModeloResource {
     public Response updateStatus(
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codModelo") @Required final Long codModelo,
-            final ModeloChecklistEdicao modeloChecklist) throws Throwable {
+            @Required final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
         return service.updateStatusAtivo(codUnidade, codModelo, modeloChecklist);
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR})
+    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/prolog")
-    public List<ModeloChecklistVisualizacao> getModelosChecklistProLog() {
+    public List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws ProLogException {
         return service.getModelosChecklistProLog();
     }
 
@@ -121,16 +121,16 @@ public class ChecklistModeloResource {
     @GET
     @Path("/url-imagens/{codUnidade}/{codFuncao}")
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-    public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
-                                               @PathParam("codFuncao") Long codFuncao) {
+    public List<String> getUrlImagensPerguntas(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codFuncao") @Required final Long codFuncao) throws ProLogException {
         return service.getUrlImagensPerguntas(codUnidade, codFuncao);
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR})
+    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/galeria-prolog")
-    public Galeria getGaleriaImagensPublicas() {
+    public Galeria getGaleriaImagensPublicas() throws ProLogException {
         return service.getGaleriaImagensPublicas();
     }
 
@@ -138,18 +138,19 @@ public class ChecklistModeloResource {
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/galerias/{codEmpresa}")
-    public Galeria getGaleriaImagensEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
+    public Galeria getGaleriaImagensEmpresa(
+            @PathParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
         return service.getGaleriaImagensEmpresa(codEmpresa);
     }
 
     @POST
-    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR})
+    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/galerias/{codEmpresa}/upload")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public AbstractResponse insertImagemGaleria(@PathParam("codEmpresa") Long codEmpresa,
-                                                @FormDataParam("file") InputStream fileInputStream,
-                                                @FormDataParam("file") FormDataContentDisposition fileDetail) {
+    public AbstractResponse insertImagemGaleria(
+            @PathParam("codEmpresa") @Required final Long codEmpresa,
+            @FormDataParam("file") @Required final InputStream fileInputStream,
+            @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) {
         Preconditions.checkNotNull(codEmpresa, "Código da empresa não pode ser null!");
         return service.insertImagem(codEmpresa, fileInputStream, fileDetail);
     }

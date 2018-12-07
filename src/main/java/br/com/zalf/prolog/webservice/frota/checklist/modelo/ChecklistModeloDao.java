@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
@@ -76,23 +75,24 @@ public interface ChecklistModeloDao {
                                @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable;
 
     /**
-     * Busca as perguntas que compoẽm o checklist.
+     * Busca as {@link PerguntaRespostaChecklist perguntas} que compoẽm o checklist.
      *
-     * @param codUnidade - Código da unidade.
-     * @param codModelo  - Código do modelo.
-     * @return - Lista de {@link PerguntaRespostaChecklist}.
-     * @throws SQLException - Se ocorrer erro na execução.
+     * @param codUnidade Código da {@link Unidade}.
+     * @param codModelo  Código do modelo.
+     * @return Lista de {@link PerguntaRespostaChecklist}.
+     * @throws Throwable Se ocorrer erro na execução.
      */
+    @NotNull
     List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
-                                                 @NotNull final  Long codModelo) throws SQLException;
+                                                 @NotNull final Long codModelo) throws Throwable;
 
     /**
-     * Marca um {@link ModeloChecklist} como ativo ou inativo.
+     * Marca um {@link ModeloChecklistVisualizacao} como ativo ou inativo.
      *
-     * @param codUnidade - Código da unidade.
-     * @param codModelo  - Código do modelo.
-     * @param statusAtivo - o novo status indicando se o modelo será ativado ou inativado.
-     * @throws SQLException - Caso ocorrer erro no banco.
+     * @param codUnidade  Código da {@link Unidade}.
+     * @param codModelo   Código do modelo.
+     * @param statusAtivo O novo status indicando se o modelo será ativado ou inativado.
+     * @throws Throwable Caso ocorrer erro no banco.
      */
     void updateStatusAtivo(@NotNull final Long codUnidade,
                            @NotNull final Long codModelo,
@@ -102,44 +102,47 @@ public interface ChecklistModeloDao {
      * Busca os modelos de checklists padrões disponibilizados pelo ProLog.
      */
     @NotNull
-    List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws SQLException;
+    List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws Throwable;
 
     /**
-     * Busca a URL das imagens das perguntas.
+     * Busca a URLs das imagens das perguntas.
      *
-     * @param codUnidade - Código da unidade.
-     * @param codFuncao  - Código da função.
-     * @return - Retorna uma lista de Strings contendo as URLs.
-     * @throws SQLException - Caso der erro no banco.
+     * @param codUnidade Código da {@link Unidade}.
+     * @param codFuncao  Código da {@link FuncaoProLog}.
+     * @return Retorna uma lista de Strings contendo as URLs.
+     * @throws Throwable Caso der erro no banco.
      */
-    List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade, @NotNull final Long codFuncao) throws SQLException;
+    List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade,
+                                        @NotNull final Long codFuncao) throws Throwable;
 
     /**
      * Este método busca uma lista de URLs em forma de {@link String}.
      * Com base nessas strings uma {@link Galeria} é criada.
      *
-     * @return - Um {@link List<String>} contendo as URLs das imagens.
-     * @throws SQLException - Caso algum erro na query ocorrer.
+     * @return Um {@link List<String>} contendo as URLs das imagens.
+     * @throws Throwable Caso algum erro na query ocorrer.
      */
-    Galeria getGaleriaImagensPublicas() throws SQLException;
+    @NotNull
+    Galeria getGaleriaImagensPublicas() throws Throwable;
 
     /**
      * Este método busca com base no código da {@link Empresa} uma lista de URLs em forma de {@link String}.
      * Com base nessas strings uma {@link Galeria} é criada.
      *
-     * @param codEmpresa - Código da empresa a qual devemos buscar as imagens.
-     * @return - Um {@link List<String>} contendo as URLs das imagens.
-     * @throws SQLException - Caso algum erro na query ocorrer.
+     * @param codEmpresa Código da empresa a qual devemos buscar as imagens.
+     * @return Um {@link List<String>} contendo as URLs das imagens.
+     * @throws Throwable Caso algum erro na query ocorrer.
      */
-    Galeria getGaleriaImagensEmpresa(@NotNull final Long codEmpresa) throws SQLException;
+    @NotNull
+    Galeria getGaleriaImagensEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * Método que insere uma imagem na {@link Galeria} da {@link Empresa}.
      *
-     * @param codEmpresa   - Código da empresa a qual devemos inserir a imagem.
-     * @param imagemProLog - Imagem que deve ser inserida.
-     * @return - Código da imagem que foi inserida.
-     * @throws SQLException - Caso algum erro na query ocorrer.
+     * @param codEmpresa   Código da empresa a qual devemos inserir a imagem.
+     * @param imagemProLog Imagem que deve ser inserida.
+     * @return Código da imagem que foi inserida.
+     * @throws SQLException Caso algum erro na query ocorrer.
      */
     @NotNull
     Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws SQLException;

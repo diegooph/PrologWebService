@@ -170,7 +170,7 @@ public class ChecklistResource {
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     @Deprecated
     public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
-                                               @PathParam("codFuncao") Long codFuncao) {
+                                               @PathParam("codFuncao") Long codFuncao) throws ProLogException {
         return new ChecklistModeloService().getUrlImagensPerguntas(codUnidade, codFuncao);
     }
 

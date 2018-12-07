@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
@@ -45,7 +46,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	@Deprecated
 	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
-											   @PathParam("codFuncao") Long codFuncao){
+											   @PathParam("codFuncao") Long codFuncao) throws ProLogException {
 		return new ChecklistModeloService().getUrlImagensPerguntas(codUnidade, codFuncao);
 	}
 
