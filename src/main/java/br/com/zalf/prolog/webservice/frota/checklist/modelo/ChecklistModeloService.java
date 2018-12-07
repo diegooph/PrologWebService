@@ -11,7 +11,6 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
@@ -73,18 +72,17 @@ public class ChecklistModeloService {
         }
     }
 
-    public Response updateModeloChecklist(@NotNull final String token,
-                                          @NotNull final Long codUnidade,
-                                          @NotNull final Long codModelo,
-                                          @NotNull final ModeloChecklistEdicao modeloChecklist) throws Exception {
+    @NotNull
+    Response updateModeloChecklist(@NotNull final String token,
+                                   @NotNull final Long codUnidade,
+                                   @NotNull final Long codModelo,
+                                   @NotNull final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
         try {
             dao.updateModeloChecklist(TokenCleaner.getOnlyToken(token), codUnidade, codModelo, modeloChecklist);
             return Response.ok("Modelo de checklist atualizado com sucesso");
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao atualizar modelo de checklist", e);
-            throw new GenericException("Não foi possível atualizar o modelo do checklist",
-                    "Erro ao atualizar o modelo de checklist código: " + codModelo,
-                    e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar modelo de checklist", t);
+            throw handler.map(t, "Erro ao atualizar modelo de checklist, tente novamente");
         }
     }
 

@@ -78,10 +78,11 @@ public class ChecklistModeloResource {
             Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}/{codModelo}")
-    public Response updateModeloChecklist(@HeaderParam("Authorization") String token,
-                                          @PathParam("codUnidade") Long codUnidade,
-                                          @PathParam("codModelo") Long codModelo,
-                                          ModeloChecklistEdicao modeloChecklist) throws Exception {
+    public Response updateModeloChecklist(
+            @HeaderParam("Authorization") @Required final String token,
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codModelo") @Required final Long codModelo,
+            @Required final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
         return service.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
     }
 

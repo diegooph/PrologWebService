@@ -64,16 +64,16 @@ public interface ChecklistModeloDao {
      * * {@link ModeloChecklistEdicao#tiposVeiculoLiberados}.
      * * {@link ModeloChecklistEdicao#perguntas}.
      *
-     * @param token           - Token do usuário que está solicitando a alteração do {@link ModeloChecklistEdicao}.
-     * @param unidade         - Código da Unidade.
-     * @param codUnidade      - Código do modelo.
-     * @param modeloChecklist - O novo {@link ModeloChecklistEdicao} que será inserido.
-     * @throws Exception      - Se algum erro ocorrer.
+     * @param token           Token do usuário que está solicitando a alteração do {@link ModeloChecklistEdicao}.
+     * @param unidade         Código da Unidade.
+     * @param codUnidade      Código do modelo.
+     * @param modeloChecklist O novo {@link ModeloChecklistEdicao} que será inserido.
+     * @throws Throwable Se algum erro acontecer na atualização dos dados.
      */
     void updateModeloChecklist(@NotNull final String token,
                                @NotNull final Long unidade,
                                @NotNull final Long codUnidade,
-                               @NotNull final ModeloChecklistEdicao modeloChecklist) throws Exception;
+                               @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable;
 
     /**
      * Busca as perguntas que compoẽm o checklist.
