@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class PneuTransferenciaRealizacao {
     private Long codUnidadeOrigem;
     private Long codUnidadeDestino;
     private Long codColaborador;
+    private LocalDateTime dataHoraTransferencia;
 
     /**
      * Código do cliente, número de fogo do pneu.
@@ -46,7 +48,7 @@ public class PneuTransferenciaRealizacao {
         this.codColaborador = codColaborador;
     }
 
-    public List<String> codCodPneusCliente() {
+    public List<String> getCodPneusCliente() {
         return codPneusCliente;
     }
 
@@ -62,12 +64,22 @@ public class PneuTransferenciaRealizacao {
         this.observacao = observacao;
     }
 
+    public LocalDateTime getDataHoraTransferencia() {
+        return dataHoraTransferencia;
+    }
+
+    public void setDataHoraTransferencia(LocalDateTime dataHoraTransferencia) {
+        this.dataHoraTransferencia = dataHoraTransferencia;
+    }
+
+
     @NotNull
     public static PneuTransferenciaRealizacao createDummy() {
         final PneuTransferenciaRealizacao transferencia = new PneuTransferenciaRealizacao();
         transferencia.setCodUnidadeOrigem(5L);
         transferencia.setCodUnidadeDestino(3L);
         transferencia.setCodColaborador(190L);
+        transferencia.setDataHoraTransferencia(LocalDateTime.now());
         List<String> codPneusCliente = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             codPneusCliente.add(String.valueOf(i));
