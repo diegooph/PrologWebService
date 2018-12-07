@@ -36,10 +36,9 @@ import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDaoImpl;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios.OrdemServicoRelatorioDao;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios.OrdemServicoRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OrdemServicoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.OrdemServicoRelatorioDao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.OrdemServicoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.relatorios.ChecklistRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
@@ -55,12 +54,12 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuSqlExceptionTranslator;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuTipoServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuTipoServicoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -77,12 +76,16 @@ import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatoriosDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
+import br.com.zalf.prolog.webservice.gente.controlejornada.VersaoDadosIntervaloAtualizador;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa.JustificativaAjusteDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa.JustificativaAjusteDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatoriosDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDao;
@@ -165,7 +168,7 @@ public final class Injection {
     }
 
     @NotNull
-    public static OrdemServicoDao provideOrdemServicoDao() {
+    public static OrdemServicoDaoImpl provideOrdemServicoDao() {
         return new OrdemServicoDaoImpl();
     }
 
@@ -255,13 +258,23 @@ public final class Injection {
     }
 
     @NotNull
-    public static ControleIntervaloDao provideControleIntervaloDao() {
-        return new ControleIntervaloDaoImpl();
+    public static ControleJornadaDao provideControleJornadaDao() {
+        return new ControleJornadaDaoImpl();
     }
 
     @NotNull
-    public static ControleIntervaloRelatoriosDao provideControleIntervaloRelatoriosDao() {
-        return new ControleIntervaloRelatorioDaoImpl();
+    public static ControleJornadaAjusteDao provideControleJornadaAjustesDao() {
+        return new ControleJornadaAjusteDaoImpl();
+    }
+
+    @NotNull
+    public static JustificativaAjusteDao provideJustificativaAjusteDao() {
+        return new JustificativaAjusteDaoImpl();
+    }
+
+    @NotNull
+    public static ControleJornadaRelatoriosDao provideControleJornadaRelatoriosDao() {
+        return new ControleJornadaRelatorioDaoImpl();
     }
 
     @NotNull

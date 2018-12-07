@@ -9,6 +9,11 @@ Change Log
 intervalo de 30 dias.
 * Cria componente para a Dashboard que mostra a quantidade de relatos pendentes, separando por tipo.
 
+### Refactors
+* Altera verificação de vlBateuJornMot, vlNaoBateuJornMot, vlRecargaMot, vlBateuJornAju, vlNaoBateuJornAju e
+vlTotalMapa no import do mapa para lidar com possibilidade de vazio na célula importada
+* Altera valor do fator de 0 para 1 no import do mapa, caso seja 0
+
 <a name="v0.0.79"></a>
 ## Version [v0.0.79](https://github.com/luizfp/PrologWebService/compare/v0.0.78...v0.0.79) (2018-11-23)
 
