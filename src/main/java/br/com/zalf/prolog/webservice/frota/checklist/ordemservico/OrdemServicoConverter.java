@@ -81,9 +81,15 @@ final class OrdemServicoConverter {
         holder.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         holder.setKmAtualVeiculo(rSet.getLong("KM_ATUAL_VEICULO"));
         final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
-        do {
-            itens.add(createItemOrdemServicoVisualizacao(rSet));
-        } while (rSet.next());
+
+        // Verifica se veio dados na query ou apenas a primeira linha para preenchimento do holder.
+        if (rSet.getLong("COD_ITEM_OS") > 0) {
+            do {
+
+                itens.add(createItemOrdemServicoVisualizacao(rSet));
+            } while (rSet.next());
+        }
+
         holder.setItens(itens);
         return holder;
     }
