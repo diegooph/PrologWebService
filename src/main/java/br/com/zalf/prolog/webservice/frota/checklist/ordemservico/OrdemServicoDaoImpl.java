@@ -197,11 +197,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             bindValueOrNull(stmt, 2, codOrdemServico, SqlType.BIGINT);
             bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
             stmt.setNull(4, SqlType.TEXT.asIntTypeJava());
-            if (statusItens != null) {
-                stmt.setString(5, statusItens.asString());
-            } else {
-                stmt.setNull(5, Types.VARCHAR);
-            }
+            bindValueOrNull(stmt, 5, statusItens != null ? statusItens.asString() : null, SqlType.VARCHAR);
             stmt.setObject(6, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setNull(7, SqlType.INTEGER.asIntTypeJava());
             stmt.setNull(8, SqlType.INTEGER.asIntTypeJava());
