@@ -137,7 +137,7 @@ public class PneuTransferenciaVisualizacao {
             sulcos.setCentralExterno(i + 13.3);
             sulcos.setExterno(i + 12.9);
             final PneusTransferencia pneusTransferencia = new PneusTransferencia();
-            pneusTransferencia.setCodPneu(Long.valueOf(i));
+            pneusTransferencia.setCodPneuCliente(String.valueOf(i));
             pneusTransferencia.setSulcosAtuais(sulcos);
             pneusTransferencia.setPressao(i + 100.5);
             pneusTransferencia.setVidaTransferencia(i);

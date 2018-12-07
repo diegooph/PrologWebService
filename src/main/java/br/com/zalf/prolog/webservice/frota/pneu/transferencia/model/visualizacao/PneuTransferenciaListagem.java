@@ -19,7 +19,10 @@ public class PneuTransferenciaListagem {
     private Long codUnidadeDestino;
     private Long codColaborador;
     private LocalDateTime dataHoraTransferencia;
-    private List<Long> pneus;
+    /**
+     * Código do cliente, número de fogo do pneu.
+     */
+    private List<String> codPneusCliente;
     private String nomeUnidadeOrigem;
     private String nomeUnidadeDestino;
     private String nomeRegionalOrigem;
@@ -67,12 +70,12 @@ public class PneuTransferenciaListagem {
         this.dataHoraTransferencia = dataHoraTransferencia;
     }
 
-    public List<Long> getPneus() {
-        return pneus;
+    public List<String> getCodPneusCliente() {
+        return codPneusCliente;
     }
 
-    public void setPneus(List<Long> pneus) {
-        this.pneus = pneus;
+    public void setCodPneusCliente(List<String> codPneusCliente) {
+        this.codPneusCliente = codPneusCliente;
     }
 
     public String getNomeUnidadeOrigem() {
@@ -123,11 +126,11 @@ public class PneuTransferenciaListagem {
         transferencia.setCodUnidadeDestino(3L);
         transferencia.setCodColaborador(190L);
         transferencia.setDataHoraTransferencia(LocalDateTime.now());
-        final List<Long> pneus = new ArrayList<>();
+        final List<String> codPneusCliente = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            pneus.add(Long.valueOf(i));
+            codPneusCliente.add(String.valueOf(i));
         }
-        transferencia.setPneus(pneus);
+        transferencia.setCodPneusCliente(codPneusCliente);
         transferencia.setNomeUnidadeOrigem("Floripa");
         transferencia.setNomeUnidadeDestino("Sapucaia");
         transferencia.setNomeRegionalOrigem("Sul");

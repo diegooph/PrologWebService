@@ -9,17 +9,20 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
  */
 public class PneusTransferencia {
 
-    private Long codPneu;
+    /**
+     * Código do cliente, número de fogo do pneu.
+     */
+    private String codPneuCliente;
     private Sulcos sulcosAtuais;
     private double pressao;
     private int vidaTransferencia;
 
-    public Long getCodPneu() {
-        return codPneu;
+    public String getCodPneuCliente() {
+        return codPneuCliente;
     }
 
-    public void setCodPneu(Long codPneu) {
-        this.codPneu = codPneu;
+    public void setCodPneuCliente(String codPneuCliente) {
+        this.codPneuCliente = codPneuCliente;
     }
 
     public Sulcos getSulcosAtuais() {

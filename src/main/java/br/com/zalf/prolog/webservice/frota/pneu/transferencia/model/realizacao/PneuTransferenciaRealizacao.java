@@ -15,7 +15,11 @@ public class PneuTransferenciaRealizacao {
     private Long codUnidadeOrigem;
     private Long codUnidadeDestino;
     private Long codColaborador;
-    private List<Long> codPneus;
+
+    /**
+     * Código do cliente, número de fogo do pneu.
+     */
+    private List<String> codPneusCliente;
     private String observacao;
 
     public Long getCodUnidadeOrigem() {
@@ -42,12 +46,12 @@ public class PneuTransferenciaRealizacao {
         this.codColaborador = codColaborador;
     }
 
-    public List<Long> codPneus() {
-        return codPneus;
+    public List<String> codCodPneusCliente() {
+        return codPneusCliente;
     }
 
-    public void setCodPneu(List<Long> codPneus) {
-        this.codPneus = codPneus;
+    public void setCodPneusCliente(List<String> codPneusCliente) {
+        this.codPneusCliente = codPneusCliente;
     }
 
     public String getObservacao() {
@@ -64,11 +68,11 @@ public class PneuTransferenciaRealizacao {
         transferencia.setCodUnidadeOrigem(5L);
         transferencia.setCodUnidadeDestino(3L);
         transferencia.setCodColaborador(190L);
-        List<Long> codPneus = new ArrayList<>();
+        List<String> codPneusCliente = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            codPneus.add(Long.valueOf(i));
+            codPneusCliente.add(String.valueOf(i));
         }
-        transferencia.setCodPneu(codPneus);
+        transferencia.setCodPneusCliente(codPneusCliente);
         transferencia.setObservacao("Operação Verão");
 
         return transferencia;
