@@ -168,6 +168,8 @@ final class OrdemServicoConverter {
         final AlternativaItemOrdemServico alternativa = new AlternativaItemOrdemServico();
         alternativa.setCodAlteranativa(rSet.getLong("COD_ALTERNATIVA"));
         alternativa.setDescricao(rSet.getString("DESCRICAO_ALTERNATIVA"));
+        alternativa.setTipoOutros(rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"));
+        alternativa.setDescricaoTipoOutros(rSet.getString("DESCRICAO_TIPO_OUTROS"));
         alternativa.setPrioridade(PrioridadeAlternativa.fromString(
                 rSet.getString("PRIORIDADE_ALTERNATIVA")));
         return alternativa;
