@@ -27,8 +27,8 @@ public class DummyPneuTransferenciaResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/pneu-transferencia-listagem-list")
-    public List<PneuTransferenciaVisualizacao> getPneuTransferenciaListagem() {
+    @Path("/pneu-transferencia-visualizacao-list")
+    public List<PneuTransferenciaVisualizacao> getPneuTransferenciaVisualizacao() {
         ensureDebugEnviroment();
         final List<PneuTransferenciaVisualizacao> transferencias = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -39,8 +39,8 @@ public class DummyPneuTransferenciaResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/pneu-transferencia-visualizacao-list")
-    public List<PneuTransferenciaListagem> getPneuTransferenciaVisualizacao() {
+    @Path("/pneu-transferencia-listagem-list")
+    public List<PneuTransferenciaListagem> getPneuTransferenciaListagem() {
         ensureDebugEnviroment();
         final List<PneuTransferenciaListagem> transferencias = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
