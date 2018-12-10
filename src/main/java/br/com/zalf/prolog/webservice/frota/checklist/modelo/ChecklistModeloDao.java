@@ -34,14 +34,14 @@ public interface ChecklistModeloDao {
      * da {@link Unidade} filtrando pela {@link FuncaoProLog}.
      *
      * @param codUnidade Código da {@link Unidade}.
-     * @param codFuncao  Código da {@link FuncaoProLog} ou "%" para buscar de todas as funções.
+     * @param codCargo  Código da {@link FuncaoProLog} ou "%" para buscar de todas as funções.
      * @return Lista de {@link ModeloChecklistListagem} da Unidade.
      * @throws Throwable Se ocorrer algum erro na busca dos dados.
      */
     @NotNull
     List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
             @NotNull final Long codUnidade,
-            @NotNull final String codFuncao) throws Throwable;
+            @NotNull final String codCargo) throws Throwable;
 
     /**
      * Busca um {@link ModeloChecklistVisualizacao modelo de checklist} através do
@@ -84,7 +84,7 @@ public interface ChecklistModeloDao {
      */
     @NotNull
     List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
-                                                 @NotNull final Long codModelo) throws Throwable;
+                                                 @NotNull final Long codModelo) throws SQLException;
 
     /**
      * Marca um {@link ModeloChecklistVisualizacao} como ativo ou inativo.
@@ -145,5 +145,5 @@ public interface ChecklistModeloDao {
      * @throws SQLException Caso algum erro na query ocorrer.
      */
     @NotNull
-    Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws SQLException;
+    Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws Throwable;
 }

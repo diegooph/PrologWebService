@@ -34,6 +34,7 @@ public class ChecklistModeloResource {
     private final ChecklistModeloService service = new ChecklistModeloService();
 
     @POST
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     public Response insertModeloChecklist(
             @Required final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
@@ -41,28 +42,34 @@ public class ChecklistModeloResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR,
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = {
+            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
             Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}")
     public List<ModeloChecklistListagem> getModelosChecklistByCodUnidade(
             @PathParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
-        return service.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, "%");
+        return service.getModelosChecklistListagemByCodUnidadeByCodCargo(codUnidade, "%");
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR,
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = {
+            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
             Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}/cargos/{codCargo}")
     public List<ModeloChecklistListagem> getModelosChecklistByCodUnidadeByCodCargo(
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codCargo") @Required final String codFuncao) throws ProLogException {
-        return service.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, codFuncao);
+        return service.getModelosChecklistListagemByCodUnidadeByCodCargo(codUnidade, codFuncao);
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR,
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = {
+            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
             Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}/{codModelo}")
@@ -74,7 +81,8 @@ public class ChecklistModeloResource {
 
     @PUT
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR,
+    @Secured(permissions = {
+            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
             Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}/{codModelo}")
@@ -86,19 +94,8 @@ public class ChecklistModeloResource {
         return service.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
     }
 
-    @GET
-    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR,
-            Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR,
-            Pilares.Frota.Checklist.REALIZAR})
-    @Path("/perguntas/{codUnidade}/{codModelo}")
-    public List<PerguntaRespostaChecklist> getPerguntas(
-            @PathParam("codUnidade") @Required final Long codUnidade,
-            @PathParam("codModelo") @Required final Long codModelo) throws ProLogException {
-        return service.getPerguntas(codUnidade, codModelo);
-    }
-
     @PUT
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR})
     @Path("/{codUnidade}/{codModelo}/status-ativo")
     public Response updateStatus(
@@ -109,6 +106,7 @@ public class ChecklistModeloResource {
     }
 
     @GET
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/prolog")
     public List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws ProLogException {
@@ -116,10 +114,11 @@ public class ChecklistModeloResource {
     }
 
     //
-    // Métodos referente ao uso da galeria
+    // Métodos referente ao uso da galeria.
     //
     @GET
     @Path("/url-imagens/{codUnidade}/{codFuncao}")
+    @UsedBy(platforms = Platform.ANDROID)
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public List<String> getUrlImagensPerguntas(
             @PathParam("codUnidade") @Required final Long codUnidade,
@@ -128,6 +127,7 @@ public class ChecklistModeloResource {
     }
 
     @GET
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/galeria-prolog")
     public Galeria getGaleriaImagensPublicas() throws ProLogException {
@@ -135,6 +135,7 @@ public class ChecklistModeloResource {
     }
 
     @GET
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/galerias/{codEmpresa}")
@@ -144,14 +145,33 @@ public class ChecklistModeloResource {
     }
 
     @POST
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    @Path("/galerias/{codEmpresa}/upload")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
+    @Path("/galerias/{codEmpresa}/upload")
     public AbstractResponse insertImagemGaleria(
             @PathParam("codEmpresa") @Required final Long codEmpresa,
             @FormDataParam("file") @Required final InputStream fileInputStream,
-            @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) {
+            @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) throws ProLogException {
         Preconditions.checkNotNull(codEmpresa, "Código da empresa não pode ser null!");
         return service.insertImagem(codEmpresa, fileInputStream, fileDetail);
+    }
+
+    //
+    // Métodos depreciados.
+    //
+    @GET
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    @Secured(permissions = {
+            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
+            Pilares.Frota.Checklist.Modelo.ALTERAR,
+            Pilares.Frota.Checklist.Modelo.CADASTRAR,
+            Pilares.Frota.Checklist.REALIZAR})
+    @Path("/perguntas/{codUnidade}/{codModelo}")
+    @Deprecated
+    public List<PerguntaRespostaChecklist> getPerguntas(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codModelo") @Required final Long codModelo) throws ProLogException {
+        return service.getPerguntas(codUnidade, codModelo);
     }
 }

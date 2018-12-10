@@ -27,7 +27,7 @@ public class ChecklistTest extends BaseTest {
     }
 
     @Test
-    public void testGetModeloChecklist() throws SQLException {
+    public void testGetModeloChecklist() throws Throwable {
         final ModeloChecklistVisualizacao modeloChecklist = dao.getModeloChecklist(5L, 40L);
 
         System.out.println(GsonUtils.getGson().toJson(modeloChecklist));
@@ -35,7 +35,7 @@ public class ChecklistTest extends BaseTest {
     }
 
     @Test
-    public void testGetModelosChecklistListagem() throws SQLException {
+    public void testGetModelosChecklistListagem() throws Throwable {
         final List<ModeloChecklistListagem> listagem =
                 dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(5L, "%");
 

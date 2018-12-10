@@ -60,11 +60,11 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                         + modeloChecklist.getCodUnidade());
             }
             conn.commit();
-        } catch (Exception e) {
+        } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
             }
-            throw e;
+            throw t;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -74,7 +74,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     @Override
     public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
             @NotNull final Long codUnidade,
-            @NotNull final String codFuncao) throws Throwable {
+            @NotNull final String codCargo) throws Throwable {
         final List<ModeloChecklistListagem> modelosChecklistListagem = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -83,7 +83,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_LISTAGEM_MODELOS_CHECKLIST(?, ?);");
             stmt.setLong(1, codUnidade);
-            stmt.setString(2, codFuncao);
+            stmt.setString(2, codCargo);
             rSet = stmt.executeQuery();
             Set<String> setCargos = new HashSet<>();
             Set<String> setTiposVeiculos = new HashSet<>();
@@ -138,7 +138,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 modeloChecklist.setCodUnidade(codUnidade);
                 modeloChecklist.setPerguntas(getPerguntasModeloChecklist(codUnidade, codModelo));
                 modeloChecklist.setTiposVeiculoLiberados(getTipoVeiculoByCodModeloChecklist(codUnidade, codModelo));
-                modeloChecklist.setCargosLiberados(getFuncaoByCodModelo(codUnidade, codModelo));
+                modeloChecklist.setCargosLiberados(getCargosByCodModelo(codUnidade, codModelo));
                 return modeloChecklist;
             } else {
                 throw new SQLException("Não foi possível buscar o modelo de checklist: "
@@ -165,11 +165,11 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 atualizaPerguntasModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
             }
             conn.commit();
-        } catch (Exception e) {
+        } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
             }
-            throw e;
+            throw t;
         } finally {
             close(conn);
         }
@@ -179,7 +179,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     @Override
     @Deprecated
     public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
-                                                        @NotNull final Long codModelo) throws Throwable {
+                                                        @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -319,7 +319,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     @Override
     public List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade,
                                                @NotNull final Long codFuncao) throws Throwable {
-        final List<String> urls = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -335,13 +334,14 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codFuncao);
             rSet = stmt.executeQuery();
+            final List<String> urls = new ArrayList<>();
             while (rSet.next()) {
                 urls.add(rSet.getString("URL_IMAGEM"));
             }
+            return urls;
         } finally {
             close(conn, stmt, rSet);
         }
-        return urls;
     }
 
     @NotNull
@@ -359,7 +359,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     @NotNull
     @Override
     public Long insertImagem(@NotNull final Long codEmpresa,
-                             @NotNull final ImagemProLog imagemProLog) throws SQLException {
+                             @NotNull final ImagemProLog imagemProLog) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -376,9 +376,11 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             } else {
                 throw new SQLException("Erro ao inserir imagem na galeria da empresa: " + codEmpresa);
             }
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -763,7 +765,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<ImagemProLog> imagensProLog = new ArrayList<>();
         try {
             conn = getConnection();
             if (codEmpresa != null) {
@@ -775,6 +776,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                         "WHERE COD_EMPRESA IS NULL AND STATUS_ATIVO = TRUE;");
             }
             rSet = stmt.executeQuery();
+            final List<ImagemProLog> imagensProLog = new ArrayList<>();
             while (rSet.next()) {
                 final ImagemProLog imagemProLog = new ImagemProLog();
                 imagemProLog.setCodImagem(rSet.getLong("COD_IMAGEM"));
@@ -783,10 +785,10 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 imagemProLog.setStatusImagem(rSet.getBoolean("STATUS_ATIVO"));
                 imagensProLog.add(imagemProLog);
             }
+            return new Galeria(imagensProLog);
         } finally {
             close(conn, stmt, rSet);
         }
-        return new Galeria(imagensProLog);
     }
 
     @NotNull
@@ -795,7 +797,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<TipoVeiculo> listTipos = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT VT.NOME AS TIPO_VEICULO, VT.CODIGO "
@@ -808,25 +809,26 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             rSet = stmt.executeQuery();
+            final List<TipoVeiculo> tipos = new ArrayList<>();
             while (rSet.next()) {
                 final TipoVeiculo tipo = new TipoVeiculo();
                 tipo.setCodigo(rSet.getLong("CODIGO"));
                 tipo.setNome(rSet.getString("TIPO_VEICULO"));
-                listTipos.add(tipo);
+                tipos.add(tipo);
             }
+            return tipos;
         } finally {
             close(conn, stmt, rSet);
         }
-        return listTipos;
     }
 
+    @SuppressWarnings("Duplicates")
     @NotNull
-    private List<Cargo> getFuncaoByCodModelo(@NotNull final Long codUnidade,
+    private List<Cargo> getCargosByCodModelo(@NotNull final Long codUnidade,
                                              @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<Cargo> listCargo = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT F.CODIGO, F.NOME "
@@ -838,47 +840,17 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             rSet = stmt.executeQuery();
+            final List<Cargo> cargos = new ArrayList<>();
             while (rSet.next()) {
                 final Cargo cargo = new Cargo();
                 cargo.setCodigo(rSet.getLong("CODIGO"));
                 cargo.setNome(rSet.getString("NOME"));
-                listCargo.add(cargo);
+                cargos.add(cargo);
             }
+            return cargos;
         } finally {
             close(conn, stmt, rSet);
         }
-        return listCargo;
-    }
-
-    @NotNull
-    @Deprecated
-    private List<PerguntaRespostaChecklist> createPerguntasAlternativas(
-            @NotNull final ResultSet rSet) throws SQLException {
-        final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
-        List<AlternativaChecklist> alternativas = new ArrayList<>();
-        PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
-        AlternativaChecklist alternativa;
-        if (rSet.first()) {
-            pergunta = createPergunta(rSet);
-            alternativa = createAlternativa(rSet);
-            alternativas.add(alternativa);
-        }
-        while (rSet.next()) {
-            if (rSet.getLong("COD_PERGUNTA") == pergunta.getCodigo()) {
-                alternativa = createAlternativa(rSet);
-                alternativas.add(alternativa);
-            } else {
-                pergunta.setAlternativasResposta(alternativas);
-                perguntas.add(pergunta);
-                alternativas = new ArrayList<>();
-                pergunta = createPergunta(rSet);
-                alternativa = createAlternativa(rSet);
-                alternativas.add(alternativa);
-            }
-        }
-        pergunta.setAlternativasResposta(alternativas);
-        perguntas.add(pergunta);
-        return perguntas;
     }
 
     @NotNull
@@ -912,19 +884,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    @Deprecated
-    private PerguntaRespostaChecklist createPergunta(@NotNull final ResultSet rSet) throws SQLException {
-        final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
-        pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
-        pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
-        pergunta.setPergunta(rSet.getString("PERGUNTA"));
-        pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
-        pergunta.setCodImagem(rSet.getLong("COD_IMAGEM"));
-        pergunta.setUrl(rSet.getString("URL_IMAGEM"));
-        return pergunta;
-    }
-
-    @NotNull
     private PerguntaModeloChecklistVisualizacao createPerguntaModeloChecklist(
             @NotNull final ResultSet rSet) throws SQLException {
         final PerguntaModeloChecklistVisualizacao pergunta = new PerguntaModeloChecklistVisualizacao();
@@ -935,19 +894,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         pergunta.setCodImagem(rSet.getLong("COD_IMAGEM"));
         pergunta.setUrlImagem(rSet.getString("URL_IMAGEM"));
         return pergunta;
-    }
-
-    @NotNull
-    @Deprecated
-    private AlternativaChecklist createAlternativa(@NotNull final ResultSet rSet) throws SQLException {
-        final AlternativaChecklist alternativa = new AlternativaChecklist();
-        alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
-        alternativa.alternativa = rSet.getString("ALTERNATIVA");
-        alternativa.prioridade = PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE"));
-        if (rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS")) {
-            alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
-        }
-        return alternativa;
     }
 
     @NotNull
@@ -1012,5 +958,62 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                     modeloChecklist.getCodigo(),
                     pergunta);
         }
+    }
+
+    @NotNull
+    @Deprecated
+    private List<PerguntaRespostaChecklist> createPerguntasAlternativas(
+            @NotNull final ResultSet rSet) throws SQLException {
+        final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
+        List<AlternativaChecklist> alternativas = new ArrayList<>();
+        PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
+        AlternativaChecklist alternativa;
+        if (rSet.first()) {
+            pergunta = createPergunta(rSet);
+            alternativa = createAlternativa(rSet);
+            alternativas.add(alternativa);
+        }
+        while (rSet.next()) {
+            if (rSet.getLong("COD_PERGUNTA") == pergunta.getCodigo()) {
+                alternativa = createAlternativa(rSet);
+                alternativas.add(alternativa);
+            } else {
+                pergunta.setAlternativasResposta(alternativas);
+                perguntas.add(pergunta);
+                alternativas = new ArrayList<>();
+                pergunta = createPergunta(rSet);
+                alternativa = createAlternativa(rSet);
+                alternativas.add(alternativa);
+            }
+        }
+        pergunta.setAlternativasResposta(alternativas);
+        perguntas.add(pergunta);
+        return perguntas;
+    }
+
+    @NotNull
+    @Deprecated
+    private PerguntaRespostaChecklist createPergunta(@NotNull final ResultSet rSet) throws SQLException {
+        final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
+        pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
+        pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
+        pergunta.setPergunta(rSet.getString("PERGUNTA"));
+        pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
+        pergunta.setCodImagem(rSet.getLong("COD_IMAGEM"));
+        pergunta.setUrl(rSet.getString("URL_IMAGEM"));
+        return pergunta;
+    }
+
+    @NotNull
+    @Deprecated
+    private AlternativaChecklist createAlternativa(@NotNull final ResultSet rSet) throws SQLException {
+        final AlternativaChecklist alternativa = new AlternativaChecklist();
+        alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
+        alternativa.alternativa = rSet.getString("ALTERNATIVA");
+        alternativa.prioridade = PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE"));
+        if (rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS")) {
+            alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
+        }
+        return alternativa;
     }
 }
