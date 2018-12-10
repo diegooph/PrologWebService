@@ -16,7 +16,7 @@ public enum SliceValueMode {
     SLICE_PERCENTAGE,
 
     /**
-     * Indica que devemos exibir em cada fatia a {@link PieEntry#representacaoValor representação de valor } enviada do
+     * Indica que devemos exibir em cada fatia a {@link PieEntry#representacaoValor representação de valor} enviada do
      * servidor para a respectiva fatia.
      */
     VALUE_REPRESENTATION

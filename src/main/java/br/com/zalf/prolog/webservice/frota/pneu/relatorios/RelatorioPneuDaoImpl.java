@@ -759,31 +759,66 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @NotNull
     @Override
-    public List<QtdDiasAfericoesVencidas> getQtdAfericoesVencidas(@NotNull List<Long> codUnidades) throws Throwable {
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            ResultSet rSet = null;
-            try {
-                conn = getConnection();
-                stmt = conn.prepareStatement("SELECT * FROM " +
-                        "FUNC_AFERICAO_RELATORIO_QTD_DIAS_VENCIDOS(?, ?);");
-                stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-                stmt.setObject(2, Now.localDateTimeUtc());
-
-                rSet = stmt.executeQuery();
-                final List<QtdDiasAfericoesVencidas> qtdDiasAfericoesVencidas = new ArrayList<>();
-                while (rSet.next()) {
-                    qtdDiasAfericoesVencidas.add(
-                            new QtdDiasAfericoesVencidas(
-                                    rSet.getString("UNIDADE"),
-                                    rSet.getString("PLACA"),
-                                    rSet.getInt("QTD DIAS SEM AFERIR SULCO"),
-                                    rSet.getInt("QTD DIAS SEM AFERIR PRSSAO")));
-                }
-                return qtdDiasAfericoesVencidas;
-            } finally {
-                closeConnection(conn, stmt, rSet);
+    public List<QtdDiasAfericoesVencidas> getQtdAfericoesVencidas(
+            @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_AFERICAO_VENCIDA(?, ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setObject(2, Now.localDateTimeUtc());
+            rSet = stmt.executeQuery();
+            final List<QtdDiasAfericoesVencidas> qtdDiasAfericoesVencidas = new ArrayList<>();
+            while (rSet.next()) {
+                qtdDiasAfericoesVencidas.add(
+                        new QtdDiasAfericoesVencidas(
+                                rSet.getString("UNIDADE"),
+                                rSet.getString("PLACA"),
+                                rSet.getInt("QTD DIAS SEM AFERIR SULCO"),
+                                rSet.getInt("QTD DIAS SEM AFERIR PRESSAO")));
             }
+            return qtdDiasAfericoesVencidas;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<QuantidadeAfericao> getQtdAfericoesRealizadasPorDiaByTipo(
+            @NotNull final List<Long> codUnidades,
+            final int diasRetroativosParaBuscar) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "FUNC_AFERICAO_RELATORIO_QTD_AFERICOES_REALIZADAS_POR_DIA(?, ?, ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setObject(2, Now.localDateUtc());
+            stmt.setInt(3, diasRetroativosParaBuscar);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<QuantidadeAfericao> afericoes = new ArrayList<>();
+                do {
+                    afericoes.add(new QuantidadeAfericao(
+                            rSet.getObject("DATA", Date.class),
+                            rSet.getString("DATA_FORMATADA"),
+                            rSet.getInt("QTD_AFERICAO_SULCO"),
+                            rSet.getInt("QTD_AFERICAO_PRESSAO"),
+                            rSet.getInt("QTD_AFERICAO_SULCO_PRESSAO")));
+                } while (rSet.next());
+                return afericoes;
+            } else {
+                throw new IllegalStateException("Erro ao buscar as informações de aferições realizadas para as " +
+                        "unidades: " + codUnidades);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @NotNull

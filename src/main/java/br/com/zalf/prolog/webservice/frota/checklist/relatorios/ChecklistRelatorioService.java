@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
 import java.util.List;
@@ -220,17 +221,17 @@ class ChecklistRelatorioService {
 
     @NotNull
     Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
+                                         @Nullable final Long codColaborador,
+                                         @Nullable final String placa,
                                          @NotNull final String dataInicial,
-                                         @NotNull final String dataFinal,
-                                         final Integer codColaborador,
-                                         final String placa) throws ProLogException {
+                                         @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getDadosGeraisChecklistReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
                     codColaborador,
-                    placa);
+                    placa,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de dados dos checklists (REPORT)", e);
             throw exceptionHandler.map(e,
@@ -241,18 +242,18 @@ class ChecklistRelatorioService {
 
     void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
                                     @NotNull final List<Long> codUnidades,
+                                    @Nullable final Long codColaborador,
+                                    @Nullable final String placa,
                                     @NotNull final String dataInicial,
-                                    @NotNull final String dataFinal,
-                                    final Integer codColaborador,
-                                    final String placa) {
+                                    @NotNull final String dataFinal) {
         try {
             dao.getDadosGeraisChecklistCsv(
                     outputStream,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
                     codColaborador,
-                    placa);
+                    placa,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de dados gerais dos checklists (CSV)", e);
             throw new RuntimeException(e);

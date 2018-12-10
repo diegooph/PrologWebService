@@ -6,7 +6,8 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolVeiculoDia;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.model.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -393,11 +394,11 @@ public final class AvaCorpAvilanConverter {
                     // Alternativa.
                     final AlternativaChecklist alternativa = new AlternativaChecklist();
                     alternativa.setAlternativa(itemCritico.getDescricao());
+                    alternativa.setPrioridade(PrioridadeAlternativa.CRITICA);
                     final List<AlternativaChecklist> alternativas = new ArrayList<>();
                     alternativas.add(alternativa);
                     // Pergunta.
                     final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
-                    pergunta.setPrioridade(PerguntaRespostaChecklist.CRITICA);
                     pergunta.setAlternativasResposta(alternativas);
                     itemOrdemServico.setPergunta(pergunta);
 

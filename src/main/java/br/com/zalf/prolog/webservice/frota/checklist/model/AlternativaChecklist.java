@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.AcaoEdicaoAlternativa;
 
 /**
  * Created by Zalf on 07/01/17.
@@ -11,6 +12,8 @@ public class AlternativaChecklist extends Alternativa {
      * Atributo restrito a ser apenas {@code DELETADA}/{@code ALTERADA}/{@code CRIADA}
      */
     public AcaoEdicaoAlternativa acaoEdicao;
+
+    public PrioridadeAlternativa prioridade;
 
     /**
      * Indica se a alternativa atual está marcada (selecionada) ou não.
@@ -27,6 +30,14 @@ public class AlternativaChecklist extends Alternativa {
 
     public void setAcaoEdicao(final AcaoEdicaoAlternativa acaoEdicao) {
         this.acaoEdicao = acaoEdicao;
+    }
+
+    public PrioridadeAlternativa getPrioridade() {
+        return prioridade;
+    }
+
+    public void setPrioridade(final PrioridadeAlternativa prioridade) {
+        this.prioridade = prioridade;
     }
 
     public boolean isSelected() {

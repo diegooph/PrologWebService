@@ -67,4 +67,8 @@ public class QuantidadeAfericao {
     public void setQtdAfericoesSulcoPressao(int qtdAfericoesSulcoPressao) {
         this.qtdAfericoesSulcoPressao = qtdAfericoesSulcoPressao;
     }
+
+    public boolean teveAfericoesRealizadas() {
+        return qtdAfericoesPressao > 0 || qtdAfericoesSulco > 0 || qtdAfericoesSulcoPressao > 0;
+    }
 }

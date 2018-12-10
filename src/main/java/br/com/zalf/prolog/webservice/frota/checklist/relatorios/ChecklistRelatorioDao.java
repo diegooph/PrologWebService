@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosAbaixoTempoEspecifico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
 import java.time.LocalDate;
@@ -87,15 +88,15 @@ public interface ChecklistRelatorioDao {
 
     void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
                                     @NotNull final List<Long> codUnidades,
+                                    @Nullable final Long codColaborador,
+                                    @Nullable final String placa,
                                     @NotNull final LocalDate dataInicial,
-                                    @NotNull final LocalDate dataFinal,
-                                    final Integer codColaborador,
-                                    final String placa) throws Throwable;
+                                    @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
     Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
+                                         @Nullable final Long codColaborador,
+                                         @Nullable final String placa,
                                          @NotNull final LocalDate dataInicial,
-                                         @NotNull final LocalDate dataFinal,
-                                         final Integer codColaborador,
-                                         final String placa) throws Throwable;
+                                         @NotNull final LocalDate dataFinal) throws Throwable;
 }

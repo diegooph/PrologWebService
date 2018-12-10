@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboData
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboGroup;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.line.*;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieData;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieEntry;
@@ -30,9 +31,13 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao.PRESSAO;
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao.SULCO;
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao.SULCO_PRESSAO;
 import static br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico.*;
 
 /**
@@ -98,12 +103,12 @@ final class DashboardPneuComponentsCreator {
         });
 
         final List<String> legendas = new ArrayList<>(3);
-        legendas.add(TipoMedicaoColetadaAfericao.SULCO.getLegibleString());
+        legendas.add(SULCO.getLegibleString());
         legendas.add(TipoMedicaoColetadaAfericao.PRESSAO.getLegibleString());
         legendas.add(TipoMedicaoColetadaAfericao.SULCO_PRESSAO.getLegibleString());
 
         final List<Color> colors = new ArrayList<>(3);
-        colors.add(TipoMedicaoColetadaAfericao.SULCO.getColor());
+        colors.add(SULCO.getColor());
         colors.add(TipoMedicaoColetadaAfericao.PRESSAO.getColor());
         colors.add(TipoMedicaoColetadaAfericao.SULCO_PRESSAO.getColor());
 
@@ -264,7 +269,7 @@ final class DashboardPneuComponentsCreator {
 
     @NotNull
     static VerticalBarChartComponent createMediaTempoConsertoServicoPorTipo(@NotNull final ComponentDataHolder
-                                                                                        component,
+                                                                                    component,
                                                                             @NotNull final Map<TipoServico, Integer>
                                                                                     tipoServicoHorasConserto) {
         final List<BarGroup> groups = new ArrayList<>(tipoServicoHorasConserto.size());
@@ -343,8 +348,8 @@ final class DashboardPneuComponentsCreator {
         final List<TableItemHeader> itemHeaders = new ArrayList<>(4);
         itemHeaders.add(new TableItemHeader("Unidade", null));
         itemHeaders.add(new TableItemHeader("Placa", null));
-        itemHeaders.add(new TableItemHeader("Qtd dias vencidos - sulco", null));
-        itemHeaders.add(new TableItemHeader("Qtd dias vencidos - pressão", null));
+        itemHeaders.add(new TableItemHeader("Dias aferição vencida - sulco", null));
+        itemHeaders.add(new TableItemHeader("Dias aferição vencida - pressão", null));
         final TableHeader tableHeader = new TableHeader(itemHeaders);
 
         // Linhas.
@@ -361,5 +366,87 @@ final class DashboardPneuComponentsCreator {
 
         final TableData tableData = new TableData(lines);
         return TableComponent.createDefault(component, tableHeader, tableData);
+    }
+
+    @NotNull
+    static HorizontalLineChartComponent getQtdAfericoesRealizadasPorDiaByTipoInterval30Days(
+            @NotNull final ComponentDataHolder component,
+            @NotNull final List<QuantidadeAfericao> afericaolistsDia) {
+
+        final Map<Double, String> informacoesPontos = new HashMap<>(afericaolistsDia.size());
+        final Map<Double, String> representacoesValoresX = new HashMap<>(afericaolistsDia.size());
+        final List<LineEntry> entriesSulco = new ArrayList<>();
+        final List<LineEntry> entriesPressao = new ArrayList<>();
+        final List<LineEntry> entriesSulcoPressao = new ArrayList<>();
+        for (int i = 0; i < afericaolistsDia.size(); i++) {
+            final QuantidadeAfericao qtdAfericao = afericaolistsDia.get(i);
+            final LineEntry sulco = new LineEntry(
+                    qtdAfericao.getQtdAfericoesSulco(),
+                    i,
+                    String.valueOf(qtdAfericao.getQtdAfericoesSulco()),
+                    qtdAfericao.getDataFormatada(),
+                    null);
+            final LineEntry pressao = new LineEntry(
+                    qtdAfericao.getQtdAfericoesPressao(),
+                    i,
+                    String.valueOf(qtdAfericao.getQtdAfericoesPressao()),
+                    qtdAfericao.getDataFormatada(),
+                    null);
+            final LineEntry sulcoPressao = new LineEntry(
+                    qtdAfericao.getQtdAfericoesSulcoPressao(),
+                    i,
+                    String.valueOf(qtdAfericao.getQtdAfericoesSulcoPressao()),
+                    qtdAfericao.getDataFormatada(),
+                    null);
+            entriesSulco.add(sulco);
+            entriesPressao.add(pressao);
+            entriesSulcoPressao.add(sulcoPressao);
+
+            // Cria a informação do ponto no gráfico em linhas.
+            String informacaoPonto = qtdAfericao.getDataFormatada();
+            if (qtdAfericao.teveAfericoesRealizadas()) {
+                if (qtdAfericao.getQtdAfericoesSulco() > 0) {
+                    informacaoPonto = String.format("%s\nSulco: %d", informacaoPonto, qtdAfericao.getQtdAfericoesSulco());
+                }
+                if (qtdAfericao.getQtdAfericoesPressao() > 0) {
+                    informacaoPonto = String.format("%s\nPressão: %d", informacaoPonto, qtdAfericao.getQtdAfericoesPressao());
+                }
+                if (qtdAfericao.getQtdAfericoesSulcoPressao() > 0) {
+                    informacaoPonto = String.format("%s\nSulco/Pressão: %d", informacaoPonto, qtdAfericao.getQtdAfericoesSulcoPressao());
+                }
+            } else {
+                informacaoPonto = String.format("%s\nsem aferições", informacaoPonto);
+            }
+            informacoesPontos.put((double) i, informacaoPonto);
+            representacoesValoresX.put((double) i, qtdAfericao.getDataFormatada());
+        }
+
+        final List<LineGroup> groups = new ArrayList<>(3 /* sulco, pressao, pressão e sulco*/);
+        final LineGroup groupSulco = new LineGroup("Sulco", entriesSulco, SULCO.getColor());
+        final LineGroup groupPressao = new LineGroup("Pressão", entriesPressao, PRESSAO.getColor());
+        final LineGroup groupSulcoPressao = new LineGroup("Sulco/Pressão", entriesSulcoPressao, SULCO_PRESSAO.getColor());
+        groups.add(groupSulco);
+        groups.add(groupPressao);
+        groups.add(groupSulcoPressao);
+
+        final LineData lineData = new LineData(groups);
+        return new HorizontalLineChartComponent.Builder()
+                .withCodigo(component.codigoComponente)
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
+                .withCodTipoComponente(component.codigoTipoComponente)
+                .withUrlEndpointDados(component.urlEndpointDados)
+                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
+                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
+                .withOrdemExibicao(component.ordemExibicao)
+                .withLabelEixoX(component.labelEixoX)
+                .withLabelEixoY(component.labelEixoY)
+                .withLineData(lineData)
+                .withSelectionLineColor(Color.RED)
+                .withRepresentacoesValoresX(representacoesValoresX)
+                .withLinesOrientation(LinesOrientation.HORIZONTAL)
+                .withInformacoesPontos(informacoesPontos)
+                .build();
     }
 }

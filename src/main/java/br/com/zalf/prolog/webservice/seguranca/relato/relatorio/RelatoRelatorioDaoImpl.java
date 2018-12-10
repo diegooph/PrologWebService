@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.seguranca.relato.relatorio;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.seguranca.relato.model.RelatoPendente;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -41,6 +43,7 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
 
     }
 
+    @NotNull
     @Override
     public Report getRelatosEstratificadosReport(Long codUnidade, Date dataInicial, Date dataFinal, String equipe)
             throws SQLException {
@@ -78,6 +81,30 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
             closeConnection(conn, stmt, rSet);
         }
         return 0;
+    }
+
+    @NotNull
+    @Override
+    public RelatoPendente getQtdRelatosPendentesByStatus(@NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "FUNC_RELATO_RELATORIO_QTD_RELATOS_PENDENTES_BY_STATUS(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return new RelatoPendente(
+                        rSet.getInt("QTD_PENDENTES_CLASSIFICACAO"),
+                        rSet.getInt("QTD_PENDENTES_FECHAMENTO"));
+            } else {
+                throw new SQLException("Erro ao buscar os relatos pendentes");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     private PreparedStatement getRelatosEstratificadosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String equipe, Connection conn)

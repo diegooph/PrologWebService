@@ -29,14 +29,16 @@ public class ChecklistRelatorioResource {
     public StreamingOutput getChecklistsRealizadosDiaAmbevCsv(@QueryParam("codUnidades") List<Long> codUnidades,
                                                               @QueryParam("dataInicial") String dataInicial,
                                                               @QueryParam("dataFinal") String dataFinal) {
-        return outputStream -> service.getChecklistsRealizadosDiaAmbevCsv(outputStream, codUnidades, dataInicial, dataFinal);
+        return outputStream ->
+                service.getChecklistsRealizadosDiaAmbevCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/ambev-checklists-realizados-dia/report")
-    public Report getChecklistsRealizadosDiaAmbevReport(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                        @QueryParam("dataInicial") String dataInicial,
-                                                        @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+    public Report getChecklistsRealizadosDiaAmbevReport(
+            @QueryParam("codUnidades") List<Long> codUnidades,
+            @QueryParam("dataInicial") String dataInicial,
+            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
         return service.getChecklistsRealizadosDiaAmbevReport(codUnidades, dataInicial, dataFinal);
     }
 
@@ -47,14 +49,16 @@ public class ChecklistRelatorioResource {
     public StreamingOutput getExtratoChecklistsRealizadosDiaAmbevCsv(@QueryParam("codUnidades") List<Long> codUnidades,
                                                                      @QueryParam("dataInicial") String dataInicial,
                                                                      @QueryParam("dataFinal") String dataFinal) {
-        return outputStream -> service.getExtratoChecklistsRealizadosDiaAmbevCsv(outputStream, codUnidades, dataInicial, dataFinal);
+        return outputStream ->
+                service.getExtratoChecklistsRealizadosDiaAmbevCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/ambev-extrato-checklists-realizados-dia/report")
-    public Report getExtratoChecklistsRealizadosDiaAmbevReport(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                               @QueryParam("dataInicial") String dataInicial,
-                                                               @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+    public Report getExtratoChecklistsRealizadosDiaAmbevReport(
+            @QueryParam("codUnidades") List<Long> codUnidades,
+            @QueryParam("dataInicial") String dataInicial,
+            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
         return service.getExtratoChecklistsRealizadosDiaAmbevReport(codUnidades, dataInicial, dataFinal);
     }
 
@@ -65,14 +69,16 @@ public class ChecklistRelatorioResource {
     public StreamingOutput getTempoRealizacaoChecklistsMotoristasCsv(@QueryParam("codUnidades") List<Long> codUnidades,
                                                                      @QueryParam("dataInicial") String dataInicial,
                                                                      @QueryParam("dataFinal") String dataFinal) {
-        return outputStream -> service.getTempoRealizacaoChecklistsMotoristasCsv(outputStream, codUnidades, dataInicial, dataFinal);
+        return outputStream ->
+                service.getTempoRealizacaoChecklistsMotoristasCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/tempo-realizacao-checklists-motoristas/report")
-    public Report getTempoRealizacaoChecklistsMotoristasReport(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                               @QueryParam("dataInicial") String dataInicial,
-                                                               @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+    public Report getTempoRealizacaoChecklistsMotoristasReport(
+            @QueryParam("codUnidades") List<Long> codUnidades,
+            @QueryParam("dataInicial") String dataInicial,
+            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
         return service.getTempoRealizacaoChecklistsMotoristasReport(codUnidades, dataInicial, dataFinal);
     }
 
@@ -97,10 +103,11 @@ public class ChecklistRelatorioResource {
 
     @GET
     @Path("/estratificacao-respostas-nok/{placa}/report")
-    public Report getEstratificacaoRespostasNokReport(@PathParam("placa") String placa,
-                                                      @QueryParam("codUnidades") List<Long> codUnidades,
-                                                      @QueryParam("dataInicial") String dataInicial,
-                                                      @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+    public Report getEstratificacaoRespostasNokReport(
+            @PathParam("placa") String placa,
+            @QueryParam("codUnidades") List<Long> codUnidades,
+            @QueryParam("dataInicial") String dataInicial,
+            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
         return service.getEstratificacaoRespostasNokReport(codUnidades, placa, dataInicial, dataFinal);
     }
 
@@ -111,12 +118,14 @@ public class ChecklistRelatorioResource {
                                                             @QueryParam("codUnidades") List<Long> codUnidades,
                                                             @QueryParam("dataInicial") String dataInicial,
                                                             @QueryParam("dataFinal") String dataFinal) {
-        return outputStream -> service.getEstratificacaoRespostasNokCsv(outputStream, codUnidades, placa, dataInicial, dataFinal);
+        return outputStream ->
+                service.getEstratificacaoRespostasNokCsv(outputStream, codUnidades, placa, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/listagem-modelos/report")
-    public Report getListagemModelosChecklistReport(@QueryParam("codUnidades") List<Long> codUnidades) throws ProLogException {
+    public Report getListagemModelosChecklistReport(
+            @QueryParam("codUnidades") List<Long> codUnidades) throws ProLogException {
         return service.getListagemModelosChecklistReport(codUnidades);
     }
 
@@ -130,22 +139,28 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/dados-gerais-checklists-realizados/report")
     public Report getDadosGeraisChecklistReport(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                @QueryParam("codColaborador") Long codColaborador,
+                                                @QueryParam("placa") String placa,
                                                 @QueryParam("dataInicial") String dataInicial,
-                                                @QueryParam("dataFinal") String dataFinal,
-                                                @QueryParam("codColaborador") Integer codColaborador,
-                                                @QueryParam("placa") String placa) throws ProLogException {
-        return service.getDadosGeraisChecklistReport(codUnidades, dataInicial, dataFinal, codColaborador, placa);
+                                                @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+        return service.getDadosGeraisChecklistReport(codUnidades, codColaborador, placa, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/dados-gerais-checklists-realizados/csv")
     @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getDadosGeraisChecklistCsv(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                      @QueryParam("codColaborador") Long codColaborador,
+                                                      @QueryParam("placa") String placa,
                                                       @QueryParam("dataInicial") String dataInicial,
-                                                      @QueryParam("dataFinal") String dataFinal,
-                                                      @QueryParam("codColaborador") Integer codColaborador,
-                                                      @QueryParam("placa") String placa) {
-        return outputStream -> service.getDadosGeraisChecklistCsv(outputStream, codUnidades, dataInicial, dataFinal,
-                codColaborador, placa);
+                                                      @QueryParam("dataFinal") String dataFinal) {
+        return outputStream ->
+                service.getDadosGeraisChecklistCsv(
+                        outputStream,
+                        codUnidades,
+                        codColaborador,
+                        placa,
+                        dataInicial,
+                        dataFinal);
     }
 }
