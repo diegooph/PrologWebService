@@ -1,4 +1,6 @@
-package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao;
+
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
 
 /**
  * Created on 06/12/18.
@@ -6,7 +8,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class AlternativaModeloChecklistEdicao extends AlternativaModeloChecklist {
-    private static final String TIPO_SERIALIZACAO = "ALTERNATIVA_MODELO_CHECKLIST_EDICAO";
+    public static final String TIPO_SERIALIZACAO = "ALTERNATIVA_MODELO_CHECKLIST_EDICAO";
+
     /**
      * Quando um modelo de checklist é editado, indica qual foi a operação de edição realizada nessa alternativa.
      */

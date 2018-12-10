@@ -9,11 +9,17 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistEdicao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AcaoEdicaoAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AlternativaModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.*;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistListagem;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao.ModeloChecklistVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.AlternativaModeloChecklistVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,6 +73,31 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             throw t;
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void updateModeloChecklist(@NotNull final String token,
+                                      @NotNull final Long codUnidade,
+                                      @NotNull final Long codModelo,
+                                      @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            atualizaModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
+            // Caso nenhuma pergunta tenha sido editada, o servidor não receberá nada.
+            if (modeloChecklist.getPerguntas() != null && modeloChecklist.getPerguntas().size() > 0) {
+                atualizaPerguntasModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
+            }
+            conn.commit();
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            close(conn);
         }
     }
 
@@ -147,31 +178,6 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             }
         } finally {
             close(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public void updateModeloChecklist(@NotNull final String token,
-                                      @NotNull final Long codUnidade,
-                                      @NotNull final Long codModelo,
-                                      @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            atualizaModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
-            // Nenhuma pergunta será enviada ao Servidor caso não tenham sofrido nenhuma edição.
-            if (modeloChecklist.getPerguntas() != null && modeloChecklist.getPerguntas().size() > 0) {
-                atualizaPerguntasModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
-            }
-            conn.commit();
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
-        } finally {
-            close(conn);
         }
     }
 
@@ -507,7 +513,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             if (rSet.next()) {
                 pergunta.setCodigo(rSet.getLong("CODIGO"));
 
-                // Se nenhuma alternativa tiver sido criada, a lista será nula e precisamos instanciá-la
+                // Se nenhuma alternativa tiver sido criada, a lista será nula e precisamos instanciá-la.
                 if (pergunta.getAlternativas() == null) {
                     pergunta.setAlternativas(new ArrayList<>());
                 }
@@ -951,7 +957,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
 
     private void insertModeloPerguntas(@NotNull final Connection conn,
                                        @NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
-        for (final PerguntaModeloChecklistVisualizacao pergunta : modeloChecklist.getPerguntas()) {
+        for (final PerguntaModeloChecklistInsercao pergunta : modeloChecklist.getPerguntas()) {
             insertPerguntaAlternativaModeloChecklist(
                     conn,
                     modeloChecklist.getCodUnidade(),

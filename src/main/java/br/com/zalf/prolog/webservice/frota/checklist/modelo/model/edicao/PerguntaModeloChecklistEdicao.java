@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao;
 
-import java.util.List;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 
 /**
  * Created on 06/12/18.
@@ -8,9 +8,8 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class PerguntaModeloChecklistEdicao extends PerguntaModeloChecklist {
-    private static final String TIPO_SERIALIZACAO = "PERGUNTA_MODELO_CHECKLIST_EDICAO";
+    public static final String TIPO_SERIALIZACAO = "PERGUNTA_MODELO_CHECKLIST_EDICAO";
 
-    private List<AlternativaModeloChecklist> alternativas;
     /**
      * Quando um modelo de checklist é editado, indica qual foi a operação de edição realizada nessa pergunta.
      */
@@ -18,16 +17,6 @@ public final class PerguntaModeloChecklistEdicao extends PerguntaModeloChecklist
 
     public PerguntaModeloChecklistEdicao() {
         super(TIPO_SERIALIZACAO);
-    }
-
-    @Override
-    public List<AlternativaModeloChecklist> getAlternativas() {
-        return alternativas;
-    }
-
-    @Override
-    public void setAlternativas(final List<AlternativaModeloChecklist> alternativas) {
-        this.alternativas = alternativas;
     }
 
     public AcaoEdicaoPergunta getAcaoEdicao() {

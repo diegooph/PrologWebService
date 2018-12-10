@@ -1,6 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao;
-
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklistVisualizacao;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ public final class ModeloChecklistInsercao {
     private Long codUnidade;
     private List<Long> tiposVeiculoLiberados;
     private List<Long> cargosLiberados;
-    private List<PerguntaModeloChecklistVisualizacao> perguntas;
+    private List<PerguntaModeloChecklistInsercao> perguntas;
 
     public ModeloChecklistInsercao() {
 
@@ -61,11 +59,11 @@ public final class ModeloChecklistInsercao {
         this.cargosLiberados = cargosLiberados;
     }
 
-    public List<PerguntaModeloChecklistVisualizacao> getPerguntas() {
+    public List<PerguntaModeloChecklistInsercao> getPerguntas() {
         return perguntas;
     }
 
-    public void setPerguntas(final List<PerguntaModeloChecklistVisualizacao> perguntas) {
+    public void setPerguntas(final List<PerguntaModeloChecklistInsercao> perguntas) {
         this.perguntas = perguntas;
     }
 }

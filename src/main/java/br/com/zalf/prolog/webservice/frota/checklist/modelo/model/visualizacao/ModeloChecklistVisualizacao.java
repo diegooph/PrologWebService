@@ -1,7 +1,6 @@
-package br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 
 import java.util.List;

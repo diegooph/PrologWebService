@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.modelo.visualizacao;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
 
 import java.util.Set;
 

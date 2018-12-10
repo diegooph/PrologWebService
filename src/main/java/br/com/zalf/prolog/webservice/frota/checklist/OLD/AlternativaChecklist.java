@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AcaoEdicaoAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AcaoEdicaoAlternativa;
 
 /**
  * Created by Zalf on 07/01/17.

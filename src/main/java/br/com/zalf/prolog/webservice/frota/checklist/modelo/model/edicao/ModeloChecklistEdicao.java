@@ -1,6 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.modelo.insercao;
-
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklistEdicao;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao;
 
 import java.util.List;
 

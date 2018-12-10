@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
 
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AlternativaModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -23,6 +26,14 @@ public abstract class AlternativaModeloChecklist {
 
     public AlternativaModeloChecklist(@NotNull final String tipo) {
         this.tipo = tipo;
+    }
+
+    @NotNull
+    public static RuntimeTypeAdapterFactory<AlternativaModeloChecklist> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(AlternativaModeloChecklist.class, "tipo")
+                .registerSubtype(AlternativaModeloChecklistInsercao.class, AlternativaModeloChecklistInsercao.TIPO_SERIALIZACAO)
+                .registerSubtype(AlternativaModeloChecklistEdicao.class, AlternativaModeloChecklistEdicao.TIPO_SERIALIZACAO);
     }
 
     public Long getCodigo() {

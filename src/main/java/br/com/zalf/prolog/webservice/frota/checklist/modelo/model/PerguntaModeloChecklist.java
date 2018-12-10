@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
 
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -17,6 +20,7 @@ public abstract class PerguntaModeloChecklist {
     private String urlImagem;
     private int ordemExibicao;
     private boolean singleChoice;
+    private List<AlternativaModeloChecklist> alternativas;
 
     @NotNull
     @Exclude
@@ -26,9 +30,13 @@ public abstract class PerguntaModeloChecklist {
         this.tipo = tipo;
     }
 
-    public abstract List<AlternativaModeloChecklist> getAlternativas();
-
-    public abstract void setAlternativas(final List<AlternativaModeloChecklist> alternativas);
+    @NotNull
+    public static RuntimeTypeAdapterFactory<PerguntaModeloChecklist> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(PerguntaModeloChecklist.class, "tipo")
+                .registerSubtype(PerguntaModeloChecklistInsercao.class, PerguntaModeloChecklistInsercao.TIPO_SERIALIZACAO)
+                .registerSubtype(PerguntaModeloChecklistEdicao.class, PerguntaModeloChecklistEdicao.TIPO_SERIALIZACAO);
+    }
 
     public Long getCodigo() {
         return codigo;
@@ -76,5 +84,13 @@ public abstract class PerguntaModeloChecklist {
 
     public void setSingleChoice(final boolean singleChoice) {
         this.singleChoice = singleChoice;
+    }
+
+    public List<AlternativaModeloChecklist> getAlternativas() {
+        return alternativas;
+    }
+
+    public void setAlternativas(final List<AlternativaModeloChecklist> alternativas) {
+        this.alternativas = alternativas;
     }
 }
