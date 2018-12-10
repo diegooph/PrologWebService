@@ -8,8 +8,8 @@ import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponen
 import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalComboChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.line.HorizontalLineChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
@@ -204,18 +204,18 @@ public final class DashboardPneuService {
     }
 
     @NotNull
-    public HorizontalLineChartComponent getQtdAfericoesRealizadasPorDiaByTipoInterval30Days(@NotNull final Integer codComponente,
-                                                                                            @NotNull final List<Long> codUnidades)
-            throws ProLogException {
+    HorizontalLineChartComponent getQtdAfericoesRealizadasPorDiaByTipoInterval30Days(
+            @NotNull final Integer codComponente,
+            @NotNull final List<Long> codUnidades) throws ProLogException {
         try {
             return DashboardPneuComponentsCreator.getQtdAfericoesRealizadasPorDiaByTipoInterval30Days(
                     dashDao.getComponenteByCodigo(codComponente),
                     relatorioDao.getQtdAfericoesRealizadasPorDiaByTipo(codUnidades, 30));
         } catch (final Throwable throwable) {
             Log.e(TAG,
-                    "Erro ao buscar a quantidade de aferições realizados para as unidades: " + codUnidades,
+                    "Erro ao buscar a quantidade de aferições realizadas para as unidades: " + codUnidades,
                     throwable);
-            throw exceptionHandler.map(throwable, "Erro ao buscar a quantidade de aferições realizados");
+            throw exceptionHandler.map(throwable, "Erro ao buscar a quantidade de aferições realizadas");
         }
     }
 }

@@ -407,7 +407,6 @@ final class DashboardPneuComponentsCreator {
             if (qtdAfericao.teveAfericoesRealizadas()) {
                 if (qtdAfericao.getQtdAfericoesSulco() > 0) {
                     informacaoPonto = String.format("%s\nSulco: %d", informacaoPonto, qtdAfericao.getQtdAfericoesSulco());
-
                 }
                 if (qtdAfericao.getQtdAfericoesPressao() > 0) {
                     informacaoPonto = String.format("%s\nPressão: %d", informacaoPonto, qtdAfericao.getQtdAfericoesPressao());
@@ -422,7 +421,7 @@ final class DashboardPneuComponentsCreator {
             representacoesValoresX.put((double) i, qtdAfericao.getDataFormatada());
         }
 
-        final List<LineGroup> groups = new ArrayList<>(3 /* sulco, pressão e sulco/pressao */);
+        final List<LineGroup> groups = new ArrayList<>(3 /* sulco, pressao, pressão e sulco*/);
         final LineGroup groupSulco = new LineGroup("Sulco", entriesSulco, SULCO.getColor());
         final LineGroup groupPressao = new LineGroup("Pressão", entriesPressao, PRESSAO.getColor());
         final LineGroup groupSulcoPressao = new LineGroup("Sulco/Pressão", entriesSulcoPressao, SULCO_PRESSAO.getColor());
