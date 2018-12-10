@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AlternativaModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.AlternativaModeloChecklistVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -33,6 +34,7 @@ public abstract class AlternativaModeloChecklist {
         return RuntimeTypeAdapterFactory
                 .of(AlternativaModeloChecklist.class, "tipo")
                 .registerSubtype(AlternativaModeloChecklistInsercao.class, AlternativaModeloChecklistInsercao.TIPO_SERIALIZACAO)
+                .registerSubtype(AlternativaModeloChecklistVisualizacao.class, AlternativaModeloChecklistVisualizacao.TIPO_SERIALIZACAO)
                 .registerSubtype(AlternativaModeloChecklistEdicao.class, AlternativaModeloChecklistEdicao.TIPO_SERIALIZACAO);
     }
 

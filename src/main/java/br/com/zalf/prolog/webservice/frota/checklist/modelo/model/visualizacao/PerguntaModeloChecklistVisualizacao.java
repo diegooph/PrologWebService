@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModelo
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class PerguntaModeloChecklistVisualizacao extends PerguntaModeloChecklist {
-    private static final String TIPO_SERIALIZACAO = "PERGUNTA_MODELO_CHECKLIST_VISUALIZACAO";
+    public static final String TIPO_SERIALIZACAO = "PERGUNTA_MODELO_CHECKLIST_VISUALIZACAO";
 
     public PerguntaModeloChecklistVisualizacao() {
         super(TIPO_SERIALIZACAO);

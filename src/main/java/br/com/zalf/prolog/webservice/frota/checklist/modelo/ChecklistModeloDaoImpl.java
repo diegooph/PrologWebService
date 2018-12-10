@@ -236,17 +236,18 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                            "  CP.CODIGO                   AS COD_PERGUNTA," +
-                            "  CGI.COD_IMAGEM              AS COD_IMAGEM," +
-                            "  CGI.URL_IMAGEM              AS URL_IMAGEM," +
-                            "  CP.PERGUNTA                 AS PERGUNTA," +
-                            "  CP.ORDEM                    AS ORDEM_PERGUNTA," +
-                            "  CP.SINGLE_CHOICE            AS SINGLE_CHOICE," +
-                            "  CAP.CODIGO                  AS COD_ALTERNATIVA," +
-                            "  CAP.ALTERNATIVA             AS ALTERNATIVA," +
-                            "  CAP.PRIORIDADE              AS PRIORIDADE," +
-                            "  CAP.ORDEM                   AS ORDEM_ALTERNATIVA," +
-                            "  CAP.ALTERNATIVA_TIPO_OUTROS AS ALTERNATIVA_TIPO_OUTROS " +
+                            "  CP.CODIGO                    AS COD_PERGUNTA," +
+                            "  CGI.COD_IMAGEM               AS COD_IMAGEM," +
+                            "  CGI.URL_IMAGEM               AS URL_IMAGEM," +
+                            "  CP.PERGUNTA                  AS PERGUNTA," +
+                            "  CP.ORDEM                     AS ORDEM_PERGUNTA," +
+                            "  CP.SINGLE_CHOICE             AS SINGLE_CHOICE," +
+                            "  CAP.CODIGO                   AS COD_ALTERNATIVA," +
+                            "  CAP.ALTERNATIVA              AS ALTERNATIVA," +
+                            "  CAP.PRIORIDADE               AS PRIORIDADE," +
+                            "  CAP.ORDEM                    AS ORDEM_ALTERNATIVA," +
+                            "  CAP.DEVE_ABRIR_ORDEM_SERVICO AS DEVE_ABRIR_ORDEM_SERVICO," +
+                            "  CAP.ALTERNATIVA_TIPO_OUTROS  AS ALTERNATIVA_TIPO_OUTROS " +
                             "FROM CHECKLIST_PERGUNTAS CP " +
                             "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP " +
                             "    ON CP.CODIGO = CAP.COD_PERGUNTA " +

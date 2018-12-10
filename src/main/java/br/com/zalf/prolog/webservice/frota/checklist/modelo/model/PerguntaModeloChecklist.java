@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public abstract class PerguntaModeloChecklist {
         return RuntimeTypeAdapterFactory
                 .of(PerguntaModeloChecklist.class, "tipo")
                 .registerSubtype(PerguntaModeloChecklistInsercao.class, PerguntaModeloChecklistInsercao.TIPO_SERIALIZACAO)
+                .registerSubtype(PerguntaModeloChecklistVisualizacao.class, PerguntaModeloChecklistVisualizacao.TIPO_SERIALIZACAO)
                 .registerSubtype(PerguntaModeloChecklistEdicao.class, PerguntaModeloChecklistEdicao.TIPO_SERIALIZACAO);
     }
 
