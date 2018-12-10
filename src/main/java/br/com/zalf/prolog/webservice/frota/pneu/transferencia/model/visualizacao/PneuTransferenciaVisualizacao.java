@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem;
+package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.PneusTransferencia;

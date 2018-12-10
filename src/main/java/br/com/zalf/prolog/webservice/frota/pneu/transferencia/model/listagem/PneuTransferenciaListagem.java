@@ -1,6 +1,5 @@
-package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao;
+package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem;
 
-import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem.PneuTransferenciaVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
