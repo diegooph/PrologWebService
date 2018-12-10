@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.80"></a>
-## Version [v0.0.80](https://github.com/luizfp/PrologWebService/compare/v0.0.79...v0.0.80) (release-date) [unreleased]
+## Version [v0.0.80](https://github.com/luizfp/PrologWebService/compare/v0.0.79...v0.0.80) (2018-12-10)
 
 ### Features
 * Cria componente para a Dashboard que mostra a quantidade de aferições realizadas por dia, separando por tipo, em um 
