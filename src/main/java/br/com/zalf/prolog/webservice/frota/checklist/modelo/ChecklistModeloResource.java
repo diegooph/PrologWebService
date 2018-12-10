@@ -29,7 +29,7 @@ import java.util.List;
 @Path("/checklists/modelos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class ChecklistModeloResource {
+public final class ChecklistModeloResource {
     @NotNull
     private final ChecklistModeloService service = new ChecklistModeloService();
 

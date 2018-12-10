@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class ResponseImagemChecklist extends ResponseWithCod {
+public final class ResponseImagemChecklist extends ResponseWithCod {
     private String urlImagem;
 
     private ResponseImagemChecklist() {

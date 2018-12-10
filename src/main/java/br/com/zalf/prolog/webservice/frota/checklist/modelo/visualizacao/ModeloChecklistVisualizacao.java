@@ -21,6 +21,7 @@ public final class ModeloChecklistVisualizacao {
     private boolean ativo;
 
     public ModeloChecklistVisualizacao() {
+
     }
 
     public Long getCodigo() {

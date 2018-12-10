@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class PerguntaModeloChecklistVisualizacao extends PerguntaModeloChecklist {
+public final class PerguntaModeloChecklistVisualizacao extends PerguntaModeloChecklist {
     private static final String TIPO_SERIALIZACAO = "PERGUNTA_MODELO_CHECKLIST_VISUALIZACAO";
 
     private List<AlternativaModeloChecklist> alternativas;

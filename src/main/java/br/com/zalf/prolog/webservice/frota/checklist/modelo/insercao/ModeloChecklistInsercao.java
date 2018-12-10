@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ModeloChecklistInsercao {
+public final class ModeloChecklistInsercao {
     private Long codigo;
     private String nome;
     private Long codUnidade;
@@ -18,6 +18,7 @@ public class ModeloChecklistInsercao {
     private List<PerguntaModeloChecklistVisualizacao> perguntas;
 
     public ModeloChecklistInsercao() {
+
     }
 
     public Long getCodigo() {

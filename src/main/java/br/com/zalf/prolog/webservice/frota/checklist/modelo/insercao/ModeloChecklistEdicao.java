@@ -19,6 +19,7 @@ public final class ModeloChecklistEdicao {
     private boolean ativo;
 
     public ModeloChecklistEdicao() {
+
     }
 
     public Long getCodigo() {

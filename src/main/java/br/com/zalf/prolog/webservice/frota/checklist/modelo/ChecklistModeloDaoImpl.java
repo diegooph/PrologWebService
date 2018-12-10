@@ -30,7 +30,7 @@ import java.util.Set;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
-public class ChecklistModeloDaoImpl extends DatabaseConnection implements ChecklistModeloDao {
+public final class ChecklistModeloDaoImpl extends DatabaseConnection implements ChecklistModeloDao {
 
     public ChecklistModeloDaoImpl() {
 
@@ -53,7 +53,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             if (rSet.next()) {
                 modeloChecklist.setCodigo(rSet.getLong("CODIGO"));
                 insertModeloTipoVeiculo(conn, modeloChecklist);
-                insertModeloFuncao(conn, modeloChecklist);
+                insertModeloCargo(conn, modeloChecklist);
                 insertModeloPerguntas(conn, modeloChecklist);
             } else {
                 throw new SQLException("Não foi possível inserir o modelo de checklist para a unidade: "
@@ -516,7 +516,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                     insertAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
                 }
             } else {
-                throw new SQLException("Erro ao inserir a pergunta do checklist: \n"
+                throw new SQLException("Erro ao inserir a pergunta do checklist:\n"
                         + "unidade: " + codUnidade + "\n"
                         + "modelo: " + codModelo);
             }
@@ -909,7 +909,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     private void insertModeloTipoVeiculo(@NotNull final Connection conn,
-                                         @NotNull final ModeloChecklistInsercao modeloChecklist) throws SQLException {
+                                         @NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
         PreparedStatement stmt = null;
         try {
             for (final Long codTipoVeiculo : modeloChecklist.getTiposVeiculoLiberados()) {
@@ -918,7 +918,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 stmt.setLong(2, modeloChecklist.getCodigo());
                 stmt.setLong(3, codTipoVeiculo);
                 if (stmt.executeUpdate() == 0) {
-                    throw new SQLException("Erro ao vincular o tipo de veículo ao modelo de checklist: \n"
+                    throw new SQLException("Erro ao vincular o tipo de veículo ao modelo de checklist:\n"
                             + "unidade: " + modeloChecklist.getCodUnidade() + "\n"
                             + "tipo do veículo: " + codTipoVeiculo);
                 }
@@ -928,8 +928,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         }
     }
 
-    private void insertModeloFuncao(@NotNull final Connection conn,
-                                    @NotNull final ModeloChecklistInsercao modeloChecklist) throws SQLException {
+    private void insertModeloCargo(@NotNull final Connection conn,
+                                   @NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
         PreparedStatement stmt = null;
         try {
             for (final Long codCargo : modeloChecklist.getCargosLiberados()) {
@@ -939,7 +939,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 stmt.setLong(2, modeloChecklist.getCodigo());
                 stmt.setLong(3, codCargo);
                 if (stmt.executeUpdate() == 0) {
-                    throw new SQLException("Erro ao vincular o cargo ao modelo de checklist: \n"
+                    throw new SQLException("Erro ao vincular o cargo ao modelo de checklist:\n"
                             + "unidade: " + modeloChecklist.getCodUnidade() + "\n"
                             + "cargo: " + codCargo);
                 }
@@ -950,7 +950,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     private void insertModeloPerguntas(@NotNull final Connection conn,
-                                       @NotNull final ModeloChecklistInsercao modeloChecklist) throws SQLException {
+                                       @NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
         for (final PerguntaModeloChecklistVisualizacao pergunta : modeloChecklist.getPerguntas()) {
             insertPerguntaAlternativaModeloChecklist(
                     conn,

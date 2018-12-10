@@ -5,7 +5,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class AlternativaModeloChecklistVisualizacao extends AlternativaModeloChecklist {
+public final class AlternativaModeloChecklistVisualizacao extends AlternativaModeloChecklist {
     private static final String TIPO_SERIALIZACAO = "ALTERNATIVA_MODELO_CHECKLIST_VISUALIZACAO";
 
     public AlternativaModeloChecklistVisualizacao() {

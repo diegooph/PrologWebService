@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Classe ChecklistModeloService responsavel por comunicar-se com a interface DAO
  */
-public class ChecklistModeloService {
+public final class ChecklistModeloService {
     private static final String TAG = ChecklistModeloService.class.getSimpleName();
     @NotNull
     private final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();

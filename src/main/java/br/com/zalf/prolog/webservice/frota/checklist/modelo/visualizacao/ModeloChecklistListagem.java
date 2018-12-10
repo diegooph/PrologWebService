@@ -7,7 +7,7 @@ import java.util.Set;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ModeloChecklistListagem {
+public final class ModeloChecklistListagem {
     private Long codigo;
     private String nome;
     private Long codUnidade;
@@ -17,6 +17,7 @@ public class ModeloChecklistListagem {
     private boolean ativo;
 
     public ModeloChecklistListagem() {
+
     }
 
     public boolean isAtivo() {
