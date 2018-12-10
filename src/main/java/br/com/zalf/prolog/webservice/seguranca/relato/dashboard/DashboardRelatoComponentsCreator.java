@@ -42,12 +42,12 @@ final class DashboardRelatoComponentsCreator {
             @NotNull final RelatoPendente qtdRelatosPendentes) {
         final List<PieEntry> entries = new ArrayList<>(2 /* Relatos pendentes. */);
         entries.add(PieEntry.create(
-                "Pendentes classificação",
+                PENDENTE_CLASSIFICACAO.getSliceDescription(),
                 qtdRelatosPendentes.getQtdRelatosPendentesClassificacao(),
                 String.valueOf(qtdRelatosPendentes.getQtdRelatosPendentesClassificacao()),
                 PENDENTE_CLASSIFICACAO.getSliceColor()));
         entries.add(PieEntry.create(
-                "Pendentes fechamento",
+                PENDENTE_FECHAMENTO.getSliceDescription(),
                 qtdRelatosPendentes.getQtdRelatosPendentesFechamento(),
                 String.valueOf(qtdRelatosPendentes.getQtdRelatosPendentesFechamento()),
                 PENDENTE_FECHAMENTO.getSliceColor()));
