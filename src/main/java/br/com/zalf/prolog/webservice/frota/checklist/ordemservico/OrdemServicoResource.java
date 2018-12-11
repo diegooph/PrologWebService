@@ -33,10 +33,6 @@ import java.util.List;
 @Path("/checklists/ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-//@AppVersionCodeHandler(
-//        targetVersionCode = 61,
-//        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-//        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class OrdemServicoResource {
     @NotNull
     private final OrdemServicoService service = new OrdemServicoService();

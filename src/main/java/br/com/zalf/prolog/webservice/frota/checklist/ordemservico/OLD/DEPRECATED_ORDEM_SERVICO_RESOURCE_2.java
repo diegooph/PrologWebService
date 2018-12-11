@@ -8,6 +8,9 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
@@ -22,6 +25,10 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Deprecated
+@AppVersionCodeHandler(
+        targetVersionCode = 62,
+        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class DEPRECATED_ORDEM_SERVICO_RESOURCE_2 {
     private final DEPRECATED_ORDEM_SERVICO_SERVICE_2 service = new DEPRECATED_ORDEM_SERVICO_SERVICE_2();
 
