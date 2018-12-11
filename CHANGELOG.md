@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.81"></a>
-## Version [v0.0.81](https://github.com/luizfp/PrologWebService/compare/v0.0.80...v0.0.81) (release-date) [unreleased]
+## Version [v0.0.81](https://github.com/luizfp/PrologWebService/compare/v0.0.80...v0.0.81) (2018-12-11)
 
 ### Refactors
 * Bloqueia resources antigos das ordens de serviço do checklist
