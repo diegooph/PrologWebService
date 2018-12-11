@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistAbreOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
@@ -266,6 +267,14 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             closeConnection(conn);
             closeStatement(stmt);
         }
+    }
+
+    @Override
+    public void createItensOrdemServicoFromAlternativas(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final List<AlternativaChecklistAbreOrdemServico> alternativasAbremOrdemServico) throws SQLException {
+
     }
 
     private void fechaOrdensServicosComBaseItens(@NotNull final Connection conn,

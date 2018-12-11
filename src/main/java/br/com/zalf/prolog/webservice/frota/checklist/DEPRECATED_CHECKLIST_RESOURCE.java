@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
@@ -29,8 +30,9 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 
 	@POST
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-	public Response insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
-		final Long codChecklist = service.insert(checklist, userToken);
+	public Response insert(@HeaderParam("Authorization") @Required final String userToken,
+						   @Required final Checklist checklist) {
+		final Long codChecklist = service.insert(userToken, checklist);
 		if (codChecklist != null) {
 			return Response.ok("Checklist inserido com sucesso");
 		} else {

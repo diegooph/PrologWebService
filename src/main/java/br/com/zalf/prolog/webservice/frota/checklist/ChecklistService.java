@@ -4,8 +4,8 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
@@ -23,7 +23,7 @@ public class ChecklistService {
     @NotNull
     private final ChecklistDao dao = Injection.provideChecklistDao();
 
-    public Long insert(Checklist checklist, String userToken) {
+    public Long insert(@NotNull final String userToken, @NotNull final Checklist checklist) {
         try {
             checklist.setData(LocalDateTime.now(Clock.systemUTC()));
             return RouterChecklists

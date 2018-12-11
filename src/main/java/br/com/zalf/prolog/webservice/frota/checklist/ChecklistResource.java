@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
@@ -29,8 +30,9 @@ public class ChecklistResource {
 
     @POST
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-    public AbstractResponse insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
-        final Long codChecklist = service.insert(checklist, userToken);
+    public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
+                                   @Required final Checklist checklist) {
+        final Long codChecklist = service.insert(userToken, checklist);
         if (codChecklist != null) {
             return ResponseWithCod.ok("Checklist inserido com sucesso", codChecklist);
         } else {
