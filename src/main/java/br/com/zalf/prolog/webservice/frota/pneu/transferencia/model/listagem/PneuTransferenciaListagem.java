@@ -13,11 +13,11 @@ import java.util.List;
  */
 public class PneuTransferenciaListagem {
 
-    private Long codTransferencia;
+    private Long codTransferenciaProcesso;
     private Long codUnidadeOrigem;
     private Long codUnidadeDestino;
-    private Long codColaborador;
-    private LocalDateTime dataHoraTransferencia;
+    private Long codColaboradorRealizacaoTransferencia;
+    private LocalDateTime dataHoraTransferenciaProcesso;
     /**
      * Código do cliente, número de fogo do pneu.
      */
@@ -26,15 +26,15 @@ public class PneuTransferenciaListagem {
     private String nomeUnidadeDestino;
     private String nomeRegionalOrigem;
     private String nomeRegionalDestino;
-    private String nomeColaborador;
+    private String nomeColaboradorRealizacaoTransferencia;
 
 
-    public Long getCodTransferencia() {
-        return codTransferencia;
+    public Long getCodTransferenciaProcesso() {
+        return codTransferenciaProcesso;
     }
 
-    public void setCodTransferencia(Long codTransferencia) {
-        this.codTransferencia = codTransferencia;
+    public void setCodTransferenciaProcesso(Long codTransferenciaProcesso) {
+        this.codTransferenciaProcesso = codTransferenciaProcesso;
     }
 
     public Long getCodUnidadeOrigem() {
@@ -53,20 +53,20 @@ public class PneuTransferenciaListagem {
         this.codUnidadeDestino = codUnidadeDestino;
     }
 
-    public Long getCodColaborador() {
-        return codColaborador;
+    public Long getCodColaboradorRealizacaoTransferencia() {
+        return codColaboradorRealizacaoTransferencia;
     }
 
-    public void setCodColaborador(Long codColaborador) {
-        this.codColaborador = codColaborador;
+    public void setCodColaboradorRealizacaoTransferencia(Long codColaboradorRealizacaoTransferencia) {
+        this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
     }
 
-    public LocalDateTime getDataHoraTransferencia() {
-        return dataHoraTransferencia;
+    public LocalDateTime getDataHoraTransferenciaProcesso() {
+        return dataHoraTransferenciaProcesso;
     }
 
-    public void setDataHoraTransferencia(LocalDateTime dataHoraTransferencia) {
-        this.dataHoraTransferencia = dataHoraTransferencia;
+    public void setDataHoraTransferenciaProcesso(LocalDateTime dataHoraTransferenciaProcesso) {
+        this.dataHoraTransferenciaProcesso = dataHoraTransferenciaProcesso;
     }
 
     public List<String> getCodPneusCliente() {
@@ -109,22 +109,22 @@ public class PneuTransferenciaListagem {
         this.nomeRegionalDestino = nomeRegionalDestino;
     }
 
-    public String getNomeColaborador() {
-        return nomeColaborador;
+    public String getNomeColaboradorRealizacaoTransferencia() {
+        return nomeColaboradorRealizacaoTransferencia;
     }
 
-    public void setNomeColaborador(String nomeColaborador) {
-        this.nomeColaborador = nomeColaborador;
+    public void setNomeColaboradorRealizacaoTransferencia(String nomeColaboradorRealizacaoTransferencia) {
+        this.nomeColaboradorRealizacaoTransferencia = nomeColaboradorRealizacaoTransferencia;
     }
 
     @NotNull
     public static PneuTransferenciaListagem createDummy() {
         final PneuTransferenciaListagem transferencia = new PneuTransferenciaListagem();
-        transferencia.setCodTransferencia(101L);
+        transferencia.setCodTransferenciaProcesso(101L);
         transferencia.setCodUnidadeOrigem(5L);
         transferencia.setCodUnidadeDestino(3L);
-        transferencia.setCodColaborador(190L);
-        transferencia.setDataHoraTransferencia(LocalDateTime.now());
+        transferencia.setCodColaboradorRealizacaoTransferencia(190L);
+        transferencia.setDataHoraTransferenciaProcesso(LocalDateTime.now());
         final List<String> codPneusCliente = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             codPneusCliente.add(String.valueOf(i));
@@ -134,7 +134,7 @@ public class PneuTransferenciaListagem {
         transferencia.setNomeUnidadeDestino("Sapucaia");
         transferencia.setNomeRegionalOrigem("Sul");
         transferencia.setNomeRegionalDestino("Sudeste");
-        transferencia.setNomeColaborador("Clementino");
+        transferencia.setNomeColaboradorRealizacaoTransferencia("Clementino");
         return transferencia;
     }
 }

@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao.PneuTransferenciaVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao.PneuTransferenciaProcessoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem.PneuTransferenciaListagem;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -28,11 +28,11 @@ public class DummyPneuTransferenciaResource {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/pneu-transferencia-visualizacao-list")
-    public List<PneuTransferenciaVisualizacao> getPneuTransferenciaVisualizacao() {
+    public List<PneuTransferenciaProcessoVisualizacao> getPneuTransferenciaVisualizacao() {
         ensureDebugEnviroment();
-        final List<PneuTransferenciaVisualizacao> transferencias = new ArrayList<>();
+        final List<PneuTransferenciaProcessoVisualizacao> transferencias = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            transferencias.add(PneuTransferenciaVisualizacao.createDummy());
+            transferencias.add(PneuTransferenciaProcessoVisualizacao.createDummy());
         }
         return transferencias;
     }

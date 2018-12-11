@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
-import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.PneusTransferencia;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -13,26 +12,26 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuTransferenciaVisualizacao {
+public class PneuTransferenciaProcessoVisualizacao {
 
-    private Long codTransferencia;
+    private Long codProcessoTransferencia;
     private Long codUnidadeOrigem;
     private Long codUnidadeDestino;
-    private Long codColaborador;
-    private List<PneusTransferencia> pneus;
+    private Long codColaboradorRealizacaoTransferencia;
+    private List<PneuTransferenciaInformacoes> pneusTransferidos;
     private LocalDateTime dataHoraTransferencia;
     private String nomeUnidadeOrigem;
     private String nomeUnidadeDestino;
     private String nomeRegionalOrigem;
     private String nomeRegionalDestino;
-    private String nomeColaborador;
+    private String nomeColaboradorRealizacaoTransferencia;
 
-    public Long getCodTransferencia() {
-        return codTransferencia;
+    public Long getCodProcessoTransferencia() {
+        return codProcessoTransferencia;
     }
 
-    public void setCodTransferencia(Long codTransferencia) {
-        this.codTransferencia = codTransferencia;
+    public void setCodProcessoTransferencia(Long codProcessoTransferencia) {
+        this.codProcessoTransferencia = codProcessoTransferencia;
     }
 
     public Long getCodUnidadeOrigem() {
@@ -51,12 +50,12 @@ public class PneuTransferenciaVisualizacao {
         this.codUnidadeDestino = codUnidadeDestino;
     }
 
-    public Long getCodColaborador() {
-        return codColaborador;
+    public Long getCodColaboradorRealizacaoTransferencia() {
+        return codColaboradorRealizacaoTransferencia;
     }
 
-    public void setCodColaborador(Long codColaborador) {
-        this.codColaborador = codColaborador;
+    public void setCodColaboradorRealizacaoTransferencia(Long codColaboradorRealizacaoTransferencia) {
+        this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
     }
 
     public LocalDateTime getDataHoraTransferencia() {
@@ -99,51 +98,51 @@ public class PneuTransferenciaVisualizacao {
         this.nomeRegionalDestino = nomeRegionalDestino;
     }
 
-    public String getNomeColaborador() {
-        return nomeColaborador;
+    public String getNomeColaboradorRealizacaoTransferencia() {
+        return nomeColaboradorRealizacaoTransferencia;
     }
 
-    public void setNomeColaborador(String nomeColaborador) {
-        this.nomeColaborador = nomeColaborador;
+    public void setNomeColaboradorRealizacaoTransferencia(String nomeColaboradorRealizacaoTransferencia) {
+        this.nomeColaboradorRealizacaoTransferencia = nomeColaboradorRealizacaoTransferencia;
     }
 
-    public List<PneusTransferencia> getPneus() {
-        return pneus;
+    public List<PneuTransferenciaInformacoes> getPneusTransferidos() {
+        return pneusTransferidos;
     }
 
-    public void setPneus(List<PneusTransferencia> pneus) {
-        this.pneus = pneus;
+    public void setPneusTransferidos(List<PneuTransferenciaInformacoes> pneusTransferidos) {
+        this.pneusTransferidos = pneusTransferidos;
     }
 
     @NotNull
-    public static PneuTransferenciaVisualizacao createDummy() {
-        final PneuTransferenciaVisualizacao transferencia = new PneuTransferenciaVisualizacao();
-        transferencia.setCodTransferencia(101L);
+    public static PneuTransferenciaProcessoVisualizacao createDummy() {
+        final PneuTransferenciaProcessoVisualizacao transferencia = new PneuTransferenciaProcessoVisualizacao();
+        transferencia.setCodProcessoTransferencia(101L);
         transferencia.setCodUnidadeOrigem(5L);
         transferencia.setCodUnidadeDestino(3L);
-        transferencia.setCodColaborador(190L);
+        transferencia.setCodColaboradorRealizacaoTransferencia(190L);
         transferencia.setDataHoraTransferencia(LocalDateTime.now());
         transferencia.setNomeUnidadeOrigem("A");
         transferencia.setNomeUnidadeDestino("B");
         transferencia.setNomeRegionalOrigem("Sul");
         transferencia.setNomeRegionalDestino("Sudeste");
-        transferencia.setNomeColaborador("Gertrudes");
+        transferencia.setNomeColaboradorRealizacaoTransferencia("Gertrudes");
 
-        final List<PneusTransferencia> pneusList = new ArrayList<>();
+        final List<PneuTransferenciaInformacoes> pneusList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             final Sulcos sulcos = new Sulcos();
             sulcos.setInterno(i + 13.5);
             sulcos.setCentralInterno(i + 13.4);
             sulcos.setCentralExterno(i + 13.3);
             sulcos.setExterno(i + 12.9);
-            final PneusTransferencia pneusTransferencia = new PneusTransferencia();
-            pneusTransferencia.setCodPneuCliente(String.valueOf(i));
-            pneusTransferencia.setSulcosAtuais(sulcos);
-            pneusTransferencia.setPressao(i + 100.5);
-            pneusTransferencia.setVidaTransferencia(i);
-            pneusList.add(pneusTransferencia);
+            final PneuTransferenciaInformacoes pneuTransferenciaInformacoes = new PneuTransferenciaInformacoes();
+            pneuTransferenciaInformacoes.setCodPneuCliente(String.valueOf(i));
+            pneuTransferenciaInformacoes.setSulcosMomentoTransferencia(sulcos);
+            pneuTransferenciaInformacoes.setPressaoMomentoTransferencia(i + 100.5);
+            pneuTransferenciaInformacoes.setVidaMomentoTransferencia(i);
+            pneusList.add(pneuTransferenciaInformacoes);
         }
-        transferencia.setPneus(pneusList);
+        transferencia.setPneusTransferidos(pneusList);
         return transferencia;
     }
 }

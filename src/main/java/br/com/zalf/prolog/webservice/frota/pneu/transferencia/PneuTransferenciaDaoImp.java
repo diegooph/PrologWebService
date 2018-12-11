@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
@@ -34,8 +34,8 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao{
                     "(COD_UNIDADE_ORIGEM, COD_UNIDADE_DESTINO, COD_COLABORADOR, DATA_HORA) VALUES (?, ?, ?, ?)");
             stmt.setLong(1, pneuTransferenciaRealizacao.getCodUnidadeOrigem());
             stmt.setLong(2, pneuTransferenciaRealizacao.getCodUnidadeDestino());
-            stmt.setLong(3, pneuTransferenciaRealizacao.getCodColaborador());
-            stmt.setObject(4, pneuTransferenciaRealizacao.getDataHoraTransferencia());
+            stmt.setLong(3, pneuTransferenciaRealizacao.getCodColaboradorRealizacaoTransferencia());
+            stmt.setObject(4, Now.offsetDateTimeUtc());
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {

@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +14,12 @@ public class PneuTransferenciaRealizacao {
 
     private Long codUnidadeOrigem;
     private Long codUnidadeDestino;
-    private Long codColaborador;
-    private LocalDateTime dataHoraTransferencia;
+    private Long codColaboradorRealizacaoTransferencia;
 
     /**
      * Código do cliente, número de fogo do pneu.
      */
-    private List<String> codPneusCliente;
+    private List<Long> codPneus;
     private String observacao;
 
     public Long getCodUnidadeOrigem() {
@@ -40,20 +38,20 @@ public class PneuTransferenciaRealizacao {
         this.codUnidadeDestino = codUnidadeDestino;
     }
 
-    public Long getCodColaborador() {
-        return codColaborador;
+    public Long getCodColaboradorRealizacaoTransferencia() {
+        return codColaboradorRealizacaoTransferencia;
     }
 
-    public void setCodColaborador(Long codColaborador) {
-        this.codColaborador = codColaborador;
+    public void setCodColaboradorRealizacaoTransferencia(Long codColaboradorRealizacaoTransferencia) {
+        this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
     }
 
-    public List<String> getCodPneusCliente() {
-        return codPneusCliente;
+    public List<Long> getCodPneus() {
+        return codPneus;
     }
 
-    public void setCodPneusCliente(List<String> codPneusCliente) {
-        this.codPneusCliente = codPneusCliente;
+    public void setCodPneus(List<Long> codPneus) {
+        this.codPneus = codPneus;
     }
 
     public String getObservacao() {
@@ -64,13 +62,6 @@ public class PneuTransferenciaRealizacao {
         this.observacao = observacao;
     }
 
-    public LocalDateTime getDataHoraTransferencia() {
-        return dataHoraTransferencia;
-    }
-
-    public void setDataHoraTransferencia(LocalDateTime dataHoraTransferencia) {
-        this.dataHoraTransferencia = dataHoraTransferencia;
-    }
 
 
     @NotNull
@@ -78,13 +69,12 @@ public class PneuTransferenciaRealizacao {
         final PneuTransferenciaRealizacao transferencia = new PneuTransferenciaRealizacao();
         transferencia.setCodUnidadeOrigem(5L);
         transferencia.setCodUnidadeDestino(3L);
-        transferencia.setCodColaborador(190L);
-        transferencia.setDataHoraTransferencia(LocalDateTime.now());
-        List<String> codPneusCliente = new ArrayList<>();
+        transferencia.setCodColaboradorRealizacaoTransferencia(190L);
+        List<Long> codPneus = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            codPneusCliente.add(String.valueOf(i));
+            codPneus.add(Long.valueOf(i));
         }
-        transferencia.setCodPneusCliente(codPneusCliente);
+        transferencia.setCodPneus(codPneus);
         transferencia.setObservacao("Operação Verão");
 
         return transferencia;
