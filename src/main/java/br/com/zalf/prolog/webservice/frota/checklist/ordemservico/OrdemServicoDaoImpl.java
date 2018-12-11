@@ -287,7 +287,9 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         itensResolucao.getCodigosItens(),
                         now);
                 final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(itensResolucao.getPlacaVeiculo(), itensResolucao.getKmColetadoVeiculo(),
+                veiculoDao.updateKmByPlaca(
+                        itensResolucao.getPlacaVeiculo(),
+                        itensResolucao.getKmColetadoVeiculo(),
                         conn);
                 conn.commit();
             } else {
