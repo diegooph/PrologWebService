@@ -1,14 +1,15 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.entrega.ImportUtils;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.Situacao;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia.*;
-import br.com.zalf.prolog.webservice.entrega.ImportUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
     private static final int COLUMN_ACIDENTES_TRABALHO_LTI = 21;
     private static final int COLUMN_ACIDENTES_TRABALHO_MDI = 22;
     private static final int COLUMN_ACIDENTES_TRABALHO_MTI = 23;
-    private static final int COLUMN_ACIDENTES_TRANSITO_CAPOTAMENTOS = 23;
+    private static final int COLUMN_ACIDENTES_TRANSITO_CAPOTAMENTOS = 24;
     private static final int COLUMN_ACIDENTES_TRANSITO_COLISOES = 25;
     private static final int COLUMN_ACIDENTES_TRANSITO_TOMBAMENTOS = 26;
     private static final int COLUMN_MULTAS_GRAVE = 27;
@@ -63,7 +64,6 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
     private static final int COLUMN_TELEMETRIA_FORCA_G = 40;
     private static final int COLUMN_TELEMETRIA_FRENAGEM_BRUSCA = 41;
     private static final int COLUMN_TELEMETRIA_POWER_ON = 42;
-    private List<Integer> indices;
 
     public ProntuarioCondutorDaoImpl() {
 
@@ -77,7 +77,6 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             conn = getConnection();
             final Reader in = new FileReader(path);
             final List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
-            createIndices(tabela);
             for (int i = LINHA_INICIAL; i < tabela.size(); i++) {
                 final ProntuarioCondutor prontuario = createProntuarioFromCsv(tabela.get(i));
                 if (prontuario != null) {
@@ -93,18 +92,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             }
             return true;
         } finally {
-            closeConnection(conn, null, null);
-        }
-    }
-
-    private void createIndices(List<CSVRecord> tabela) {
-        indices = new ArrayList<>();
-        final CSVRecord linhaValidacao1 = tabela.get(LINHA_VALIDACAO_1);
-        final CSVRecord linhaValidacao2 = tabela.get(LINHA_VALIDACAO_2);
-        for (int i = 0; i < linhaValidacao1.size(); i++) {
-            if (!linhaValidacao1.get(i).isEmpty() || !linhaValidacao2.get(i).isEmpty()) {
-                indices.add(i);
-            }
+            close(conn);
         }
     }
 
@@ -124,7 +112,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             }
             return null;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -162,7 +150,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             }
             return prontuarios;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -172,71 +160,70 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             return null;
         } else {
             final Colaborador colaborador = new Colaborador();
-            colaborador.setCpf(Long.parseLong(linha.get(indices.get(COLUMN_CPF)).replace(".", "").replace("-", "")));
+            colaborador.setCpf(Long.parseLong(linha.get((COLUMN_CPF)).replace(".", "").replace("-", "")));
 
             final Situacao situacao = new Situacao();
-            situacao.setStatus(linha.get(indices.get(COLUMN_STATUS)));
-            situacao.setMotivo(linha.get(indices.get(COLUMN_MOTIVO)));
+            situacao.setStatus(linha.get((COLUMN_STATUS)));
+            situacao.setMotivo(linha.get((COLUMN_MOTIVO)));
 
             final Cnh cnh = new Cnh();
-            if (linha.get(indices.get(COLUMN_PONTUACAO_CNH)).isEmpty()) {
+            if (linha.get((COLUMN_PONTUACAO_CNH)).isEmpty()) {
                 cnh.setPontuacao(0);
             } else {
-                cnh.setPontuacao(Integer.parseInt(linha.get(indices.get(COLUMN_PONTUACAO_CNH))));
+                cnh.setPontuacao((int) parseDouble(linha.get((COLUMN_PONTUACAO_CNH))));
             }
             // Podemos ignorar o uso de toTimestamp aqui. No banco, a columa é um DATE (que é o que importa para o
             // vencimento de CNH) então não teremos problema com time zone nesse caso.
-            cnh.setVencimento(ImportUtils.toTimestamp(linha.get(indices.get(COLUMN_VENCIMENTO_CNH))));
+            cnh.setVencimento(ImportUtils.toTimestamp(linha.get((COLUMN_VENCIMENTO_CNH))));
 
             final Documento documento = new Documento();
-            documento.setRs(linha.get(indices.get(COLUMN_DOCUMENTOS_RS)));
-            documento.setEc(linha.get(indices.get(COLUMN_DOCUMENTOS_EC)));
-            documento.setIt(linha.get(indices.get(COLUMN_DOCUMENTOS_IT)));
+            documento.setRs(linha.get((COLUMN_DOCUMENTOS_RS)));
+            documento.setEc(linha.get((COLUMN_DOCUMENTOS_EC)));
+            documento.setIt(linha.get((COLUMN_DOCUMENTOS_IT)));
 
-            prontuario.setPontuacaoTotalPonderada(Double.parseDouble(linha.get(indices.get
-                    (COLUMN_PONTUACAO_PONDERADA)).replace(",", ".")));
+            prontuario.setPontuacaoTotalPonderada(parseDouble(linha.get(COLUMN_PONTUACAO_PONDERADA)));
 
             final AcidentesTrabalho acidentesTrabalho = new AcidentesTrabalho();
-            acidentesTrabalho.setFai(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRABALHO_FAI))));
-            acidentesTrabalho.setLti(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRABALHO_LTI))));
-            acidentesTrabalho.setMdi(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRABALHO_MDI))));
-            acidentesTrabalho.setMti(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRABALHO_MTI))));
+            acidentesTrabalho.setFai((int) parseDouble(linha.get((COLUMN_ACIDENTES_TRABALHO_FAI))));
+            acidentesTrabalho.setLti((int) parseDouble(linha.get((COLUMN_ACIDENTES_TRABALHO_LTI))));
+            acidentesTrabalho.setMdi((int) parseDouble(linha.get((COLUMN_ACIDENTES_TRABALHO_MDI))));
+            acidentesTrabalho.setMti((int) parseDouble(linha.get((COLUMN_ACIDENTES_TRABALHO_MTI))));
 
             final AcidentesTransito acidentesTransito = new AcidentesTransito();
-            acidentesTransito.setCapotamentos(Integer.parseInt(linha.get(indices.get
+            acidentesTransito.setCapotamentos((int) parseDouble(linha.get(
                     (COLUMN_ACIDENTES_TRANSITO_CAPOTAMENTOS))));
-            acidentesTransito.setColisoes(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRANSITO_COLISOES))));
-            acidentesTransito.setTombamentos(Integer.parseInt(linha.get(indices.get
+            acidentesTransito.setColisoes((int) parseDouble(linha.get((COLUMN_ACIDENTES_TRANSITO_COLISOES))));
+            acidentesTransito.setTombamentos((int) parseDouble(linha.get(
                     (COLUMN_ACIDENTES_TRANSITO_TOMBAMENTOS))));
 
             final Multas multas = new Multas();
-            multas.setGrave(Integer.parseInt(linha.get(indices.get(COLUMN_MULTAS_GRAVE))));
-            multas.setGravissima(Integer.parseInt(linha.get(indices.get(COLUMN_MULTAS_GRAVISSIMA))));
-            multas.setLeve(Integer.parseInt(linha.get(indices.get(COLUMN_MULTAS_LEVE))));
-            multas.setMedia(Integer.parseInt(linha.get(indices.get(COLUMN_MULTAS_MEDIA))));
+            multas.setGrave((int) parseDouble(linha.get((COLUMN_MULTAS_GRAVE))));
+            multas.setGravissima((int) parseDouble(linha.get((COLUMN_MULTAS_GRAVISSIMA))));
+            multas.setLeve((int) parseDouble(linha.get((COLUMN_MULTAS_LEVE))));
+            multas.setMedia((int) parseDouble(linha.get((COLUMN_MULTAS_MEDIA))));
 
             final Sac sac = new Sac();
-            sac.setImpericia(Integer.parseInt(linha.get(indices.get(COLUMN_SAC_IMPERICIA))));
-            sac.setImprudencia(Integer.parseInt(linha.get(indices.get(COLUMN_SAC_IMPRUDENCIA))));
+            sac.setImpericia((int) parseDouble(linha.get((COLUMN_SAC_IMPERICIA))));
+            sac.setImprudencia((int) parseDouble(linha.get((COLUMN_SAC_IMPRUDENCIA))));
 
             final Indisciplina indisciplina = new Indisciplina();
-            indisciplina.setAdvertencias(Integer.parseInt(linha.get(indices.get(COLUMN_INDISCIPLINA_ADVERTENCIAS))));
-            indisciplina.setSuspensoes(Integer.parseInt(linha.get(indices.get(COLUMN_INDISCIPLINA_SUSPENSOES))));
+            indisciplina.setAdvertencias((int) parseDouble(linha.get((COLUMN_INDISCIPLINA_ADVERTENCIAS))));
+            indisciplina.setSuspensoes((int) parseDouble(linha.get((COLUMN_INDISCIPLINA_SUSPENSOES))));
 
             final Sav sav = new Sav();
-            sav.setImpericia(Integer.parseInt(linha.get(indices.get(COLUMN_SAV_IMPERICIA))));
-            sav.setImprudencia(Integer.parseInt(linha.get(indices.get(COLUMN_SAV_IMPRUDENCIA))));
+            sav.setImpericia((int) parseDouble(linha.get((COLUMN_SAV_IMPERICIA))));
+            sav.setImprudencia((int) parseDouble(linha.get((COLUMN_SAV_IMPRUDENCIA))));
 
             final Telemetria telemetria = new Telemetria();
-            telemetria.setExcessoVelocidade1(Integer.parseInt(linha.get(indices.get
+            telemetria.setExcessoVelocidade1((int) parseDouble(linha.get(
                     (COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_1))));
-            telemetria.setExcessoVelocidade2(Integer.parseInt(linha.get(indices.get
+            telemetria.setExcessoVelocidade2((int) parseDouble(linha.get(
                     (COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_2))));
-            telemetria.setExcessoVelocidade3(Integer.parseInt(linha.get(indices.get
+            telemetria.setExcessoVelocidade3((int) parseDouble(linha.get(
                     (COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_3))));
-            telemetria.setForcaG(Integer.parseInt(linha.get(indices.get(COLUMN_TELEMETRIA_FORCA_G))));
-            telemetria.setFrenagemBrusca(Integer.parseInt(linha.get(indices.get(COLUMN_TELEMETRIA_FRENAGEM_BRUSCA))));
-            telemetria.setPowerOn(Integer.parseInt(linha.get(indices.get(COLUMN_TELEMETRIA_POWER_ON))));
+            telemetria.setForcaG((int) parseDouble(linha.get((COLUMN_TELEMETRIA_FORCA_G))));
+            telemetria.setFrenagemBrusca((int) parseDouble(linha.get((COLUMN_TELEMETRIA_FRENAGEM_BRUSCA))));
+            telemetria.setPowerOn((int) parseDouble(linha.get((COLUMN_TELEMETRIA_POWER_ON))));
 
             prontuario.setColaborador(colaborador);
             prontuario.setSituacao(situacao);
@@ -258,7 +245,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         try {
             stmt = conn.prepareStatement("INSERT INTO PRONTUARIO_CONDUTOR_CONSOLIDADO VALUES (?,?,?,?,?,?,?,?,?,?,?," +
                     "?,?,?,?,?," +
-                    "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setLong(1, prontuario.getColaborador().getCpf());
             stmt.setString(2, prontuario.getSituacao().getStatus());
             stmt.setString(3, prontuario.getSituacao().getMotivo());
@@ -291,13 +278,14 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             stmt.setInt(30, prontuario.getTelemetria().getForcaG());
             stmt.setInt(31, prontuario.getTelemetria().getFrenagemBrusca());
             stmt.setObject(32, OffsetDateTime.now(Clock.systemUTC()));
+            stmt.setObject(33, prontuario.getTelemetria().getPowerOn());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o prontuário do colaborador: " + prontuario.getColaborador()
                         .getCpf());
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
         return true;
     }
@@ -306,38 +294,39 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         PreparedStatement stmt = null;
         try {
             stmt = connection.prepareStatement("UPDATE PRONTUARIO_CONDUTOR_CONSOLIDADO SET " +
-                    "CPF_COLABORADOR= ? ,\n" +
-                    "STATUS = ? ,\n" +
-                    "MOTIVO = ? ,\n" +
-                    "PONTUACAO = ? ,\n" +
-                    "VENCIMENTO_CNH = ? ,\n" +
-                    "DOCUMENTOS_RS = ? ,\n" +
-                    "DOCUMENTOS_EC = ? ,\n" +
-                    "DOCUMENTOS_IT = ? ,\n" +
-                    "PONTUACAO_PONDERADA= ? ,\n" +
-                    "ACIDENTES_FAI = ? ,\n" +
-                    "ACIDENTES_LTI = ? ,\n" +
-                    "ACIDENTES_MDI = ? ,\n" +
-                    "ACIDENTES_MTI = ? ,\n" +
-                    "CAPOTAMENTOS= ? ,\n" +
-                    "COLISOES= ? ,\n" +
-                    "TOMBAMENTOS = ? ,\n" +
-                    "MULTAS_LEVE = ? ,\n" +
-                    "MULTAS_MEDIA= ? ,\n" +
-                    "MULTAS_GRAVE= ? ,\n" +
-                    "MULTAS_GRAVISSIMA = ? ,\n" +
-                    "SAC_IMPERICIA = ? ,\n" +
-                    "SAC_IMPRUDENCIA = ? ,\n" +
-                    "SAV_IMPERICIA = ? ,\n" +
-                    "SAV_IMPRUDENCIA = ? ,\n" +
-                    "ADVERTENCIAS= ? ,\n" +
-                    "SUSPENSOES= ? ,\n" +
-                    "EXCESSO_VELOCIDADE_1= ? ,\n" +
-                    "EXCESSO_VELOCIDADE_2= ? ,\n" +
-                    "EXCESSO_VELOCIDADE_3= ? ,\n" +
-                    "FORCA_G = ? ,\n" +
-                    "FRENAGEM_BRUSCA = ? ,\n" +
-                    "DATA_ATUALIZACAO= ?\n" +
+                    "CPF_COLABORADOR= ? ," +
+                    "STATUS = ? ," +
+                    "MOTIVO = ? ," +
+                    "PONTUACAO = ? ," +
+                    "VENCIMENTO_CNH = ? ," +
+                    "DOCUMENTOS_RS = ? ," +
+                    "DOCUMENTOS_EC = ? ," +
+                    "DOCUMENTOS_IT = ? ," +
+                    "PONTUACAO_PONDERADA= ? ," +
+                    "ACIDENTES_FAI = ? ," +
+                    "ACIDENTES_LTI = ? ," +
+                    "ACIDENTES_MDI = ? ," +
+                    "ACIDENTES_MTI = ? ," +
+                    "CAPOTAMENTOS= ? ," +
+                    "COLISOES= ? ," +
+                    "TOMBAMENTOS = ? ," +
+                    "MULTAS_LEVE = ? ," +
+                    "MULTAS_MEDIA= ? ," +
+                    "MULTAS_GRAVE= ? ," +
+                    "MULTAS_GRAVISSIMA = ? ," +
+                    "SAC_IMPERICIA = ? ," +
+                    "SAC_IMPRUDENCIA = ? ," +
+                    "SAV_IMPERICIA = ? ," +
+                    "SAV_IMPRUDENCIA = ? ," +
+                    "ADVERTENCIAS= ? ," +
+                    "SUSPENSOES= ? ," +
+                    "EXCESSO_VELOCIDADE_1= ? ," +
+                    "EXCESSO_VELOCIDADE_2= ? ," +
+                    "EXCESSO_VELOCIDADE_3= ? ," +
+                    "FORCA_G = ? ," +
+                    "FRENAGEM_BRUSCA = ? ," +
+                    "POWER_ON = ? ," +
+                    "DATA_ATUALIZACAO= ? " +
                     "WHERE cpf_colaborador = ?;");
             stmt.setLong(1, prontuario.getColaborador().getCpf());
             stmt.setString(2, prontuario.getSituacao().getStatus());
@@ -370,14 +359,15 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             stmt.setInt(29, prontuario.getTelemetria().getExcessoVelocidade3());
             stmt.setInt(30, prontuario.getTelemetria().getForcaG());
             stmt.setInt(31, prontuario.getTelemetria().getFrenagemBrusca());
-            stmt.setObject(32, OffsetDateTime.now(Clock.systemUTC()));
-            stmt.setLong(33, prontuario.getColaborador().getCpf());
-            int count = stmt.executeUpdate();
+            stmt.setInt(32, prontuario.getTelemetria().getPowerOn());
+            stmt.setObject(33, OffsetDateTime.now(Clock.systemUTC()));
+            stmt.setLong(34, prontuario.getColaborador().getCpf());
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 return false;
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
         return true;
     }
@@ -389,7 +379,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         final ProntuarioCondutor prontuario = new ProntuarioCondutor();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PRONTUARIO_CONDUTOR_CONSOLIDADO WHERE CPF_COLABORADOR = ?");
+            stmt = conn.prepareStatement("SELECT * FROM PRONTUARIO_CONDUTOR_CONSOLIDADO WHERE CPF_COLABORADOR = ?;");
             stmt.setLong(1, cpf);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -443,6 +433,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                 telemetria.setExcessoVelocidade3(rSet.getInt("EXCESSO_VELOCIDADE_3"));
                 telemetria.setForcaG(rSet.getInt("FORCA_G"));
                 telemetria.setFrenagemBrusca(rSet.getInt("FRENAGEM_BRUSCA"));
+                telemetria.setPowerOn(rSet.getInt("POWER_ON"));
 
                 prontuario.setSituacao(situacao);
                 prontuario.setCnh(cnh);
@@ -457,8 +448,12 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                 return prontuario;
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return prontuario;
+    }
+
+    private double parseDouble(@NotNull final String value) {
+        return Double.parseDouble(value.replace(",", "."));
     }
 }

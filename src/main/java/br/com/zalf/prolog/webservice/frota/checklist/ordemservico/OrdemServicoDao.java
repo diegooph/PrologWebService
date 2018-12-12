@@ -162,7 +162,7 @@ public interface OrdemServicoDao {
     void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable;
 
     /**
-     * Método responsável por resolver múltiplos itens de uma Ordem de Serviço..
+     * Método responsável por resolver múltiplos itens de uma Ordem de Serviço.
      *
      * @param itensResolucao Objeto {@link ResolverMultiplosItensOs} contendo as informações dos itens resolvidos.
      * @throws Throwable Se ocorrer algum erro no processamento das informações.

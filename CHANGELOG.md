@@ -1,8 +1,19 @@
 Change Log
 ==========
 
+<a name="v0.0.82"></a>
+## Version [v0.0.82](https://github.com/luizfp/PrologWebService/compare/v0.0.81...v0.0.82) (release-date) [unreleased]
+
+### Bug Fixes
+* Corrige criação dos componentes resumidos da dashboard
+
 <a name="v0.0.81"></a>
-## Version [v0.0.81](https://github.com/luizfp/PrologWebService/compare/v0.0.80...v0.0.81) (release-date) [unreleased]
+## Version [v0.0.81](https://github.com/luizfp/PrologWebService/compare/v0.0.80...v0.0.81) (2018-12-11)
+
+### Refactors
+* Bloqueia resources antigos das ordens de serviço do checklist
+* Altera forma de import do prontuário do condutor
+* Lida com nova coluna no import do prontuário do condutor (powerOn)
 
 <a name="v0.0.80"></a>
 ## Version [v0.0.80](https://github.com/luizfp/PrologWebService/compare/v0.0.79...v0.0.80) (2018-12-10)
