@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-class IntegracaoPraxioService {
+public class IntegracaoPraxioService {
     @NotNull
     private static final String TAG = IntegracaoPraxioService.class.getSimpleName();
     @NotNull
@@ -31,8 +31,8 @@ class IntegracaoPraxioService {
     }
 
     @NotNull
-    List<AfericaoIntegracaoPraxio> getAfericoesRealizadas(@NotNull final String tokenIntegracao,
-                                                          @NotNull final Long codUltimaAfericao) throws ProLogException {
+    public List<AfericaoIntegracaoPraxio> getAfericoesRealizadas(@NotNull final String tokenIntegracao,
+                                                                 @NotNull final Long codUltimaAfericao) throws ProLogException {
         ensureValidToken(tokenIntegracao);
 
         try {

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class AfericaoIntegracaoPraxio {
+public final class AfericaoIntegracaoPraxio {
     private Long codigo;
     private Long codUnidadeAfericao;
     private String cpfColaborador;
