@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
+import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
+import javax.ws.rs.NotAuthorizedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +15,10 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 class IntegracaoPraxioService {
+    @NotNull
+    private static final String TAG = IntegracaoPraxioService.class.getSimpleName();
+    @NotNull
+    private IntegracaoPraxioDao dao = new IntegracaoPraxioDaoImpl();
 
     @NotNull
     List<AfericaoIntegracaoPraxio> getDummy() {
@@ -23,7 +30,32 @@ class IntegracaoPraxioService {
         return afericoes;
     }
 
-    void getAfericoesRealizadas(@NotNull final String tokenIntegracao,
-                                @NotNull final Long codUltimaAfericao) throws ProLogException {
+    @NotNull
+    List<AfericaoIntegracaoPraxio> getAfericoesRealizadas(@NotNull final String tokenIntegracao,
+                                                          @NotNull final Long codUltimaAfericao) throws ProLogException {
+        ensureValidToken(tokenIntegracao);
+
+        try {
+            return dao.getAfericoesRealizadas(codUltimaAfericao);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar as novas aferições da Integração\n" +
+                    "Código da última aferição sincronizada: %d", codUltimaAfericao), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t,"Erro ao buscar marcações para sincronizar");
+        }
+    }
+
+    private void ensureValidToken(@NotNull final String tokenIntegracao) throws ProLogException {
+        try {
+            if (!dao.verifyIfTokenIntegracaoExists(tokenIntegracao)) {
+                throw new NotAuthorizedException("Token Integração não existe no banco de dados: " + tokenIntegracao);
+            }
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao verificar se o tokenIntegracao existe: %s", tokenIntegracao), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao verificar Token da Integração");
+        }
     }
 }

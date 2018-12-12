@@ -27,13 +27,12 @@ public class IntegracaoPraxioResource {
     private final IntegracaoPraxioService service = new IntegracaoPraxioService();
 
     @GET
-//    @SecuredIntegration
     @Path("/afericoes")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<AfericaoIntegracaoPraxio> getAfericoesRealizadas(
             @HeaderParam(HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimaAfericao") @Required final Long codUltimaAfericao) throws ProLogException {
-//        service.getAfericoesRealizadas(tokenIntegracao, codUltimaAfericao);
+        service.getAfericoesRealizadas(tokenIntegracao, codUltimaAfericao);
         return service.getDummy();
     }
 }
