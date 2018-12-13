@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class AfericaoIntegracaoPraxio {
+public final class MedicaoIntegracaoPraxio {
     private Long codigo;
     private Long codUnidadeAfericao;
     private String cpfColaborador;
@@ -31,95 +31,95 @@ public final class AfericaoIntegracaoPraxio {
     private TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao;
     private TipoProcessoColetaAfericao tipoProcessoColetaAfericao;
 
-    public AfericaoIntegracaoPraxio() {
+    public MedicaoIntegracaoPraxio() {
 
     }
 
     @NotNull
-    static AfericaoIntegracaoPraxio createDummyAfericaoPlacaSulcoPressao() {
-        final AfericaoIntegracaoPraxio afericao = new AfericaoIntegracaoPraxio();
-        afericao.setCodigo(12345L);
-        afericao.setCodUnidadeAfericao(5L);
-        afericao.setCpfColaborador("00000000011");
-        afericao.setPlacaVeiculoAferido("PRO0001");
-        afericao.setCodPneuAferido(1000L);
-        afericao.setNumeroFogoPneu("PN123");
-        afericao.setAlturaSulcoInterno(15.5);
-        afericao.setAlturaSulcoCentralInterno(15.5);
-        afericao.setAlturaSulcoCentralExterno(15.5);
-        afericao.setAlturaSulcoExterno(15.5);
-        afericao.setPressao(120.0);
-        afericao.setKmVeiculoMomentoAfericao(123456L);
-        afericao.setTempoRealizacaoEmSegundos(300L);
-        afericao.setVidaPneuMomentoAfericao(1);
-        afericao.setPosicaoPneuMomentoAfericao(111);
-        afericao.setDataHoraAfericao(LocalDateTime.now());
-        afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO_PRESSAO);
-        afericao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PLACA);
-        return afericao;
+    static MedicaoIntegracaoPraxio createDummyAfericaoPlacaSulcoPressao() {
+        final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
+        medicao.setCodigo(12345L);
+        medicao.setCodUnidadeAfericao(5L);
+        medicao.setCpfColaborador("00000000011");
+        medicao.setPlacaVeiculoAferido("PRO0001");
+        medicao.setCodPneuAferido(1000L);
+        medicao.setNumeroFogoPneu("PN123");
+        medicao.setAlturaSulcoInterno(15.5);
+        medicao.setAlturaSulcoCentralInterno(15.5);
+        medicao.setAlturaSulcoCentralExterno(15.5);
+        medicao.setAlturaSulcoExterno(15.5);
+        medicao.setPressao(120.0);
+        medicao.setKmVeiculoMomentoAfericao(123456L);
+        medicao.setTempoRealizacaoEmSegundos(300L);
+        medicao.setVidaPneuMomentoAfericao(1);
+        medicao.setPosicaoPneuMomentoAfericao(111);
+        medicao.setDataHoraAfericao(LocalDateTime.now());
+        medicao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO_PRESSAO);
+        medicao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PLACA);
+        return medicao;
     }
 
     @NotNull
-    static AfericaoIntegracaoPraxio createDummyAfericaoPlacaSulco() {
-        final AfericaoIntegracaoPraxio afericao = new AfericaoIntegracaoPraxio();
-        afericao.setCodigo(12345L);
-        afericao.setCodUnidadeAfericao(5L);
-        afericao.setCpfColaborador("00000000011");
-        afericao.setPlacaVeiculoAferido("PRO0001");
-        afericao.setCodPneuAferido(1000L);
-        afericao.setNumeroFogoPneu("PN123");
-        afericao.setAlturaSulcoInterno(15.5);
-        afericao.setAlturaSulcoCentralInterno(15.5);
-        afericao.setAlturaSulcoCentralExterno(15.5);
-        afericao.setAlturaSulcoExterno(15.5);
-        afericao.setKmVeiculoMomentoAfericao(123456L);
-        afericao.setTempoRealizacaoEmSegundos(300L);
-        afericao.setVidaPneuMomentoAfericao(1);
-        afericao.setPosicaoPneuMomentoAfericao(111);
-        afericao.setDataHoraAfericao(LocalDateTime.now());
-        afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO);
-        afericao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PLACA);
-        return afericao;
+    static MedicaoIntegracaoPraxio createDummyAfericaoPlacaSulco() {
+        final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
+        medicao.setCodigo(12345L);
+        medicao.setCodUnidadeAfericao(5L);
+        medicao.setCpfColaborador("00000000011");
+        medicao.setPlacaVeiculoAferido("PRO0001");
+        medicao.setCodPneuAferido(1000L);
+        medicao.setNumeroFogoPneu("PN123");
+        medicao.setAlturaSulcoInterno(15.5);
+        medicao.setAlturaSulcoCentralInterno(15.5);
+        medicao.setAlturaSulcoCentralExterno(15.5);
+        medicao.setAlturaSulcoExterno(15.5);
+        medicao.setKmVeiculoMomentoAfericao(123456L);
+        medicao.setTempoRealizacaoEmSegundos(300L);
+        medicao.setVidaPneuMomentoAfericao(1);
+        medicao.setPosicaoPneuMomentoAfericao(111);
+        medicao.setDataHoraAfericao(LocalDateTime.now());
+        medicao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO);
+        medicao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PLACA);
+        return medicao;
     }
 
     @NotNull
-    static AfericaoIntegracaoPraxio createDummyAfericaoPlacaPressao() {
-        final AfericaoIntegracaoPraxio afericao = new AfericaoIntegracaoPraxio();
-        afericao.setCodigo(12345L);
-        afericao.setCodUnidadeAfericao(5L);
-        afericao.setCpfColaborador("00000000011");
-        afericao.setPlacaVeiculoAferido("PRO0001");
-        afericao.setCodPneuAferido(1000L);
-        afericao.setNumeroFogoPneu("PN123");
-        afericao.setPressao(120.0);
-        afericao.setKmVeiculoMomentoAfericao(123456L);
-        afericao.setTempoRealizacaoEmSegundos(300L);
-        afericao.setVidaPneuMomentoAfericao(1);
-        afericao.setPosicaoPneuMomentoAfericao(111);
-        afericao.setDataHoraAfericao(LocalDateTime.now());
-        afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.PRESSAO);
-        afericao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PLACA);
-        return afericao;
+    static MedicaoIntegracaoPraxio createDummyAfericaoPlacaPressao() {
+        final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
+        medicao.setCodigo(12345L);
+        medicao.setCodUnidadeAfericao(5L);
+        medicao.setCpfColaborador("00000000011");
+        medicao.setPlacaVeiculoAferido("PRO0001");
+        medicao.setCodPneuAferido(1000L);
+        medicao.setNumeroFogoPneu("PN123");
+        medicao.setPressao(120.0);
+        medicao.setKmVeiculoMomentoAfericao(123456L);
+        medicao.setTempoRealizacaoEmSegundos(300L);
+        medicao.setVidaPneuMomentoAfericao(1);
+        medicao.setPosicaoPneuMomentoAfericao(111);
+        medicao.setDataHoraAfericao(LocalDateTime.now());
+        medicao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.PRESSAO);
+        medicao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PLACA);
+        return medicao;
     }
 
     @NotNull
-    static AfericaoIntegracaoPraxio createDummyAfericaoPneuAvulsoSulco() {
-        final AfericaoIntegracaoPraxio afericao = new AfericaoIntegracaoPraxio();
-        afericao.setCodigo(12345L);
-        afericao.setCodUnidadeAfericao(5L);
-        afericao.setCpfColaborador("00000000011");
-        afericao.setCodPneuAferido(1000L);
-        afericao.setNumeroFogoPneu("PN123");
-        afericao.setAlturaSulcoInterno(15.5);
-        afericao.setAlturaSulcoCentralInterno(15.5);
-        afericao.setAlturaSulcoCentralExterno(15.5);
-        afericao.setAlturaSulcoExterno(15.5);
-        afericao.setTempoRealizacaoEmSegundos(300L);
-        afericao.setVidaPneuMomentoAfericao(1);
-        afericao.setDataHoraAfericao(LocalDateTime.now());
-        afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO);
-        afericao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PNEU_AVULSO);
-        return afericao;
+    static MedicaoIntegracaoPraxio createDummyAfericaoPneuAvulsoSulco() {
+        final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
+        medicao.setCodigo(12345L);
+        medicao.setCodUnidadeAfericao(5L);
+        medicao.setCpfColaborador("00000000011");
+        medicao.setCodPneuAferido(1000L);
+        medicao.setNumeroFogoPneu("PN123");
+        medicao.setAlturaSulcoInterno(15.5);
+        medicao.setAlturaSulcoCentralInterno(15.5);
+        medicao.setAlturaSulcoCentralExterno(15.5);
+        medicao.setAlturaSulcoExterno(15.5);
+        medicao.setTempoRealizacaoEmSegundos(300L);
+        medicao.setVidaPneuMomentoAfericao(1);
+        medicao.setDataHoraAfericao(LocalDateTime.now());
+        medicao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO);
+        medicao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PNEU_AVULSO);
+        return medicao;
     }
 
     public Long getCodigo() {

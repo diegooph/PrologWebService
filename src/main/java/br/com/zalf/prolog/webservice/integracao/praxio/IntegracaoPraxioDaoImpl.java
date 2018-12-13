@@ -18,7 +18,7 @@ class IntegracaoPraxioDaoImpl extends DatabaseConnection implements IntegracaoPr
 
     @NotNull
     @Override
-    public List<AfericaoIntegracaoPraxio> getAfericoesRealizadas(
+    public List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(
             @NotNull final String tokenIntegracao,
             @NotNull final Long codUltimaAfericao) throws Throwable {
         Connection conn = null;
@@ -30,11 +30,11 @@ class IntegracaoPraxioDaoImpl extends DatabaseConnection implements IntegracaoPr
             stmt.setString(1, tokenIntegracao);
             stmt.setLong(2, codUltimaAfericao);
             rSet = stmt.executeQuery();
-            final List<AfericaoIntegracaoPraxio> afericoes = new ArrayList<>();
+            final List<MedicaoIntegracaoPraxio> medicoes = new ArrayList<>();
             while (rSet.next()) {
-                afericoes.add(AfericaoIntegracaoPraxioConverter.convert(rSet));
+                medicoes.add(AfericaoIntegracaoPraxioConverter.convert(rSet));
             }
-            return afericoes;
+            return medicoes;
         } finally {
             close(conn, stmt, rSet);
         }

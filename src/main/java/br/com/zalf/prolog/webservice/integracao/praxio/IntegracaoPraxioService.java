@@ -21,18 +21,19 @@ public class IntegracaoPraxioService {
     private IntegracaoPraxioDao dao = new IntegracaoPraxioDaoImpl();
 
     @NotNull
-    List<AfericaoIntegracaoPraxio> getDummy() {
-        final List<AfericaoIntegracaoPraxio> afericoes = new ArrayList<>();
-        afericoes.add(AfericaoIntegracaoPraxio.createDummyAfericaoPlacaSulcoPressao());
-        afericoes.add(AfericaoIntegracaoPraxio.createDummyAfericaoPlacaSulco());
-        afericoes.add(AfericaoIntegracaoPraxio.createDummyAfericaoPlacaPressao());
-        afericoes.add(AfericaoIntegracaoPraxio.createDummyAfericaoPneuAvulsoSulco());
+    List<MedicaoIntegracaoPraxio> getDummy() {
+        final List<MedicaoIntegracaoPraxio> afericoes = new ArrayList<>();
+        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaSulcoPressao());
+        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaSulco());
+        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaPressao());
+        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPneuAvulsoSulco());
         return afericoes;
     }
 
     @NotNull
-    public List<AfericaoIntegracaoPraxio> getAfericoesRealizadas(@NotNull final String tokenIntegracao,
-                                                                 @NotNull final Long codUltimaAfericao) throws ProLogException {
+    public List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(
+            @NotNull final String tokenIntegracao,
+            @NotNull final Long codUltimaAfericao) throws ProLogException {
         ensureValidToken(tokenIntegracao);
 
         try {
@@ -42,7 +43,7 @@ public class IntegracaoPraxioService {
                     "Código da última aferição sincronizada: %d", codUltimaAfericao), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t,"Erro ao buscar marcações para sincronizar");
+                    .map(t, "Erro ao buscar marcações para sincronizar");
         }
     }
 

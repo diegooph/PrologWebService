@@ -3,7 +3,7 @@ package test.integracao.praxio;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoProcessoColetaAfericao;
-import br.com.zalf.prolog.webservice.integracao.praxio.AfericaoIntegracaoPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,13 +27,13 @@ public class BuscaAfericoesTest extends BaseTest {
 
     @Test
     public void testInsertRecapadora() throws ProLogException {
-        final List<AfericaoIntegracaoPraxio> afericoesRealizadas =
+        final List<MedicaoIntegracaoPraxio> medicoesRealizadas =
                 service.getAfericoesRealizadas(TOKEN_PICCOLOTUR, 10L);
 
-        Assert.assertNotNull(afericoesRealizadas);
-        Assert.assertTrue(afericoesRealizadas.size() > 0);
+        Assert.assertNotNull(medicoesRealizadas);
+        Assert.assertTrue(medicoesRealizadas.size() > 0);
 
-        for (final AfericaoIntegracaoPraxio afericao : afericoesRealizadas) {
+        for (final MedicaoIntegracaoPraxio afericao : medicoesRealizadas) {
             Assert.assertNotNull(afericao.getCodigo());
             Assert.assertTrue(afericao.getCodigo() > 0);
             Assert.assertNotNull(afericao.getCodUnidadeAfericao());

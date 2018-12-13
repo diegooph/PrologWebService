@@ -28,7 +28,7 @@ public class IntegracaoPraxioResource {
     @GET
     @Path("/afericoes")
     @UsedBy(platforms = Platform.INTEGRACOES)
-    public List<AfericaoIntegracaoPraxio> getAfericoesRealizadas(
+    public List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimaAfericao") @Required final Long codUltimaAfericao) throws ProLogException {
         return service.getAfericoesRealizadas(tokenIntegracao, codUltimaAfericao);
@@ -37,7 +37,7 @@ public class IntegracaoPraxioResource {
     @GET
     @Path("/afericoes/dummies")
     @UsedBy(platforms = Platform.INTEGRACOES)
-    public List<AfericaoIntegracaoPraxio> getAfericoesRealizadasDummies(
+    public List<MedicaoIntegracaoPraxio> getAfericoesRealizadasDummies(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimaAfericao") @Required final Long codUltimaAfericao) {
         return service.getDummy();

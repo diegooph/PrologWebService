@@ -21,42 +21,42 @@ final class AfericaoIntegracaoPraxioConverter {
     }
 
     @NotNull
-    static AfericaoIntegracaoPraxio convert(@NotNull final ResultSet rSet) throws SQLException {
-        final AfericaoIntegracaoPraxio afericao = new AfericaoIntegracaoPraxio();
-        afericao.setCodigo(rSet.getLong("COD_AFERICAO"));
-        afericao.setCodUnidadeAfericao(rSet.getLong("COD_UNIDADE_AFERICAO"));
-        afericao.setCpfColaborador(String.valueOf(rSet.getLong("CPF_COLABORADOR")));
-        afericao.setCodPneuAferido(rSet.getLong("COD_PNEU_AFERIDO"));
-        afericao.setNumeroFogoPneu(rSet.getString("NUMERO_FOGO"));
-        afericao.setTempoRealizacaoEmSegundos(rSet.getLong("TEMPO_REALIZACAO_AFERICAO_EM_SEGUNDOS"));
-        afericao.setVidaPneuMomentoAfericao(rSet.getInt("VIDA_MOMENTO_AFERICAO"));
-        afericao.setDataHoraAfericao(rSet.getObject("DATA_HORA_AFERICAO", LocalDateTime.class));
+    static MedicaoIntegracaoPraxio convert(@NotNull final ResultSet rSet) throws SQLException {
+        final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
+        medicao.setCodigo(rSet.getLong("COD_AFERICAO"));
+        medicao.setCodUnidadeAfericao(rSet.getLong("COD_UNIDADE_AFERICAO"));
+        medicao.setCpfColaborador(String.valueOf(rSet.getLong("CPF_COLABORADOR")));
+        medicao.setCodPneuAferido(rSet.getLong("COD_PNEU_AFERIDO"));
+        medicao.setNumeroFogoPneu(rSet.getString("NUMERO_FOGO"));
+        medicao.setTempoRealizacaoEmSegundos(rSet.getLong("TEMPO_REALIZACAO_AFERICAO_EM_SEGUNDOS"));
+        medicao.setVidaPneuMomentoAfericao(rSet.getInt("VIDA_MOMENTO_AFERICAO"));
+        medicao.setDataHoraAfericao(rSet.getObject("DATA_HORA_AFERICAO", LocalDateTime.class));
 
         final TipoMedicaoColetadaAfericao tipoMedicao =
                 TipoMedicaoColetadaAfericao.fromString(rSet.getString("TIPO_MEDICAO_COLETADA"));
         final TipoProcessoColetaAfericao tipoProcesso =
                 TipoProcessoColetaAfericao.fromString(rSet.getString("TIPO_PROCESSO_COLETA"));
-        afericao.setTipoMedicaoColetadaAfericao(tipoMedicao);
-        afericao.setTipoProcessoColetaAfericao(tipoProcesso);
+        medicao.setTipoMedicaoColetadaAfericao(tipoMedicao);
+        medicao.setTipoProcessoColetaAfericao(tipoProcesso);
 
         if (tipoProcesso.equals(TipoProcessoColetaAfericao.PLACA)
                 && tipoMedicao.equals(TipoMedicaoColetadaAfericao.SULCO_PRESSAO)) {
-            return createAfericaoPlacaSulcoPressao(rSet, afericao);
+            return createMedicaoPlacaSulcoPressao(rSet, medicao);
         }
 
         if (tipoProcesso.equals(TipoProcessoColetaAfericao.PLACA)
                 && tipoMedicao.equals(TipoMedicaoColetadaAfericao.SULCO)) {
-            return createAfericaoPlacaSulco(rSet, afericao);
+            return createMedicaoPlacaSulco(rSet, medicao);
         }
 
         if (tipoProcesso.equals(TipoProcessoColetaAfericao.PLACA)
                 && tipoMedicao.equals(TipoMedicaoColetadaAfericao.PRESSAO)) {
-            return createAfericaoPlacaPressao(rSet, afericao);
+            return createMedicaoPlacaPressao(rSet, medicao);
         }
 
         if (tipoProcesso.equals(TipoProcessoColetaAfericao.PNEU_AVULSO)
                 && tipoMedicao.equals(TipoMedicaoColetadaAfericao.SULCO)) {
-            return createAfericaoPneuAvulsoSulco(rSet, afericao);
+            return createMedicaoPneuAvulsoSulco(rSet, medicao);
         }
 
         throw new IllegalStateException(
@@ -64,53 +64,53 @@ final class AfericaoIntegracaoPraxioConverter {
     }
 
     @NotNull
-    private static AfericaoIntegracaoPraxio createAfericaoPlacaSulcoPressao(
+    private static MedicaoIntegracaoPraxio createMedicaoPlacaSulcoPressao(
             @NotNull final ResultSet rSet,
-            @NotNull final AfericaoIntegracaoPraxio afericao) throws SQLException {
-        afericao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
-        afericao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        afericao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        afericao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        afericao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        afericao.setPressao(rSet.getDouble("PRESSAO"));
-        afericao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
-        afericao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
-        return afericao;
+            @NotNull final MedicaoIntegracaoPraxio medicao) throws SQLException {
+        medicao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
+        medicao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        medicao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        medicao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        medicao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        medicao.setPressao(rSet.getDouble("PRESSAO"));
+        medicao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
+        medicao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
+        return medicao;
     }
 
     @NotNull
-    private static AfericaoIntegracaoPraxio createAfericaoPlacaSulco(
+    private static MedicaoIntegracaoPraxio createMedicaoPlacaSulco(
             @NotNull final ResultSet rSet,
-            @NotNull final AfericaoIntegracaoPraxio afericao) throws SQLException {
-        afericao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
-        afericao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        afericao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        afericao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        afericao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        afericao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
-        afericao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
-        return afericao;
+            @NotNull final MedicaoIntegracaoPraxio medicao) throws SQLException {
+        medicao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
+        medicao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        medicao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        medicao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        medicao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        medicao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
+        medicao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
+        return medicao;
     }
 
     @NotNull
-    private static AfericaoIntegracaoPraxio createAfericaoPlacaPressao(
+    private static MedicaoIntegracaoPraxio createMedicaoPlacaPressao(
             @NotNull final ResultSet rSet,
-            @NotNull final AfericaoIntegracaoPraxio afericao) throws SQLException {
-        afericao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
-        afericao.setPressao(rSet.getDouble("PRESSAO"));
-        afericao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
-        afericao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
-        return afericao;
+            @NotNull final MedicaoIntegracaoPraxio medicao) throws SQLException {
+        medicao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
+        medicao.setPressao(rSet.getDouble("PRESSAO"));
+        medicao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
+        medicao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
+        return medicao;
     }
 
     @NotNull
-    private static AfericaoIntegracaoPraxio createAfericaoPneuAvulsoSulco(
+    private static MedicaoIntegracaoPraxio createMedicaoPneuAvulsoSulco(
             @NotNull final ResultSet rSet,
-            @NotNull final AfericaoIntegracaoPraxio afericao) throws SQLException {
-        afericao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        afericao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        afericao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        afericao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        return afericao;
+            @NotNull final MedicaoIntegracaoPraxio medicao) throws SQLException {
+        medicao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        medicao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        medicao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        medicao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        return medicao;
     }
 }
