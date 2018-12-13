@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,6 +58,24 @@ public class IntegracaoPraxioService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao verificar Token da Integração");
+        }
+    }
+
+    @NotNull
+    List<MedicaoIntegracaoPraxio> getAfericoesRealizadasDummy(final String tokenIntegracao,
+                                                              final Long codUltimaAfericao) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (codUltimaAfericao == null) {
+                throw new GenericException("Um código para a busca deve ser fornecido");
+            }
+            return getDummy();
+        } catch (Throwable t) {
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro na busca das aferições de teste");
         }
     }
 }
