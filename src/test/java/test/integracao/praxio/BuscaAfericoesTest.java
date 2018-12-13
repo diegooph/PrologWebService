@@ -44,11 +44,11 @@ public class BuscaAfericoesTest extends BaseTest {
             Assert.assertTrue(afericao.getCodPneuAferido() > 0);
             Assert.assertNotNull(afericao.getNumeroFogoPneu());
             Assert.assertFalse(afericao.getNumeroFogoPneu().isEmpty());
-            Assert.assertNotNull(afericao.getTempoRealizacaoMilis());
-            Assert.assertTrue(afericao.getTempoRealizacaoMilis() > 0);
+            Assert.assertNotNull(afericao.getTempoRealizacaoEmSegundos());
+            Assert.assertTrue(afericao.getTempoRealizacaoEmSegundos() > 0);
             Assert.assertNotNull(afericao.getVidaPneuMomentoAfericao());
             Assert.assertTrue(afericao.getVidaPneuMomentoAfericao() >= 0);
-            Assert.assertNotNull(afericao.getDataHoraRealizacao());
+            Assert.assertNotNull(afericao.getDataHoraAfericao());
 
             if (afericao.getTipoProcessoColetaAfericao().equals(TipoProcessoColetaAfericao.PLACA)
                     && afericao.getTipoMedicaoColetadaAfericao().equals(TipoMedicaoColetadaAfericao.SULCO_PRESSAO)) {

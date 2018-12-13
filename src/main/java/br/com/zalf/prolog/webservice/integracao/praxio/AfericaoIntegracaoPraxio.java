@@ -24,10 +24,10 @@ public final class AfericaoIntegracaoPraxio {
     private Double alturaSulcoExterno;
     private Double pressao;
     private Long kmVeiculoMomentoAfericao;
-    private Long tempoRealizacaoMilis;
+    private Long tempoRealizacaoEmSegundos;
     private Integer vidaPneuMomentoAfericao;
     private Integer posicaoPneuMomentoAfericao;
-    private LocalDateTime dataHoraRealizacao;
+    private LocalDateTime dataHoraAfericao;
     private TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao;
     private TipoProcessoColetaAfericao tipoProcessoColetaAfericao;
 
@@ -50,10 +50,10 @@ public final class AfericaoIntegracaoPraxio {
         afericao.setAlturaSulcoExterno(15.5);
         afericao.setPressao(120.0);
         afericao.setKmVeiculoMomentoAfericao(123456L);
-        afericao.setTempoRealizacaoMilis(900000L);
+        afericao.setTempoRealizacaoEmSegundos(300L);
         afericao.setVidaPneuMomentoAfericao(1);
         afericao.setPosicaoPneuMomentoAfericao(111);
-        afericao.setDataHoraRealizacao(LocalDateTime.now());
+        afericao.setDataHoraAfericao(LocalDateTime.now());
         afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO_PRESSAO);
         afericao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PLACA);
         return afericao;
@@ -73,10 +73,10 @@ public final class AfericaoIntegracaoPraxio {
         afericao.setAlturaSulcoCentralExterno(15.5);
         afericao.setAlturaSulcoExterno(15.5);
         afericao.setKmVeiculoMomentoAfericao(123456L);
-        afericao.setTempoRealizacaoMilis(900000L);
+        afericao.setTempoRealizacaoEmSegundos(300L);
         afericao.setVidaPneuMomentoAfericao(1);
         afericao.setPosicaoPneuMomentoAfericao(111);
-        afericao.setDataHoraRealizacao(LocalDateTime.now());
+        afericao.setDataHoraAfericao(LocalDateTime.now());
         afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO);
         afericao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PLACA);
         return afericao;
@@ -93,10 +93,10 @@ public final class AfericaoIntegracaoPraxio {
         afericao.setNumeroFogoPneu("PN123");
         afericao.setPressao(120.0);
         afericao.setKmVeiculoMomentoAfericao(123456L);
-        afericao.setTempoRealizacaoMilis(900000L);
+        afericao.setTempoRealizacaoEmSegundos(300L);
         afericao.setVidaPneuMomentoAfericao(1);
         afericao.setPosicaoPneuMomentoAfericao(111);
-        afericao.setDataHoraRealizacao(LocalDateTime.now());
+        afericao.setDataHoraAfericao(LocalDateTime.now());
         afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.PRESSAO);
         afericao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PLACA);
         return afericao;
@@ -114,9 +114,9 @@ public final class AfericaoIntegracaoPraxio {
         afericao.setAlturaSulcoCentralInterno(15.5);
         afericao.setAlturaSulcoCentralExterno(15.5);
         afericao.setAlturaSulcoExterno(15.5);
-        afericao.setTempoRealizacaoMilis(900000L);
+        afericao.setTempoRealizacaoEmSegundos(300L);
         afericao.setVidaPneuMomentoAfericao(1);
-        afericao.setDataHoraRealizacao(LocalDateTime.now());
+        afericao.setDataHoraAfericao(LocalDateTime.now());
         afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO);
         afericao.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PNEU_AVULSO);
         return afericao;
@@ -218,12 +218,12 @@ public final class AfericaoIntegracaoPraxio {
         this.kmVeiculoMomentoAfericao = kmVeiculoMomentoAfericao;
     }
 
-    public Long getTempoRealizacaoMilis() {
-        return tempoRealizacaoMilis;
+    public Long getTempoRealizacaoEmSegundos() {
+        return tempoRealizacaoEmSegundos;
     }
 
-    public void setTempoRealizacaoMilis(final Long tempoRealizacaoMilis) {
-        this.tempoRealizacaoMilis = tempoRealizacaoMilis;
+    public void setTempoRealizacaoEmSegundos(final Long tempoRealizacaoEmSegundos) {
+        this.tempoRealizacaoEmSegundos = tempoRealizacaoEmSegundos;
     }
 
     public Integer getVidaPneuMomentoAfericao() {
@@ -242,12 +242,12 @@ public final class AfericaoIntegracaoPraxio {
         this.posicaoPneuMomentoAfericao = posicaoPneuMomentoAfericao;
     }
 
-    public LocalDateTime getDataHoraRealizacao() {
-        return dataHoraRealizacao;
+    public LocalDateTime getDataHoraAfericao() {
+        return dataHoraAfericao;
     }
 
-    public void setDataHoraRealizacao(final LocalDateTime dataHoraRealizacao) {
-        this.dataHoraRealizacao = dataHoraRealizacao;
+    public void setDataHoraAfericao(final LocalDateTime dataHoraAfericao) {
+        this.dataHoraAfericao = dataHoraAfericao;
     }
 
     public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao() {

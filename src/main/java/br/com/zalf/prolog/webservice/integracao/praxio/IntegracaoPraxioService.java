@@ -36,7 +36,7 @@ public class IntegracaoPraxioService {
         ensureValidToken(tokenIntegracao);
 
         try {
-            return dao.getAfericoesRealizadas(codUltimaAfericao);
+            return dao.getAfericoesRealizadas(tokenIntegracao, codUltimaAfericao);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar as novas aferições da Integração\n" +
                     "Código da última aferição sincronizada: %d", codUltimaAfericao), t);
@@ -48,7 +48,7 @@ public class IntegracaoPraxioService {
 
     private void ensureValidToken(@NotNull final String tokenIntegracao) throws ProLogException {
         try {
-            if (!dao.verifyIfTokenIntegracaoExists(tokenIntegracao)) {
+            if (!Injection.provideAutenticacaoIntegracaoDao().verifyIfTokenIntegracaoExists(tokenIntegracao)) {
                 throw new NotAuthorizedException("Token Integração não existe no banco de dados: " + tokenIntegracao);
             }
         } catch (final Throwable t) {

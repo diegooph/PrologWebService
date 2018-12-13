@@ -24,13 +24,13 @@ final class AfericaoIntegracaoPraxioConverter {
     static AfericaoIntegracaoPraxio convert(@NotNull final ResultSet rSet) throws SQLException {
         final AfericaoIntegracaoPraxio afericao = new AfericaoIntegracaoPraxio();
         afericao.setCodigo(rSet.getLong("COD_AFERICAO"));
-        afericao.setCodUnidadeAfericao(rSet.getLong("COD_UNIDADE"));
+        afericao.setCodUnidadeAfericao(rSet.getLong("COD_UNIDADE_AFERICAO"));
         afericao.setCpfColaborador(String.valueOf(rSet.getLong("CPF_COLABORADOR")));
-        afericao.setCodPneuAferido(rSet.getLong("COD_PNEU"));
+        afericao.setCodPneuAferido(rSet.getLong("COD_PNEU_AFERIDO"));
         afericao.setNumeroFogoPneu(rSet.getString("NUMERO_FOGO"));
-        afericao.setTempoRealizacaoMilis(rSet.getLong("TEMPO_REALIZACAO"));
+        afericao.setTempoRealizacaoEmSegundos(rSet.getLong("TEMPO_REALIZACAO_AFERICAO_EM_SEGUNDOS"));
         afericao.setVidaPneuMomentoAfericao(rSet.getInt("VIDA_MOMENTO_AFERICAO"));
-        afericao.setDataHoraRealizacao(rSet.getObject("DATA_HORA", LocalDateTime.class));
+        afericao.setDataHoraAfericao(rSet.getObject("DATA_HORA_AFERICAO", LocalDateTime.class));
 
         final TipoMedicaoColetadaAfericao tipoMedicao =
                 TipoMedicaoColetadaAfericao.fromString(rSet.getString("TIPO_MEDICAO_COLETADA"));
@@ -67,14 +67,14 @@ final class AfericaoIntegracaoPraxioConverter {
     private static AfericaoIntegracaoPraxio createAfericaoPlacaSulcoPressao(
             @NotNull final ResultSet rSet,
             @NotNull final AfericaoIntegracaoPraxio afericao) throws SQLException {
-        afericao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO"));
+        afericao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
         afericao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
         afericao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
         afericao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
         afericao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
         afericao.setPressao(rSet.getDouble("PRESSAO"));
-        afericao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO"));
-        afericao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO"));
+        afericao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
+        afericao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
         return afericao;
     }
 
@@ -82,13 +82,13 @@ final class AfericaoIntegracaoPraxioConverter {
     private static AfericaoIntegracaoPraxio createAfericaoPlacaSulco(
             @NotNull final ResultSet rSet,
             @NotNull final AfericaoIntegracaoPraxio afericao) throws SQLException {
-        afericao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO"));
+        afericao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
         afericao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
         afericao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
         afericao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
         afericao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        afericao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO"));
-        afericao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO"));
+        afericao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
+        afericao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
         return afericao;
     }
 
@@ -96,10 +96,10 @@ final class AfericaoIntegracaoPraxioConverter {
     private static AfericaoIntegracaoPraxio createAfericaoPlacaPressao(
             @NotNull final ResultSet rSet,
             @NotNull final AfericaoIntegracaoPraxio afericao) throws SQLException {
-        afericao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO"));
+        afericao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
         afericao.setPressao(rSet.getDouble("PRESSAO"));
-        afericao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO"));
-        afericao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO"));
+        afericao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
+        afericao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
         return afericao;
     }
 
