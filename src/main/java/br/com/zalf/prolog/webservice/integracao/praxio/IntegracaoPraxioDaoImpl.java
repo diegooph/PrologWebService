@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-class IntegracaoPraxioDaoImpl extends DatabaseConnection implements IntegracaoPraxioDao {
+final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements IntegracaoPraxioDao {
 
     @NotNull
     @Override

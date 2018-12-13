@@ -14,11 +14,11 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class IntegracaoPraxioService {
+public final class IntegracaoPraxioService {
     @NotNull
     private static final String TAG = IntegracaoPraxioService.class.getSimpleName();
     @NotNull
-    private IntegracaoPraxioDao dao = new IntegracaoPraxioDaoImpl();
+    private final IntegracaoPraxioDao dao = new IntegracaoPraxioDaoImpl();
 
     @NotNull
     List<MedicaoIntegracaoPraxio> getDummy() {

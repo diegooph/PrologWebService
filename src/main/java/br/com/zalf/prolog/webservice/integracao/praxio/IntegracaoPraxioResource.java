@@ -21,7 +21,7 @@ import java.util.List;
 @DebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class IntegracaoPraxioResource {
+public final class IntegracaoPraxioResource {
     @NotNull
     private final IntegracaoPraxioService service = new IntegracaoPraxioService();
 
