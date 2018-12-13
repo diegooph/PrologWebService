@@ -17,8 +17,8 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@Path("/integracoes/praxio")
 @DebugLog
+@Path("/integracoes/praxio")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class IntegracaoPraxioResource {
@@ -43,3 +43,8 @@ public final class IntegracaoPraxioResource {
         return service.getDummy();
     }
 }
+
+
+
+
+

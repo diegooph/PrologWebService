@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 12/12/18.
@@ -28,7 +29,8 @@ final class AfericaoIntegracaoPraxioConverter {
         medicao.setCpfColaborador(String.valueOf(rSet.getLong("CPF_COLABORADOR")));
         medicao.setCodPneuAferido(rSet.getLong("COD_PNEU_AFERIDO"));
         medicao.setNumeroFogoPneu(rSet.getString("NUMERO_FOGO"));
-        medicao.setTempoRealizacaoEmSegundos(rSet.getLong("TEMPO_REALIZACAO_AFERICAO_EM_SEGUNDOS"));
+        medicao.setTempoRealizacaoEmSegundos(TimeUnit.MILLISECONDS.toSeconds(
+                rSet.getLong("TEMPO_REALIZACAO_AFERICAO_EM_MILIS")));
         medicao.setVidaPneuMomentoAfericao(rSet.getInt("VIDA_MOMENTO_AFERICAO"));
         medicao.setDataHoraAfericao(rSet.getObject("DATA_HORA_AFERICAO", LocalDateTime.class));
 
