@@ -78,6 +78,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                 throw new SQLException("Erro ao inserir o checklist");
             }
         } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+
             // Como esse método ainda não está refatorado para retornar um Throwable, encapsulamos o retorno em uma
             // SQLException.
             throw new SQLException(t);
