@@ -7,13 +7,10 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistAbreOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistAbreOrdemServicoConverter;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,23 +68,19 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                 checklist.setCodigo(rSet.getLong("CODIGO"));
                 final Long codUnidade = rSet.getLong("COD_UNIDADE");
                 insertRespostas(checklist, conn);
-                final List<AlternativaChecklistAbreOrdemServico> alternativasAbremOrdemServico =
-                        createAlternativaChecklistAbreOrdemServico(
-                                conn,
-                                codUnidade,
-                                checklist.getCodModelo(),
-                                checklist.getPlacaVeiculo());
                 Injection
                         .provideOrdemServicoDao()
-                        .createItensOrdemServicoFromAlternativas(conn, codUnidade, alternativasAbremOrdemServico);
-                // TODO - remover essa chamada deprecated
-                new DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2().insertItemOs(checklist, conn, codUnidade);
+                        .processaChecklistRealizado(conn, codUnidade, checklist);
                 veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo(), conn);
                 conn.commit();
                 return checklist.getCodigo();
             } else {
                 throw new SQLException("Erro ao inserir o checklist");
             }
+        } catch (final Throwable t) {
+            // Como esse método ainda não está refatorado para retornar um Throwable, encapsulamos o retorno em uma
+            // SQLException.
+            throw new SQLException(t);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -288,31 +281,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             return ChecklistConverter.createFarolChecklist(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    private List<AlternativaChecklistAbreOrdemServico> createAlternativaChecklistAbreOrdemServico(
-            @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
-            @NotNull final Long codModelo,
-            @NotNull final String placaVeiculo) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_ALTERNATIVAS_ABRE_ORDEM_SERVICO(?, ?, ?)");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codModelo);
-            stmt.setString(3, placaVeiculo);
-            rSet = stmt.executeQuery();
-            final List<AlternativaChecklistAbreOrdemServico> alternativas = new ArrayList<>();
-            while (rSet.next()) {
-                alternativas.add(AlternativaChecklistAbreOrdemServicoConverter
-                        .createAlternativaChecklistAbreOrdemServico(rSet));
-            }
-            return alternativas;
-        } finally {
-            close(stmt, rSet);
         }
     }
 

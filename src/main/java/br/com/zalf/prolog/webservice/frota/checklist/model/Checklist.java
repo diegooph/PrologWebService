@@ -14,6 +14,7 @@ import java.util.List;
  * Checklist de saída ou retorno (atributo "tipo") do veículo, contém placa do veículo e colaborador que realizou o check
  * além de um map com as perguntas e respostas.
  */
+@Deprecated
 public class Checklist {
 	public static final char TIPO_SAIDA = 'S';
 	public static final char TIPO_RETORNO = 'R';

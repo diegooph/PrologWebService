@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.AlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
@@ -30,6 +31,16 @@ final class OrdemServicoConverter {
 
     private OrdemServicoConverter() {
         throw new IllegalStateException(OrdemServicoConverter.class.getSimpleName() + " cannot be instantiated!");
+    }
+
+    @NotNull
+    static AlternativaAberturaOrdemServico createAlternativaChecklistAbreOrdemServico(
+            @NotNull final ResultSet rSet) throws Throwable {
+        return new AlternativaAberturaOrdemServico(
+                rSet.getLong("COD_ALTERNATIVA"),
+                rSet.getLong("COD_ITEM_ORDEM_SERVICO"),
+                rSet.getInt("QTD_APONTAMENTOS_ITEM"),
+                rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"));
     }
 
     @NotNull

@@ -4,9 +4,11 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistAbreOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.AlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoListagem;
@@ -23,7 +25,10 @@ import java.sql.*;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
@@ -109,7 +114,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             return ordens;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -134,7 +139,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                 throw new IllegalStateException("Erro ao buscar resolução de ordem de serviço");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -173,7 +178,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                 throw new IllegalStateException("Erro ao buscar resolução de itens de ordem de serviço");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -217,7 +222,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             throw t;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt, null);
         }
     }
 
@@ -264,17 +269,131 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             throw t;
         } finally {
-            closeConnection(conn);
-            closeStatement(stmt);
+            close(conn, stmt);
         }
     }
 
     @Override
-    public void createItensOrdemServicoFromAlternativas(
-            @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
-            @NotNull final List<AlternativaChecklistAbreOrdemServico> alternativasAbremOrdemServico) throws SQLException {
+    public void processaChecklistRealizado(@NotNull final Connection conn,
+                                           @NotNull final Long codUnidade,
+                                           @NotNull final Checklist checklist) throws Throwable {
+        final Map<Long, AlternativaAberturaOrdemServico> alternativasOrdemServico =
+                createAlternativaChecklistAbreOrdemServico(
+                conn,
+                checklist.getCodModelo(),
+                checklist.getPlacaVeiculo());
 
+        PreparedStatement stmtQtdApontamentos = null, stmtCriacaoItens = null;
+        try {
+            stmtQtdApontamentos = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS " +
+                    "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1 WHERE CODIGO = ? AND STATUS_RESOLUCAO = ?;");
+            stmtCriacaoItens = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS" +
+                    "(COD_UNIDADE, COD_OS, COD_PERGUNTA, COD_ALTERNATIVA, STATUS_RESOLUCAO) " +
+                    "VALUES (?, ?, ?, ?, ?);");
+
+            // Se uma nova O.S. tiver que ser aberta, conterá o código dela. Lembrando que um checklist pode abrir,
+            // NO MÁXIMO, uma Ordem de Serviço.
+            Long codOrdemServico = null;
+            final List<PerguntaRespostaChecklist> respostas = checklist.getListRespostas();
+            for (final PerguntaRespostaChecklist resposta : respostas) {
+                for (final AlternativaChecklist alternativaResposta : resposta.getAlternativasResposta()) {
+                    final AlternativaAberturaOrdemServico alternativaOrdemServico =
+                            alternativasOrdemServico.get(alternativaResposta.getCodigo());
+
+                    if (alternativaResposta.isSelected() && alternativaOrdemServico.isDeveAbrirOrdemServico()) {
+                        if (alternativaOrdemServico.jaTemItemPendente()) {
+                            // Incrementa apontamentos.
+                            stmtQtdApontamentos.setLong(
+                                    1,
+                                    alternativaOrdemServico.getCodItemOrdemServico());
+                            stmtQtdApontamentos.setString(2, StatusItemOrdemServico.PENDENTE.asString());
+                            stmtQtdApontamentos.addBatch();
+                        } else {
+                            if (codOrdemServico == null) {
+                                codOrdemServico = criarOrdemServico(conn, codUnidade, checklist.getCodigo());
+                            }
+                            stmtCriacaoItens.setLong(1, codUnidade);
+                            stmtCriacaoItens.setLong(2, codOrdemServico);
+                            stmtCriacaoItens.setLong(3, resposta.getCodigo());
+                            stmtCriacaoItens.setLong(4, alternativaResposta.getCodigo());
+                            stmtCriacaoItens.setString(5, StatusItemOrdemServico.PENDENTE.asString());
+                            stmtCriacaoItens.addBatch();
+                        }
+                    }
+                }
+            }
+
+            // Executa o batch de operações de incremento de quantidade de apontamento de itens de O.S. já existentes
+            // e pendentes. Se o batch estiver vazio, um array vazio será retornado e não teremos problema com esse caso.
+            final boolean todosUpdatesOk = IntStream
+                    .of(stmtQtdApontamentos.executeBatch())
+                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
+            if (!todosUpdatesOk) {
+                throw new IllegalStateException("Erro ao incrementar a quantidade de apontamentos");
+            }
+
+            // Executa o batch de operações de criação de itens para uma Ordem de Serviço criada agora.
+            // Se o batch estiver vazio, um array vazio será retornado e não teremos problema com esse caso.
+            final boolean criacaoItensOk = IntStream
+                    .of(stmtCriacaoItens.executeBatch())
+                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
+            if (!criacaoItensOk) {
+                throw new IllegalStateException("Erro ao criar itens de O.S.");
+            }
+        } finally {
+            close(stmtQtdApontamentos, stmtCriacaoItens);
+        }
+    }
+
+    @NotNull
+    private Long criarOrdemServico(@NotNull final Connection conn,
+                                   @NotNull final Long codUnidade,
+                                   @NotNull final Long codChecklist) throws Throwable {
+        ResultSet rSet = null;
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO " +
+                    "CHECKLIST_ORDEM_SERVICO(CODIGO, COD_UNIDADE, COD_CHECKLIST, STATUS) VALUES " +
+                    "((SELECT COALESCE(MAX(CODIGO), MAX(CODIGO), 0) + 1 AS CODIGO " +
+                    "  FROM CHECKLIST_ORDEM_SERVICO " +
+                    "  WHERE COD_UNIDADE = ?), ?, ?, ?) RETURNING CODIGO;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codUnidade);
+            stmt.setLong(3, codChecklist);
+            stmt.setString(4, StatusOrdemServico.ABERTA.asString());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Erro ao criar nova OS");
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private Map<Long, AlternativaAberturaOrdemServico> createAlternativaChecklistAbreOrdemServico(
+            @NotNull final Connection conn,
+            @NotNull final Long codModelo,
+            @NotNull final String placaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_ALTERNATIVAS_ABRE_ORDEM_SERVICO(?, ?)");
+            stmt.setLong(1, codModelo);
+            stmt.setString(2, placaVeiculo);
+            rSet = stmt.executeQuery();
+            final Map<Long, AlternativaAberturaOrdemServico> alternativas = new HashMap<>();
+            while (rSet.next()) {
+                alternativas.put(
+                        rSet.getLong("COD_ALTERNATIVA"),
+                        OrdemServicoConverter.createAlternativaChecklistAbreOrdemServico(rSet));
+            }
+            return alternativas;
+        } finally {
+            close(stmt, rSet);
+        }
     }
 
     private void fechaOrdensServicosComBaseItens(@NotNull final Connection conn,
@@ -320,8 +439,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             stmt.executeBatch();
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -348,7 +466,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt.setString(7, StatusItemOrdemServico.PENDENTE.asString());
             stmt.execute();
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 }

@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistAbreOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
@@ -17,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -145,22 +142,7 @@ public interface OrdemServicoDao {
      */
     void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable;
 
-    /**
-     * Este método processa todas as {@link AlternativaChecklist alternativas} respondidas pelo
-     * Colaborador. As alternativas estão presentes no {@code checklist}, bem como as propriedades
-     * de cada alternativa.
-     *
-     * @param conn                          {@link Connection conexão} do banco de dados para executar a operação.
-     * @param codUnidade                    Código da {@link Unidade unidade} que o checklist foi realizado.
-     * @param alternativasAbremOrdemServico Objeto contendo as alternativas que podem abrir Itens
-     *                                      de Ordem de Serviço. Este objeto também contém, em caso
-     *                                      de uma alternativa já conter algum Item Pendente,
-     *                                      a qual Ordem de Serviço ele pertence e qual a quantidade
-     *                                      de apontamentos.
-     * @throws SQLException Se ocorrer algum erro no processamento dos dados.
-     */
-    void createItensOrdemServicoFromAlternativas(
-            @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
-            @NotNull final List<AlternativaChecklistAbreOrdemServico> alternativasAbremOrdemServico) throws SQLException;
+    void processaChecklistRealizado(@NotNull final Connection conn,
+                                    @NotNull final Long codUnidade,
+                                    @NotNull final Checklist checklist) throws Throwable;
 }
