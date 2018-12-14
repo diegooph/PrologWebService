@@ -6,7 +6,6 @@ package br.com.zalf.prolog.webservice.seguranca.relato.model;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class RelatoPendente {
-
     private final int qtdRelatosPendentesClassificacao;
     private final int getQtdRelatosPendentesFechamento;
 

@@ -24,6 +24,7 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
     private String feedbackResolucao;
     @SerializedName("duracaoResolucaoEmSegundos")
     private Duration duracaoResolucao;
+    private long kmVeiculoColetadoResolucao;
 
     public ItemOrdemServicoResolvido() {
         super(TIPO_SERIALIZACAO);
@@ -48,6 +49,7 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
         item.setDataHoraResolucao(LocalDateTime.now());
         item.setFeedbackResolucao("Feedback Fechamento");
         item.setDuracaoResolucao(Duration.ofMinutes(10));
+        item.setKmVeiculoColetadoResolucao(1000);
         return item;
     }
 
@@ -89,5 +91,13 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
 
     public void setDuracaoResolucao(final Duration tempoResolucao) {
         this.duracaoResolucao = tempoResolucao;
+    }
+
+    public long getKmVeiculoColetadoResolucao() {
+        return kmVeiculoColetadoResolucao;
+    }
+
+    public void setKmVeiculoColetadoResolucao(final long kmVeiculoColetadoResolucao) {
+        this.kmVeiculoColetadoResolucao = kmVeiculoColetadoResolucao;
     }
 }

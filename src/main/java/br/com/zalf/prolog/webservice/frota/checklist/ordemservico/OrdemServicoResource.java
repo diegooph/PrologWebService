@@ -33,10 +33,6 @@ import java.util.List;
 @Path("/checklists/ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-//@AppVersionCodeHandler(
-//        targetVersionCode = 61,
-//        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-//        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class OrdemServicoResource {
     @NotNull
     private final OrdemServicoService service = new OrdemServicoService();
@@ -86,7 +82,7 @@ public final class OrdemServicoResource {
     }
 
     @GET
-    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/resolucao-ordem-servico")
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
@@ -98,7 +94,7 @@ public final class OrdemServicoResource {
     }
 
     @GET
-    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/resolucao-itens-ordem-servico")
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
@@ -107,9 +103,23 @@ public final class OrdemServicoResource {
             @QueryParam("placaVeiculo") @Required final String placaVeiculo,
             @QueryParam("prioridade") @Optional final PrioridadeAlternativa prioridade,
             @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens,
-            @QueryParam("limit") @Optional final Integer limit,
-            @QueryParam("offset") @Optional final Integer offset) throws ProLogException {
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final int offset) throws ProLogException {
         return service.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridade, statusItens, limit, offset);
+    }
+
+    @GET
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/resolucao-multiplos-itens")
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
+    public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
+            @QueryParam("codUnidade") @Optional final Long codUnidade,
+            @QueryParam("codOrdemServico") @Optional final Long codOrdemServico,
+            @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
+            @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens) throws ProLogException {
+        return service.getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
     }
 
     @POST

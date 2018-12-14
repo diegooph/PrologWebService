@@ -92,9 +92,15 @@ final class OrdemServicoConverter {
         holder.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         holder.setKmAtualVeiculo(rSet.getLong("KM_ATUAL_VEICULO"));
         final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
-        do {
-            itens.add(createItemOrdemServicoVisualizacao(rSet));
-        } while (rSet.next());
+
+        // Verifica se veio dados na query ou apenas a primeira linha para preenchimento do holder.
+        if (rSet.getLong("COD_ITEM_OS") > 0) {
+            do {
+
+                itens.add(createItemOrdemServicoVisualizacao(rSet));
+            } while (rSet.next());
+        }
+
         holder.setItens(itens);
         return holder;
     }
@@ -139,6 +145,7 @@ final class OrdemServicoConverter {
             resolvido.setDataHoraResolucao(rSet.getObject("DATA_HORA_RESOLUCAO", LocalDateTime.class));
             resolvido.setFeedbackResolucao(rSet.getString("FEEDBACK_RESOLUCAO"));
             resolvido.setDuracaoResolucao(Duration.ofMinutes(rSet.getLong("DURACAO_RESOLUCAO_MINUTOS")));
+            resolvido.setKmVeiculoColetadoResolucao(rSet.getLong("KM_VEICULO_COLETADO_RESOLUCAO"));
         }
         item.setStatus(status);
         item.setCodigo(rSet.getLong("COD_ITEM_OS"));
@@ -172,6 +179,8 @@ final class OrdemServicoConverter {
         final AlternativaItemOrdemServico alternativa = new AlternativaItemOrdemServico();
         alternativa.setCodAlteranativa(rSet.getLong("COD_ALTERNATIVA"));
         alternativa.setDescricao(rSet.getString("DESCRICAO_ALTERNATIVA"));
+        alternativa.setTipoOutros(rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"));
+        alternativa.setDescricaoTipoOutros(rSet.getString("DESCRICAO_TIPO_OUTROS"));
         alternativa.setPrioridade(PrioridadeAlternativa.fromString(
                 rSet.getString("PRIORIDADE_ALTERNATIVA")));
         return alternativa;

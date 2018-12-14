@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,12 +79,12 @@ public interface OrdemServicoDao {
      * Esta busca utiliza paginação, então deve-se explicitar a quantidade de dados que serão buscados
      * através dos parâmetros {@code limit} e {@code offset}.
      *
-     * @param codUnidade             Código da {@link Unidade} que os Itens pertencem.
-     * @param codTipoVeiculo         Tipo de Veículo que deseja-se buscar as Ordens de Serviço.
-     * @param placaVeiculo           Placa do Veículo que deseja-se contar os Itens.
-     * @param statusItens Status em que o Item se encontra.
-     * @param limit                  Quantidade de elementos a serem retornados na busca.
-     * @param offset                 Indice a partir do qual a busca será retornada.
+     * @param codUnidade     Código da {@link Unidade} que os Itens pertencem.
+     * @param codTipoVeiculo Tipo de Veículo que deseja-se buscar as Ordens de Serviço.
+     * @param placaVeiculo   Placa do Veículo que deseja-se contar os Itens.
+     * @param statusItens    Status em que o Item se encontra.
+     * @param limit          Quantidade de elementos a serem retornados na busca.
+     * @param offset         Indice a partir do qual a busca será retornada.
      * @return Lista de {@link List<QtdItensPlacaListagem> quantidade de itens por placa}, seguindo a filtragem.
      * @throws Throwable Se ocorrer algum erro no processamento dos dados.
      */
@@ -98,8 +99,8 @@ public interface OrdemServicoDao {
     /**
      * Método utilizado para buscar uma Ordem de Serviço para ser fechada.
      *
-     * @param codOrdemServico Código da Ordem de Serviço.
      * @param codUnidade      Código da {@link Unidade} que a Ordem de Serviço pertence.
+     * @param codOrdemServico Código da Ordem de Serviço.
      * @return Um {@link HolderResolucaoOrdemServico holder} contendo a Ordem de Serviço para o fechamento.
      * @throws Throwable Caso algum erro acontecer no processo de busca.
      */
@@ -123,8 +124,34 @@ public interface OrdemServicoDao {
             @NotNull final String placaVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
             @Nullable final StatusItemOrdemServico statusItens,
-            @Nullable final Integer limit,
-            @Nullable final Integer offset) throws Throwable;
+            final int limit,
+            final int offset) throws Throwable;
+
+    /**
+     * Método genérico para a busca de Itens de Ordem de Serviço. Todos os parâmetros de filtragem
+     * são assinados com a anotação {@link Nullable} indicando que podem ser <code>Null</code>.
+     * Mas a combinação de todos os parâmetros <code>Null</code> não pode acontecer.
+     * <p>
+     * A filtragem de Itens de Ordem de Serviço têm que acontecer através da {@code placaVeiculo}
+     * ou através da combinação de {@code codUnidade} e {@code codOrdemServico}.
+     * <p>
+     * O parâmetro {@code statusItens} é utilizado para filtrar o resultado entre
+     * {@link StatusItemOrdemServico#RESOLVIDO} ou {@link StatusItemOrdemServico#PENDENTE}, para que a busca
+     * retorne ambos os status é necessário que {@code statusItens} seja <code>Null</code>.
+     *
+     * @param codUnidade      Código da {@link Unidade} de filtragem dos Itens de Ordem de Serviço.
+     * @param codOrdemServico Código da Ordem de Serviço para filtrar os Itens.
+     * @param placaVeiculo    Placa do {@link Veiculo} para filtrar os Itens de Ordem de Serviço.
+     * @param statusItens     {@link StatusItemOrdemServico status} de filtragem do Itens.
+     * @return Um {@link HolderResolucaoItensOrdemServico holder} contendo os Itens de Ordem de Serviço filtrados.
+     * @throws Throwable Se algum erro ocorrer na realização da busca das informações.
+     */
+    @NotNull
+    HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
+            @Nullable final Long codUnidade,
+            @Nullable final Long codOrdemServico,
+            @Nullable final String placaVeiculo,
+            @Nullable final StatusItemOrdemServico statusItens) throws Throwable;
 
     /**
      * Método responsável por resolver um item de uma Ordem de Serviço.
@@ -135,7 +162,7 @@ public interface OrdemServicoDao {
     void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable;
 
     /**
-     * Método responsável por resolver múltiplos itens de uma Ordem de Serviço..
+     * Método responsável por resolver múltiplos itens de uma Ordem de Serviço.
      *
      * @param itensResolucao Objeto {@link ResolverMultiplosItensOs} contendo as informações dos itens resolvidos.
      * @throws Throwable Se ocorrer algum erro no processamento das informações.

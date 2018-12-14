@@ -1,18 +1,35 @@
 Change Log
 ==========
 
+<a name="v0.0.82"></a>
+## Version [v0.0.82](https://github.com/luizfp/PrologWebService/compare/v0.0.81...v0.0.82) (release-date) [unreleased]
+
+### Bug Fixes
+* Corrige criação dos componentes resumidos da dashboard
+
+<a name="v0.0.81"></a>
+## Version [v0.0.81](https://github.com/luizfp/PrologWebService/compare/v0.0.80...v0.0.81) (2018-12-11)
+
+### Refactors
+* Bloqueia resources antigos das ordens de serviço do checklist
+* Altera forma de import do prontuário do condutor
+* Lida com nova coluna no import do prontuário do condutor (powerOn)
+
 <a name="v0.0.80"></a>
-## Version [v0.0.80](https://github.com/luizfp/PrologWebService/compare/v0.0.79...v0.0.80) (release-date) [unreleased]
+## Version [v0.0.80](https://github.com/luizfp/PrologWebService/compare/v0.0.79...v0.0.80) (2018-12-10)
 
 ### Features
 * Cria componente para a Dashboard que mostra a quantidade de aferições realizadas por dia, separando por tipo, em um 
 intervalo de 30 dias.
 * Cria componente para a Dashboard que mostra a quantidade de relatos pendentes, separando por tipo.
+* Cria parte de gestão de marcações para o controle de jornada
 
 ### Refactors
 * Altera verificação de vlBateuJornMot, vlNaoBateuJornMot, vlRecargaMot, vlBateuJornAju, vlNaoBateuJornAju e
 vlTotalMapa no import do mapa para lidar com possibilidade de vazio na célula importada
 * Altera valor do fator de 0 para 1 no import do mapa, caso seja 0
+* Altera forma de vínculo de marcações para utilizar vínculo por código e não mais automático por data/hora
+* Altera objetos da parte de Ordem de Serviço de checklist
 
 <a name="v0.0.79"></a>
 ## Version [v0.0.79](https://github.com/luizfp/PrologWebService/compare/v0.0.78...v0.0.79) (2018-11-23)

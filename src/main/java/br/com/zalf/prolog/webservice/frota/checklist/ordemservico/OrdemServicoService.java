@@ -93,12 +93,32 @@ final class OrdemServicoService {
             @NotNull final String placaVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
             @Nullable final StatusItemOrdemServico statusItens,
-            @Nullable final Integer limit,
-            @Nullable final Integer offset) throws ProLogException {
+            final int limit,
+            final int offset) throws ProLogException {
         try {
             return dao.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridade, statusItens, limit, offset);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar holder de resolução de itens de O.S. para a placa: " + placaVeiculo, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao realizar busca, tente novamente");
+        }
+    }
+
+    @NotNull
+    HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
+            @Nullable final Long codUnidade,
+            @Nullable final Long codOrdemServico,
+            @Nullable final String placaVeiculo,
+            @Nullable final StatusItemOrdemServico statusItens) throws ProLogException {
+        try {
+            if (placaVeiculo == null && (codUnidade == null || codOrdemServico == null)) {
+                throw new IllegalStateException("Já que a placa é nula, você deve filtrar por código da unidade e da O.S.");
+            }
+
+            return dao.getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar holder de resolução de múltiplos itens para a placa: " + placaVeiculo, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao realizar busca, tente novamente");
