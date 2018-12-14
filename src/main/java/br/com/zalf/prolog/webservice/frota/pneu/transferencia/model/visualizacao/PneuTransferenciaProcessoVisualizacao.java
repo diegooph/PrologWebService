@@ -14,12 +14,9 @@ import java.util.List;
  */
 public class PneuTransferenciaProcessoVisualizacao {
 
-    private Long codProcessoTransferencia;
-    private Long codUnidadeOrigem;
-    private Long codUnidadeDestino;
-    private Long codColaboradorRealizacaoTransferencia;
-    private List<PneuTransferenciaInformacoes> pneusTransferidos;
+    private Long codTransferenciaProcesso;
     private LocalDateTime dataHoraTransferencia;
+    private List<PneuTransferenciaInformacoes> pneusTransferidos;
     private String nomeUnidadeOrigem;
     private String nomeUnidadeDestino;
     private String nomeRegionalOrigem;
@@ -27,35 +24,11 @@ public class PneuTransferenciaProcessoVisualizacao {
     private String nomeColaboradorRealizacaoTransferencia;
 
     public Long getCodProcessoTransferencia() {
-        return codProcessoTransferencia;
+        return codTransferenciaProcesso;
     }
 
     public void setCodProcessoTransferencia(Long codProcessoTransferencia) {
-        this.codProcessoTransferencia = codProcessoTransferencia;
-    }
-
-    public Long getCodUnidadeOrigem() {
-        return codUnidadeOrigem;
-    }
-
-    public void setCodUnidadeOrigem(Long codUnidadeOrigem) {
-        this.codUnidadeOrigem = codUnidadeOrigem;
-    }
-
-    public Long getCodUnidadeDestino() {
-        return codUnidadeDestino;
-    }
-
-    public void setCodUnidadeDestino(Long codUnidadeDestino) {
-        this.codUnidadeDestino = codUnidadeDestino;
-    }
-
-    public Long getCodColaboradorRealizacaoTransferencia() {
-        return codColaboradorRealizacaoTransferencia;
-    }
-
-    public void setCodColaboradorRealizacaoTransferencia(Long codColaboradorRealizacaoTransferencia) {
-        this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
+        this.codTransferenciaProcesso = codProcessoTransferencia;
     }
 
     public LocalDateTime getDataHoraTransferencia() {
@@ -118,9 +91,6 @@ public class PneuTransferenciaProcessoVisualizacao {
     public static PneuTransferenciaProcessoVisualizacao createDummy() {
         final PneuTransferenciaProcessoVisualizacao transferencia = new PneuTransferenciaProcessoVisualizacao();
         transferencia.setCodProcessoTransferencia(101L);
-        transferencia.setCodUnidadeOrigem(5L);
-        transferencia.setCodUnidadeDestino(3L);
-        transferencia.setCodColaboradorRealizacaoTransferencia(190L);
         transferencia.setDataHoraTransferencia(LocalDateTime.now());
         transferencia.setNomeUnidadeOrigem("A");
         transferencia.setNomeUnidadeDestino("B");

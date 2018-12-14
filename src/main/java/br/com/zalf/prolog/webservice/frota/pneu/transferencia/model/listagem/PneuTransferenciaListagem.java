@@ -14,9 +14,6 @@ import java.util.List;
 public class PneuTransferenciaListagem {
 
     private Long codTransferenciaProcesso;
-    private Long codUnidadeOrigem;
-    private Long codUnidadeDestino;
-    private Long codColaboradorRealizacaoTransferencia;
     private LocalDateTime dataHoraTransferenciaProcesso;
     /**
      * Código do cliente, número de fogo do pneu.
@@ -35,30 +32,6 @@ public class PneuTransferenciaListagem {
 
     public void setCodTransferenciaProcesso(Long codTransferenciaProcesso) {
         this.codTransferenciaProcesso = codTransferenciaProcesso;
-    }
-
-    public Long getCodUnidadeOrigem() {
-        return codUnidadeOrigem;
-    }
-
-    public void setCodUnidadeOrigem(Long codUnidadeOrigem) {
-        this.codUnidadeOrigem = codUnidadeOrigem;
-    }
-
-    public Long getCodUnidadeDestino() {
-        return codUnidadeDestino;
-    }
-
-    public void setCodUnidadeDestino(Long codUnidadeDestino) {
-        this.codUnidadeDestino = codUnidadeDestino;
-    }
-
-    public Long getCodColaboradorRealizacaoTransferencia() {
-        return codColaboradorRealizacaoTransferencia;
-    }
-
-    public void setCodColaboradorRealizacaoTransferencia(Long codColaboradorRealizacaoTransferencia) {
-        this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
     }
 
     public LocalDateTime getDataHoraTransferenciaProcesso() {
@@ -121,9 +94,6 @@ public class PneuTransferenciaListagem {
     public static PneuTransferenciaListagem createDummy() {
         final PneuTransferenciaListagem transferencia = new PneuTransferenciaListagem();
         transferencia.setCodTransferenciaProcesso(101L);
-        transferencia.setCodUnidadeOrigem(5L);
-        transferencia.setCodUnidadeDestino(3L);
-        transferencia.setCodColaboradorRealizacaoTransferencia(190L);
         transferencia.setDataHoraTransferenciaProcesso(LocalDateTime.now());
         final List<String> codPneusCliente = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
