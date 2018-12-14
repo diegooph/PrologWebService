@@ -69,40 +69,11 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
         logRequisicao.setHttpMethod(requestContext.getMethod());
         logRequisicao.setUrlAcesso(getFullUrlAcesso(requestContext));
         logRequisicao.setHeaders(getFullHeaders(requestContext));
-        logRequisicao.setParameters(getFullParameters(requestContext));
+        logRequisicao.setPathParamns(getFullPathParameters(requestContext));
+        logRequisicao.setQueryParamns(getFullQueryParameters(requestContext));
         logRequisicao.setBodyRequest(readBody(requestContext));
         logRequisicao.setDataHoraRequisicao(LocalDateTime.now());
         return logRequisicao;
-    }
-
-    @Nullable
-    private String getFullParameters(@NotNull final ContainerRequestContext requestContext) {
-        if (requestContext.getUriInfo() == null
-                || (requestContext.getUriInfo().getPathParameters() == null
-                && requestContext.getUriInfo().getQueryParameters() == null))
-            return null;
-
-        final String pathParameters = requestContext.getUriInfo().getPathParameters().toString();
-        final String queryParameters = requestContext.getUriInfo().getQueryParameters().toString();
-        final String pathParams = pathParameters.isEmpty() || pathParameters.equals("{}") ? "" : pathParameters;
-        final String queryParams = queryParameters.isEmpty() || queryParameters.equals("{}") ? "" : queryParameters;
-        return pathParams + queryParams;
-    }
-
-    @Nullable
-    private String getFullHeaders(@NotNull final ContainerRequestContext requestContext) {
-        if (requestContext.getHeaders() == null)
-            return null;
-
-        return requestContext.getHeaders().toString();
-    }
-
-    @Nullable
-    private String getFullUrlAcesso(@NotNull final ContainerRequestContext requestContext) {
-        if (requestContext.getUriInfo() == null || requestContext.getUriInfo().getAbsolutePath() == null)
-            return null;
-
-        return requestContext.getUriInfo().getAbsolutePath().toString();
     }
 
     @Nullable
@@ -121,6 +92,40 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
         final String signature = resourceInfo.getResourceMethod().getName();
         final String parameters = Arrays.toString(resourceInfo.getResourceMethod().getGenericParameterTypes());
         return returnType.concat(" ").concat(signature).concat("(").concat(parameters).concat(");");
+    }
+
+    @Nullable
+    private String getFullUrlAcesso(@NotNull final ContainerRequestContext requestContext) {
+        if (requestContext.getUriInfo() == null || requestContext.getUriInfo().getAbsolutePath() == null)
+            return null;
+
+        return requestContext.getUriInfo().getAbsolutePath().toString();
+    }
+
+    @Nullable
+    private String getFullHeaders(@NotNull final ContainerRequestContext requestContext) {
+        if (requestContext.getHeaders() == null)
+            return null;
+
+        return requestContext.getHeaders().toString();
+    }
+
+    @Nullable
+    private String getFullPathParameters(@NotNull final ContainerRequestContext requestContext) {
+        if (requestContext.getUriInfo() == null || requestContext.getUriInfo().getQueryParameters() == null)
+            return null;
+
+        final String pathParameters = requestContext.getUriInfo().getPathParameters().toString();
+        return pathParameters.isEmpty() || pathParameters.equals("{}") ? "" : pathParameters;
+    }
+
+    @Nullable
+    private String getFullQueryParameters(@NotNull final ContainerRequestContext requestContext) {
+        if (requestContext.getUriInfo() == null || requestContext.getUriInfo().getPathParameters() == null)
+            return null;
+
+        final String queryParameters = requestContext.getUriInfo().getQueryParameters().toString();
+        return queryParameters.isEmpty() || queryParameters.equals("{}") ? "" : queryParameters;
     }
 
     @NotNull

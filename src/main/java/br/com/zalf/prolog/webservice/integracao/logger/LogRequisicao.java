@@ -21,7 +21,9 @@ public final class LogRequisicao {
     @Nullable
     private String headers;
     @Nullable
-    private String parameters;
+    private String pathParamns;
+    @Nullable
+    private String queryParamns;
     @Nullable
     private String bodyRequest;
     private LocalDateTime dataHoraRequisicao;
@@ -76,12 +78,21 @@ public final class LogRequisicao {
     }
 
     @Nullable
-    public String getParameters() {
-        return parameters;
+    public String getPathParamns() {
+        return pathParamns;
     }
 
-    public void setParameters(@Nullable final String parameters) {
-        this.parameters = parameters;
+    public void setPathParamns(@Nullable final String pathParamns) {
+        this.pathParamns = pathParamns;
+    }
+
+    @Nullable
+    public String getQueryParamns() {
+        return queryParamns;
+    }
+
+    public void setQueryParamns(@Nullable final String queryParamns) {
+        this.queryParamns = queryParamns;
     }
 
     @Nullable
@@ -107,7 +118,8 @@ public final class LogRequisicao {
                 && (httpMethod == null || httpMethod.isEmpty())
                 && (urlAcesso == null || urlAcesso.isEmpty())
                 && (headers == null || headers.isEmpty())
-                && (parameters == null || parameters.isEmpty())
+                && (pathParamns == null || pathParamns.isEmpty())
+                && (queryParamns == null || queryParamns.isEmpty())
                 && (bodyRequest == null || bodyRequest.isEmpty());
     }
 }
