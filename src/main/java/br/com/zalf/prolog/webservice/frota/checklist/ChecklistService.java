@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
@@ -23,15 +24,17 @@ public class ChecklistService {
     @NotNull
     private final ChecklistDao dao = Injection.provideChecklistDao();
 
-    public Long insert(@NotNull final String userToken, @NotNull final Checklist checklist) {
+    public Long insert(@NotNull final String userToken, @NotNull final Checklist checklist) throws ProLogException {
         try {
-            checklist.setData(LocalDateTime.now(Clock.systemUTC()));
+            checklist.setData(Now.localDateTimeUtc());
             return RouterChecklists
                     .create(dao, userToken)
                     .insertChecklist(checklist);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao inserir um checklist", e);
-            return null;
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir um checklist", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir checklist, tente novamente");
         }
     }
 

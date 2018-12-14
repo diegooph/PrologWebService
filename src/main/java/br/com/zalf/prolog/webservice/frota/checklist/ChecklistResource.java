@@ -31,7 +31,7 @@ public class ChecklistResource {
     @POST
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
-                                   @Required final Checklist checklist) {
+                                   @Required final Checklist checklist) throws ProLogException {
         final Long codChecklist = service.insert(userToken, checklist);
         if (codChecklist != null) {
             return ResponseWithCod.ok("Checklist inserido com sucesso", codChecklist);

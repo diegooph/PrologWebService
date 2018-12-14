@@ -31,7 +31,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	@POST
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public Response insert(@HeaderParam("Authorization") @Required final String userToken,
-						   @Required final Checklist checklist) {
+						   @Required final Checklist checklist) throws ProLogException {
 		final Long codChecklist = service.insert(userToken, checklist);
 		if (codChecklist != null) {
 			return Response.ok("Checklist inserido com sucesso");
