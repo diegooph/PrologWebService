@@ -40,10 +40,75 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
 public final class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServicoDao {
 
     @Override
-    public void criarItemOrdemServico(@NotNull final Connection conn,
-                                      @NotNull final Long codUnidade,
-                                      @NotNull final Checklist checklist) throws Throwable {
-        throw new UnsupportedOperationException("Ainda não implementado");
+    public void processaChecklistRealizado(@NotNull final Connection conn,
+                                           @NotNull final Long codUnidade,
+                                           @NotNull final Checklist checklist) throws Throwable {
+        final Map<Long, AlternativaAberturaOrdemServico> alternativasOrdemServico =
+                createAlternativaChecklistAbreOrdemServico(
+                        conn,
+                        checklist.getCodModelo(),
+                        checklist.getPlacaVeiculo());
+
+        PreparedStatement stmtQtdApontamentos = null, stmtCriacaoItens = null;
+        try {
+            stmtQtdApontamentos = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS " +
+                    "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1 WHERE CODIGO = ? AND STATUS_RESOLUCAO = ?;");
+            stmtCriacaoItens = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS" +
+                    "(COD_UNIDADE, COD_OS, COD_PERGUNTA, COD_ALTERNATIVA, STATUS_RESOLUCAO) " +
+                    "VALUES (?, ?, ?, ?, ?);");
+
+            // Se uma nova O.S. tiver que ser aberta, conterá o código dela. Lembrando que um checklist pode abrir,
+            // NO MÁXIMO, uma Ordem de Serviço.
+            Long codOrdemServico = null;
+            final List<PerguntaRespostaChecklist> respostas = checklist.getListRespostas();
+            for (final PerguntaRespostaChecklist resposta : respostas) {
+                for (final AlternativaChecklist alternativaResposta : resposta.getAlternativasResposta()) {
+                    final AlternativaAberturaOrdemServico alternativaOrdemServico =
+                            alternativasOrdemServico.get(alternativaResposta.getCodigo());
+
+                    if (alternativaResposta.isSelected() && alternativaOrdemServico.isDeveAbrirOrdemServico()) {
+                        if (alternativaOrdemServico.jaTemItemPendente()) {
+                            // Incrementa apontamentos.
+                            stmtQtdApontamentos.setLong(
+                                    1,
+                                    alternativaOrdemServico.getCodItemOrdemServico());
+                            stmtQtdApontamentos.setString(2, StatusItemOrdemServico.PENDENTE.asString());
+                            stmtQtdApontamentos.addBatch();
+                        } else {
+                            if (codOrdemServico == null) {
+                                codOrdemServico = criarOrdemServico(conn, codUnidade, checklist.getCodigo());
+                            }
+                            stmtCriacaoItens.setLong(1, codUnidade);
+                            stmtCriacaoItens.setLong(2, codOrdemServico);
+                            stmtCriacaoItens.setLong(3, resposta.getCodigo());
+                            stmtCriacaoItens.setLong(4, alternativaResposta.getCodigo());
+                            stmtCriacaoItens.setString(5, StatusItemOrdemServico.PENDENTE.asString());
+                            stmtCriacaoItens.addBatch();
+                        }
+                    }
+                }
+            }
+
+            // Executa o batch de operações de incremento de quantidade de apontamento de itens de O.S. já existentes
+            // e pendentes. Se o batch estiver vazio, um array vazio será retornado e não teremos problema com esse caso.
+            final boolean todosUpdatesOk = IntStream
+                    .of(stmtQtdApontamentos.executeBatch())
+                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
+            if (!todosUpdatesOk) {
+                throw new IllegalStateException("Erro ao incrementar a quantidade de apontamentos");
+            }
+
+            // Executa o batch de operações de criação de itens para uma Ordem de Serviço criada agora.
+            // Se o batch estiver vazio, um array vazio será retornado e não teremos problema com esse caso.
+            final boolean criacaoItensOk = IntStream
+                    .of(stmtCriacaoItens.executeBatch())
+                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
+            if (!criacaoItensOk) {
+                throw new IllegalStateException("Erro ao criar itens de O.S.");
+            }
+        } finally {
+            close(stmtQtdApontamentos, stmtCriacaoItens);
+        }
     }
 
     @NotNull
@@ -77,7 +142,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             return ordens;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -270,78 +335,6 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             throw t;
         } finally {
             close(conn, stmt);
-        }
-    }
-
-    @Override
-    public void processaChecklistRealizado(@NotNull final Connection conn,
-                                           @NotNull final Long codUnidade,
-                                           @NotNull final Checklist checklist) throws Throwable {
-        final Map<Long, AlternativaAberturaOrdemServico> alternativasOrdemServico =
-                createAlternativaChecklistAbreOrdemServico(
-                conn,
-                checklist.getCodModelo(),
-                checklist.getPlacaVeiculo());
-
-        PreparedStatement stmtQtdApontamentos = null, stmtCriacaoItens = null;
-        try {
-            stmtQtdApontamentos = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS " +
-                    "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1 WHERE CODIGO = ? AND STATUS_RESOLUCAO = ?;");
-            stmtCriacaoItens = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS" +
-                    "(COD_UNIDADE, COD_OS, COD_PERGUNTA, COD_ALTERNATIVA, STATUS_RESOLUCAO) " +
-                    "VALUES (?, ?, ?, ?, ?);");
-
-            // Se uma nova O.S. tiver que ser aberta, conterá o código dela. Lembrando que um checklist pode abrir,
-            // NO MÁXIMO, uma Ordem de Serviço.
-            Long codOrdemServico = null;
-            final List<PerguntaRespostaChecklist> respostas = checklist.getListRespostas();
-            for (final PerguntaRespostaChecklist resposta : respostas) {
-                for (final AlternativaChecklist alternativaResposta : resposta.getAlternativasResposta()) {
-                    final AlternativaAberturaOrdemServico alternativaOrdemServico =
-                            alternativasOrdemServico.get(alternativaResposta.getCodigo());
-
-                    if (alternativaResposta.isSelected() && alternativaOrdemServico.isDeveAbrirOrdemServico()) {
-                        if (alternativaOrdemServico.jaTemItemPendente()) {
-                            // Incrementa apontamentos.
-                            stmtQtdApontamentos.setLong(
-                                    1,
-                                    alternativaOrdemServico.getCodItemOrdemServico());
-                            stmtQtdApontamentos.setString(2, StatusItemOrdemServico.PENDENTE.asString());
-                            stmtQtdApontamentos.addBatch();
-                        } else {
-                            if (codOrdemServico == null) {
-                                codOrdemServico = criarOrdemServico(conn, codUnidade, checklist.getCodigo());
-                            }
-                            stmtCriacaoItens.setLong(1, codUnidade);
-                            stmtCriacaoItens.setLong(2, codOrdemServico);
-                            stmtCriacaoItens.setLong(3, resposta.getCodigo());
-                            stmtCriacaoItens.setLong(4, alternativaResposta.getCodigo());
-                            stmtCriacaoItens.setString(5, StatusItemOrdemServico.PENDENTE.asString());
-                            stmtCriacaoItens.addBatch();
-                        }
-                    }
-                }
-            }
-
-            // Executa o batch de operações de incremento de quantidade de apontamento de itens de O.S. já existentes
-            // e pendentes. Se o batch estiver vazio, um array vazio será retornado e não teremos problema com esse caso.
-            final boolean todosUpdatesOk = IntStream
-                    .of(stmtQtdApontamentos.executeBatch())
-                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
-            if (!todosUpdatesOk) {
-                throw new IllegalStateException("Erro ao incrementar a quantidade de apontamentos");
-            }
-
-            // Executa o batch de operações de criação de itens para uma Ordem de Serviço criada agora.
-            // Se o batch estiver vazio, um array vazio será retornado e não teremos problema com esse caso.
-            final boolean criacaoItensOk = IntStream
-                    .of(stmtCriacaoItens.executeBatch())
-                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
-            if (!criacaoItensOk) {
-                throw new IllegalStateException("Erro ao criar itens de O.S.");
-            }
-        } finally {
-            close(stmtQtdApontamentos, stmtCriacaoItens);
         }
     }
 

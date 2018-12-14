@@ -25,17 +25,17 @@ import java.util.List;
 public interface OrdemServicoDao {
 
     /**
-     * Método chamado quando é recebido um checklist, verifica as premissas para criar uma nova OS ou add
-     * o item com problema a uma OS existente.
+     * Processa o checklist que foi realizado pelo usuário e cria itens de ordens de serviços ou incrementa a quantidade
+     * de apontamento para itens já existentes e ainda pendentes.
      *
-     * @param checklist  um checklist
-     * @param conn       conexão do banco
-     * @param codUnidade código da unidade
-     * @throws Throwable se ocorrer algum erro.
+     * @param conn Conexão com o banco atualmente aberta.
+     * @param codUnidade O código da unidade onde o checklist foi realizado.
+     * @param checklist O checklist que foi realizado.
+     * @throws Throwable Se ocorrer algum erro no processamento das informações.
      */
-    void criarItemOrdemServico(@NotNull final Connection conn,
-                               @NotNull final Long codUnidade,
-                               @NotNull final Checklist checklist) throws Throwable;
+    void processaChecklistRealizado(@NotNull final Connection conn,
+                                    @NotNull final Long codUnidade,
+                                    @NotNull final Checklist checklist) throws Throwable;
 
     /**
      * Método utilizado para buscar a Listagem de Ordens de Serviços.
@@ -141,8 +141,4 @@ public interface OrdemServicoDao {
      * @throws Throwable Se ocorrer algum erro no processamento das informações.
      */
     void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable;
-
-    void processaChecklistRealizado(@NotNull final Connection conn,
-                                    @NotNull final Long codUnidade,
-                                    @NotNull final Checklist checklist) throws Throwable;
 }
