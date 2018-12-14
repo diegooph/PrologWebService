@@ -5,6 +5,12 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model;
  * ou se incrementamos a quantidade de apontamentos de um item já criado.
  *
  * É importante ressaltar que apesar de nosso padrão de usar objetos para representar códigos ao invés de tipos
+ * primitivos ({@link Long} ao invés de <code>long</code>), nesse objeto usaremos tipos primitivos.
+ * Isso porque esse objeto será usado apenas no servidor então não corremos o risco de serializar os valores default do
+ * Java. Além disso, iremos economizar memória.
+ *
+ * Como essa implementação é uma parte crítica do sistema, optamos obrigar o uso do construtor para setar os atributos,
+ * assim conseguimos realizar algumas validações no momento da criação.
  *
  * Created on 11/12/18.
  *
