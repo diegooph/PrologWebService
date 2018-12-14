@@ -57,7 +57,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
         if (tokenHeader == null) {
             throw new IllegalStateException("Não é possível ler o token da requisição");
         }
-        return tokenHeader.substring(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO.length()).trim();
+        return tokenHeader.trim();
     }
 
     @NotNull
