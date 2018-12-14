@@ -44,7 +44,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                                            @NotNull final Long codUnidade,
                                            @NotNull final Checklist checklist) throws Throwable {
         final Map<Long, AlternativaAberturaOrdemServico> alternativasOrdemServico =
-                createAlternativaChecklistAbreOrdemServico(
+                createAlternativasAberturaOrdemServico(
                         conn,
                         checklist.getCodModelo(),
                         checklist.getPlacaVeiculo());
@@ -366,14 +366,14 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     }
 
     @NotNull
-    private Map<Long, AlternativaAberturaOrdemServico> createAlternativaChecklistAbreOrdemServico(
+    private Map<Long, AlternativaAberturaOrdemServico> createAlternativasAberturaOrdemServico(
             @NotNull final Connection conn,
             @NotNull final Long codModelo,
             @NotNull final String placaVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_ALTERNATIVAS_ABRE_ORDEM_SERVICO(?, ?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(?, ?)");
             stmt.setLong(1, codModelo);
             stmt.setString(2, placaVeiculo);
             rSet = stmt.executeQuery();
