@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem.PneuTransferenciaListagem;
@@ -29,8 +30,8 @@ public class PneuTransferenciaService {
             return dao.getListagem(
                     codUnidadesOrigem,
                     codUnidadesDestino,
-                    dataInicial,
-                    dataFinal);
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
 
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar as transferências", e);
@@ -38,7 +39,7 @@ public class PneuTransferenciaService {
         }
     }
 
-    public List<PneuTransferenciaProcessoVisualizacao> transferenciaVisualizacao(@NotNull final Long codTransferencia)
+    public PneuTransferenciaProcessoVisualizacao transferenciaVisualizacao(@NotNull final Long codTransferencia)
             throws ProLogException{
         try {
             return dao.getVisualizacao(

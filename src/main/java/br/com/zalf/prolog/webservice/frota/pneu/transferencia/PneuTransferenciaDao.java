@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -20,8 +21,8 @@ public interface PneuTransferenciaDao {
 
     List<PneuTransferenciaListagem> getListagem(@NotNull final List<Long> codUnidadesOrigem,
                                                 @NotNull final List<Long> codUnidadesDestino,
-                                                @NotNull final String dataInicial,
-                                                @NotNull final String dataFinal) throws SQLException, Throwable;
+                                                @NotNull final LocalDate dataInicial,
+                                                @NotNull final LocalDate dataFinal) throws Throwable;
 
-    List<PneuTransferenciaProcessoVisualizacao> getVisualizacao(@NotNull final Long codTransferencia) throws Throwable;
+    PneuTransferenciaProcessoVisualizacao getVisualizacao(@NotNull final Long codTransferencia) throws Throwable;
 }

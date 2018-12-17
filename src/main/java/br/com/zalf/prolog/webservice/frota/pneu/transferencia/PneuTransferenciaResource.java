@@ -45,8 +45,8 @@ public class PneuTransferenciaResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/pneu-transferencia-visualizacao-list")
-    public List<PneuTransferenciaProcessoVisualizacao> getPneuTransferenciaVisualizacao(
+    @Path("/pneu-transferencia-visualizacao-transferencia")
+    public PneuTransferenciaProcessoVisualizacao getPneuTransferenciaVisualizacao(
             @QueryParam("codTransferencia") final Long codTransferencia) throws ProLogException {
         return service.transferenciaVisualizacao(codTransferencia);
     }
