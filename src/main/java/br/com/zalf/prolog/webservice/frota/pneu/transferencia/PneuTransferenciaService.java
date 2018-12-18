@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem.PneuTransferenciaListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao.PneuTransferenciaProcessoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +22,16 @@ public class PneuTransferenciaService {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
     private final PneuTransferenciaDao dao = Injection.providePneuTransferenciaDao();
+
+    public void insertTransferencia(PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
+        try {
+            dao.insertTransferencia(pneuTransferenciaRealizacao, Injection.providePneuTransferenciaDao());
+        } catch (Throwable e) {
+            final String errorMessage = "Erro ao realizar a transferência";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
+        }
+    }
 
     public List<PneuTransferenciaListagem> transferenciaListagem(@NotNull final List<Long> codUnidadesOrigem,
                                                                  @NotNull final List<Long> codUnidadesDestino,
@@ -50,3 +61,5 @@ public class PneuTransferenciaService {
         }
     }
 }
+
+

@@ -17,7 +17,7 @@ import java.util.List;
 public interface PneuTransferenciaDao {
 
     void insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
-                             @NotNull final List<Long> codPneusCliente) throws Throwable;
+                             @NotNull final PneuTransferenciaDao pneuTransferenciaDao) throws Throwable;
 
     List<PneuTransferenciaListagem> getListagem(@NotNull final List<Long> codUnidadesOrigem,
                                                 @NotNull final List<Long> codUnidadesDestino,

@@ -30,29 +30,37 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
 
 
+
     @Override
     public void insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
-                                    @NotNull final List<Long> codPneus) throws Throwable {
+                                    @NotNull final PneuTransferenciaDao pneuTransferenciaDao) throws Throwable {
+
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
 
-            stmt = conn.prepareStatement("INSERT INTO PNEU_TRANSFERENCIA_PROCESSO " +
-                    "(COD_UNIDADE_ORIGEM, COD_UNIDADE_DESTINO, COD_COLABORADOR, DATA_HORA_TRANSFERENCIA_PROCESSO) VALUES (?, ?, ?, ?)");
+            stmt = conn.prepareStatement ("INSERT INTO PNEU_TRANSFERENCIA_PROCESSO" +
+                    "(COD_UNIDADE_ORIGEM," +
+                    " COD_UNIDADE_DESTINO," +
+                    " COD_COLABORADOR," +
+                    " DATA_HORA_TRANSFERENCIA_PROCESSO) VALUES (?, ?, ?, ?)");
+
             stmt.setLong(1, pneuTransferenciaRealizacao.getCodUnidadeOrigem());
             stmt.setLong(2, pneuTransferenciaRealizacao.getCodUnidadeDestino());
             stmt.setLong(3, pneuTransferenciaRealizacao.getCodColaboradorRealizacaoTransferencia());
             stmt.setObject(4, Now.offsetDateTimeUtc());
 
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Long codTransferencia = rSet.getLong("CODIGO");
-                insertTransferenciaValores(conn, codPneus, codTransferencia);
+            int count = stmt.executeUpdate();
+            if (count != 0) {
+                Long codTransferencia = rSet.getLong("CODIGO");
+                insertTransferenciaValores(conn, pneuTransferenciaRealizacao, codTransferencia);
             } else {
                 throw new SQLException("Erro ao realizar a transferencia");
             }
+        } catch (Throwable t) {
+            throw new SQLException(t);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -198,11 +206,11 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
     }
 
     private void insertTransferenciaValores(@NotNull final Connection conn,
-                                            @NotNull final List<Long> codPneus,
+                                            @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
                                             @NotNull final Long codTransferencia) throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_INSERT_PNEU_TRANSFERENCIA_INFORMACOES(?,?)");
         stmt.setLong(1, codTransferencia);
-        //       stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codPneus));
+        stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, pneuTransferenciaRealizacao.getCodPneus()));
 
         if (stmt.executeUpdate() == 0) {
             throw new SQLException("Não foi possível inserir as informações do(s) pneu(s) transferido(s)");
