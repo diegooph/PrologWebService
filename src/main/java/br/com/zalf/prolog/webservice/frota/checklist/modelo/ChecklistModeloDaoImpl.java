@@ -700,7 +700,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setArray(5, PostgresUtils.listToArray(
                     conn,
                     SqlType.BIGINT,
-                    modeloChecklist.getCargosLiberados()));
+                    modeloChecklist.getTiposVeiculoLiberados()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 if (!rSet.getBoolean(1)) {
