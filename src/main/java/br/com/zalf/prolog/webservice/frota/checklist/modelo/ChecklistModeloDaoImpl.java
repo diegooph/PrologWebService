@@ -626,7 +626,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
 
     private void updateOrdemExibicaoAlternativa(@NotNull final Connection conn,
                                                 @NotNull final Long codAlternativa,
-                                                final int ordemExibicao) throws Throwable {
+                                                final int ordemExibicao) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE CHECKLIST_ALTERNATIVA_PERGUNTA " +
