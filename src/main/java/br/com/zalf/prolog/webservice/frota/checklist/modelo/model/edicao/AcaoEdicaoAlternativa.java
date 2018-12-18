@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public enum AcaoEdicaoAlternativa {
     DELETADA("DELETADA"),
     ALTERADA("ALTERADA"),
+    ALTERADA_ORDENACAO("ALTERADA_ORDENACAO"),
     CRIADA("CRIADA");
 
     @NotNull

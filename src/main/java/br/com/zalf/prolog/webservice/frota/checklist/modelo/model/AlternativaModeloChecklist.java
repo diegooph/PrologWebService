@@ -20,7 +20,6 @@ public abstract class AlternativaModeloChecklist {
     private int ordemExibicao;
     private boolean deveAbrirOrdemServico;
     private PrioridadeAlternativa prioridade;
-
     @NotNull
     @Exclude
     private final String tipo;

@@ -465,6 +465,11 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                             codModelo,
                                             pergunta.getCodigo(),
                                             alternativaEdicao);
+                                } else if (alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.ALTERADA_ORDENACAO)) {
+                                    updateOrdemExibicaoAlternativa(
+                                            conn,
+                                            alternativaEdicao.getCodigo(),
+                                            alternativa.getOrdemExibicao());
                                 } else {
                                     // Devemos passar o código da pergunta que foi desativada,
                                     // para podermos desativar as suas alternativas também.
@@ -613,6 +618,23 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setBoolean(9, alternativa.isDeveAbrirOrdemServico());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inserir a alternativa da pergunta: " + codPergunta);
+            }
+        } finally {
+            close(stmt);
+        }
+    }
+
+    private void updateOrdemExibicaoAlternativa(@NotNull final Connection conn,
+                                                @NotNull final Long codAlternativa,
+                                                final int ordemExibicao) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ALTERNATIVA_PERGUNTA " +
+                    "SET ORDEM = ? WHERE CODIGO = ?;");
+            stmt.setInt(1, ordemExibicao);
+            stmt.setLong(2, codAlternativa);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível atualizar a ordem de exibição da alternativa: " + codAlternativa);
             }
         } finally {
             close(stmt);
