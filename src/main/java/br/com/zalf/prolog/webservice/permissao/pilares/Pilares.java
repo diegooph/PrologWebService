@@ -9,6 +9,11 @@ public final class Pilares {
     public static final int FROTA = 1;
 
     public static final class Frota extends Pilar {
+        /**
+         * Essa permissão libera tanto a visualização das transferências de veículos/pneus quanto a realização das
+         * mesmas.
+         */
+        public static final int TRANSFERENCIA_PNEUS_VEICULOS = 141;
 
         public final class FarolStatusPlacas {
             private FarolStatusPlacas() {
@@ -56,11 +61,6 @@ public final class Pilares {
                 private Movimentacao() {
                 }
 
-                /**
-                 * Essa permissão libera tanto a visualização das transferências de veículos/pneus quanto a realização das
-                 * mesmas.
-                 */
-                public static final int TRANSFERENCIA_PNEUS_VEICULOS = 141;
                 public static final int MOVIMENTAR_GERAL = 120;
                 public static final int MOVIMENTAR_ANALISE_TO_DESCARTE = 125;
                 public static final int CADASTRAR_MOTIVOS_DESCARTE = 123;
