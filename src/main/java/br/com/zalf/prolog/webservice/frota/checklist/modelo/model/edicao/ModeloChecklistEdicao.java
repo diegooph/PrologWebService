@@ -10,7 +10,6 @@ import java.util.List;
 public final class ModeloChecklistEdicao {
     private Long codigo;
     private String nome;
-    private Long codUnidade;
     private List<Long> tiposVeiculoLiberados;
     private List<Long> cargosLiberados;
     private List<PerguntaModeloChecklistEdicao> perguntas;
@@ -34,14 +33,6 @@ public final class ModeloChecklistEdicao {
 
     public void setNome(final String nome) {
         this.nome = nome;
-    }
-
-    public Long getCodUnidade() {
-        return codUnidade;
-    }
-
-    public void setCodUnidade(final Long codUnidade) {
-        this.codUnidade = codUnidade;
     }
 
     public List<Long> getTiposVeiculoLiberados() {
