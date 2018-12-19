@@ -38,6 +38,7 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
+        Long codTransferencia = null;
         try {
             conn = getConnection();
 
@@ -45,16 +46,18 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
                     "(COD_UNIDADE_ORIGEM," +
                     " COD_UNIDADE_DESTINO," +
                     " COD_COLABORADOR," +
-                    " DATA_HORA_TRANSFERENCIA_PROCESSO) VALUES (?, ?, ?, ?)");
+                    " DATA_HORA_TRANSFERENCIA_PROCESSO," +
+                    " OBSERVACAO) VALUES (?, ?, ?, ?, ?) RETURNING CODIGO");
 
             stmt.setLong(1, pneuTransferenciaRealizacao.getCodUnidadeOrigem());
             stmt.setLong(2, pneuTransferenciaRealizacao.getCodUnidadeDestino());
             stmt.setLong(3, pneuTransferenciaRealizacao.getCodColaboradorRealizacaoTransferencia());
             stmt.setObject(4, Now.offsetDateTimeUtc());
+            stmt.setString(5, pneuTransferenciaRealizacao.getObservacao());
 
-            int count = stmt.executeUpdate();
-            if (count != 0) {
-                Long codTransferencia = rSet.getLong("CODIGO");
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                codTransferencia = rSet.getLong("CODIGO");
                 insertTransferenciaValores(conn, pneuTransferenciaRealizacao, codTransferencia);
             } else {
                 throw new SQLException("Erro ao realizar a transferencia");
@@ -119,6 +122,7 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
                 processoVisualizacao.setNomeUnidadeDestino(rSet.getString("UNIDADE_DESTINO"));
                 processoVisualizacao.setNomeColaboradorRealizacaoTransferencia(rSet.getString("NOME_COLABORADOR"));
                 processoVisualizacao.setDataHoraTransferencia(rSet.getObject("DATA_TRANSFERENCIA", LocalDateTime.class));
+                processoVisualizacao.setObservacao(rSet.getString("OBSERVACAO"));
                 processoVisualizacao.setPneusTransferidos(createPneuTransferenciaInformacoes(codTransferenciaProcesso));
             }
         } catch (Throwable t) {
@@ -174,6 +178,7 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         pneuTransferenciaListagem.setNomeUnidadeDestino(rSet.getString("UNIDADE_DESTINO"));
         pneuTransferenciaListagem.setNomeColaboradorRealizacaoTransferencia(rSet.getString("NOME_COLABORADOR"));
         pneuTransferenciaListagem.setDataHoraTransferenciaProcesso(rSet.getObject("DATA_TRANSFERENCIA", LocalDateTime.class));
+        pneuTransferenciaListagem.setObservacaoTransferenciaProcesso(rSet.getString("OBSERVACAO"));
         pneuTransferenciaListagem.setCodPneusCliente(createPneusTransferidos(conn, pneuTransferenciaListagem.getCodTransferenciaProcesso()));
 
         return pneuTransferenciaListagem;
@@ -208,11 +213,31 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
     private void insertTransferenciaValores(@NotNull final Connection conn,
                                             @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
                                             @NotNull final Long codTransferencia) throws Throwable {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_INSERT_PNEU_TRANSFERENCIA_INFORMACOES(?,?)");
+        ResultSet rSet = null;
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_INSERT_TRANSFERENCIA_INFORMACOES(?,?)");
         stmt.setLong(1, codTransferencia);
         stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, pneuTransferenciaRealizacao.getCodPneus()));
 
-        if (stmt.executeUpdate() == 0) {
+        rSet = stmt.executeQuery();
+
+        if (rSet.next()) {
+            updateUnidadeAlocacaoPneu(conn, pneuTransferenciaRealizacao);
+        }else{
+            throw new SQLException("Não foi possível inserir as informações do(s) pneu(s) transferido(s)");
+        }
+    }
+
+    private void updateUnidadeAlocacaoPneu(@NotNull final Connection conn,
+                                          @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao)
+            throws Throwable{
+
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_UPDATE_UNIDADE_ALOCACAO(?,?,?)");
+        stmt.setLong(1, pneuTransferenciaRealizacao.getCodUnidadeOrigem());
+        stmt.setLong(2, pneuTransferenciaRealizacao.getCodUnidadeDestino());
+        stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.BIGINT, pneuTransferenciaRealizacao.getCodPneus()));
+        int count = stmt.executeUpdate();
+        System.out.println(count);
+        if (count == 0) {
             throw new SQLException("Não foi possível inserir as informações do(s) pneu(s) transferido(s)");
         }
     }

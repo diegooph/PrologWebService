@@ -24,7 +24,7 @@ public class PneuTransferenciaListagem {
     private String nomeRegionalOrigem;
     private String nomeRegionalDestino;
     private String nomeColaboradorRealizacaoTransferencia;
-
+    private String observacaoTransferenciaProcesso;
 
     public Long getCodTransferenciaProcesso() {
         return codTransferenciaProcesso;
@@ -88,6 +88,14 @@ public class PneuTransferenciaListagem {
 
     public void setNomeColaboradorRealizacaoTransferencia(String nomeColaboradorRealizacaoTransferencia) {
         this.nomeColaboradorRealizacaoTransferencia = nomeColaboradorRealizacaoTransferencia;
+    }
+
+    public String getObservacaoTransferenciaProcesso() {
+        return observacaoTransferenciaProcesso;
+    }
+
+    public void setObservacaoTransferenciaProcesso(String observacaoTransferenciaProcesso) {
+        this.observacaoTransferenciaProcesso = observacaoTransferenciaProcesso;
     }
 
     @NotNull

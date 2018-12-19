@@ -22,6 +22,7 @@ public class PneuTransferenciaProcessoVisualizacao {
     private String nomeRegionalOrigem;
     private String nomeRegionalDestino;
     private String nomeColaboradorRealizacaoTransferencia;
+    private String observacao;
 
     public Long getCodProcessoTransferencia() {
         return codTransferenciaProcesso;
@@ -85,6 +86,22 @@ public class PneuTransferenciaProcessoVisualizacao {
 
     public void setPneusTransferidos(List<PneuTransferenciaInformacoes> pneusTransferidos) {
         this.pneusTransferidos = pneusTransferidos;
+    }
+
+    public Long getCodTransferenciaProcesso() {
+        return codTransferenciaProcesso;
+    }
+
+    public void setCodTransferenciaProcesso(Long codTransferenciaProcesso) {
+        this.codTransferenciaProcesso = codTransferenciaProcesso;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 
     @NotNull
