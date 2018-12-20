@@ -95,43 +95,6 @@ public class DeprecatedControleIntervaloResource_1 {
         return service.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
     }
 
-    @GET
-    @Secured(permissions = {
-            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
-            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
-            Pilares.Gente.Relatorios.INTERVALOS})
-    @Path("/tipos/{codUnidade}/completos")
-    public List<TipoMarcacao> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, true,true);
-    }
-
-    @POST
-    @Path("/tipos")
-    public AbstractResponse insertTipoIntervalo(TipoMarcacao tipoIntervalo) {
-        return service.insertTipoIntervalo(tipoIntervalo);
-    }
-
-    @PUT
-    @Path("/tipos")
-    public Response updateTipoInvervalo(TipoMarcacao tipoIntervalo) {
-        if (service.updateTipoIntervalo(tipoIntervalo)) {
-            return Response.ok("Tipo de intervalo editado com sucesso");
-        } else {
-            return Response.error("Erro ao editar o tipo de intervalo");
-        }
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
-            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
-    @Path("/tipos/{codUnidade}/resumidos")
-    public List<TipoMarcacao> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, true,false);
-    }
-
     /**
      * @deprecated at 08/09/17
      */

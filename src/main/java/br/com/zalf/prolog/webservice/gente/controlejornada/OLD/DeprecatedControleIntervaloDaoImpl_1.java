@@ -28,11 +28,6 @@ public class DeprecatedControleIntervaloDaoImpl_1 extends DatabaseConnection imp
     private static final String TAG = DeprecatedControleIntervaloDaoImpl_1.class.getSimpleName();
 
     @Override
-    public List<TipoMarcacao> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
-        return new DeprecatedControleIntervaloDaoImpl_2().getTiposIntervalosByUnidade(codUnidade, true, withCargos);
-    }
-
-    @Override
     public Intervalo getIntervaloAberto(Long cpf, TipoMarcacao tipoInvervalo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -108,24 +103,6 @@ public class DeprecatedControleIntervaloDaoImpl_1 extends DatabaseConnection imp
         } finally {
             closeConnection(conn, null, null);
         }
-    }
-
-    @Override
-    public Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                    @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        return new DeprecatedControleIntervaloDaoImpl_2().insertTipoIntervalo(tipoIntervalo, listener);
-    }
-
-    @Override
-    public void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                    @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        new DeprecatedControleIntervaloDaoImpl_2().updateTipoIntervalo(tipoIntervalo, listener);
-    }
-
-    @Override
-    public void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
-                                      @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        new DeprecatedControleIntervaloDaoImpl_2().updateStatusAtivoTipoIntervalo(codUnidade, codTipoIntervalo, null, listener);
     }
 
     @Override

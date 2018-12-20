@@ -86,6 +86,8 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa.JustificativaAjusteDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatoriosDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDao;
@@ -255,6 +257,11 @@ public final class Injection {
     @NotNull
     public static ContrachequeDao provideContrachequeDao() {
         return new ContrachequeDaoImpl();
+    }
+
+    @NotNull
+    public static TipoMarcacaoDao provideTipoMarcacaoDao() {
+        return new TipoMarcacaoDaoImpl();
     }
 
     @NotNull

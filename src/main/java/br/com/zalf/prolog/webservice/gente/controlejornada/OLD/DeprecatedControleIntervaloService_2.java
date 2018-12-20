@@ -3,11 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -27,28 +23,6 @@ public class DeprecatedControleIntervaloService_2 {
     private DeprecatedControleIntervaloDao_2 dao = new DeprecatedControleIntervaloDaoImpl_2();
     @NotNull
     private final ControleJornadaDao daoNova = Injection.provideControleJornadaDao();
-
-    public List<TipoMarcacao> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
-        try {
-            return dao.getTiposIntervalosByUnidade(codUnidade, apenasAtivos, withCargos);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar os tipos de intervalos. \n" +
-                    "codUnidade: %d \n" +
-                    "withCargos: %b", codUnidade, withCargos), e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public TipoMarcacao getTipoIntervalo(Long codUnidade, Long codTipoIntervalo) {
-        try {
-            return dao.getTipoIntervalo(codUnidade, codTipoIntervalo);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar tipo de intervalo. \n" +
-                    "codUnidade: %d \n" +
-                    "codTipoIntervalo: %d", codUnidade, codTipoIntervalo), e);
-            throw new RuntimeException(e);
-        }
-    }
 
     public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(Long codUnidade, Long cpf, Long codTipoIntervalo) throws Throwable {
         try {
@@ -94,51 +68,6 @@ public class DeprecatedControleIntervaloService_2 {
         }
     }
 
-    public AbstractResponse insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo) {
-        try {
-            return ResponseWithCod.ok(
-                    "Tipo de intervalo inserido com sucesso",
-                    dao.insertTipoIntervalo(tipoIntervalo,
-                            Injection.provideDadosIntervaloChangedListener()));
-        } catch (Throwable e){
-            Log.e(TAG, "Erro ao inserir o tipo de intervalo", e);
-            return Response.error("Erro ao inserir o tipo de intervalo");
-        }
-    }
-
-    public boolean updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo) {
-        try {
-            dao.updateTipoIntervalo(tipoIntervalo, Injection.provideDadosIntervaloChangedListener());
-            return true;
-        } catch (Throwable e) {
-            Log.e(TAG, "Erro ao atualizar o tipo de intervalo", e);
-            return false;
-        }
-    }
-
-    public void updateStatusAtivo(@NotNull final Long codUnidade,
-                                  @NotNull final Long codTipoIntervalo,
-                                  @NotNull final TipoMarcacao tipoIntervalo) throws ProLogException {
-        try {
-            dao.updateStatusAtivoTipoIntervalo(
-                    codUnidade,
-                    codTipoIntervalo,
-                    tipoIntervalo,
-                    Injection.provideDadosIntervaloChangedListener());
-        } catch (final Throwable e) {
-            Log.e(TAG, String.format("Erro ao inativar o tipo de intervalo. \n" +
-                    "codUnidade: %d \n" +
-                    "codTipoIntervalo: %d", codUnidade, codTipoIntervalo), e);
-            final String errorMessage;
-            if (tipoIntervalo.isAtivo()) {
-                errorMessage = "Erro ao ativar tipo de marcação, tente novamente";
-            } else {
-                errorMessage = "Erro ao inativar tipo de marcação, tente novamente";
-            }
-            throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
-        }
-    }
-
     @SuppressWarnings("Duplicates")
     @NotNull
     public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
@@ -149,7 +78,7 @@ public class DeprecatedControleIntervaloService_2 {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
                     codUnidade,
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO);
-            final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
+            final List<TipoMarcacao> tiposIntervalo = Injection.provideTipoMarcacaoDao().getTiposMarcacoes(codUnidade,  true, true);
             final Optional<DadosMarcacaoUnidade> versaoDados = daoNova.getDadosMarcacaoUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 

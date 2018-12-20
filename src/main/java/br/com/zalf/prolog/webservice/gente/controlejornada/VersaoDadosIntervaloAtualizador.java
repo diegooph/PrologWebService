@@ -23,8 +23,8 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
     }
 
     @Override
-    public void onTiposIntervaloChanged(@NotNull final Connection connection,
-                                        @NotNull final Long codUnidade) throws Throwable {
+    public void onTiposMarcacaoChanged(@NotNull final Connection connection,
+                                       @NotNull final Long codUnidade) throws Throwable {
         incrementaVersaoDadosUnidade(connection, codUnidade);
     }
 

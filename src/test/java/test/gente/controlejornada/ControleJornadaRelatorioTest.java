@@ -1,5 +1,6 @@
 package test.gente.controlejornada;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
@@ -63,7 +64,10 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         final DeprecatedControleIntervaloService_2 intervaloService = new DeprecatedControleIntervaloService_2();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
-        final List<TipoMarcacao> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
+        final List<TipoMarcacao> tiposIntervalos = Injection.provideTipoMarcacaoDao().getTiposMarcacoes(
+                COD_UNIDADE,
+                true,
+                false);
         assertNotNull(tiposIntervalos);
         assertFalse(tiposIntervalos.isEmpty());
         final TipoMarcacao tipoIntervalo = tiposIntervalos.get(0);
@@ -126,7 +130,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         final DeprecatedControleIntervaloService_2 intervaloService = new DeprecatedControleIntervaloService_2();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
-        final List<TipoMarcacao> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
+        final List<TipoMarcacao> tiposIntervalos = Injection.provideTipoMarcacaoDao().getTiposMarcacoes(COD_UNIDADE, true, false);
         assertNotNull(tiposIntervalos);
         assertFalse(tiposIntervalos.isEmpty());
         final TipoMarcacao tipoIntervalo = tiposIntervalos.get(0);
