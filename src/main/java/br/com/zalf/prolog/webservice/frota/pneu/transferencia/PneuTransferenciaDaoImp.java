@@ -82,8 +82,8 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
 
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidadesOrigem));
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidadesDestino));
-            stmt.setObject(3, (dataInicial));
-            stmt.setObject(4, (dataFinal));
+            stmt.setObject(3, dataInicial);
+            stmt.setObject(4, dataFinal);
 
             rSet = stmt.executeQuery();
             final List<PneuTransferenciaListagem> transferencias = new ArrayList<>();
@@ -120,7 +120,7 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
                 processoVisualizacao.setNomeRegionalDestino(rSet.getString("REGIONAL_DESTINO"));
                 processoVisualizacao.setNomeUnidadeDestino(rSet.getString("UNIDADE_DESTINO"));
                 processoVisualizacao.setNomeColaboradorRealizacaoTransferencia(rSet.getString("NOME_COLABORADOR"));
-                processoVisualizacao.setDataHoraTransferencia(rSet.getObject("DATA_TRANSFERENCIA", LocalDateTime.class));
+                processoVisualizacao.setDataHoraTransferencia(rSet.getObject("DATA_HORA_TRANSFERENCIA", LocalDateTime.class));
                 processoVisualizacao.setObservacao(rSet.getString("OBSERVACAO"));
                 processoVisualizacao.setPneusTransferidos(createPneuTransferenciaInformacoes(conn, codTransferenciaProcesso));
             } else {
@@ -141,7 +141,7 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_INSERT_TRANSFERENCIA_INFORMACOES(?, ?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_TRANSFERENCIA_INSERT_INFORMACOES(?, ?)");
             stmt.setLong(1, codTransferencia);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, pneuTransferenciaRealizacao.getCodPneus()));
             rSet = stmt.executeQuery();
@@ -166,7 +166,7 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_UPDATE_UNIDADE_ALOCACAO(?, ?, ?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_TRANSFERENCIA_ALTERAR_UNIDADE_ALOCADO(?, ?, ?)");
             stmt.setLong(1, pneuTransferenciaRealizacao.getCodUnidadeOrigem());
             stmt.setLong(2, pneuTransferenciaRealizacao.getCodUnidadeDestino());
             stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.BIGINT, pneuTransferenciaRealizacao.getCodPneus()));
@@ -224,7 +224,7 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         pneuTransferenciaListagem.setNomeRegionalDestino(rSet.getString("REGIONAL_DESTINO"));
         pneuTransferenciaListagem.setNomeUnidadeDestino(rSet.getString("UNIDADE_DESTINO"));
         pneuTransferenciaListagem.setNomeColaboradorRealizacaoTransferencia(rSet.getString("NOME_COLABORADOR"));
-        pneuTransferenciaListagem.setDataHoraTransferenciaProcesso(rSet.getObject("DATA_TRANSFERENCIA", LocalDateTime.class));
+        pneuTransferenciaListagem.setDataHoraTransferenciaProcesso(rSet.getObject("DATA_HORA_TRANSFERENCIA", LocalDateTime.class));
         pneuTransferenciaListagem.setObservacaoTransferenciaProcesso(rSet.getString("OBSERVACAO"));
         pneuTransferenciaListagem.setCodPneusCliente(createPneusTransferidos(conn, pneuTransferenciaListagem.getCodTransferenciaProcesso()));
         return pneuTransferenciaListagem;

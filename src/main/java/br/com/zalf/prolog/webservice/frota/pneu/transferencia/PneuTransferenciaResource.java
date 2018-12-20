@@ -45,7 +45,7 @@ public final class PneuTransferenciaResource {
             @QueryParam("codUnidadesDestino") @Required final List<Long> codUnidadesDestino,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
-        return service.transferenciaListagem(
+        return service.getListagem(
                 codUnidadesOrigem,
                 codUnidadesDestino,
                 dataInicial,
@@ -57,6 +57,6 @@ public final class PneuTransferenciaResource {
     @Path("/{codTransferencia}")
     public PneuTransferenciaProcessoVisualizacao getPneuTransferenciaVisualizacao(
             @PathParam("codTransferencia") @Required final Long codTransferencia) throws ProLogException {
-        return service.transferenciaVisualizacao(codTransferencia);
+        return service.getTransferenciaVisualizacao(codTransferencia);
     }
 }

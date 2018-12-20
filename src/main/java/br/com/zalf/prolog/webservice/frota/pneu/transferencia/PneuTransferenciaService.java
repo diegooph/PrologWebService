@@ -33,24 +33,25 @@ final class PneuTransferenciaService {
         }
     }
 
-    public List<PneuTransferenciaListagem> transferenciaListagem(@NotNull final List<Long> codUnidadesOrigem,
-                                                                 @NotNull final List<Long> codUnidadesDestino,
-                                                                 @NotNull final String dataInicial,
-                                                                 @NotNull final String dataFinal) throws ProLogException {
+    @NotNull
+    public List<PneuTransferenciaListagem> getListagem(@NotNull final List<Long> codUnidadesOrigem,
+                                                       @NotNull final List<Long> codUnidadesDestino,
+                                                       @NotNull final String dataInicial,
+                                                       @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getListagem(
                     codUnidadesOrigem,
                     codUnidadesDestino,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar as transferências", e);
             throw exceptionHandler.map(e, "Erro ao buscar as transferências");
         }
     }
 
-    public PneuTransferenciaProcessoVisualizacao transferenciaVisualizacao(@NotNull final Long codTransferencia)
+    @NotNull
+    public PneuTransferenciaProcessoVisualizacao getTransferenciaVisualizacao(@NotNull final Long codTransferencia)
             throws ProLogException {
         try {
             return dao.getVisualizacao(
