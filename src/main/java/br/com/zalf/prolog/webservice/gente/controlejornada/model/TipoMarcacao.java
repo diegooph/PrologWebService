@@ -34,8 +34,21 @@ public class TipoMarcacao {
     @SerializedName("tempoLimiteEstouroSegundos")
     private Duration tempoLimiteEstouro;
 
+    /**
+     * Indica se esse tipo representa a jornada do colaborador.
+     */
+    private boolean tipoJornada;
+
     public TipoMarcacao() {
 
+    }
+
+    public boolean isTipoJornada() {
+        return tipoJornada;
+    }
+
+    public void setTipoJornada(final boolean tipoJornada) {
+        this.tipoJornada = tipoJornada;
     }
 
     public Long getCodigo() {

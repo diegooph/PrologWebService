@@ -114,8 +114,7 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALOS_UNIDADE(?, " +
-                    "?);");
+            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_MARCACAO_GET_TIPOS_MARCACOES(?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setBoolean(2, apenasAtivos);
             rSet = stmt.executeQuery();
@@ -147,7 +146,8 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
                     "IT.HORARIO_SUGERIDO, " +
                     "IT.ICONE, " +
                     "IT.TEMPO_ESTOURO_MINUTOS, " +
-                    "IT.TEMPO_RECOMENDADO_MINUTOS " +
+                    "IT.TEMPO_RECOMENDADO_MINUTOS, " +
+                    "IT.TIPO_JORNADA " +
                     "FROM INTERVALO_TIPO_CARGO ITC JOIN VIEW_INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE " +
                     "AND ITC" +
                     ".COD_TIPO_INTERVALO = IT.CODIGO " +
@@ -255,22 +255,23 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
     private TipoMarcacao createTipoMarcacao(@NotNull final Connection conn,
                                             @NotNull final ResultSet rSet,
                                             final boolean withCargos) throws Throwable {
-        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
-        tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
-        tipoIntervalo.setCodigoPorUnidade(rSet.getLong("CODIGO_TIPO_INTERVALO_POR_UNIDADE"));
-        tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
+        final TipoMarcacao tipoMarcacao = new TipoMarcacao();
+        tipoMarcacao.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
+        tipoMarcacao.setCodigoPorUnidade(rSet.getLong("CODIGO_TIPO_INTERVALO_POR_UNIDADE"));
+        tipoMarcacao.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
         final Unidade unidade = new Unidade();
         unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
-        tipoIntervalo.setUnidade(unidade);
-        tipoIntervalo.setAtivo(rSet.getBoolean("ATIVO"));
-        tipoIntervalo.setHorarioSugerido(rSet.getTime("HORARIO_SUGERIDO"));
-        tipoIntervalo.setIcone(Icone.fromString(rSet.getString("ICONE")));
-        tipoIntervalo.setTempoLimiteEstouro(Duration.ofMinutes(rSet.getLong("TEMPO_ESTOURO_MINUTOS")));
-        tipoIntervalo.setTempoRecomendado(Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")));
+        tipoMarcacao.setUnidade(unidade);
+        tipoMarcacao.setAtivo(rSet.getBoolean("ATIVO"));
+        tipoMarcacao.setHorarioSugerido(rSet.getTime("HORARIO_SUGERIDO"));
+        tipoMarcacao.setIcone(Icone.fromString(rSet.getString("ICONE")));
+        tipoMarcacao.setTempoLimiteEstouro(Duration.ofMinutes(rSet.getLong("TEMPO_ESTOURO_MINUTOS")));
+        tipoMarcacao.setTempoRecomendado(Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")));
+        tipoMarcacao.setTipoJornada(rSet.getBoolean("TIPO_JORNADA"));
         if (withCargos) {
-            tipoIntervalo.setCargos(getCargosByTipoMarcacao(conn, tipoIntervalo));
+            tipoMarcacao.setCargos(getCargosByTipoMarcacao(conn, tipoMarcacao));
         }
-        return tipoIntervalo;
+        return tipoMarcacao;
     }
 
     @NotNull
