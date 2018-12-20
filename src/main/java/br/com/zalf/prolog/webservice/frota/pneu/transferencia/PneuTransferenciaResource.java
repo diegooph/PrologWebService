@@ -23,10 +23,10 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @DebugLog
-@Secured(permissions = {Pilares.Frota.TRANSFERENCIA_PNEUS_VEICULOS})
 @Path("pneus/transferencias")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@Secured(permissions = Pilares.Frota.TRANSFERENCIA_PNEUS_VEICULOS)
 public final class PneuTransferenciaResource {
     @NotNull
     private final PneuTransferenciaService service = new PneuTransferenciaService();
