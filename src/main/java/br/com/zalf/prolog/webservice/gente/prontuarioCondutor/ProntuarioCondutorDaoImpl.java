@@ -31,6 +31,10 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
     private static final int PRIMEIRA_LINHA_HEADER = 3;
     private static final int LINHA_INICIAL = 5;
 
+    /*
+     * Os índices presentes abaixo representa a coluna em que a informação se encontra após
+     * ser removido as colunas em branco do arquivo recebido.
+     */
     private static final int COLUMN_CPF = 2;
     private static final int COLUMN_STATUS = 4;
     private static final int COLUMN_MOTIVO = 5;
@@ -78,12 +82,10 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             final List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
             final List<List<String>> dados = criarDadosSemColunasVazias(tabela);
             for (int i = 0; i < dados.size(); i++) {
-                final ProntuarioCondutor prontuario = createProntuarioFromCsv(dados.get(i));
+                final ProntuarioCondutor prontuario = createProntuarioFromData(dados.get(i));
                 if (prontuario != null) {
-                    if (updateProntuario(conn, prontuario)) {
-                        // Prontuário ja existia e foi atualizado.
-                    } else {
-                        // Prontuário não existia e foi inserido na base.
+                    if (!updateProntuario(conn, prontuario)) {
+                        // Prontuário não existia e será inserido na base.
                         insertProntuario(conn, prontuario);
                     }
                 }
@@ -268,13 +270,15 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
     }
 
     @Nullable
-    private ProntuarioCondutor createProntuarioFromCsv(@Nullable final List<String> linha) {
+    private ProntuarioCondutor createProntuarioFromData(@Nullable final List<String> linha) {
         final ProntuarioCondutor prontuario = new ProntuarioCondutor();
         if (linha == null || linha.isEmpty() || linha.get(0).isEmpty()) {
             return null;
         } else {
             final Colaborador colaborador = new Colaborador();
-            colaborador.setCpf(Long.parseLong(getValue(COLUMN_CPF, linha).replace(".", "").replace("-", "")));
+            colaborador.setCpf(Long.parseLong(getValue(COLUMN_CPF, linha)
+                    .replace(".", "")
+                    .replace("-", "")));
 
             final Situacao situacao = new Situacao();
             situacao.setStatus(getValue(COLUMN_STATUS, linha));
@@ -362,13 +366,12 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         return Double.parseDouble(value.replace(",", "."));
     }
 
-    private boolean insertProntuario(@NotNull final Connection conn, @NotNull final ProntuarioCondutor prontuario)
-            throws SQLException {
+    private boolean insertProntuario(@NotNull final Connection conn,
+                                     @NotNull final ProntuarioCondutor prontuario) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO PRONTUARIO_CONDUTOR_CONSOLIDADO VALUES (?,?,?,?,?,?,?,?,?,?,?," +
-                    "?,?,?,?,?," +
-                    "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = conn.prepareStatement("INSERT INTO PRONTUARIO_CONDUTOR_CONSOLIDADO VALUES " +
+                    "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setLong(1, prontuario.getColaborador().getCpf());
             stmt.setString(2, prontuario.getSituacao().getStatus());
             stmt.setString(3, prontuario.getSituacao().getMotivo());
@@ -402,10 +405,9 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             stmt.setInt(31, prontuario.getTelemetria().getFrenagemBrusca());
             stmt.setObject(32, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setObject(33, prontuario.getTelemetria().getPowerOn());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao inserir o prontuário do colaborador: " + prontuario.getColaborador()
-                        .getCpf());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir o prontuário do colaborador: "
+                        + prontuario.getColaborador().getCpf());
             }
         } finally {
             close(stmt);
@@ -413,8 +415,8 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         return true;
     }
 
-    private boolean updateProntuario(@NotNull final Connection conn, @NotNull final ProntuarioCondutor prontuario)
-            throws SQLException {
+    private boolean updateProntuario(@NotNull final Connection conn,
+                                     @NotNull final ProntuarioCondutor prontuario) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE PRONTUARIO_CONDUTOR_CONSOLIDADO SET " +
@@ -451,7 +453,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                     "FRENAGEM_BRUSCA = ? ," +
                     "POWER_ON = ? ," +
                     "DATA_ATUALIZACAO= ? " +
-                    "WHERE cpf_colaborador = ?;");
+                    "WHERE CPF_COLABORADOR = ?;");
             stmt.setLong(1, prontuario.getColaborador().getCpf());
             stmt.setString(2, prontuario.getSituacao().getStatus());
             stmt.setString(3, prontuario.getSituacao().getMotivo());
@@ -486,8 +488,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             stmt.setInt(32, prontuario.getTelemetria().getPowerOn());
             stmt.setObject(33, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setLong(34, prontuario.getColaborador().getCpf());
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
+            if (stmt.executeUpdate() == 0) {
                 return false;
             }
         } finally {
