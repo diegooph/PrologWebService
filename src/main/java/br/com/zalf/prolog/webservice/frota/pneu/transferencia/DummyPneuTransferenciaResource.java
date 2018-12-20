@@ -23,7 +23,7 @@ import java.util.List;
 @Path("/dummies")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class DummyPneuTransferenciaResource {
+public final class DummyPneuTransferenciaResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)

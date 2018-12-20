@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem.PneuTransferenciaListagem;
@@ -23,30 +24,27 @@ import java.util.List;
  */
 @DebugLog
 @Secured(permissions = {Pilares.Frota.TRANSFERENCIA_PNEUS_VEICULOS})
-@Path("/transferencia")
+@Path("pneus/transferencias")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class PneuTransferenciaResource {
+public final class PneuTransferenciaResource {
     @NotNull
     private final PneuTransferenciaService service = new PneuTransferenciaService();
 
-
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/pneu-transferencia-realizacao")
     public Response transferencia(PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
         service.insertTransferencia(pneuTransferenciaRealizacao);
-        return Response.ok("Transferencia realizada com sucesso");
+        return Response.ok("Transferência realizada com sucesso");
     }
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/pneu-transferencia-listagem-list")
     public List<PneuTransferenciaListagem> getPneuTransferenciaListagem(
-            @QueryParam("codUnidadesOrigem") final List<Long> codUnidadesOrigem,
-            @QueryParam("codUnidadesDestino") final List<Long> codUnidadesDestino,
-            @QueryParam("dataInicial") final String dataInicial,
-            @QueryParam("dataFinal") final String dataFinal) throws ProLogException {
+            @QueryParam("codUnidadesOrigem") @Required final List<Long> codUnidadesOrigem,
+            @QueryParam("codUnidadesDestino") @Required final List<Long> codUnidadesDestino,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
         return service.transferenciaListagem(
                 codUnidadesOrigem,
                 codUnidadesDestino,
@@ -56,9 +54,9 @@ public class PneuTransferenciaResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/pneu-transferencia-visualizacao-transferencia")
+    @Path("/{codTransferencia}")
     public PneuTransferenciaProcessoVisualizacao getPneuTransferenciaVisualizacao(
-            @QueryParam("codTransferencia") final Long codTransferencia) throws ProLogException {
+            @PathParam("codTransferencia") @Required final Long codTransferencia) throws ProLogException {
         return service.transferenciaVisualizacao(codTransferencia);
     }
 }

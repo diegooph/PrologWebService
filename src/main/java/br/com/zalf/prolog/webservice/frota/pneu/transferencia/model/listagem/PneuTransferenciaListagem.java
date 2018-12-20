@@ -11,8 +11,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuTransferenciaListagem {
-
+public final class PneuTransferenciaListagem {
     private Long codTransferenciaProcesso;
     private LocalDateTime dataHoraTransferenciaProcesso;
     /**
@@ -25,6 +24,10 @@ public class PneuTransferenciaListagem {
     private String nomeRegionalDestino;
     private String nomeColaboradorRealizacaoTransferencia;
     private String observacaoTransferenciaProcesso;
+
+    public PneuTransferenciaListagem() {
+
+    }
 
     public Long getCodTransferenciaProcesso() {
         return codTransferenciaProcesso;

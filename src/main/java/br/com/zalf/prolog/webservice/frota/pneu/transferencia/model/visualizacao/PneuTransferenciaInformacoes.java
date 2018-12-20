@@ -7,8 +7,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuTransferenciaInformacoes {
-
+public final class PneuTransferenciaInformacoes {
     private Long codPneuTransferenciaInformacoes;
     /**
      * Código do cliente, número de fogo do pneu.
@@ -17,6 +16,10 @@ public class PneuTransferenciaInformacoes {
     private Sulcos sulcosMomentoTransferencia;
     private double pressaoMomentoTransferencia;
     private int vidaMomentoTransferencia;
+
+    public PneuTransferenciaInformacoes() {
+
+    }
 
     public String getCodPneuCliente() {
         return codPneuCliente;

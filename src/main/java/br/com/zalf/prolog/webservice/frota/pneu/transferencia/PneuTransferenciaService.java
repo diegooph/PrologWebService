@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuTransferenciaService {
+final class PneuTransferenciaService {
     private static final String TAG = PneuTransferenciaService.class.getSimpleName();
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();

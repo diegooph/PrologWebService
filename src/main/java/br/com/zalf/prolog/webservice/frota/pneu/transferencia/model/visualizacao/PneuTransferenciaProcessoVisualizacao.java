@@ -12,8 +12,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuTransferenciaProcessoVisualizacao {
-
+public final class PneuTransferenciaProcessoVisualizacao {
     private Long codTransferenciaProcesso;
     private LocalDateTime dataHoraTransferencia;
     private List<PneuTransferenciaInformacoes> pneusTransferidos;
@@ -23,6 +22,10 @@ public class PneuTransferenciaProcessoVisualizacao {
     private String nomeRegionalDestino;
     private String nomeColaboradorRealizacaoTransferencia;
     private String observacao;
+
+    public PneuTransferenciaProcessoVisualizacao() {
+
+    }
 
     public Long getCodProcessoTransferencia() {
         return codTransferenciaProcesso;

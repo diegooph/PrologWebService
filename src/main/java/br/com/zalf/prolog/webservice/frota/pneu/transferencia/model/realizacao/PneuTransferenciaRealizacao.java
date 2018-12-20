@@ -10,8 +10,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuTransferenciaRealizacao {
-
+public final class PneuTransferenciaRealizacao {
     private Long codUnidadeOrigem;
     private Long codUnidadeDestino;
     private Long codColaboradorRealizacaoTransferencia;
@@ -21,6 +20,10 @@ public class PneuTransferenciaRealizacao {
      */
     private List<Long> codPneus;
     private String observacao;
+
+    public PneuTransferenciaRealizacao() {
+
+    }
 
     public Long getCodUnidadeOrigem() {
         return codUnidadeOrigem;
