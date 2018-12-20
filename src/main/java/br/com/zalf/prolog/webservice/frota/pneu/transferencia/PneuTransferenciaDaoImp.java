@@ -68,6 +68,7 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         }
     }
 
+    @NotNull
     @Override
     public List<PneuTransferenciaListagem> getListagem(@NotNull final List<Long> codUnidadesOrigem,
                                                        @NotNull final List<Long> codUnidadesDestino,
@@ -79,17 +80,14 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_TRANSFERENCIA_LISTAGEM(?,?,?,?)");
-
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidadesOrigem));
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidadesDestino));
             stmt.setObject(3, dataInicial);
             stmt.setObject(4, dataFinal);
-
             rSet = stmt.executeQuery();
             final List<PneuTransferenciaListagem> transferencias = new ArrayList<>();
             while (rSet.next()) {
-                final PneuTransferenciaListagem pneuTransferenciaListagem = createPneuTransferenciaListagem(conn, rSet);
-                transferencias.add(pneuTransferenciaListagem);
+                transferencias.add(createPneuTransferenciaListagem(conn, rSet));
             }
             return transferencias;
         } catch (Throwable t) {
@@ -99,6 +97,7 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         }
     }
 
+    @NotNull
     @Override
     public PneuTransferenciaProcessoVisualizacao getVisualizacao(@NotNull final Long codTransferenciaProcesso)
             throws Throwable {
@@ -108,9 +107,7 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_TRANSFERENCIA_VISUALIZACAO(?);");
-
             stmt.setLong(1, codTransferenciaProcesso);
-
             rSet = stmt.executeQuery();
             final PneuTransferenciaProcessoVisualizacao processoVisualizacao = new PneuTransferenciaProcessoVisualizacao();
             if (rSet.next()) {
@@ -184,8 +181,10 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         }
     }
 
-    private List<PneuTransferenciaInformacoes> createPneuTransferenciaInformacoes(Connection conn, Long codTransferenciaProcesso)
-            throws Throwable {
+    @NotNull
+    private List<PneuTransferenciaInformacoes> createPneuTransferenciaInformacoes(
+            @NotNull final Connection conn,
+            @NotNull final Long codTransferenciaProcesso) throws Throwable {
         ResultSet rSet = null;
         PreparedStatement stmt = null;
         try {
@@ -242,16 +241,11 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
             rSet = stmt.executeQuery();
             final List<String> pneusTransferidos = new ArrayList<>();
             while (rSet.next()) {
-                pneusTransferidos.add(createListPneusTransferidos(rSet));
+                pneusTransferidos.add(rSet.getString("CODIGO_CLIENTE"));
             }
             return pneusTransferidos;
         } finally {
             close(stmt, rSet);
         }
-    }
-
-    @NotNull
-    private String createListPneusTransferidos(ResultSet rSet) throws Throwable {
-        return rSet.getString("CODIGO_CLIENTE");
     }
 }
