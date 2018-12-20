@@ -36,7 +36,7 @@ public class PneuTransferenciaResource {
     @Path("/pneu-transferencia-realizacao")
     public Response transferencia(PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
         service.insertTransferencia(pneuTransferenciaRealizacao);
-        return Response.ok("Transferencia realizada com sucesso");
+        return Response.ok("Transferência realizada com sucesso");
     }
 
     @GET
