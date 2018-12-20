@@ -124,7 +124,7 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
                 processoVisualizacao.setNomeColaboradorRealizacaoTransferencia(rSet.getString("NOME_COLABORADOR"));
                 processoVisualizacao.setDataHoraTransferencia(rSet.getObject("DATA_TRANSFERENCIA", LocalDateTime.class));
                 processoVisualizacao.setObservacao(rSet.getString("OBSERVACAO"));
-                processoVisualizacao.setPneusTransferidos(createPneuTransferenciaInformacoes(codTransferenciaProcesso));
+                processoVisualizacao.setPneusTransferidos(createPneuTransferenciaInformacoes(conn, codTransferenciaProcesso));
             }
         } catch (Throwable t) {
             throw new SQLException(t);
@@ -134,12 +134,11 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         return processoVisualizacao;
     }
 
-    private List<PneuTransferenciaInformacoes> createPneuTransferenciaInformacoes(Long codTransferenciaProcesso)
+    private List<PneuTransferenciaInformacoes> createPneuTransferenciaInformacoes(Connection conn, Long codTransferenciaProcesso)
             throws Throwable {
         List<PneuTransferenciaInformacoes> listPneuTransferenciaInformacoes = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
         ResultSet rSet = null;
+        PreparedStatement stmt = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT PTI.*, P.CODIGO_CLIENTE FROM PNEU_TRANSFERENCIA_INFORMACOES PTI " +
@@ -148,7 +147,7 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
             stmt.setLong(1, codTransferenciaProcesso);
 
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
+            while (rSet.next()) {
                 final PneuTransferenciaInformacoes pneuTransferenciaInformacoes = new PneuTransferenciaInformacoes();
                 pneuTransferenciaInformacoes.setCodPneuCliente(rSet.getString("CODIGO_CLIENTE"));
                 pneuTransferenciaInformacoes.setCodPneuTransferenciaInformacoes(rSet.getLong("CODIGO"));
@@ -163,10 +162,9 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
                 listPneuTransferenciaInformacoes.add(pneuTransferenciaInformacoes);
             }
         } finally {
-            close(conn, stmt, rSet);
+            close(stmt, rSet);
         }
         return listPneuTransferenciaInformacoes;
-
     }
 
 
