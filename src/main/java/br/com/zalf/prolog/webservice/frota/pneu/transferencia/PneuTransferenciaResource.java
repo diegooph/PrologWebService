@@ -9,7 +9,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.P
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao.PneuTransferenciaProcessoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @DebugLog
-@Secured
+@Secured(permissions = {Pilares.Frota.TRANSFERENCIA_PNEUS_VEICULOS})
 @Path("/transferencia")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
