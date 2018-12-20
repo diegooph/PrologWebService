@@ -130,6 +130,7 @@ public class PneuTransferenciaProcessoVisualizacao {
             pneusList.add(pneuTransferenciaInformacoes);
         }
         transferencia.setPneusTransferidos(pneusList);
+        transferencia.setObservacao("Operação Verão");
         return transferencia;
     }
 }

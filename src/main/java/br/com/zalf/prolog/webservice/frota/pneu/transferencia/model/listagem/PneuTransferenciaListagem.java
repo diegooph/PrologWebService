@@ -113,6 +113,7 @@ public class PneuTransferenciaListagem {
         transferencia.setNomeRegionalOrigem("Sul");
         transferencia.setNomeRegionalDestino("Sudeste");
         transferencia.setNomeColaboradorRealizacaoTransferencia("Clementino");
+        transferencia.setObservacaoTransferenciaProcesso("Operação Verão");
         return transferencia;
     }
 }
