@@ -63,7 +63,6 @@ public class PneuTransferenciaRealizacao {
     }
 
 
-
     @NotNull
     public static PneuTransferenciaRealizacao createDummy() {
         final PneuTransferenciaRealizacao transferencia = new PneuTransferenciaRealizacao();

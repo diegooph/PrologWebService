@@ -51,7 +51,7 @@ public class PneuTransferenciaService {
     }
 
     public PneuTransferenciaProcessoVisualizacao transferenciaVisualizacao(@NotNull final Long codTransferencia)
-            throws ProLogException{
+            throws ProLogException {
         try {
             return dao.getVisualizacao(
                     codTransferencia);

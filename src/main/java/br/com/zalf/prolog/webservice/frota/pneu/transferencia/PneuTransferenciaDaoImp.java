@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -30,19 +31,17 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
 
 
-
     @Override
     public void insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
                                     @NotNull final PneuTransferenciaDao pneuTransferenciaDao) throws Throwable {
-
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Long codTransferencia = null;
         try {
             conn = getConnection();
-
-            stmt = conn.prepareStatement ("INSERT INTO PNEU_TRANSFERENCIA_PROCESSO" +
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("INSERT INTO PNEU_TRANSFERENCIA_PROCESSO" +
                     "(COD_UNIDADE_ORIGEM," +
                     " COD_UNIDADE_DESTINO," +
                     " COD_COLABORADOR," +
@@ -59,11 +58,13 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
             if (rSet.next()) {
                 codTransferencia = rSet.getLong("CODIGO");
                 insertTransferenciaValores(conn, pneuTransferenciaRealizacao, codTransferencia);
-            } else {
-                throw new SQLException("Erro ao realizar a transferencia");
             }
-        } catch (Throwable t) {
-            throw new SQLException(t);
+            conn.commit();
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -219,25 +220,31 @@ public class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
         stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, pneuTransferenciaRealizacao.getCodPneus()));
 
         rSet = stmt.executeQuery();
-
+        Long qtdRowsRSet = null;
         if (rSet.next()) {
+            qtdRowsRSet = rSet.getLong(1);
+        }
+        if (qtdRowsRSet == pneuTransferenciaRealizacao.getCodPneus().size()) {
             updateUnidadeAlocacaoPneu(conn, pneuTransferenciaRealizacao);
-        }else{
+        } else {
             throw new SQLException("Não foi possível inserir as informações do(s) pneu(s) transferido(s)");
         }
     }
 
     private void updateUnidadeAlocacaoPneu(@NotNull final Connection conn,
-                                          @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao)
-            throws Throwable{
-
+                                           @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao)
+            throws Throwable {
+        ResultSet rSet = null;
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_UPDATE_UNIDADE_ALOCACAO(?,?,?)");
         stmt.setLong(1, pneuTransferenciaRealizacao.getCodUnidadeOrigem());
         stmt.setLong(2, pneuTransferenciaRealizacao.getCodUnidadeDestino());
         stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.BIGINT, pneuTransferenciaRealizacao.getCodPneus()));
-        int count = stmt.executeUpdate();
-        System.out.println(count);
-        if (count == 0) {
+        rSet = stmt.executeQuery();
+        Long qtdRowsRSet = null;
+        if (rSet.next()) {
+            qtdRowsRSet = rSet.getLong(1);
+        }
+        if (qtdRowsRSet != pneuTransferenciaRealizacao.getCodPneus().size()) {
             throw new SQLException("Não foi possível inserir as informações do(s) pneu(s) transferido(s)");
         }
     }
