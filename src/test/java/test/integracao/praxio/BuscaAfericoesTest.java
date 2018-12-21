@@ -26,7 +26,7 @@ public class BuscaAfericoesTest extends BaseTest {
     }
 
     @Test
-    public void testInsertRecapadora() throws ProLogException {
+    public void testBuscaAfericoes() throws ProLogException {
         final List<MedicaoIntegracaoPraxio> medicoesRealizadas =
                 service.getAfericoesRealizadas(TOKEN_PICCOLOTUR, 10L);
 

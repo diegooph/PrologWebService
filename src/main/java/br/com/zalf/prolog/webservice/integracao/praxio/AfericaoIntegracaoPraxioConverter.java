@@ -26,7 +26,7 @@ final class AfericaoIntegracaoPraxioConverter {
         final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
         medicao.setCodigo(rSet.getLong("COD_AFERICAO"));
         medicao.setCodUnidadeAfericao(rSet.getLong("COD_UNIDADE_AFERICAO"));
-        medicao.setCpfColaborador(String.valueOf(rSet.getLong("CPF_COLABORADOR")));
+        medicao.setCpfColaborador(rSet.getString("CPF_COLABORADOR"));
         medicao.setCodPneuAferido(rSet.getLong("COD_PNEU_AFERIDO"));
         medicao.setNumeroFogoPneu(rSet.getString("NUMERO_FOGO"));
         medicao.setTempoRealizacaoEmSegundos(TimeUnit.MILLISECONDS.toSeconds(

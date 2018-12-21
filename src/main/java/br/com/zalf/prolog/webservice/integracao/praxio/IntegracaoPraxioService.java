@@ -44,7 +44,7 @@ public final class IntegracaoPraxioService {
                     "Código da última aferição sincronizada: %d", codUltimaAfericao), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar marcações para sincronizar");
+                    .map(t, "Erro ao buscar aferições para sincronizar");
         }
     }
 
