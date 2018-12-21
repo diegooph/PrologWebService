@@ -8,6 +8,7 @@ Change Log
 * Cria componente para a Dashboard que mostra a quantidade de aferições realizadas por dia, separando por tipo, em um 
 intervalo de 30 dias.
 * Cria componente para a Dashboard que mostra a quantidade de relatos pendentes, separando por tipo.
+* Cria funcionalidade para transferência de pneus.
 
 ### Refactors
 * Altera verificação de vlBateuJornMot, vlNaoBateuJornMot, vlRecargaMot, vlBateuJornAju, vlNaoBateuJornAju e
