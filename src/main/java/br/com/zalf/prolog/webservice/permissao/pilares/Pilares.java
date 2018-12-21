@@ -9,6 +9,11 @@ public final class Pilares {
     public static final int FROTA = 1;
 
     public static final class Frota extends Pilar {
+        /**
+         * Essa permissão libera tanto a visualização das transferências de veículos/pneus quanto a realização das
+         * mesmas.
+         */
+        public static final int TRANSFERENCIA_PNEUS_VEICULOS = 141;
 
         public final class FarolStatusPlacas {
             private FarolStatusPlacas() {
@@ -86,7 +91,7 @@ public final class Pilares {
                 }
 
                 public static final int VISUALIZAR = 12;
-                public static final int CONSERTAR_ITEM = 13;
+                public static final int RESOLVER_ITEM = 13;
             }
 
             public final class Pneu {
@@ -158,8 +163,11 @@ public final class Pilares {
              */
             public static final int MARCAR_INTERVALO = 336;
             public static final int VISUALIZAR_TODAS_MARCACOES = 337;
-            public static final int EDITAR_MARCACAO = 338;
-            public static final int VALIDAR_INVALIDAR_MARCACAO = 339;
+            /**
+             * Permite ao usuário criar, editar, ativar ou inativar marcações.
+             */
+            public static final int AJUSTE_MARCACOES = 338;
+
             public static final int CRIAR_TIPO_INTERVALO = 340;
             public static final int ALTERAR_TIPO_INTERVALO = 344;
             public static final int ATIVAR_INATIVAR_TIPO_INTERVALO = 341;
