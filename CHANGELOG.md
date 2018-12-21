@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.82"></a>
 ## Version [v0.0.82](https://github.com/luizfp/PrologWebService/compare/v0.0.81...v0.0.82) (release-date) [unreleased]
 
+### Features
+* Cria funcionalidade para permitir a transferência de pneus entre unidades
+
 ### Refactors
 * Altera forma de parse do arquivo de prontuário do condutor para ignorar colunas vazias
 
