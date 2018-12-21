@@ -787,9 +787,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @NotNull
     @Override
-    public List<QuantidadeAfericao> getQtdAfericoesRealizadasPorDiaByTipo(@NotNull final List<Long> codUnidades,
-                                                                          final int diasRetroativosParaBuscar)
-            throws Throwable {
+    public List<QuantidadeAfericao> getQtdAfericoesRealizadasPorDiaByTipo(
+            @NotNull final List<Long> codUnidades,
+            final int diasRetroativosParaBuscar) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -817,7 +817,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                         "unidades: " + codUnidades);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

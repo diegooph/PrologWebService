@@ -394,7 +394,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new SQLException("Erro ao atualizar o km do veículo");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 

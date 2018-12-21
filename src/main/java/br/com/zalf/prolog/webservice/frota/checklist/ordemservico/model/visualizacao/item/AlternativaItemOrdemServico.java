@@ -24,6 +24,18 @@ public final class AlternativaItemOrdemServico {
     private String descricao;
 
     /**
+     * Indica se essa alternativa é do tipo outros. Se for (true nesse caso), então o usuário
+     * forneceu uma resposta durante a realização do checklist e não escolheu uma das pré definidas.
+     */
+    private boolean tipoOutros;
+
+    /**
+     * Se a alternativa for do tipo outros, então essa String conterá a descrição fornecida pelo
+     * usuário, do contrário será <code>null</code>.
+     */
+    private String descricaoTipoOutros;
+
+    /**
      * Prioridade que a alternativa marcada como Não Ok (NOK) possui.
      * A prioridade pode ser:
      * *{@link PrioridadeAlternativa#CRITICA}.
@@ -41,6 +53,8 @@ public final class AlternativaItemOrdemServico {
         final AlternativaItemOrdemServico alternativa = new AlternativaItemOrdemServico();
         alternativa.setCodAlteranativa(24345L);
         alternativa.setDescricao("Teste Alternativa");
+        alternativa.setTipoOutros(true);
+        alternativa.setDescricaoTipoOutros("Descrição tipo outros");
         alternativa.setPrioridade(PrioridadeAlternativa.CRITICA);
         return alternativa;
     }
@@ -59,6 +73,22 @@ public final class AlternativaItemOrdemServico {
 
     public void setDescricao(final String descricao) {
         this.descricao = descricao;
+    }
+
+    public boolean isTipoOutros() {
+        return tipoOutros;
+    }
+
+    public void setTipoOutros(final boolean tipoOutros) {
+        this.tipoOutros = tipoOutros;
+    }
+
+    public String getDescricaoTipoOutros() {
+        return descricaoTipoOutros;
+    }
+
+    public void setDescricaoTipoOutros(final String descricaoTipoOutros) {
+        this.descricaoTipoOutros = descricaoTipoOutros;
     }
 
     public PrioridadeAlternativa getPrioridade() {

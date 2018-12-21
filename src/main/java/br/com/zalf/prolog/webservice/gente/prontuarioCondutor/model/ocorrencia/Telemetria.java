@@ -10,6 +10,7 @@ public class Telemetria extends Ocorrencia {
     private int excessoVelocidade3;
     private int forcaG;
     private int frenagemBrusca;
+    private int powerOn;
 
     public Telemetria() {
     }
@@ -52,5 +53,13 @@ public class Telemetria extends Ocorrencia {
 
     public void setFrenagemBrusca(int frenagemBrusca) {
         this.frenagemBrusca = frenagemBrusca;
+    }
+
+    public int getPowerOn() {
+        return powerOn;
+    }
+
+    public void setPowerOn(int powerOn) {
+        this.powerOn = powerOn;
     }
 }

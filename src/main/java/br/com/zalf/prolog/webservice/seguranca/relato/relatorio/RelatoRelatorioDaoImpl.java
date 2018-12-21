@@ -1,13 +1,12 @@
 package br.com.zalf.prolog.webservice.seguranca.relato.relatorio;
 
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.RelatoPendente;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +18,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Zart on 20/11/2017.
@@ -43,6 +43,7 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
 
     }
 
+    @NotNull
     @Override
     public Report getRelatosEstratificadosReport(Long codUnidade, Date dataInicial, Date dataFinal, String equipe)
             throws SQLException {
@@ -84,8 +85,7 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
 
     @NotNull
     @Override
-    public RelatoPendente getQtdRelatosPendentesByStatus(
-            @NotNull final List<Long> codUnidades) throws Throwable {
+    public RelatoPendente getQtdRelatosPendentesByStatus(@NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -100,10 +100,10 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
                         rSet.getInt("QTD_PENDENTES_CLASSIFICACAO"),
                         rSet.getInt("QTD_PENDENTES_FECHAMENTO"));
             } else {
-                throw new SQLException("Erro ao buscar o relatos pendentes");
+                throw new SQLException("Erro ao buscar os relatos pendentes");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

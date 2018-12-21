@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.seguranca.relato.relatorio.RelatoRelatorioDao;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,10 +19,10 @@ import java.util.List;
  */
 final class DashboardRelatoService {
     private static final String TAG = DashboardRelatoService.class.getSimpleName();
-    private final DashboardDao dashDao = Injection.provideDashboardDao();
-    private final RelatoRelatorioDao relatorioDao = Injection.provideRelatoRelatorioDao();
     @NotNull
-    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
+    private final DashboardDao dashDao = Injection.provideDashboardDao();
+    @NotNull
+    private final RelatoRelatorioDao relatorioDao = Injection.provideRelatoRelatorioDao();
 
     @NotNull
     QuantidadeItemComponent getQtdRelatosRealizadosHoje(@NotNull final Integer codComponente,
@@ -50,7 +49,9 @@ final class DashboardRelatoService {
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de relatos pendentes para as unidades %s",
                     codUnidades.toString()), throwable);
-            throw exceptionHandler.map(throwable, "Erro ao burcar a quantidade de relatos pendentes.");
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao burcar a quantidade de relatos pendentes");
         }
     }
 }
