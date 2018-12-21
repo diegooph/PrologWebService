@@ -41,14 +41,16 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
             stmt = conn.prepareStatement("INSERT INTO PNEU_TRANSFERENCIA_PROCESSO" +
                     "(COD_UNIDADE_ORIGEM," +
                     " COD_UNIDADE_DESTINO," +
+                    " COD_UNIDADE_COLABORADOR," +
                     " COD_COLABORADOR," +
                     " DATA_HORA_TRANSFERENCIA_PROCESSO," +
-                    " OBSERVACAO) VALUES (?, ?, ?, ?, ?) RETURNING CODIGO");
+                    " OBSERVACAO) VALUES (?, ?, (SELECT COD_UNIDADE FROM COLABORADOR WHERE CODIGO = ?), ?, ?, ?) RETURNING CODIGO");
             stmt.setLong(1, pneuTransferenciaRealizacao.getCodUnidadeOrigem());
             stmt.setLong(2, pneuTransferenciaRealizacao.getCodUnidadeDestino());
             stmt.setLong(3, pneuTransferenciaRealizacao.getCodColaboradorRealizacaoTransferencia());
-            stmt.setObject(4, Now.offsetDateTimeUtc());
-            stmt.setString(5, pneuTransferenciaRealizacao.getObservacao());
+            stmt.setLong(4, pneuTransferenciaRealizacao.getCodColaboradorRealizacaoTransferencia());
+            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setString(6, pneuTransferenciaRealizacao.getObservacao());
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
