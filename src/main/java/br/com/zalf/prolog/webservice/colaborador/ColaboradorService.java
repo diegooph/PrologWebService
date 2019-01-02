@@ -47,7 +47,7 @@ public class ColaboradorService {
             ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.update(cpfAntigo, colaborador, Injection.provideDadosIntervaloChangedListener());
         } catch (Throwable e) {
-            final String errorMessage = "Erro ao inserir colaborador";
+            final String errorMessage = "Erro ao atualizar colaborador";
             Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
             throw exceptionHandler.map(e, errorMessage);
         }
