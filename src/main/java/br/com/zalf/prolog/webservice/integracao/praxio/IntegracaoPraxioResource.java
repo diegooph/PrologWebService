@@ -33,7 +33,7 @@ public final class IntegracaoPraxioResource {
     public List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimaAfericao") @Required final Long codUltimaAfericao) throws ProLogException {
-        return service.getAfericoesRealizadasDummy(tokenIntegracao, codUltimaAfericao);
+        return service.getAfericoesRealizadas(tokenIntegracao, codUltimaAfericao);
     }
 
     @GET

@@ -32,12 +32,16 @@ public final class IntegracaoPraxioService {
     }
 
     @NotNull
-    public List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(
-            @NotNull final String tokenIntegracao,
-            @NotNull final Long codUltimaAfericao) throws ProLogException {
-        ensureValidToken(tokenIntegracao);
-
+    public List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(final String tokenIntegracao,
+                                                                final Long codUltimaAfericao) throws ProLogException {
         try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (codUltimaAfericao == null) {
+                throw new GenericException("Um código para a busca deve ser fornecido");
+            }
+            ensureValidToken(tokenIntegracao);
             return dao.getAfericoesRealizadas(tokenIntegracao, codUltimaAfericao);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar as novas aferições da Integração\n" +
@@ -58,24 +62,6 @@ public final class IntegracaoPraxioService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao verificar Token da Integração");
-        }
-    }
-
-    @NotNull
-    List<MedicaoIntegracaoPraxio> getAfericoesRealizadasDummy(final String tokenIntegracao,
-                                                              final Long codUltimaAfericao) throws ProLogException {
-        try {
-            if (tokenIntegracao == null) {
-                throw new GenericException("Um Token deve ser fornecido");
-            }
-            if (codUltimaAfericao == null) {
-                throw new GenericException("Um código para a busca deve ser fornecido");
-            }
-            return getDummy();
-        } catch (Throwable t) {
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro na busca das aferições de teste");
         }
     }
 }
