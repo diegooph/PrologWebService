@@ -411,6 +411,11 @@ public final class Injection {
         return new RaizenProdutividadeRelatorioDaoImpl();
     }
 
+    @NotNull
+    public static PneuTransferenciaDao providePneuTransferenciaDao() {
+        return new PneuTransferenciaDaoImp();
+    }
+
     // ================================================
     // OUTROS
     // ================================================
@@ -419,6 +424,14 @@ public final class Injection {
         return new VersaoDadosIntervaloAtualizador();
     }
 
+    @NotNull
+    public static AutenticacaoIntegracaoDao provideAutenticacaoIntegracaoDao() {
+        return new AutenticacaoIntegracaoDaoImpl();
+    }
+
+    // ================================================
+    // EXCEPTION HANDLERS
+    // ================================================
     @NotNull
     public static ProLogExceptionHandler provideProLogExceptionHandler() {
         return new ProLogExceptionHandler(provideProLogSqlExceptionTranslator());
@@ -457,15 +470,5 @@ public final class Injection {
     @NotNull
     private static PneuSqlExceptionTranslator providePneuSqlExceptionTranslator() {
         return new PneuSqlExceptionTranslator();
-    }
-
-    @NotNull
-    public static PneuTransferenciaDao providePneuTransferenciaDao() {
-        return new PneuTransferenciaDaoImp();
-    }
-
-    @NotNull
-    public static AutenticacaoIntegracaoDao provideAutenticacaoIntegracaoDao() {
-        return new AutenticacaoIntegracaoDaoImpl();
     }
 }
