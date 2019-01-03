@@ -110,6 +110,8 @@ import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRel
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
+import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDao;
@@ -460,5 +462,10 @@ public final class Injection {
     @NotNull
     public static PneuTransferenciaDao providePneuTransferenciaDao() {
         return new PneuTransferenciaDaoImp();
+    }
+
+    @NotNull
+    public static AutenticacaoIntegracaoDao provideAutenticacaoIntegracaoDao() {
+        return new AutenticacaoIntegracaoDaoImpl();
     }
 }
