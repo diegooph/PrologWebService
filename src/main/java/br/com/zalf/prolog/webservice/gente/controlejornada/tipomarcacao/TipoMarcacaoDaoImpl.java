@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
@@ -42,7 +43,11 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             stmt.setLong(4, tipoMarcacao.getTempoLimiteEstouro().toMinutes());
             stmt.setTime(5, tipoMarcacao.getHorarioSugerido());
             stmt.setLong(6, tipoMarcacao.getUnidade().getCodigo());
-            stmt.setBoolean(7, tipoMarcacao.isTipoJornada());
+            if (tipoMarcacao.isTipoJornada()) {
+                stmt.setBoolean(7, true);
+            } else {
+                stmt.setNull(7, SqlType.BOOLEAN.asIntTypeJava());
+            }
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 tipoMarcacao.setCodigo(rSet.getLong("CODIGO"));
@@ -76,15 +81,19 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
                     "SET NOME = ?, ICONE = ?, TEMPO_RECOMENDADO_MINUTOS = ?, TEMPO_ESTOURO_MINUTOS = ?, " +
-                    "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ? AND TIPO_JORNADA = ? AND ATIVO = TRUE;");
+                    "HORARIO_SUGERIDO = ?, TIPO_JORNADA = ? WHERE COD_UNIDADE = ? AND CODIGO = ? AND ATIVO = TRUE;");
             stmt.setString(1, tipoMarcacao.getNome());
             stmt.setString(2, tipoMarcacao.getIcone().getNomeIcone());
             stmt.setLong(3, tipoMarcacao.getTempoRecomendado().toMinutes());
             stmt.setLong(4, tipoMarcacao.getTempoLimiteEstouro().toMinutes());
             stmt.setTime(5, tipoMarcacao.getHorarioSugerido());
-            stmt.setLong(6, tipoMarcacao.getUnidade().getCodigo());
-            stmt.setLong(7, tipoMarcacao.getCodigo());
-            stmt.setBoolean(8, tipoMarcacao.isTipoJornada());
+            if (tipoMarcacao.isTipoJornada()) {
+                stmt.setBoolean(6, true);
+            } else {
+                stmt.setNull(6, SqlType.BOOLEAN.asIntTypeJava());
+            }
+            stmt.setLong(7, tipoMarcacao.getUnidade().getCodigo());
+            stmt.setLong(8, tipoMarcacao.getCodigo());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o Tipo de Marcação de código: " + tipoMarcacao.getCodigo());
