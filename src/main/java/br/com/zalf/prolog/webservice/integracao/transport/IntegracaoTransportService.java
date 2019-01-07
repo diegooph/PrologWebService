@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -20,6 +22,28 @@ class IntegracaoTransportService extends BaseIntegracaoService {
     private static final String TAG = IntegracaoTransportService.class.getSimpleName();
     @NotNull
     private final IntegracaoTransportDao dao = new IntegracaoTransportDaoImpl();
+
+    @NotNull
+    AbstractResponse resolverMuliplosItens(
+            final String tokenIntegracao,
+            final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (itensResolvidos == null) {
+                throw new GenericException("Uma lista de itens resolvidos deve ser fornecida");
+            }
+            ensureValidToken(tokenIntegracao, TAG);
+            dao.resolverMuliplosItens(tokenIntegracao, itensResolvidos);
+            return Response.ok("Itens resolvidos com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao salvar os itens resolvidos na Integração", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao salvar itens resolvidos na integração");
+        }
+    }
 
     @NotNull
     List<ItemPendenteIntegracaoTransport> getItensPendentes(final String tokenIntegracao,

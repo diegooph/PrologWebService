@@ -16,6 +16,32 @@ import java.util.List;
  */
 public class IntegracaoTransportDaoImpl extends DatabaseConnection implements IntegracaoTransportDao {
 
+    @Override
+    public void resolverMuliplosItens(
+            @NotNull final String tokenIntegracao,
+            @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("");
+            if (stmt.executeUpdate() == itensResolvidos.size()) {
+                conn.commit();
+            } else {
+                throw new IllegalStateException("Erro ao marcar os itens como resolvidos: "
+                        + itensResolvidos.size());
+            }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
     @NotNull
     @Override
     public List<ItemPendenteIntegracaoTransport> getItensPendentes(

@@ -12,6 +12,19 @@ import java.util.List;
 public interface IntegracaoTransportDao {
 
     /**
+     * Método utilizado para inserir no banco de dados do ProLog uma lista de
+     * {@link List<ItemResolvidoIntegracaoTransport> itens resolvidos}. Estes itens são enviados através do sistema
+     * integrado Transport, para serem salvos no ProLog.
+     *
+     * @param tokenIntegracao Token utilizado para a requisição. Este token será utilizado para
+     *                        descobrir qual empresa está requisitando as informações.
+     * @param itensResolvidos Uma lista de {@link List<ItemResolvidoIntegracaoTransport> itens resolvidos}.
+     * @throws Throwable Se algum erro ocorrer durante a busca dos itens pendentes.
+     */
+    void resolverMuliplosItens(@NotNull final String tokenIntegracao,
+                               @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws Throwable;
+
+    /**
      * Este método busca os {@link ItemPendenteIntegracaoTransport itens pendentes} a partir
      * do {@code codUltimoItemPendente} recebido.
      * O código do Último Item Pendente Sincronizado é utilizado como um Offset de busca,

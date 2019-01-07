@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
@@ -25,6 +26,16 @@ import java.util.List;
 public class IntegracaoTransportResource {
     @NotNull
     private final IntegracaoTransportService service = new IntegracaoTransportService();
+
+    @POST
+    @LogIntegracaoRequest
+    @Path("/ordens-servico/resolver-multiplos-itens")
+    @UsedBy(platforms = Platform.INTEGRACOES)
+    public AbstractResponse resolverMuliplosItens(
+            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @Required final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
+        return service.resolverMuliplosItens(tokenIntegracao, itensResolvidos);
+    }
 
     @GET
     @LogIntegracaoRequest
