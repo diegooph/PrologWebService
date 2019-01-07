@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.modelo;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
 
 import java.util.Set;
 
@@ -7,16 +7,17 @@ import java.util.Set;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ModeloChecklistListagem {
+public final class ModeloChecklistListagem {
     private Long codigo;
-    private Long codUnidade;
     private String nome;
+    private Long codUnidade;
     private Set<String> tiposVeiculoLiberados;
     private Set<String> cargosLiberados;
     private int qtdPerguntas;
     private boolean ativo;
 
     public ModeloChecklistListagem() {
+
     }
 
     public boolean isAtivo() {

@@ -66,6 +66,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio.ServicoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio.ServicoRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDao;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDaoImp;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
@@ -108,6 +110,8 @@ import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRel
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
+import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDao;
@@ -407,6 +411,11 @@ public final class Injection {
         return new RaizenProdutividadeRelatorioDaoImpl();
     }
 
+    @NotNull
+    public static PneuTransferenciaDao providePneuTransferenciaDao() {
+        return new PneuTransferenciaDaoImp();
+    }
+
     // ================================================
     // OUTROS
     // ================================================
@@ -415,6 +424,14 @@ public final class Injection {
         return new VersaoDadosIntervaloAtualizador();
     }
 
+    @NotNull
+    public static AutenticacaoIntegracaoDao provideAutenticacaoIntegracaoDao() {
+        return new AutenticacaoIntegracaoDaoImpl();
+    }
+
+    // ================================================
+    // EXCEPTION HANDLERS
+    // ================================================
     @NotNull
     public static ProLogExceptionHandler provideProLogExceptionHandler() {
         return new ProLogExceptionHandler(provideProLogSqlExceptionTranslator());

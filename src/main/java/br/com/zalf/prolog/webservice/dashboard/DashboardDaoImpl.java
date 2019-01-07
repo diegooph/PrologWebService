@@ -120,17 +120,16 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     components.add(createComponentResumido(rSet));
                 } else {
                     final int codPilarResultSet = rSet.getInt("COD_PILAR_PROLOG_COMPONENTE");
-                    codPilarUltimoComponente = components.get(components.size() - 1).getCodPilarProLog();
                     if (codPilarUltimoComponente == codPilarResultSet) {
                         components.add(createComponentResumido(rSet));
                     } else {
                         // Trocou de pilar.
                         componentsPilar.add(new DashboardPilarComponents(codPilarUltimoComponente, components));
-                        codPilarUltimoComponente = codPilarResultSet;
                         components = new ArrayList<>();
                         components.add(createComponentResumido(rSet));
                     }
                 }
+                codPilarUltimoComponente = components.get(components.size() - 1).getCodPilarProLog();
             }
             if (!components.isEmpty()) {
                 componentsPilar.add(new DashboardPilarComponents(codPilarUltimoComponente, components));

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.log;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 
@@ -9,10 +10,12 @@ import java.sql.SQLException;
  * Classe LogService responsavel por comunicar-se com a interface DAO
  */
 public class LogService {
+	@NotNull
 	private static final String TAG = LogService.class.getSimpleName();
+	@NotNull
 	private final LogDao dao = Injection.provideLogDao();
 
-	public boolean insert(String log, String identificador) {
+	public boolean insert(@NotNull final String log, @NotNull final String identificador) {
 		try {
 			return dao.insert(log, identificador);
 		} catch (SQLException e) {
