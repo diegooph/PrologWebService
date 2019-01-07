@@ -17,9 +17,9 @@ public interface IntegracaoTransportDao {
      * integrado Transport, para serem salvos no ProLog.
      *
      * @param tokenIntegracao Token utilizado para a requisição. Este token será utilizado para
-     *                        descobrir qual empresa está requisitando as informações.
+     *                        autenticar e descobrir o código da empresa que faz requisição.
      * @param itensResolvidos Uma lista de {@link List<ItemResolvidoIntegracaoTransport> itens resolvidos}.
-     * @throws Throwable Se algum erro ocorrer durante a busca dos itens pendentes.
+     * @throws Throwable Se algum erro ocorrer durante a resolução dos itens pendentes.
      */
     void resolverMultiplosItens(@NotNull final String tokenIntegracao,
                                 @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws Throwable;

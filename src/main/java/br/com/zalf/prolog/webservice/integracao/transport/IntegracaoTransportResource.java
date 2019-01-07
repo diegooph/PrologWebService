@@ -23,13 +23,13 @@ import java.util.List;
 @Path("/integracoes/fgt-sistemas")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class IntegracaoTransportResource {
+public final class IntegracaoTransportResource {
     @NotNull
     private final IntegracaoTransportService service = new IntegracaoTransportService();
 
     @POST
     @LogIntegracaoRequest
-    @Path("/ordens-servico/resolver-multiplos-itens")
+    @Path("/ordens-servicos/resolver-multiplos-itens")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public AbstractResponse resolverMultiplosItens(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
@@ -39,7 +39,7 @@ public class IntegracaoTransportResource {
 
     @GET
     @LogIntegracaoRequest
-    @Path("/ordens-servico/itens-pendentes")
+    @Path("/ordens-servicos/itens-pendentes")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ItemPendenteIntegracaoTransport> getItensPendentes(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
@@ -49,7 +49,7 @@ public class IntegracaoTransportResource {
 
     @GET
     @LogIntegracaoRequest
-    @Path("/ordens-servico/itens-pendentes/dummies")
+    @Path("/ordens-servicos/itens-pendentes/dummies")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ItemPendenteIntegracaoTransport> getItensPendentesDummies(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,

@@ -9,10 +9,10 @@ import java.sql.ResultSet;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class ItensPendentesIntegracaoTransportConverter {
+final class IntegracaoTransportConverter {
 
-    public ItensPendentesIntegracaoTransportConverter() {
-        throw new IllegalStateException(ItensPendentesIntegracaoTransportConverter.class.getSimpleName()
+    public IntegracaoTransportConverter() {
+        throw new IllegalStateException(IntegracaoTransportConverter.class.getSimpleName()
                 + " cannot be instatiated!");
     }
 

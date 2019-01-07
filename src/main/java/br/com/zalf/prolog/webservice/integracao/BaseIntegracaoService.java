@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class BaseIntegracaoService {
+public abstract class BaseIntegracaoService {
 
     protected void ensureValidToken(@NotNull final String tokenIntegracao,
                                     @NotNull final String tag) throws ProLogException {

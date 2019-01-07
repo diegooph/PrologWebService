@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-class IntegracaoTransportService extends BaseIntegracaoService {
+final class IntegracaoTransportService extends BaseIntegracaoService {
     @NotNull
     private static final String TAG = IntegracaoTransportService.class.getSimpleName();
     @NotNull

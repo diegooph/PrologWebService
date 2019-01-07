@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ItemPendenteIntegracaoTransport {
+public final class ItemPendenteIntegracaoTransport {
     private String placaVeiculo;
     private Long kmAberturaServico;
     private Long codOrdemServico;

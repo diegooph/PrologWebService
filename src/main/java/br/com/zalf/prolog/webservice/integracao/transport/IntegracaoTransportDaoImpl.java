@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class IntegracaoTransportDaoImpl extends DatabaseConnection implements IntegracaoTransportDao {
+public final class IntegracaoTransportDaoImpl extends DatabaseConnection implements IntegracaoTransportDao {
 
     @Override
     public void resolverMultiplosItens(
@@ -58,7 +58,7 @@ public class IntegracaoTransportDaoImpl extends DatabaseConnection implements In
             rSet = stmt.executeQuery();
             final List<ItemPendenteIntegracaoTransport> itensPendentes = new ArrayList<>();
             while (rSet.next()) {
-                itensPendentes.add(ItensPendentesIntegracaoTransportConverter.convert(rSet));
+                itensPendentes.add(IntegracaoTransportConverter.convert(rSet));
             }
             return itensPendentes;
         } finally {

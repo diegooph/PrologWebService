@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+
 import java.time.LocalDateTime;
 
 /**
@@ -7,13 +9,17 @@ import java.time.LocalDateTime;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ItemResolvidoIntegracaoTransport {
+public final class ItemResolvidoIntegracaoTransport {
     private Long codUnidadeOrdemServico;
     private Long codOrdemServico;
     private Long codItemResolvido;
     private String cpfColaboradoResolucao;
+    /**
+     * Placa do {@link Veiculo} a qual o item resolvido pertence.
+     */
+    private String placaVeiculo;
     private Long kmColetadoVeiculo;
-    private Long duracaoResolucaoItemEmMilisegundos;
+    private Long duracaoResolucaoItemEmMilissegundos;
     private String feedbackResolucao;
     private LocalDateTime dataHoraResolucao;
 
@@ -52,6 +58,14 @@ public class ItemResolvidoIntegracaoTransport {
         this.cpfColaboradoResolucao = cpfColaboradoResolucao;
     }
 
+    public String getPlacaVeiculo() {
+        return placaVeiculo;
+    }
+
+    public void setPlacaVeiculo(final String placaVeiculo) {
+        this.placaVeiculo = placaVeiculo;
+    }
+
     public Long getKmColetadoVeiculo() {
         return kmColetadoVeiculo;
     }
@@ -60,12 +74,12 @@ public class ItemResolvidoIntegracaoTransport {
         this.kmColetadoVeiculo = kmColetadoVeiculo;
     }
 
-    public Long getDuracaoResolucaoItemEmMilisegundos() {
-        return duracaoResolucaoItemEmMilisegundos;
+    public Long getDuracaoResolucaoItemEmMilissegundos() {
+        return duracaoResolucaoItemEmMilissegundos;
     }
 
-    public void setDuracaoResolucaoItemEmMilisegundos(final Long duracaoResolucaoItemEmMilisegundos) {
-        this.duracaoResolucaoItemEmMilisegundos = duracaoResolucaoItemEmMilisegundos;
+    public void setDuracaoResolucaoItemEmMilissegundos(final Long duracaoResolucaoItemEmMilissegundos) {
+        this.duracaoResolucaoItemEmMilissegundos = duracaoResolucaoItemEmMilissegundos;
     }
 
     public String getFeedbackResolucao() {
