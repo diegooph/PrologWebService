@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Cria funcionalidade para permitir a transferência de pneus entre unidades
+* Cria atributo na alternativa do checklist para definir se ela deve ou não abrir O.S.
 
 ### Refactors
 * Altera forma de parse do arquivo de prontuário do condutor para ignorar colunas vazias
