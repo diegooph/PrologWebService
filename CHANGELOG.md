@@ -12,6 +12,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige criação dos componentes resumidos da dashboard
+* Força a parte de controle de jornada a retornar 401 caso token inválido
 
 <a name="v0.0.81"></a>
 ## Version [v0.0.81](https://github.com/luizfp/PrologWebService/compare/v0.0.80...v0.0.81) (2018-12-11)

@@ -184,6 +184,9 @@ class ControleJornadaService {
             }
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao verificar se o tokenMarcacao existe: %s", tokenMarcacao), t);
+            if (t instanceof NotAuthorizedException) {
+                throw (NotAuthorizedException) t;
+            }
             throw Injection.provideProLogExceptionHandler().map(t, "Erro ao verificar token");
         }
     }
