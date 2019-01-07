@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.82"></a>
-## Version [v0.0.82](https://github.com/luizfp/PrologWebService/compare/v0.0.81...v0.0.82) (release-date) [unreleased]
+## Version [v0.0.82](https://github.com/luizfp/PrologWebService/compare/v0.0.81...v0.0.82) (2019-01-07)
 
 ### Features
 * Cria funcionalidade para permitir a transferência de pneus entre unidades
