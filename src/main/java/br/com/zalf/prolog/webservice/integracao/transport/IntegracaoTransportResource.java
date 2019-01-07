@@ -31,10 +31,10 @@ public class IntegracaoTransportResource {
     @LogIntegracaoRequest
     @Path("/ordens-servico/resolver-multiplos-itens")
     @UsedBy(platforms = Platform.INTEGRACOES)
-    public AbstractResponse resolverMuliplosItens(
+    public AbstractResponse resolverMultiplosItens(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
-        return service.resolverMuliplosItens(tokenIntegracao, itensResolvidos);
+        return service.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
     }
 
     @GET

@@ -21,8 +21,8 @@ public interface IntegracaoTransportDao {
      * @param itensResolvidos Uma lista de {@link List<ItemResolvidoIntegracaoTransport> itens resolvidos}.
      * @throws Throwable Se algum erro ocorrer durante a busca dos itens pendentes.
      */
-    void resolverMuliplosItens(@NotNull final String tokenIntegracao,
-                               @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws Throwable;
+    void resolverMultiplosItens(@NotNull final String tokenIntegracao,
+                                @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws Throwable;
 
     /**
      * Este método busca os {@link ItemPendenteIntegracaoTransport itens pendentes} a partir

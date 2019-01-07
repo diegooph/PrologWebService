@@ -25,6 +25,7 @@ public class ItemPendenteIntegracaoTransport {
     private StatusItemOrdemServico statusItemOrdemServico;
     private Integer prazoResolucaoItemHoras;
     private Integer qtdApontamentos;
+    private Long codChecklistPrimeiroApontamento;
     private Long codPergunta;
     private String descricaoPergunta;
     private Long codAlternativaPergunta;
@@ -51,6 +52,7 @@ public class ItemPendenteIntegracaoTransport {
         item.setDataHoraPrimeiroApontamento(LocalDateTime.now());
         item.setPrazoResolucaoItemHoras(1);
         item.setQtdApontamentos(1);
+        item.setCodChecklistPrimeiroApontamento(80931L);
         item.setCodPergunta(1130L);
         item.setDescricaoPergunta("Cintos de segurança e sensor");
         item.setCodAlternativaPergunta(294L);
@@ -74,6 +76,7 @@ public class ItemPendenteIntegracaoTransport {
         item.setDataHoraPrimeiroApontamento(LocalDateTime.now());
         item.setPrazoResolucaoItemHoras(720);
         item.setQtdApontamentos(1);
+        item.setCodChecklistPrimeiroApontamento(80931L);
         item.setCodPergunta(1163L);
         item.setDescricaoPergunta("Tampa da buzina, painel, porta luvas");
         item.setCodAlternativaPergunta(381L);
@@ -170,6 +173,14 @@ public class ItemPendenteIntegracaoTransport {
 
     public void setQtdApontamentos(final Integer qtdApontamentos) {
         this.qtdApontamentos = qtdApontamentos;
+    }
+
+    public Long getCodChecklistPrimeiroApontamento() {
+        return codChecklistPrimeiroApontamento;
+    }
+
+    public void setCodChecklistPrimeiroApontamento(final Long codChecklistPrimeiroApontamento) {
+        this.codChecklistPrimeiroApontamento = codChecklistPrimeiroApontamento;
     }
 
     public Long getCodPergunta() {

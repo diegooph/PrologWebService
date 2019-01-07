@@ -17,7 +17,7 @@ import java.util.List;
 public class IntegracaoTransportDaoImpl extends DatabaseConnection implements IntegracaoTransportDao {
 
     @Override
-    public void resolverMuliplosItens(
+    public void resolverMultiplosItens(
             @NotNull final String tokenIntegracao,
             @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws Throwable {
         Connection conn = null;

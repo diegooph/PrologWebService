@@ -24,7 +24,7 @@ class IntegracaoTransportService extends BaseIntegracaoService {
     private final IntegracaoTransportDao dao = new IntegracaoTransportDaoImpl();
 
     @NotNull
-    AbstractResponse resolverMuliplosItens(
+    AbstractResponse resolverMultiplosItens(
             final String tokenIntegracao,
             final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
         try {
@@ -35,7 +35,7 @@ class IntegracaoTransportService extends BaseIntegracaoService {
                 throw new GenericException("Uma lista de itens resolvidos deve ser fornecida");
             }
             ensureValidToken(tokenIntegracao, TAG);
-            dao.resolverMuliplosItens(tokenIntegracao, itensResolvidos);
+            dao.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
             return Response.ok("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao salvar os itens resolvidos na Integração", t);

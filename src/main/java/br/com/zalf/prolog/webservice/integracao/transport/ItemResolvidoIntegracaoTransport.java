@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -14,7 +13,7 @@ public class ItemResolvidoIntegracaoTransport {
     private Long codItemResolvido;
     private String cpfColaboradoResolucao;
     private Long kmColetadoVeiculo;
-    private Duration duracaoResolucaoItem;
+    private Long duracaoResolucaoItemEmMilisegundos;
     private String feedbackResolucao;
     private LocalDateTime dataHoraResolucao;
 
@@ -61,12 +60,12 @@ public class ItemResolvidoIntegracaoTransport {
         this.kmColetadoVeiculo = kmColetadoVeiculo;
     }
 
-    public Duration getDuracaoResolucaoItem() {
-        return duracaoResolucaoItem;
+    public Long getDuracaoResolucaoItemEmMilisegundos() {
+        return duracaoResolucaoItemEmMilisegundos;
     }
 
-    public void setDuracaoResolucaoItem(final Duration duracaoResolucaoItem) {
-        this.duracaoResolucaoItem = duracaoResolucaoItem;
+    public void setDuracaoResolucaoItemEmMilisegundos(final Long duracaoResolucaoItemEmMilisegundos) {
+        this.duracaoResolucaoItemEmMilisegundos = duracaoResolucaoItemEmMilisegundos;
     }
 
     public String getFeedbackResolucao() {
