@@ -1,12 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
+import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,14 +16,14 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class IntegracaoTransportService extends BaseIntegracaoService {
+public final class IntegracaoTransportService extends BaseIntegracaoService {
     @NotNull
     private static final String TAG = IntegracaoTransportService.class.getSimpleName();
     @NotNull
     private final IntegracaoTransportDao dao = new IntegracaoTransportDaoImpl();
 
     @NotNull
-    AbstractResponse resolverMultiplosItens(
+    SuccessResponseIntegracao resolverMultiplosItens(
             final String tokenIntegracao,
             final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
         try {
@@ -36,7 +35,7 @@ final class IntegracaoTransportService extends BaseIntegracaoService {
             }
             ensureValidToken(tokenIntegracao, TAG);
             dao.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
-            return Response.ok("Itens resolvidos com sucesso");
+            return new SuccessResponseIntegracao("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao salvar os itens resolvidos na Integração", t);
             throw Injection
@@ -67,7 +66,7 @@ final class IntegracaoTransportService extends BaseIntegracaoService {
     }
 
     @NotNull
-    List<ItemPendenteIntegracaoTransport> getDummy() {
+    public List<ItemPendenteIntegracaoTransport> getDummy() {
         final List<ItemPendenteIntegracaoTransport> itensPendentes = new ArrayList<>();
         itensPendentes.add(ItemPendenteIntegracaoTransport.getDummy());
         itensPendentes.add(ItemPendenteIntegracaoTransport.getDummyTipoOutros());

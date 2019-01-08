@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +25,21 @@ public final class ItemResolvidoIntegracaoTransport {
     private LocalDateTime dataHoraResolucao;
 
     public ItemResolvidoIntegracaoTransport() {
+    }
+
+    @NotNull
+    public static ItemResolvidoIntegracaoTransport getDummy() {
+        final ItemResolvidoIntegracaoTransport item = new ItemResolvidoIntegracaoTransport();
+        item.setCodUnidadeOrdemServico(5L);
+        item.setCodOrdemServico(94L);
+        item.setCodItemResolvido(106851L);
+        item.setCpfColaboradoResolucao("03383283194");
+        item.setPlacaVeiculo("PRO0001");
+        item.setKmColetadoVeiculo(90051L);
+        item.setDuracaoResolucaoItemEmMilissegundos(900000L);
+        item.setFeedbackResolucao("Item foi consertado.");
+        item.setDataHoraResolucao(LocalDateTime.now());
+        return item;
     }
 
     public Long getCodUnidadeOrdemServico() {
