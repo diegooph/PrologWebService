@@ -30,18 +30,6 @@ public final class PneuImport {
     @Parsed(field = "pressao_recomendada")
     private double pressaoRecomendada;
 
-    @Parsed(field = "altura_sulco_interno")
-    private double alturaSulcoInterno;
-
-    @Parsed(field = "altura_sulco_central_interno")
-    private double alturaSulcoCentralInterno;
-
-    @Parsed(field = "altura_sulco_central_externo")
-    private double alturaSulcoCentralExterno;
-
-    @Parsed(field = "altura_sulco_externo")
-    private double alturaSulcoExterno;
-
     @Parsed(field = "status")
     @EnumOptions(selectors = EnumSelector.STRING)
     private StatusPneu statusPneu;
@@ -103,22 +91,6 @@ public final class PneuImport {
 
     public double getPressaoRecomendada() {
         return pressaoRecomendada;
-    }
-
-    public double getAlturaSulcoInterno() {
-        return alturaSulcoInterno;
-    }
-
-    public double getAlturaSulcoCentralInterno() {
-        return alturaSulcoCentralInterno;
-    }
-
-    public double getAlturaSulcoCentralExterno() {
-        return alturaSulcoCentralExterno;
-    }
-
-    public double getAlturaSulcoExterno() {
-        return alturaSulcoExterno;
     }
 
     public StatusPneu getStatusPneu() {
