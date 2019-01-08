@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
+import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +32,7 @@ public final class IntegracaoTransportResource {
     @LogIntegracaoRequest
     @Path("/ordens-servicos/resolver-multiplos-itens")
     @UsedBy(platforms = Platform.INTEGRACOES)
-    public AbstractResponse resolverMultiplosItens(
+    public SuccessResponseIntegracao resolverMultiplosItens(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
         return service.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
