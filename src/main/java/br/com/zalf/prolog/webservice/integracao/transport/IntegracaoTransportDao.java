@@ -30,13 +30,14 @@ public interface IntegracaoTransportDao {
      * O código do Último Item Pendente Sincronizado é utilizado como um Offset de busca,
      * todas os itens a partir deste código serão retornadas por este método.
      *
-     * @param tokenIntegracao       Token utilizado para a requisição. Este token será utilizado para
-     *                              descobrir qual empresa está requisitando as informações.
-     * @param codUltimoItemPendente Código do último item pendente de Ordem de Serviço sincronizado.
+     * @param tokenIntegracao                   Token utilizado para a requisição. Este token será utilizado para
+     *                                          descobrir qual empresa está requisitando as informações.
+     * @param codUltimoItemPendenteSincronizado Código do último item pendente de Ordem de Serviço sincronizado.
      * @return Uma lista de {@link List <ItemPendenteIntegracaoTransport> itens pendentes} não sincronizados.
      * @throws Throwable Se algum erro ocorrer durante a busca dos itens pendentes.
      */
     @NotNull
-    List<ItemPendenteIntegracaoTransport> getItensPendentes(@NotNull final String tokenIntegracao,
-                                                            @NotNull final Long codUltimoItemPendente) throws Throwable;
+    List<ItemPendenteIntegracaoTransport> getItensPendentes(
+            @NotNull final String tokenIntegracao,
+            @NotNull final Long codUltimoItemPendenteSincronizado) throws Throwable;
 }

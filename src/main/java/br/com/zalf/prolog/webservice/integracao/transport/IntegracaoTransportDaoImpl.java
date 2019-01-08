@@ -46,7 +46,7 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
     @Override
     public List<ItemPendenteIntegracaoTransport> getItensPendentes(
             @NotNull final String tokenIntegracao,
-            @NotNull final Long codUltimoItemPendente) throws Throwable {
+            @NotNull final Long codUltimoItemPendenteSincronizado) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -54,7 +54,7 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
             conn = getConnection();
             stmt = conn.prepareStatement("");
             stmt.setString(1, tokenIntegracao);
-            stmt.setLong(2, codUltimoItemPendente);
+            stmt.setLong(2, codUltimoItemPendenteSincronizado);
             rSet = stmt.executeQuery();
             final List<ItemPendenteIntegracaoTransport> itensPendentes = new ArrayList<>();
             while (rSet.next()) {

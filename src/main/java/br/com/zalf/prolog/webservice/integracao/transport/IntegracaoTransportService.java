@@ -45,20 +45,21 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
     }
 
     @NotNull
-    List<ItemPendenteIntegracaoTransport> getItensPendentes(final String tokenIntegracao,
-                                                            final Long codUltimoItemPendente) throws ProLogException {
+    List<ItemPendenteIntegracaoTransport> getItensPendentes(
+            final String tokenIntegracao,
+            final Long codUltimoItemPendenteSincronizado) throws ProLogException {
         try {
             if (tokenIntegracao == null) {
                 throw new GenericException("Um Token deve ser fornecido");
             }
-            if (codUltimoItemPendente == null) {
+            if (codUltimoItemPendenteSincronizado == null) {
                 throw new GenericException("Um código para a busca deve ser fornecido");
             }
             ensureValidToken(tokenIntegracao, TAG);
-            return dao.getItensPendentes(tokenIntegracao, codUltimoItemPendente);
+            return dao.getItensPendentes(tokenIntegracao, codUltimoItemPendenteSincronizado);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os itens pendentes na Integração\n" +
-                    "Código do último item pendente sincronizado: %d", codUltimoItemPendente), t);
+                    "Código do último item pendente sincronizado: %d", codUltimoItemPendenteSincronizado), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar itens pendentes para sincronizar");

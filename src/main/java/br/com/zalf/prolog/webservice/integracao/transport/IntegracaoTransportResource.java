@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
@@ -44,8 +43,9 @@ public final class IntegracaoTransportResource {
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ItemPendenteIntegracaoTransport> getItensPendentes(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @QueryParam("codUltimoItemPendente") @Required final Long codUltimoItemPendente) throws ProLogException {
-        return service.getItensPendentes(tokenIntegracao, codUltimoItemPendente);
+            @QueryParam("codUltimoItemPendenteSincronizado") @Required final Long codUltimoItemPendenteSincronizado)
+            throws ProLogException {
+        return service.getItensPendentes(tokenIntegracao, codUltimoItemPendenteSincronizado);
     }
 
     @GET
@@ -54,7 +54,7 @@ public final class IntegracaoTransportResource {
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ItemPendenteIntegracaoTransport> getItensPendentesDummies(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @QueryParam("codUltimoItemPendente") @Required final Long codUltimoItemPendente) {
+            @QueryParam("codUltimoItemPendenteSincronizado") @Required final Long codUltimoItemPendenteSincronizado) {
         return service.getDummy();
     }
 }
