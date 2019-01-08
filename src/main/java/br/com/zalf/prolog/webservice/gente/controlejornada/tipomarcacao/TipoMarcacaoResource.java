@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
@@ -30,29 +29,23 @@ public final class TipoMarcacaoResource {
 
     @POST
     @Secured(permissions = Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO)
-    public AbstractResponse insertTipoIntervalo(TipoMarcacao tipoIntervalo) throws ProLogException {
+    public AbstractResponse insertTipoIntervalo(@Required final TipoMarcacao tipoIntervalo) throws ProLogException {
         return service.insertTipoMarcacao(tipoIntervalo);
     }
 
     @PUT
     @Secured(permissions = Pilares.Gente.Intervalo.ALTERAR_TIPO_INTERVALO)
-    public Response updateTipoInvervalo(TipoMarcacao tipoIntervalo) throws ProLogException {
-        service.updateTipoMarcacao(tipoIntervalo);
-        return Response.ok("Tipo de marcação atualizada com sucesso");
+    public Response updateTipoInvervalo(@Required final TipoMarcacao tipoIntervalo) throws ProLogException {
+        return service.updateTipoMarcacao(tipoIntervalo);
     }
 
     @PUT
     @Path("/{codTipoMarcacao}/status-ativo")
     @Secured(permissions = Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO)
     public Response inativarTipoIntervalo(
-            @Required @PathParam("codTipoMarcacao") Long codTipoIntervalo,
-            @Required final TipoMarcacao tipoIntervalo) throws ProLogException {
-        service.updateStatusAtivo(codTipoIntervalo, tipoIntervalo);
-        if (tipoIntervalo.isAtivo()) {
-            return Response.ok("Tipo de marcação ativada com sucesso");
-        } else {
-            return Response.ok("Tipo de marcação inativada com sucesso");
-        }
+            @PathParam("codTipoMarcacao") @Required final Long codTipoMarcacao,
+            @Required final TipoMarcacao tipoMarcacao) throws ProLogException {
+        return service.updateStatusAtivo(codTipoMarcacao, tipoMarcacao);
     }
 
     @GET
@@ -75,9 +68,8 @@ public final class TipoMarcacaoResource {
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/resumidos")
     public List<TipoMarcacao> getTiposMarcacoesResumidos(
-            @Required @QueryParam("codUnidade") Long codUnidade,
-            @Optional @QueryParam("apenasAtivos")
-            @DefaultValue("true") boolean apenasAtivos) throws ProLogException {
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("apenasAtivos") @DefaultValue("true") boolean apenasAtivos) throws ProLogException {
         return service.getTiposMarcacoes(codUnidade, apenasAtivos, false);
     }
 
@@ -89,9 +81,8 @@ public final class TipoMarcacaoResource {
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/completos")
     public List<TipoMarcacao> getTiposMarcacoesCompletos(
-            @Required @QueryParam("codUnidade") Long codUnidade,
-            @Optional @QueryParam("apenasAtivos")
-            @DefaultValue("true") boolean apenasAtivos) throws ProLogException {
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("apenasAtivos") @DefaultValue("true") boolean apenasAtivos) throws ProLogException {
         return service.getTiposMarcacoes(codUnidade, apenasAtivos, true);
     }
 }
