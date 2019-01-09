@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -160,6 +161,32 @@ public class ControleJornadaRelatorioService {
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             final String errorMessage = String.format("Erro ao buscar o relatório de folha de ponto. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipoIntervalo: %s \n" +
+                    "cpf: %s \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, cpf, dataInicial, dataFinal);
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<FolhaPontoJornadaRelatorio> getFolhaPontoJornadaRelatorio(
+            @NotNull final Long codUnidade,
+            @NotNull final String codTipoIntervalo,
+            @NotNull final String cpf,
+            @NotNull final String dataInicial,
+            @NotNull final String dataFinal) throws ProLogException {
+        try {
+            return dao.getFolhaPontoJornadaRelatorio(
+                    codUnidade,
+                    codTipoIntervalo,
+                    cpf,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            final String errorMessage = String.format("Erro ao buscar o relatório de folha de ponto jornada. \n" +
                     "codUnidade: %d \n" +
                     "codTipoIntervalo: %s \n" +
                     "cpf: %s \n" +

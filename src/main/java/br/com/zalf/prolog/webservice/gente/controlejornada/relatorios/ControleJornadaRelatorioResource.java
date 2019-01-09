@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -129,6 +130,23 @@ public class ControleJornadaRelatorioResource {
             @QueryParam("dataInicial") @Required String dataInicial,
             @QueryParam("dataFinal") @Required String dataFinal) throws Throwable {
         return service.getFolhaPontoRelatorio(
+                codUnidade,
+                codTipoIntervalo,
+                cpf,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Secured
+    @Path("/folha-ponto-jornada/{codUnidade}/{codTipoIntervalo}/{cpf}")
+    public List<FolhaPontoJornadaRelatorio> getFolhaPontoJornadaRelatorio(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("cpf") @Required final String cpf,
+            @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) throws Throwable {
+        return service.getFolhaPontoJornadaRelatorio(
                 codUnidade,
                 codTipoIntervalo,
                 cpf,

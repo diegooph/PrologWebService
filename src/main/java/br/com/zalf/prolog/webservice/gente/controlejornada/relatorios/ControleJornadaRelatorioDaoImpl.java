@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
@@ -7,10 +8,9 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDaoImpl_2;
-import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDao_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.RelatorioTotaisPorTipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -58,7 +58,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -74,7 +74,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -91,7 +91,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -107,14 +107,14 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
     @NotNull
     @Override
     public Report getAderenciaIntervalosDiariaReport(Long codUnidade, Date dataInicial, Date dataFinal)
-            throws SQLException, IOException {
+            throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -124,7 +124,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -141,7 +141,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -158,7 +158,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -178,7 +178,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -212,15 +212,45 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             stmt.setString(6, zoneId.getId());
             rSet = stmt.executeQuery();
 
-            final DeprecatedControleIntervaloDao_2 dao = new DeprecatedControleIntervaloDaoImpl_2();
             return ControleJornadaRelatorioConverter.createFolhaPontoRelatorio(
                     rSet,
-                    dao.getTiposIntervalosByUnidade(codUnidade, true, false),
+                    Injection
+                            .provideControleJornadaDao()
+                            .getTiposIntervalosByUnidade(codUnidade, true, false),
                     dataInicial,
                     dataFinal,
                     zoneId);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<FolhaPontoJornadaRelatorio> getFolhaPontoJornadaRelatorio(
+            @NotNull final Long codUnidade,
+            @NotNull final String codTipoIntervalo,
+            @NotNull final String cpf,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("");
+            rSet = stmt.executeQuery();
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            return ControleJornadaRelatorioConverter.createFolhaPontoJornadaRelatorio(
+                    rSet,
+                    Injection
+                            .provideControleJornadaDao()
+                            .getTiposIntervalosByUnidade(codUnidade, true, false),
+                    dataInicial,
+                    dataFinal,
+                    zoneId);
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 
@@ -239,7 +269,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -258,7 +288,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -275,17 +305,18 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             conn = getConnection();
             stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            final DeprecatedControleIntervaloDao_2 dao = new DeprecatedControleIntervaloDaoImpl_2();
             new CsvWriter
                     .Builder(out)
                     .withCsvReport(new RelatorioTotaisPorTipoIntervalo(
                             rSet,
-                            dao.getTiposIntervalosByUnidade(codUnidade, true,false),
+                            Injection
+                                    .provideControleJornadaDao()
+                                    .getTiposIntervalosByUnidade(codUnidade, true, false),
                             codTipoIntervalo.equals("%") ? null : Long.parseLong(codTipoIntervalo)))
                     .build()
                     .write();
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -304,7 +335,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -375,7 +406,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
 
     @NotNull
     private PreparedStatement getMarcacoesDiariasStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf,
-                                                Connection conn) throws SQLException {
+                                                      Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM FUNC_MARCACAO_RELATORIO_MARCACOES_DIARIAS(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);

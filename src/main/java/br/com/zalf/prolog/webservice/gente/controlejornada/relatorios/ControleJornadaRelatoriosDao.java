@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.model.Clt;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -167,6 +168,13 @@ public interface ControleJornadaRelatoriosDao {
                                                      @NotNull final String cpf,
                                                      @NotNull final LocalDate dataInicial,
                                                      @NotNull final LocalDate dataFinal) throws Throwable;
+
+    @NotNull
+    List<FolhaPontoJornadaRelatorio> getFolhaPontoJornadaRelatorio(@NotNull final Long codUnidade,
+                                                                   @NotNull final String codTipoIntervalo,
+                                                                   @NotNull final String cpf,
+                                                                   @NotNull final LocalDate dataInicial,
+                                                                   @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
     Report getMarcacoesComparandoEscalaDiariaReport(@NotNull final Long codUnidade,

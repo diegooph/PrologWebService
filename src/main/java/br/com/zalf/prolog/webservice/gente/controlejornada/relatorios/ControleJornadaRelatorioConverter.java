@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoDia;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoIntervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -118,6 +119,16 @@ final class ControleJornadaRelatorioConverter {
     }
 
     @NotNull
+    static List<FolhaPontoJornadaRelatorio> createFolhaPontoJornadaRelatorio(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<TipoMarcacao> tiposIntervalos,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal,
+            @NotNull final ZoneId zoneIdUnidade) throws Throwable {
+        return null;
+    }
+
+    @NotNull
     private static FolhaPontoRelatorio createFolhaPontoRelatorio(@NotNull final Long cpfAnterior,
                                                                  @NotNull final String nomeAnterior,
                                                                  @NotNull final LocalDate diaAnterior,
@@ -136,7 +147,7 @@ final class ControleJornadaRelatorioConverter {
     private static Map<Long, TipoMarcacao> tiposIntervalosToMap(@NotNull final List<TipoMarcacao> tiposIntervalos) {
         final Map<Long, TipoMarcacao> tiposIntervalosMap = new HashMap<>();
         tiposIntervalos.forEach(
-                tipoIntervalo -> tiposIntervalosMap.put(tipoIntervalo.getCodigo(),tipoIntervalo));
+                tipoIntervalo -> tiposIntervalosMap.put(tipoIntervalo.getCodigo(), tipoIntervalo));
         return tiposIntervalosMap;
     }
 }
