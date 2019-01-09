@@ -33,7 +33,7 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
     @NotNull
     private final Map<Long, Integer> tipoIntervaloIndexColuna;
 
-    RelatorioTotaisPorTipoIntervalo(@NotNull final ResultSet rSet,
+    public RelatorioTotaisPorTipoIntervalo(@NotNull final ResultSet rSet,
                                     @NotNull final List<TipoMarcacao> tiposIntervalos,
                                     @Nullable final Long codTipoIntervaloFiltrado) {
         this.rSet = rSet;

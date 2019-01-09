@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jor
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +21,13 @@ public class FolhaPontoJornadaDia {
                                 @NotNull final List<FolhaPontoJornadas> jornadasDia) {
         this.diaReferencia = diaReferencia;
         this.jornadasDia = jornadasDia;
+    }
+
+    @NotNull
+    static FolhaPontoJornadaDia getDummy() {
+        final List<FolhaPontoJornadas> jornadasDia = new ArrayList<>();
+        jornadasDia.add(FolhaPontoJornadas.getDummy());
+        return new FolhaPontoJornadaDia(LocalDate.now(), jornadasDia);
     }
 
     @NotNull

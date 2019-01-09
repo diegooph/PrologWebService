@@ -6,8 +6,8 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcac
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioService;
-import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.FolhaPontoRelatorio;
-import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.FolhaPontoTipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoTipoIntervalo;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import test.BaseTest;

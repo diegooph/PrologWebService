@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 
-import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.Consumes;
@@ -8,6 +8,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +24,9 @@ public class DummyControleJornadaRelatorioResource {
     @GET
     @Secured
     @Path("/intervalos/relatorios/folha-ponto-jornada")
-    public List<FolhaPontoRelatorio> getFolhaPontoRelatorio() {
-        return null;
+    public List<FolhaPontoJornadaRelatorio> getFolhaPontoRelatorio() {
+        final List<FolhaPontoJornadaRelatorio> relatorio = new ArrayList<>();
+        relatorio.add(FolhaPontoJornadaRelatorio.getDummy());
+        return relatorio;
     }
 }

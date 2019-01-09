@@ -42,6 +42,18 @@ public class FolhaPontoMarcacoes {
         this.marcacaoFimAjustada = marcacaoFimAjustada;
     }
 
+    @NotNull
+    static FolhaPontoMarcacoes getDummy() {
+        return new FolhaPontoMarcacoes(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                1L,
+                1L,
+                false,
+                true,
+                false);
+    }
+
     @Nullable
     public LocalDateTime getDataHoraInicio() {
         return dataHoraInicio;

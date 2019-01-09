@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,6 +52,25 @@ public class FolhaPontoJornadas {
         this.marcacaoFimAjustada = marcacaoFimAjustada;
     }
 
+    @NotNull
+    static FolhaPontoJornadas getDummy() {
+        final List<FolhaPontoMarcacoes> marcacoes = new ArrayList<>();
+        marcacoes.add(FolhaPontoMarcacoes.getDummy());
+        marcacoes.add(FolhaPontoMarcacoes.getDummy());
+        final FolhaPontoJornadas jornadas = new FolhaPontoJornadas(
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                1L,
+                1L,
+                marcacoes,
+                false,
+                false,
+                true);
+        jornadas.setJornadaBruta(Duration.ofHours(9));
+        jornadas.setJornadaLiquida(Duration.ofHours(8));
+        return jornadas;
+    }
+
     @Nullable
     public LocalDateTime getDataHoraInicioJornada() {
         return dataHoraInicioJornada;
@@ -86,5 +106,21 @@ public class FolhaPontoJornadas {
 
     public boolean isMarcacaoFimAjustada() {
         return marcacaoFimAjustada;
+    }
+
+    public Duration getJornadaBruta() {
+        return jornadaBruta;
+    }
+
+    public void setJornadaBruta(final Duration jornadaBruta) {
+        this.jornadaBruta = jornadaBruta;
+    }
+
+    public Duration getJornadaLiquida() {
+        return jornadaLiquida;
+    }
+
+    public void setJornadaLiquida(final Duration jornadaLiquida) {
+        this.jornadaLiquida = jornadaLiquida;
     }
 }
