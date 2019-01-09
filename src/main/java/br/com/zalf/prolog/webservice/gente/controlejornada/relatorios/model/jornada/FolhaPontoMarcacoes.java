@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.jornada;
+package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

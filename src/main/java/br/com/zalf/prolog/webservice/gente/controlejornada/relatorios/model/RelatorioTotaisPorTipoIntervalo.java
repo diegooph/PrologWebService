@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
+package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model;
 
 import br.com.zalf.prolog.webservice.commons.report.CsvReport;
 import br.com.zalf.prolog.webservice.commons.util.date.Durations;
