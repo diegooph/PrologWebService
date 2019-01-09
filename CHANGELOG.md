@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+#### Stage
+* Adiciona novo atributo na tabela de tipos de marcações para identificar se um tipo é jornada (TIPO_JORNADA)
+
 <a name="v0.0.82"></a>
 ## Version [v0.0.82](https://github.com/luizfp/PrologWebService/compare/v0.0.81...v0.0.82) (release-date) [unreleased]
 
