@@ -16,18 +16,23 @@ public class FolhaPontoJornadaDia {
     private final LocalDate diaReferencia;
     @NotNull
     private final List<FolhaPontoJornadas> jornadasDia;
+    @NotNull
+    private final List<FolhaPontoMarcacoes> marcacoesForaJornada;
 
     public FolhaPontoJornadaDia(@NotNull final LocalDate diaReferencia,
-                                @NotNull final List<FolhaPontoJornadas> jornadasDia) {
+                                @NotNull final List<FolhaPontoJornadas> jornadasDia,
+                                @NotNull final List<FolhaPontoMarcacoes> marcacoesForaJornada) {
         this.diaReferencia = diaReferencia;
         this.jornadasDia = jornadasDia;
+        this.marcacoesForaJornada = marcacoesForaJornada;
     }
 
     @NotNull
     static FolhaPontoJornadaDia getDummy() {
         final List<FolhaPontoJornadas> jornadasDia = new ArrayList<>();
         jornadasDia.add(FolhaPontoJornadas.getDummy());
-        return new FolhaPontoJornadaDia(LocalDate.now(), jornadasDia);
+        final List<FolhaPontoMarcacoes> marcacoesExtraJornada = new ArrayList<>();
+        return new FolhaPontoJornadaDia(LocalDate.now(), jornadasDia, marcacoesExtraJornada);
     }
 
     @NotNull
@@ -38,5 +43,10 @@ public class FolhaPontoJornadaDia {
     @NotNull
     public List<FolhaPontoJornadas> getJornadasDia() {
         return jornadasDia;
+    }
+
+    @NotNull
+    public List<FolhaPontoMarcacoes> getMarcacoesForaJornada() {
+        return marcacoesForaJornada;
     }
 }
