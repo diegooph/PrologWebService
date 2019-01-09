@@ -199,11 +199,12 @@ public abstract class Pneu {
         this.codPneuProblema = codPneuProblema;
     }
 
+    @Nullable
     public List<Problema> getProblemas() {
         return problemas;
     }
 
-    public void setProblemas(List<Problema> problemas) {
+    public void setProblemas(@Nullable List<Problema> problemas) {
         this.problemas = problemas;
     }
 
@@ -259,6 +260,7 @@ public abstract class Pneu {
         return temSulcosAtuais;
     }
 
+    @Nullable
     public Sulcos getSulcosAtuais() {
         return sulcosAtuais;
     }
