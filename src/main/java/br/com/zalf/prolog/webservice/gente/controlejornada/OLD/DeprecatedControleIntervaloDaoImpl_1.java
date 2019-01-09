@@ -1,15 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.DadosMarcacaoUnidade;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
@@ -28,8 +25,10 @@ public class DeprecatedControleIntervaloDaoImpl_1 extends DatabaseConnection imp
     private static final String TAG = DeprecatedControleIntervaloDaoImpl_1.class.getSimpleName();
 
     @Override
-    public List<TipoMarcacao> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
-        return new DeprecatedControleIntervaloDaoImpl_2().getTiposIntervalosByUnidade(codUnidade, true, withCargos);
+    public List<TipoMarcacao> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws Throwable {
+        return Injection
+                .provideControleJornadaDao()
+                .getTiposIntervalosByUnidade(codUnidade, true, withCargos);
     }
 
     @Override

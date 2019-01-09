@@ -30,12 +30,14 @@ public class DeprecatedControleIntervaloService_2 {
 
     public List<TipoMarcacao> getTiposIntervalos(Long codUnidade, boolean apenasAtivos, boolean withCargos) {
         try {
-            return dao.getTiposIntervalosByUnidade(codUnidade, apenasAtivos, withCargos);
-        } catch (SQLException e) {
+            return Injection
+                    .provideControleJornadaDao()
+                    .getTiposIntervalosByUnidade(codUnidade, apenasAtivos, withCargos);
+        } catch (Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os tipos de intervalos. \n" +
                     "codUnidade: %d \n" +
-                    "withCargos: %b", codUnidade, withCargos), e);
-            throw new RuntimeException(e);
+                    "withCargos: %b", codUnidade, withCargos), t);
+            throw new RuntimeException(t);
         }
     }
 
@@ -65,8 +67,7 @@ public class DeprecatedControleIntervaloService_2 {
         try {
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             // Temos certeza que existira no banco, se não existir, então melhor dar erro.
-            @SuppressWarnings("ConstantConditions")
-            final DadosMarcacaoUnidade versaoDados = daoNova.getDadosMarcacaoUnidade(codUnidade).get();
+            @SuppressWarnings("ConstantConditions") final DadosMarcacaoUnidade versaoDados = daoNova.getDadosMarcacaoUnidade(codUnidade).get();
             if (versaoDadosIntervalo < versaoDados.getVersaoDadosBanco()) {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
             } else {
@@ -100,7 +101,7 @@ public class DeprecatedControleIntervaloService_2 {
                     "Tipo de intervalo inserido com sucesso",
                     dao.insertTipoIntervalo(tipoIntervalo,
                             Injection.provideDadosIntervaloChangedListener()));
-        } catch (Throwable e){
+        } catch (Throwable e) {
             Log.e(TAG, "Erro ao inserir o tipo de intervalo", e);
             return Response.error("Erro ao inserir o tipo de intervalo");
         }
@@ -149,7 +150,10 @@ public class DeprecatedControleIntervaloService_2 {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
                     codUnidade,
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO);
-            final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade,  true, true);
+            final List<TipoMarcacao> tiposIntervalo =
+                    Injection
+                            .provideControleJornadaDao()
+                            .getTiposIntervalosByUnidade(codUnidade, true, true);
             final Optional<DadosMarcacaoUnidade> versaoDados = daoNova.getDadosMarcacaoUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 

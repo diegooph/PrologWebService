@@ -188,31 +188,6 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
 
     @NotNull
     @Override
-    public List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
-                                                          final boolean apenasAtivos,
-                                                          final boolean withCargos)
-            throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<TipoMarcacao> tipos = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALOS_UNIDADE(?, ?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setBoolean(2, apenasAtivos);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                tipos.add(createTipoInvervalo(rSet, withCargos, conn));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return tipos;
-    }
-
-    @NotNull
-    @Override
     public TipoMarcacao getTipoIntervalo(@NotNull final Long codUnidade,
                                          @NotNull final Long codTipoIntervalo) throws SQLException {
         Connection conn = null;

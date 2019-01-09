@@ -15,7 +15,7 @@ import java.util.Optional;
 @Deprecated
 public interface DeprecatedControleIntervaloDao_1 {
 
-    List<TipoMarcacao> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException;
+    List<TipoMarcacao> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws Throwable;
 
     Intervalo getIntervaloAberto(Long cpf, TipoMarcacao tipoInvervalo) throws SQLException;
 

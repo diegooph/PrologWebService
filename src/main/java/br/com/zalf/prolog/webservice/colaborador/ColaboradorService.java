@@ -10,8 +10,6 @@ import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDaoImpl_2;
-import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDao_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
@@ -185,15 +183,14 @@ public class ColaboradorService {
 
             // Se usuário tem acesso a marcação de intervalo, precisamos setar os tipos de intervalo também.
             if (colaborador.getVisao().hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)) {
-                final DeprecatedControleIntervaloDao_2 dao = new DeprecatedControleIntervaloDaoImpl_2();
-                final List<TipoMarcacao> tiposIntervalo = dao.getTiposIntervalosByUnidade(
-                        colaborador.getUnidade().getCodigo(),
-                        true,
-                        true);
+                final List<TipoMarcacao> tiposIntervalo =
+                        Injection
+                                .provideControleJornadaDao()
+                                .getTiposIntervalosByUnidade(colaborador.getUnidade().getCodigo(),true,true);
                 loginHolder.setTiposIntervalos(tiposIntervalo);
             }
-        } catch (SQLException | AmazonCredentialsException e) {
-            Log.e(TAG, String.format("Erro ao criar LoginHolder para o cpf %d", cpf), e);
+        } catch (Throwable t) {
+            Log.e(TAG, String.format("Erro ao criar LoginHolder para o cpf %d", cpf), t);
             throw new RuntimeException("Erro ao criar LoginHolder");
         }
         return loginHolder;

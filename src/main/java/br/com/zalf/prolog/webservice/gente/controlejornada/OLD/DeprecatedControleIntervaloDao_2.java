@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Created on 08/03/2018
@@ -30,11 +29,6 @@ public interface DeprecatedControleIntervaloDao_2 {
 
     void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
-
-    @NotNull
-    List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
-                                                    final boolean apenasAtivos,
-                                                    final boolean withCargos) throws SQLException;
 
     @NotNull
     TipoMarcacao getTipoIntervalo(@NotNull final Long codUnidade,
