@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Clt;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import com.google.common.base.Preconditions;
 import com.google.gson.annotations.SerializedName;
@@ -192,9 +193,9 @@ public final class FolhaPontoRelatorio {
         LocalDate localDate = ldStart;
 
         final LocalTime timeStartMin = LocalTime.MIN;
-        final LocalTime timeStop05 = LocalTime.of(5, 0, 0);
+        final LocalTime timeStop05 = Clt.FIM_HORAS_NOTURAS;
 
-        final LocalTime timeStart22 = LocalTime.of(22, 0, 0);
+        final LocalTime timeStart22 = Clt.INICIO_HORAS_NOTURAS;
         final LocalTime timeStopMax = LocalTime.MAX;
 
         Duration totalDuration = Duration.ZERO;
