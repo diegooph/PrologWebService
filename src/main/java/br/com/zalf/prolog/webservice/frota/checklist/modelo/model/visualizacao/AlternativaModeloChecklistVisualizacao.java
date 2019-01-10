@@ -1,0 +1,16 @@
+package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao;
+
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+
+/**
+ * Created on 06/12/18.
+ *
+ * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ */
+public final class AlternativaModeloChecklistVisualizacao extends AlternativaModeloChecklist {
+    public static final String TIPO_SERIALIZACAO = "ALTERNATIVA_MODELO_CHECKLIST_VISUALIZACAO";
+
+    public AlternativaModeloChecklistVisualizacao() {
+        super(TIPO_SERIALIZACAO);
+    }
+}

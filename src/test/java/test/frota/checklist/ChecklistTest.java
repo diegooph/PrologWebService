@@ -4,10 +4,10 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import org.junit.Assert;
 import org.junit.Test;
 import test.BaseTest;
@@ -27,15 +27,15 @@ public class ChecklistTest extends BaseTest {
     }
 
     @Test
-    public void testGetModeloChecklist() throws SQLException {
-        final ModeloChecklist modeloChecklist = dao.getModeloChecklist(5L, 40L);
+    public void testGetModeloChecklist() throws Throwable {
+        final ModeloChecklistVisualizacao modeloChecklist = dao.getModeloChecklist(5L, 40L);
 
         System.out.println(GsonUtils.getGson().toJson(modeloChecklist));
         Assert.assertNotNull(modeloChecklist);
     }
 
     @Test
-    public void testGetModelosChecklistListagem() throws SQLException {
+    public void testGetModelosChecklistListagem() throws Throwable {
         final List<ModeloChecklistListagem> listagem =
                 dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(5L, "%");
 

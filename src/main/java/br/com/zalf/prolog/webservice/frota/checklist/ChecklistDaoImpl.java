@@ -4,17 +4,21 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.model.*;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_2;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -37,15 +41,20 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        final DEPRECATED_ORDEM_SERVICO_DAO_2 osDao = new DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2();
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO CHECKLIST "
-                    + "(COD_UNIDADE,COD_CHECKLIST_MODELO, DATA_HORA, CPF_COLABORADOR, PLACA_VEICULO, TIPO, " +
-                    "KM_VEICULO, TEMPO_REALIZACAO) "
-                    + "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?,?,?,?,?) RETURNING CODIGO, " +
-                    "COD_UNIDADE");
+            stmt = conn.prepareStatement("INSERT INTO CHECKLIST(" +
+                    "  COD_UNIDADE, " +
+                    "  COD_CHECKLIST_MODELO, " +
+                    "  DATA_HORA, " +
+                    "  CPF_COLABORADOR, " +
+                    "  PLACA_VEICULO, " +
+                    "  TIPO, " +
+                    "  KM_VEICULO, " +
+                    "  TEMPO_REALIZACAO) " +
+                    "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?), ?, ?, ?, ?, ?, ?, ?) " +
+                    "RETURNING CODIGO, COD_UNIDADE;");
             stmt.setString(1, checklist.getPlacaVeiculo());
             stmt.setLong(2, checklist.getCodModelo());
             stmt.setObject(3, checklist.getData().atOffset(ZoneOffset.UTC));
@@ -57,17 +66,27 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 checklist.setCodigo(rSet.getLong("CODIGO"));
-                final Long codUnidade = rSet.getLong("cod_unidade");
+                final Long codUnidade = rSet.getLong("COD_UNIDADE");
                 insertRespostas(checklist, conn);
-                osDao.insertItemOs(checklist, conn, codUnidade);
+                Injection
+                        .provideOrdemServicoDao()
+                        .processaChecklistRealizado(conn, codUnidade, checklist);
                 veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo(), conn);
                 conn.commit();
                 return checklist.getCodigo();
             } else {
                 throw new SQLException("Erro ao inserir o checklist");
             }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+
+            // Como esse método ainda não está refatorado para retornar um Throwable, encapsulamos o retorno em uma
+            // SQLException.
+            throw new SQLException(t);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

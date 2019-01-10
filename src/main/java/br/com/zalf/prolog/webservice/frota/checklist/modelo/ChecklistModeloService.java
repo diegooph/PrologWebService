@@ -9,133 +9,153 @@ import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
  * Classe ChecklistModeloService responsavel por comunicar-se com a interface DAO
  */
-public class ChecklistModeloService {
-
+public final class ChecklistModeloService {
     private static final String TAG = ChecklistModeloService.class.getSimpleName();
+    @NotNull
     private final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
 
-    public void insertModeloChecklist(@NotNull final ModeloChecklist modeloChecklist) {
+    @NotNull
+    Response insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
         try {
             dao.insertModeloChecklist(modeloChecklist);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inserir modelo de checklist", e);
-            throw new RuntimeException(e);
+            return Response.ok("Modelo de checklist inserido com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir modelo de checklist", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir modelo de checklist, tente novamente");
         }
     }
 
-    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
+    @NotNull
+    List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodCargo(
             @NotNull final Long codUnidade,
-            @NotNull final String codFuncao) {
+            @NotNull final String codCargo) throws ProLogException {
         try {
-            return dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, codFuncao);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar os modelos de checklist para o cargo " + codFuncao, e);
-            throw new RuntimeException(e);
+            return dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, codCargo);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar os modelos de checklist para o cargo " + codCargo, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar modelos de checklist, tente novamente");
         }
     }
 
-    public ModeloChecklist getModeloChecklist(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
+    @NotNull
+    ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
+                                                   @NotNull final Long codModelo) throws ProLogException {
         try {
             return dao.getModeloChecklist(codUnidade, codModelo);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar o modelo de checklist " + codModelo, e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar o modelo de checklist " + codModelo, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar modelo de checklist, tente novamente");
         }
     }
 
-    public Response updateModeloChecklist(@NotNull final String token,
-                                          @NotNull final Long codUnidade,
-                                          @NotNull final Long codModelo,
-                                          @NotNull final ModeloChecklist modeloChecklist) throws Exception {
+    @NotNull
+    Response updateModeloChecklist(@NotNull final String token,
+                                   @NotNull final Long codUnidade,
+                                   @NotNull final Long codModelo,
+                                   @NotNull final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
         try {
             dao.updateModeloChecklist(TokenCleaner.getOnlyToken(token), codUnidade, codModelo, modeloChecklist);
             return Response.ok("Modelo de checklist atualizado com sucesso");
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao atualizar modelo de checklist", e);
-            throw new GenericException("Não foi possível atualizar o modelo do checklist",
-                    "Erro ao atualizar o modelo de checklist código: " + codModelo,
-                    e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar modelo de checklist", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar modelo de checklist, tente novamente");
         }
     }
 
-    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
-        try {
-            return dao.getPerguntas(codUnidade, codModelo);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar perguntas do modelo de checklist " + codModelo, e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Response updateStatusAtivo(@NotNull final Long codUnidade,
-                                      @NotNull final Long codModelo,
-                                      @NotNull final ModeloChecklist modeloChecklist) throws Throwable {
+    @NotNull
+    Response updateStatusAtivo(@NotNull final Long codUnidade,
+                               @NotNull final Long codModelo,
+                               @NotNull final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
         try {
             dao.updateStatusAtivo(codUnidade, codModelo, modeloChecklist.isAtivo());
             return Response.ok("Modelo de checklist " + (modeloChecklist.isAtivo() ? "ativado" : "inativado"));
-        } catch (Throwable e) {
-            final String errorMessage = "Erro ao ativar/inativar o modelo de checklist: " + codModelo;
-            Log.e(TAG, errorMessage, e);
-//            throw ProLogExceptionHandler.map(e, errorMessage);
+        } catch (Throwable t) {
+            Log.e(TAG, "Erro ao ativar/inativar o modelo de checklist: " + codModelo, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao ativar/inativar o modelo de checklist, tente novamente");
         }
-        return null;
     }
 
-    public List<ModeloChecklist> getModelosChecklistProLog() {
+    @NotNull
+    List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws ProLogException {
         try {
             return dao.getModelosChecklistProLog();
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar modelos de checklist do ProLog", e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar modelos de checklist do ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar modelos de checklist do ProLog, tente novamente");
         }
     }
 
-    public List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade, @NotNull final Long codFuncao) {
+    @NotNull
+    public List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade,
+                                               @NotNull final Long codFuncao) throws ProLogException {
         try {
             return dao.getUrlImagensPerguntas(codUnidade, codFuncao);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar as URL das perguntas", e);
-            return null;
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar as URLs das perguntas", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar as URLs das perguntas, tente novamente");
         }
     }
 
-    public Galeria getGaleriaImagensPublicas() {
+    @NotNull
+    Galeria getGaleriaImagensPublicas() throws ProLogException {
         try {
             return dao.getGaleriaImagensPublicas();
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar galeria de imagens publicas", e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar galeria de imagens publicas", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar galeria de imagens publicas, tente novamente");
         }
     }
 
-    public Galeria getGaleriaImagensEmpresa(@NotNull final Long codEmpresa) {
+    @NotNull
+    Galeria getGaleriaImagensEmpresa(@NotNull final Long codEmpresa) throws ProLogException {
         try {
             return dao.getGaleriaImagensEmpresa(codEmpresa);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar galeria de imagens da empresa: " + codEmpresa, e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar galeria de imagens da empresa: " + codEmpresa, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar galeria de imagens da empresa, tente novamente");
         }
     }
 
-    public AbstractResponse insertImagem(@NotNull final Long codEmpresa,
-                                         @NotNull final InputStream fileInputStream,
-                                         @NotNull final FormDataContentDisposition fileDetail) {
+    @NotNull
+    AbstractResponse insertImagem(@NotNull final Long codEmpresa,
+                                  @NotNull final InputStream fileInputStream,
+                                  @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
             final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
             final ImagemProLog imagemProLog = UploadImageHelper.uploadCompressedImagem(
@@ -143,13 +163,32 @@ public class ChecklistModeloService {
                     AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS,
                     imageType);
             final Long codImagem = dao.insertImagem(codEmpresa, imagemProLog);
-            return ResponseImagemChecklist.ok("Imagem inserida com sucesso!", codImagem, imagemProLog.getUrlImagem());
-        } catch (FileFormatNotSupportException e) {
+            return ResponseImagemChecklist.ok(
+                    "Imagem inserida com sucesso",
+                    codImagem,
+                    imagemProLog.getUrlImagem());
+        } catch (final FileFormatNotSupportException e) {
             Log.e(TAG, "Arquivo recebido não é uma imagem", e);
             return Response.error(e.getMessage());
-        } catch (SQLException | IOException | S3FileSender.S3FileSenderException e) {
-            Log.e(TAG, "Erro ao inserir o imagem", e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir a imagem", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir a imagem, tente novamente");
+        }
+    }
+
+    @NotNull
+    @Deprecated
+    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
+                                                        @NotNull final Long codModelo) throws ProLogException {
+        try {
+            return dao.getPerguntas(codUnidade, codModelo);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar perguntas do modelo de checklist " + codModelo, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar perguntas do modelo de checklist, tente novamente");
         }
     }
 }
