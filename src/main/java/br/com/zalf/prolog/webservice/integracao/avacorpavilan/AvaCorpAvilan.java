@@ -66,9 +66,43 @@ public final class AvaCorpAvilan extends Sistema {
         return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(getCpf(), getDataNascimento()), codUnidade);
     }
 
+    @Deprecated
     @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
+        final List<TipoVeiculoAvilan> tiposVeiculosAvilan = new ArrayList<>();
+
+        // Adiciona os tipos diferentes na listagem de tipos de veículo da Avilan.
+        veiculosAtivos.getVeiculo().forEach(veiculo -> {
+            if (!tiposVeiculosAvilan.contains(veiculo.getTipo())) {
+                tiposVeiculosAvilan.add(veiculo.getTipo());
+            }
+        });
+
+        // Sincroniza os tipos buscados com o nosso banco de dados.
+        final List<TipoVeiculoAvilanProLog> tiposVeiculosProLog =
+                new AvaCorpAvilanSincronizadorTiposVeiculos(getAvaCorpAvilanDao()).sync(tiposVeiculosAvilan);
+
+        final List<TipoVeiculoAvilanProLog> tiposPrologFiltrados = new ArrayList<>();
+
+        // O veículo pode ter sido salvo no banco do ProLog e posteriormente desativado na Avilan esse método separa
+        // em uma lista apenas os veiculos que estejam ativos no ProLog e na Avilan.
+        for (TipoVeiculoAvilanProLog tipoVeiculoAvilanProLog : tiposVeiculosProLog) {
+            for (TipoVeiculoAvilan tipoVeiculoAvilan : tiposVeiculosAvilan) {
+                if (tipoVeiculoAvilan.getCodigo().equals(tipoVeiculoAvilanProLog.getCodigoAvilan())) {
+                    tiposPrologFiltrados.add(tipoVeiculoAvilanProLog);
+                }
+            }
+        }
+
+        return AvaCorpAvilanConverter.convert(tiposPrologFiltrados);
+    }
+
+    //TODO Não sei exatamente o que fazer nessa parte da integração.
+    @NotNull
+    @Override
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
         final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
         final List<TipoVeiculoAvilan> tiposVeiculosAvilan = new ArrayList<>();
 

@@ -142,10 +142,17 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return veiculoDao.getVeiculosAtivosByUnidade(codUnidade, ativos);
     }
 
+    @Deprecated
     @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
         return veiculoDao.getTipoVeiculosByUnidade(codUnidade);
+    }
+
+    @NotNull
+    @Override
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
+        return veiculoDao.getTipoVeiculosByEmpresa(codEmpresa);
     }
 
     @NotNull

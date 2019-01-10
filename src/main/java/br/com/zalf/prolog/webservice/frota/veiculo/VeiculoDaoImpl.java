@@ -263,6 +263,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         }
     }
 
+    @Deprecated
     @Override
     public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
         List<TipoVeiculo> listTipo = new ArrayList<>();
@@ -284,6 +285,27 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     @Override
+    public List<TipoVeiculo> getTipoVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+        List<TipoVeiculo> listTipo = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE COD_EMPRESA = ? AND STATUS_ATIVO = TRUE");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                listTipo.add(new TipoVeiculo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return listTipo;
+    }
+
+    @Deprecated
+    @Override
     public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -299,6 +321,26 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             }
         } finally {
             closeConnection(conn, stmt, null);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo, Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO VEICULO_TIPO(COD_EMPRESA, NOME, STATUS_ATIVO) VALUES (?,?,?)");
+            stmt.setLong(1, codEmpresa);
+            stmt.setString(2, tipoVeiculo.getNome());
+            stmt.setBoolean(3, true);
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao cadastrar o tipo de veículo");
+            }
+        } finally {
+            close(conn, stmt, null);
         }
         return true;
     }

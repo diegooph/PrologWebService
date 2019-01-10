@@ -69,6 +69,7 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @Deprecated
     @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
@@ -76,6 +77,16 @@ public abstract class Router implements OperacoesIntegradas {
             return getSistema().getTiposVeiculosByUnidade(codUnidade);
         } else {
             return integradorProLog.getTiposVeiculosByUnidade(codUnidade);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(Long codEmpresa) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getTiposVeiculosByEmpresa(codEmpresa);
+        } else {
+            return integradorProLog.getTiposVeiculosByEmpresa(codEmpresa);
         }
     }
 

@@ -100,7 +100,17 @@ public interface VeiculoDao {
      * @return uma lista de tipos de veículos
      * @throws SQLException caso ocorrer erro no banco
      */
+    @Deprecated
     List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException;
+
+    /**
+     * busca o tipo de veículo pela empresa
+     *
+     * @param codEmpresa código da unidade
+     * @return uma lista de tipos de veículos
+     * @throws Throwable caso ocorrer erro no banco
+     */
+    List<TipoVeiculo> getTipoVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * insere um tipo de veículo
@@ -110,7 +120,18 @@ public interface VeiculoDao {
      * @return valor referente a operação
      * @throws SQLException se ocorrer erro no banco
      */
+    @Deprecated
     boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException;
+
+    /**
+     * insere um tipo de veículo
+     *
+     * @param tipoVeiculo descrição do tipo do veículo
+     * @param codEmpresa  código da empresa
+     * @return valor referente a operação
+     * @throws SQLException se ocorrer erro no banco
+     */
+    boolean insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo, Long codEmpresa) throws Throwable;
 
     /**
      * busca os eixos
@@ -175,7 +196,7 @@ public interface VeiculoDao {
     /**
      * Método utilizado para buscar o {@link DiagramaVeiculo} com base na {@code placa}.
      *
-     * @param conn {@link Connection} que será utilizada para realizar a operação.
+     * @param conn  {@link Connection} que será utilizada para realizar a operação.
      * @param placa Placa do {@link Veiculo}.
      * @return Caso exista, retornará o {@link DiagramaVeiculo} caso contrário NULL.
      * @throws SQLException Se qualquer erro ocorrer na busca.

@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -94,11 +95,25 @@ public class VeiculoResource {
         return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
     }
 
+    @Deprecated
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/{codUnidade}/tipo")
     public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade) {
         if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
+            return Response.ok("Tipo de veículo inserido com sucesso");
+        } else {
+            return Response.error("Erro ao inserir o tipo de veículo");
+        }
+    }
+
+    @POST
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/{codEmpresa}/tipo")
+    public Response insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo,
+                                                @PathParam("codEmpresa") Long codEmpresa)
+            throws ProLogException {
+        if (service.insertTipoVeiculoPorEmpresa(tipoVeiculo, codEmpresa)) {
             return Response.ok("Tipo de veículo inserido com sucesso");
         } else {
             return Response.error("Erro ao inserir o tipo de veículo");
@@ -125,6 +140,7 @@ public class VeiculoResource {
         return service.getVeiculosByTipo(codUnidade, codTipo, userToken);
     }
 
+    @Deprecated
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.ALTERAR,
@@ -142,6 +158,25 @@ public class VeiculoResource {
     public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
                                                       @PathParam("codUnidade") Long codUnidade) {
         return service.getTipoVeiculosByUnidade(userToken, codUnidade);
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+    @Path("/{codEmpresa}/tipo")
+    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
+    public List<TipoVeiculo> getTipoVeiculosByEmpresa(@HeaderParam("Authorization") String userToken,
+                                                      @PathParam("codEmpresa") Long codEmpresa) throws ProLogException {
+        return service.getTipoVeiculosByEmpresa(userToken, codEmpresa);
     }
 
     @GET

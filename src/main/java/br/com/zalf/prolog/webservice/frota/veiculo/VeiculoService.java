@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Classe VeiculoService responsavel por comunicar-se com a interface DAO
+ * Classe VeiculoService responsável por comunicar-se com a interface DAO
  */
 public class VeiculoService {
     private static final String TAG = VeiculoService.class.getSimpleName();
@@ -36,6 +36,7 @@ public class VeiculoService {
         }
     }
 
+    @Deprecated
     public List<TipoVeiculo> getTipoVeiculosByUnidade(String userToken, Long codUnidade) {
         try {
             return RouterVeiculo
@@ -46,6 +47,20 @@ public class VeiculoService {
                     "Unidade: %d \n" +
                     "userToken: %s", codUnidade, userToken), e);
             throw new RuntimeException("Erro ao buscar os tipos de veículo da unidade: " + codUnidade);
+        }
+    }
+
+    public List<TipoVeiculo> getTipoVeiculosByEmpresa(String userToken, Long codEmpresa) throws ProLogException {
+        try {
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getTiposVeiculosByEmpresa(codEmpresa);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar os tipos de veículos ativos da empresa. \n" +
+                    "Empresa: %d \n" +
+                    "userToken: %s", codEmpresa, userToken), throwable);
+            throw exceptionHandler.map(throwable, "Erro ao buscar os tipos de veículo da empresa: "
+                    + codEmpresa);
         }
     }
 
@@ -63,6 +78,7 @@ public class VeiculoService {
         }
     }
 
+    @Deprecated
     public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) {
         try {
             return dao.insertTipoVeiculo(tipoVeiculo, codUnidade);
@@ -70,6 +86,17 @@ public class VeiculoService {
             Log.e(TAG, String.format("Erro ao inserir o tipo de veículo. \n" +
                     "Unidade: %d \n", codUnidade), e);
             return false;
+        }
+    }
+
+    public boolean insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo, Long codEmpresa) throws ProLogException {
+        try {
+            return dao.insertTipoVeiculoPorEmpresa(tipoVeiculo, codEmpresa);
+        } catch (Throwable e) {
+            final String errorMessage = "Erro ao inserir o tipo de veículo";
+            Log.e(TAG, String.format("Erro ao inserir o tipo de veículo. \n" +
+                    "Empresa: %d", codEmpresa), e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
