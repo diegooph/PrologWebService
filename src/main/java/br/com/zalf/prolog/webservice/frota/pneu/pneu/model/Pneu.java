@@ -63,7 +63,6 @@ public abstract class Pneu {
     private double pressaoCorreta;
     private double pressaoAtual;
 
-
     /**
      * Indica se esse pneu tem informações de sulcos atuais no nosso banco de dados. Pneus que nunca
      * foram aferidos não irão possuir sulcos.
