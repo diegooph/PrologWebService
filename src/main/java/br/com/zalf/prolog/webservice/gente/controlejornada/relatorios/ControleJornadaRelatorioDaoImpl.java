@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDao;
 import com.google.common.base.Preconditions;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -312,16 +310,15 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                                                                @NotNull final LocalDate dataInicial,
                                                                @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM FUNC_INTERVALOS_GET_TOTAL_TEMPO_POR_TIPO_INTERVALO(?, ?, ?, ?, ?);");
+                "SELECT * FROM FUNC_MARCACAO_GET_TOTAL_TEMPO_POR_TIPO_MARCACAO(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         if (codTipoIntervalo.equals("%")) {
             stmt.setNull(2, Types.BIGINT);
         } else {
             stmt.setLong(2, Long.parseLong(codTipoIntervalo));
         }
-        stmt.setObject(3, dataInicial.atTime(LocalTime.MIN));
-        stmt.setObject(4, dataFinal.atTime(LocalTime.MAX));
-        stmt.setObject(5, Now.localDateTimeUtc());
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
         return stmt;
     }
 
