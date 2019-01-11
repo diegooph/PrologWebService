@@ -22,7 +22,7 @@ public class FolhaPontoJornadaRelatorio {
     @NotNull
     private final String nomeColaborador;
     @NotNull
-    private final List<FolhaPontoJornadaDia> jornadasDia;
+    private final List<FolhaPontoJornadaDia> marcacoesDia;
     private Set<FolhaPontoTipoIntervalo> tiposMarcacoesMarcadas;
     @SerializedName("dataHoraGeracaoRelatorio")
     @NotNull
@@ -32,11 +32,11 @@ public class FolhaPontoJornadaRelatorio {
 
     public FolhaPontoJornadaRelatorio(@NotNull final String cpfColaborador,
                                       @NotNull final String nomeColaborador,
-                                      @NotNull final List<FolhaPontoJornadaDia> jornadasDia,
+                                      @NotNull final List<FolhaPontoJornadaDia> marcacoesDia,
                                       @NotNull final LocalDateTime dataHoraGeracaoRelatorioZoned) {
         this.cpfColaborador = cpfColaborador;
         this.nomeColaborador = nomeColaborador;
-        this.jornadasDia = jornadasDia;
+        this.marcacoesDia = marcacoesDia;
         this.dataHoraGeracaoRelatorioZoned = dataHoraGeracaoRelatorioZoned;
     }
 
@@ -68,8 +68,8 @@ public class FolhaPontoJornadaRelatorio {
     }
 
     @NotNull
-    public List<FolhaPontoJornadaDia> getJornadasDia() {
-        return jornadasDia;
+    public List<FolhaPontoJornadaDia> getMarcacoesDia() {
+        return marcacoesDia;
     }
 
     @NotNull
