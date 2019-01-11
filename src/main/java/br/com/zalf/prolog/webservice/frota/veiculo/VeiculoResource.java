@@ -213,7 +213,7 @@ public class VeiculoResource {
     @Path("/com-pneus/{placa}")
     @AppVersionCodeHandler(
             implementation = DefaultAppVersionCodeHandler.class,
-            targetVersionCode = 55,
+            targetVersionCode = 64,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public Veiculo getVeiculoByPlacaComPneus(@HeaderParam("Authorization") String userToken,
