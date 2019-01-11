@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
@@ -201,10 +202,17 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             for (final Movimentacao mov : processoMov.getMovimentacoes()) {
                 final Pneu pneu = mov.getPneu();
                 stmt.setLong(3, pneu.getCodigo());
-                stmt.setDouble(4, pneu.getSulcosAtuais().getInterno());
-                stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
-                stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
-                stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
+                if (pneu.getSulcosAtuais() != null) {
+                    stmt.setDouble(4, pneu.getSulcosAtuais().getInterno());
+                    stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
+                    stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
+                    stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
+                } else {
+                    stmt.setNull(4, SqlType.REAL.asIntTypeJava());
+                    stmt.setNull(5, SqlType.REAL.asIntTypeJava());
+                    stmt.setNull(6, SqlType.REAL.asIntTypeJava());
+                    stmt.setNull(7, SqlType.REAL.asIntTypeJava());
+                }
                 stmt.setDouble(8, pneu.getVidaAtual());
                 stmt.setString(9, mov.getObservacao());
                 rSet = stmt.executeQuery();
@@ -221,7 +229,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 }
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 

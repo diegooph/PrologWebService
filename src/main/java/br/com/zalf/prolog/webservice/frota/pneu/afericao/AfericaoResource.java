@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.StreamingOutput;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
         implementation = DefaultAppVersionCodeHandler.class,
-        targetVersionCode = 57,
+        targetVersionCode = 64,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class AfericaoResource {

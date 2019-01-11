@@ -62,6 +62,18 @@ public abstract class Pneu {
     private Dimensao dimensao;
     private double pressaoCorreta;
     private double pressaoAtual;
+
+    /**
+     * Indica se esse pneu tem informações de sulcos atuais no nosso banco de dados. Pneus que nunca
+     * foram aferidos não irão possuir sulcos.
+     */
+    private boolean temSulcosAtuais;
+
+    /**
+     * Contém os sulcos atuais do pneu. Pode ser <code>null</code> caso ele nunca tenha sido
+     * aferido antes.
+     */
+    @Nullable
     private Sulcos sulcosAtuais;
     private int vidaAtual;
     private int vidasTotal;
@@ -155,7 +167,7 @@ public abstract class Pneu {
         return fotosCadastro;
     }
 
-    public void setFotosCadastro(final List<PneuFotoCadastro> fotosCadastro) {
+    public void setFotosCadastro(@Nullable final List<PneuFotoCadastro> fotosCadastro) {
         this.fotosCadastro = fotosCadastro;
     }
 
@@ -186,11 +198,12 @@ public abstract class Pneu {
         this.codPneuProblema = codPneuProblema;
     }
 
+    @Nullable
     public List<Problema> getProblemas() {
         return problemas;
     }
 
-    public void setProblemas(List<Problema> problemas) {
+    public void setProblemas(@Nullable List<Problema> problemas) {
         this.problemas = problemas;
     }
 
@@ -242,12 +255,18 @@ public abstract class Pneu {
         this.pressaoCorreta = pressaoCorreta;
     }
 
+    public boolean isTemSulcosAtuais() {
+        return temSulcosAtuais;
+    }
+
+    @Nullable
     public Sulcos getSulcosAtuais() {
         return sulcosAtuais;
     }
 
-    public void setSulcosAtuais(Sulcos sulcosAtuais) {
+    public void setSulcosAtuais(@Nullable Sulcos sulcosAtuais) {
         this.sulcosAtuais = sulcosAtuais;
+        this.temSulcosAtuais = sulcosAtuais != null;
     }
 
     public StatusPneu getStatus() {
