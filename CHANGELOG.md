@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Stage
+* Deixa sulcos do cadastro de pneus opcional e lida com possibilidade de sulcos nulos em algumas partes do sistema
+
 <a name="v0.0.83"></a>
 ## Version [v0.0.83](https://github.com/luizfp/PrologWebService/compare/v0.0.82...v0.0.83) (release-date)
 
