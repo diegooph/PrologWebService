@@ -37,7 +37,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -54,7 +54,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -70,7 +70,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -87,7 +87,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -103,7 +103,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -120,7 +120,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -137,7 +137,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -154,7 +154,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -174,7 +174,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -216,7 +216,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                     dataFinal,
                     zoneId);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -235,7 +235,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -254,7 +254,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -281,7 +281,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                     .build()
                     .write();
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -300,7 +300,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

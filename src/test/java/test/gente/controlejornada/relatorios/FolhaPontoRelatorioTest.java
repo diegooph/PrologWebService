@@ -1,4 +1,4 @@
-package test.gente.controlejornada;
+package test.gente.controlejornada.relatorios;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class ControleJornadaRelatorioTest extends BaseTest {
+public class FolhaPontoRelatorioTest extends BaseTest {
     private ControleJornadaRelatorioService service;
     private static final Long COD_UNIDADE = 5L;
     private static final Long CPF_COLABORADOR = 3383283194L;
