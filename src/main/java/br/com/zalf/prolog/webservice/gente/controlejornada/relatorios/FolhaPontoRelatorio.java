@@ -166,7 +166,10 @@ public final class FolhaPontoRelatorio {
                     localDate.atTime(timeStart22).atZone(zoneId).toInstant(),
                     localDate.atTime(timeStopMax).atZone(zoneId).toInstant());
             if (interval.overlaps(interval22ToMax)) {
-                totalDuration = totalDuration.plus(interval.intersection(interval22ToMax).toDuration());
+                // Como o nosso Max é o LocalTime.MAX, ele vai até 23:59:59.999999999. Dessa forma, a cada comparação
+                // dessa, nós acabamos perdendo um nano de segundo no valor total das horas noturnas. Para compensar
+                // isso, utilizamos o plusNanos(1). É um hack simples e feio, mas funciona.
+                totalDuration = totalDuration.plus(interval.intersection(interval22ToMax).toDuration().plusNanos(1));
             }
 
             // Setup the next loop.
