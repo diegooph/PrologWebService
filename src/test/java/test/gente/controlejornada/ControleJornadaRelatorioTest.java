@@ -66,8 +66,8 @@ public class ControleJornadaRelatorioTest extends BaseTest {
                 COD_UNIDADE,
                 TODOS_TIPOS_INTERVALOS,
                 TODOS_COLABORADORES,
-                "2018-11-01",
-                "2019-01-11");
+                "2019-01-01",
+                "2019-01-20");
         assertNotNull(folhaPontoJornadaRelatorio);
         assertFalse(folhaPontoJornadaRelatorio.isEmpty());
         System.out.println(GsonUtils.getGson().toJson(folhaPontoJornadaRelatorio));

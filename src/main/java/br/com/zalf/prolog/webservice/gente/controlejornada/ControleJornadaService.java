@@ -19,7 +19,7 @@ import java.util.Optional;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-class ControleJornadaService {
+public class ControleJornadaService {
     @NotNull
     private static final String TAG = ControleJornadaService.class.getSimpleName();
     @NotNull
@@ -27,7 +27,7 @@ class ControleJornadaService {
 
     @SuppressWarnings("Duplicates")
     @NotNull
-    ResponseIntervalo insertMarcacaoIntervalo(
+    public ResponseIntervalo insertMarcacaoIntervalo(
             @NotNull final String tokenMarcacao,
             final long versaoDadosIntervalo,
             @NotNull final IntervaloMarcacao intervaloMarcacao,
