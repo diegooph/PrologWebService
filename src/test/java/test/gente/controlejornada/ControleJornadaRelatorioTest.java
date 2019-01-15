@@ -1,13 +1,15 @@
 package test.gente.controlejornada;
 
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoTipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import test.BaseTest;
@@ -56,6 +58,19 @@ public class ControleJornadaRelatorioTest extends BaseTest {
                 DATA_HORA_FIM);
         assertNotNull(folhaPontoRelatorio);
         assertFalse(folhaPontoRelatorio.isEmpty());
+    }
+
+    @Test
+    public void testFolhaPontoJornadaRelatorio() throws Throwable {
+        List<FolhaPontoJornadaRelatorio> folhaPontoJornadaRelatorio = service.getFolhaPontoJornadaRelatorio(
+                COD_UNIDADE,
+                TODOS_TIPOS_INTERVALOS,
+                TODOS_COLABORADORES,
+                "2018-11-01",
+                "2019-01-11");
+        assertNotNull(folhaPontoJornadaRelatorio);
+        assertFalse(folhaPontoJornadaRelatorio.isEmpty());
+        System.out.println(GsonUtils.getGson().toJson(folhaPontoJornadaRelatorio));
     }
 
     @Test
