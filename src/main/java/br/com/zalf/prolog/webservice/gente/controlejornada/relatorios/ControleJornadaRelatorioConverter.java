@@ -268,7 +268,7 @@ final class ControleJornadaRelatorioConverter {
                     Log.d(TAG, "Mesmo dia. Anterior: " + diaAnterior + " - Atual: " + diaAtual);
                     marcacoesDb.add(
                             new FolhaPontoMarcacaoDb(
-                                    rSet.getLong("CPF_COLABORADOR"),
+                                    rSet.getString("CPF_COLABORADOR"),
                                     rSet.getString("NOME_COLABORADOR"),
                                     rSet.getLong("COD_TIPO_INTERVALO"),
                                     rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),

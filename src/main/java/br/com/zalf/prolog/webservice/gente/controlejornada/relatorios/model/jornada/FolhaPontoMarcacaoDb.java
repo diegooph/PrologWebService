@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  */
 public class FolhaPontoMarcacaoDb {
     @NotNull
-    private final Long cpfColaborador;
+    private final String cpfColaborador;
     @NotNull
     private final String nomeColaborador;
     @NotNull
@@ -39,7 +39,7 @@ public class FolhaPontoMarcacaoDb {
     private final boolean trocouDia;
     private final boolean tipoJornada;
 
-    public FolhaPontoMarcacaoDb(@NotNull final Long cpfColaborador,
+    public FolhaPontoMarcacaoDb(@NotNull final String cpfColaborador,
                                 @NotNull final String nomeColaborador,
                                 @NotNull final Long codTipoMarcacao,
                                 @NotNull final Long codTipoMarcacaoPorUnidade,
@@ -74,7 +74,7 @@ public class FolhaPontoMarcacaoDb {
     }
 
     @NotNull
-    public Long getCpfColaborador() {
+    public String getCpfColaborador() {
         return cpfColaborador;
     }
 

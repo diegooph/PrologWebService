@@ -238,9 +238,25 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("");
-            rSet = stmt.executeQuery();
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_PONTO_JORNADA(?, ?, ?, ?, ?, ?);");
+            stmt.setLong(1, codUnidade);
+            if (codTipoIntervalo.equals("%")) {
+                stmt.setNull(2, Types.BIGINT);
+            } else {
+                stmt.setLong(2, Long.parseLong(codTipoIntervalo));
+            }
+            if (cpf.equals("%")) {
+                stmt.setNull(3, Types.BIGINT);
+            } else {
+                stmt.setLong(3, Long.parseLong(cpf));
+            }
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            stmt.setString(6, zoneId.getId());
+
+            rSet = stmt.executeQuery();
             return ControleJornadaRelatorioConverter.createFolhaPontoJornadaRelatorio(
                     rSet,
                     Injection
