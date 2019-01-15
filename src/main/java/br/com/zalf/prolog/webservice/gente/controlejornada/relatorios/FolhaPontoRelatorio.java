@@ -55,15 +55,10 @@ public final class FolhaPontoRelatorio {
     }
 
     @SuppressWarnings("ForLoopReplaceableByForEach")
-    public void calculaTempoEmCadaTipoIntervalo(@NotNull final LocalDate dataInicial,
-                                                @NotNull final LocalDate dataFinal,
-                                                @NotNull final Map<Long, TipoMarcacao> tiposIntervalosUnidade,
+    public void calculaTempoEmCadaTipoIntervalo(@NotNull final Map<Long, TipoMarcacao> tiposIntervalosUnidade,
                                                 @NotNull final ZoneId zoneId) {
         //noinspection ConstantConditions
         Preconditions.checkState(marcacoesDias != null);
-
-        final LocalDateTime filtroInicio = dataInicial.atTime(LocalTime.MIN);
-        final LocalDateTime filtroFim = dataFinal.atTime(LocalTime.MAX);
 
         // Map para irmos somando o tempo em segundos que o colaborador passou em cada tipo de intervalo dado
         // o período filtrado.
@@ -85,10 +80,6 @@ public final class FolhaPontoRelatorio {
                         intervalo,
                         dataHoraInicio,
                         dataHoraFim,
-                        filtroInicio,
-                        // Se o filtro de fim for maior que o horário atual do sistema, precisamos garantir que os
-                        // cálculos utilizem o horário atual e não o filtro de fim.
-                        filtroFim.isBefore(dataHoraGeracaoRelatorioZoned) ? filtroFim : dataHoraGeracaoRelatorioZoned,
                         zoneId);
             }
         }
@@ -104,47 +95,11 @@ public final class FolhaPontoRelatorio {
                                     @NotNull final FolhaPontoIntervalo intervalo,
                                     @Nullable final LocalDateTime dataHoraInicio,
                                     @Nullable final LocalDateTime dataHoraFim,
-                                    @NotNull final LocalDateTime filtroInicio,
-                                    @NotNull final LocalDateTime filtroFim,
                                     @NotNull final ZoneId zoneId) {
         // Calcula a diferença de tempo entre início e fim, se ambos existirem.
         if (dataHoraInicio != null && dataHoraFim != null) {
-            // Precisamos cobrir 4 diferentes casos:
-            // 1 - Uma marcação com início ANTES do período do filtro e fim DENTRO do período.
-            // 2 - Uma marcação com início DENTRO do período do filtro e fim DENTRO do período.
-            // 3 - Uma marcação com início DENTRO do período do filtro e fim DEPOIS do período.
-            // 4 - Uma marcação com início ANTES do período do filtro e fim DEPOIS do período.
-            LocalDateTime inicio, fim;
-            // Caso 1) ANTES -> DENTRO
-            if (dataHoraInicio.isBefore(filtroInicio)
-                    && filtroInicio.isBefore(dataHoraFim)
-                    && dataHoraFim.isBefore(filtroFim)) {
-                inicio = filtroInicio;
-                fim = dataHoraFim;
-
-                // Caso 2) DENTRO -> DENTRO
-            } else if (filtroInicio.isBefore(dataHoraInicio)
-                    && filtroFim.isAfter(dataHoraFim)) {
-                inicio = dataHoraInicio;
-                fim = dataHoraFim;
-
-                // Caso 3) DENTRO -> DEPOIS
-            } else if (dataHoraInicio.isAfter(filtroInicio)
-                    && filtroFim.isAfter(dataHoraInicio)
-                    && dataHoraFim.isAfter(filtroFim)) {
-                inicio = dataHoraInicio;
-                fim = filtroFim;
-
-                // Caso 4) ANTES -> DEPOIS
-            } else if (dataHoraInicio.isBefore(filtroInicio)
-                    && dataHoraFim.isAfter(filtroFim)) {
-                inicio = filtroInicio;
-                fim = filtroFim;
-            } else {
-                throw new IllegalStateException("Condição não mapeada! :(");
-            }
-            final ZonedDateTime inicioZoned = inicio.atZone(zoneId);
-            final ZonedDateTime fimZoned = fim.atZone(zoneId);
+            final ZonedDateTime inicioZoned = dataHoraInicio.atZone(zoneId);
+            final ZonedDateTime fimZoned = dataHoraFim.atZone(zoneId);
             final long segundos = ChronoUnit.SECONDS.between(inicioZoned, fimZoned);
             final long segundosNoturnos = calculaHorasNoturnas(inicioZoned, fimZoned, zoneId).getSeconds();
             segundosTotaisTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);

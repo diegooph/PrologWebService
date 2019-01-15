@@ -71,7 +71,7 @@ final class ControleJornadaRelatorioConverter {
                 //noinspection ConstantConditions
                 final FolhaPontoRelatorio folhaPontoRelatorio = createFolhaPontoRelatorio(cpfAnterior,
                         nomeAnterior, diaAnterior, dias, intervalosDia, dataHoraGeracaoRelatorioUtc, dataHoraGeracaoRelatorioZoned);
-                folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(dataInicial, dataFinal, tiposIntervalosUnidade, zoneIdUnidade);
+                folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(tiposIntervalosUnidade, zoneIdUnidade);
                 relatorios.add(folhaPontoRelatorio);
                 dias = new ArrayList<>();
                 intervalosDia = new ArrayList<>();
@@ -108,7 +108,7 @@ final class ControleJornadaRelatorioConverter {
         if (diaAnterior != null) {
             final FolhaPontoRelatorio folhaPontoRelatorio = createFolhaPontoRelatorio(cpfAnterior,
                     nomeAnterior, diaAnterior, dias, intervalosDia, dataHoraGeracaoRelatorioUtc, dataHoraGeracaoRelatorioZoned);
-            folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(dataInicial, dataFinal, tiposIntervalosUnidade, zoneIdUnidade);
+            folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(tiposIntervalosUnidade, zoneIdUnidade);
             relatorios.add(folhaPontoRelatorio);
         }
         return relatorios;
