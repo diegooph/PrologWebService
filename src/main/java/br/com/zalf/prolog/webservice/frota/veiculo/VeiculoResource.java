@@ -109,9 +109,9 @@ public class VeiculoResource {
 
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/{codEmpresa}/tipo")
+    @Path("/tipos-veiculos")
     public Response insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo,
-                                                @PathParam("codEmpresa") Long codEmpresa)
+                                                @QueryParam("codEmpresa") Long codEmpresa)
             throws ProLogException {
         if (service.insertTipoVeiculoPorEmpresa(tipoVeiculo, codEmpresa)) {
             return Response.ok("Tipo de veículo inserido com sucesso");
@@ -172,10 +172,10 @@ public class VeiculoResource {
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
-    @Path("/{codEmpresa}/tipo")
+    @Path("/tipos-veiculos")
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     public List<TipoVeiculo> getTipoVeiculosByEmpresa(@HeaderParam("Authorization") String userToken,
-                                                      @PathParam("codEmpresa") Long codEmpresa) throws ProLogException {
+                                                      @QueryParam("codEmpresa") Long codEmpresa) throws ProLogException {
         return service.getTipoVeiculosByEmpresa(userToken, codEmpresa);
     }
 
