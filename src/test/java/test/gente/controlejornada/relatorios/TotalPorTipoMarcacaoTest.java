@@ -93,7 +93,7 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_MARCACAO_GET_TOTAL_TEMPO_POR_TIPO_MARCACAO(?, ?, ?, ?);");
+                    "SELECT * FROM FUNC_MARCACAO_GET_TEMPO_TOTAL_POR_TIPO_MARCACAO(?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
             if (codTipoIntervalo.equals("%")) {
                 stmt.setNull(2, Types.BIGINT);

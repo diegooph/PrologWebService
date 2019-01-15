@@ -310,7 +310,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                                                                @NotNull final LocalDate dataInicial,
                                                                @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM FUNC_MARCACAO_GET_TOTAL_TEMPO_POR_TIPO_MARCACAO(?, ?, ?, ?);");
+                "SELECT * FROM FUNC_MARCACAO_GET_TEMPO_TOTAL_POR_TIPO_MARCACAO(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         if (codTipoIntervalo.equals("%")) {
             stmt.setNull(2, Types.BIGINT);
