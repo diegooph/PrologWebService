@@ -261,30 +261,28 @@ final class ControleJornadaRelatorioConverter {
                 Log.d(TAG, "Mesmo colaborador. Anterior: " + cpfAnterior + " - Atual: " + cpfAtual);
                 if (!diaAnterior.equals(diaAtual)) {
                     // Trocou o dia.
-                    internalMap.put(diaAtual, marcacoesDb);
+                    internalMap.put(diaAnterior, marcacoesDb);
                     marcacoesDb = new ArrayList<>();
-                } else {
-                    // Mesmo dia.
-                    Log.d(TAG, "Mesmo dia. Anterior: " + diaAnterior + " - Atual: " + diaAtual);
-                    marcacoesDb.add(
-                            new FolhaPontoMarcacaoDb(
-                                    rSet.getString("CPF_COLABORADOR"),
-                                    rSet.getString("NOME_COLABORADOR"),
-                                    rSet.getLong("COD_TIPO_INTERVALO"),
-                                    rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
-                                    rSet.getLong("COD_MARCACAO_INICIO"),
-                                    rSet.getLong("COD_MARCACAO_FIM"),
-                                    rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
-                                    rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
-                                    rSet.getObject("DATA_HORA_INICIO_UTC", LocalDateTime.class),
-                                    rSet.getObject("DATA_HORA_FIM_UTC", LocalDateTime.class),
-                                    rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"),
-                                    rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"),
-                                    rSet.getBoolean("MARCACAO_INICIO_AJUSTADA"),
-                                    rSet.getBoolean("MARCACAO_FIM_AJUSTADA"),
-                                    rSet.getBoolean("TROCOU_DIA"),
-                                    rSet.getBoolean("TIPO_JORNADA")));
                 }
+
+                marcacoesDb.add(
+                        new FolhaPontoMarcacaoDb(
+                                rSet.getString("CPF_COLABORADOR"),
+                                rSet.getString("NOME_COLABORADOR"),
+                                rSet.getLong("COD_TIPO_INTERVALO"),
+                                rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
+                                rSet.getLong("COD_MARCACAO_INICIO"),
+                                rSet.getLong("COD_MARCACAO_FIM"),
+                                rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
+                                rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
+                                rSet.getObject("DATA_HORA_INICIO_UTC", LocalDateTime.class),
+                                rSet.getObject("DATA_HORA_FIM_UTC", LocalDateTime.class),
+                                rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"),
+                                rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"),
+                                rSet.getBoolean("MARCACAO_INICIO_AJUSTADA"),
+                                rSet.getBoolean("MARCACAO_FIM_AJUSTADA"),
+                                rSet.getBoolean("TROCOU_DIA"),
+                                rSet.getBoolean("TIPO_JORNADA")));
             }
             cpfAnterior = cpfAtual;
             nomeAnterior = rSet.getString("NOME_COLABORADOR");
