@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class FolhaPontoMarcacoes {
+public class FolhaPontoMarcacao {
     @Nullable
     private final LocalDateTime dataHoraInicio;
     @Nullable
@@ -26,13 +26,13 @@ public class FolhaPontoMarcacoes {
     private final boolean marcacaoInicioAjustada;
     private final boolean marcacaoFimAjustada;
 
-    public FolhaPontoMarcacoes(@Nullable final LocalDateTime dataHoraInicio,
-                               @Nullable final LocalDateTime dataHoraFim,
-                               @NotNull final Long codTipoMarcacao,
-                               @NotNull final Long codTipoMarcacaoPorUnidade,
-                               final boolean trocouDia,
-                               final boolean marcacaoInicioAjustada,
-                               final boolean marcacaoFimAjustada) {
+    public FolhaPontoMarcacao(@Nullable final LocalDateTime dataHoraInicio,
+                              @Nullable final LocalDateTime dataHoraFim,
+                              @NotNull final Long codTipoMarcacao,
+                              @NotNull final Long codTipoMarcacaoPorUnidade,
+                              final boolean trocouDia,
+                              final boolean marcacaoInicioAjustada,
+                              final boolean marcacaoFimAjustada) {
         this.dataHoraInicio = dataHoraInicio;
         this.dataHoraFim = dataHoraFim;
         this.codTipoMarcacao = codTipoMarcacao;
@@ -43,8 +43,8 @@ public class FolhaPontoMarcacoes {
     }
 
     @NotNull
-    static FolhaPontoMarcacoes getDummy() {
-        return new FolhaPontoMarcacoes(
+    static FolhaPontoMarcacao getDummy() {
+        return new FolhaPontoMarcacao(
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 1L,
@@ -87,7 +87,7 @@ public class FolhaPontoMarcacoes {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public boolean fitIn(@NotNull final FolhaPontoJornadas jornada) {
+    public boolean fitIn(@NotNull final FolhaPontoJornada jornada) {
         return this.dataHoraInicio.isAfter(jornada.getDataHoraInicioJornada())
                 && this.dataHoraFim.isBefore(jornada.getDataHoraFimJornada());
     }

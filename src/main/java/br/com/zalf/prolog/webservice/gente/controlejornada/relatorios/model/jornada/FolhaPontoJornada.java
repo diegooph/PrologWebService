@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class FolhaPontoJornadas {
+public class FolhaPontoJornada {
     @Nullable
     private final LocalDateTime dataHoraInicioJornada;
     @Nullable
@@ -24,7 +24,7 @@ public class FolhaPontoJornadas {
     @NotNull
     private final Long codTipoMarcacaoPorUnidade;
     @NotNull
-    private final List<FolhaPontoMarcacoes> marcacoes;
+    private final List<FolhaPontoMarcacao> marcacoes;
     /**
      * Indica se as marcações de início e fim foram feitas em dias diferentes.
      */
@@ -35,14 +35,14 @@ public class FolhaPontoJornadas {
     private Duration jornadaBruta;
     private Duration jornadaLiquida;
 
-    public FolhaPontoJornadas(@Nullable final LocalDateTime dataHoraInicioJornada,
-                              @Nullable final LocalDateTime dataHoraFimJornada,
-                              @NotNull final Long codTipoMarcacao,
-                              @NotNull final Long codTipoMarcacaoPorUnidade,
-                              @NotNull final List<FolhaPontoMarcacoes> marcacoes,
-                              final boolean trocouDia,
-                              final boolean marcacaoInicioAjustada,
-                              final boolean marcacaoFimAjustada) {
+    public FolhaPontoJornada(@Nullable final LocalDateTime dataHoraInicioJornada,
+                             @Nullable final LocalDateTime dataHoraFimJornada,
+                             @NotNull final Long codTipoMarcacao,
+                             @NotNull final Long codTipoMarcacaoPorUnidade,
+                             @NotNull final List<FolhaPontoMarcacao> marcacoes,
+                             final boolean trocouDia,
+                             final boolean marcacaoInicioAjustada,
+                             final boolean marcacaoFimAjustada) {
         this.dataHoraInicioJornada = dataHoraInicioJornada;
         this.dataHoraFimJornada = dataHoraFimJornada;
         this.codTipoMarcacao = codTipoMarcacao;
@@ -54,11 +54,11 @@ public class FolhaPontoJornadas {
     }
 
     @NotNull
-    static FolhaPontoJornadas getDummy() {
-        final List<FolhaPontoMarcacoes> marcacoes = new ArrayList<>();
-        marcacoes.add(FolhaPontoMarcacoes.getDummy());
-        marcacoes.add(FolhaPontoMarcacoes.getDummy());
-        final FolhaPontoJornadas jornadas = new FolhaPontoJornadas(
+    static FolhaPontoJornada getDummy() {
+        final List<FolhaPontoMarcacao> marcacoes = new ArrayList<>();
+        marcacoes.add(FolhaPontoMarcacao.getDummy());
+        marcacoes.add(FolhaPontoMarcacao.getDummy());
+        final FolhaPontoJornada jornada = new FolhaPontoJornada(
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 1L,
@@ -67,9 +67,9 @@ public class FolhaPontoJornadas {
                 false,
                 false,
                 true);
-        jornadas.setJornadaBruta(Duration.ofHours(9));
-        jornadas.setJornadaLiquida(Duration.ofHours(8));
-        return jornadas;
+        jornada.setJornadaBruta(Duration.ofHours(9));
+        jornada.setJornadaLiquida(Duration.ofHours(8));
+        return jornada;
     }
 
     @Nullable
@@ -93,7 +93,7 @@ public class FolhaPontoJornadas {
     }
 
     @NotNull
-    public List<FolhaPontoMarcacoes> getMarcacoes() {
+    public List<FolhaPontoMarcacao> getMarcacoes() {
         return marcacoes;
     }
 
@@ -130,7 +130,7 @@ public class FolhaPontoJornadas {
                 && this.dataHoraFimJornada != null;
     }
 
-    public void addMarcacaoToJornada(@NotNull final FolhaPontoMarcacoes folhaPontoMarcacao) {
+    public void addMarcacaoToJornada(@NotNull final FolhaPontoMarcacao folhaPontoMarcacao) {
         this.marcacoes.add(folhaPontoMarcacao);
     }
 

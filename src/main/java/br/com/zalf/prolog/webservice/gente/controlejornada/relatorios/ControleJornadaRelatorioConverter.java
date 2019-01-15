@@ -137,19 +137,19 @@ final class ControleJornadaRelatorioConverter {
             marcacoesDia.forEach((dia, marcacoes) -> {
                 // Para cada dia.
 
-                final List<FolhaPontoJornadas> jornadasDia = new ArrayList<>();
-                final List<FolhaPontoMarcacoes> marcacoesForaJornada = new ArrayList<>();
+                final List<FolhaPontoJornada> jornadasDia = new ArrayList<>();
+                final List<FolhaPontoMarcacao> marcacoesForaJornada = new ArrayList<>();
                 marcacoes.forEach(folhaPontoMarcacaoDb -> {
                     // Para cada marcação.
 
                     // Precisamos realizar os cálculos e gerar os objetos corretos
-                    final FolhaPontoMarcacoes folhaPontoMarcacao =
+                    final FolhaPontoMarcacao folhaPontoMarcacao =
                             convertoToFolhaPontoMarcacao(folhaPontoMarcacaoDb);
 
                     // precisamos descobrir se ela vai pra lista de jornada ou fora.
                     if (folhaPontoMarcacaoDb.isTipoJornada()) {
                         // Se é uma marcação tipo Jornada, sabemos que ela será adicionada nas jornadas
-                        final FolhaPontoJornadas jornada = new FolhaPontoJornadas(
+                        final FolhaPontoJornada jornada = new FolhaPontoJornada(
                                 folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio(),
                                 folhaPontoMarcacaoDb.getDataHoraMarcacaoFim(),
                                 folhaPontoMarcacaoDb.getCodTipoMarcacao(),
@@ -168,7 +168,7 @@ final class ControleJornadaRelatorioConverter {
                         // Se não é uma jornada, e já temos jornadas adicionadas. Então precisamos
                         // descobrir se essa marcação está dentro de uma jornada.
                         boolean foiAdicionadaEmJornada = false;
-                        for (final FolhaPontoJornadas jornada : jornadasDia) {
+                        for (final FolhaPontoJornada jornada : jornadasDia) {
                             if (jornada.hasInicioFim() && folhaPontoMarcacao.fitIn(jornada)) {
                                 jornada.addMarcacaoToJornada(folhaPontoMarcacao);
                                 jornada.calculaJornadaLiquida(folhaPontoMarcacaoDb.getDiferencaoInicioFimEmSegundos());
@@ -299,9 +299,9 @@ final class ControleJornadaRelatorioConverter {
     }
 
     @NotNull
-    private static FolhaPontoMarcacoes convertoToFolhaPontoMarcacao(
+    private static FolhaPontoMarcacao convertoToFolhaPontoMarcacao(
             @NotNull final FolhaPontoMarcacaoDb folhaPontoMarcacaoDb) {
-        return new FolhaPontoMarcacoes(
+        return new FolhaPontoMarcacao(
                 folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio(),
                 folhaPontoMarcacaoDb.getDataHoraMarcacaoFim(),
                 folhaPontoMarcacaoDb.getCodTipoMarcacao(),
