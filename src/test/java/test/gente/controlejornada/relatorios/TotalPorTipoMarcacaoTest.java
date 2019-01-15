@@ -79,8 +79,6 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
                         tipoMarcacao.getTempoTotalHorasNoturnas());
             }
         }
-
-        assertTrue("Todo o Map precisa ser processado", totaisTiposColab.isEmpty());
     }
 
     @SuppressWarnings("SameParameterValue")
