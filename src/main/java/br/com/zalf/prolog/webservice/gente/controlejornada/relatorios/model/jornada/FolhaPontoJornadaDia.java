@@ -31,8 +31,10 @@ public class FolhaPontoJornadaDia {
     static FolhaPontoJornadaDia getDummy() {
         final List<FolhaPontoJornada> jornadasDia = new ArrayList<>();
         jornadasDia.add(FolhaPontoJornada.getDummy());
-        final List<FolhaPontoMarcacao> marcacoesExtraJornada = new ArrayList<>();
-        return new FolhaPontoJornadaDia(LocalDate.now(), jornadasDia, marcacoesExtraJornada);
+        final List<FolhaPontoMarcacao> marcacoesForaJornada = new ArrayList<>();
+        marcacoesForaJornada.add(FolhaPontoMarcacao.getDummy());
+        marcacoesForaJornada.add(FolhaPontoMarcacao.getDummy());
+        return new FolhaPontoJornadaDia(LocalDate.now(), jornadasDia, marcacoesForaJornada);
     }
 
     @NotNull
