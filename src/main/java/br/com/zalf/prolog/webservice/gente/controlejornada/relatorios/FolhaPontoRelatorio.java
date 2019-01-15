@@ -137,6 +137,12 @@ public final class FolhaPontoRelatorio {
         return tiposIntervalosMarcados;
     }
 
+    /**
+     * @deprecated em 15/01/2019. Essa solução não lida corretamente com mudanças de horário de verão/inverno e por
+     * isso não deve mais ser utilizada. Existe uma function em BD que realiza o mesmo tipo de cálculo e considera
+     * corretamente as mudanças de horário de verão/inverno, portanto, devemos utilizar o cálculo em banco de dados.
+     */
+    @Deprecated
     @NotNull
     private Duration calculaHorasNoturnas(@NotNull final ZonedDateTime fromTz,
                                           @NotNull final ZonedDateTime toTz,
