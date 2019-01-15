@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada;
 
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoTipoIntervalo;
+import com.google.common.base.Preconditions;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,8 +53,8 @@ public class FolhaPontoJornadaRelatorio {
         final Set<FolhaPontoTipoIntervalo> tiposMarcacoesMarcadas = new HashSet<>();
         tiposMarcacoesMarcadas.add(FolhaPontoTipoIntervalo.getDummy());
         folhaPonto.setTiposMarcacoesMarcadas(tiposMarcacoesMarcadas);
-        folhaPonto.setTotalJornadaBrutaPeriodo(Duration.ofHours(9*4));
-        folhaPonto.setTotalJornadaLiquidaPeriodo(Duration.ofHours(8*4));
+        folhaPonto.setTotalJornadaBrutaPeriodo(Duration.ofHours(9 * 4));
+        folhaPonto.setTotalJornadaLiquidaPeriodo(Duration.ofHours(8 * 4));
         return folhaPonto;
     }
 
@@ -102,5 +103,24 @@ public class FolhaPontoJornadaRelatorio {
 
     public void setTotalJornadaLiquidaPeriodo(@NotNull final Duration totalJornadaLiquidaPeriodo) {
         this.totalJornadaLiquidaPeriodo = totalJornadaLiquidaPeriodo;
+    }
+
+    public void calculaTotaisHorasJornadasLiquidaBruta() {
+        Preconditions.checkNotNull(this.marcacoesDia);
+
+        // Inicializamos com Duration.ZERO para evitar qualquer erro de cálculo
+        this.totalJornadaBrutaPeriodo = Duration.ZERO;
+        this.totalJornadaLiquidaPeriodo = Duration.ZERO;
+        if (this.marcacoesDia.isEmpty()) {
+            return;
+        }
+
+        marcacoesDia.forEach(folhaPontoTipoIntervalo -> {
+            for (int i = 0; i < folhaPontoTipoIntervalo.getJornadasDia().size(); i++) {
+                FolhaPontoJornadas jornada = folhaPontoTipoIntervalo.getJornadasDia().get(i);
+                this.totalJornadaBrutaPeriodo = this.totalJornadaBrutaPeriodo.plus(jornada.getJornadaBruta());
+                this.totalJornadaLiquidaPeriodo = this.totalJornadaLiquidaPeriodo.plus(jornada.getJornadaLiquida());
+            }
+        });
     }
 }

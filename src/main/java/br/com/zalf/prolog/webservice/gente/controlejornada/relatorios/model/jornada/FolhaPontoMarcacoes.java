@@ -85,4 +85,10 @@ public class FolhaPontoMarcacoes {
     public boolean isMarcacaoFimAjustada() {
         return marcacaoFimAjustada;
     }
+
+    @SuppressWarnings("ConstantConditions")
+    public boolean fitIn(@NotNull final FolhaPontoJornadas jornada) {
+        return this.dataHoraInicio.isAfter(jornada.getDataHoraInicioJornada())
+                && this.dataHoraFim.isBefore(jornada.getDataHoraFimJornada());
+    }
 }

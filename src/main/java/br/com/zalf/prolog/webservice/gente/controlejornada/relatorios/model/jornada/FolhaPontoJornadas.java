@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -122,5 +123,25 @@ public class FolhaPontoJornadas {
 
     public void setJornadaLiquida(final Duration jornadaLiquida) {
         this.jornadaLiquida = jornadaLiquida;
+    }
+
+    public boolean hasInicioFim() {
+        return this.dataHoraInicioJornada != null
+                && this.dataHoraFimJornada != null;
+    }
+
+    public void addMarcacaoToJornada(@NotNull final FolhaPontoMarcacoes folhaPontoMarcacao) {
+        this.marcacoes.add(folhaPontoMarcacao);
+    }
+
+    public void calculaJornadaLiquida(@Nullable final Long diferencaoInicioFimEmSegundos) {
+        Preconditions.checkNotNull(this.jornadaBruta);
+
+        if (diferencaoInicioFimEmSegundos == null)
+            return;
+
+        final Long jornadaLiquida =
+                Math.abs(this.jornadaBruta.minus(Duration.ofSeconds(diferencaoInicioFimEmSegundos)).getSeconds());
+        setJornadaLiquida(Duration.ofSeconds(jornadaLiquida));
     }
 }

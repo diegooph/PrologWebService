@@ -246,8 +246,6 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                     Injection
                             .provideControleJornadaDao()
                             .getTiposIntervalosByUnidade(codUnidade, true, false),
-                    dataInicial,
-                    dataFinal,
                     zoneId);
         } finally {
             close(conn, stmt, rSet);
