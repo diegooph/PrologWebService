@@ -9,19 +9,14 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import test.BaseTest;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Types;
+import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created on 14/01/19
@@ -66,14 +61,22 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
 
         for (final FolhaPontoRelatorio pontoRelatorio : relatorios) {
             for (final FolhaPontoTipoIntervalo tipoMarcacao : pontoRelatorio.getTiposIntervalosMarcados()) {
+                final Long cpfColaborador = pontoRelatorio.getColaborador().getCpf();
+                final Long codTipoMarcacao = tipoMarcacao.getCodigo();
                 final String mapKey = createMapKey(
-                        pontoRelatorio.getColaborador().getCpf(),
-                        tipoMarcacao.getCodigo());
+                        cpfColaborador,
+                        codTipoMarcacao);
                 final TotalPorTipoMarcacao totalPorTipoMarcacao = totaisTiposColab.remove(mapKey);
 
                 assertNotNull("totalPorTipoMarcacao não encontrado para a chave: " + mapKey, totalPorTipoMarcacao);
-                assertEquals(totalPorTipoMarcacao.getTotalTipoMarcacao(), tipoMarcacao.getTempoTotalTipoIntervalo());
-                assertEquals(totalPorTipoMarcacao.getTotalHorasNoturnasTipoMarcacao(), tipoMarcacao.getTempoTotalHorasNoturnas());
+                assertEquals(
+                        "TOTAL TIPO do colaborador " + cpfColaborador + " e tipo marcação " + codTipoMarcacao,
+                        totalPorTipoMarcacao.getTotalTipoMarcacao(),
+                        tipoMarcacao.getTempoTotalTipoIntervalo());
+                assertEquals(
+                        "HORAS NOTURNAS do colaborador " + cpfColaborador + " e tipo marcação " + codTipoMarcacao,
+                        totalPorTipoMarcacao.getTotalHorasNoturnasTipoMarcacao(),
+                        tipoMarcacao.getTempoTotalHorasNoturnas());
             }
         }
 
@@ -125,6 +128,19 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
             return totaisTipoColab;
         } finally {
             DatabaseConnection.close(stmt, rSet);
+        }
+    }
+
+    private void printResultSet(@NotNull final ResultSet resultSet) throws Throwable {
+        final ResultSetMetaData rsmd = resultSet.getMetaData();
+        int columnsNumber = rsmd.getColumnCount();
+        while (resultSet.next()) {
+            for (int i = 1; i <= columnsNumber; i++) {
+                if (i > 1) System.out.print(",  ");
+                String columnValue = resultSet.getString(i);
+                System.out.print(columnValue + " " + rsmd.getColumnName(i));
+            }
+            System.out.println("");
         }
     }
 
