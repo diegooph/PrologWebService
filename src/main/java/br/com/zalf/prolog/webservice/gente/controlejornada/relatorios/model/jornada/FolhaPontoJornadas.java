@@ -134,14 +134,28 @@ public class FolhaPontoJornadas {
         this.marcacoes.add(folhaPontoMarcacao);
     }
 
+    public void calculaJornadaBruta(@Nullable final Long diferencaoInicioFimEmSegundos) {
+        if (diferencaoInicioFimEmSegundos == null) {
+            setJornadaBruta(Duration.ZERO);
+        } else {
+            setJornadaBruta(Duration.ofSeconds(diferencaoInicioFimEmSegundos));
+        }
+    }
+
     public void calculaJornadaLiquida(@Nullable final Long diferencaoInicioFimEmSegundos) {
         Preconditions.checkNotNull(this.jornadaBruta);
 
         if (diferencaoInicioFimEmSegundos == null)
             return;
 
+        // A primeira vez que calculamos a jornada liquida, apenas setamos a bruta, para decrementar posteriormente.
+        if (this.jornadaLiquida == null) {
+            this.jornadaLiquida = Duration.ofSeconds(jornadaBruta.getSeconds());
+            return;
+        }
+
         final Long jornadaLiquida =
-                Math.abs(this.jornadaBruta.minus(Duration.ofSeconds(diferencaoInicioFimEmSegundos)).getSeconds());
+                Math.abs(this.jornadaLiquida.minus(Duration.ofSeconds(diferencaoInicioFimEmSegundos)).getSeconds());
         setJornadaLiquida(Duration.ofSeconds(jornadaLiquida));
     }
 }

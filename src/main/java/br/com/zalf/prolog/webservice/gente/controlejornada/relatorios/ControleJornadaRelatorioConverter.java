@@ -158,7 +158,8 @@ final class ControleJornadaRelatorioConverter {
                                 folhaPontoMarcacaoDb.isTrocouDia(),
                                 folhaPontoMarcacaoDb.isMarcacaoInicioAjustada(),
                                 folhaPontoMarcacaoDb.isMarcacaoFimAjustada());
-                        jornada.setJornadaBruta(Duration.ofSeconds(folhaPontoMarcacaoDb.getTempoNoturnoEmSegundos()));
+                        jornada.calculaJornadaBruta(folhaPontoMarcacaoDb.getDiferencaoInicioFimEmSegundos());
+                        jornada.calculaJornadaLiquida(folhaPontoMarcacaoDb.getDiferencaoInicioFimEmSegundos());
                         jornadasDia.add(jornada);
                     } else if (jornadasDia.isEmpty()) {
                         // Se não tem nenhuma jornada criada ainda, não tem como a marcação pertencer à uma.
