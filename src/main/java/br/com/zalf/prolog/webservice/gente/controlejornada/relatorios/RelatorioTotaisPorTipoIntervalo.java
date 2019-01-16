@@ -134,9 +134,9 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         header.add("NOME");
         header.add("CARGO");
         for (final TipoMarcacao tipoIntervalo : tiposIntervalos) {
-            header.add(tipoIntervalo.getNome() + " - TOTAL");
+            header.add(String.format("%d - %s - TOTAL", tipoIntervalo.getCodigoPorUnidade(), tipoIntervalo.getNome()));
             tipoIntervaloTotalIndexColuna.put(tipoIntervalo.getCodigo(), header.size() - 1);
-            header.add(tipoIntervalo.getNome() + " - HORAS NOTURNAS");
+            header.add(String.format("%d - %s  - HORAS NOTURNAS", tipoIntervalo.getCodigoPorUnidade(), tipoIntervalo.getNome()));
             tipoIntervaloHorasNoturnasIndexColuna.put(tipoIntervalo.getCodigo(), header.size() - 1);
         }
         return header;
