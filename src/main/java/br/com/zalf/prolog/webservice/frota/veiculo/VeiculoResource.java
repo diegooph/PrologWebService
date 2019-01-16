@@ -95,6 +95,12 @@ public class VeiculoResource {
         return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
     }
 
+    /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
+     */
     @Deprecated
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
@@ -140,6 +146,12 @@ public class VeiculoResource {
         return service.getVeiculosByTipo(codUnidade, codTipo, userToken);
     }
 
+    /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #getTipoVeiculosByEmpresa(String, Long)}.
+     */
     @Deprecated
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,

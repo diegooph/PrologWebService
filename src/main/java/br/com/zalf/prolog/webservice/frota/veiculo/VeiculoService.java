@@ -36,6 +36,12 @@ public class VeiculoService {
         }
     }
 
+    /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #getTipoVeiculosByEmpresa(String, Long)}.
+     */
     @Deprecated
     public List<TipoVeiculo> getTipoVeiculosByUnidade(String userToken, Long codUnidade) {
         try {
@@ -78,6 +84,12 @@ public class VeiculoService {
         }
     }
 
+    /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
+     */
     @Deprecated
     public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) {
         try {
