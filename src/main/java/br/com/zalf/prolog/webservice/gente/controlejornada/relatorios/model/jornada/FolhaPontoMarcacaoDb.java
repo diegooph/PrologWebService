@@ -20,17 +20,9 @@ public class FolhaPontoMarcacaoDb {
     @NotNull
     private final Long codTipoMarcacaoPorUnidade;
     @Nullable
-    private final Long codMarcacaoInicio;
-    @Nullable
-    private final Long codMarcacaoFim;
-    @Nullable
     private final LocalDateTime dataHoraMarcacaoInicio;
     @Nullable
     private final LocalDateTime dataHoraMarcacaoFim;
-    @Nullable
-    private final LocalDateTime dataHoraMarcacaoInicioUtc;
-    @Nullable
-    private final LocalDateTime dataHoraMarcacaoFimUtc;
     @Nullable
     private final Long diferencaoInicioFimEmSegundos;
     private final long tempoNoturnoEmSegundos;
@@ -43,12 +35,8 @@ public class FolhaPontoMarcacaoDb {
                                 @NotNull final String nomeColaborador,
                                 @NotNull final Long codTipoMarcacao,
                                 @NotNull final Long codTipoMarcacaoPorUnidade,
-                                @Nullable final Long codMarcacaoInicio,
-                                @Nullable final Long codMarcacaoFim,
                                 @Nullable final LocalDateTime dataHoraMarcacaoInicio,
                                 @Nullable final LocalDateTime dataHoraMarcacaoFim,
-                                @Nullable final LocalDateTime dataHoraMarcacaoInicioUtc,
-                                @Nullable final LocalDateTime dataHoraMarcacaoFimUtc,
                                 @Nullable final Long diferencaoInicioFimEmSegundos,
                                 final long tempoNoturnoEmSegundos,
                                 final boolean marcacaoInicioAjustada,
@@ -59,12 +47,8 @@ public class FolhaPontoMarcacaoDb {
         this.nomeColaborador = nomeColaborador;
         this.codTipoMarcacao = codTipoMarcacao;
         this.codTipoMarcacaoPorUnidade = codTipoMarcacaoPorUnidade;
-        this.codMarcacaoInicio = codMarcacaoInicio;
-        this.codMarcacaoFim = codMarcacaoFim;
         this.dataHoraMarcacaoInicio = dataHoraMarcacaoInicio;
         this.dataHoraMarcacaoFim = dataHoraMarcacaoFim;
-        this.dataHoraMarcacaoInicioUtc = dataHoraMarcacaoInicioUtc;
-        this.dataHoraMarcacaoFimUtc = dataHoraMarcacaoFimUtc;
         this.diferencaoInicioFimEmSegundos = diferencaoInicioFimEmSegundos;
         this.tempoNoturnoEmSegundos = tempoNoturnoEmSegundos;
         this.marcacaoInicioAjustada = marcacaoInicioAjustada;
@@ -94,16 +78,6 @@ public class FolhaPontoMarcacaoDb {
     }
 
     @Nullable
-    public Long getCodMarcacaoInicio() {
-        return codMarcacaoInicio;
-    }
-
-    @Nullable
-    public Long getCodMarcacaoFim() {
-        return codMarcacaoFim;
-    }
-
-    @Nullable
     public LocalDateTime getDataHoraMarcacaoInicio() {
         return dataHoraMarcacaoInicio;
     }
@@ -111,16 +85,6 @@ public class FolhaPontoMarcacaoDb {
     @Nullable
     public LocalDateTime getDataHoraMarcacaoFim() {
         return dataHoraMarcacaoFim;
-    }
-
-    @Nullable
-    public LocalDateTime getDataHoraMarcacaoInicioUtc() {
-        return dataHoraMarcacaoInicioUtc;
-    }
-
-    @Nullable
-    public LocalDateTime getDataHoraMarcacaoFimUtc() {
-        return dataHoraMarcacaoFimUtc;
     }
 
     @Nullable
