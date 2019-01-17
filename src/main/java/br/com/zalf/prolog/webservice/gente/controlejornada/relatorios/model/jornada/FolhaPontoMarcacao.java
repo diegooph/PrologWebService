@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada;
 
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +26,13 @@ public class FolhaPontoMarcacao {
     private final boolean trocouDia;
     private final boolean marcacaoInicioAjustada;
     private final boolean marcacaoFimAjustada;
+
+    @Exclude
+    @Nullable
+    private Long diferencaoInicioFimEmSegundos;
+    @Exclude
+    @Nullable
+    private Long tempoNoturnoEmSegundos;
 
     public FolhaPontoMarcacao(@Nullable final LocalDateTime dataHoraInicio,
                               @Nullable final LocalDateTime dataHoraFim,
@@ -84,6 +92,24 @@ public class FolhaPontoMarcacao {
 
     public boolean isMarcacaoFimAjustada() {
         return marcacaoFimAjustada;
+    }
+
+    @Nullable
+    public Long getDiferencaoInicioFimEmSegundos() {
+        return diferencaoInicioFimEmSegundos;
+    }
+
+    public void setDiferencaoInicioFimEmSegundos(@Nullable final Long diferencaoInicioFimEmSegundos) {
+        this.diferencaoInicioFimEmSegundos = diferencaoInicioFimEmSegundos;
+    }
+
+    @Nullable
+    public Long getTempoNoturnoEmSegundos() {
+        return tempoNoturnoEmSegundos;
+    }
+
+    public void setTempoNoturnoEmSegundos(@Nullable final Long tempoNoturnoEmSegundos) {
+        this.tempoNoturnoEmSegundos = tempoNoturnoEmSegundos;
     }
 
     @SuppressWarnings("ConstantConditions")
