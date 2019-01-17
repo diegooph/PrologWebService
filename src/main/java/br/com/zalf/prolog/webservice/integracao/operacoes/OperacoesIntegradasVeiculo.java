@@ -14,6 +14,12 @@ interface OperacoesIntegradasVeiculo {
     @NotNull
     List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos) throws Exception;
 
+    /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #getTiposVeiculosByEmpresa(Long)}.
+     */
     @Deprecated
     @NotNull
     List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull final Long codUnidade) throws Exception;
