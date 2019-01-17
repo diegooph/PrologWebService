@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorExceptionHandler;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -250,6 +251,11 @@ public class VeiculoService {
         }
     }
 
+    /**
+     * @deprecated at 2019-01-17.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
+     */
     public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) {
         try {
             return dao.updateTipoVeiculo(tipo, codUnidade);
@@ -257,6 +263,19 @@ public class VeiculoService {
             Log.e(TAG, String.format("Erro ao atualizar o tipo de veículo. \n" +
                     "codUnidade: %d", codUnidade), e);
             return false;
+        }
+    }
+
+    @NotNull
+    Response updateTipoVeiculo(TipoVeiculo tipo) throws ProLogException {
+        try {
+            dao.updateTipoVeiculo(tipo);
+            return Response.ok("Tipo de veículo atualizado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o tipo de veículo", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o tipo de veículo, tente novamente");
         }
     }
 

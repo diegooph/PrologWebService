@@ -195,7 +195,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                     "EV.DIANTEIRO, " +
                     "EV.TRASEIRO, " +
                     "EV.CODIGO AS COD_EIXOS, " +
-                    "tv.nome AS TIPO, " +
+                    "TV.nome AS TIPO, " +
                     "MAV.NOME AS MARCA, " +
                     "MAV.CODIGO AS COD_MARCA  "
                     + "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
@@ -380,6 +380,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return null;
     }
 
+    /**
+     * @deprecated at 2019-01-17.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
+     */
+    @Deprecated
     @Override
     public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) throws SQLException {
         Connection conn = null;
@@ -393,6 +399,26 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             return stmt.executeUpdate() > 0;
         } finally {
             closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
+    public boolean updateTipoVeiculo(TipoVeiculo tipo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE veiculo_tipo SET nome = ? WHERE codigo = ?;");
+            stmt.setString(1, tipo.getNome());
+            stmt.setLong(2, tipo.getCodigo());
+            return stmt.executeUpdate() > 0;
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            close(conn, stmt, null);
         }
     }
 
@@ -621,10 +647,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         List<String> placas = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT V.PLACA FROM veiculo V JOIN veiculo_tipo VT ON V.cod_unidade = VT.cod_unidade\n" +
-                    "AND V.cod_tipo = VT.codigo\n" +
-                    "WHERE VT.cod_unidade = ? AND VT.codigo::TEXT LIKE ? " +
-                    "ORDER BY V.PLACA");
+            stmt = conn.prepareStatement("SELECT V.PLACA FROM VEICULO V JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO " +
+                    "WHERE V.COD_UNIDADE = ? AND VT.CODIGO::TEXT LIKE ? ORDER BY V.PLACA;");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, codTipo);
             rSet = stmt.executeQuery();

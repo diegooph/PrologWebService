@@ -276,6 +276,12 @@ public class VeiculoResource {
         return service.getVeiculoByPlaca(userToken, placa, false);
     }
 
+    /**
+     * @deprecated at 2019-01-17.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
+     */
+    @Deprecated
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos/{codUnidade}/{codTipo}")
@@ -285,6 +291,13 @@ public class VeiculoResource {
         } else {
             return Response.error("Erro ao alterar o tipo");
         }
+    }
+
+    @PUT
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/update-tipos}")
+    public Response updateTipoVeiculo(TipoVeiculo tipo) throws ProLogException {
+        return service.updateTipoVeiculo(tipo);
     }
 
     @DELETE
