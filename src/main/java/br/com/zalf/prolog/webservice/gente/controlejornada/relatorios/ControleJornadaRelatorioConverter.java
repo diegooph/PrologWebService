@@ -7,10 +7,14 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.*;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 
 /**
@@ -233,6 +237,10 @@ final class ControleJornadaRelatorioConverter {
         String cpfAnterior = null;
         String nomeAnterior = null;
         LocalDate diaAnterior = null;
+        LocalDate diaBase = null;
+        LocalDateTime dataHoraInicioFiltro = null;
+        LocalDateTime dataHoraFimFiltro = null;
+        boolean usarFiltroDataHora = false;
         while (rSet.next()) {
             final String cpfAtual = rSet.getString("CPF_COLABORADOR");
             final LocalDateTime dataHoraInicio = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class);
@@ -250,9 +258,25 @@ final class ControleJornadaRelatorioConverter {
                 diaAnterior = diaAtual;
             }
 
+            final FolhaPontoMarcacaoDb folhaPontoMarcacaoDb = new FolhaPontoMarcacaoDb(
+                    rSet.getString("CPF_COLABORADOR"),
+                    rSet.getString("NOME_COLABORADOR"),
+                    rSet.getLong("COD_TIPO_INTERVALO"),
+                    rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
+                    rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
+                    rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
+                    rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"),
+                    rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"),
+                    rSet.getBoolean("MARCACAO_INICIO_AJUSTADA"),
+                    rSet.getBoolean("MARCACAO_FIM_AJUSTADA"),
+                    rSet.getBoolean("TROCOU_DIA"),
+                    rSet.getBoolean("TIPO_JORNADA"));
+
             if (!cpfAnterior.equals(cpfAtual)) {
                 // Trocou de colaborador.
                 Log.d(TAG, "Colaborador alterado. Anterior: " + cpfAnterior + " - Atual: " + cpfAtual);
+
+                internalMap.put(diaAnterior, marcacoesDb);
                 //noinspection ConstantConditions
                 maperson.put(new ColaboradorFolhaPontoDb(cpfAnterior, nomeAnterior), internalMap);
                 internalMap = new HashMap<>();
@@ -260,31 +284,45 @@ final class ControleJornadaRelatorioConverter {
             } else {
                 // Mesmo colaborador.
                 Log.d(TAG, "Mesmo colaborador. Anterior: " + cpfAnterior + " - Atual: " + cpfAtual);
-                if (!diaAnterior.equals(diaAtual)) {
-                    // Trocou o dia.
-                    internalMap.put(diaAnterior, marcacoesDb);
-                    marcacoesDb = new ArrayList<>();
+
+                if (usarFiltroDataHora) {
+                    if (estaDentroDoFiltro(dataHoraInicioFiltro, dataHoraFimFiltro, folhaPontoMarcacaoDb)) {
+                        marcacoesDb.add(folhaPontoMarcacaoDb);
+                    } else {
+                        internalMap.put(diaBase, marcacoesDb);
+                        marcacoesDb = new ArrayList<>();
+
+                        marcacoesDb.add(folhaPontoMarcacaoDb);
+                        usarFiltroDataHora = false;
+                    }
+                } else {
+                    if (!diaAnterior.equals(diaAtual)) {
+                        // Trocou o dia.
+                        internalMap.put(diaAnterior, marcacoesDb);
+                        marcacoesDb = new ArrayList<>();
+                    }
+                    marcacoesDb.add(folhaPontoMarcacaoDb);
                 }
 
-                marcacoesDb.add(
-                        new FolhaPontoMarcacaoDb(
-                                rSet.getString("CPF_COLABORADOR"),
-                                rSet.getString("NOME_COLABORADOR"),
-                                rSet.getLong("COD_TIPO_INTERVALO"),
-                                rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
-                                rSet.getLong("COD_MARCACAO_INICIO"),
-                                rSet.getLong("COD_MARCACAO_FIM"),
-                                rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
-                                rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
-                                rSet.getObject("DATA_HORA_INICIO_UTC", LocalDateTime.class),
-                                rSet.getObject("DATA_HORA_FIM_UTC", LocalDateTime.class),
-                                rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"),
-                                rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"),
-                                rSet.getBoolean("MARCACAO_INICIO_AJUSTADA"),
-                                rSet.getBoolean("MARCACAO_FIM_AJUSTADA"),
-                                rSet.getBoolean("TROCOU_DIA"),
-                                rSet.getBoolean("TIPO_JORNADA")));
             }
+
+            // Se a marcação for JORNADA e TROCOU_DIA, significa que marcações do próximo dia podem
+            // ser vinculadas nessa jornada. Entrão utilizamos o range dessa jornada para comparar
+            // as próximas marcações, afim de encontrar alguma que encaixe dentro do mesmo dia da jornada.
+            // Deixamos esse código no final da execução pois a necessidade é para a proxima marcação.
+            if (folhaPontoMarcacaoDb.isTipoJornada() && folhaPontoMarcacaoDb.isTrocouDia()) {
+                if (folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio() == null
+                        || folhaPontoMarcacaoDb.getDataHoraMarcacaoFim() == null) {
+                    throw new IllegalStateException("Uma marcação não pode ter a proriedade 'trocouDia' e " +
+                            "ter dataHoraMarcacaoInicio ou Fim nula.");
+                }
+
+                dataHoraInicioFiltro = folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio();
+                dataHoraFimFiltro = folhaPontoMarcacaoDb.getDataHoraMarcacaoFim();
+                usarFiltroDataHora = true;
+                diaBase = folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio().toLocalDate();
+            }
+
             cpfAnterior = cpfAtual;
             nomeAnterior = rSet.getString("NOME_COLABORADOR");
             diaAnterior = diaAtual;
@@ -296,6 +334,20 @@ final class ControleJornadaRelatorioConverter {
         }
 
         return maperson;
+    }
+
+    private static boolean estaDentroDoFiltro(@Nullable final LocalDateTime dataHoraInicioFiltro,
+                                              @Nullable final LocalDateTime dataHoraFimFiltro,
+                                              @NotNull final FolhaPontoMarcacaoDb folhaPontoMarcacaoDb) {
+        if (folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio() == null
+                || folhaPontoMarcacaoDb.getDataHoraMarcacaoFim() == null
+                || dataHoraInicioFiltro == null
+                || dataHoraFimFiltro == null)
+            return false;
+        // TODO - Este cálculo deve ser inclusivo
+        // Atualmente se uma marcação for realizada na mesma data_hora que a jornada, retorna false.
+        return folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio().isAfter(dataHoraInicioFiltro)
+                && folhaPontoMarcacaoDb.getDataHoraMarcacaoFim().isBefore(dataHoraFimFiltro);
     }
 
     @NotNull
@@ -312,13 +364,14 @@ final class ControleJornadaRelatorioConverter {
     }
 
     @NotNull
-    private static FolhaPontoRelatorio createFolhaPontoRelatorio(@NotNull final Long cpfAnterior,
-                                                                 @NotNull final String nomeAnterior,
-                                                                 @NotNull final LocalDate diaAnterior,
-                                                                 @NotNull final List<FolhaPontoDia> dias,
-                                                                 @NotNull final List<FolhaPontoIntervalo> intervalosDia,
-                                                                 @NotNull final LocalDateTime dataHoraGeracaoRelatorioUtc,
-                                                                 @NotNull final LocalDateTime dataHoraGeracaoRelatorioZoned) {
+    private static FolhaPontoRelatorio createFolhaPontoRelatorio(
+            @NotNull final Long cpfAnterior,
+            @NotNull final String nomeAnterior,
+            @NotNull final LocalDate diaAnterior,
+            @NotNull final List<FolhaPontoDia> dias,
+            @NotNull final List<FolhaPontoIntervalo> intervalosDia,
+            @NotNull final LocalDateTime dataHoraGeracaoRelatorioUtc,
+            @NotNull final LocalDateTime dataHoraGeracaoRelatorioZoned) {
         dias.add(new FolhaPontoDia(diaAnterior, intervalosDia));
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(cpfAnterior);
