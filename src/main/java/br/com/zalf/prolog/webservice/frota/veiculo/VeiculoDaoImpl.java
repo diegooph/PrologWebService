@@ -403,7 +403,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     @Override
-    public boolean updateTipoVeiculo(TipoVeiculo tipo) throws Throwable {
+    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -411,7 +411,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt = conn.prepareStatement("UPDATE veiculo_tipo SET nome = ? WHERE codigo = ?;");
             stmt.setString(1, tipo.getNome());
             stmt.setLong(2, tipo.getCodigo());
-            return stmt.executeUpdate() > 0;
+            stmt.executeUpdate();
         } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
@@ -422,6 +422,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         }
     }
 
+    /**
+     * @deprecated at 2019-01-18.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
+     */
+    @Deprecated
     public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -435,6 +441,28 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             closeConnection(conn, stmt, null);
         }
     }
+
+    public void deleteTipoVeiculoByEmpresa(@NotNull final Long codTipo,
+                                           @NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM veiculo_tipo WHERE codigo = ? AND cod_empresa = ?");
+            stmt.setLong(1, codTipo);
+            stmt.setLong(2, codEmpresa);
+            stmt.executeUpdate();
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            close(conn, stmt, null);
+        }
+    }
+
+
 
     @Override
     public List<Eixos> getEixos() throws SQLException {

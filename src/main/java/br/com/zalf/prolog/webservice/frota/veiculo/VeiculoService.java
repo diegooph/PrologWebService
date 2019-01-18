@@ -267,7 +267,7 @@ public class VeiculoService {
     }
 
     @NotNull
-    Response updateTipoVeiculo(TipoVeiculo tipo) throws ProLogException {
+    Response updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws ProLogException {
         try {
             dao.updateTipoVeiculo(tipo);
             return Response.ok("Tipo de veículo atualizado com sucesso");
@@ -279,6 +279,13 @@ public class VeiculoService {
         }
     }
 
+
+    /**
+     * @deprecated at 2019-01-18.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
+     */
+    @Deprecated
     public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) {
         try {
             return dao.deleteTipoVeiculo(codTipo, codUnidade);
@@ -287,6 +294,18 @@ public class VeiculoService {
                     "codUnidade: %d \n" +
                     "codTipo: %d", codUnidade, codTipo), e);
             return false;
+        }
+    }
+
+    Response deleteTipoVeiculoByEmpresa(@NotNull final Long codTipo,
+                                        @NotNull final Long codEmpresa) throws ProLogException {
+        try {
+            dao.deleteTipoVeiculoByEmpresa(codTipo, codEmpresa);
+            return Response.ok("Tipo de veículo deletado com sucesso");
+        } catch (final Throwable e) {
+            final String msg = "Erro ao deletar tipo de veículo";
+            Log.e(TAG, msg, e);
+            throw exceptionHandler.map(e, msg);
         }
     }
 

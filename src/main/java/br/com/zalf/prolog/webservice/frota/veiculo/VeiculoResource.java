@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppV
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -296,10 +297,16 @@ public class VeiculoResource {
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/update-tipos}")
-    public Response updateTipoVeiculo(TipoVeiculo tipo) throws ProLogException {
+    public Response updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws ProLogException {
         return service.updateTipoVeiculo(tipo);
     }
 
+    /**
+     * @deprecated at 2019-01-18.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
+     */
+    @Deprecated
     @DELETE
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos/{codUnidade}/{codTipo}")
@@ -309,6 +316,15 @@ public class VeiculoResource {
         } else {
             return Response.error("Erro ao deletar o tipo");
         }
+    }
+
+    @DELETE
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/delete-tipo")
+    public Response deleteTipoVeiculoByEmpresa(@QueryParam("codTipo") @NotNull final Long codTipo,
+                                               @QueryParam("codEmpresa") @NotNull final Long codEmpresa)
+            throws ProLogException {
+        return service.deleteTipoVeiculoByEmpresa(codTipo, codEmpresa);
     }
 
     @GET

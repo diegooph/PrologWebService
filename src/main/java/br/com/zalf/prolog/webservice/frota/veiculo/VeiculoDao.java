@@ -268,10 +268,14 @@ public interface VeiculoDao {
      * @return
      * @throws SQLException
      */
-    boolean updateTipoVeiculo(TipoVeiculo tipo) throws Throwable;
+    void updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws Throwable;
 
     /**
-     * deleta um tipo de veículo, apenas se não tiver nenhuma placa vinculada
+     * @deprecated at 2019-01-18.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
+     *
+     * deletava um tipo de veículo, apenas se não tiver nenhuma placa vinculada
      *
      * @param codTipo
      * @param codUnidade
@@ -279,6 +283,17 @@ public interface VeiculoDao {
      * @throws SQLException
      */
     boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
+
+    /**
+     * deleta um tipo de veículo, apenas se não tiver nenhuma placa vinculada
+     *
+     * @param codTipo
+     * @param codEmpresa
+     * @return
+     * @throws SQLException
+     */
+    void deleteTipoVeiculoByEmpresa(@NotNull final Long codTipo,
+                                    @NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * busca um tipo de veículo
