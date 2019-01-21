@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.84"></a>
 ## Version [v0.0.84](https://github.com/luizfp/PrologWebService/compare/v0.0.83...v0.0.84) (release-date) [unreleased]
 
+### Refactors
+* Remove validação de letras e números do cadastro de veículos (PL-1636)
+
 <a name="v0.0.83"></a>
 ## Version [v0.0.83](https://github.com/luizfp/PrologWebService/compare/v0.0.82...v0.0.83) (2019-01-11)
 

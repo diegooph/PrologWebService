@@ -7,10 +7,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 public class VeiculoValidator {
-
     private static final int MAX_LENGTH_PLACA = 7;
-    private static final int QTD_NUMEROS_PLACA = 4;
-    private static final int QTD_LETRAS_PLACA = 3;
 
     private VeiculoValidator() {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
@@ -35,28 +32,12 @@ public class VeiculoValidator {
         if (placa.length() != MAX_LENGTH_PLACA) {
             throw new GenericException("Placa inválida\nA placa deve conter sete caracteres", "Placa informada: " + placa);
         }
-        if (!verificaQuantidadeLetrasPlaca(placa)) {
-            throw new GenericException("Placa inválida\nA placa deve conter três letras", "Placa informada: " + placa);
-        }
-        if (!verificaQuantidadeNumerosPlaca(placa)) {
-            throw new GenericException("Placa inválida\nA placa deve conter quatro números", "Placa informada: " + placa);
-        }
         if (!(StringUtils.stripCharactersWithAccents(placa)).equals(placa)) {
             throw new GenericException("Placa inválida\nA placa não deve conter acentos", "Placa informada: " + placa);
         }
         if (!(StringUtils.stripCharactersSpecials(placa)).equals(placa)) {
             throw new GenericException("Placa inválida\nA placa não deve conter caracteres especiais", "Placa informada: " + placa);
         }
-    }
-
-    private static boolean verificaQuantidadeNumerosPlaca(String string) {
-        String placaNumeros = StringUtils.getOnlyNumbers(string);
-        return placaNumeros.length() == QTD_NUMEROS_PLACA;
-    }
-
-    private static boolean verificaQuantidadeLetrasPlaca(String placa) {
-        String placaLetras = StringUtils.getOnlyLetters(placa.trim().toUpperCase());
-        return placaLetras.length() == QTD_LETRAS_PLACA;
     }
 
     private static void validacaoKmAtual(Long kmAtual) {
