@@ -19,9 +19,11 @@ import java.util.Set;
 /**
  * Classe VeiculoService responsável por comunicar-se com a interface DAO
  */
-public class VeiculoService {
+public final class VeiculoService {
     private static final String TAG = VeiculoService.class.getSimpleName();
+    @NotNull
     private final VeiculoDao dao = Injection.provideVeiculoDao();
+    @NotNull
     private final VeiculoExceptionHandler exceptionHandler = Injection.provideVeiculoExceptionHandler();
 
     public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos) {
@@ -34,26 +36,6 @@ public class VeiculoService {
                     "Unidade: %d \n" +
                     "userToken: %s", codUnidade, userToken), e);
             throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #getTipoVeiculosByEmpresa(String, Long)}.
-     */
-    @Deprecated
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(String userToken, Long codUnidade) {
-        try {
-            return RouterVeiculo
-                    .create(dao, userToken)
-                    .getTiposVeiculosByUnidade(codUnidade);
-        } catch (Exception e) {
-            Log.e(TAG, String.format("Erro ao buscar os tipos de veículos ativos da unidade. \n" +
-                    "Unidade: %d \n" +
-                    "userToken: %s", codUnidade, userToken), e);
-            throw new RuntimeException("Erro ao buscar os tipos de veículo da unidade: " + codUnidade);
         }
     }
 
@@ -82,23 +64,6 @@ public class VeiculoService {
                     "withPneus: %b \n" +
                     "userToken: %s", placa, withPneus, userToken), e);
             return null;
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
-     */
-    @Deprecated
-    public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) {
-        try {
-            return dao.insertTipoVeiculo(tipoVeiculo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao inserir o tipo de veículo. \n" +
-                    "Unidade: %d \n", codUnidade), e);
-            return false;
         }
     }
 
@@ -251,21 +216,6 @@ public class VeiculoService {
         }
     }
 
-    /**
-     * @deprecated at 2019-01-17.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
-     */
-    public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) {
-        try {
-            return dao.updateTipoVeiculo(tipo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao atualizar o tipo de veículo. \n" +
-                    "codUnidade: %d", codUnidade), e);
-            return false;
-        }
-    }
-
     @NotNull
     Response updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws ProLogException {
         try {
@@ -279,23 +229,6 @@ public class VeiculoService {
         }
     }
 
-
-    /**
-     * @deprecated at 2019-01-18.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
-     */
-    @Deprecated
-    public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) {
-        try {
-            return dao.deleteTipoVeiculo(codTipo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao deletar o tipo de veículo. \n" +
-                    "codUnidade: %d \n" +
-                    "codTipo: %d", codUnidade, codTipo), e);
-            return false;
-        }
-    }
 
     Response deleteTipoVeiculoByEmpresa(@NotNull final Long codTipo,
                                         @NotNull final Long codEmpresa) throws ProLogException {
@@ -317,6 +250,75 @@ public class VeiculoService {
                     "codUnidade: %d \n" +
                     "codTipo: %d", codUnidade, codTipo), e);
             return null;
+        }
+    }
+
+    /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
+     */
+    @Deprecated
+    public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) {
+        try {
+            return dao.insertTipoVeiculo(tipoVeiculo, codUnidade);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao inserir o tipo de veículo. \n" +
+                    "Unidade: %d \n", codUnidade), e);
+            return false;
+        }
+    }
+
+    /**
+     * @deprecated at 2019-01-17.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
+     */
+    public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) {
+        try {
+            return dao.updateTipoVeiculo(tipo, codUnidade);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao atualizar o tipo de veículo. \n" +
+                    "codUnidade: %d", codUnidade), e);
+            return false;
+        }
+    }
+
+    /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #getTipoVeiculosByEmpresa(String, Long)}.
+     */
+    @Deprecated
+    public List<TipoVeiculo> getTipoVeiculosByUnidade(String userToken, Long codUnidade) {
+        try {
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getTiposVeiculosByUnidade(codUnidade);
+        } catch (Exception e) {
+            Log.e(TAG, String.format("Erro ao buscar os tipos de veículos ativos da unidade. \n" +
+                    "Unidade: %d \n" +
+                    "userToken: %s", codUnidade, userToken), e);
+            throw new RuntimeException("Erro ao buscar os tipos de veículo da unidade: " + codUnidade);
+        }
+    }
+
+    /**
+     * @deprecated at 2019-01-18.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
+     */
+    @Deprecated
+    public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) {
+        try {
+            return dao.deleteTipoVeiculo(codTipo, codUnidade);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao deletar o tipo de veículo. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipo: %d", codUnidade, codTipo), e);
+            return false;
         }
     }
 }

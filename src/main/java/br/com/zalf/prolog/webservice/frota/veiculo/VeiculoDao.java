@@ -100,7 +100,7 @@ public interface VeiculoDao {
      * @deprecated at 2019-01-10.
      * Método depreciado pois não será mais utilizado o código da unidade.
      * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #getTipoVeiculosByEmpresa(Long)}.
+     * Utilize {@link #getTiposVeiculosByEmpresa(Long)}.
      * <p>
      * <p>
      * buscava o tipo de veículo pela unidade
@@ -115,7 +115,7 @@ public interface VeiculoDao {
      * @return uma lista de tipos de veículos
      * @throws Throwable caso ocorrer erro no banco
      */
-    List<TipoVeiculo> getTipoVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
+    List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * @param tipoVeiculo descrição do tipo do veículo

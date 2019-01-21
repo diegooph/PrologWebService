@@ -17,8 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
-
+public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     private static final String VEICULOS_BY_PLACA = "SELECT " +
             "V.*, " +
             "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
@@ -63,7 +62,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new SQLException("Erro ao inserir o veículo");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -86,7 +85,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new SQLException("Erro ao atualizar o veículo");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -105,7 +104,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new SQLException("Erro ao atualizar o status do veículo com placa: " + placa);
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
     }
 
@@ -124,7 +123,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new SQLException("Erro ao deletar o veículo");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -174,7 +173,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 veiculos.add(createVeiculo(rSet));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return veiculos;
     }
@@ -213,7 +212,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 veiculos.add(veiculo);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return veiculos;
     }
@@ -234,7 +233,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             conn = getConnection();
             return internalGetVeiculoByPlaca(conn, placa, withPneus);
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -259,39 +258,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new IllegalStateException("Erro ao buscar veículo com a placa: " + placa);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #getTipoVeiculosByEmpresa(Long)}.
-     */
-    @Deprecated
     @Override
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
-        List<TipoVeiculo> listTipo = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                listTipo.add(new TipoVeiculo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return listTipo;
-    }
-
-    @Override
-    public List<TipoVeiculo> getTipoVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable {
         List<TipoVeiculo> listTipo = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -310,33 +282,6 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return listTipo;
     }
 
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
-     */
-    @Deprecated
-    @Override
-    public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO VEICULO_TIPO(COD_UNIDADE, NOME, STATUS_ATIVO) VALUES (?,?,?)");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, tipoVeiculo.getNome());
-            stmt.setBoolean(3, true);
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao cadastrar o tipo de veículo");
-            }
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-        return true;
-    }
-
     @Override
     public boolean insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo, Long codEmpresa) throws Throwable {
         Connection conn = null;
@@ -352,7 +297,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new SQLException("Erro ao cadastrar o tipo de veículo");
             }
         } finally {
-            close(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -375,31 +320,9 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 return tipo;
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return null;
-    }
-
-    /**
-     * @deprecated at 2019-01-17.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
-     */
-    @Deprecated
-    @Override
-    public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE veiculo_tipo SET nome = ? WHERE codigo = ? AND cod_unidade = ?;");
-            stmt.setString(1, tipo.getNome());
-            stmt.setLong(2, tipo.getCodigo());
-            stmt.setLong(3, codUnidade);
-            return stmt.executeUpdate() > 0;
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
     }
 
     @Override
@@ -418,30 +341,11 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             }
             throw t;
         } finally {
-            close(conn, stmt, null);
+            close(conn, stmt);
         }
     }
 
-    /**
-     * @deprecated at 2019-01-18.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
-     */
-    @Deprecated
-    public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM veiculo_tipo WHERE codigo = ? AND cod_unidade = ?");
-            stmt.setLong(1, codTipo);
-            stmt.setLong(2, codUnidade);
-            return stmt.executeUpdate() > 0;
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-    }
-
+    @Override
     public void deleteTipoVeiculoByEmpresa(@NotNull final Long codTipo,
                                            @NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
@@ -458,11 +362,9 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             }
             throw e;
         } finally {
-            close(conn, stmt, null);
+            close(conn, stmt);
         }
     }
-
-
 
     @Override
     public List<Eixos> getEixos() throws SQLException {
@@ -483,7 +385,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 eixos.add(eixo);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return eixos;
     }
@@ -555,16 +457,9 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             marca.setModelos(modelos);
             marcas.add(marca);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return marcas;
-    }
-
-    private ModeloVeiculo createModelo(ResultSet rSet) throws SQLException {
-        ModeloVeiculo modelo = new ModeloVeiculo();
-        modelo.setCodigo(rSet.getLong("COD_MODELO"));
-        modelo.setNome(rSet.getString("MODELO"));
-        return modelo;
     }
 
     @Override
@@ -586,7 +481,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 }
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -610,7 +505,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 return modelo;
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return null;
     }
@@ -629,7 +524,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt.setLong(4, codUnidade);
             return stmt.executeUpdate() > 0;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
     }
 
@@ -645,7 +540,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt.setLong(2, codUnidade);
             return stmt.executeUpdate() > 0;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
     }
 
@@ -662,7 +557,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 total = rSet.getInt("COUNT");
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
         return total;
     }
@@ -684,7 +579,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 placas.add(rSet.getString("placa"));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return placas;
     }
@@ -696,7 +591,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             conn = getConnection();
             return internalGetDiagramaVeiculoByPlaca(conn, placa);
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -707,25 +602,11 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     @NotNull
-    private Optional<DiagramaVeiculo> internalGetDiagramaVeiculoByPlaca(@NotNull final Connection conn,
-                                                                        @NotNull final String placa) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT vd.*\n" +
-                    "FROM veiculo v JOIN veiculo_tipo vt on v.cod_tipo = vt.codigo and v.cod_unidade = vt.cod_unidade\n" +
-                    "JOIN veiculo_diagrama vd on vd.codigo = vt.cod_diagrama\n" +
-                    "WHERE v.placa = ?");
-            stmt.setString(1, placa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return createDiagramaVeiculo(rSet, conn);
-            }
-        } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
-        }
-        return Optional.empty();
+    private ModeloVeiculo createModelo(ResultSet rSet) throws SQLException {
+        final ModeloVeiculo modelo = new ModeloVeiculo();
+        modelo.setCodigo(rSet.getLong("COD_MODELO"));
+        modelo.setNome(rSet.getString("MODELO"));
+        return modelo;
     }
 
     @Override
@@ -746,7 +627,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 return createDiagramaVeiculo(rSet, conn);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return Optional.empty();
     }
@@ -765,7 +646,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 createDiagramaVeiculo(rSet, conn).ifPresent(diagramas::add);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return diagramas;
     }
@@ -788,7 +669,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new SQLException("Erro ao aplicar o pneu " + codPneu + " ao veículo " + placa);
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -809,10 +690,32 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new SQLException("Erro ao remover o pneu " + codPneu + " da placa " + placa);
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
+    @NotNull
+    private Optional<DiagramaVeiculo> internalGetDiagramaVeiculoByPlaca(@NotNull final Connection conn,
+                                                                        @NotNull final String placa) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT vd.*\n" +
+                    "FROM veiculo v JOIN veiculo_tipo vt on v.cod_tipo = vt.codigo and v.cod_unidade = vt.cod_unidade\n" +
+                    "JOIN veiculo_diagrama vd on vd.codigo = vt.cod_diagrama\n" +
+                    "WHERE v.placa = ?");
+            stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createDiagramaVeiculo(rSet, conn);
+            }
+        } finally {
+            close(stmt);
+        }
+        return Optional.empty();
+    }
+
+    @NotNull
     private Optional<DiagramaVeiculo> createDiagramaVeiculo(ResultSet rSet, Connection conn) throws SQLException {
         return Optional.of(new DiagramaVeiculo(
                 rSet.getShort("CODIGO"),
@@ -821,6 +724,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 rSet.getString("URL_IMAGEM")));
     }
 
+    @NotNull
     private Set<EixoVeiculo> getEixosDiagrama(int codDiagrama, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -841,11 +745,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 eixos.add(eixoVeiculo);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
         return eixos;
     }
 
+    @NotNull
     private Veiculo createVeiculo(ResultSet rSet) throws SQLException {
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(rSet.getString("PLACA"));
@@ -885,11 +790,11 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return veiculo;
     }
 
+    @NotNull
     public List<Veiculo> getVeiculoKm(Long codUnidade, String placa, String codTipo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<Veiculo> veiculos = new ArrayList<>();
         Veiculo v = null;
         try {
             conn = getConnection();
@@ -899,15 +804,112 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt.setString(2, codTipo);
             stmt.setString(3, placa);
             rSet = stmt.executeQuery();
+            final List<Veiculo> veiculos = new ArrayList<>();
             while (rSet.next()) {
                 v = new Veiculo();
                 v.setPlaca(rSet.getString("placa"));
                 v.setKmAtual(rSet.getLong("km"));
                 veiculos.add(v);
             }
+            return veiculos;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
-        return veiculos;
+    }
+
+    /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
+     */
+    @Deprecated
+    @Override
+    public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO VEICULO_TIPO(COD_UNIDADE, NOME, STATUS_ATIVO) VALUES (?,?,?)");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, tipoVeiculo.getNome());
+            stmt.setBoolean(3, true);
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao cadastrar o tipo de veículo");
+            }
+        } finally {
+            close(conn, stmt);
+        }
+        return true;
+    }
+
+    /**
+     * @deprecated at 2019-01-17.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
+     */
+    @Deprecated
+    @Override
+    public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE veiculo_tipo SET nome = ? WHERE codigo = ? AND cod_unidade = ?;");
+            stmt.setString(1, tipo.getNome());
+            stmt.setLong(2, tipo.getCodigo());
+            stmt.setLong(3, codUnidade);
+            return stmt.executeUpdate() > 0;
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #getTiposVeiculosByEmpresa(Long)}.
+     */
+    @Deprecated
+    @Override
+    public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
+        List<TipoVeiculo> listTipo = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                listTipo.add(new TipoVeiculo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return listTipo;
+    }
+
+    /**
+     * @deprecated at 2019-01-18.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
+     */
+    @Deprecated
+    public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM veiculo_tipo WHERE codigo = ? AND cod_unidade = ?");
+            stmt.setLong(1, codTipo);
+            stmt.setLong(2, codUnidade);
+            return stmt.executeUpdate() > 0;
+        } finally {
+            close(conn, stmt);
+        }
     }
 }

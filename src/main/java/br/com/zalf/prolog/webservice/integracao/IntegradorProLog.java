@@ -158,7 +158,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
-        return veiculoDao.getTipoVeiculosByEmpresa(codEmpresa);
+        return veiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
     }
 
     @NotNull

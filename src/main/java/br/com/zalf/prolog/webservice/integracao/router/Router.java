@@ -88,7 +88,7 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByEmpresa(Long codEmpresa) throws Throwable {
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
         if (getSistema() != null) {
             return getSistema().getTiposVeiculosByEmpresa(codEmpresa);
         } else {

@@ -24,7 +24,7 @@ import java.util.Set;
 @Path("veiculos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class VeiculoResource {
+public final class VeiculoResource {
 
     private VeiculoService service = new VeiculoService();
 
@@ -96,24 +96,6 @@ public class VeiculoResource {
         return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
     }
 
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
-     */
-    @Deprecated
-    @POST
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/{codUnidade}/tipo")
-    public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
-            return Response.ok("Tipo de veículo inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir o tipo de veículo");
-        }
-    }
-
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos-veiculos")
@@ -125,6 +107,42 @@ public class VeiculoResource {
         } else {
             return Response.error("Erro ao inserir o tipo de veículo");
         }
+    }
+
+    @PUT
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/tipos-veiculos")
+    public Response updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws ProLogException {
+        return service.updateTipoVeiculo(tipo);
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+    @Path("/tipos-veiculos")
+    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@HeaderParam("Authorization") String userToken,
+                                                       @QueryParam("codEmpresa") Long codEmpresa)
+            throws ProLogException {
+        return service.getTipoVeiculosByEmpresa(userToken, codEmpresa);
+    }
+
+    @DELETE
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/tipos-veiculos")
+    public Response deleteTipoVeiculoByEmpresa(@QueryParam("codTipo") @NotNull final Long codTipo,
+                                               @QueryParam("codEmpresa") @NotNull final Long codEmpresa)
+            throws ProLogException {
+        return service.deleteTipoVeiculoByEmpresa(codTipo, codEmpresa);
     }
 
     @GET
@@ -145,51 +163,6 @@ public class VeiculoResource {
                                           @PathParam("codTipo") String codTipo,
                                           @HeaderParam("Authorization") String userToken) {
         return service.getVeiculosByTipo(codUnidade, codTipo, userToken);
-    }
-
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #getTipoVeiculosByEmpresa(String, Long)}.
-     */
-    @Deprecated
-    @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
-            Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
-            Pilares.Frota.Checklist.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
-            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
-            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
-    @Path("/{codUnidade}/tipo")
-    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
-                                                      @PathParam("codUnidade") Long codUnidade) {
-        return service.getTipoVeiculosByUnidade(userToken, codUnidade);
-    }
-
-    @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
-            Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
-            Pilares.Frota.Checklist.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
-            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
-            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
-    @Path("/tipos-veiculos")
-    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
-    public List<TipoVeiculo> getTipoVeiculosByEmpresa(@HeaderParam("Authorization") String userToken,
-                                                      @QueryParam("codEmpresa") Long codEmpresa) throws ProLogException {
-        return service.getTipoVeiculosByEmpresa(userToken, codEmpresa);
     }
 
     @GET
@@ -278,6 +251,50 @@ public class VeiculoResource {
     }
 
     /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
+     */
+    @Deprecated
+    @POST
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/{codUnidade}/tipo")
+    public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade) {
+        if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
+            return Response.ok("Tipo de veículo inserido com sucesso");
+        } else {
+            return Response.error("Erro ao inserir o tipo de veículo");
+        }
+    }
+
+    /**
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #getTiposVeiculosByEmpresa(String, Long)}.
+     */
+    @Deprecated
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+    @Path("/{codUnidade}/tipo")
+    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
+    public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
+                                                      @PathParam("codUnidade") Long codUnidade) {
+        return service.getTipoVeiculosByUnidade(userToken, codUnidade);
+    }
+
+    /**
      * @deprecated at 2019-01-17.
      * Método depreciado pois não será mais utilizado o código da unidade.
      * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
@@ -292,13 +309,6 @@ public class VeiculoResource {
         } else {
             return Response.error("Erro ao alterar o tipo");
         }
-    }
-
-    @PUT
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/update-tipos}")
-    public Response updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws ProLogException {
-        return service.updateTipoVeiculo(tipo);
     }
 
     /**
@@ -316,15 +326,6 @@ public class VeiculoResource {
         } else {
             return Response.error("Erro ao deletar o tipo");
         }
-    }
-
-    @DELETE
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/delete-tipo")
-    public Response deleteTipoVeiculoByEmpresa(@QueryParam("codTipo") @NotNull final Long codTipo,
-                                               @QueryParam("codEmpresa") @NotNull final Long codEmpresa)
-            throws ProLogException {
-        return service.deleteTipoVeiculoByEmpresa(codTipo, codEmpresa);
     }
 
     @GET
