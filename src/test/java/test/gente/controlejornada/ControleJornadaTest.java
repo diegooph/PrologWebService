@@ -51,6 +51,8 @@ public class ControleJornadaTest extends BaseTest {
         cenarioTeste7();
         cenarioTeste8();
         cenarioTeste9();
+        cenarioTeste10();
+        cenarioTeste11();
     }
 
     /**
@@ -618,6 +620,127 @@ public class ControleJornadaTest extends BaseTest {
                 codMarcacaoInserida,
                 TIPO_INTERVALO_INTERVALO,
                 ProLogDateParser.toLocalDateTime("2019-01-20T20:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+    }
+
+    /**
+     * Com este cenário mapeamos o caso de marcações que estão dentro de uma jornada que dura mais de um dia.
+     * Este cenário foi criado para facilitar o teste da busca da marcações dentro de uma jornada,
+     * porém fora do range de filtragem. Por exemplo:
+     *
+     * Ao realizar a filtragem pelo dia 22, será buscado a jornada do dia 22/01 até o dia 25/01,
+     * juntamente com todas as marcações com INICIO e FIM dentro do range da marcação de JORNADA.
+     * Mas as marcações que possuem apenas início ou apenas fim dentro do período da jornada não
+     * deverão ser trazidas pelo relatório.
+     *
+     * @throws ProLogException Em caso de erro.
+     */
+    private void cenarioTeste10() throws ProLogException {
+        // MARCACAO DE JORNADA
+        IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_JORNADA,
+                ProLogDateParser.toLocalDateTime("2019-01-22T06:15:00"));
+        Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_JORNADA,
+                ProLogDateParser.toLocalDateTime("2019-01-24T18:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE DESCANSO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_DESCANSO,
+                ProLogDateParser.toLocalDateTime("2019-01-21T22:00:00"));
+        codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_DESCANSO,
+                ProLogDateParser.toLocalDateTime("2019-01-22T07:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE REFEIÇÃO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_REFEICAO,
+                ProLogDateParser.toLocalDateTime("2019-01-22T12:00:00"));
+        codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_REFEICAO,
+                ProLogDateParser.toLocalDateTime("2019-01-22T13:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE HOSPEDAGEM
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_HOSPEDAGEM,
+                ProLogDateParser.toLocalDateTime("2019-01-22T20:00:00"));
+        codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_HOSPEDAGEM,
+                ProLogDateParser.toLocalDateTime("2019-01-23T05:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE DESCANSO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_DESCANSO,
+                ProLogDateParser.toLocalDateTime("2019-01-24T22:00:00"));
+        codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_DESCANSO,
+                ProLogDateParser.toLocalDateTime("2019-01-25T07:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+    }
+
+
+    /**
+     * Cenário criado para mapear o caso de um marcação ter INÍCIO em uma JORNADA e FIM em outra JORNADA.
+     *
+     * O comportamento esperado para o método neste cenário é que a marcação que tem partes em uma
+     * Jornada e partes noutra jornada, esteja vinculada sempre à Jornada cujo o início está incluso.
+     *
+     * @throws ProLogException Caso algum erro aconteça.
+     */
+    private void cenarioTeste11() throws ProLogException {
+        // MARCACAO DE JORNADA
+        IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_JORNADA,
+                ProLogDateParser.toLocalDateTime("2019-01-25T06:15:00"));
+        Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_JORNADA,
+                ProLogDateParser.toLocalDateTime("2019-01-26T07:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE DESCANSO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_DESCANSO,
+                ProLogDateParser.toLocalDateTime("2019-01-25T22:00:00"));
+        codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_DESCANSO,
+                ProLogDateParser.toLocalDateTime("2019-01-26T14:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE JORNADA
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_JORNADA,
+                ProLogDateParser.toLocalDateTime("2019-01-26T12:00:00"));
+        codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_JORNADA,
+                ProLogDateParser.toLocalDateTime("2019-01-26T18:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
