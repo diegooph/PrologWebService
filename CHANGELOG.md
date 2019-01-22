@@ -7,6 +7,9 @@ Change Log
 ### Refactors
 * Remove validação de letras e números do cadastro de veículos (PL-1636)
 
+### Bug Fixes
+* Corrige criação de componente da dashboard de aferições realizadas (PL-1643)
+
 <a name="v0.0.83"></a>
 ## Version [v0.0.83](https://github.com/luizfp/PrologWebService/compare/v0.0.82...v0.0.83) (2019-01-11)
 
