@@ -94,21 +94,6 @@ public interface VeiculoDao {
                               final boolean withPneus) throws Throwable;
 
     /**
-     * @param codUnidade código da unidade
-     * @return uma lista de tipos de veículos
-     * @throws SQLException caso ocorrer erro no banco
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #getTiposVeiculosByEmpresa(Long)}.
-     * <p>
-     * <p>
-     * buscava o tipo de veículo pela unidade
-     */
-    @Deprecated
-    List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException;
-
-    /**
      * busca o tipo de veículo pela empresa
      *
      * @param codEmpresa código da unidade
@@ -116,22 +101,6 @@ public interface VeiculoDao {
      * @throws Throwable caso ocorrer erro no banco
      */
     List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
-
-    /**
-     * @param tipoVeiculo descrição do tipo do veículo
-     * @param codUnidade  código da unidade
-     * @return valor referente a operação
-     * @throws SQLException se ocorrer erro no banco
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
-     * <p>
-     * <p>
-     * inseria um tipo de veículo por unidade
-     */
-    @Deprecated
-    boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException;
 
     /**
      * insere um tipo de veículo
@@ -271,20 +240,6 @@ public interface VeiculoDao {
     void updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws Throwable;
 
     /**
-     * @deprecated at 2019-01-18.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
-     *
-     * deletava um tipo de veículo, apenas se não tiver nenhuma placa vinculada
-     *
-     * @param codTipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
-    boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
-
-    /**
      * deleta um tipo de veículo, apenas se não tiver nenhuma placa vinculada
      *
      * @param codTipo
@@ -295,15 +250,7 @@ public interface VeiculoDao {
     void deleteTipoVeiculoByEmpresa(@NotNull final Long codTipo,
                                     @NotNull final Long codEmpresa) throws Throwable;
 
-    /**
-     * busca um tipo de veículo
-     *
-     * @param codTipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
-    TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
+    TipoVeiculo getTipoVeiculo(Long codTipo) throws Throwable;
 
     /**
      * Aplica um pneu à uma posição específico do veículo.
@@ -334,4 +281,60 @@ public interface VeiculoDao {
                            @NotNull final Long codUnidade,
                            @NotNull final String placa,
                            @NotNull final Long codPneu) throws Throwable;
+
+    /**
+     * @param tipoVeiculo descrição do tipo do veículo
+     * @param codUnidade  código da unidade
+     * @return valor referente a operação
+     * @throws SQLException se ocorrer erro no banco
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
+     * <p>
+     * inseria um tipo de veículo por unidade
+     */
+    @Deprecated
+    boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException;
+
+    /**
+     * @param codUnidade código da unidade
+     * @return uma lista de tipos de veículos
+     * @throws SQLException caso ocorrer erro no banco
+     * @deprecated at 2019-01-10.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Em seu lugar será utilizado o código da empresa.
+     * Utilize {@link #getTiposVeiculosByEmpresa(Long)}.
+     * <p>
+     * buscava o tipo de veículo pela unidade
+     */
+    @Deprecated
+    List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException;
+
+    /**
+     * @param codTipo
+     * @param codUnidade
+     * @return
+     * @throws SQLException
+     * @deprecated at 2019-01-18.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
+     * <p>
+     * deletava um tipo de veículo, apenas se não tiver nenhuma placa vinculada
+     */
+    boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
+
+    /**
+     * @param codTipo
+     * @param codUnidade
+     * @return
+     * @throws SQLException
+     * @deprecated at 2019-01-22.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #getTipoVeiculo(Long)}.
+     * <p>
+     * buscava um tipo de veículo.
+     */
+    @Deprecated
+    TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
 }

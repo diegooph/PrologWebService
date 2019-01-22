@@ -242,6 +242,21 @@ public final class VeiculoService {
         }
     }
 
+    public TipoVeiculo getTipoVeiculo(Long codTipo) throws ProLogException {
+        try {
+            return dao.getTipoVeiculo(codTipo);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar os tipos de veículo"), throwable);
+            throw exceptionHandler.map(throwable, "Erro ao buscar os tipos de veículo");
+        }
+    }
+
+    /**
+     * @deprecated at 2019-01-22.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #getTipoVeiculo(Long)}.
+     */
+    @Deprecated
     public TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) {
         try {
             return dao.getTipoVeiculo(codTipo, codUnidade);

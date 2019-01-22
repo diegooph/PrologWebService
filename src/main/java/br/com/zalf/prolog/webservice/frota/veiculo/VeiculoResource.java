@@ -96,6 +96,26 @@ public final class VeiculoResource {
         return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
     }
 
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+    @Path("/byTipo/{codUnidade}/{codTipo}")
+    @UsedBy(platforms = Platform.ANDROID)
+    public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
+                                          @PathParam("codTipo") String codTipo,
+                                          @HeaderParam("Authorization") String userToken) {
+        return service.getVeiculosByTipo(codUnidade, codTipo, userToken);
+    }
+
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos-veiculos")
@@ -136,6 +156,13 @@ public final class VeiculoResource {
         return service.getTipoVeiculosByEmpresa(userToken, codEmpresa);
     }
 
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/tipo-veiculo")
+    public TipoVeiculo getTipoVeiculo(@QueryParam("codTipo") Long codTipo) throws ProLogException {
+        return service.getTipoVeiculo(codTipo);
+    }
+
     @DELETE
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos-veiculos")
@@ -143,26 +170,6 @@ public final class VeiculoResource {
                                                @QueryParam("codEmpresa") @NotNull final Long codEmpresa)
             throws ProLogException {
         return service.deleteTipoVeiculoByEmpresa(codTipo, codEmpresa);
-    }
-
-    @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
-            Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
-            Pilares.Frota.Checklist.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
-            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
-            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
-    @Path("/byTipo/{codUnidade}/{codTipo}")
-    @UsedBy(platforms = Platform.ANDROID)
-    public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
-                                          @PathParam("codTipo") String codTipo,
-                                          @HeaderParam("Authorization") String userToken) {
-        return service.getVeiculosByTipo(codUnidade, codTipo, userToken);
     }
 
     @GET
@@ -328,6 +335,12 @@ public final class VeiculoResource {
         }
     }
 
+    /**
+     * @deprecated at 2019-01-22.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #getTipoVeiculo(Long)}.
+     */
+    @Deprecated
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos/{codUnidade}/{codTipo}")

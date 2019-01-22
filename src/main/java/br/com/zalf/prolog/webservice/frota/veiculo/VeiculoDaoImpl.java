@@ -283,6 +283,27 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
+    public TipoVeiculo getTipoVeiculo(Long codTipo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM veiculo_tipo WHERE codigo = ?");
+            stmt.setLong(1, codTipo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                TipoVeiculo tipo = new TipoVeiculo();
+                tipo.setCodigo(rSet.getLong("CODIGO"));
+                return tipo;
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return null;
+    }
+
+    @Override
     public boolean insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo, Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -300,29 +321,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             close(conn, stmt);
         }
         return true;
-    }
-
-    @Override
-    public TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM veiculo_tipo WHERE codigo = ? AND cod_unidade = ?");
-            stmt.setLong(1, codTipo);
-            stmt.setLong(2, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                TipoVeiculo tipo = new TipoVeiculo();
-                tipo.setCodigo(rSet.getLong("CODIGO"));
-                tipo.setNome(rSet.getString("NOME"));
-                return tipo;
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return null;
     }
 
     @Override
@@ -911,5 +909,34 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         } finally {
             close(conn, stmt);
         }
+    }
+
+    /**
+     * @deprecated at 2019-01-22.
+     * Método depreciado pois não será mais utilizado o código da unidade.
+     * Utilize {@link #getTipoVeiculo(Long)}.
+     */
+    @Deprecated
+    @Override
+    public TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM veiculo_tipo WHERE codigo = ? AND cod_unidade = ?");
+            stmt.setLong(1, codTipo);
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                TipoVeiculo tipo = new TipoVeiculo();
+                tipo.setCodigo(rSet.getLong("CODIGO"));
+                tipo.setNome(rSet.getString("NOME"));
+                return tipo;
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return null;
     }
 }
