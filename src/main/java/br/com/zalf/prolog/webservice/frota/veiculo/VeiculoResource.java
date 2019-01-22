@@ -158,8 +158,8 @@ public final class VeiculoResource {
 
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/tipo-veiculo")
-    public TipoVeiculo getTipoVeiculo(@QueryParam("codTipo") Long codTipo) throws ProLogException {
+    @Path("/tipos-veiculos/{codigo}")
+    public TipoVeiculo getTipoVeiculo(@PathParam("codigo") Long codTipo) throws ProLogException {
         return service.getTipoVeiculo(codTipo);
     }
 
