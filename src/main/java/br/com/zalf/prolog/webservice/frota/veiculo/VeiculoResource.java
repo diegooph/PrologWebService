@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -146,9 +147,16 @@ public class VeiculoResource {
 
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/marcaModelos/{codEmpresa}")
-    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+    @Path("/marcas")
+    public List<Marca> getMarcasVeiculosNivelProLog() throws ProLogException {
+        return service.getMarcasVeiculosNivelProLog();
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/marcas-modelos/{codEmpresa}")
+    public List<Marca> getMarcasModelosVeiculosByEmpresa(@PathParam("codEmpresa") Long codEmpresa) throws ProLogException {
+        return service.getMarcasModelosVeiculosByEmpresa(codEmpresa);
     }
 
     @POST
@@ -256,5 +264,27 @@ public class VeiculoResource {
     @Path("/tipos/{codUnidade}/{codTipo}")
     public TipoVeiculo getTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
         return service.getTipoVeiculo(codTipo, codUnidade);
+    }
+
+    /**
+     * @deprecated at 2019-01-23.
+     *
+     * Este método foi depreciado pois era utilizado em locais com diferentes finalidades:
+     * 1 - No cadastro/edição de veículos, como seleção de qual a marca/modelo do veículo.
+     * 2 - No cadastro/edição/listagem de marcas e modelos de veículos.
+     *
+     * O problema, é que no primeiro caso, o método deveria retornar todas as marcas do BD, no segundo, apenas as marcas
+     * para as quais a empresa tem modelos associados. Essa distinção não é lidada por esse método, por isso optamos
+     * por depreciar e criar outros.
+     *
+     * Dessa forma, separamos essa lógica em dois métodos, caso queira o caso 1, utilize
+     * {@link #getMarcasVeiculosNivelProLog()} se for o caso 2, utilize {@link #getMarcasModelosVeiculosByEmpresa(Long)}.
+     */
+    @Deprecated
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/marcaModelos/{codEmpresa}")
+    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
+        return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
     }
 }

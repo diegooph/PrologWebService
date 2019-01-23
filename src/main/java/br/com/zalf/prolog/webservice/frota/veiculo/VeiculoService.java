@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorExceptionHandler;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
@@ -9,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -141,6 +141,31 @@ public class VeiculoService {
             Log.e(TAG, String.format("Erro ao buscar as marcas e modelos dos veículos. \n" +
                     "Empresa: %d", codEmpresa), e);
             return new ArrayList<>();
+        }
+    }
+
+    @NotNull
+    public List<Marca> getMarcasVeiculosNivelProLog() throws ProLogException {
+        try {
+            return dao.getMarcasVeiculosNivelProLog();
+        } catch (final Throwable t) {
+            final String errorMessage = "Erro ao buscar marcas de veículos";
+            Log.e(TAG, errorMessage, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, errorMessage);
+        }
+    }
+
+    @NotNull
+    public List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws ProLogException {
+        try {
+            return dao.getMarcasModelosVeiculosByEmpresa(codEmpresa);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar marcas e modelos de veículos da empresa %d", codEmpresa), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar marcas e modelos de veículos");
         }
     }
 

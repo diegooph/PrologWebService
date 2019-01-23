@@ -140,6 +140,28 @@ public interface VeiculoDao {
     List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException;
 
     /**
+     * As marcas de veículos são a nível ProLog. Esse método retorna uma lista com todas as marcas disponíveis.
+     * Importante lembrar que os modelos para cada marca não serão setados, já que modelos de veículos são por empresa.
+     *
+     * @return uma lista de {@link Marca marcas}.
+     * @throws Throwable caso qualquer erro aconteça.
+     */
+    @NotNull
+    List<Marca> getMarcasVeiculosNivelProLog() throws Throwable;
+
+    /**
+     * As marcas de veículos são a nível ProLog, porém, os modelos são a nível de empresa. Esse método retorna uma
+     * lista com todas as marcas disponíveis, cada marca contém uma lista de modelos com os modelos criados pela
+     * empresa para qual as informações foram solicitadas.
+     * Caso a empresa não tenha modelos para uma marca qualquer, essa marca não estará na lista.
+     *
+     * @return uma lista de {@link Marca marcas}.
+     * @throws Throwable caso qualquer erro aconteça.
+     */
+    @NotNull
+    List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
+
+    /**
      * insere um modelo de veiculo
      *
      * @param modelo     descrição do modelo

@@ -452,10 +452,69 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return marcas;
     }
 
+    @NotNull
+    @Override
+    public List<Marca> getMarcasVeiculosNivelProLog() throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_MARCAS_NIVEL_PROLOG();");
+            rSet = stmt.executeQuery();
+            final List<Marca> marcas = new ArrayList<>();
+            while (rSet.next()) {
+                final Marca marca = new Marca();
+                marca.setCodigo(rSet.getLong("COD_MARCA"));
+                marca.setNome(rSet.getString("NOME_MARCA"));
+                marcas.add(marca);
+            }
+            return marcas;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_MARCAS_MODELOS_EMPRESA(?);");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            final List<Marca> marcas = new ArrayList<>();
+            Long codMarcaAnterior = null;
+            List<Modelo> modelos = null;
+            while (rSet.next()) {
+                if (codMarcaAnterior == null || !codMarcaAnterior.equals(rSet.getLong("COD_MARCA"))) {
+                    final Marca marca = new Marca();
+                    marca.setNome(rSet.getString("NOME_MARCA"));
+                    marca.setCodigo(rSet.getLong("COD_MARCA"));
+                    modelos = new ArrayList<>();
+                    marca.setModelos(modelos);
+                    marcas.add(marca);
+                }
+
+                // No caso de iterar e ficar na mesma marca, seria apenas necessário criar um novo modelo, como isso
+                // sempre acontece, não precisamos de um if específico acima para tratar isso.
+                // Modelos são adicionados na lista por referência.
+                modelos.add(createModelo(rSet));
+                codMarcaAnterior = rSet.getLong("COD_MARCA");
+            }
+            return marcas;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     private ModeloVeiculo createModelo(ResultSet rSet) throws SQLException {
         ModeloVeiculo modelo = new ModeloVeiculo();
         modelo.setCodigo(rSet.getLong("COD_MODELO"));
-        modelo.setNome(rSet.getString("MODELO"));
+        modelo.setNome(rSet.getString("NOME_MODELO"));
         return modelo;
     }
 
