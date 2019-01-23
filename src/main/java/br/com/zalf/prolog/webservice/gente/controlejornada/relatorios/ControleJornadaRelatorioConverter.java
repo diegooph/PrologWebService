@@ -4,10 +4,14 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.*;
-import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.*;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoDia;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornada;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaDia;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoMarcacao;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +19,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 25/07/2018
@@ -120,249 +127,121 @@ final class ControleJornadaRelatorioConverter {
             @NotNull final ResultSet rSet,
             @NotNull final List<TipoMarcacao> tiposIntervalos,
             @NotNull final ZoneId zoneIdUnidade) throws Throwable {
+        final LocalDateTime dataHoraGeracaoRelatorioUtc = Now.localDateTimeUtc();
+        final LocalDateTime dataHoraGeracaoRelatorioZoned = dataHoraGeracaoRelatorioUtc
+                .atZone(ZoneOffset.UTC)
+                .withZoneSameInstant(zoneIdUnidade)
+                .toLocalDateTime();
         final List<FolhaPontoJornadaRelatorio> folhasPontoJornada = new ArrayList<>();
 
-        // Estrutura de dados = Map<colaborador, Map<dia, List<marcacao>>>
-        // Assim temos para um colaborador uma estrutura de dias e marcações naquele dia.
-        final Map<ColaboradorFolhaPontoDb, Map<LocalDate, List<FolhaPontoMarcacaoDb>>> marcacoesDb =
-                createMarcacoesDb(rSet);
-        // Se não tiver dados para processar, retornamos o relatório vazio
-        if (marcacoesDb.isEmpty()) {
-            return folhasPontoJornada;
+        List<FolhaPontoJornadaDia> marcacoesDia = new ArrayList<>();
+        List<FolhaPontoJornada> jornadasDia = new ArrayList<>();
+        FolhaPontoJornada jornada = null;
+        List<FolhaPontoMarcacao> marcacoesForaJornada = new ArrayList<>();
+        // Variáveis de controle de fluxo do algorítmo.
+        String nomeAnterior = null, cpfAtual, cpfAnterior = null;
+        LocalDate diaAtual, diaAnterior = null;
+        Long codMarcacaoJornadaAnterior = null;
+        while (rSet.next()) {
+            diaAtual = rSet.getObject("DIA_BASE", LocalDate.class);
+            if (diaAnterior == null) {
+                diaAnterior = diaAtual;
+            }
+            cpfAtual = rSet.getString("CPF_COLABORADOR");
+            if (cpfAnterior == null) {
+                cpfAnterior = cpfAtual;
+            }
+
+            if (!cpfAnterior.equals(cpfAtual)) {
+                // Trocou de colaborador.
+                // TODO - Aqui setar mais algum atributo?
+                jornadasDia.add(jornada);
+                marcacoesDia.add(new FolhaPontoJornadaDia(diaAnterior, jornadasDia, marcacoesForaJornada));
+                //noinspection ConstantConditions
+                folhasPontoJornada.add(
+                        new FolhaPontoJornadaRelatorio(
+                                cpfAnterior,
+                                nomeAnterior,
+                                marcacoesDia,
+                                dataHoraGeracaoRelatorioZoned));
+                marcacoesDia = new ArrayList<>();
+                jornadasDia = new ArrayList<>();
+                jornada = null;
+                marcacoesForaJornada = new ArrayList<>();
+                codMarcacaoJornadaAnterior = null;
+            } else {
+                // Mesmo colaborador.
+                if (!diaAnterior.equals(diaAtual)) {
+                    // Trocou de dia.
+                    jornadasDia.add(jornada);
+                    marcacoesDia.add(new FolhaPontoJornadaDia(diaAnterior, jornadasDia, marcacoesForaJornada));
+                    jornadasDia = new ArrayList<>();
+                    marcacoesForaJornada = new ArrayList<>();
+                    codMarcacaoJornadaAnterior = null;
+                }
+            }
+            final boolean tipoJornada = rSet.getBoolean("TIPO_JORNADA");
+            final Long codMarcacaoJornada = rSet.getLong("COD_MARCACAO_JORNADA");
+
+            if (tipoJornada) {
+                // Criamos uma Jornada.
+                if (codMarcacaoJornadaAnterior != null &&!codMarcacaoJornada.equals(codMarcacaoJornadaAnterior)) {
+                    jornadasDia.add(jornada);
+                }
+                jornada = createFolhaPontoJornada(rSet);
+                codMarcacaoJornadaAnterior = codMarcacaoJornada;
+            } else if (codMarcacaoJornada > 0) {
+                if (jornada == null) {
+                    throw new IllegalStateException("O objeto jornada deve ser instanciado!");
+                }
+                // Marcação não é Jornada mas está vinculada à uma.
+                jornada.addMarcacaoToJornada(createFolhaPontoMarcacao(rSet));
+            } else {
+                // Marcação deste dia não pertence à nenhuma Jornada.
+                marcacoesForaJornada.add(createFolhaPontoMarcacao(rSet));
+            }
+
+            diaAnterior = diaAtual;
+            cpfAnterior = cpfAtual;
+            nomeAnterior = rSet.getString("NOME_COLABORADOR");
         }
-
-        final Map<Long, FolhaPontoTipoIntervalo> tiposIntervalosUnidade = new HashMap<>();
-
-        // Precisamos, de alguma forma, montrar o relatório :chan:.
-        marcacoesDb.forEach((colaboradorFolhaPontoDb, marcacoesDia) -> {
-            // Para cada colaborador.
-
-            final List<FolhaPontoJornadaDia> marcacoesDiaColaborador = new ArrayList<>();
-            marcacoesDia.forEach((dia, marcacoes) -> {
-                // Para cada dia.
-
-                final List<FolhaPontoJornada> jornadasDia = new ArrayList<>();
-                final List<FolhaPontoMarcacao> marcacoesForaJornada = new ArrayList<>();
-                marcacoes.forEach(folhaPontoMarcacaoDb -> {
-                    // Para cada marcação.
-
-                    // Precisamos realizar os cálculos e gerar os objetos corretos
-                    final FolhaPontoMarcacao folhaPontoMarcacao =
-                            convertoToFolhaPontoMarcacao(folhaPontoMarcacaoDb);
-
-                    // precisamos descobrir se ela vai pra lista de jornada ou fora.
-                    if (folhaPontoMarcacaoDb.isTipoJornada()) {
-                        // Se é uma marcação tipo Jornada, sabemos que ela será adicionada nas jornadas
-                        final FolhaPontoJornada jornada = new FolhaPontoJornada(
-                                folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio(),
-                                folhaPontoMarcacaoDb.getDataHoraMarcacaoFim(),
-                                folhaPontoMarcacaoDb.getCodTipoMarcacao(),
-                                folhaPontoMarcacaoDb.getCodTipoMarcacaoPorUnidade(),
-                                new ArrayList<>(),
-                                folhaPontoMarcacaoDb.isTrocouDia(),
-                                folhaPontoMarcacaoDb.isMarcacaoInicioAjustada(),
-                                folhaPontoMarcacaoDb.isMarcacaoFimAjustada());
-                        jornada.calculaJornadaBruta(folhaPontoMarcacaoDb.getDiferencaoInicioFimEmSegundos());
-                        jornada.calculaJornadaLiquida(folhaPontoMarcacaoDb.getDiferencaoInicioFimEmSegundos());
-                        jornadasDia.add(jornada);
-                    } else if (jornadasDia.isEmpty()) {
-                        // Se não tem nenhuma jornada criada ainda, não tem como a marcação pertencer à uma.
-                        marcacoesForaJornada.add(folhaPontoMarcacao);
-                    } else {
-                        // Se não é uma jornada, e já temos jornadas adicionadas. Então precisamos
-                        // descobrir se essa marcação está dentro de uma jornada.
-                        boolean foiAdicionadaEmJornada = false;
-                        for (final FolhaPontoJornada jornada : jornadasDia) {
-                            if (jornada.hasInicioFim() && folhaPontoMarcacao.fitIn(jornada)) {
-                                jornada.addMarcacaoToJornada(folhaPontoMarcacao);
-                                jornada.calculaJornadaLiquida(folhaPontoMarcacaoDb.getDiferencaoInicioFimEmSegundos());
-                                foiAdicionadaEmJornada = true;
-                                break;
-                            }
-                        }
-                        if (!foiAdicionadaEmJornada) {
-                            // Se a marcação não se encaixa em nenhuma jornada, então adicionamos fora das jornadas.
-                            marcacoesForaJornada.add(folhaPontoMarcacao);
-                        }
-                    }
-
-                    // Precisamos atualizar a lista de tipos de marcações marcadas.
-                    final Long codTipoMarcacao = folhaPontoMarcacaoDb.getCodTipoMarcacao();
-                    if (tiposIntervalosUnidade.get(codTipoMarcacao) == null) {
-                        // Se ainda não estiver mapeado, precisamos criar o tipo de intervalo e somar os tempos
-                        for (final TipoMarcacao tipoMarcacao : tiposIntervalos) {
-                            if (tipoMarcacao.getCodigo().equals(codTipoMarcacao)) {
-                                tiposIntervalosUnidade.put(
-                                        tipoMarcacao.getCodigo(),
-                                        FolhaPontoTipoIntervalo.createFromTipoIntervalo(
-                                                tipoMarcacao,
-                                                0L,
-                                                0L));
-                            }
-                        }
-                    }
-
-                    // Se o tipo já estiver mapeado, apenas somamos os tempos do intervalo
-                    tiposIntervalosUnidade
-                            .get(codTipoMarcacao)
-                            .sumTempoTotalTipoIntervalo(folhaPontoMarcacaoDb.getDiferencaoInicioFimEmSegundos());
-                    tiposIntervalosUnidade
-                            .get(codTipoMarcacao)
-                            .sumTempoTotalHorasNoturnas(folhaPontoMarcacaoDb.getTempoNoturnoEmSegundos());
-                });
-                marcacoesDiaColaborador.add(new FolhaPontoJornadaDia(dia, jornadasDia, marcacoesForaJornada));
-            });
-
-            final FolhaPontoJornadaRelatorio relatorioColaborador =
+        if (cpfAnterior != null) {
+            jornadasDia.add(jornada);
+            marcacoesDia.add(new FolhaPontoJornadaDia(diaAnterior, jornadasDia, marcacoesForaJornada));
+            folhasPontoJornada.add(
                     new FolhaPontoJornadaRelatorio(
-                            colaboradorFolhaPontoDb.getCpfColaborador(),
-                            colaboradorFolhaPontoDb.getNomeColaborador(),
-                            marcacoesDiaColaborador,
-                            LocalDateTime.now().atZone(zoneIdUnidade).toLocalDateTime());
-            relatorioColaborador.setTiposMarcacoesMarcadas(new HashSet<>(tiposIntervalosUnidade.values()));
-            relatorioColaborador.calculaTotaisHorasJornadasLiquidaBruta();
-            folhasPontoJornada.add(relatorioColaborador);
-        });
+                            cpfAnterior,
+                            nomeAnterior,
+                            marcacoesDia,
+                            dataHoraGeracaoRelatorioZoned));
+        }
 
         return folhasPontoJornada;
     }
 
     @NotNull
-    private static Map<ColaboradorFolhaPontoDb, Map<LocalDate, List<FolhaPontoMarcacaoDb>>> createMarcacoesDb(
-            @NotNull final ResultSet rSet) throws SQLException {
-        final Map<ColaboradorFolhaPontoDb, Map<LocalDate, List<FolhaPontoMarcacaoDb>>> maperson = new HashMap<>();
-        Map<LocalDate, List<FolhaPontoMarcacaoDb>> internalMap = new HashMap<>();
-        List<FolhaPontoMarcacaoDb> marcacoesDb = new ArrayList<>();
-
-        String cpfAnterior = null;
-        String nomeAnterior = null;
-        LocalDate diaAnterior = null;
-        LocalDate diaBase = null;
-        LocalDateTime dataHoraInicioFiltro = null;
-        LocalDateTime dataHoraFimFiltro = null;
-        boolean usarFiltroDataHora = false;
-        while (rSet.next()) {
-            final String cpfAtual = rSet.getString("CPF_COLABORADOR");
-            final LocalDateTime dataHoraInicio = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class);
-            // A data/hora de início pode ser nula ou a de fim, mas nunca ambas. Para utilizar o dia atual, devemos
-            // priorizar a data/hora de início.
-            final LocalDate diaAtual = dataHoraInicio != null
-                    ? dataHoraInicio.toLocalDate()
-                    : rSet.getObject("DATA_HORA_FIM", LocalDateTime.class).toLocalDate();
-
-            // Se for na primeira iteração, devemos deixar dia e cpf anterior como sendo igual aos atuais.
-            if (cpfAnterior == null) {
-                cpfAnterior = cpfAtual;
-            }
-            if (diaAnterior == null) {
-                diaAnterior = diaAtual;
-            }
-
-            final FolhaPontoMarcacaoDb folhaPontoMarcacaoDb = new FolhaPontoMarcacaoDb(
-                    rSet.getString("CPF_COLABORADOR"),
-                    rSet.getString("NOME_COLABORADOR"),
-                    rSet.getLong("COD_MARCACAO_JORNADA"),
-                    rSet.getObject("DIA_BASE", LocalDate.class),
-                    rSet.getLong("COD_TIPO_INTERVALO"),
-                    rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
-                    rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
-                    rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
-                    rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"),
-                    rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"),
-                    rSet.getBoolean("MARCACAO_INICIO_AJUSTADA"),
-                    rSet.getBoolean("MARCACAO_FIM_AJUSTADA"),
-                    rSet.getBoolean("TROCOU_DIA"),
-                    rSet.getBoolean("TIPO_JORNADA"));
-
-            if (!cpfAnterior.equals(cpfAtual)) {
-                // Trocou de colaborador.
-                Log.d(TAG, "Colaborador alterado. Anterior: " + cpfAnterior + " - Atual: " + cpfAtual);
-
-                internalMap.put(diaAnterior, marcacoesDb);
-                //noinspection ConstantConditions
-                maperson.put(new ColaboradorFolhaPontoDb(cpfAnterior, nomeAnterior), internalMap);
-                internalMap = new HashMap<>();
-                marcacoesDb = new ArrayList<>();
-            } else {
-                // Mesmo colaborador.
-                Log.d(TAG, "Mesmo colaborador. Anterior: " + cpfAnterior + " - Atual: " + cpfAtual);
-
-                if (usarFiltroDataHora) {
-                    if (estaDentroDoFiltro(dataHoraInicioFiltro, dataHoraFimFiltro, folhaPontoMarcacaoDb)) {
-                        marcacoesDb.add(folhaPontoMarcacaoDb);
-                    } else {
-                        internalMap.put(diaBase, marcacoesDb);
-                        marcacoesDb = new ArrayList<>();
-
-                        marcacoesDb.add(folhaPontoMarcacaoDb);
-                        usarFiltroDataHora = false;
-                    }
-                } else {
-                    if (!diaAnterior.equals(diaAtual)) {
-                        // Trocou o dia.
-                        internalMap.put(diaAnterior, marcacoesDb);
-                        marcacoesDb = new ArrayList<>();
-                    }
-                    marcacoesDb.add(folhaPontoMarcacaoDb);
-                }
-
-            }
-
-            // Se a marcação for JORNADA e TROCOU_DIA, significa que marcações do próximo dia podem
-            // ser vinculadas nessa jornada. Entrão utilizamos o range dessa jornada para comparar
-            // as próximas marcações, afim de encontrar alguma que encaixe dentro do mesmo dia da jornada.
-            // Deixamos esse código no final da execução pois a necessidade é para a proxima marcação.
-            if (folhaPontoMarcacaoDb.isTipoJornada() && folhaPontoMarcacaoDb.isTrocouDia()) {
-                if (folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio() == null
-                        || folhaPontoMarcacaoDb.getDataHoraMarcacaoFim() == null) {
-                    throw new IllegalStateException("Uma marcação não pode ter a proriedade 'trocouDia' e " +
-                            "ter dataHoraMarcacaoInicio ou Fim nula.");
-                }
-
-                dataHoraInicioFiltro = folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio();
-                dataHoraFimFiltro = folhaPontoMarcacaoDb.getDataHoraMarcacaoFim();
-                usarFiltroDataHora = true;
-                diaBase = folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio().toLocalDate();
-            }
-
-            cpfAnterior = cpfAtual;
-            nomeAnterior = rSet.getString("NOME_COLABORADOR");
-            diaAnterior = diaAtual;
-        }
-
-        if (diaAnterior != null) {
-            internalMap.put(diaAnterior, marcacoesDb);
-            maperson.put(new ColaboradorFolhaPontoDb(cpfAnterior, nomeAnterior), internalMap);
-        }
-
-        return maperson;
-    }
-
-    private static boolean estaDentroDoFiltro(@Nullable final LocalDateTime dataHoraInicioFiltro,
-                                              @Nullable final LocalDateTime dataHoraFimFiltro,
-                                              @NotNull final FolhaPontoMarcacaoDb folhaPontoMarcacaoDb) {
-        if (folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio() == null
-                || folhaPontoMarcacaoDb.getDataHoraMarcacaoFim() == null
-                || dataHoraInicioFiltro == null
-                || dataHoraFimFiltro == null)
-            return false;
-        // TODO - Este cálculo deve ser inclusivo
-        // Atualmente se uma marcação for realizada na mesma data_hora que a jornada, retorna false.
-        return folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio().isAfter(dataHoraInicioFiltro)
-                && folhaPontoMarcacaoDb.getDataHoraMarcacaoFim().isBefore(dataHoraFimFiltro);
+    private static FolhaPontoJornada createFolhaPontoJornada(@NotNull final ResultSet rSet) throws SQLException {
+        return new FolhaPontoJornada(
+                rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
+                rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
+                rSet.getLong("COD_TIPO_INTERVALO"),
+                rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
+                new ArrayList<>(),
+                rSet.getBoolean("TROCOU_DIA"),
+                rSet.getBoolean("MARCACAO_INICIO_AJUSTADA"),
+                rSet.getBoolean("MARCACAO_FIM_AJUSTADA"));
     }
 
     @NotNull
-    private static FolhaPontoMarcacao convertoToFolhaPontoMarcacao(
-            @NotNull final FolhaPontoMarcacaoDb folhaPontoMarcacaoDb) {
+    private static FolhaPontoMarcacao createFolhaPontoMarcacao(@NotNull final ResultSet rSet) throws SQLException {
         return new FolhaPontoMarcacao(
-                folhaPontoMarcacaoDb.getDataHoraMarcacaoInicio(),
-                folhaPontoMarcacaoDb.getDataHoraMarcacaoFim(),
-                folhaPontoMarcacaoDb.getCodTipoMarcacao(),
-                folhaPontoMarcacaoDb.getCodTipoMarcacaoPorUnidade(),
-                folhaPontoMarcacaoDb.isTrocouDia(),
-                folhaPontoMarcacaoDb.isMarcacaoInicioAjustada(),
-                folhaPontoMarcacaoDb.isMarcacaoFimAjustada());
+                rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
+                rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
+                rSet.getLong("COD_TIPO_INTERVALO"),
+                rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
+                rSet.getBoolean("TROCOU_DIA"),
+                rSet.getBoolean("MARCACAO_INICIO_AJUSTADA"),
+                rSet.getBoolean("MARCACAO_FIM_AJUSTADA"));
     }
 
     @NotNull
