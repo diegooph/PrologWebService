@@ -7,6 +7,7 @@ Change Log
 * Cria teste para validar relatório de totais por tipo de marcação (PL-1617)
 * Altera forma de cálculo do total de horas do relatório de folha de ponto (PL-1576)
 * Altera nome no header do relatório de totais por tipo de marcação para evitar problema com colunas de mesmo nome (PL-1159)
+* Corrige criação de token de controle de jornada caso unidade não possua (PL-1575)
 
 <a name="v0.0.82"></a>
 ## Version [v0.0.82](https://github.com/luizfp/PrologWebService/compare/v0.0.81...v0.0.82) (release-date) [unreleased]
