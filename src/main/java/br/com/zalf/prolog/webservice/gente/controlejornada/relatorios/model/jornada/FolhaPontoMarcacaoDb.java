@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jor
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -15,6 +16,10 @@ public class FolhaPontoMarcacaoDb {
     private final String cpfColaborador;
     @NotNull
     private final String nomeColaborador;
+    @Nullable
+    private final Long codMarcacaoJornada;
+    @Nullable
+    private final LocalDate diaBaseMarcacao;
     @NotNull
     private final Long codTipoMarcacao;
     @NotNull
@@ -33,6 +38,8 @@ public class FolhaPontoMarcacaoDb {
 
     public FolhaPontoMarcacaoDb(@NotNull final String cpfColaborador,
                                 @NotNull final String nomeColaborador,
+                                @Nullable final Long codMarcacaoJornada,
+                                @Nullable final LocalDate diaBaseMarcacao,
                                 @NotNull final Long codTipoMarcacao,
                                 @NotNull final Long codTipoMarcacaoPorUnidade,
                                 @Nullable final LocalDateTime dataHoraMarcacaoInicio,
@@ -45,6 +52,8 @@ public class FolhaPontoMarcacaoDb {
                                 final boolean tipoJornada) {
         this.cpfColaborador = cpfColaborador;
         this.nomeColaborador = nomeColaborador;
+        this.codMarcacaoJornada = codMarcacaoJornada;
+        this.diaBaseMarcacao = diaBaseMarcacao;
         this.codTipoMarcacao = codTipoMarcacao;
         this.codTipoMarcacaoPorUnidade = codTipoMarcacaoPorUnidade;
         this.dataHoraMarcacaoInicio = dataHoraMarcacaoInicio;
@@ -65,6 +74,16 @@ public class FolhaPontoMarcacaoDb {
     @NotNull
     public String getNomeColaborador() {
         return nomeColaborador;
+    }
+
+    @Nullable
+    public Long getCodMarcacaoJornada() {
+        return codMarcacaoJornada;
+    }
+
+    @Nullable
+    public LocalDate getDiaBaseMarcacao() {
+        return diaBaseMarcacao;
     }
 
     @NotNull

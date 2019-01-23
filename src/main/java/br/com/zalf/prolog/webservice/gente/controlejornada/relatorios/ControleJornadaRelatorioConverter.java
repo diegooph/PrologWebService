@@ -261,6 +261,8 @@ final class ControleJornadaRelatorioConverter {
             final FolhaPontoMarcacaoDb folhaPontoMarcacaoDb = new FolhaPontoMarcacaoDb(
                     rSet.getString("CPF_COLABORADOR"),
                     rSet.getString("NOME_COLABORADOR"),
+                    rSet.getLong("COD_MARCACAO_JORNADA"),
+                    rSet.getObject("DIA_BASE", LocalDate.class),
                     rSet.getLong("COD_TIPO_INTERVALO"),
                     rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
                     rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
