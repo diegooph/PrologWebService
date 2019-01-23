@@ -53,6 +53,8 @@ public class ControleJornadaTest extends BaseTest {
         cenarioTeste9();
         cenarioTeste10();
         cenarioTeste11();
+        cenarioTeste12();
+        cenarioTeste13();
     }
 
     /**
@@ -741,6 +743,83 @@ public class ControleJornadaTest extends BaseTest {
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
                 ProLogDateParser.toLocalDateTime("2019-01-26T18:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+    }
+
+    /**
+     * O cenário 12 trata de marcações realizadas que não são completas, ou seja, não possui
+     * INICIO ou não possui FIM.
+     *
+     * @throws ProLogException Em caso de erro.
+     */
+    private void cenarioTeste12() throws ProLogException {
+        // MARCACAO DE JORNADA
+        IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_JORNADA,
+                ProLogDateParser.toLocalDateTime("2019-01-27T06:15:00"));
+        Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_JORNADA,
+                ProLogDateParser.toLocalDateTime("2019-01-27T18:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE INICIO DE DESCANSO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_DESCANSO,
+                ProLogDateParser.toLocalDateTime("2019-01-27T09:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE INICIO DE REFEICAO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_REFEICAO,
+                ProLogDateParser.toLocalDateTime("2019-01-27T12:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE INICIO DE INTERVALO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_INTERVALO,
+                ProLogDateParser.toLocalDateTime("2019-01-27T19:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+    }
+
+    /**
+     * Este cenário é semelhante ao {@code cenarioTeste12 cenário 12}, mas neste cenário a
+     * JORNADA dura mais de um dia e contém marcações apenas com apenas INICIO.
+     *
+     * @see ControleJornadaTest#cenarioTeste12()
+     * @throws ProLogException Em caso de erro.
+     */
+    private void cenarioTeste13() throws ProLogException {
+        // MARCACAO DE JORNADA
+        IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_JORNADA,
+                ProLogDateParser.toLocalDateTime("2019-01-28T06:15:00"));
+        Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_JORNADA,
+                ProLogDateParser.toLocalDateTime("2019-01-30T18:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE INICIO DE DESCANSO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_DESCANSO,
+                ProLogDateParser.toLocalDateTime("2019-01-28T09:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE INICIO DE REFEICAO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_REFEICAO,
+                ProLogDateParser.toLocalDateTime("2019-01-29T12:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE INICIO DE INTERVALO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_INTERVALO,
+                ProLogDateParser.toLocalDateTime("2019-01-30T15:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
