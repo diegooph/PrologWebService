@@ -8,8 +8,8 @@ import java.util.Date;
 public class QuantidadeAfericao {
     private Date data;
     private String dataFormatada;
-    private int qtdAfericoesPressao;
     private int qtdAfericoesSulco;
+    private int qtdAfericoesPressao;
     private int qtdAfericoesSulcoPressao;
 
     public QuantidadeAfericao() {
@@ -18,13 +18,13 @@ public class QuantidadeAfericao {
 
     public QuantidadeAfericao(Date data,
                               String dataFormatada,
-                              int qtdAfericoesPressao,
                               int qtdAfericoesSulco,
+                              int qtdAfericoesPressao,
                               int qtAfericaoSulcoPressao) {
         this.data = data;
         this.dataFormatada = dataFormatada;
-        this.qtdAfericoesPressao = qtdAfericoesPressao;
         this.qtdAfericoesSulco = qtdAfericoesSulco;
+        this.qtdAfericoesPressao = qtdAfericoesPressao;
         this.qtdAfericoesSulcoPressao = qtAfericaoSulcoPressao;
     }
 
@@ -44,20 +44,20 @@ public class QuantidadeAfericao {
         this.dataFormatada = dataFormatada;
     }
 
-    public int getQtdAfericoesPressao() {
-        return qtdAfericoesPressao;
-    }
-
-    public void setQtdAfericoesPressao(int qtdAfericoesPressao) {
-        this.qtdAfericoesPressao = qtdAfericoesPressao;
-    }
-
     public int getQtdAfericoesSulco() {
         return qtdAfericoesSulco;
     }
 
     public void setQtdAfericoesSulco(int qtdAfericoesSulco) {
         this.qtdAfericoesSulco = qtdAfericoesSulco;
+    }
+
+    public int getQtdAfericoesPressao() {
+        return qtdAfericoesPressao;
+    }
+
+    public void setQtdAfericoesPressao(int qtdAfericoesPressao) {
+        this.qtdAfericoesPressao = qtdAfericoesPressao;
     }
 
     public int getQtdAfericoesSulcoPressao() {

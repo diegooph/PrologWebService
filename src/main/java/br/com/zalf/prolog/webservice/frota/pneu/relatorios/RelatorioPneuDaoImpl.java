@@ -807,8 +807,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     afericoes.add(new QuantidadeAfericao(
                             rSet.getObject("DATA", Date.class),
                             rSet.getString("DATA_FORMATADA"),
-                            rSet.getInt("QTD_AFERICAO_PRESSAO"),
                             rSet.getInt("QTD_AFERICAO_SULCO"),
+                            rSet.getInt("QTD_AFERICAO_PRESSAO"),
                             rSet.getInt("QTD_AFERICAO_SULCO_PRESSAO")));
                 } while (rSet.next());
                 return afericoes;
