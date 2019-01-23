@@ -153,7 +153,8 @@ public interface VeiculoDao {
      * As marcas de veículos são a nível ProLog, porém, os modelos são a nível de empresa. Esse método retorna uma
      * lista com todas as marcas disponíveis, cada marca contém uma lista de modelos com os modelos criados pela
      * empresa para qual as informações foram solicitadas.
-     * Caso a empresa não tenha modelos para uma marca qualquer, essa marca não estará na lista.
+     * Caso a empresa não tenha modelos para uma marca qualquer, essa marca irá possuir uma lista vazia de modelos,
+     * não nula.
      *
      * @return uma lista de {@link Marca marcas}.
      * @throws Throwable caso qualquer erro aconteça.

@@ -498,11 +498,14 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                     marca.setModelos(modelos);
                     marcas.add(marca);
                 }
-
                 // No caso de iterar e ficar na mesma marca, seria apenas necessário criar um novo modelo, como isso
                 // sempre acontece, não precisamos de um if específico acima para tratar isso.
-                // Modelos são adicionados na lista por referência.
-                modelos.add(createModelo(rSet));
+
+                // Modelos são adicionados na lista por referência. O if abaixo é necessário para os casos onde a
+                // empresa não possui nenhum modelo para alguma marca.
+                if (rSet.getLong("COD_MODELO") > 0) {
+                    modelos.add(createModelo(rSet));
+                }
                 codMarcaAnterior = rSet.getLong("COD_MARCA");
             }
             return marcas;
