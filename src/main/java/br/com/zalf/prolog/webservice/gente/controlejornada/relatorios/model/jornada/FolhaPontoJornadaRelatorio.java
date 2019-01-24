@@ -117,7 +117,11 @@ public class FolhaPontoJornadaRelatorio {
 
         marcacoesDia.forEach(folhaPontoTipoIntervalo -> {
             for (int i = 0; i < folhaPontoTipoIntervalo.getJornadasDia().size(); i++) {
-                FolhaPontoJornada jornada = folhaPontoTipoIntervalo.getJornadasDia().get(i);
+                final FolhaPontoJornada jornada = folhaPontoTipoIntervalo.getJornadasDia().get(i);
+                if (jornada == null) {
+                    // Por desencargo de consciência, verificamos se é null. Mas não deve acontecer.
+                    continue;
+                }
                 this.totalJornadaBrutaPeriodo = this.totalJornadaBrutaPeriodo.plus(jornada.getJornadaBruta());
                 this.totalJornadaLiquidaPeriodo = this.totalJornadaLiquidaPeriodo.plus(jornada.getJornadaLiquida());
             }

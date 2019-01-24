@@ -154,7 +154,6 @@ final class ControleJornadaRelatorioConverter {
 
             if (!cpfAnterior.equals(cpfAtual)) {
                 // Trocou de colaborador.
-                // TODO - Aqui setar mais algum atributo?
                 jornadasDia.add(jornada);
                 marcacoesDia.add(new FolhaPontoJornadaDia(diaAnterior, jornadasDia, marcacoesForaJornada));
                 //noinspection ConstantConditions
@@ -166,6 +165,7 @@ final class ControleJornadaRelatorioConverter {
                 folhaPontoJornadaRelatorio.setTiposMarcacoesMarcadas(new HashSet<>(tiposIntervalosUnidade.values()));
                 folhaPontoJornadaRelatorio.calculaTotaisHorasJornadasLiquidaBruta();
                 folhasPontoJornada.add(folhaPontoJornadaRelatorio);
+                // Resetamos os objetos para o novo colaborador.
                 tiposIntervalosUnidade = new HashMap<>();
                 marcacoesDia = new ArrayList<>();
                 jornadasDia = new ArrayList<>();
@@ -179,6 +179,7 @@ final class ControleJornadaRelatorioConverter {
                     jornadasDia.add(jornada);
                     marcacoesDia.add(new FolhaPontoJornadaDia(diaAnterior, jornadasDia, marcacoesForaJornada));
                     jornadasDia = new ArrayList<>();
+                    jornada = null;
                     marcacoesForaJornada = new ArrayList<>();
                     codMarcacaoJornadaAnterior = null;
                 }
@@ -187,10 +188,12 @@ final class ControleJornadaRelatorioConverter {
             final Long codMarcacaoJornada = rSet.getLong("COD_MARCACAO_JORNADA");
 
             if (tipoJornada) {
-                // Criamos uma Jornada.
-                if (codMarcacaoJornadaAnterior != null &&!codMarcacaoJornada.equals(codMarcacaoJornadaAnterior)) {
+                // Se o código da jornada mudou, temos que adicionar a jornada anterior processada.
+                if (codMarcacaoJornadaAnterior != null
+                        && !codMarcacaoJornada.equals(codMarcacaoJornadaAnterior)) {
                     jornadasDia.add(jornada);
                 }
+                // Criamos uma Jornada.
                 jornada = createFolhaPontoJornada(rSet);
                 codMarcacaoJornadaAnterior = codMarcacaoJornada;
             } else if (codMarcacaoJornada > 0) {
@@ -206,36 +209,17 @@ final class ControleJornadaRelatorioConverter {
                 marcacoesForaJornada.add(createFolhaPontoMarcacao(rSet));
             }
 
-            // Precisamos atualizar a lista de tipos de marcações marcadas.
-            final Long codTipoMarcacao = rSet.getLong("COD_TIPO_INTERVALO");
-            if (tiposIntervalosUnidade.get(codTipoMarcacao) == null) {
-                // Se ainda não estiver mapeado, precisamos criar o tipo de intervalo e somar os tempos
-                for (final TipoMarcacao tipoMarcacao : tiposIntervalos) {
-                    if (tipoMarcacao.getCodigo().equals(codTipoMarcacao)) {
-                        tiposIntervalosUnidade.put(
-                                tipoMarcacao.getCodigo(),
-                                FolhaPontoTipoIntervalo.createFromTipoIntervalo(
-                                        tipoMarcacao,
-                                        0L,
-                                        0L));
-                    }
-                }
-            }
-
-            // Se o tipo já estiver mapeado, apenas somamos os tempos do intervalo
-            tiposIntervalosUnidade
-                    .get(codTipoMarcacao)
-                    .sumTempoTotalTipoIntervalo(rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"));
-            tiposIntervalosUnidade
-                    .get(codTipoMarcacao)
-                    .sumTempoTotalHorasNoturnas(rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"));
+            // Para cada Marcação processada, atualizamos os cálculos de tempo.
+            calculaTempoPorTipoMarcacao(rSet, tiposIntervalosUnidade, tiposIntervalos);
 
             diaAnterior = diaAtual;
             cpfAnterior = cpfAtual;
             nomeAnterior = rSet.getString("NOME_COLABORADOR");
         }
         if (cpfAnterior != null) {
-            jornadasDia.add(jornada);
+            if (jornada != null) {
+                jornadasDia.add(jornada);
+            }
             marcacoesDia.add(new FolhaPontoJornadaDia(diaAnterior, jornadasDia, marcacoesForaJornada));
             final FolhaPontoJornadaRelatorio folhaPontoJornadaRelatorio = new FolhaPontoJornadaRelatorio(
                     cpfAnterior,
@@ -248,6 +232,35 @@ final class ControleJornadaRelatorioConverter {
         }
 
         return folhasPontoJornada;
+    }
+
+    private static void calculaTempoPorTipoMarcacao(
+            @NotNull final ResultSet rSet,
+            @NotNull final Map<Long, FolhaPontoTipoIntervalo> tiposIntervalosUnidade,
+            @NotNull final List<TipoMarcacao> tiposIntervalos) throws SQLException {
+        // Precisamos atualizar a lista de tipos de marcações marcadas.
+        final Long codTipoMarcacao = rSet.getLong("COD_TIPO_INTERVALO");
+        if (tiposIntervalosUnidade.get(codTipoMarcacao) == null) {
+            // Se ainda não estiver mapeado, precisamos criar o tipo de intervalo e somar os tempos
+            for (final TipoMarcacao tipoMarcacao : tiposIntervalos) {
+                if (tipoMarcacao.getCodigo().equals(codTipoMarcacao)) {
+                    tiposIntervalosUnidade.put(
+                            tipoMarcacao.getCodigo(),
+                            FolhaPontoTipoIntervalo.createFromTipoIntervalo(
+                                    tipoMarcacao,
+                                    0L,
+                                    0L));
+                }
+            }
+        }
+
+        // Se o tipo já estiver mapeado, apenas somamos os tempos do intervalo
+        tiposIntervalosUnidade
+                .get(codTipoMarcacao)
+                .sumTempoTotalTipoIntervalo(rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"));
+        tiposIntervalosUnidade
+                .get(codTipoMarcacao)
+                .sumTempoTotalHorasNoturnas(rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"));
     }
 
     @NotNull
