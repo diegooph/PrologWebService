@@ -125,8 +125,7 @@ final class ControleJornadaRelatorioConverter {
             @NotNull final ResultSet rSet,
             @NotNull final List<TipoMarcacao> tiposIntervalos,
             @NotNull final ZoneId zoneIdUnidade) throws Throwable {
-        final LocalDateTime dataHoraGeracaoRelatorioUtc = Now.localDateTimeUtc();
-        final LocalDateTime dataHoraGeracaoRelatorioZoned = dataHoraGeracaoRelatorioUtc
+        final LocalDateTime dataHoraGeracaoRelatorioZoned = Now.localDateTimeUtc()
                 .atZone(ZoneOffset.UTC)
                 .withZoneSameInstant(zoneIdUnidade)
                 .toLocalDateTime();
