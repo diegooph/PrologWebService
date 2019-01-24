@@ -55,6 +55,7 @@ public class ControleJornadaTest extends BaseTest {
         cenarioTeste11();
         cenarioTeste12();
         cenarioTeste13();
+        cenarioTeste14();
     }
 
     /**
@@ -820,6 +821,38 @@ public class ControleJornadaTest extends BaseTest {
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_INTERVALO,
                 ProLogDateParser.toLocalDateTime("2019-01-30T15:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+    }
+
+    /**
+     * Cenário criado para testar o caso em que um dia não possui nenhuma JORNADA.
+     * Para este dia o relatório deverá mostrar apenas marcações avulsas.
+     *
+     * @throws ProLogException Em caso de erros.
+     */
+    private void cenarioTeste14() throws ProLogException {
+        // MARCACAO DE INICIO DE DESCANSO
+        IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_DESCANSO,
+                ProLogDateParser.toLocalDateTime("2019-01-31T09:00:00"));
+        Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+
+        marcacao = getIntervaloMarcacaoFim(
+                codMarcacaoInserida,
+                TIPO_INTERVALO_DESCANSO,
+                ProLogDateParser.toLocalDateTime("2019-01-31T10:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE INICIO DE REFEICAO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_REFEICAO,
+                ProLogDateParser.toLocalDateTime("2019-01-31T12:00:00"));
+        insertMarcacaoIntervalo(marcacao);
+
+        // MARCACAO DE INICIO DE INTERVALO
+        marcacao = getIntervaloMarcacaoInicio(
+                TIPO_INTERVALO_INTERVALO,
+                ProLogDateParser.toLocalDateTime("2019-01-31T15:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
