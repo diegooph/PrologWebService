@@ -511,7 +511,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "PUBLIC.FUNC_PNEU_RELATORIO_QUANTIDADE_AFERICOES_POR_TIPO_MEDICAO_COLETADA(?, ?, ?);");
+                    "PUBLIC.FUNC_PNEU_RELATORIO_QTD_AFERICOES_POR_TIPO_MEDICAO_COLETADA(?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setDate(2, dataInicial);
             stmt.setDate(3, dataFinal);
