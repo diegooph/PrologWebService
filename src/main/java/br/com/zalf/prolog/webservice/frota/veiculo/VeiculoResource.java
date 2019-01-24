@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
@@ -162,12 +163,12 @@ public class VeiculoResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/modelo/{codEmpresa}/{codMarca}")
-    public Response insertModeloVeiculo(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca) {
-        if (service.insertModeloVeiculo(modelo, codEmpresa, codMarca)) {
-            return Response.ok("Modelo inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir o modelo");
-        }
+    public ResponseWithCod insertModeloVeiculo(Modelo modelo,
+                                               @PathParam("codEmpresa") Long codEmpresa,
+                                               @PathParam("codMarca") Long codMarca) throws ProLogException {
+        return ResponseWithCod.ok(
+                "Modelo cadastrado com sucesso",
+                service.insertModeloVeiculo(modelo, codEmpresa, codMarca));
     }
 
     @GET

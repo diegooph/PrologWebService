@@ -171,7 +171,10 @@ public interface VeiculoDao {
      * @return resultado da operação
      * @throws SQLException caso ocorrer erro
      */
-    boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException;
+    @NotNull
+    Long insertModeloVeiculo(@NotNull final Modelo modelo,
+                             @NotNull final Long codEmpresa,
+                             @NotNull final Long codMarca) throws Throwable;
 
     /**
      * busca o total de vaículos de uma unidade

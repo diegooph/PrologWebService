@@ -521,28 +521,30 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return modelo;
     }
 
+    @NotNull
     @Override
-    public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException, NullPointerException {
+    public Long insertModeloVeiculo(@NotNull final Modelo modelo,
+                                    @NotNull final Long codEmpresa,
+                                    @NotNull final Long codMarca) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            if (modelo.getNome().trim().isEmpty()) {
-                throw new NullPointerException("Modelo sem nome!");
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?) " +
+                    "RETURNING CODIGO");
+            stmt.setString(1, modelo.getNome());
+            stmt.setLong(2, codMarca);
+            stmt.setLong(3, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
             } else {
-                conn = getConnection();
-                stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?)");
-                stmt.setString(1, modelo.getNome());
-                stmt.setLong(2, codMarca);
-                stmt.setLong(3, codEmpresa);
-                int count = stmt.executeUpdate();
-                if (count == 0) {
-                    throw new SQLException("Erro ao cadastrar o modelo do veículo");
-                }
+                throw new SQLException("Erro ao cadastrar o modelo do veículo");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt, rSet);
         }
-        return true;
     }
 
     @Override
