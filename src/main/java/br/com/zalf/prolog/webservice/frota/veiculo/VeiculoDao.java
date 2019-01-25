@@ -163,13 +163,13 @@ public interface VeiculoDao {
     List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
-     * insere um modelo de veiculo
+     * Insere um modelo de veiculo
      *
-     * @param modelo     descrição do modelo
-     * @param codEmpresa código da empresa
-     * @param codMarca   códiga da marca
-     * @return resultado da operação
-     * @throws SQLException caso ocorrer erro
+     * @param modelo     descrição do modelo.
+     * @param codEmpresa código da empresa.
+     * @param codMarca   códiga da marca.
+     * @return código do novo modelo inserido.
+     * @throws Throwable caso ocorrer erro.
      */
     @NotNull
     Long insertModeloVeiculo(@NotNull final Modelo modelo,
