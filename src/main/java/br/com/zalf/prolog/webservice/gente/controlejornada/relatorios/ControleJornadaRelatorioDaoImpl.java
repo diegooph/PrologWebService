@@ -240,7 +240,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_PONTO_JORNADA(?, ?, ?, ?, ?, ?);");
+                    "SELECT * FROM FUNC_MARCACAO_RELATORIO_FOLHA_PONTO_JORNADA(?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
             if (Filtros.isFiltroTodos(codTipoIntervalo)) {
                 stmt.setNull(2, Types.BIGINT);
