@@ -7,7 +7,7 @@ Change Log
 ### Features
 * Cria novos métodos de busca de marcas e modelos de veículos (PL-1441)
 * Cria function para deleção de checklist e suas respectivas ordens de serviço (PL-1607)
-* Cria novo diagrama para carreta 2 eixos single (PS-1569, PS-1570, PS-1571)
+* Cria novo diagrama para carreta 2 eixos single (PL-1569, PL-1570, PL-1571)
 
 ### Refactors
 * Remove validação de letras e números do cadastro de veículos (PL-1636)
