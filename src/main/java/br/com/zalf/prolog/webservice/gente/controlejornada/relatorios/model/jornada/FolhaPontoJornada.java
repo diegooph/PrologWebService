@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +24,9 @@ public class FolhaPontoJornada {
     private final Long codTipoMarcacaoPorUnidade;
     @NotNull
     private final List<FolhaPontoMarcacao> marcacoes;
+    @NotNull
+    private final Duration jornadaBruta;
+    private Duration jornadaLiquida;
     /**
      * Indica se as marcações de início e fim foram feitas em dias diferentes.
      */
@@ -32,14 +34,13 @@ public class FolhaPontoJornada {
     private final boolean marcacaoInicioAjustada;
     private final boolean marcacaoFimAjustada;
 
-    private Duration jornadaBruta;
-    private Duration jornadaLiquida;
-
     public FolhaPontoJornada(@Nullable final LocalDateTime dataHoraInicioJornada,
                              @Nullable final LocalDateTime dataHoraFimJornada,
                              @NotNull final Long codTipoMarcacao,
                              @NotNull final Long codTipoMarcacaoPorUnidade,
                              @NotNull final List<FolhaPontoMarcacao> marcacoes,
+                             @NotNull final Duration jornadaBruta,
+                             @NotNull final Duration jornadaLiquida,
                              final boolean trocouDia,
                              final boolean marcacaoInicioAjustada,
                              final boolean marcacaoFimAjustada) {
@@ -51,6 +52,8 @@ public class FolhaPontoJornada {
         this.trocouDia = trocouDia;
         this.marcacaoInicioAjustada = marcacaoInicioAjustada;
         this.marcacaoFimAjustada = marcacaoFimAjustada;
+        this.jornadaBruta = jornadaBruta;
+        this.jornadaLiquida = jornadaLiquida;
     }
 
     @NotNull
@@ -58,18 +61,17 @@ public class FolhaPontoJornada {
         final List<FolhaPontoMarcacao> marcacoes = new ArrayList<>();
         marcacoes.add(FolhaPontoMarcacao.getDummy());
         marcacoes.add(FolhaPontoMarcacao.getDummy());
-        final FolhaPontoJornada jornada = new FolhaPontoJornada(
+        return new FolhaPontoJornada(
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 1L,
                 1L,
                 marcacoes,
+                Duration.ofHours(9),
+                Duration.ofHours(8),
                 false,
                 false,
                 true);
-        jornada.setJornadaBruta(Duration.ofHours(9));
-        jornada.setJornadaLiquida(Duration.ofHours(8));
-        return jornada;
     }
 
     @Nullable
@@ -113,10 +115,6 @@ public class FolhaPontoJornada {
         return jornadaBruta;
     }
 
-    public void setJornadaBruta(final Duration jornadaBruta) {
-        this.jornadaBruta = jornadaBruta;
-    }
-
     public Duration getJornadaLiquida() {
         return jornadaLiquida;
     }
@@ -125,37 +123,20 @@ public class FolhaPontoJornada {
         this.jornadaLiquida = jornadaLiquida;
     }
 
-    public boolean hasInicioFim() {
-        return this.dataHoraInicioJornada != null
-                && this.dataHoraFimJornada != null;
-    }
-
     public void addMarcacaoToJornada(@NotNull final FolhaPontoMarcacao folhaPontoMarcacao) {
         this.marcacoes.add(folhaPontoMarcacao);
+        this.calculaJornadaLiquida(folhaPontoMarcacao.getDiferencaInicioFimEmSegundos());
     }
 
-    public void calculaJornadaBruta(@Nullable final Long diferencaoInicioFimEmSegundos) {
-        if (diferencaoInicioFimEmSegundos == null) {
-            setJornadaBruta(Duration.ZERO);
-        } else {
-            setJornadaBruta(Duration.ofSeconds(diferencaoInicioFimEmSegundos));
-        }
-    }
-
-    public void calculaJornadaLiquida(@Nullable final Long diferencaoInicioFimEmSegundos) {
-        Preconditions.checkNotNull(this.jornadaBruta);
-
-        if (diferencaoInicioFimEmSegundos == null)
+    public void calculaJornadaLiquida(final long diferencaInicioFimEmSegundos) {
+        // Pode ser null no caso de marcações que tem apenas início ou fim ou que foram iniciadas e finalizadas no
+        // mesmo segundo. Vai saber...
+        if (diferencaInicioFimEmSegundos == 0)
             return;
 
-        // A primeira vez que calculamos a jornada liquida, apenas setamos a bruta, para decrementar posteriormente.
-        if (this.jornadaLiquida == null) {
-            this.jornadaLiquida = Duration.ofSeconds(jornadaBruta.getSeconds());
-            return;
-        }
-
-        final Long jornadaLiquida =
-                Math.abs(this.jornadaLiquida.minus(Duration.ofSeconds(diferencaoInicioFimEmSegundos)).getSeconds());
-        setJornadaLiquida(Duration.ofSeconds(jornadaLiquida));
+        // Se marcação tem extensão maior que a duração da jornada, o tempo total de jornada líquida será negativo,
+        // optamos, por deixar assim para fazer o erro ser vísivel no relatório.
+        final long jornadaLiquidaSegundos = this.jornadaLiquida.minusSeconds(diferencaInicioFimEmSegundos).getSeconds();
+        setJornadaLiquida(Duration.ofSeconds(jornadaLiquidaSegundos));
     }
 }

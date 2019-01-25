@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Time;
 import java.time.Duration;
@@ -106,15 +105,11 @@ public final class FolhaPontoTipoIntervalo extends TipoMarcacao {
         return super.hashCode();
     }
 
-    public void sumTempoTotalTipoIntervalo(@Nullable final Long tempoTotalTipoIntervaloSegundos) {
-        if (tempoTotalTipoIntervaloSegundos != null) {
-            this.tempoTotalTipoIntervalo =
-                    tempoTotalTipoIntervalo.plus(Duration.ofSeconds(tempoTotalTipoIntervaloSegundos));
-        }
+    public void sumTempoTotalTipoIntervalo(final long tempoTotalTipoIntervaloSegundos) {
+        this.tempoTotalTipoIntervalo = tempoTotalTipoIntervalo.plusSeconds(tempoTotalTipoIntervaloSegundos);
     }
 
-    public void sumTempoTotalHorasNoturnas(@NotNull final Long tempoTotalHorasNoturnasSegundos) {
-        this.tempoTotalHorasNoturnas =
-                tempoTotalHorasNoturnas.plus(Duration.ofSeconds(tempoTotalHorasNoturnasSegundos));
+    public void sumTempoTotalHorasNoturnas(final long tempoTotalHorasNoturnasSegundos) {
+        this.tempoTotalHorasNoturnas = tempoTotalHorasNoturnas.plusSeconds(tempoTotalHorasNoturnasSegundos);
     }
 }

@@ -28,16 +28,16 @@ public class FolhaPontoMarcacao {
     private final boolean marcacaoFimAjustada;
 
     @Exclude
-    @Nullable
-    private Long diferencaoInicioFimEmSegundos;
+    private final long diferencaInicioFimEmSegundos;
     @Exclude
-    @Nullable
-    private Long tempoNoturnoEmSegundos;
+    private final long tempoNoturnoEmSegundos;
 
     public FolhaPontoMarcacao(@Nullable final LocalDateTime dataHoraInicio,
                               @Nullable final LocalDateTime dataHoraFim,
                               @NotNull final Long codTipoMarcacao,
                               @NotNull final Long codTipoMarcacaoPorUnidade,
+                              final long diferencaInicioFimEmSegundos,
+                              final long tempoNoturnoEmSegundos,
                               final boolean trocouDia,
                               final boolean marcacaoInicioAjustada,
                               final boolean marcacaoFimAjustada) {
@@ -45,6 +45,8 @@ public class FolhaPontoMarcacao {
         this.dataHoraFim = dataHoraFim;
         this.codTipoMarcacao = codTipoMarcacao;
         this.codTipoMarcacaoPorUnidade = codTipoMarcacaoPorUnidade;
+        this.diferencaInicioFimEmSegundos = diferencaInicioFimEmSegundos;
+        this.tempoNoturnoEmSegundos = tempoNoturnoEmSegundos;
         this.trocouDia = trocouDia;
         this.marcacaoInicioAjustada = marcacaoInicioAjustada;
         this.marcacaoFimAjustada = marcacaoFimAjustada;
@@ -57,6 +59,8 @@ public class FolhaPontoMarcacao {
                 LocalDateTime.now(),
                 1L,
                 1L,
+                21000,
+                1000,
                 false,
                 true,
                 false);
@@ -94,22 +98,12 @@ public class FolhaPontoMarcacao {
         return marcacaoFimAjustada;
     }
 
-    @Nullable
-    public Long getDiferencaoInicioFimEmSegundos() {
-        return diferencaoInicioFimEmSegundos;
+    public long getDiferencaInicioFimEmSegundos() {
+        return diferencaInicioFimEmSegundos;
     }
 
-    public void setDiferencaoInicioFimEmSegundos(@Nullable final Long diferencaoInicioFimEmSegundos) {
-        this.diferencaoInicioFimEmSegundos = diferencaoInicioFimEmSegundos;
-    }
-
-    @Nullable
-    public Long getTempoNoturnoEmSegundos() {
+    public long getTempoNoturnoEmSegundos() {
         return tempoNoturnoEmSegundos;
-    }
-
-    public void setTempoNoturnoEmSegundos(@Nullable final Long tempoNoturnoEmSegundos) {
-        this.tempoNoturnoEmSegundos = tempoNoturnoEmSegundos;
     }
 
     @SuppressWarnings("ConstantConditions")

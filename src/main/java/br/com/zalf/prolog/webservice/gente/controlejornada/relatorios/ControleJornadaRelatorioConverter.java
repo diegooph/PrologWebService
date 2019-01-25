@@ -16,10 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -48,7 +45,7 @@ final class ControleJornadaRelatorioConverter {
                 .withZoneSameInstant(zoneIdUnidade)
                 .toLocalDateTime();
         final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
-        final Map<Long, TipoMarcacao> tiposIntervalosUnidade = tiposIntervalosToMap(tiposIntervalos);
+        final Map<Long, TipoMarcacao> tiposIntervalosUnidade = tiposMarcacoesToMap(tiposIntervalos);
         Long cpfAnterior = null;
         String nomeAnterior = null;
         LocalDate diaAnterior = null;
@@ -129,10 +126,11 @@ final class ControleJornadaRelatorioConverter {
                 .atZone(ZoneOffset.UTC)
                 .withZoneSameInstant(zoneIdUnidade)
                 .toLocalDateTime();
-        final List<FolhaPontoJornadaRelatorio> folhasPontoJornada = new ArrayList<>();
+        final List<FolhaPontoJornadaRelatorio> relatorios = new ArrayList<>();
 
         // Objetos utilizados para montar o relatório.
-        Map<Long, FolhaPontoTipoIntervalo> tiposIntervalosUnidade = new HashMap<>();
+        final Map<Long, TipoMarcacao> tiposMarcacoesUnidade = tiposMarcacoesToMap(tiposIntervalos);
+        final Map<Long, FolhaPontoTipoIntervalo> tiposMarcacoesMarcados = new HashMap<>();
         List<FolhaPontoJornadaDia> marcacoesDia = new ArrayList<>();
         List<FolhaPontoJornada> jornadasDia = new ArrayList<>();
         FolhaPontoJornada jornada = null;
@@ -161,11 +159,11 @@ final class ControleJornadaRelatorioConverter {
                         nomeAnterior,
                         marcacoesDia,
                         dataHoraGeracaoRelatorioZoned);
-                folhaPontoJornadaRelatorio.setTiposMarcacoesMarcadas(new HashSet<>(tiposIntervalosUnidade.values()));
+                folhaPontoJornadaRelatorio.setTiposMarcacoesMarcadas(new HashSet<>(tiposMarcacoesMarcados.values()));
                 folhaPontoJornadaRelatorio.calculaTotaisHorasJornadasLiquidaBruta();
-                folhasPontoJornada.add(folhaPontoJornadaRelatorio);
+                relatorios.add(folhaPontoJornadaRelatorio);
                 // Resetamos os objetos para o novo colaborador.
-                tiposIntervalosUnidade = new HashMap<>();
+                tiposMarcacoesMarcados.clear();
                 marcacoesDia = new ArrayList<>();
                 jornadasDia = new ArrayList<>();
                 jornada = null;
@@ -195,21 +193,22 @@ final class ControleJornadaRelatorioConverter {
                 // Criamos uma Jornada.
                 jornada = createFolhaPontoJornada(rSet);
                 codMarcacaoJornadaAnterior = codMarcacaoJornada;
+
+                // Se tipoJornada for false e o codMarcacaoJornada for > 0, significa que essa marcação não é
+                // de jornada, mas está dentro de alguma. Esse caso lida com marcações completas e avulsas!
             } else if (codMarcacaoJornada > 0) {
+                // Garante que se uma marcação pertence a uma jornada, a jornada já estar instanciada.
                 if (jornada == null) {
                     throw new IllegalStateException("O objeto jornada deve ser instanciado!");
                 }
-                // Marcação não é Jornada mas está vinculada à uma.
-                final FolhaPontoMarcacao folhaPontoMarcacao = createFolhaPontoMarcacao(rSet);
-                jornada.addMarcacaoToJornada(folhaPontoMarcacao);
-                jornada.calculaJornadaLiquida(folhaPontoMarcacao.getDiferencaoInicioFimEmSegundos());
+                jornada.addMarcacaoToJornada(createFolhaPontoMarcacao(rSet));
             } else {
                 // Marcação deste dia não pertence à nenhuma Jornada.
                 marcacoesForaJornada.add(createFolhaPontoMarcacao(rSet));
             }
 
             // Para cada Marcação processada, atualizamos os cálculos de tempo.
-            calculaTempoPorTipoMarcacao(rSet, tiposIntervalosUnidade, tiposIntervalos);
+            calculaTempoPorTipoMarcacao(rSet, tiposMarcacoesMarcados, tiposMarcacoesUnidade);
 
             diaAnterior = diaAtual;
             cpfAnterior = cpfAtual;
@@ -225,72 +224,69 @@ final class ControleJornadaRelatorioConverter {
                     nomeAnterior,
                     marcacoesDia,
                     dataHoraGeracaoRelatorioZoned);
-            folhaPontoJornadaRelatorio.setTiposMarcacoesMarcadas(new HashSet<>(tiposIntervalosUnidade.values()));
+            folhaPontoJornadaRelatorio.setTiposMarcacoesMarcadas(new HashSet<>(tiposMarcacoesMarcados.values()));
             folhaPontoJornadaRelatorio.calculaTotaisHorasJornadasLiquidaBruta();
-            folhasPontoJornada.add(folhaPontoJornadaRelatorio);
+            relatorios.add(folhaPontoJornadaRelatorio);
         }
 
-        return folhasPontoJornada;
+        return relatorios;
     }
 
     private static void calculaTempoPorTipoMarcacao(
             @NotNull final ResultSet rSet,
-            @NotNull final Map<Long, FolhaPontoTipoIntervalo> tiposIntervalosUnidade,
-            @NotNull final List<TipoMarcacao> tiposIntervalos) throws SQLException {
+            @NotNull final Map<Long, FolhaPontoTipoIntervalo> tiposMarcacoesMarcadas,
+            @NotNull final Map<Long, TipoMarcacao> tiposMarcacoesUnidade) throws SQLException {
         // Precisamos atualizar a lista de tipos de marcações marcadas.
         final Long codTipoMarcacao = rSet.getLong("COD_TIPO_INTERVALO");
-        if (tiposIntervalosUnidade.get(codTipoMarcacao) == null) {
-            // Se ainda não estiver mapeado, precisamos criar o tipo de intervalo e somar os tempos
-            for (final TipoMarcacao tipoMarcacao : tiposIntervalos) {
-                if (tipoMarcacao.getCodigo().equals(codTipoMarcacao)) {
-                    tiposIntervalosUnidade.put(
-                            tipoMarcacao.getCodigo(),
-                            FolhaPontoTipoIntervalo.createFromTipoIntervalo(
-                                    tipoMarcacao,
-                                    0L,
-                                    0L));
-                }
-            }
+        if (tiposMarcacoesMarcadas.get(codTipoMarcacao) == null) {
+            // Se ainda não estiver mapeado, precisamos criar o tipo de marcação e somar os tempos
+            final TipoMarcacao tipoMarcacao = tiposMarcacoesUnidade.get(codTipoMarcacao);
+            tiposMarcacoesMarcadas.put(
+                    tipoMarcacao.getCodigo(),
+                    FolhaPontoTipoIntervalo.createFromTipoIntervalo(
+                            tipoMarcacao,
+                            0L,
+                            0L));
         }
 
-        // Se o tipo já estiver mapeado, apenas somamos os tempos do intervalo
-        tiposIntervalosUnidade
+        // Se o tipo já estiver mapeado, apenas somamos os tempos do intervalo.
+        tiposMarcacoesMarcadas
                 .get(codTipoMarcacao)
                 .sumTempoTotalTipoIntervalo(rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"));
-        tiposIntervalosUnidade
+        tiposMarcacoesMarcadas
                 .get(codTipoMarcacao)
                 .sumTempoTotalHorasNoturnas(rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"));
     }
 
     @NotNull
     private static FolhaPontoJornada createFolhaPontoJornada(@NotNull final ResultSet rSet) throws SQLException {
-        final FolhaPontoJornada jornada = new FolhaPontoJornada(
+        // Na inicialização a jornada bruta e líquida podem ser iniciadas iguais.
+        final Duration jornadaBrutaLiquida = Duration.ofSeconds(rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"));
+        return new FolhaPontoJornada(
                 rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
                 rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
                 rSet.getLong("COD_TIPO_INTERVALO"),
                 rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
                 new ArrayList<>(),
+                jornadaBrutaLiquida,
+                jornadaBrutaLiquida,
                 rSet.getBoolean("TROCOU_DIA"),
                 rSet.getBoolean("MARCACAO_INICIO_AJUSTADA"),
                 rSet.getBoolean("MARCACAO_FIM_AJUSTADA"));
-        jornada.calculaJornadaBruta(rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"));
-        jornada.calculaJornadaLiquida(rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"));
-        return jornada;
     }
 
     @NotNull
     private static FolhaPontoMarcacao createFolhaPontoMarcacao(@NotNull final ResultSet rSet) throws SQLException {
-        final FolhaPontoMarcacao folhaPontoMarcacao = new FolhaPontoMarcacao(
+        return new FolhaPontoMarcacao(
                 rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
                 rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
                 rSet.getLong("COD_TIPO_INTERVALO"),
                 rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
+                rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"),
+                rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"),
                 rSet.getBoolean("TROCOU_DIA"),
                 rSet.getBoolean("MARCACAO_INICIO_AJUSTADA"),
                 rSet.getBoolean("MARCACAO_FIM_AJUSTADA"));
-        folhaPontoMarcacao.setDiferencaoInicioFimEmSegundos(rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"));
-        folhaPontoMarcacao.setTempoNoturnoEmSegundos(rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"));
-        return folhaPontoMarcacao;
     }
 
     @NotNull
@@ -310,7 +306,7 @@ final class ControleJornadaRelatorioConverter {
     }
 
     @NotNull
-    private static Map<Long, TipoMarcacao> tiposIntervalosToMap(@NotNull final List<TipoMarcacao> tiposIntervalos) {
+    private static Map<Long, TipoMarcacao> tiposMarcacoesToMap(@NotNull final List<TipoMarcacao> tiposIntervalos) {
         final Map<Long, TipoMarcacao> tiposIntervalosMap = new HashMap<>();
         tiposIntervalos.forEach(
                 tipoIntervalo -> tiposIntervalosMap.put(tipoIntervalo.getCodigo(), tipoIntervalo));

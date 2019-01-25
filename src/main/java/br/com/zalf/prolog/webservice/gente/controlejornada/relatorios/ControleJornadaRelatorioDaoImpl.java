@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 
+import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
@@ -241,12 +242,12 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             stmt = conn.prepareStatement(
                     "SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_PONTO_JORNADA(?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
-            if (codTipoIntervalo.equals("%")) {
+            if (Filtros.isFiltroTodos(codTipoIntervalo)) {
                 stmt.setNull(2, Types.BIGINT);
             } else {
                 stmt.setLong(2, Long.parseLong(codTipoIntervalo));
             }
-            if (cpf.equals("%")) {
+            if (Filtros.isFiltroTodos(cpf)) {
                 stmt.setNull(3, Types.BIGINT);
             } else {
                 stmt.setLong(3, Long.parseLong(cpf));
