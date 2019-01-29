@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -164,6 +166,30 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
             close(conn, stmt, rSet);
         }
         return intervalos;
+    }
+
+    @NotNull
+    @Override
+    public List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
+                                                          final boolean apenasAtivos,
+                                                          final boolean withCargos) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<TipoMarcacao> tipos = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALOS_UNIDADE(?, ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setBoolean(2, apenasAtivos);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                tipos.add(createTipoInvervalo(rSet, withCargos, conn));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return tipos;
     }
 
     @Override
@@ -406,6 +432,52 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
         } finally {
             close(rSet, stmt);
         }
+    }
+
+    @NotNull
+    private TipoMarcacao createTipoInvervalo(@NotNull final ResultSet rSet,
+                                             final boolean withCargos,
+                                             @NotNull final Connection conn) throws SQLException {
+        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
+        tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
+        tipoIntervalo.setCodigoPorUnidade(rSet.getLong("CODIGO_TIPO_INTERVALO_POR_UNIDADE"));
+        tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
+        final Unidade unidade = new Unidade();
+        unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
+        tipoIntervalo.setUnidade(unidade);
+        tipoIntervalo.setAtivo(rSet.getBoolean("ATIVO"));
+        tipoIntervalo.setHorarioSugerido(rSet.getTime("HORARIO_SUGERIDO"));
+        tipoIntervalo.setIcone(Icone.fromString(rSet.getString("ICONE")));
+        tipoIntervalo.setTempoLimiteEstouro(Duration.ofMinutes(rSet.getLong("TEMPO_ESTOURO_MINUTOS")));
+        tipoIntervalo.setTempoRecomendado(Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")));
+        if (withCargos) {
+            tipoIntervalo.setCargos(getCargosByTipoIntervalo(tipoIntervalo, conn));
+        }
+        return tipoIntervalo;
+    }
+
+    @NotNull
+    private List<Cargo> getCargosByTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
+                                                 @NotNull final Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<Cargo> cargos = new ArrayList<>();
+        try {
+            stmt = conn.prepareStatement("SELECT DISTINCT F.* " +
+                    "FROM INTERVALO_TIPO_CARGO ITC " +
+                    "  JOIN UNIDADE U ON U.CODIGO = ITC.COD_UNIDADE " +
+                    "  JOIN FUNCAO F ON F.COD_EMPRESA = U.COD_EMPRESA AND F.CODIGO = ITC.COD_CARGO " +
+                    "WHERE ITC.COD_TIPO_INTERVALO = ? AND ITC.COD_UNIDADE = ?;");
+            stmt.setLong(1, tipoIntervalo.getCodigo());
+            stmt.setLong(2, tipoIntervalo.getUnidade().getCodigo());
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                cargos.add(new Cargo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+        return cargos;
     }
 
     @NotNull

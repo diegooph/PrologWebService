@@ -5,7 +5,8 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -18,10 +19,9 @@ import java.util.List;
  * Created by Zart on 28/08/2017.
  */
 public class ControleJornadaRelatorioService {
-
     private static final String TAG = ControleJornadaRelatorioService.class.getSimpleName();
-    private ControleJornadaRelatoriosDao dao = Injection.provideControleJornadaRelatoriosDao();
-    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
+    @NotNull
+    private final ControleJornadaRelatoriosDao dao = Injection.provideControleJornadaRelatoriosDao();
 
     public void getMarcacoesDiariasCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
         try {
@@ -165,7 +165,37 @@ public class ControleJornadaRelatorioService {
                     "dataInicial: %s \n" +
                     "dataFinal: %s", codUnidade, codTipoIntervalo, cpf, dataInicial, dataFinal);
             Log.e(TAG, errorMessage, e);
-            throw exceptionHandler.map(e, "Erro ao gerar relatório, tente novamente");
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<FolhaPontoJornadaRelatorio> getFolhaPontoJornadaRelatorio(
+            @NotNull final Long codUnidade,
+            @NotNull final String codTipoIntervalo,
+            @NotNull final String cpf,
+            @NotNull final String dataInicial,
+            @NotNull final String dataFinal) throws ProLogException {
+        try {
+            return dao.getFolhaPontoJornadaRelatorio(
+                    codUnidade,
+                    codTipoIntervalo,
+                    cpf,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            final String errorMessage = String.format("Erro ao buscar o relatório de folha de ponto jornada.\n" +
+                    "codUnidade: %d\n" +
+                    "codTipoIntervalo: %s\n" +
+                    "cpf: %s\n" +
+                    "dataInicial: %s\n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, cpf, dataInicial, dataFinal);
+            Log.e(TAG, errorMessage, e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -253,7 +283,9 @@ public class ControleJornadaRelatorioService {
                             "dataInicial: %s \n" +
                             "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             Log.e(TAG, errorMessage, e);
-            throw exceptionHandler.map(e, "Erro ao gerar relatório, tente novamente");
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 }

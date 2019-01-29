@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
+package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model;
 
 import br.com.zalf.prolog.webservice.commons.report.CsvReport;
 import br.com.zalf.prolog.webservice.commons.util.date.Durations;
@@ -35,7 +35,7 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
     @NotNull
     private final Map<Long, Integer> tipoIntervaloHorasNoturnasIndexColuna;
 
-    RelatorioTotaisPorTipoIntervalo(@NotNull final ResultSet rSet,
+    public RelatorioTotaisPorTipoIntervalo(@NotNull final ResultSet rSet,
                                     @NotNull final List<TipoMarcacao> tiposIntervalos,
                                     @Nullable final Long codTipoIntervaloFiltrado) {
         this.rSet = rSet;
