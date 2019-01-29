@@ -3,8 +3,8 @@ package test.gente.controlejornada.relatorios;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioService;
-import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.FolhaPontoRelatorio;
-import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.FolhaPontoTipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoTipoIntervalo;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import test.BaseTest;
@@ -16,7 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created on 14/01/19

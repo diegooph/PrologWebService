@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 
+import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
@@ -7,6 +8,9 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.RelatorioTotaisPorTipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDao;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
@@ -214,6 +218,49 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                     dao.getTiposMarcacoes(codUnidade, true, false),
                     dataInicial,
                     dataFinal,
+                    zoneId);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<FolhaPontoJornadaRelatorio> getFolhaPontoJornadaRelatorio(
+            @NotNull final Long codUnidade,
+            @NotNull final String codTipoIntervalo,
+            @NotNull final String cpf,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_MARCACAO_RELATORIO_FOLHA_PONTO_JORNADA(?, ?, ?, ?, ?, ?);");
+            stmt.setLong(1, codUnidade);
+            if (Filtros.isFiltroTodos(codTipoIntervalo)) {
+                stmt.setNull(2, Types.BIGINT);
+            } else {
+                stmt.setLong(2, Long.parseLong(codTipoIntervalo));
+            }
+            if (Filtros.isFiltroTodos(cpf)) {
+                stmt.setNull(3, Types.BIGINT);
+            } else {
+                stmt.setLong(3, Long.parseLong(cpf));
+            }
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            stmt.setString(6, zoneId.getId());
+
+            rSet = stmt.executeQuery();
+            return ControleJornadaRelatorioConverter.createFolhaPontoJornadaRelatorio(
+                    rSet,
+                    Injection
+                            .provideControleJornadaDao()
+                            .getTiposIntervalosByUnidade(codUnidade, true, false),
                     zoneId);
         } finally {
             close(conn, stmt, rSet);
