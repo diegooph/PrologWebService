@@ -36,7 +36,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
             "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
             "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
-            "WHERE V.PLACA = ?";
+            "WHERE V.PLACA = ?;";
 
     public VeiculoDaoImpl() {
 
@@ -49,7 +49,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO VEICULO (PLACA, COD_UNIDADE, KM, STATUS_ATIVO," +
-                    " COD_TIPO, COD_MODELO, COD_EIXOS, COD_UNIDADE_CADASTRO)  VALUES (?,?,?,?,?,?,?,?)");
+                    " COD_TIPO, COD_MODELO, COD_EIXOS, COD_UNIDADE_CADASTRO)  VALUES (?,?,?,?,?,?,?,?);");
             stmt.setString(1, veiculo.getPlaca().toUpperCase());
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, veiculo.getKmAtual());
