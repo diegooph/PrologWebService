@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.Duration;
 
 /**
  * Created on 29/01/19
@@ -21,6 +24,9 @@ public final class MarcacaoAgrupadaAcompanhamento {
     @Nullable
     private final MarcacaoAcompanhamento marcacaoFim;
     @Nullable
+    @SerializedName("tempoDecorridoEntreInicioFimEmSegundos")
+    private final Duration tempoDecorridoEntreInicioFim;
+    @Nullable
     private final String justificativaEstouro;
     @Nullable
     private final String justificativaTempoRecomendado;
@@ -30,6 +36,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
                                           @NotNull final String nomeColaborador,
                                           @Nullable final MarcacaoAcompanhamento marcacaoInicio,
                                           @Nullable final MarcacaoAcompanhamento marcacaoFim,
+                                          @Nullable final Duration tempoDecorridoEntreInicioFim,
                                           @Nullable final String justificativaEstouro,
                                           @Nullable final String justificativaTempoRecomendado) {
         this.nomeTipoMarcacao = nomeTipoMarcacao;
@@ -37,6 +44,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
         this.nomeColaborador = nomeColaborador;
         this.marcacaoInicio = marcacaoInicio;
         this.marcacaoFim = marcacaoFim;
+        this.tempoDecorridoEntreInicioFim = tempoDecorridoEntreInicioFim;
         this.justificativaEstouro = justificativaEstouro;
         this.justificativaTempoRecomendado = justificativaTempoRecomendado;
     }
@@ -50,6 +58,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
                     "João Carlos de Souza",
                     MarcacaoAcompanhamento.createDummy(true),
                     MarcacaoAcompanhamento.createDummy(false),
+                    Duration.ofHours(3),
                     "Esqueci de finalizar",
                     null);
         } else if (tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)) {
@@ -58,6 +67,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
                     3383283194L,
                     "João Carlos de Souza",
                     MarcacaoAcompanhamento.createDummy(true),
+                    null,
                     null,
                     "Esqueci de finalizar",
                     null);
@@ -69,6 +79,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
                     "João Carlos de Souza",
                     null,
                     MarcacaoAcompanhamento.createDummy(true),
+                    null,
                     "Esqueci de finalizar",
                     null);
         }
@@ -97,6 +108,11 @@ public final class MarcacaoAgrupadaAcompanhamento {
     @Nullable
     public MarcacaoAcompanhamento getMarcacaoFim() {
         return marcacaoFim;
+    }
+
+    @Nullable
+    public Duration getTempoDecorridoEntreInicioFim() {
+        return tempoDecorridoEntreInicioFim;
     }
 
     @Nullable
