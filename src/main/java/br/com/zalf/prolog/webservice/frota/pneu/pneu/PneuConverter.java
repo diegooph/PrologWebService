@@ -56,12 +56,19 @@ public final class PneuConverter {
         dimensao.aro = rSet.getDouble("ARO");
         pneu.setDimensao(dimensao);
 
-        final Sulcos sulcoAtual = new Sulcos();
-        sulcoAtual.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        sulcoAtual.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        sulcoAtual.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        sulcoAtual.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        pneu.setSulcosAtuais(sulcoAtual);
+        final double sulcoCentralInterno = rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO");
+        final double sulcoCentralExterno = rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO");
+        final double sulcoExterno = rSet.getDouble("ALTURA_SULCO_EXTERNO");
+        final double sulcoInterno = rSet.getDouble("ALTURA_SULCO_INTERNO");
+        final boolean temSulcosAtuais = !rSet.wasNull();
+        if (temSulcosAtuais) {
+            final Sulcos sulcosAtuais = new Sulcos();
+            sulcosAtuais.setCentralInterno(sulcoCentralInterno);
+            sulcosAtuais.setCentralExterno(sulcoCentralExterno);
+            sulcosAtuais.setExterno(sulcoExterno);
+            sulcosAtuais.setInterno(sulcoInterno);
+            pneu.setSulcosAtuais(sulcosAtuais);
+        }
 
         pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
         pneu.setPressaoAtual(rSet.getDouble("PRESSAO_ATUAL"));

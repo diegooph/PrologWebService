@@ -202,16 +202,18 @@ public class RelatorioPneuResource {
     @Produces("application/csv")
     @Path("/cronograma-afericoes-placas/csv")
     public StreamingOutput getCronogramaAfericoesPlacasCsv(
-            @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @HeaderParam("Authorization") @Required final String userToken) {
         return outputStream -> new AfericaoRelatorioService()
-                .getCronogramaAfericoesPlacasCsv(outputStream, codUnidades);
+                .getCronogramaAfericoesPlacasCsv(outputStream, codUnidades, userToken);
     }
 
     @GET
     @Path("/cronograma-afericoes-placas/report")
     public Report getCronogramaAfericoesPlacasReport(
-            @QueryParam("codUnidades") @Required final List<Long> codUnidades) throws ProLogException {
-        return new AfericaoRelatorioService().getCronogramaAfericoesPlacasReport(codUnidades);
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
+        return new AfericaoRelatorioService().getCronogramaAfericoesPlacasReport(codUnidades, userToken);
     }
 
     @GET

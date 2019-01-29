@@ -72,7 +72,7 @@ public final class DashboardPneuService {
     }
 
     public VerticalComboChartComponent getQtdAfericoesUltimaSemana(@NotNull final Integer codComponente,
-                                                                   @NotNull final List<Long> codUnidades) {
+                                                                   @NotNull final List<Long> codUnidades) throws ProLogException {
         final Calendar calendar = Calendar.getInstance();
         final long now = Now.utcMillis();
         calendar.setTimeInMillis(now);
@@ -85,12 +85,13 @@ public final class DashboardPneuService {
             return DashboardPneuComponentsCreator.createQtdAfericoesUltimaSemana(
                     dashDao.getComponenteByCodigo(codComponente),
                     relatorioDao.getQtdAfericoesByTipoByData(codUnidades, dataInicial, dataFinal));
-        } catch (SQLException e) {
+        } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de aferições realizadas por data, agrupadas por tipo. \n" +
                     "dataInicial: %s \n" +
                     "dataFinal: %s \n" +
                     "unidades: %s", dataInicial.toString(), dataFinal, codUnidades.toString()), e);
-            throw new RuntimeException(e);
+            throw Injection.provideProLogExceptionHandler().map(e,
+                    "Erro ao buscar a quantidade de aferições realizadas por data, tente novamente");
         }
     }
 

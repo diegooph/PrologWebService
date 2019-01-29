@@ -9,14 +9,41 @@ Change Log
 * Altera nome no header do relatório de totais por tipo de marcação para evitar problema com colunas de mesmo nome (PL-1159)
 * Corrige criação de token de controle de jornada caso unidade não possua (PL-1575)
 
+
+<a name="v0.0.84"></a>
+## Version [v0.0.84](https://github.com/luizfp/PrologWebService/compare/v0.0.83...v0.0.84) (release-date) [unreleased]
+
+### Features
+* Cria novos métodos de busca de marcas e modelos de veículos (PL-1441)
+* Cria function para deleção de checklist e suas respectivas ordens de serviço (PL-1607)
+* Cria novo diagrama para carreta 2 eixos single (PL-1569, PL-1570, PL-1571)
+
+### Refactors
+* Remove validação de letras e números do cadastro de veículos (PL-1636)
+
+### Bug Fixes
+* Corrige criação de componente da dashboard de aferições realizadas (PL-1643)
+
+<a name="v0.0.83"></a>
+## Version [v0.0.83](https://github.com/luizfp/PrologWebService/compare/v0.0.82...v0.0.83) (2019-01-11)
+
+### Refactors
+* Deixa sulcos do cadastro de pneus opcional e lida com possibilidade de sulcos nulos em algumas partes do sistema
+
 <a name="v0.0.82"></a>
-## Version [v0.0.82](https://github.com/luizfp/PrologWebService/compare/v0.0.81...v0.0.82) (release-date) [unreleased]
+## Version [v0.0.82](https://github.com/luizfp/PrologWebService/compare/v0.0.81...v0.0.82) (2019-01-07)
+
+### Features
+* Cria funcionalidade para permitir a transferência de pneus entre unidades
+* Cria atributo na alternativa do checklist para definir se ela deve ou não abrir O.S.
+* Cria integração com a Praxio
 
 ### Refactors
 * Altera forma de parse do arquivo de prontuário do condutor para ignorar colunas vazias
 
 ### Bug Fixes
 * Corrige criação dos componentes resumidos da dashboard
+* Força a parte de controle de jornada a retornar 401 caso token inválido
 
 <a name="v0.0.81"></a>
 ## Version [v0.0.81](https://github.com/luizfp/PrologWebService/compare/v0.0.80...v0.0.81) (2018-12-11)

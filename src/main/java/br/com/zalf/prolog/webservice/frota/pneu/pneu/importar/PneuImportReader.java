@@ -55,13 +55,6 @@ public final class PneuImportReader {
             dimensao.setCodigo(pneuImport.getCodDimensao());
             pneu.setDimensao(dimensao);
 
-            final Sulcos sulcoAtual = new Sulcos();
-            sulcoAtual.setCentralInterno(pneuImport.getAlturaSulcoCentralInterno());
-            sulcoAtual.setCentralExterno(pneuImport.getAlturaSulcoCentralExterno());
-            sulcoAtual.setExterno(pneuImport.getAlturaSulcoExterno());
-            sulcoAtual.setInterno(pneuImport.getAlturaSulcoInterno());
-            pneu.setSulcosAtuais(sulcoAtual);
-
             pneu.setPressaoCorreta(pneuImport.getPressaoRecomendada());
             pneu.setStatus(pneuImport.getStatusPneu());
             pneu.setVidaAtual(pneuImport.getVidaAtual());

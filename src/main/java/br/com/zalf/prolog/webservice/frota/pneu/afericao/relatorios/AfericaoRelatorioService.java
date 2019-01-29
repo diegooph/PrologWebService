@@ -21,11 +21,13 @@ public class AfericaoRelatorioService {
     private AfericaoRelatorioDao dao = Injection.provideAfericaoRelatorioDao();
 
     public void getCronogramaAfericoesPlacasCsv(@NotNull final OutputStream out,
-                                                @NotNull final List<Long> codUnidades) {
+                                                @NotNull final List<Long> codUnidades,
+                                                @NotNull final String userToken) {
         try {
             dao.getCronogramaAfericoesPlacasCsv(
                     out,
-                    codUnidades);
+                    codUnidades,
+                    userToken);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório do cronograma de aferições (CSV)", throwable);
             throw new RuntimeException(throwable);
@@ -33,10 +35,11 @@ public class AfericaoRelatorioService {
     }
 
     @NotNull
-    public Report getCronogramaAfericoesPlacasReport(@NotNull final List<Long> codUnidades) throws ProLogException {
+    public Report getCronogramaAfericoesPlacasReport(@NotNull final List<Long> codUnidades,
+                                                     @NotNull final String userToken) throws ProLogException {
         try {
             return dao.getCronogramaAfericoesPlacasReport(
-                    codUnidades);
+                    codUnidades, userToken);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório do cronograma de aferições  (REPORT)", throwable);
             throw Injection

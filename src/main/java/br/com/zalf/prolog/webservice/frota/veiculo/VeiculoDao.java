@@ -140,15 +140,41 @@ public interface VeiculoDao {
     List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException;
 
     /**
-     * insere um modelo de veiculo
+     * As marcas de veículos são a nível ProLog. Esse método retorna uma lista com todas as marcas disponíveis.
+     * Importante lembrar que os modelos para cada marca não serão setados, já que modelos de veículos são por empresa.
      *
-     * @param modelo     descrição do modelo
-     * @param codEmpresa código da empresa
-     * @param codMarca   códiga da marca
-     * @return resultado da operação
-     * @throws SQLException caso ocorrer erro
+     * @return uma lista de {@link Marca marcas}.
+     * @throws Throwable caso qualquer erro aconteça.
      */
-    boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException;
+    @NotNull
+    List<Marca> getMarcasVeiculosNivelProLog() throws Throwable;
+
+    /**
+     * As marcas de veículos são a nível ProLog, porém, os modelos são a nível de empresa. Esse método retorna uma
+     * lista com todas as marcas disponíveis, cada marca contém uma lista de modelos com os modelos criados pela
+     * empresa para qual as informações foram solicitadas.
+     * Caso a empresa não tenha modelos para uma marca qualquer, essa marca irá possuir uma lista vazia de modelos,
+     * não nula.
+     *
+     * @return uma lista de {@link Marca marcas}.
+     * @throws Throwable caso qualquer erro aconteça.
+     */
+    @NotNull
+    List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
+
+    /**
+     * Insere um modelo de veiculo
+     *
+     * @param modelo     descrição do modelo.
+     * @param codEmpresa código da empresa.
+     * @param codMarca   códiga da marca.
+     * @return código do novo modelo inserido.
+     * @throws Throwable caso ocorrer erro.
+     */
+    @NotNull
+    Long insertModeloVeiculo(@NotNull final Modelo modelo,
+                             @NotNull final Long codEmpresa,
+                             @NotNull final Long codMarca) throws Throwable;
 
     /**
      * busca o total de vaículos de uma unidade

@@ -7,5 +7,6 @@ package br.com.zalf.prolog.webservice.commons.util;
  */
 public enum Platform {
     WEBSITE,
-    ANDROID
+    ANDROID,
+    INTEGRACOES
 }
