@@ -49,6 +49,19 @@ public final class MarcacaoAcompanhamento {
     }
 
     @NotNull
+    public static MarcacaoAcompanhamento createDummy(final boolean tipoInicio) {
+        return new MarcacaoAcompanhamento(
+                1L,
+                LocalDateTime.now(),
+                FonteDataHora.REDE_CELULAR,
+                tipoInicio ? TipoInicioFim.MARCACAO_INICIO : TipoInicioFim.MARCACAO_FIM,
+                new Localizacao("-27.6403877", "-48.6827399"),
+                60,
+                61,
+                true);
+    }
+
+    @NotNull
     public Long getCodigo() {
         return codigo;
     }

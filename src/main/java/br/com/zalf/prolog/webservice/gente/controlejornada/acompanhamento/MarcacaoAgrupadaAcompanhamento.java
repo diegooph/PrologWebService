@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +39,39 @@ public final class MarcacaoAgrupadaAcompanhamento {
         this.marcacaoFim = marcacaoFim;
         this.justificativaEstouro = justificativaEstouro;
         this.justificativaTempoRecomendado = justificativaTempoRecomendado;
+    }
+
+    @NotNull
+    public static MarcacaoAgrupadaAcompanhamento createDummy(@Nullable final TipoInicioFim tipoInicioFim) {
+        if (tipoInicioFim == null) {
+            return new MarcacaoAgrupadaAcompanhamento(
+                    "Refeição",
+                    3383283194L,
+                    "João Carlos de Souza",
+                    MarcacaoAcompanhamento.createDummy(true),
+                    MarcacaoAcompanhamento.createDummy(false),
+                    "Esqueci de finalizar",
+                    null);
+        } else if (tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)) {
+            return new MarcacaoAgrupadaAcompanhamento(
+                    "Refeição",
+                    3383283194L,
+                    "João Carlos de Souza",
+                    MarcacaoAcompanhamento.createDummy(true),
+                    null,
+                    "Esqueci de finalizar",
+                    null);
+        } else {
+            // Apenas de fim.
+            return new MarcacaoAgrupadaAcompanhamento(
+                    "Refeição",
+                    3383283194L,
+                    "João Carlos de Souza",
+                    null,
+                    MarcacaoAcompanhamento.createDummy(true),
+                    "Esqueci de finalizar",
+                    null);
+        }
     }
 
     @NotNull

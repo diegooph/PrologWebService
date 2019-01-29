@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andam
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +27,20 @@ public final class ViagemEmAndamento {
         this.qtdViagensEmAndamento = qtdViagensEmAndamento;
         this.formaCalculoJornadaBruta = formaCalculoJornadaBruta;
         this.formaCalculoJornadaLiquida = formaCalculoJornadaLiquida;
+    }
+
+    @NotNull
+    public static ViagemEmAndamento createDummy() {
+        final List<ColaboradorEmViagem> colaboradores = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            colaboradores.add(ColaboradorEmViagem.createDummy());
+        }
+
+        return new ViagemEmAndamento(
+                colaboradores,
+                colaboradores.size(),
+                "Jornada Bruta = Tempo Total Jornada - Refeição - Descarga",
+                "Jornada Líquida = Jornada Bruta - Descanso");
     }
 
     @NotNull

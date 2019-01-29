@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.desca
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +19,16 @@ public final class ViagemEmDescanso {
                             final int qtdColaboradoresEmDescanso) {
         this.colaboradoresEmDescanso = colaboradoresEmDescanso;
         this.qtdColaboradoresEmDescanso = qtdColaboradoresEmDescanso;
+    }
+
+    @NotNull
+    public static ViagemEmDescanso createDummy() {
+        final List<ColaboradorEmDescanso> colaboradores = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            colaboradores.add(ColaboradorEmDescanso.createDummy(i % 2 == 0));
+        }
+
+        return new ViagemEmDescanso(colaboradores, colaboradores.size());
     }
 
     @NotNull

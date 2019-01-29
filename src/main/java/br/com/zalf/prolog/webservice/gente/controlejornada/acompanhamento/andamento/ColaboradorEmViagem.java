@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +44,22 @@ public final class ColaboradorEmViagem {
         this.marcacoesDentroJornada = marcacoesDentroJornada;
         this.qtdMarcacoesDentroJornada = qtdMarcacoesDentroJornada;
         this.inicioJornadaAjustada = inicioJornadaAjustada;
+    }
+
+    @NotNull
+    public static ColaboradorEmViagem createDummy() {
+        final List<MarcacaoDentroJornada> marcacoesDentroJornada = new ArrayList<>();
+        marcacoesDentroJornada.add(MarcacaoDentroJornada.createDummy(false));
+        marcacoesDentroJornada.add(MarcacaoDentroJornada.createDummy(true));
+
+        return new ColaboradorEmViagem(
+                "João Carlos de Souza",
+                LocalDateTime.now().minus(5, ChronoUnit.HOURS),
+                Duration.ofHours(5),
+                Duration.ofHours(4),
+                marcacoesDentroJornada,
+                marcacoesDentroJornada.size(),
+                true);
     }
 
     @NotNull

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Created on 29/01/19
@@ -31,6 +32,31 @@ public final class ColaboradorEmDescanso {
         this.dataHoraInicioUltimaViagem = dataHoraInicioUltimaViagem;
         this.dataHoraFimUltimaViagem = dataHoraFimUltimaViagem;
         this.tempoTotalDescanso = tempoTotalDescanso;
+    }
+
+    @NotNull
+    public static ColaboradorEmDescanso createDummy(final boolean fimAvulso) {
+        if (fimAvulso) {
+            return new ColaboradorEmDescanso(
+                    "Carlos Eduardo da Silva",
+                    null,
+                    // Parou faz 11 horas e 30 minutos.
+                    LocalDateTime
+                            .now()
+                            .minus((11 * 60) + 30, ChronoUnit.MINUTES),
+                    Duration.ofMinutes((11 * 60) + 30));
+        } else {
+            return new ColaboradorEmDescanso(
+                    "Emanuel Sebastião Cunha",
+                    LocalDateTime
+                            .now()
+                            .minus(8, ChronoUnit.HOURS),
+                    // Parou faz 11 horas e 30 minutos.
+                    LocalDateTime
+                            .now()
+                            .minus((11 * 60) + 30, ChronoUnit.MINUTES),
+                    Duration.ofMinutes((11 * 60) + 30));
+        }
     }
 
     @NotNull
