@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
@@ -16,6 +15,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Created on 20/12/18
@@ -35,23 +35,22 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO INTERVALO_TIPO(NOME, ICONE, TEMPO_RECOMENDADO_MINUTOS, " +
-                    "TEMPO_ESTOURO_MINUTOS, HORARIO_SUGERIDO, COD_UNIDADE, TIPO_JORNADA, ATIVO) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, TRUE) RETURNING CODIGO;");
+                    "TEMPO_ESTOURO_MINUTOS, HORARIO_SUGERIDO, COD_UNIDADE, ATIVO) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, TRUE) RETURNING CODIGO;");
             stmt.setString(1, tipoMarcacao.getNome());
             stmt.setString(2, tipoMarcacao.getIcone().getNomeIcone());
             stmt.setLong(3, tipoMarcacao.getTempoRecomendado().toMinutes());
             stmt.setLong(4, tipoMarcacao.getTempoLimiteEstouro().toMinutes());
             stmt.setTime(5, tipoMarcacao.getHorarioSugerido());
             stmt.setLong(6, tipoMarcacao.getUnidade().getCodigo());
-            if (tipoMarcacao.isTipoJornada()) {
-                stmt.setBoolean(7, true);
-            } else {
-                stmt.setNull(7, SqlType.BOOLEAN.asIntTypeJava());
-            }
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 tipoMarcacao.setCodigo(rSet.getLong("CODIGO"));
                 associaCargosTipoMarcacao(tipoMarcacao, conn);
+                if (tipoMarcacao.isTipoJornada()) {
+                    atualizarTipoJornadaUnidade(conn, tipoMarcacao.getUnidade().getCodigo(), tipoMarcacao.getCodigo());
+                    salvarTiposDescontadosJornadaBrutaLiquida(conn, tipoMarcacao);
+                }
                 // Avisamos o listener que um tipo de marcação FOI INCLUÍDO.
                 listener.onTiposMarcacaoChanged(conn, tipoMarcacao.getUnidade().getCodigo());
                 // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
@@ -81,24 +80,26 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
                     "SET NOME = ?, ICONE = ?, TEMPO_RECOMENDADO_MINUTOS = ?, TEMPO_ESTOURO_MINUTOS = ?, " +
-                    "HORARIO_SUGERIDO = ?, TIPO_JORNADA = ? WHERE COD_UNIDADE = ? AND CODIGO = ? AND ATIVO = TRUE;");
+                    "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ? AND ATIVO = TRUE;");
             stmt.setString(1, tipoMarcacao.getNome());
             stmt.setString(2, tipoMarcacao.getIcone().getNomeIcone());
             stmt.setLong(3, tipoMarcacao.getTempoRecomendado().toMinutes());
             stmt.setLong(4, tipoMarcacao.getTempoLimiteEstouro().toMinutes());
             stmt.setTime(5, tipoMarcacao.getHorarioSugerido());
-            if (tipoMarcacao.isTipoJornada()) {
-                stmt.setBoolean(6, true);
-            } else {
-                stmt.setNull(6, SqlType.BOOLEAN.asIntTypeJava());
-            }
-            stmt.setLong(7, tipoMarcacao.getUnidade().getCodigo());
-            stmt.setLong(8, tipoMarcacao.getCodigo());
-            int count = stmt.executeUpdate();
+            stmt.setLong(6, tipoMarcacao.getUnidade().getCodigo());
+            stmt.setLong(7, tipoMarcacao.getCodigo());
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o Tipo de Marcação de código: " + tipoMarcacao.getCodigo());
             }
             associaCargosTipoMarcacao(tipoMarcacao, conn);
+            if (tipoMarcacao.isTipoJornada()) {
+                atualizarTipoJornadaUnidade(conn, tipoMarcacao.getUnidade().getCodigo(), tipoMarcacao.getCodigo());
+                salvarTiposDescontadosJornadaBrutaLiquida(conn, tipoMarcacao);
+            } else {
+                removerTipoJornadaUnidade(conn, tipoMarcacao.getUnidade().getCodigo());
+            }
+
             // Avisamos o listener que um tipo de marcação mudou.
             listener.onTiposMarcacaoChanged(conn, tipoMarcacao.getUnidade().getCodigo());
 
@@ -303,6 +304,86 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             return cargos;
         } finally {
             close(stmt, rSet);
+        }
+    }
+
+    private void removerTipoJornadaUnidade(@NotNull final Connection conn,
+                                           @NotNull final Long codUnidade) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_REMOVE_INFOS_TIPO_JORNADA_UNIDADE(?) AS RESULT;");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || !rSet.getBoolean("RESULT")) {
+                throw new SQLException(String.format(
+                        "Erro ao remover informações de tipo jornada para a unidade %d",
+                        codUnidade));
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    private void atualizarTipoJornadaUnidade(@NotNull final Connection conn,
+                                             @NotNull final Long codUnidade,
+                                             @NotNull final Long codTipoJornada) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_ATUALIZA_INFOS_TIPO_JORNADA_UNIDADE(?, ?) AS RESULT;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTipoJornada);
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || !rSet.getBoolean("RESULT")) {
+                throw new SQLException(String.format(
+                        "Erro ao atualizar informações de tipo jornada para a unidade %d e tipo %d",
+                        codUnidade,
+                        codTipoJornada));
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    private void salvarTiposDescontadosJornadaBrutaLiquida(@NotNull final Connection conn,
+                                                           @NotNull final TipoMarcacao tipoMarcacao) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO MARCACAO_TIPOS_DESCONTADOS_CALCULO_JORNADA_BRUTA_LIQUIDA " +
+                    "(COD_UNIDADE, COD_TIPO_JORNADA, COD_TIPO_DESCONTADO, DESCONTA_JORNADA_BRUTA, " +
+                    "DESCONTA_JORNADA_LIQUIDA) VALUES (?, ?, ?, ?, ?);");
+            final List<TipoMarcacao> descontosBruta = tipoMarcacao.getTiposDescontadosJornadaBruta();
+            final List<TipoMarcacao> descontosLiquida = tipoMarcacao.getTiposDescontadosJornadaLiquida();
+            if (descontosBruta != null && descontosLiquida != null) {
+                for (final TipoMarcacao tipoDescontado : descontosBruta) {
+                    stmt.setLong(1, tipoMarcacao.getUnidade().getCodigo());
+                    stmt.setLong(2, tipoMarcacao.getCodigo());
+                    stmt.setLong(3, tipoDescontado.getCodigo());
+                    stmt.setBoolean(4, true);
+                    stmt.setBoolean(5, false);
+                    stmt.addBatch();
+                }
+                for (final TipoMarcacao tipoDescontado : descontosLiquida) {
+                    stmt.setLong(1, tipoMarcacao.getUnidade().getCodigo());
+                    stmt.setLong(2, tipoMarcacao.getCodigo());
+                    stmt.setLong(3, tipoDescontado.getCodigo());
+                    stmt.setBoolean(4, false);
+                    stmt.setBoolean(5, true);
+                    stmt.addBatch();
+                }
+                final boolean todasInsercoesOk = IntStream
+                        .of(stmt.executeBatch())
+                        .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
+                if (!todasInsercoesOk) {
+                    throw new IllegalStateException("Erro ao inserir tipos que descontam da jornada bruta e líquida");
+                }
+            } else {
+                throw new IllegalStateException("tiposDescontadosJornadaBruta e tiposDescontadosJornadaLiquida " +
+                        "precisam ser diferentes de null");
+            }
+        } finally {
+            close(stmt);
         }
     }
 }

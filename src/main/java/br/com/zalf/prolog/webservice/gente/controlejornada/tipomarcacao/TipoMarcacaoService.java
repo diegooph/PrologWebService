@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
+import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -16,14 +17,16 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-final class TipoMarcacaoService {
+@VisibleForTesting
+public final class TipoMarcacaoService {
     @NotNull
     private final String TAG = TipoMarcacaoService.class.getSimpleName();
     @NotNull
     private final TipoMarcacaoDao dao = Injection.provideTipoMarcacaoDao();
 
     @NotNull
-    AbstractResponse insertTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao) throws ProLogException {
+    @VisibleForTesting
+    public AbstractResponse insertTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao) throws ProLogException {
         try {
             return ResponseWithCod.ok(
                     "Tipo de marcação inserido com sucesso",
@@ -38,7 +41,8 @@ final class TipoMarcacaoService {
     }
 
     @NotNull
-    Response updateTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao) throws ProLogException {
+    @VisibleForTesting
+    public Response updateTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao) throws ProLogException {
         try {
             dao.updateTipoMarcacao(tipoMarcacao, Injection.provideDadosIntervaloChangedListener());
             return Response.ok("Tipo de marcação atualizada com sucesso");

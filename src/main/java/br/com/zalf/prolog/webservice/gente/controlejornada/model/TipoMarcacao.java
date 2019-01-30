@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Time;
 import java.time.Duration;
@@ -39,16 +40,13 @@ public class TipoMarcacao {
      */
     private boolean tipoJornada;
 
+    @Nullable
+    private List<TipoMarcacao> tiposDescontadosJornadaBruta;
+    @Nullable
+    private List<TipoMarcacao> tiposDescontadosJornadaLiquida;
+
     public TipoMarcacao() {
 
-    }
-
-    public boolean isTipoJornada() {
-        return tipoJornada;
-    }
-
-    public void setTipoJornada(final boolean tipoJornada) {
-        this.tipoJornada = tipoJornada;
     }
 
     public Long getCodigo() {
@@ -129,6 +127,32 @@ public class TipoMarcacao {
 
     public void setCodigoPorUnidade(final Long codigoPorUnidade) {
         this.codigoPorUnidade = codigoPorUnidade;
+    }
+
+    public boolean isTipoJornada() {
+        return tipoJornada;
+    }
+
+    public void setTipoJornada(final boolean tipoJornada) {
+        this.tipoJornada = tipoJornada;
+    }
+
+    @Nullable
+    public List<TipoMarcacao> getTiposDescontadosJornadaBruta() {
+        return tiposDescontadosJornadaBruta;
+    }
+
+    public void setTiposDescontadosJornadaBruta(@Nullable final List<TipoMarcacao> tiposDescontadosJornadaBruta) {
+        this.tiposDescontadosJornadaBruta = tiposDescontadosJornadaBruta;
+    }
+
+    @Nullable
+    public List<TipoMarcacao> getTiposDescontadosJornadaLiquida() {
+        return tiposDescontadosJornadaLiquida;
+    }
+
+    public void setTiposDescontadosJornadaLiquida(@Nullable final List<TipoMarcacao> tiposDescontadosJornadaLiquida) {
+        this.tiposDescontadosJornadaLiquida = tiposDescontadosJornadaLiquida;
     }
 
     @Override
