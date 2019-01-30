@@ -8,12 +8,16 @@ Change Log
 * Cria novos métodos de busca de marcas e modelos de veículos (PL-1441)
 * Cria function para deleção de checklist e suas respectivas ordens de serviço (PL-1607)
 * Cria novo diagrama para carreta 2 eixos single (PL-1569, PL-1570, PL-1571)
+* Cria schema de backup (PL-1658)
 
 ### Refactors
 * Remove validação de letras e números do cadastro de veículos (PL-1636)
+* Adiciona data de geração de relatório no cronograma de aferição (PL-1521)
+* Realiza backup de dados antes de deletar checklist (PL-1659)
 
 ### Bug Fixes
 * Corrige criação de componente da dashboard de aferições realizadas (PL-1643)
+* Corrige componente na dashboard de relatos pendentes (PL-1666)
 
 <a name="v0.0.83"></a>
 ## Version [v0.0.83](https://github.com/luizfp/PrologWebService/compare/v0.0.82...v0.0.83) (2019-01-11)
