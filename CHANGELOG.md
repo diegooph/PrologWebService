@@ -2,12 +2,13 @@ Change Log
 ==========
 
 #### Stage
-* Adiciona novo atributo na tabela de tipos de marcações para identificar se um tipo é jornada (TIPO_JORNADA) (PL-1578)
+* Adiciona novo atributo para identificar se um tipo é jornada (PL-1578)
 * Adiciona total de horas noturnas por tipo no relatório Tempo Total Por Tipo de Marcação (PL-1530)
 * Cria teste para validar relatório de totais por tipo de marcação (PL-1617)
 * Altera forma de cálculo do total de horas do relatório de folha de ponto (PL-1576)
 * Altera nome no header do relatório de totais por tipo de marcação para evitar problema com colunas de mesmo nome (PL-1159)
 * Corrige criação de token de controle de jornada caso unidade não possua (PL-1575)
+* Permite ao cliente selecionar quais tipos de marcação descontam do cálculo de jornada bruta e líquida (PL-1648)
 
 
 <a name="v0.0.84"></a>
