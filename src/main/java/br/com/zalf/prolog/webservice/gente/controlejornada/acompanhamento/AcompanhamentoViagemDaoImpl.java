@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ColaboradorEmDescanso;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
@@ -31,9 +32,10 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_COLABORADORES_JORNADA_FINALIZADA(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_COLABORADORES_JORNADA_FINALIZADA(?, ?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codCargos));
+            stmt.setObject(3, Now.offsetDateTimeUtc());
             rSet = stmt.executeQuery();
             final List<ColaboradorEmDescanso> colaboradores = new ArrayList<>();
             while (rSet.next()) {
