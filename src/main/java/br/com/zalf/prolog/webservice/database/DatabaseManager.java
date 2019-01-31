@@ -59,7 +59,8 @@ public final class DatabaseManager {
         Log.d(TAG, "DatabaseManager initialized");
     }
 
-    static void finish() {
+    @VisibleForTesting
+    public static void finish() {
         if (singleton == null) {
             throw new IllegalStateException("You cannot finish a not initialized manager");
         }

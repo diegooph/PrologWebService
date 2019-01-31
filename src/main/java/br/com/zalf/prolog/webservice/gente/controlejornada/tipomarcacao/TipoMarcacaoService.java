@@ -72,7 +72,8 @@ public final class TipoMarcacaoService {
     }
 
     @NotNull
-    TipoMarcacao getTipoMarcacao(@NotNull final Long codTipoMarcacao) throws ProLogException {
+    @VisibleForTesting
+    public TipoMarcacao getTipoMarcacao(@NotNull final Long codTipoMarcacao) throws ProLogException {
         try {
             return dao.getTipoMarcacao(codTipoMarcacao);
         } catch (final Throwable t) {

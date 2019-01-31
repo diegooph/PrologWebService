@@ -70,4 +70,19 @@ public class Unidade {
                 ", listNomesEquipes=" + listNomesEquipes +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+
+        if (!(obj instanceof Unidade))
+            return false;
+
+        if (obj == this)
+            return true;
+
+        final Unidade unidade = (Unidade) obj;
+        return !(codigo == null || unidade.codigo == null) && codigo.equals(unidade.codigo);
+    }
 }

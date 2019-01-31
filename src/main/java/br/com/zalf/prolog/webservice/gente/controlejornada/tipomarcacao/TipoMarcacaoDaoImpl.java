@@ -278,6 +278,9 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
         tipoMarcacao.setTempoLimiteEstouro(Duration.ofMinutes(rSet.getLong("TEMPO_ESTOURO_MINUTOS")));
         tipoMarcacao.setTempoRecomendado(Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")));
         tipoMarcacao.setTipoJornada(rSet.getBoolean("TIPO_JORNADA"));
+        if (tipoMarcacao.isTipoJornada()) {
+            tipoMarcacao.setTiposDescontadosJornada(getTiposDescontadosJornada(conn, unidade.getCodigo()));
+        }
         if (withCargos) {
             tipoMarcacao.setCargos(getCargosByTipoMarcacao(conn, tipoMarcacao));
         }
@@ -302,6 +305,36 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
                 cargos.add(new Cargo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
             }
             return cargos;
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private TipoDescontadoJornada getTiposDescontadosJornada(@NotNull final Connection conn,
+                                                             @NotNull final Long codUnidade) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_TIPOS_DESCONTADOS_JORNADA_BRUTA_LIQUIDA(?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<Long> descontosBruta = new ArrayList<>();
+                final List<Long> descontosLiquida = new ArrayList<>();
+                do {
+                    if (rSet.getBoolean("DESCONTA_JORNADA_BRUTA")) {
+                        descontosBruta.add(rSet.getLong("COD_TIPO_DESCONTADO"));
+                    } else {
+                        descontosLiquida.add(rSet.getLong("COD_TIPO_DESCONTADO"));
+                    }
+                } while (rSet.next());
+                return new TipoDescontadoJornada(descontosBruta, descontosLiquida);
+            } else {
+                throw new SQLException(String.format(
+                        "Dados de tipos descontados da jornada não encontrados para a unidade %d",
+                        codUnidade));
+            }
         } finally {
             close(stmt, rSet);
         }
@@ -353,9 +386,10 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             stmt = conn.prepareStatement("INSERT INTO MARCACAO_TIPOS_DESCONTADOS_CALCULO_JORNADA_BRUTA_LIQUIDA " +
                     "(COD_UNIDADE, COD_TIPO_JORNADA, COD_TIPO_DESCONTADO, DESCONTA_JORNADA_BRUTA, " +
                     "DESCONTA_JORNADA_LIQUIDA) VALUES (?, ?, ?, ?, ?);");
-            final List<Long> descontosBruta = tipoMarcacao.getCodTiposDescontadosJornadaBruta();
-            final List<Long> descontosLiquida = tipoMarcacao.getCodTiposDescontadosJornadaLiquida();
-            if (descontosBruta != null && descontosLiquida != null) {
+            final TipoDescontadoJornada tiposDescontados = tipoMarcacao.getTiposDescontadosJornada();
+            if (tiposDescontados != null) {
+                final List<Long> descontosBruta = tiposDescontados.getCodTiposDescontadosJornadaBruta();
+                final List<Long> descontosLiquida = tiposDescontados.getCodTiposDescontadosJornadaLiquida();
                 for (final Long codTipoDescontado : descontosBruta) {
                     stmt.setLong(1, tipoMarcacao.getUnidade().getCodigo());
                     stmt.setLong(2, tipoMarcacao.getCodigo());
