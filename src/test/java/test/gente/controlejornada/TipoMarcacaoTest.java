@@ -42,7 +42,8 @@ public class TipoMarcacaoTest extends BaseTest {
     public void testUpdateTipoMarcacao() throws Throwable {
         final TipoMarcacao tipoMarcacao = createTipoMarcacao();
         // Seta código para poder atualizar
-        tipoMarcacao.setCodigo(90L);
+        tipoMarcacao.setCodigo(93L);
+        tipoMarcacao.setNome(tipoMarcacao.getNome() + " UPDATE");
         final AbstractResponse response = service.updateTipoMarcacao(tipoMarcacao);
         assertNotNull(response);
         assertTrue(response.isOk());
@@ -68,22 +69,13 @@ public class TipoMarcacaoTest extends BaseTest {
         cargos.add(new Cargo(159L, "Motorista"));
         tipo.setCargos(cargos);
 
-        {
-            final List<TipoMarcacao> descontadosJornadaBruta = new ArrayList<>();
-            final TipoMarcacao refeicao = new TipoMarcacao();
-            refeicao.setCodigo(15L);
-            descontadosJornadaBruta.add(refeicao);
-            tipo.setTiposDescontadosJornadaBruta(descontadosJornadaBruta);
-        }
+        final List<Long> descontadosJornadaBruta = new ArrayList<>();
+        descontadosJornadaBruta.add(15L);
+        tipo.setCodTiposDescontadosJornadaBruta(descontadosJornadaBruta);
 
-        {
-            final List<TipoMarcacao> descontadosJornadaLiquida = new ArrayList<>();
-            final TipoMarcacao descanso = new TipoMarcacao();
-            descanso.setCodigo(19L);
-            descontadosJornadaLiquida.add(descanso);
-            tipo.setTiposDescontadosJornadaLiquida(descontadosJornadaLiquida);
-        }
-
+        final List<Long> descontadosJornadaLiquida = new ArrayList<>();
+        descontadosJornadaLiquida.add(19L);
+        tipo.setCodTiposDescontadosJornadaLiquida(descontadosJornadaLiquida);
 
         return tipo;
     }

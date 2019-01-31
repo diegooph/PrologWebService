@@ -41,9 +41,9 @@ public class TipoMarcacao {
     private boolean tipoJornada;
 
     @Nullable
-    private List<TipoMarcacao> tiposDescontadosJornadaBruta;
+    private List<Long> codTiposDescontadosJornadaBruta;
     @Nullable
-    private List<TipoMarcacao> tiposDescontadosJornadaLiquida;
+    private List<Long> codTiposDescontadosJornadaLiquida;
 
     public TipoMarcacao() {
 
@@ -138,21 +138,21 @@ public class TipoMarcacao {
     }
 
     @Nullable
-    public List<TipoMarcacao> getTiposDescontadosJornadaBruta() {
-        return tiposDescontadosJornadaBruta;
+    public List<Long> getCodTiposDescontadosJornadaBruta() {
+        return codTiposDescontadosJornadaBruta;
     }
 
-    public void setTiposDescontadosJornadaBruta(@Nullable final List<TipoMarcacao> tiposDescontadosJornadaBruta) {
-        this.tiposDescontadosJornadaBruta = tiposDescontadosJornadaBruta;
+    public void setCodTiposDescontadosJornadaBruta(@Nullable final List<Long> codTiposDescontadosJornadaBruta) {
+        this.codTiposDescontadosJornadaBruta = codTiposDescontadosJornadaBruta;
     }
 
     @Nullable
-    public List<TipoMarcacao> getTiposDescontadosJornadaLiquida() {
-        return tiposDescontadosJornadaLiquida;
+    public List<Long> getCodTiposDescontadosJornadaLiquida() {
+        return codTiposDescontadosJornadaLiquida;
     }
 
-    public void setTiposDescontadosJornadaLiquida(@Nullable final List<TipoMarcacao> tiposDescontadosJornadaLiquida) {
-        this.tiposDescontadosJornadaLiquida = tiposDescontadosJornadaLiquida;
+    public void setCodTiposDescontadosJornadaLiquida(@Nullable final List<Long> codTiposDescontadosJornadaLiquida) {
+        this.codTiposDescontadosJornadaLiquida = codTiposDescontadosJornadaLiquida;
     }
 
     @Override

@@ -353,21 +353,21 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             stmt = conn.prepareStatement("INSERT INTO MARCACAO_TIPOS_DESCONTADOS_CALCULO_JORNADA_BRUTA_LIQUIDA " +
                     "(COD_UNIDADE, COD_TIPO_JORNADA, COD_TIPO_DESCONTADO, DESCONTA_JORNADA_BRUTA, " +
                     "DESCONTA_JORNADA_LIQUIDA) VALUES (?, ?, ?, ?, ?);");
-            final List<TipoMarcacao> descontosBruta = tipoMarcacao.getTiposDescontadosJornadaBruta();
-            final List<TipoMarcacao> descontosLiquida = tipoMarcacao.getTiposDescontadosJornadaLiquida();
+            final List<Long> descontosBruta = tipoMarcacao.getCodTiposDescontadosJornadaBruta();
+            final List<Long> descontosLiquida = tipoMarcacao.getCodTiposDescontadosJornadaLiquida();
             if (descontosBruta != null && descontosLiquida != null) {
-                for (final TipoMarcacao tipoDescontado : descontosBruta) {
+                for (final Long codTipoDescontado : descontosBruta) {
                     stmt.setLong(1, tipoMarcacao.getUnidade().getCodigo());
                     stmt.setLong(2, tipoMarcacao.getCodigo());
-                    stmt.setLong(3, tipoDescontado.getCodigo());
+                    stmt.setLong(3, codTipoDescontado);
                     stmt.setBoolean(4, true);
                     stmt.setBoolean(5, false);
                     stmt.addBatch();
                 }
-                for (final TipoMarcacao tipoDescontado : descontosLiquida) {
+                for (final Long codTipoDescontado : descontosLiquida) {
                     stmt.setLong(1, tipoMarcacao.getUnidade().getCodigo());
                     stmt.setLong(2, tipoMarcacao.getCodigo());
-                    stmt.setLong(3, tipoDescontado.getCodigo());
+                    stmt.setLong(3, codTipoDescontado);
                     stmt.setBoolean(4, false);
                     stmt.setBoolean(5, true);
                     stmt.addBatch();
