@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ViagemEmAndamento;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +34,23 @@ public final class AcompanhamentoViagemService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar colaboradores em descanso, tente novamente");
+        }
+    }
+
+    @NotNull
+    public ViagemEmAndamento getViagensEmAndamento(@NotNull final Long codUnidade,
+                                                   @NotNull final List<Long> codCargos) throws ProLogException {
+        try {
+            return dao.getViagensEmAndamento(codUnidade, codCargos);
+        } catch (final Throwable t) {
+            final String errorMessage = String.format(
+                    "Erro ao buscar viagens em andamento da unidade %d e cargos %s",
+                    codUnidade,
+                    codCargos);
+            Log.e(TAG, errorMessage, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar viagens em andamento, tente novamente");
         }
     }
 }

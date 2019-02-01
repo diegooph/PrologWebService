@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
+import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ViagemEmAndamento;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,4 +16,8 @@ public interface AcompanhamentoViagemDao {
     @NotNull
     ViagemEmDescanso getColaboradoresEmDescanso(@NotNull final Long codUnidade,
                                                 @NotNull final List<Long> codCargos) throws Throwable;
+
+    @NotNull
+    ViagemEmAndamento getViagensEmAndamento(@NotNull final Long codUnidade,
+                                            @NotNull final List<Long> codCargos) throws Throwable;
 }

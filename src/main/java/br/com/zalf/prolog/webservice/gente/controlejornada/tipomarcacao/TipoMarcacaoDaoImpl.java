@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoDescontadoJornada;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 

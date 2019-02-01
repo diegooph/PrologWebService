@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoDescontadoJornada;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoDescontadoJornada;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;

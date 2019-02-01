@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ViagemEmAndamento;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -21,7 +22,7 @@ import java.util.List;
 @Path("/controle-jornada/acompanhamento-viagens")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class AcompanhamentoViagemResource {
+public final class AcompanhamentoViagemResource {
     @NotNull
     private final AcompanhamentoViagemService service = new AcompanhamentoViagemService();
 
@@ -32,5 +33,14 @@ public class AcompanhamentoViagemResource {
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("codCargos") @Required final List<Long> codCargos) throws ProLogException {
         return service.getColaboradoresEmDescanso(codUnidade, codCargos);
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Gente.Relatorios.INTERVALOS})
+    @Path("/viagens-em-andamento")
+    public ViagemEmAndamento getViagensEmAndamento(
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("codCargos") @Required final List<Long> codCargos) throws ProLogException {
+        return service.getViagensEmAndamento(codUnidade, codCargos);
     }
 }

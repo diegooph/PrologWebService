@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoDescontadoJornada;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

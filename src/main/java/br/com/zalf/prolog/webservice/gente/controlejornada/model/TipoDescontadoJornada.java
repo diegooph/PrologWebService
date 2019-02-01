@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao;
+package br.com.zalf.prolog.webservice.gente.controlejornada.model;
 
 import org.jetbrains.annotations.NotNull;
 
