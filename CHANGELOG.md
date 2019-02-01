@@ -9,6 +9,7 @@ Change Log
 * Altera nome no header do relatório de totais por tipo de marcação para evitar problema com colunas de mesmo nome (PL-1159)
 * Corrige criação de token de controle de jornada caso unidade não possua (PL-1575)
 * Permite ao cliente selecionar quais tipos de marcação descontam do cálculo de jornada bruta e líquida (PL-1648)
+* Cria métodos para nova tela de acompanhamento de viagens do controle de jornada (PL-1661)
 
 
 <a name="v0.0.84"></a>
