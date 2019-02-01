@@ -23,15 +23,21 @@ public final class ColaboradorEmDescanso {
     @NotNull
     @SerializedName("tempoTotalDescansoEmSegundos")
     private final Duration tempoTotalDescanso;
+    private final boolean inicioFoiAjustado;
+    private final boolean fimFoiAjustado;
 
     public ColaboradorEmDescanso(@NotNull final String nomeColaborador,
                                  @Nullable final LocalDateTime dataHoraInicioUltimaViagem,
                                  @NotNull final LocalDateTime dataHoraFimUltimaViagem,
-                                 @NotNull final Duration tempoTotalDescanso) {
+                                 @NotNull final Duration tempoTotalDescanso,
+                                 final boolean inicioFoiAjustado,
+                                 final boolean fimFoiAjustado) {
         this.nomeColaborador = nomeColaborador;
         this.dataHoraInicioUltimaViagem = dataHoraInicioUltimaViagem;
         this.dataHoraFimUltimaViagem = dataHoraFimUltimaViagem;
         this.tempoTotalDescanso = tempoTotalDescanso;
+        this.inicioFoiAjustado = inicioFoiAjustado;
+        this.fimFoiAjustado = fimFoiAjustado;
     }
 
     @NotNull
@@ -44,7 +50,9 @@ public final class ColaboradorEmDescanso {
                     LocalDateTime
                             .now()
                             .minus((11 * 60) + 30, ChronoUnit.MINUTES),
-                    Duration.ofMinutes((11 * 60) + 30));
+                    Duration.ofMinutes((11 * 60) + 30),
+                    true,
+                    true);
         } else {
             return new ColaboradorEmDescanso(
                     "Emanuel Sebastião Cunha",
@@ -55,7 +63,9 @@ public final class ColaboradorEmDescanso {
                     LocalDateTime
                             .now()
                             .minus((11 * 60) + 30, ChronoUnit.MINUTES),
-                    Duration.ofMinutes((11 * 60) + 30));
+                    Duration.ofMinutes((11 * 60) + 30),
+                    false,
+                    false);
         }
     }
 
@@ -77,5 +87,13 @@ public final class ColaboradorEmDescanso {
     @NotNull
     public Duration getTempoTotalDescanso() {
         return tempoTotalDescanso;
+    }
+
+    public boolean isInicioFoiAjustado() {
+        return inicioFoiAjustado;
+    }
+
+    public boolean isFimFoiAjustado() {
+        return fimFoiAjustado;
     }
 }

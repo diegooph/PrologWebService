@@ -46,7 +46,9 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                         rSet.getString("NOME_COLABORADOR"),
                         rSet.getObject("DATA_HORA_INICIO_ULTIMA_VIAGEM", LocalDateTime.class),
                         rSet.getObject("DATA_HORA_FIM_ULTIMA_VIAGEM", LocalDateTime.class),
-                        Duration.ofSeconds(rSet.getLong("TEMPO_DESCANSO_SEGUNDOS"))));
+                        Duration.ofSeconds(rSet.getLong("TEMPO_DESCANSO_SEGUNDOS")),
+                        rSet.getBoolean("FOI_AJUSTADO_INICIO"),
+                        rSet.getBoolean("FOI_AJUSTADO_FIM")));
             }
             return new ViagemEmDescanso(colaboradores, colaboradores.size());
         } finally {
