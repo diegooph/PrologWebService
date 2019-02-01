@@ -45,7 +45,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
     }
 
     @NotNull
-    List<ItemPendenteIntegracaoTransport> getItensPendentes(
+    public List<ItemPendenteIntegracaoTransport> getItensPendentes(
             final String tokenIntegracao,
             final Long codUltimoItemPendenteSincronizado) throws ProLogException {
         try {

@@ -52,9 +52,9 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("");
-            stmt.setString(1, tokenIntegracao);
-            stmt.setLong(2, codUltimoItemPendenteSincronizado);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_INTEGRACAO_BUSCA_ITENS_OS_EMPRESA(?, ?);");
+            stmt.setLong(1, codUltimoItemPendenteSincronizado);
+            stmt.setString(2, tokenIntegracao);
             rSet = stmt.executeQuery();
             final List<ItemPendenteIntegracaoTransport> itensPendentes = new ArrayList<>();
             while (rSet.next()) {
