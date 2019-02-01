@@ -25,7 +25,7 @@ public final class TipoMarcacaoService {
 
     @NotNull
     @VisibleForTesting
-    public AbstractResponse insertTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao) throws ProLogException {
+    public AbstractResponse insertTipoMarcacao(final TipoMarcacao tipoMarcacao) throws ProLogException {
         try {
             return ResponseWithCod.ok(
                     "Tipo de marcação inserido com sucesso",
@@ -41,7 +41,7 @@ public final class TipoMarcacaoService {
 
     @NotNull
     @VisibleForTesting
-    public Response updateTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao) throws ProLogException {
+    public Response updateTipoMarcacao(final TipoMarcacao tipoMarcacao) throws ProLogException {
         try {
             dao.updateTipoMarcacao(tipoMarcacao, Injection.provideDadosIntervaloChangedListener());
             return Response.ok("Tipo de marcação atualizada com sucesso");
@@ -54,7 +54,7 @@ public final class TipoMarcacaoService {
     }
 
     @NotNull
-    List<TipoMarcacao> getTiposMarcacoes(@NotNull final Long codUnidade,
+    List<TipoMarcacao> getTiposMarcacoes(final Long codUnidade,
                                          final boolean apenasAtivos,
                                          final boolean withCargos) throws ProLogException {
         try {
@@ -72,7 +72,7 @@ public final class TipoMarcacaoService {
 
     @NotNull
     @VisibleForTesting
-    public TipoMarcacao getTipoMarcacao(@NotNull final Long codTipoMarcacao) throws ProLogException {
+    public TipoMarcacao getTipoMarcacao(final Long codTipoMarcacao) throws ProLogException {
         try {
             return dao.getTipoMarcacao(codTipoMarcacao);
         } catch (final Throwable t) {
@@ -85,8 +85,8 @@ public final class TipoMarcacaoService {
     }
 
     @NotNull
-    Response updateStatusAtivo(@NotNull final Long codTipoMarcacao,
-                               @NotNull final TipoMarcacao tipoMarcacao) throws ProLogException {
+    Response updateStatusAtivo(final Long codTipoMarcacao,
+                               final TipoMarcacao tipoMarcacao) throws ProLogException {
         try {
             dao.updateStatusAtivoTipoMarcacao(
                     codTipoMarcacao,
@@ -105,6 +105,19 @@ public final class TipoMarcacaoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, errorMessage);
+        }
+    }
+
+    @NotNull
+    public FormulaCalculoJornada getForumaCalculoJornada(final Long codUnidade) throws ProLogException {
+        try {
+            return dao.getForumaCalculoJornada(codUnidade);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar fórmula de cálculo da jornada\n" +
+                    "codUnidade: %d", codUnidade), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar fórmula de cálculo da jornada, tente novamente");
         }
     }
 }

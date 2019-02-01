@@ -84,4 +84,16 @@ public final class TipoMarcacaoResource {
             @QueryParam("apenasAtivos") @DefaultValue("true") boolean apenasAtivos) throws ProLogException {
         return service.getTiposMarcacoes(codUnidade, apenasAtivos, true);
     }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
+            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
+            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
+            Pilares.Gente.Relatorios.INTERVALOS})
+    @Path("/formula-calculo-jornada")
+    public FormulaCalculoJornada getForumaCalculoJornada(@QueryParam("codUnidade") @Required final Long codUnidade)
+            throws ProLogException {
+        return service.getForumaCalculoJornada(codUnidade);
+    }
 }

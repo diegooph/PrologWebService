@@ -49,7 +49,7 @@ public final class FormulaCalculoJornada {
 
     @NotNull
     private String createFormulaCalculoJornadaBruta() {
-        final StringBuilder builder = new StringBuilder("Jornada Bruta = ");
+        final StringBuilder builder = new StringBuilder("Jornada Bruta = Duração Total Jornada");
         for (final TipoDescontadoJornada tipoDescontadoJornada : tiposDescontadosJornadaBruta) {
             builder.append(" - ").append(tipoDescontadoJornada.getNomeTipo());
         }
@@ -58,7 +58,7 @@ public final class FormulaCalculoJornada {
 
     @NotNull
     private String createFormulaCalculoJornadaLiquida() {
-        final StringBuilder builder = new StringBuilder("Jornada Bruta = Jornada Líquida");
+        final StringBuilder builder = new StringBuilder("Jornada Líquida = Jornada Bruta");
         for (final TipoDescontadoJornada tipoDescontadoJornada : tiposDescontadosJornadaLiquida) {
             builder.append(" - ").append(tipoDescontadoJornada.getNomeTipo());
         }
