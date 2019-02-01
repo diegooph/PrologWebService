@@ -1,7 +1,8 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.model;
+package br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +42,7 @@ public class TipoMarcacao {
     private boolean tipoJornada;
 
     @Nullable
-    private TipoDescontadoJornada tiposDescontadosJornada;
+    private FormulaCalculoJornada formulaCalculoJornada;
 
     public TipoMarcacao() {
 
@@ -136,12 +137,12 @@ public class TipoMarcacao {
     }
 
     @Nullable
-    public TipoDescontadoJornada getTiposDescontadosJornada() {
-        return tiposDescontadosJornada;
+    public FormulaCalculoJornada getFormulaCalculoJornada() {
+        return formulaCalculoJornada;
     }
 
-    public void setTiposDescontadosJornada(@Nullable final TipoDescontadoJornada tiposDescontadosJornada) {
-        this.tiposDescontadosJornada = tiposDescontadosJornada;
+    public void setFormulaCalculoJornada(@Nullable final FormulaCalculoJornada formulaCalculoJornada) {
+        this.formulaCalculoJornada = formulaCalculoJornada;
     }
 
     @Override

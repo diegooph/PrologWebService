@@ -5,8 +5,6 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoDescontadoJornada;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -280,7 +278,7 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
         tipoMarcacao.setTempoRecomendado(Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")));
         tipoMarcacao.setTipoJornada(rSet.getBoolean("TIPO_JORNADA"));
         if (tipoMarcacao.isTipoJornada()) {
-            tipoMarcacao.setTiposDescontadosJornada(getTiposDescontadosJornada(conn, unidade.getCodigo()));
+            tipoMarcacao.setFormulaCalculoJornada(getForumaCalculoJornada(conn, unidade.getCodigo()));
         }
         if (withCargos) {
             tipoMarcacao.setCargos(getCargosByTipoMarcacao(conn, tipoMarcacao));
@@ -312,8 +310,8 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
     }
 
     @NotNull
-    private TipoDescontadoJornada getTiposDescontadosJornada(@NotNull final Connection conn,
-                                                             @NotNull final Long codUnidade) throws Throwable {
+    private FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Connection conn,
+                                                          @NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -321,16 +319,20 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final List<Long> descontosBruta = new ArrayList<>();
-                final List<Long> descontosLiquida = new ArrayList<>();
+                final List<TipoDescontadoJornada> descontosBruta = new ArrayList<>();
+                final List<TipoDescontadoJornada> descontosLiquida = new ArrayList<>();
                 do {
                     if (rSet.getBoolean("DESCONTA_JORNADA_BRUTA")) {
-                        descontosBruta.add(rSet.getLong("COD_TIPO_DESCONTADO"));
+                        descontosBruta.add(new TipoDescontadoJornada(
+                                rSet.getLong("COD_TIPO_DESCONTADO"),
+                                rSet.getString("NOME_TIPO_DESCONTADO")));
                     } else {
-                        descontosLiquida.add(rSet.getLong("COD_TIPO_DESCONTADO"));
+                        descontosLiquida.add(new TipoDescontadoJornada(
+                                rSet.getLong("COD_TIPO_DESCONTADO"),
+                                rSet.getString("NOME_TIPO_DESCONTADO")));
                     }
                 } while (rSet.next());
-                return new TipoDescontadoJornada(descontosBruta, descontosLiquida);
+                return new FormulaCalculoJornada(descontosBruta, descontosLiquida);
             } else {
                 throw new SQLException(String.format(
                         "Dados de tipos descontados da jornada não encontrados para a unidade %d",
@@ -387,22 +389,22 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             stmt = conn.prepareStatement("INSERT INTO MARCACAO_TIPOS_DESCONTADOS_CALCULO_JORNADA_BRUTA_LIQUIDA " +
                     "(COD_UNIDADE, COD_TIPO_JORNADA, COD_TIPO_DESCONTADO, DESCONTA_JORNADA_BRUTA, " +
                     "DESCONTA_JORNADA_LIQUIDA) VALUES (?, ?, ?, ?, ?);");
-            final TipoDescontadoJornada tiposDescontados = tipoMarcacao.getTiposDescontadosJornada();
-            if (tiposDescontados != null) {
-                final List<Long> descontosBruta = tiposDescontados.getCodTiposDescontadosJornadaBruta();
-                final List<Long> descontosLiquida = tiposDescontados.getCodTiposDescontadosJornadaLiquida();
-                for (final Long codTipoDescontado : descontosBruta) {
+            final FormulaCalculoJornada formulaCalculo = tipoMarcacao.getFormulaCalculoJornada();
+            if (formulaCalculo != null) {
+                final List<TipoDescontadoJornada> descontosBruta = formulaCalculo.getTiposDescontadosJornadaBruta();
+                final List<TipoDescontadoJornada> descontosLiquida = formulaCalculo.getTiposDescontadosJornadaLiquida();
+                for (final TipoDescontadoJornada tipoDescontado : descontosBruta) {
                     stmt.setLong(1, tipoMarcacao.getUnidade().getCodigo());
                     stmt.setLong(2, tipoMarcacao.getCodigo());
-                    stmt.setLong(3, codTipoDescontado);
+                    stmt.setLong(3, tipoDescontado.getCodTipo());
                     stmt.setBoolean(4, true);
                     stmt.setBoolean(5, false);
                     stmt.addBatch();
                 }
-                for (final Long codTipoDescontado : descontosLiquida) {
+                for (final TipoDescontadoJornada tipoDescontado : descontosLiquida) {
                     stmt.setLong(1, tipoMarcacao.getUnidade().getCodigo());
                     stmt.setLong(2, tipoMarcacao.getCodigo());
-                    stmt.setLong(3, codTipoDescontado);
+                    stmt.setLong(3, tipoDescontado.getCodTipo());
                     stmt.setBoolean(4, false);
                     stmt.setBoolean(5, true);
                     stmt.addBatch();

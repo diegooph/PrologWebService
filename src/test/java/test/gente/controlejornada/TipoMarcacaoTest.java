@@ -5,8 +5,9 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoDescontadoJornada;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoDescontadoJornada;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.FormulaCalculoJornada;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
@@ -78,26 +79,26 @@ public class TipoMarcacaoTest extends BaseTest {
             assertEquals(inserido.getCodigo(), buscado.getCodigo());
         }
 
-        final TipoDescontadoJornada descontosInseridos = tipoMarcacao.getTiposDescontadosJornada();
-        final TipoDescontadoJornada descontosBuscados = tipoBuscado.getTiposDescontadosJornada();
+        final FormulaCalculoJornada descontosInseridos = tipoMarcacao.getFormulaCalculoJornada();
+        final FormulaCalculoJornada descontosBuscados = tipoBuscado.getFormulaCalculoJornada();
         assertNotNull(descontosInseridos);
         assertNotNull(descontosBuscados);
 
-        final List<Long> brutaInseridos = descontosInseridos.getCodTiposDescontadosJornadaBruta();
-        final List<Long> brutaBuscados = descontosBuscados.getCodTiposDescontadosJornadaBruta();
+        final List<TipoDescontadoJornada> brutaInseridos = descontosInseridos.getTiposDescontadosJornadaBruta();
+        final List<TipoDescontadoJornada> brutaBuscados = descontosBuscados.getTiposDescontadosJornadaBruta();
         assertEquals(brutaInseridos.size(), brutaBuscados.size());
         for (int i = 0; i < brutaInseridos.size(); i++) {
-            final Long codInserido = brutaInseridos.get(i);
-            final Long codBuscado = brutaBuscados.get(i);
+            final Long codInserido = brutaInseridos.get(i).getCodTipo();
+            final Long codBuscado = brutaBuscados.get(i).getCodTipo();
             assertEquals(codInserido, codBuscado);
         }
 
-        final List<Long> liquidaInseridos = descontosInseridos.getCodTiposDescontadosJornadaLiquida();
-        final List<Long> liquidaBuscados = descontosBuscados.getCodTiposDescontadosJornadaLiquida();
+        final List<TipoDescontadoJornada> liquidaInseridos = descontosInseridos.getTiposDescontadosJornadaLiquida();
+        final List<TipoDescontadoJornada> liquidaBuscados = descontosBuscados.getTiposDescontadosJornadaLiquida();
         assertEquals(liquidaInseridos.size(), liquidaBuscados.size());
         for (int i = 0; i < liquidaInseridos.size(); i++) {
-            final Long codInserido = liquidaInseridos.get(i);
-            final Long codBuscado = liquidaBuscados.get(i);
+            final Long codInserido = liquidaInseridos.get(i).getCodTipo();
+            final Long codBuscado = liquidaBuscados.get(i).getCodTipo();
             assertEquals(codInserido, codBuscado);
         }
     }
@@ -135,12 +136,13 @@ public class TipoMarcacaoTest extends BaseTest {
         cargos.add(new Cargo(159L, "Motorista"));
         tipo.setCargos(cargos);
 
-        final List<Long> descontadosBruta = new ArrayList<>();
-        descontadosBruta.add(15L);
-        final List<Long> descontadosLiquida = new ArrayList<>();
-        descontadosLiquida.add(19L);
-        final TipoDescontadoJornada tiposDescontados = new TipoDescontadoJornada(descontadosBruta, descontadosLiquida);
-        tipo.setTiposDescontadosJornada(tiposDescontados);
+
+        final List<TipoDescontadoJornada> descontadosBruta = new ArrayList<>();
+        descontadosBruta.add(new TipoDescontadoJornada(15L, "Refeição"));
+        final List<TipoDescontadoJornada> descontadosLiquida = new ArrayList<>();
+        descontadosLiquida.add(new TipoDescontadoJornada(19L, "Descanso"));
+        final FormulaCalculoJornada tiposDescontados = new FormulaCalculoJornada(descontadosBruta, descontadosLiquida);
+        tipo.setFormulaCalculoJornada(tiposDescontados);
 
         return tipo;
     }
