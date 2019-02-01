@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ViagemEmAndamento;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
 import org.jetbrains.annotations.NotNull;
@@ -13,10 +15,36 @@ import java.util.List;
  */
 public interface AcompanhamentoViagemDao {
 
+    /**
+     * Este método busca todos os colaboradores que estão em descanso. É entendido como 'em descanso' o colaborador que
+     * não tem nenhuma marcação do tipo jornada em aberto. Ou seja, a última marcação do tipo jornada desse colaborador
+     * deve ter, pelo menos, o fim. Podendo inclusive ser um fim sem início.
+     *
+     * @param codUnidade Código da {@link Unidade unidade} para a qual as informações serão buscadas.
+     * @param codCargos Código dos {@link Cargo cargos} para os quais as informações serão buscadas.
+     * @return Um objeto contendo todos os colaboradores que estão em descanso.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
     @NotNull
     ViagemEmDescanso getColaboradoresEmDescanso(@NotNull final Long codUnidade,
                                                 @NotNull final List<Long> codCargos) throws Throwable;
 
+    /**
+     * Este método busca todas as viagens que estão em andamento bem como informações dos colaboradores que estão
+     * realizando essas viagens. É entendido como tendo viagem 'em andamento' o colaborador cuja última marcação do tipo
+     * jornada é um início que não possui fim.
+     *
+     * <b>Pontos importantes:</b>
+     * 1 - Inícios que possuam fins inativos não serão considerados como viagens em andamento.
+     * 2 - Se um colaborador tem uma marcação de início de tipo jornada sem fim, e depois dessa uma jornada completa com
+     * início e fim, caso essa jornada completa tenha seu início e fim inativados, o início avulso antes dela não
+     * passará a ser considerado uma viagem em andamento.
+     *
+     * @param codUnidade Código da {@link Unidade unidade} para a qual as informações serão buscadas.
+     * @param codCargos Código dos {@link Cargo cargos} para os quais as informações serão buscadas.
+     * @return Um objeto contendo todas as viagens em andamento.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
     @NotNull
     ViagemEmAndamento getViagensEmAndamento(@NotNull final Long codUnidade,
                                             @NotNull final List<Long> codCargos) throws Throwable;
