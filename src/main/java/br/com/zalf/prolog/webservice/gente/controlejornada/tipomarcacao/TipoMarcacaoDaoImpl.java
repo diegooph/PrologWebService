@@ -278,7 +278,7 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
         tipoMarcacao.setTempoRecomendado(Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")));
         tipoMarcacao.setTipoJornada(rSet.getBoolean("TIPO_JORNADA"));
         if (tipoMarcacao.isTipoJornada()) {
-            tipoMarcacao.setFormulaCalculoJornada(getForumaCalculoJornada(conn, unidade.getCodigo()));
+            tipoMarcacao.setFormulaCalculoJornada(internalGetForumaCalculoJornada(conn, unidade.getCodigo()));
         }
         if (withCargos) {
             tipoMarcacao.setCargos(getCargosByTipoMarcacao(conn, tipoMarcacao));
@@ -310,8 +310,20 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
     }
 
     @NotNull
-    private FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Connection conn,
-                                                          @NotNull final Long codUnidade) throws Throwable {
+    @Override
+    public FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return internalGetForumaCalculoJornada(conn, codUnidade);
+        } finally {
+            close(conn);
+        }
+    }
+
+    @NotNull
+    private FormulaCalculoJornada internalGetForumaCalculoJornada(@NotNull final Connection conn,
+                                                                  @NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {

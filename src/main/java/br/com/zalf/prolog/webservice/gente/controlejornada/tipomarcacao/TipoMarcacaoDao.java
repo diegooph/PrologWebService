@@ -88,4 +88,7 @@ public interface TipoMarcacaoDao {
     void updateStatusAtivoTipoMarcacao(@NotNull final Long codTipoMarcacao,
                                        @NotNull final TipoMarcacao tipoMarcacao,
                                        @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
+
+    @NotNull
+    FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable;
 }
