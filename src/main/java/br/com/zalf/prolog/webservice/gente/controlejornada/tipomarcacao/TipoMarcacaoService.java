@@ -109,7 +109,7 @@ public final class TipoMarcacaoService {
     }
 
     @NotNull
-    public FormulaCalculoJornada getForumaCalculoJornada(final Long codUnidade) throws ProLogException {
+    public FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws ProLogException {
         try {
             return dao.getForumaCalculoJornada(codUnidade);
         } catch (final Throwable t) {

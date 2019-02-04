@@ -92,8 +92,8 @@ public final class TipoMarcacaoResource {
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
             Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/formula-calculo-jornada")
-    public FormulaCalculoJornada getForumaCalculoJornada(@QueryParam("codUnidade") @Required final Long codUnidade)
-            throws ProLogException {
+    public FormulaCalculoJornada getForumaCalculoJornada(
+            @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
         return service.getForumaCalculoJornada(codUnidade);
     }
 }

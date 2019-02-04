@@ -89,6 +89,25 @@ public interface TipoMarcacaoDao {
                                        @NotNull final TipoMarcacao tipoMarcacao,
                                        @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
+    /**
+     * A {@link FormulaCalculoJornada fórmula de cálculo de Jornada} é um objeto que contém as informações para a
+     * realização do cálculo de Jornada Bruta e da Jornada Líquida.
+     * <p>
+     * A Jornada Bruta é calculada através da duração total da jornada (diferença de tempo entre início e fim)
+     * descontando as {@link FormulaCalculoJornada#tiposDescontadosJornadaBruta marcações} que foram selecionadas
+     * pelo usuário para descontar do período de Jornada.
+     * <b>Ex: Jornada Bruta = Tempo Total Jornada - Refeição - Descarga</b>
+     * <p>
+     * A Jornada Líquida, por sua vez, é a diferença entre a Jornada Bruta e as marcações que foram selecionadas pelo
+     * usuário para descontar da jornada líquida.
+     * As marcações selecionadas para descontar da Jornada Bruta não podem estar marcados para descontar da
+     * Jornada Líquida, e o contrário também é válido.
+     * <b>Ex: Jornada Líquida = Jornada Bruta - Descanso</b>
+     *
+     * @param codUnidade Código da {@link Unidade unidade} que será buscado a fórmula de cálculo de jornada.
+     * @return A {@link FormulaCalculoJornada fórmula de cálculo de Jornada} para a unidade selecionada.
+     * @throws Throwable Para o caso de algum erro acontecer.
+     */
     @NotNull
     FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable;
 }
