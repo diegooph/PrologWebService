@@ -14,19 +14,11 @@ public final class ViagemEmAndamento {
     @NotNull
     private final List<ColaboradorEmViagem> colaboradoresEmViagem;
     private final int qtdViagensEmAndamento;
-    @NotNull
-    private final String formaCalculoJornadaBruta;
-    @NotNull
-    private final String formaCalculoJornadaLiquida;
 
     public ViagemEmAndamento(@NotNull final List<ColaboradorEmViagem> colaboradoresEmViagem,
-                             final int qtdViagensEmAndamento,
-                             @NotNull final String formaCalculoJornadaBruta,
-                             @NotNull final String formaCalculoJornadaLiquida) {
+                             final int qtdViagensEmAndamento) {
         this.colaboradoresEmViagem = colaboradoresEmViagem;
         this.qtdViagensEmAndamento = qtdViagensEmAndamento;
-        this.formaCalculoJornadaBruta = formaCalculoJornadaBruta;
-        this.formaCalculoJornadaLiquida = formaCalculoJornadaLiquida;
     }
 
     @NotNull
@@ -36,11 +28,7 @@ public final class ViagemEmAndamento {
             colaboradores.add(ColaboradorEmViagem.createDummy());
         }
 
-        return new ViagemEmAndamento(
-                colaboradores,
-                colaboradores.size(),
-                "Jornada Bruta = Tempo Total Jornada - Refeição - Descarga",
-                "Jornada Líquida = Jornada Bruta - Descanso");
+        return new ViagemEmAndamento(colaboradores, colaboradores.size());
     }
 
     @NotNull
@@ -50,15 +38,5 @@ public final class ViagemEmAndamento {
 
     public int getQtdViagensEmAndamento() {
         return qtdViagensEmAndamento;
-    }
-
-    @NotNull
-    public String getFormaCalculoJornadaBruta() {
-        return formaCalculoJornadaBruta;
-    }
-
-    @NotNull
-    public String getFormaCalculoJornadaLiquida() {
-        return formaCalculoJornadaLiquida;
     }
 }

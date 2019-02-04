@@ -21,7 +21,7 @@ public interface AcompanhamentoViagemDao {
      * deve ter, pelo menos, o fim. Podendo inclusive ser um fim sem início.
      *
      * @param codUnidade Código da {@link Unidade unidade} para a qual as informações serão buscadas.
-     * @param codCargos Código dos {@link Cargo cargos} para os quais as informações serão buscadas.
+     * @param codCargos  Código dos {@link Cargo cargos} para os quais as informações serão buscadas.
      * @return Um objeto contendo todos os colaboradores que estão em descanso.
      * @throws Throwable Caso qualquer erro aconteça.
      */
@@ -41,7 +41,7 @@ public interface AcompanhamentoViagemDao {
      * passará a ser considerado uma viagem em andamento.
      *
      * @param codUnidade Código da {@link Unidade unidade} para a qual as informações serão buscadas.
-     * @param codCargos Código dos {@link Cargo cargos} para os quais as informações serão buscadas.
+     * @param codCargos  Código dos {@link Cargo cargos} para os quais as informações serão buscadas.
      * @return Um objeto contendo todas as viagens em andamento.
      * @throws Throwable Caso qualquer erro aconteça.
      */

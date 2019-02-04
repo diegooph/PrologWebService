@@ -89,11 +89,7 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                 marcacoes.add(createMarcacaoDentroJornada(rSet));
                 cpfAnterior = rSet.getLong("CPF_COLABORADOR");
             }
-            return new ViagemEmAndamento(
-                    viagens,
-                    viagens.size(),
-                    "bruta",
-                    "liquida");
+            return new ViagemEmAndamento(viagens, viagens.size());
         } finally {
             close(conn, stmt, rSet);
         }
