@@ -49,8 +49,9 @@ public final class AcompanhamentoViagemResource {
     @Secured(permissions = {Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/marcacoes")
     public MarcacaoAgrupadaAcompanhamento getMarcacoes(
+            @QueryParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("codInicio") @Optional final Long codInicio,
             @QueryParam("codFim") @Optional final Long codFim) throws ProLogException {
-        return service.getMarcacoes(codInicio, codFim);
+        return service.getMarcacoes(codUnidade, codInicio, codFim);
     }
 }

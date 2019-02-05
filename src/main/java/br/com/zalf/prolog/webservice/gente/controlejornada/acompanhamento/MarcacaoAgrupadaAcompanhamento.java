@@ -16,14 +16,14 @@ public final class MarcacaoAgrupadaAcompanhamento {
     @NotNull
     private final String nomeTipoMarcacao;
     @NotNull
-    private final Long cpfColaborador;
+    private final String cpfColaborador;
     @NotNull
     private final String nomeColaborador;
     @Nullable
     private final MarcacaoAcompanhamento marcacaoInicio;
     @Nullable
     private final MarcacaoAcompanhamento marcacaoFim;
-    @Nullable
+    @NotNull
     @SerializedName("tempoDecorridoEntreInicioFimEmSegundos")
     private final Duration tempoDecorridoEntreInicioFim;
     @Nullable
@@ -32,11 +32,11 @@ public final class MarcacaoAgrupadaAcompanhamento {
     private final String justificativaTempoRecomendado;
 
     public MarcacaoAgrupadaAcompanhamento(@NotNull final String nomeTipoMarcacao,
-                                          @NotNull final Long cpfColaborador,
+                                          @NotNull final String cpfColaborador,
                                           @NotNull final String nomeColaborador,
                                           @Nullable final MarcacaoAcompanhamento marcacaoInicio,
                                           @Nullable final MarcacaoAcompanhamento marcacaoFim,
-                                          @Nullable final Duration tempoDecorridoEntreInicioFim,
+                                          @NotNull final Duration tempoDecorridoEntreInicioFim,
                                           @Nullable final String justificativaEstouro,
                                           @Nullable final String justificativaTempoRecomendado) {
         this.nomeTipoMarcacao = nomeTipoMarcacao;
@@ -54,7 +54,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
         if (tipoInicioFim == null) {
             return new MarcacaoAgrupadaAcompanhamento(
                     "Refeição",
-                    3383283194L,
+                    "3383283194",
                     "João Carlos de Souza",
                     MarcacaoAcompanhamento.createDummy(true),
                     MarcacaoAcompanhamento.createDummy(false),
@@ -64,7 +64,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
         } else if (tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)) {
             return new MarcacaoAgrupadaAcompanhamento(
                     "Refeição",
-                    3383283194L,
+                    "3383283194",
                     "João Carlos de Souza",
                     MarcacaoAcompanhamento.createDummy(true),
                     null,
@@ -75,7 +75,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
             // Apenas de fim.
             return new MarcacaoAgrupadaAcompanhamento(
                     "Refeição",
-                    3383283194L,
+                    "3383283194",
                     "João Carlos de Souza",
                     null,
                     MarcacaoAcompanhamento.createDummy(true),
@@ -91,7 +91,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
     }
 
     @NotNull
-    public Long getCpfColaborador() {
+    public String getCpfColaborador() {
         return cpfColaborador;
     }
 
@@ -110,7 +110,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
         return marcacaoFim;
     }
 
-    @Nullable
+    @NotNull
     public Duration getTempoDecorridoEntreInicioFim() {
         return tempoDecorridoEntreInicioFim;
     }

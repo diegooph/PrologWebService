@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
@@ -10,6 +11,9 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andame
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ViagemEmAndamento;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ColaboradorEmDescanso;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,7 +71,8 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_COLABORADORES_JORNADA_EM_ANDAMENTO(?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_COLABORADORES_JORNADA_EM_ANDAMENTO(?, ?, ?)" +
+                    ";");
             stmt.setLong(1, codUnidade);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codCargos));
             stmt.setObject(3, Now.offsetDateTimeUtc());
@@ -99,7 +104,8 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
 
     @NotNull
     @Override
-    public MarcacaoAgrupadaAcompanhamento getMarcacoes(@Nullable final Long codInicio,
+    public MarcacaoAgrupadaAcompanhamento getMarcacoes(@NotNull final Long codUnidade,
+                                                       @Nullable final Long codInicio,
                                                        @Nullable final Long codFim) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -109,11 +115,59 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_MARCACOES_ACOMPANHAMENTO(?, ?, ?);");
             StatementUtils.bindValueOrNull(stmt, 1, codInicio, SqlType.BIGINT);
             StatementUtils.bindValueOrNull(stmt, 2, codFim, SqlType.BIGINT);
+            stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             rSet = stmt.executeQuery();
-            return null;
+            if (rSet.next()) {
+                return createMarcacaoAgrupada(rSet);
+            } else {
+                throw new IllegalStateException();
+            }
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    private MarcacaoAgrupadaAcompanhamento createMarcacaoAgrupada(@NotNull final ResultSet rSet) throws Throwable {
+        return new MarcacaoAgrupadaAcompanhamento(
+                rSet.getString("NOME_TIPO_MARCACAO"),
+                rSet.getString("CPF_COLABORADOR"),
+                rSet.getString("NOME_COLABORADOR"),
+                rSet.getLong("COD_MARCACAO_INICIO") > 0 ? createMarcacaoInicio(rSet) : null,
+                rSet.getLong("COD_MARCACAO_FIM") > 0 ? createMarcacaoFim(rSet) : null,
+                Duration.ofSeconds(rSet.getLong("TEMPO_DECORRIDO_ENTRE_INICIO_FIM_SEGUNDOS")),
+                rSet.getString("JUSTIFICATIVA_ESTOURO"),
+                rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
+    }
+
+    @NotNull
+    private MarcacaoAcompanhamento createMarcacaoInicio(@NotNull final ResultSet rSet) throws Throwable {
+        return new MarcacaoAcompanhamento(
+                rSet.getLong("COD_MARCACAO_INICIO"),
+                rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
+                FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA_INICIO")),
+                TipoInicioFim.MARCACAO_INICIO,
+                new Localizacao(
+                        rSet.getString("LATITUDE_MARCACAO_INICIO"),
+                        rSet.getString("LONGITUDE_MARCACAO_INICIO")),
+                rSet.getInt("VERSAO_APP_MOMENTO_MARCACAO_INICIO"),
+                rSet.getInt("VERSAO_APP_MOMENTO_SINCRONIZACAO_INICIO"),
+                rSet.getBoolean("FOI_AJUSTADO_INICIO"));
+    }
+
+    @NotNull
+    private MarcacaoAcompanhamento createMarcacaoFim(@NotNull final ResultSet rSet) throws Throwable {
+        return new MarcacaoAcompanhamento(
+                rSet.getLong("COD_MARCACAO_FIM"),
+                rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
+                FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA_FIM")),
+                TipoInicioFim.MARCACAO_FIM,
+                new Localizacao(
+                        rSet.getString("LATITUDE_MARCACAO_FIM"),
+                        rSet.getString("LONGITUDE_MARCACAO_FIM")),
+                rSet.getInt("VERSAO_APP_MOMENTO_MARCACAO_FIM"),
+                rSet.getInt("VERSAO_APP_MOMENTO_SINCRONIZACAO_FIM"),
+                rSet.getBoolean("FOI_AJUSTADO_FIM"));
     }
 
     @NotNull

@@ -55,23 +55,25 @@ public final class AcompanhamentoViagemService {
     }
 
     @NotNull
-    public MarcacaoAgrupadaAcompanhamento getMarcacoes(final Long codInicio,
+    public MarcacaoAgrupadaAcompanhamento getMarcacoes(final Long codUnidade,
+                                                       final Long codInicio,
                                                        final Long codFim) throws ProLogException {
         try {
             if (codInicio == null && codFim == null) {
                 throw new IllegalArgumentException("codInicio e codFim não podem ser ambos nulos!");
             }
 
-            return dao.getMarcacoes(codInicio, codFim);
+            return dao.getMarcacoes(codUnidade, codInicio, codFim);
         } catch (final Throwable t) {
             final String errorMessage = String.format(
-                    "Erro ao buscar marcações\ncodInicio: %d\ncodFim: %d",
+                    "Erro ao buscar marcações\ncodUnidade: %d\ncodInicio: %d\ncodFim: %d",
+                    codUnidade,
                     codInicio,
                     codFim);
             Log.e(TAG, errorMessage, t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao marcação(ões), tente novamente");
+                    .map(t, "Erro ao buscar marcação(ões), tente novamente");
         }
     }
 }
