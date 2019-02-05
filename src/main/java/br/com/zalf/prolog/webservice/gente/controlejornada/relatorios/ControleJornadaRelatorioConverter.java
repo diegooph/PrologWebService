@@ -197,7 +197,7 @@ final class ControleJornadaRelatorioConverter {
                 // Se tipoJornada for false e o codMarcacaoJornada for > 0, significa que essa marcação não é
                 // de jornada, mas está dentro de alguma. Esse caso lida com marcações completas e avulsas!
             } else if (codMarcacaoJornada > 0) {
-                // Garante que se uma marcação pertence a uma jornada, a jornada já estar instanciada.
+                // Garante que se uma marcação pertence a uma jornada, a jornada já estará instanciada.
                 if (jornada == null) {
                     throw new IllegalStateException("O objeto jornada deve ser instanciado!");
                 }
@@ -282,11 +282,13 @@ final class ControleJornadaRelatorioConverter {
                 rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
                 rSet.getLong("COD_TIPO_INTERVALO"),
                 rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
-                rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"),
-                rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"),
                 rSet.getBoolean("TROCOU_DIA"),
                 rSet.getBoolean("MARCACAO_INICIO_AJUSTADA"),
-                rSet.getBoolean("MARCACAO_FIM_AJUSTADA"));
+                rSet.getBoolean("MARCACAO_FIM_AJUSTADA"),
+                rSet.getBoolean("DESCONTA_JORNADA_BRUTA"),
+                rSet.getBoolean("DESCONTA_JORNADA_LIQUIDA"),
+                rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"),
+                rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"));
     }
 
     @NotNull

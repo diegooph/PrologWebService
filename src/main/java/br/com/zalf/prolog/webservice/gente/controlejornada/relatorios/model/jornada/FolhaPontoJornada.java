@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada;
 
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,8 +25,9 @@ public class FolhaPontoJornada {
     private final Long codTipoMarcacaoPorUnidade;
     @NotNull
     private final List<FolhaPontoMarcacao> marcacoes;
-    @NotNull
-    private final Duration jornadaBruta;
+    @SerializedName("jornadaBrutaEmSegundos")
+    private Duration jornadaBruta;
+    @SerializedName("jornadaLiquidaEmSegundos")
     private Duration jornadaLiquida;
     /**
      * Indica se as marcações de início e fim foram feitas em dias diferentes.
@@ -119,24 +121,34 @@ public class FolhaPontoJornada {
         return jornadaLiquida;
     }
 
-    public void setJornadaLiquida(final Duration jornadaLiquida) {
-        this.jornadaLiquida = jornadaLiquida;
-    }
-
     public void addMarcacaoToJornada(@NotNull final FolhaPontoMarcacao folhaPontoMarcacao) {
         this.marcacoes.add(folhaPontoMarcacao);
-        this.calculaJornadaLiquida(folhaPontoMarcacao.getDiferencaInicioFimEmSegundos());
-    }
 
-    public void calculaJornadaLiquida(final long diferencaInicioFimEmSegundos) {
-        // Pode ser null no caso de marcações que tem apenas início ou fim ou que foram iniciadas e finalizadas no
+        // Pode ser 0 no caso de marcações que tem apenas início ou fim ou que foram iniciadas e finalizadas no
         // mesmo segundo. Vai saber...
-        if (diferencaInicioFimEmSegundos == 0)
+        if (folhaPontoMarcacao.getDiferencaInicioFimEmSegundos() == 0)
             return;
 
-        // Se marcação tem extensão maior que a duração da jornada, o tempo total de jornada líquida será negativo,
-        // optamos, por deixar assim para fazer o erro ser vísivel no relatório.
-        final long jornadaLiquidaSegundos = this.jornadaLiquida.minusSeconds(diferencaInicioFimEmSegundos).getSeconds();
-        setJornadaLiquida(Duration.ofSeconds(jornadaLiquidaSegundos));
+        if (folhaPontoMarcacao.isDescontaJornadaBruta()) {
+            // Como a jornada líquida é a jornada bruta com mais alguns descontos extras,
+            // Ex: Jornada Líquida = Jornada Bruta - Descanso. Quando temos alguma marcação que deve descontar da
+            // jornada bruta, também descontados da líquida.
+            calculaJornadaBruta(folhaPontoMarcacao.getDiferencaInicioFimEmSegundos());
+            calculaJornadaLiquida(folhaPontoMarcacao.getDiferencaInicioFimEmSegundos());
+        } else if (folhaPontoMarcacao.isDescontaJornadaLiquida()) {
+            calculaJornadaLiquida(folhaPontoMarcacao.getDiferencaInicioFimEmSegundos());
+        }
+    }
+
+    private void calculaJornadaBruta(final long diferencaInicioFimEmSegundos) {
+        // Se marcação tem extensão maior que a duração da jornada, o tempo total de jornada bruta será negativo.
+        // Optamos por deixar assim para fazer o erro ser vísivel no relatório.
+        jornadaBruta = jornadaBruta.minusSeconds(diferencaInicioFimEmSegundos);
+    }
+
+    private void calculaJornadaLiquida(final long diferencaInicioFimEmSegundos) {
+        // Se marcação tem extensão maior que a duração da jornada, o tempo total de jornada líquida será negativo.
+        // Optamos  por deixar assim para fazer o erro ser vísivel no relatório.
+        jornadaLiquida = jornadaLiquida.minusSeconds(diferencaInicioFimEmSegundos);
     }
 }

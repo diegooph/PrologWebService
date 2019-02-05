@@ -28,6 +28,10 @@ public class FolhaPontoMarcacao {
     private final boolean marcacaoFimAjustada;
 
     @Exclude
+    private final boolean descontaJornadaBruta;
+    @Exclude
+    private final boolean descontaJornadaLiquida;
+    @Exclude
     private final long diferencaInicioFimEmSegundos;
     @Exclude
     private final long tempoNoturnoEmSegundos;
@@ -36,20 +40,24 @@ public class FolhaPontoMarcacao {
                               @Nullable final LocalDateTime dataHoraFim,
                               @NotNull final Long codTipoMarcacao,
                               @NotNull final Long codTipoMarcacaoPorUnidade,
-                              final long diferencaInicioFimEmSegundos,
-                              final long tempoNoturnoEmSegundos,
                               final boolean trocouDia,
                               final boolean marcacaoInicioAjustada,
-                              final boolean marcacaoFimAjustada) {
+                              final boolean marcacaoFimAjustada,
+                              final boolean descontaJornadaBruta,
+                              final boolean descontaJornadaLiquida,
+                              final long diferencaInicioFimEmSegundos,
+                              final long tempoNoturnoEmSegundos) {
         this.dataHoraInicio = dataHoraInicio;
         this.dataHoraFim = dataHoraFim;
         this.codTipoMarcacao = codTipoMarcacao;
         this.codTipoMarcacaoPorUnidade = codTipoMarcacaoPorUnidade;
-        this.diferencaInicioFimEmSegundos = diferencaInicioFimEmSegundos;
-        this.tempoNoturnoEmSegundos = tempoNoturnoEmSegundos;
         this.trocouDia = trocouDia;
         this.marcacaoInicioAjustada = marcacaoInicioAjustada;
         this.marcacaoFimAjustada = marcacaoFimAjustada;
+        this.descontaJornadaBruta = descontaJornadaBruta;
+        this.descontaJornadaLiquida = descontaJornadaLiquida;
+        this.diferencaInicioFimEmSegundos = diferencaInicioFimEmSegundos;
+        this.tempoNoturnoEmSegundos = tempoNoturnoEmSegundos;
     }
 
     @NotNull
@@ -59,11 +67,13 @@ public class FolhaPontoMarcacao {
                 LocalDateTime.now(),
                 1L,
                 1L,
-                21000,
-                1000,
                 false,
                 true,
-                false);
+                false,
+                true,
+                false,
+                21000,
+                1000);
     }
 
     @Nullable
@@ -104,6 +114,14 @@ public class FolhaPontoMarcacao {
 
     public long getTempoNoturnoEmSegundos() {
         return tempoNoturnoEmSegundos;
+    }
+
+    public boolean isDescontaJornadaBruta() {
+        return descontaJornadaBruta;
+    }
+
+    public boolean isDescontaJornadaLiquida() {
+        return descontaJornadaLiquida;
     }
 
     @SuppressWarnings("ConstantConditions")

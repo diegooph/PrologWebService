@@ -28,7 +28,9 @@ public class FolhaPontoJornadaRelatorio {
     @SerializedName("dataHoraGeracaoRelatorio")
     @NotNull
     private final LocalDateTime dataHoraGeracaoRelatorioZoned;
+    @SerializedName("totalJornadaBrutaPeriodoEmSegundos")
     private Duration totalJornadaBrutaPeriodo;
+    @SerializedName("totalJornadaLiquidaPeriodoEmSegundos")
     private Duration totalJornadaLiquidaPeriodo;
 
     public FolhaPontoJornadaRelatorio(@NotNull final String cpfColaborador,
