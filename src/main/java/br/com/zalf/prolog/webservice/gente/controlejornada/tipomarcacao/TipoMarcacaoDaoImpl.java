@@ -330,26 +330,20 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_TIPOS_DESCONTADOS_JORNADA_BRUTA_LIQUIDA(?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final List<TipoDescontadoJornada> descontosBruta = new ArrayList<>();
-                final List<TipoDescontadoJornada> descontosLiquida = new ArrayList<>();
-                do {
-                    if (rSet.getBoolean("DESCONTA_JORNADA_BRUTA")) {
-                        descontosBruta.add(new TipoDescontadoJornada(
-                                rSet.getLong("COD_TIPO_DESCONTADO"),
-                                rSet.getString("NOME_TIPO_DESCONTADO")));
-                    } else {
-                        descontosLiquida.add(new TipoDescontadoJornada(
-                                rSet.getLong("COD_TIPO_DESCONTADO"),
-                                rSet.getString("NOME_TIPO_DESCONTADO")));
-                    }
-                } while (rSet.next());
-                return new FormulaCalculoJornada(descontosBruta, descontosLiquida);
-            } else {
-                throw new SQLException(String.format(
-                        "Dados de tipos descontados da jornada não encontrados para a unidade %d",
-                        codUnidade));
+            final List<TipoDescontadoJornada> descontosBruta = new ArrayList<>();
+            final List<TipoDescontadoJornada> descontosLiquida = new ArrayList<>();
+            while (rSet.next()) {
+                if (rSet.getBoolean("DESCONTA_JORNADA_BRUTA")) {
+                    descontosBruta.add(new TipoDescontadoJornada(
+                            rSet.getLong("COD_TIPO_DESCONTADO"),
+                            rSet.getString("NOME_TIPO_DESCONTADO")));
+                } else {
+                    descontosLiquida.add(new TipoDescontadoJornada(
+                            rSet.getLong("COD_TIPO_DESCONTADO"),
+                            rSet.getString("NOME_TIPO_DESCONTADO")));
+                }
             }
+            return new FormulaCalculoJornada(descontosBruta, descontosLiquida);
         } finally {
             close(stmt, rSet);
         }
