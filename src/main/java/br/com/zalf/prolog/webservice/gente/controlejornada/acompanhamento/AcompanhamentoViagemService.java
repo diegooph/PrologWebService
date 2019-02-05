@@ -21,8 +21,8 @@ public final class AcompanhamentoViagemService {
     private final AcompanhamentoViagemDao dao = Injection.provideAcompanhamentoViagemDao();
 
     @NotNull
-    public ViagemEmDescanso getColaboradoresEmDescanso(@NotNull final Long codUnidade,
-                                                       @NotNull final List<Long> codCargos) throws ProLogException {
+    public ViagemEmDescanso getColaboradoresEmDescanso(final Long codUnidade,
+                                                       final List<Long> codCargos) throws ProLogException {
         try {
             return dao.getColaboradoresEmDescanso(codUnidade, codCargos);
         } catch (final Throwable t) {
@@ -38,8 +38,8 @@ public final class AcompanhamentoViagemService {
     }
 
     @NotNull
-    public ViagemEmAndamento getViagensEmAndamento(@NotNull final Long codUnidade,
-                                                   @NotNull final List<Long> codCargos) throws ProLogException {
+    public ViagemEmAndamento getViagensEmAndamento(final Long codUnidade,
+                                                   final List<Long> codCargos) throws ProLogException {
         try {
             return dao.getViagensEmAndamento(codUnidade, codCargos);
         } catch (final Throwable t) {
@@ -51,6 +51,27 @@ public final class AcompanhamentoViagemService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar viagens em andamento, tente novamente");
+        }
+    }
+
+    @NotNull
+    public MarcacaoAgrupadaAcompanhamento getMarcacoes(final Long codInicio,
+                                                       final Long codFim) throws ProLogException {
+        try {
+            if (codInicio == null && codFim == null) {
+                throw new IllegalArgumentException("codInicio e codFim não podem ser ambos nulos!");
+            }
+
+            return dao.getMarcacoes(codInicio, codFim);
+        } catch (final Throwable t) {
+            final String errorMessage = String.format(
+                    "Erro ao buscar marcações\ncodInicio: %d\ncodFim: %d",
+                    codInicio,
+                    codFim);
+            Log.e(TAG, errorMessage, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao marcação(ões), tente novamente");
         }
     }
 }

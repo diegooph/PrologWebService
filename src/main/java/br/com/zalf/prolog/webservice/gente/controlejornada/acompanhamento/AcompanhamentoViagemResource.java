@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
+import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ViagemEmAndamento;
@@ -42,5 +43,14 @@ public final class AcompanhamentoViagemResource {
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("codCargos") @Required final List<Long> codCargos) throws ProLogException {
         return service.getViagensEmAndamento(codUnidade, codCargos);
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Gente.Relatorios.INTERVALOS})
+    @Path("/marcacoes")
+    public MarcacaoAgrupadaAcompanhamento getMarcacoes(
+            @QueryParam("codInicio") @Optional final Long codInicio,
+            @QueryParam("codFim") @Optional final Long codFim) throws ProLogException {
+        return service.getMarcacoes(codInicio, codFim);
     }
 }

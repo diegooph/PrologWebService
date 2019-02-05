@@ -95,6 +95,8 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             if (tipoMarcacao.isTipoJornada()) {
                 atualizarTipoJornadaUnidade(conn, tipoMarcacao.getUnidade().getCodigo(), tipoMarcacao.getCodigo());
                 salvarTiposDescontadosJornadaBrutaLiquida(conn, tipoMarcacao);
+            } else {
+                removerTipoJornadaUnidade(conn, tipoMarcacao.getUnidade().getCodigo(), tipoMarcacao.getCodigo());
             }
 
             // Avisamos o listener que um tipo de marcação mudou.
@@ -413,6 +415,26 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             }
         } finally {
             close(stmt);
+        }
+    }
+
+    private void removerTipoJornadaUnidade(@NotNull final Connection conn,
+                                           @NotNull final Long codUnidade,
+                                           @NotNull final Long codTipoMarcacaoEditado) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_REMOVE_INFOS_TIPO_JORNADA_UNIDADE(?, ?) AS RESULT;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTipoMarcacaoEditado);
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || !rSet.getBoolean("RESULT")) {
+                throw new SQLException(String.format(
+                        "Erro ao remover informações de tipo jornada para a unidade %d",
+                        codUnidade));
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 }

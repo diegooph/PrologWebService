@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ColaboradorEmViagem;
@@ -10,6 +11,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andame
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ColaboradorEmDescanso;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -90,6 +92,25 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                 cpfAnterior = rSet.getLong("CPF_COLABORADOR");
             }
             return new ViagemEmAndamento(viagens, viagens.size());
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public MarcacaoAgrupadaAcompanhamento getMarcacoes(@Nullable final Long codInicio,
+                                                       @Nullable final Long codFim) throws Throwable {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_MARCACOES_ACOMPANHAMENTO(?, ?, ?);");
+            StatementUtils.bindValueOrNull(stmt, 1, codInicio, SqlType.BIGINT);
+            StatementUtils.bindValueOrNull(stmt, 2, codFim, SqlType.BIGINT);
+            rSet = stmt.executeQuery();
+            return null;
         } finally {
             close(conn, stmt, rSet);
         }
