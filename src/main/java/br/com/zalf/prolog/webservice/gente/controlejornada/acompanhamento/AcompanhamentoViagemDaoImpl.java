@@ -105,9 +105,9 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
 
     @NotNull
     @Override
-    public MarcacaoAgrupadaAcompanhamento getMarcacoes(@NotNull final Long codUnidade,
-                                                       @Nullable final Long codInicio,
-                                                       @Nullable final Long codFim) throws Throwable {
+    public MarcacaoAgrupadaAcompanhamento getMarcacaoInicioFim(@NotNull final Long codUnidade,
+                                                               @Nullable final Long codInicio,
+                                                               @Nullable final Long codFim) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet rSet = null;

@@ -51,7 +51,7 @@ public interface AcompanhamentoViagemDao {
                                             @NotNull final List<Long> codCargos) throws Throwable;
 
     @NotNull
-    MarcacaoAgrupadaAcompanhamento getMarcacoes(@NotNull final Long codUnidade,
-                                                @Nullable final Long codInicio,
-                                                @Nullable final Long codFim) throws Throwable;
+    MarcacaoAgrupadaAcompanhamento getMarcacaoInicioFim(@NotNull final Long codUnidade,
+                                                        @Nullable final Long codInicio,
+                                                        @Nullable final Long codFim) throws Throwable;
 }
