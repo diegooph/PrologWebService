@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
@@ -150,8 +151,8 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                 new Localizacao(
                         rSet.getString("LATITUDE_MARCACAO_INICIO"),
                         rSet.getString("LONGITUDE_MARCACAO_INICIO")),
-                rSet.getInt("VERSAO_APP_MOMENTO_MARCACAO_INICIO"),
-                rSet.getInt("VERSAO_APP_MOMENTO_SINCRONIZACAO_INICIO"),
+                NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_MARCACAO_INICIO"), 0),
+                NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_SINCRONIZACAO_INICIO"), 0),
                 rSet.getBoolean("FOI_AJUSTADO_INICIO"));
     }
 
@@ -165,8 +166,8 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                 new Localizacao(
                         rSet.getString("LATITUDE_MARCACAO_FIM"),
                         rSet.getString("LONGITUDE_MARCACAO_FIM")),
-                rSet.getInt("VERSAO_APP_MOMENTO_MARCACAO_FIM"),
-                rSet.getInt("VERSAO_APP_MOMENTO_SINCRONIZACAO_FIM"),
+                NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_MARCACAO_FIM"), 0),
+                NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_SINCRONIZACAO_FIM"), 0),
                 rSet.getBoolean("FOI_AJUSTADO_FIM"));
     }
 
