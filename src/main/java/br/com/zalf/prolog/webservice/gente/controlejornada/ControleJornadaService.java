@@ -5,9 +5,9 @@ import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDaoImpl_2;
-import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDao_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ import java.util.Optional;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-class ControleJornadaService {
+public class ControleJornadaService {
     @NotNull
     private static final String TAG = ControleJornadaService.class.getSimpleName();
     @NotNull
@@ -29,7 +29,7 @@ class ControleJornadaService {
 
     @SuppressWarnings("Duplicates")
     @NotNull
-    ResponseIntervalo insertMarcacaoIntervalo(
+    public ResponseIntervalo insertMarcacaoIntervalo(
             @NotNull final String tokenMarcacao,
             final long versaoDadosIntervalo,
             @NotNull final IntervaloMarcacao intervaloMarcacao,
@@ -109,8 +109,8 @@ class ControleJornadaService {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
                     codUnidade,
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO);
-            final DeprecatedControleIntervaloDao_2 daoAntiga = new DeprecatedControleIntervaloDaoImpl_2();
-            final List<TipoMarcacao> tiposIntervalo = daoAntiga.getTiposIntervalosByUnidade(codUnidade, true, true);
+            final TipoMarcacaoDao tipoMarcacaoDao = Injection.provideTipoMarcacaoDao();
+            final List<TipoMarcacao> tiposIntervalo = tipoMarcacaoDao.getTiposMarcacoes(codUnidade, true, true);
             final Optional<DadosMarcacaoUnidade> dadosMarcacaoUnidade = dao.getDadosMarcacaoUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 

@@ -82,12 +82,16 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.VersaoDadosIntervaloAtualizador;
+import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.AcompanhamentoViagemDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.AcompanhamentoViagemDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteDao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa.JustificativaAjusteDao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa.JustificativaAjusteDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatoriosDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDao;
@@ -262,6 +266,11 @@ public final class Injection {
     }
 
     @NotNull
+    public static TipoMarcacaoDao provideTipoMarcacaoDao() {
+        return new TipoMarcacaoDaoImpl();
+    }
+
+    @NotNull
     public static ControleJornadaDao provideControleJornadaDao() {
         return new ControleJornadaDaoImpl();
     }
@@ -414,6 +423,11 @@ public final class Injection {
     @NotNull
     public static PneuTransferenciaDao providePneuTransferenciaDao() {
         return new PneuTransferenciaDaoImp();
+    }
+
+    @NotNull
+    public static AcompanhamentoViagemDao provideAcompanhamentoViagemDao() {
+        return new AcompanhamentoViagemDaoImpl();
     }
 
     // ================================================

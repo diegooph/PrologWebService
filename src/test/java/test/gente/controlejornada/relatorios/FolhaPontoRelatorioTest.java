@@ -1,13 +1,17 @@
-package test.gente.controlejornada;
+package test.gente.controlejornada.relatorios;
 
+import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioService;
-import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.FolhaPontoRelatorio;
-import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.FolhaPontoTipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoTipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import test.BaseTest;
@@ -30,7 +34,7 @@ import static org.junit.Assert.*;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class ControleJornadaRelatorioTest extends BaseTest {
+public class FolhaPontoRelatorioTest extends BaseTest {
     private ControleJornadaRelatorioService service;
     private static final Long COD_UNIDADE = 5L;
     private static final Long CPF_COLABORADOR = 3383283194L;
@@ -43,7 +47,26 @@ public class ControleJornadaRelatorioTest extends BaseTest {
 
     @Override
     public void initialize() {
+        DatabaseManager.init();
         service = new ControleJornadaRelatorioService();
+    }
+
+    @Override
+    public void destroy() {
+        DatabaseManager.finish();
+    }
+
+    @Test
+    public void testFolhaPontoJornadaRelatorio() throws Throwable {
+        List<FolhaPontoJornadaRelatorio> folhaPontoJornadaRelatorio = service.getFolhaPontoJornadaRelatorio(
+                COD_UNIDADE,
+                TODOS_TIPOS_INTERVALOS,
+                String.valueOf(CPF_COLABORADOR),
+                "2019-01-01",
+                "2019-01-31");
+        assertNotNull(folhaPontoJornadaRelatorio);
+        assertFalse(folhaPontoJornadaRelatorio.isEmpty());
+        System.out.println(GsonUtils.getGson().toJson(folhaPontoJornadaRelatorio));
     }
 
     @Test
@@ -63,7 +86,10 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         final DeprecatedControleIntervaloService_2 intervaloService = new DeprecatedControleIntervaloService_2();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
-        final List<TipoMarcacao> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
+        final List<TipoMarcacao> tiposIntervalos = Injection.provideTipoMarcacaoDao().getTiposMarcacoes(
+                COD_UNIDADE,
+                true,
+                false);
         assertNotNull(tiposIntervalos);
         assertFalse(tiposIntervalos.isEmpty());
         final TipoMarcacao tipoIntervalo = tiposIntervalos.get(0);
@@ -126,7 +152,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         final DeprecatedControleIntervaloService_2 intervaloService = new DeprecatedControleIntervaloService_2();
 
         // Escolhemos o tipo de intervalo que iremos realizar.
-        final List<TipoMarcacao> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, true,false);
+        final List<TipoMarcacao> tiposIntervalos = Injection.provideTipoMarcacaoDao().getTiposMarcacoes(COD_UNIDADE, true, false);
         assertNotNull(tiposIntervalos);
         assertFalse(tiposIntervalos.isEmpty());
         final TipoMarcacao tipoIntervalo = tiposIntervalos.get(0);
