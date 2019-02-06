@@ -119,6 +119,10 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
             stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
+                if (!rSet.isLast()) {
+                    throw new IllegalStateException("O ResultSet deveria retornar apenas uma linha!");
+                }
+
                 return createMarcacaoAgrupada(rSet);
             } else {
                 throw new IllegalStateException();
