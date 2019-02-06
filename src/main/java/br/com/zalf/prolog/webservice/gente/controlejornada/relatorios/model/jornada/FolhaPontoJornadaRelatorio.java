@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada;
 
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoTipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.FormulaCalculoJornada;
 import com.google.common.base.Preconditions;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +29,8 @@ public class FolhaPontoJornadaRelatorio {
     @SerializedName("dataHoraGeracaoRelatorio")
     @NotNull
     private final LocalDateTime dataHoraGeracaoRelatorioZoned;
+    @NotNull
+    private final FormulaCalculoJornada formulaCalculoJornada;
     @SerializedName("totalJornadaBrutaPeriodoEmSegundos")
     private Duration totalJornadaBrutaPeriodo;
     @SerializedName("totalJornadaLiquidaPeriodoEmSegundos")
@@ -36,11 +39,13 @@ public class FolhaPontoJornadaRelatorio {
     public FolhaPontoJornadaRelatorio(@NotNull final String cpfColaborador,
                                       @NotNull final String nomeColaborador,
                                       @NotNull final List<FolhaPontoJornadaDia> marcacoesDia,
-                                      @NotNull final LocalDateTime dataHoraGeracaoRelatorioZoned) {
+                                      @NotNull final LocalDateTime dataHoraGeracaoRelatorioZoned,
+                                      @NotNull final FormulaCalculoJornada formulaCalculoJornada) {
         this.cpfColaborador = cpfColaborador;
         this.nomeColaborador = nomeColaborador;
         this.marcacoesDia = marcacoesDia;
         this.dataHoraGeracaoRelatorioZoned = dataHoraGeracaoRelatorioZoned;
+        this.formulaCalculoJornada = formulaCalculoJornada;
     }
 
     @NotNull
@@ -51,7 +56,8 @@ public class FolhaPontoJornadaRelatorio {
                 "03383283194",
                 "Zalf Sistemas",
                 jornadasDia,
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                FormulaCalculoJornada.createDummy());
         final Set<FolhaPontoTipoIntervalo> tiposMarcacoesMarcadas = new HashSet<>();
         tiposMarcacoesMarcadas.add(FolhaPontoTipoIntervalo.getDummy());
         folhaPonto.setTiposMarcacoesMarcadas(tiposMarcacoesMarcadas);

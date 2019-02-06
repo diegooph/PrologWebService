@@ -169,30 +169,6 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
         return intervalos;
     }
 
-    @NotNull
-    @Override
-    public List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
-                                                          final boolean apenasAtivos,
-                                                          final boolean withCargos) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<TipoMarcacao> tipos = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALOS_UNIDADE(?, ?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setBoolean(2, apenasAtivos);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                tipos.add(createTipoInvervalo(rSet, withCargos, conn));
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return tipos;
-    }
-
     @Override
     public boolean verifyIfTokenMarcacaoExists(@NotNull final String tokenMarcacao) throws SQLException {
         Connection conn = null;

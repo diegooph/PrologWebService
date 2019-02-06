@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,15 @@ public final class FormulaCalculoJornada {
         this.tiposDescontadosJornadaLiquida = tiposDescontadosJornadaLiquida;
         this.formulaCalculoJornadaBruta = createFormulaCalculoJornadaBruta();
         this.formulaCalculoJornadaLiquida = createFormulaCalculoJornadaLiquida();
+    }
+
+    @NotNull
+    public static FormulaCalculoJornada createDummy() {
+        final List<TipoDescontadoJornada> descontadosBruta = new ArrayList<>();
+        descontadosBruta.add(new TipoDescontadoJornada(15L, "Refeição"));
+        final List<TipoDescontadoJornada> descontadosLiquida = new ArrayList<>();
+        descontadosLiquida.add(new TipoDescontadoJornada(19L, "Descanso"));
+        return new FormulaCalculoJornada(descontadosBruta, descontadosLiquida);
     }
 
     @NotNull

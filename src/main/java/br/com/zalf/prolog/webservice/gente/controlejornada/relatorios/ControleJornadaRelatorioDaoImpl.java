@@ -256,11 +256,11 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             stmt.setString(6, zoneId.getId());
 
             rSet = stmt.executeQuery();
+            final TipoMarcacaoDao tipoMarcacaoDao = Injection.provideTipoMarcacaoDao();
             return ControleJornadaRelatorioConverter.createFolhaPontoJornadaRelatorio(
                     rSet,
-                    Injection
-                            .provideControleJornadaDao()
-                            .getTiposIntervalosByUnidade(codUnidade, true, false),
+                    tipoMarcacaoDao.getTiposMarcacoes(codUnidade, true, false),
+                    tipoMarcacaoDao.getForumaCalculoJornada(codUnidade),
                     zoneId);
         } finally {
             close(conn, stmt, rSet);

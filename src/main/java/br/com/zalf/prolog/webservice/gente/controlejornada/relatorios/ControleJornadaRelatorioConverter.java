@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.FormulaCalculoJornada;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoDia;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoIntervalo;
@@ -121,6 +122,7 @@ final class ControleJornadaRelatorioConverter {
     static List<FolhaPontoJornadaRelatorio> createFolhaPontoJornadaRelatorio(
             @NotNull final ResultSet rSet,
             @NotNull final List<TipoMarcacao> tiposIntervalos,
+            @NotNull final FormulaCalculoJornada formulaCalculoJornada,
             @NotNull final ZoneId zoneIdUnidade) throws Throwable {
         final LocalDateTime dataHoraGeracaoRelatorioZoned = Now.localDateTimeUtc()
                 .atZone(ZoneOffset.UTC)
@@ -158,7 +160,8 @@ final class ControleJornadaRelatorioConverter {
                         cpfAnterior,
                         nomeAnterior,
                         marcacoesDia,
-                        dataHoraGeracaoRelatorioZoned);
+                        dataHoraGeracaoRelatorioZoned,
+                        formulaCalculoJornada);
                 folhaPontoJornadaRelatorio.setTiposMarcacoesMarcadas(new HashSet<>(tiposMarcacoesMarcados.values()));
                 folhaPontoJornadaRelatorio.calculaTotaisHorasJornadasLiquidaBruta();
                 relatorios.add(folhaPontoJornadaRelatorio);
@@ -223,7 +226,8 @@ final class ControleJornadaRelatorioConverter {
                     cpfAnterior,
                     nomeAnterior,
                     marcacoesDia,
-                    dataHoraGeracaoRelatorioZoned);
+                    dataHoraGeracaoRelatorioZoned,
+                    formulaCalculoJornada);
             folhaPontoJornadaRelatorio.setTiposMarcacoesMarcadas(new HashSet<>(tiposMarcacoesMarcados.values()));
             folhaPontoJornadaRelatorio.calculaTotaisHorasJornadasLiquidaBruta();
             relatorios.add(folhaPontoJornadaRelatorio);
