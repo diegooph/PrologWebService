@@ -50,6 +50,19 @@ public interface AcompanhamentoViagemDao {
     ViagemEmAndamento getViagensEmAndamento(@NotNull final Long codUnidade,
                                             @NotNull final List<Long> codCargos) throws Throwable;
 
+    /**
+     * Método utilizado para buscar uma {@link MarcacaoAgrupadaAcompanhamento marcação agrupada}. Para realizar a busca
+     * pode-se utilizar o código de início, fim ou ambos os código da marcação. Caso a marcação não possua vínculo,
+     * ou seja, for uma marcação de início que não possui fim ou uma marcação de fim que não possui início,
+     * o objeto retornado conterá apenas as informações da marcação avulsa.
+     *
+     * @param codUnidade Código da {@link Unidade unidade} onde a marcação foi realizada.
+     * @param codInicio  Código de Início da marcação.
+     * @param codFim     Código de Fim da marcação.
+     * @return {@link MarcacaoAgrupadaAcompanhamento marcação agrupada} contendo as informações da(s)
+     * marcação(ões) buscada(s).
+     * @throws Throwable Caso algum erro aconteça na busca das informações
+     */
     @NotNull
     MarcacaoAgrupadaAcompanhamento getMarcacaoInicioFim(@NotNull final Long codUnidade,
                                                         @Nullable final Long codInicio,

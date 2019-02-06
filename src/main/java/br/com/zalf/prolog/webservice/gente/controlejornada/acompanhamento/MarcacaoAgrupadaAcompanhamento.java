@@ -68,7 +68,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
                     "João Carlos de Souza",
                     MarcacaoAcompanhamento.createDummy(true),
                     null,
-                    null,
+                    Duration.ZERO,
                     "Esqueci de finalizar",
                     null);
         } else {
@@ -79,7 +79,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
                     "João Carlos de Souza",
                     null,
                     MarcacaoAcompanhamento.createDummy(true),
-                    null,
+                    Duration.ZERO,
                     "Esqueci de finalizar",
                     null);
         }
