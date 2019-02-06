@@ -28,8 +28,10 @@ public final class MarcacaoAgrupadaAcompanhamento {
     private final Duration tempoDecorridoEntreInicioFim;
     @Nullable
     private final String justificativaEstouro;
+    private final boolean temJustificativaEstouro;
     @Nullable
     private final String justificativaTempoRecomendado;
+    private final boolean temJustificativaTempoRecomendado;
 
     public MarcacaoAgrupadaAcompanhamento(@NotNull final String nomeTipoMarcacao,
                                           @NotNull final String cpfColaborador,
@@ -47,6 +49,8 @@ public final class MarcacaoAgrupadaAcompanhamento {
         this.tempoDecorridoEntreInicioFim = tempoDecorridoEntreInicioFim;
         this.justificativaEstouro = justificativaEstouro;
         this.justificativaTempoRecomendado = justificativaTempoRecomendado;
+        this.temJustificativaEstouro = justificativaEstouro != null;
+        this.temJustificativaTempoRecomendado = justificativaTempoRecomendado != null;
     }
 
     @NotNull
@@ -123,5 +127,13 @@ public final class MarcacaoAgrupadaAcompanhamento {
     @Nullable
     public String getJustificativaTempoRecomendado() {
         return justificativaTempoRecomendado;
+    }
+
+    public boolean isTemJustificativaEstouro() {
+        return temJustificativaEstouro;
+    }
+
+    public boolean isTemJustificativaTempoRecomendado() {
+        return temJustificativaTempoRecomendado;
     }
 }

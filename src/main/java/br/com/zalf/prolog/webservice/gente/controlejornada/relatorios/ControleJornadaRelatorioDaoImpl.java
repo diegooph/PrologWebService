@@ -259,7 +259,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             final TipoMarcacaoDao tipoMarcacaoDao = Injection.provideTipoMarcacaoDao();
             return ControleJornadaRelatorioConverter.createFolhaPontoJornadaRelatorio(
                     rSet,
-                    tipoMarcacaoDao.getTiposMarcacoes(codUnidade, true, false),
+                    tipoMarcacaoDao.getTiposMarcacoes(codUnidade, false, false),
                     tipoMarcacaoDao.getForumaCalculoJornada(codUnidade),
                     zoneId);
         } finally {
