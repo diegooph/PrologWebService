@@ -180,8 +180,8 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
         return new MarcacaoDentroJornada(
                 rSet.getLong("COD_TIPO_MARCACAO"),
                 rSet.getString("NOME_TIPO_MARCACAO"),
-                rSet.getLong("COD_MARCACAO_INICIO"),
-                rSet.getLong("COD_MARCACAO_FIM"),
+                NullIf.equalOrLess(rSet.getLong("COD_MARCACAO_INICIO"), 0),
+                NullIf.equalOrLess(rSet.getLong("COD_MARCACAO_FIM"), 0),
                 rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
                 rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
                 rSet.getBoolean("FOI_AJUSTADO_INICIO"),

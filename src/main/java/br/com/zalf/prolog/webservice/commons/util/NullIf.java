@@ -22,4 +22,9 @@ public final class NullIf {
     public static Integer equalOrLess(final int a, final int b) {
         return a <= b ? null : a;
     }
+
+    @Nullable
+    public static Long equalOrLess(final long a, final long b) {
+        return a <= b ? null : a;
+    }
 }
