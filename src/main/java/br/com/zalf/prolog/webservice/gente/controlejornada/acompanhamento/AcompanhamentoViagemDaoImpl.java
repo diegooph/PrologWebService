@@ -94,7 +94,10 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                     viagens.add(colaboradorEmViagem);
                 }
 
-                marcacoes.add(createMarcacaoDentroJornada(rSet));
+                // O if abaixo é necessário para os casos onde uma jornada não possua nenhuma marcação.
+                if (rSet.getLong("COD_TIPO_MARCACAO") > 0) {
+                    marcacoes.add(createMarcacaoDentroJornada(rSet));
+                }
                 cpfAnterior = rSet.getLong("CPF_COLABORADOR");
             }
             return new ViagemEmAndamento(viagens, viagens.size());
