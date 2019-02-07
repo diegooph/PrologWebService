@@ -141,6 +141,7 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                 rSet.getLong("COD_MARCACAO_INICIO") > 0 ? createMarcacaoInicio(rSet) : null,
                 rSet.getLong("COD_MARCACAO_FIM") > 0 ? createMarcacaoFim(rSet) : null,
                 Duration.ofSeconds(rSet.getLong("TEMPO_DECORRIDO_ENTRE_INICIO_FIM_SEGUNDOS")),
+                Duration.ofSeconds(rSet.getLong("TEMPO_RECOMENDADO_TIPO_MARCACAO_SEGUNDOS")),
                 rSet.getString("JUSTIFICATIVA_ESTOURO"),
                 rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
     }
