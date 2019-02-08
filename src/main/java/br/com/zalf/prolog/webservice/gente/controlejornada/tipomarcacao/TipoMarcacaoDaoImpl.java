@@ -147,20 +147,7 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "IT.CODIGO AS CODIGO_TIPO_INTERVALO, " +
-                    "IT.CODIGO_TIPO_INTERVALO_POR_UNIDADE AS CODIGO_TIPO_INTERVALO_POR_UNIDADE, " +
-                    "IT.NOME AS NOME_TIPO_INTERVALO, " +
-                    "IT.COD_UNIDADE, " +
-                    "IT.ATIVO, " +
-                    "IT.HORARIO_SUGERIDO, " +
-                    "IT.ICONE, " +
-                    "IT.TEMPO_ESTOURO_MINUTOS, " +
-                    "IT.TEMPO_RECOMENDADO_MINUTOS, " +
-                    "IT.TIPO_JORNADA " +
-                    "FROM INTERVALO_TIPO_CARGO ITC JOIN VIEW_INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE " +
-                    "AND ITC.COD_TIPO_INTERVALO = IT.CODIGO " +
-                    " WHERE IT.CODIGO = ?;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_TIPO_MARCACAO(?);");
             stmt.setLong(1, codTipoMarcacao);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
