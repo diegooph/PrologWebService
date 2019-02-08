@@ -26,10 +26,15 @@ public final class MarcacaoAgrupadaAcompanhamento {
     @NotNull
     @SerializedName("tempoDecorridoEntreInicioFimEmSegundos")
     private final Duration tempoDecorridoEntreInicioFim;
+    @NotNull
+    @SerializedName("tempoRecomendadoTipoMarcacaoEmSegundos")
+    private final Duration tempoRecomendadoTipoMarcacao;
     @Nullable
     private final String justificativaEstouro;
+    private final boolean temJustificativaEstouro;
     @Nullable
     private final String justificativaTempoRecomendado;
+    private final boolean temJustificativaTempoRecomendado;
 
     public MarcacaoAgrupadaAcompanhamento(@NotNull final String nomeTipoMarcacao,
                                           @NotNull final String cpfColaborador,
@@ -37,6 +42,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
                                           @Nullable final MarcacaoAcompanhamento marcacaoInicio,
                                           @Nullable final MarcacaoAcompanhamento marcacaoFim,
                                           @NotNull final Duration tempoDecorridoEntreInicioFim,
+                                          @NotNull final Duration tempoRecomendadoTipoMarcacao,
                                           @Nullable final String justificativaEstouro,
                                           @Nullable final String justificativaTempoRecomendado) {
         this.nomeTipoMarcacao = nomeTipoMarcacao;
@@ -45,8 +51,11 @@ public final class MarcacaoAgrupadaAcompanhamento {
         this.marcacaoInicio = marcacaoInicio;
         this.marcacaoFim = marcacaoFim;
         this.tempoDecorridoEntreInicioFim = tempoDecorridoEntreInicioFim;
+        this.tempoRecomendadoTipoMarcacao = tempoRecomendadoTipoMarcacao;
         this.justificativaEstouro = justificativaEstouro;
         this.justificativaTempoRecomendado = justificativaTempoRecomendado;
+        this.temJustificativaEstouro = justificativaEstouro != null;
+        this.temJustificativaTempoRecomendado = justificativaTempoRecomendado != null;
     }
 
     @NotNull
@@ -59,6 +68,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
                     MarcacaoAcompanhamento.createDummy(true),
                     MarcacaoAcompanhamento.createDummy(false),
                     Duration.ofHours(3),
+                    Duration.ofHours(1),
                     "Esqueci de finalizar",
                     null);
         } else if (tipoInicioFim.equals(TipoInicioFim.MARCACAO_INICIO)) {
@@ -69,6 +79,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
                     MarcacaoAcompanhamento.createDummy(true),
                     null,
                     Duration.ZERO,
+                    Duration.ofHours(1),
                     "Esqueci de finalizar",
                     null);
         } else {
@@ -80,6 +91,7 @@ public final class MarcacaoAgrupadaAcompanhamento {
                     null,
                     MarcacaoAcompanhamento.createDummy(true),
                     Duration.ZERO,
+                    Duration.ofHours(1),
                     "Esqueci de finalizar",
                     null);
         }
@@ -115,6 +127,11 @@ public final class MarcacaoAgrupadaAcompanhamento {
         return tempoDecorridoEntreInicioFim;
     }
 
+    @NotNull
+    public Duration getTempoRecomendadoTipoMarcacao() {
+        return tempoRecomendadoTipoMarcacao;
+    }
+
     @Nullable
     public String getJustificativaEstouro() {
         return justificativaEstouro;
@@ -123,5 +140,13 @@ public final class MarcacaoAgrupadaAcompanhamento {
     @Nullable
     public String getJustificativaTempoRecomendado() {
         return justificativaTempoRecomendado;
+    }
+
+    public boolean isTemJustificativaEstouro() {
+        return temJustificativaEstouro;
+    }
+
+    public boolean isTemJustificativaTempoRecomendado() {
+        return temJustificativaTempoRecomendado;
     }
 }

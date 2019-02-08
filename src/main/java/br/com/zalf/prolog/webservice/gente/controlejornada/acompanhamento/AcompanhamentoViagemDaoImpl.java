@@ -94,7 +94,10 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                     viagens.add(colaboradorEmViagem);
                 }
 
-                marcacoes.add(createMarcacaoDentroJornada(rSet));
+                // O if abaixo é necessário para os casos onde uma jornada não possua nenhuma marcação.
+                if (rSet.getLong("COD_TIPO_MARCACAO") > 0) {
+                    marcacoes.add(createMarcacaoDentroJornada(rSet));
+                }
                 cpfAnterior = rSet.getLong("CPF_COLABORADOR");
             }
             return new ViagemEmAndamento(viagens, viagens.size());
@@ -141,6 +144,7 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                 rSet.getLong("COD_MARCACAO_INICIO") > 0 ? createMarcacaoInicio(rSet) : null,
                 rSet.getLong("COD_MARCACAO_FIM") > 0 ? createMarcacaoFim(rSet) : null,
                 Duration.ofSeconds(rSet.getLong("TEMPO_DECORRIDO_ENTRE_INICIO_FIM_SEGUNDOS")),
+                Duration.ofSeconds(rSet.getLong("TEMPO_RECOMENDADO_TIPO_MARCACAO_SEGUNDOS")),
                 rSet.getString("JUSTIFICATIVA_ESTOURO"),
                 rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
     }
@@ -152,9 +156,11 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                 rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
                 FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA_INICIO")),
                 TipoInicioFim.MARCACAO_INICIO,
-                new Localizacao(
+                rSet.getString("LATITUDE_MARCACAO_INICIO") != null
+                        ? new Localizacao(
                         rSet.getString("LATITUDE_MARCACAO_INICIO"),
-                        rSet.getString("LONGITUDE_MARCACAO_INICIO")),
+                        rSet.getString("LONGITUDE_MARCACAO_INICIO"))
+                        : null,
                 NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_MARCACAO_INICIO"), 0),
                 NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_SINCRONIZACAO_INICIO"), 0),
                 rSet.getBoolean("FOI_AJUSTADO_INICIO"));
@@ -167,9 +173,11 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                 rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
                 FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA_FIM")),
                 TipoInicioFim.MARCACAO_FIM,
-                new Localizacao(
+                rSet.getString("LATITUDE_MARCACAO_FIM") != null
+                        ? new Localizacao(
                         rSet.getString("LATITUDE_MARCACAO_FIM"),
-                        rSet.getString("LONGITUDE_MARCACAO_FIM")),
+                        rSet.getString("LONGITUDE_MARCACAO_FIM"))
+                        : null,
                 NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_MARCACAO_FIM"), 0),
                 NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_SINCRONIZACAO_FIM"), 0),
                 rSet.getBoolean("FOI_AJUSTADO_FIM"));
@@ -180,8 +188,8 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
         return new MarcacaoDentroJornada(
                 rSet.getLong("COD_TIPO_MARCACAO"),
                 rSet.getString("NOME_TIPO_MARCACAO"),
-                rSet.getLong("COD_MARCACAO_INICIO"),
-                rSet.getLong("COD_MARCACAO_FIM"),
+                NullIf.equalOrLess(rSet.getLong("COD_MARCACAO_INICIO"), 0),
+                NullIf.equalOrLess(rSet.getLong("COD_MARCACAO_FIM"), 0),
                 rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
                 rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
                 rSet.getBoolean("FOI_AJUSTADO_INICIO"),
