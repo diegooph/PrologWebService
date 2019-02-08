@@ -114,6 +114,8 @@ final class ControleJornadaRelatorioConverter {
                     rSet.getObject("DATA_HORA_FIM_UTC", LocalDateTime.class),
                     codTipoIntervaloLong,
                     rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
+                    rSet.getBoolean("FOI_AJUSTADO_INICIO"),
+                    rSet.getBoolean("FOI_AJUSTADO_FIM"),
                     rSet.getBoolean("TROCOU_DIA"));
             intervalosDia.add(intervalo);
 

@@ -34,6 +34,9 @@ public final class FolhaPontoIntervalo {
     @Nullable
     private final LocalDateTime dataHoraFimUtc;
 
+    private final boolean foiAjustadoInicio;
+    private final boolean foiAjustadoFim;
+
     /**
      * Indica se as marcações de início e fim foram feitas em dias diferentes.
      */
@@ -45,6 +48,8 @@ public final class FolhaPontoIntervalo {
                                @Nullable final LocalDateTime dataHoraFimUtc,
                                @NotNull final Long codTipoIntervalo,
                                @NotNull final Long codTipoIntervaloPorUnidade,
+                               final boolean foiAjustadoInicio,
+                               final boolean foiAjustadoFim,
                                final boolean trocouDia) {
         if ((dataHoraInicio != null && dataHoraInicioUtc == null)
                 || ((dataHoraInicioUtc != null && dataHoraInicio == null))) {
@@ -61,6 +66,8 @@ public final class FolhaPontoIntervalo {
         this.dataHoraFimUtc = dataHoraFimUtc;
         this.codTipoIntervalo = codTipoIntervalo;
         this.codTipoIntervaloPorUnidade = codTipoIntervaloPorUnidade;
+        this.foiAjustadoInicio = foiAjustadoInicio;
+        this.foiAjustadoFim = foiAjustadoFim;
         this.trocouDia = trocouDia;
     }
 
@@ -96,5 +103,13 @@ public final class FolhaPontoIntervalo {
 
     public boolean isTrocouDia() {
         return trocouDia;
+    }
+
+    public boolean isFoiAjustadoInicio() {
+        return foiAjustadoInicio;
+    }
+
+    public boolean isFoiAjustadoFim() {
+        return foiAjustadoFim;
     }
 }
