@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.util.FormatUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
-import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.FormulaCalculoJornada;
-import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoDia;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoIntervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
@@ -13,6 +13,8 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jorn
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaDia;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.FormulaCalculoJornada;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -95,6 +97,16 @@ final class ControleJornadaRelatorioConverter {
 
             final LocalDateTime dataHoraFim = rSet.getObject("DATA_HORA_FIM", LocalDateTime.class);
             final Long codTipoIntervaloLong = rSet.getLong("COD_TIPO_INTERVALO");
+
+            if (dataHoraInicio != null && dataHoraFim != null && dataHoraFim.isBefore(dataHoraInicio)) {
+                throw new GenericException("Erro!\nA marcação do colaborador <b>"
+                        + rSet.getString("NOME_COLABORADOR")
+                        + "</b> possui fim antes do início, impossibilitando a geração do relatório.\n"
+                        + "<b>Início: " + FormatUtils.toUserFriendlyDateTime(dataHoraInicio) + "</b>\n"
+                        + "<b>Fim: " + FormatUtils.toUserFriendlyDateTime(dataHoraFim) + "</b>\n\n"
+                        + "<a href=\"https://prologapp.zendesk.com/hc/pt-br/articles/360002008792-Relat%C3%B3rios-Controle-de-Jornada#%E2%80%9Cfolha\" target=\"_blank\">Clique aqui para mais informações</a>");
+            }
+
             final FolhaPontoIntervalo intervalo = new FolhaPontoIntervalo(
                     dataHoraInicio,
                     dataHoraFim,
