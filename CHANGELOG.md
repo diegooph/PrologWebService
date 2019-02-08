@@ -11,6 +11,7 @@ Change Log
 * Permite ao cliente selecionar quais tipos de marcação descontam do cálculo de jornada bruta e líquida (PL-1648)
 * Cria métodos para nova tela de acompanhamento de viagens do controle de jornada (PL-1661)
 * Altera busca de um tipo de marcação para utilizar function (PL-1681)
+* Previne caso de erro causado por marcação de fim antes do início no relatório de folha ponto (PL-1682)
 
 
 <a name="v0.0.84"></a>
