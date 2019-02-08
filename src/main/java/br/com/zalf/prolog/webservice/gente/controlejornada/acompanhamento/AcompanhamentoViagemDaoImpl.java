@@ -42,7 +42,7 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_COLABORADORES_JORNADA_FINALIZADA(?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_COLABORADORES_EM_DESCANSO(?, ?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codCargos));
             stmt.setObject(3, Now.offsetDateTimeUtc());
