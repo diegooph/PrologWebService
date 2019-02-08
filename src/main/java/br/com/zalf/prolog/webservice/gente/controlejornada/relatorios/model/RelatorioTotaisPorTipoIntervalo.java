@@ -94,13 +94,13 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
             final Integer colunaTotal = tipoIntervaloTotalIndexColuna.get(codTipoIntervalo);
             if (colunaTotal != null) {
                 linhaAtual.set(colunaTotal, tempoTotalMillis != 0
-                        ? Durations.formatDuration(tempoTotalMillis, Durations.Format.HH_MM_SS)
+                        ? Durations.formatDurationHandleNegative(tempoTotalMillis, Durations.Format.HH_MM_SS)
                         : ZERO_HORAS);
             }
             final Integer colunaHorasNoturnas = tipoIntervaloHorasNoturnasIndexColuna.get(codTipoIntervalo);
             if (colunaHorasNoturnas != null) {
                 linhaAtual.set(colunaHorasNoturnas, tempoTotalHorasNoturnasMillis != 0
-                        ? Durations.formatDuration(tempoTotalHorasNoturnasMillis, Durations.Format.HH_MM_SS)
+                        ? Durations.formatDurationHandleNegative(tempoTotalHorasNoturnasMillis, Durations.Format.HH_MM_SS)
                         : ZERO_HORAS);
             }
         } else {
@@ -114,13 +114,13 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
             final Integer coluna = tipoIntervaloTotalIndexColuna.get(codTipoIntervalo);
             if (coluna != null) {
                 linha.set(coluna, tempoTotalMillis != 0
-                        ? Durations.formatDuration(tempoTotalMillis, Durations.Format.HH_MM_SS)
+                        ? Durations.formatDurationHandleNegative(tempoTotalMillis, Durations.Format.HH_MM_SS)
                         : ZERO_HORAS);
             }
             final Integer colunaHorasNoturnas = tipoIntervaloHorasNoturnasIndexColuna.get(codTipoIntervalo);
             if (colunaHorasNoturnas != null) {
                 linha.set(colunaHorasNoturnas, tempoTotalHorasNoturnasMillis != 0
-                        ? Durations.formatDuration(tempoTotalHorasNoturnasMillis, Durations.Format.HH_MM_SS)
+                        ? Durations.formatDurationHandleNegative(tempoTotalHorasNoturnasMillis, Durations.Format.HH_MM_SS)
                         : ZERO_HORAS);
             }
             table.put(cpfColaborador, linha);
