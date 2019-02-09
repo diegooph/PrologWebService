@@ -298,7 +298,7 @@ public interface RelatorioPneuDao {
      */
     List<QuantidadeAfericao> getQtdAfericoesByTipoByData(@NotNull final List<Long> codUnidades,
                                                          @NotNull final Date dataInicial,
-                                                         @NotNull final Date dataFinal) throws SQLException;
+                                                         @NotNull final Date dataFinal) throws Throwable;
 
     /**
      * Busca a quantidade de serviços abertos para cada {@link TipoServico}.

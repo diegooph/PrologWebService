@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.exibicao;
 
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 /**

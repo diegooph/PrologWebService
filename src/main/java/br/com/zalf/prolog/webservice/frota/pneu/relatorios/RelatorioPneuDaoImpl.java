@@ -504,31 +504,36 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     @Override
     public List<QuantidadeAfericao> getQtdAfericoesByTipoByData(@NotNull final List<Long> codUnidades,
                                                                 @NotNull final Date dataInicial,
-                                                                @NotNull final Date dataFinal) throws SQLException {
+                                                                @NotNull final Date dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "PUBLIC.FUNC_PNEU_RELATORIO_QUANTIDADE_AFERICOES_POR_TIPO_MEDICAO_COLETADA(?, ?, ?);");
+                    "PUBLIC.FUNC_PNEU_RELATORIO_QTD_AFERICOES_POR_TIPO_MEDICAO_COLETADA(?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setDate(2, dataInicial);
             stmt.setDate(3, dataFinal);
             rSet = stmt.executeQuery();
-            final List<QuantidadeAfericao> qtdAfericoes = new ArrayList<>();
-            while (rSet.next()) {
-                qtdAfericoes.add(
-                        new QuantidadeAfericao(
-                                rSet.getDate("DATA_REFERENCIA"),
-                                rSet.getString("DATA_REFERENCIA_FORMATADA"),
-                                rSet.getInt("QTD_AFERICAO_PRESSAO"),
-                                rSet.getInt("QTD_AFERICAO_SULCO"),
-                                rSet.getInt("QTD_AFERICAO_SULCO_PRESSAO")));
+            if (rSet.next()) {
+                final List<QuantidadeAfericao> qtdAfericoes = new ArrayList<>();
+                while (rSet.next()) {
+                    qtdAfericoes.add(
+                            new QuantidadeAfericao(
+                                    rSet.getDate("DATA_REFERENCIA"),
+                                    rSet.getString("DATA_REFERENCIA_FORMATADA"),
+                                    rSet.getInt("QTD_AFERICAO_SULCO"),
+                                    rSet.getInt("QTD_AFERICAO_PRESSAO"),
+                                    rSet.getInt("QTD_AFERICAO_SULCO_PRESSAO")));
+                }
+                return qtdAfericoes;
+            } else {
+                throw new IllegalStateException("Erro ao buscar as informações de aferições realizadas para as " +
+                        "unidades: " + codUnidades);
             }
-            return qtdAfericoes;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
