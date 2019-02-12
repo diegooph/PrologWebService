@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.*;
 import java.sql.Date;
-import java.time.LocalDate;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -824,6 +824,60 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    @Override
+    public Report getVencimentoDotReport(@NotNull final List<Long> codUnidades,
+                                         @NotNull final String userToken) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getVencimentoDotStmt(conn, codUnidades, userToken);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getVencimentoDotCsv(@NotNull final OutputStream out,
+                                    @NotNull final List<Long> codUnidades,
+                                    @NotNull final String userToken) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getVencimentoDotStmt(conn, codUnidades, userToken);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(out)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private PreparedStatement getVencimentoDotStmt(@NotNull final Connection conn,
+                                                   @NotNull final List<Long> codUnidades,
+                                                   @NotNull final String userToken) throws Throwable {
+        final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(userToken, conn);
+        final LocalDateTime dataHoraAtual = Now.localDateTimeUtc()
+                .atZone(ZoneOffset.UTC)
+                .withZoneSameInstant(zoneId)
+                .toLocalDateTime();
+        final PreparedStatement stmt =
+                conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_VALIDADE_DOT(?, ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        stmt.setObject(2, dataHoraAtual);
+        return stmt;
     }
 
     @NotNull

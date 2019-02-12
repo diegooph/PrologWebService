@@ -239,6 +239,24 @@ public class RelatorioPneuResource {
         return new MovimentacaoRelatorioService().getDadosGeraisMovimentacoesReport(codUnidades, dataInicial, dataFinal);
     }
 
+    @GET
+    @Produces("application/csv")
+    @Path("/vencimento-dot/csv")
+    public StreamingOutput getVencimentoDotCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @HeaderParam("Authorization") @Required final String userToken) {
+        return outputStream -> new RelatorioPneuService()
+                .getVencimentoDotCsv(outputStream, codUnidades, userToken);
+    }
+
+    @GET
+    @Path("/vencimento-dot/report")
+    public Report getVencimentoDotReport(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
+        return new RelatorioPneuService().getVencimentoDotReport(codUnidades, userToken);
+    }
+
     /**
      * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getQtdPneusByFaixaSulco(List, List)} instead.
      */
