@@ -48,13 +48,24 @@ public final class IntegracaoTransportResource {
         return service.getItensPendentes(tokenIntegracao, codUltimoItemPendenteSincronizado);
     }
 
+    @POST
+    @LogIntegracaoRequest
+    @Path("/ordens-servicos/resolver-multiplos-itens/dummies")
+    @UsedBy(platforms = Platform.INTEGRACOES)
+    public SuccessResponseIntegracao resolverMultiplosItensDummies(
+            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @Required final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
+        return service.resolverMultiplosItensDummy(tokenIntegracao, itensResolvidos);
+    }
+
     @GET
     @LogIntegracaoRequest
     @Path("/ordens-servicos/itens-pendentes/dummies")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ItemPendenteIntegracaoTransport> getItensPendentesDummies(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @QueryParam("codUltimoItemPendenteSincronizado") @Required final Long codUltimoItemPendenteSincronizado) {
-        return service.getDummy();
+            @QueryParam("codUltimoItemPendenteSincronizado") @Required final Long codUltimoItemPendenteSincronizado)
+            throws ProLogException {
+        return service.getItensPendentesDummy(tokenIntegracao, codUltimoItemPendenteSincronizado);
     }
 }
