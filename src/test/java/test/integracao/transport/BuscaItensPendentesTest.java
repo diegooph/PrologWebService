@@ -1,16 +1,23 @@
 package test.integracao.transport;
 
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
+import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import br.com.zalf.prolog.webservice.integracao.transport.IntegracaoTransportService;
 import br.com.zalf.prolog.webservice.integracao.transport.ItemPendenteIntegracaoTransport;
+import br.com.zalf.prolog.webservice.integracao.transport.ItemResolvidoIntegracaoTransport;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -80,5 +87,38 @@ public class BuscaItensPendentesTest {
                     || itemPendenteIntegracaoTransport.getPrioridadeAlternativa() == PrioridadeAlternativa.ALTA
                     || itemPendenteIntegracaoTransport.getPrioridadeAlternativa() == PrioridadeAlternativa.CRITICA);
         });
+    }
+
+    @Test
+    public void testResolveItensPendentes() throws ProLogException {
+        final List<ItemPendenteIntegracaoTransport> itensPendentes =
+                service.getItensPendentes(TOKEN_TRANSLECCHI, 1L);
+
+        final List<ItemResolvidoIntegracaoTransport> itensResolvidos = new ArrayList<>();
+        for (final ItemPendenteIntegracaoTransport itemPendente : itensPendentes) {
+            itensResolvidos.add(convert(itemPendente));
+        }
+
+        final SuccessResponseIntegracao successResponseIntegracao =
+                service.resolverMultiplosItens(TOKEN_TRANSLECCHI, itensResolvidos);
+
+        Assert.assertNotNull(successResponseIntegracao);
+        Assert.assertNotNull(successResponseIntegracao.getMsg());
+        System.out.println(GsonUtils.getGson().toJson(itensPendentes));
+    }
+
+    @NotNull
+    private ItemResolvidoIntegracaoTransport convert(@NotNull final ItemPendenteIntegracaoTransport itemPendente) {
+        final ItemResolvidoIntegracaoTransport item = new ItemResolvidoIntegracaoTransport();
+        item.setCodUnidadeOrdemServico(itemPendente.getCodUnidadeOrdemServico());
+        item.setCodOrdemServico(itemPendente.getCodOrdemServico());
+        item.setCodItemResolvido(itemPendente.getCodItemOrdemServico());
+        item.setCpfColaboradoResolucao("39476386800");
+        item.setPlacaVeiculo(itemPendente.getPlacaVeiculo());
+        item.setKmColetadoVeiculo(itemPendente.getKmAberturaServico() + 100);
+        item.setDuracaoResolucaoItemEmMilissegundos(Duration.ofMinutes(15L).toMillis());
+        item.setFeedbackResolucao("Fechando item através de teste de integração");
+        item.setDataHoraResolucao(LocalDateTime.now());
+        return item;
     }
 }
