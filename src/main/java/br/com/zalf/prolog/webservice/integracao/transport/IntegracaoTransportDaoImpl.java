@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 /**
  * Created on 03/01/19.
@@ -39,11 +39,11 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
                 stmt.setObject(8, itensResolvido.getDataHoraResolucao());
                 stmt.addBatch();
             }
-            final boolean todasInsercoesOk = IntStream
-                    .of(stmt.executeBatch())
-                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
-            if (!todasInsercoesOk) {
-                throw new IllegalStateException("Erro ao resolver os itens de OS recebidos");
+            // Verificamos apenas se a quantidade de vezes que a function executou bate com a quantidade de itens.
+            // A function irá lançar uma exceção para qualquer caso de inconsistência, não é preciso verificar aqui
+            // no java se cada vez que a function executou os updates.
+            if (stmt.executeBatch().length != itensResolvidos.size()) {
+                throw new SQLException("Não foi possível resolver os itens");
             }
             conn.commit();
         } catch (final Throwable t) {

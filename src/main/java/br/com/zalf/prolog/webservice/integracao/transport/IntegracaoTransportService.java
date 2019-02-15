@@ -23,7 +23,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
     private final IntegracaoTransportDao dao = new IntegracaoTransportDaoImpl();
 
     @NotNull
-    SuccessResponseIntegracao resolverMultiplosItens(
+    public SuccessResponseIntegracao resolverMultiplosItens(
             final String tokenIntegracao,
             final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
         try {
