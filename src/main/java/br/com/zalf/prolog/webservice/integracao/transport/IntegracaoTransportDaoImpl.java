@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Created on 03/01/19.
@@ -25,13 +26,26 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("");
-            if (stmt.executeUpdate() == itensResolvidos.size()) {
-                conn.commit();
-            } else {
-                throw new IllegalStateException("Erro ao marcar os itens como resolvidos: "
-                        + itensResolvidos.size());
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_INTEGRACAO_RESOLVE_ITENS_PENDENTES(?, ?, ?, ?, ?, ?, ?, ?);");
+            for (final ItemResolvidoIntegracaoTransport itensResolvido : itensResolvidos) {
+                stmt.setLong(1, itensResolvido.getCodUnidadeOrdemServico());
+                stmt.setLong(2, itensResolvido.getCodOrdemServico());
+                stmt.setLong(3, itensResolvido.getCodItemResolvido());
+                stmt.setLong(4, Long.parseLong(itensResolvido.getCpfColaboradoResolucao()));
+                stmt.setLong(5, itensResolvido.getKmColetadoVeiculo());
+                stmt.setLong(6, itensResolvido.getDuracaoResolucaoItemEmMilissegundos());
+                stmt.setString(7, itensResolvido.getFeedbackResolucao());
+                stmt.setObject(8, itensResolvido.getDataHoraResolucao());
+                stmt.addBatch();
             }
+            final boolean todasInsercoesOk = IntStream
+                    .of(stmt.executeBatch())
+                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
+            if (!todasInsercoesOk) {
+                throw new IllegalStateException("Erro ao resolver os itens de OS recebidos");
+            }
+            conn.commit();
         } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
