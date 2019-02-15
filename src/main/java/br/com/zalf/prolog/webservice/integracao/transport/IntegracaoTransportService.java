@@ -77,7 +77,6 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             if (itensResolvidos == null || itensResolvidos.size() <= 0) {
                 throw new GenericException("Nenhum item foi recebido para a resolução");
             }
-            ensureValidToken(tokenIntegracao, TAG);
             return verifyItensDummy(itensResolvidos);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver itens pendentes", t);
@@ -98,7 +97,6 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             if (codUltimoItemPendenteSincronizado == null || codUltimoItemPendenteSincronizado < 0) {
                 throw new GenericException("Um código positivo para a busca deve ser fornecido");
             }
-            ensureValidToken(tokenIntegracao, TAG);
             return getDummy();
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os itens pendentes na Integração\n" +
