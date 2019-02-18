@@ -67,7 +67,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
     }
 
     @NotNull
-    public SuccessResponseIntegracao resolverMultiplosItensDummy(
+    SuccessResponseIntegracao resolverMultiplosItensDummy(
             final String tokenIntegracao,
             final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
         try {
@@ -87,7 +87,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
     }
 
     @NotNull
-    public List<ItemPendenteIntegracaoTransport> getItensPendentesDummy(
+    List<ItemPendenteIntegracaoTransport> getItensPendentesDummy(
             final String tokenIntegracao,
             final Long codUltimoItemPendenteSincronizado) throws ProLogException {
         try {

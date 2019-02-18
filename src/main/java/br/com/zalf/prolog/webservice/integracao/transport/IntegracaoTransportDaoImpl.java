@@ -27,7 +27,7 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_INTEGRACAO_RESOLVE_ITENS_PENDENTES(?, ?, ?, ?, ?, ?, ?, ?);");
+                    "SELECT * FROM FUNC_INTEGRACAO_RESOLVE_ITENS_PENDENTES_EMPRESA(?, ?, ?, ?, ?, ?, ?, ?, ?);");
             for (final ItemResolvidoIntegracaoTransport itensResolvido : itensResolvidos) {
                 stmt.setLong(1, itensResolvido.getCodUnidadeOrdemServico());
                 stmt.setLong(2, itensResolvido.getCodOrdemServico());
@@ -37,6 +37,7 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
                 stmt.setLong(6, itensResolvido.getDuracaoResolucaoItemEmMilissegundos());
                 stmt.setString(7, itensResolvido.getFeedbackResolucao());
                 stmt.setObject(8, itensResolvido.getDataHoraResolucao());
+                stmt.setString(9, tokenIntegracao);
                 stmt.addBatch();
             }
             // Verificamos apenas se a quantidade de vezes que a function executou bate com a quantidade de itens.

@@ -34,8 +34,7 @@ public final class IntegracaoTransportResource {
     public SuccessResponseIntegracao resolverMultiplosItens(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
-//        return service.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
-        return null;
+        return service.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
     }
 
     @GET
@@ -46,8 +45,7 @@ public final class IntegracaoTransportResource {
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimoItemPendenteSincronizado") @Required final Long codUltimoItemPendenteSincronizado)
             throws ProLogException {
-//        return service.getItensPendentes(tokenIntegracao, codUltimoItemPendenteSincronizado);
-        return null;
+        return service.getItensPendentes(tokenIntegracao, codUltimoItemPendenteSincronizado);
     }
 
     @POST

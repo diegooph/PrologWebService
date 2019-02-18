@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class BuscaItensPendentesTest {
+public class IntegracaoOrdemServicoTransportTest {
     private static final String TOKEN_TRANSLECCHI = "pdgcvsvt1bnhbaqt4ldlhq6i4d5v2ve1jd6g36gmtqgfpikpi7q";
     private IntegracaoTransportService service;
 
