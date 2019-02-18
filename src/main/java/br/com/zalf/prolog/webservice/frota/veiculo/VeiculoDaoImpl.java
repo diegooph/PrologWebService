@@ -300,7 +300,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             if (rSet.next()) {
                 final TipoVeiculo tipo = new TipoVeiculo();
                 tipo.setCodigo(rSet.getLong("CODIGO"));
-                tipo.setNome("NOME");
+                tipo.setNome(rSet.getString("NOME"));
                 return tipo;
             } else {
                 throw new IllegalStateException("Tipo de veículo não encontrado com o código: " + codTipo);
