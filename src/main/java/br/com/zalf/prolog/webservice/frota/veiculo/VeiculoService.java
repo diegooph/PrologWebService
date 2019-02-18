@@ -67,13 +67,12 @@ public final class VeiculoService {
         }
     }
 
-    public boolean insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo, Long codEmpresa) throws ProLogException {
+    public void insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo) throws ProLogException {
         try {
-            return dao.insertTipoVeiculoPorEmpresa(tipoVeiculo, codEmpresa);
+            dao.insertTipoVeiculoPorEmpresa(tipoVeiculo);
         } catch (Throwable e) {
             final String errorMessage = "Erro ao inserir o tipo de veículo";
-            Log.e(TAG, String.format("Erro ao inserir o tipo de veículo. \n" +
-                    "Empresa: %d", codEmpresa), e);
+            Log.e(TAG, "Erro ao inserir o tipo de veículo", e);
             throw exceptionHandler.map(e, errorMessage);
         }
     }
@@ -163,7 +162,7 @@ public final class VeiculoService {
     }
 
     @NotNull
-    public List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws ProLogException {
+    public List<Marca> getMarcasModelosVeiculosByEmpresa(final Long codEmpresa) throws ProLogException {
         try {
             return dao.getMarcasModelosVeiculosByEmpresa(codEmpresa);
         } catch (final Throwable t) {
@@ -248,7 +247,7 @@ public final class VeiculoService {
     }
 
     @NotNull
-    Response updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws ProLogException {
+    Response updateTipoVeiculo(final TipoVeiculo tipo) throws ProLogException {
         try {
             dao.updateTipoVeiculo(tipo);
             return Response.ok("Tipo de veículo atualizado com sucesso");
@@ -261,8 +260,8 @@ public final class VeiculoService {
     }
 
 
-    Response deleteTipoVeiculoByEmpresa(@NotNull final Long codTipo,
-                                        @NotNull final Long codEmpresa) throws ProLogException {
+    Response deleteTipoVeiculoByEmpresa(final Long codTipo,
+                                        final Long codEmpresa) throws ProLogException {
         try {
             dao.deleteTipoVeiculoByEmpresa(codTipo, codEmpresa);
             return Response.ok("Tipo de veículo deletado com sucesso");
@@ -273,61 +272,13 @@ public final class VeiculoService {
         }
     }
 
+    @NotNull
     public TipoVeiculo getTipoVeiculo(Long codTipo) throws ProLogException {
         try {
             return dao.getTipoVeiculo(codTipo);
         } catch (final Throwable throwable) {
-            Log.e(TAG, String.format("Erro ao buscar os tipos de veículo"), throwable);
-            throw exceptionHandler.map(throwable, "Erro ao buscar os tipos de veículo");
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-22.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #getTipoVeiculo(Long)}.
-     */
-    @Deprecated
-    public TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) {
-        try {
-            return dao.getTipoVeiculo(codTipo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o tipo de veículo. \n" +
-                    "codUnidade: %d \n" +
-                    "codTipo: %d", codUnidade, codTipo), e);
-            return null;
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
-     */
-    @Deprecated
-    public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) {
-        try {
-            return dao.insertTipoVeiculo(tipoVeiculo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao inserir o tipo de veículo. \n" +
-                    "Unidade: %d \n", codUnidade), e);
-            return false;
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-17.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
-     */
-    public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) {
-        try {
-            return dao.updateTipoVeiculo(tipo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao atualizar o tipo de veículo. \n" +
-                    "codUnidade: %d", codUnidade), e);
-            return false;
+            Log.e(TAG, String.format("Erro ao buscar tipo de veículo: %d", codTipo), throwable);
+            throw exceptionHandler.map(throwable, "Erro ao buscar o tipo de veículo, tente novamente");
         }
     }
 
@@ -342,29 +293,12 @@ public final class VeiculoService {
         try {
             return RouterVeiculo
                     .create(dao, userToken)
-                    .getTiposVeiculosByUnidade(codUnidade);
-        } catch (Exception e) {
+                    .getTiposVeiculosByEmpresa(Injection.provideEmpresaDao().getCodEmpresaByCodUnidade(codUnidade));
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os tipos de veículos ativos da unidade. \n" +
-                    "Unidade: %d \n" +
-                    "userToken: %s", codUnidade, userToken), e);
+                    "Unidade: %d\n" +
+                    "userToken: %s", codUnidade, userToken), t);
             throw new RuntimeException("Erro ao buscar os tipos de veículo da unidade: " + codUnidade);
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-18.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
-     */
-    @Deprecated
-    public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) {
-        try {
-            return dao.deleteTipoVeiculo(codTipo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao deletar o tipo de veículo. \n" +
-                    "codUnidade: %d \n" +
-                    "codTipo: %d", codUnidade, codTipo), e);
-            return false;
         }
     }
 }

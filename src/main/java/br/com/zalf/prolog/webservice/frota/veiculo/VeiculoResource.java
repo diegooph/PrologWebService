@@ -120,20 +120,16 @@ public final class VeiculoResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos-veiculos")
-    public Response insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo,
-                                                @QueryParam("codEmpresa") Long codEmpresa)
+    public Response insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo)
             throws ProLogException {
-        if (service.insertTipoVeiculoPorEmpresa(tipoVeiculo, codEmpresa)) {
-            return Response.ok("Tipo de veículo inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir o tipo de veículo");
-        }
+        service.insertTipoVeiculoPorEmpresa(tipoVeiculo);
+        return Response.ok("Tipo de veículo inserido com sucesso");
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos-veiculos")
-    public Response updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws ProLogException {
+    public Response updateTipoVeiculo(TipoVeiculo tipo) throws ProLogException {
         return service.updateTipoVeiculo(tipo);
     }
 
@@ -269,24 +265,6 @@ public final class VeiculoResource {
      * @deprecated at 2019-01-10.
      * Método depreciado pois não será mais utilizado o código da unidade.
      * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
-     */
-    @Deprecated
-    @POST
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/{codUnidade}/tipo")
-    public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
-            return Response.ok("Tipo de veículo inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir o tipo de veículo");
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
      * Utilize {@link #getTiposVeiculosByEmpresa(String, Long)}.
      */
     @Deprecated
@@ -307,53 +285,6 @@ public final class VeiculoResource {
     public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
                                                       @PathParam("codUnidade") Long codUnidade) {
         return service.getTipoVeiculosByUnidade(userToken, codUnidade);
-    }
-
-    /**
-     * @deprecated at 2019-01-17.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
-     */
-    @Deprecated
-    @PUT
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/tipos/{codUnidade}/{codTipo}")
-    public Response updateTipoVeiculo(TipoVeiculo tipo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.updateTipoVeiculo(tipo, codUnidade)) {
-            return Response.ok("Tipo alterado com sucesso");
-        } else {
-            return Response.error("Erro ao alterar o tipo");
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-18.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
-     */
-    @Deprecated
-    @DELETE
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/tipos/{codUnidade}/{codTipo}")
-    public Response deleteTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.deleteTipoVeiculo(codTipo, codUnidade)) {
-            return Response.ok("Tipo deletado com sucesso");
-        } else {
-            return Response.error("Erro ao deletar o tipo");
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-22.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #getTipoVeiculo(Long)}.
-     */
-    @Deprecated
-    @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/tipos/{codUnidade}/{codTipo}")
-    public TipoVeiculo getTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
-        return service.getTipoVeiculo(codTipo, codUnidade);
     }
 
     /**

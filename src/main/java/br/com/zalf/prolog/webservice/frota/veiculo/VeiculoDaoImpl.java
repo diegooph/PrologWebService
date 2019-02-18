@@ -262,65 +262,71 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable {
-        List<TipoVeiculo> listTipo = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE COD_EMPRESA = ? AND STATUS_ATIVO = TRUE");
+            stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE COD_EMPRESA = ? AND STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
+            final List<TipoVeiculo> listTipo = new ArrayList<>();
             while (rSet.next()) {
-                listTipo.add(new TipoVeiculo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
+                listTipo.add(new TipoVeiculo(
+                        rSet.getLong("COD_EMPRESA"),
+                        rSet.getLong("CODIGO"),
+                        rSet.getString("NOME")));
             }
+            return listTipo;
         } finally {
             close(conn, stmt, rSet);
         }
-        return listTipo;
     }
 
+    @NotNull
     @Override
-    public TipoVeiculo getTipoVeiculo(Long codTipo) throws Throwable {
+    public TipoVeiculo getTipoVeiculo(@NotNull final Long codTipo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM veiculo_tipo WHERE codigo = ?");
+            stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE CODIGO = ?;");
             stmt.setLong(1, codTipo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                TipoVeiculo tipo = new TipoVeiculo();
+                final TipoVeiculo tipo = new TipoVeiculo();
                 tipo.setCodigo(rSet.getLong("CODIGO"));
+                tipo.setNome("NOME");
                 return tipo;
+            } else {
+                throw new IllegalStateException("Tipo de veículo não encontrado com o código: " + codTipo);
             }
         } finally {
             close(conn, stmt, rSet);
         }
-        return null;
     }
 
     @Override
-    public boolean insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo, Long codEmpresa) throws Throwable {
+    public void insertTipoVeiculoPorEmpresa(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO VEICULO_TIPO(COD_EMPRESA, NOME, STATUS_ATIVO) VALUES (?,?,?)");
-            stmt.setLong(1, codEmpresa);
+            stmt.setLong(1, tipoVeiculo.getCodEmpresa());
             stmt.setString(2, tipoVeiculo.getNome());
             stmt.setBoolean(3, true);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao cadastrar o tipo de veículo");
             }
         } finally {
             close(conn, stmt);
         }
-        return true;
     }
 
     @Override
@@ -333,11 +339,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setString(1, tipo.getNome());
             stmt.setLong(2, tipo.getCodigo());
             stmt.executeUpdate();
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
         } finally {
             close(conn, stmt);
         }
@@ -876,130 +877,5 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         } finally {
             close(conn, stmt, rSet);
         }
-    }
-
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
-     */
-    @Deprecated
-    @Override
-    public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO VEICULO_TIPO(COD_UNIDADE, NOME, STATUS_ATIVO) VALUES (?,?,?)");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, tipoVeiculo.getNome());
-            stmt.setBoolean(3, true);
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao cadastrar o tipo de veículo");
-            }
-        } finally {
-            close(conn, stmt);
-        }
-        return true;
-    }
-
-    /**
-     * @deprecated at 2019-01-17.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
-     */
-    @Deprecated
-    @Override
-    public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE veiculo_tipo SET nome = ? WHERE codigo = ? AND cod_unidade = ?;");
-            stmt.setString(1, tipo.getNome());
-            stmt.setLong(2, tipo.getCodigo());
-            stmt.setLong(3, codUnidade);
-            return stmt.executeUpdate() > 0;
-        } finally {
-            close(conn, stmt);
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #getTiposVeiculosByEmpresa(Long)}.
-     */
-    @Deprecated
-    @Override
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
-        List<TipoVeiculo> listTipo = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                listTipo.add(new TipoVeiculo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return listTipo;
-    }
-
-    /**
-     * @deprecated at 2019-01-18.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
-     */
-    @Deprecated
-    public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM veiculo_tipo WHERE codigo = ? AND cod_unidade = ?");
-            stmt.setLong(1, codTipo);
-            stmt.setLong(2, codUnidade);
-            return stmt.executeUpdate() > 0;
-        } finally {
-            close(conn, stmt);
-        }
-    }
-
-    /**
-     * @deprecated at 2019-01-22.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #getTipoVeiculo(Long)}.
-     */
-    @Deprecated
-    @Override
-    public TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM veiculo_tipo WHERE codigo = ? AND cod_unidade = ?");
-            stmt.setLong(1, codTipo);
-            stmt.setLong(2, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                TipoVeiculo tipo = new TipoVeiculo();
-                tipo.setCodigo(rSet.getLong("CODIGO"));
-                tipo.setNome(rSet.getString("NOME"));
-                return tipo;
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return null;
     }
 }

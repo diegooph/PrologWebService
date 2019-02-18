@@ -43,19 +43,6 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getVeiculosAtivosByUnidade(codUnidade, ativos);
     }
 
-    /**
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #getTiposVeiculosByEmpresa(Long)}.
-     */
-    @Deprecated
-    @NotNull
-    @Override
-    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
-        return getIntegradorProLog().getTiposVeiculosByUnidade(codUnidade);
-    }
-
     @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {

@@ -100,17 +100,17 @@ public interface VeiculoDao {
      * @return uma lista de tipos de veículos
      * @throws Throwable caso ocorrer erro no banco
      */
+    @NotNull
     List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * insere um tipo de veículo
      *
      * @param tipoVeiculo descrição do tipo do veículo
-     * @param codEmpresa  código da empresa
      * @return valor referente a operação
      * @throws SQLException se ocorrer erro no banco
      */
-    boolean insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo, Long codEmpresa) throws Throwable;
+    void insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo) throws Throwable;
 
     /**
      * busca os eixos
@@ -244,19 +244,6 @@ public interface VeiculoDao {
     boolean deleteModelo(Long codModelo, Long codUnidade) throws SQLException;
 
     /**
-     * @param tipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     * @deprecated at 2019-01-17.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #updateTipoVeiculo(TipoVeiculo)}.
-     * <p>
-     * atualizava um tipo de veículo
-     */
-    boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) throws SQLException;
-
-    /**
      * atualiza um tipo de veículo
      *
      * @param tipo
@@ -276,7 +263,8 @@ public interface VeiculoDao {
     void deleteTipoVeiculoByEmpresa(@NotNull final Long codTipo,
                                     @NotNull final Long codEmpresa) throws Throwable;
 
-    TipoVeiculo getTipoVeiculo(Long codTipo) throws Throwable;
+    @NotNull
+    TipoVeiculo getTipoVeiculo(@NotNull final Long codTipo) throws Throwable;
 
     /**
      * Aplica um pneu à uma posição específico do veículo.
@@ -307,60 +295,4 @@ public interface VeiculoDao {
                            @NotNull final Long codUnidade,
                            @NotNull final String placa,
                            @NotNull final Long codPneu) throws Throwable;
-
-    /**
-     * @param tipoVeiculo descrição do tipo do veículo
-     * @param codUnidade  código da unidade
-     * @return valor referente a operação
-     * @throws SQLException se ocorrer erro no banco
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #insertTipoVeiculoPorEmpresa(TipoVeiculo, Long)}.
-     * <p>
-     * inseria um tipo de veículo por unidade
-     */
-    @Deprecated
-    boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException;
-
-    /**
-     * @param codUnidade código da unidade
-     * @return uma lista de tipos de veículos
-     * @throws SQLException caso ocorrer erro no banco
-     * @deprecated at 2019-01-10.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Em seu lugar será utilizado o código da empresa.
-     * Utilize {@link #getTiposVeiculosByEmpresa(Long)}.
-     * <p>
-     * buscava o tipo de veículo pela unidade
-     */
-    @Deprecated
-    List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException;
-
-    /**
-     * @param codTipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     * @deprecated at 2019-01-18.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #deleteTipoVeiculoByEmpresa(Long, Long)}.
-     * <p>
-     * deletava um tipo de veículo, apenas se não tiver nenhuma placa vinculada
-     */
-    boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
-
-    /**
-     * @param codTipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     * @deprecated at 2019-01-22.
-     * Método depreciado pois não será mais utilizado o código da unidade.
-     * Utilize {@link #getTipoVeiculo(Long)}.
-     * <p>
-     * buscava um tipo de veículo.
-     */
-    @Deprecated
-    TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
 }
