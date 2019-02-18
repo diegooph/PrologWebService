@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -15,6 +16,8 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class EscalaDiariaTest extends BaseTest {
+    private static final LocalDate DATA_INICIAL = LocalDate.parse("2018-03-18");
+    private static final LocalDate DATA_FINAL = LocalDate.parse("2018-04-19");
 
     @Override
     public void initialize() {

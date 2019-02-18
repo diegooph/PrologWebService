@@ -41,16 +41,20 @@ final class DashboardRelatoComponentsCreator {
             @NotNull final ComponentDataHolder component,
             @NotNull final RelatoPendente qtdRelatosPendentes) {
         final List<PieEntry> entries = new ArrayList<>(2 /* Relatos pendentes. */);
-        entries.add(PieEntry.create(
-                PENDENTE_CLASSIFICACAO.getSliceDescription(),
-                qtdRelatosPendentes.getQtdRelatosPendentesClassificacao(),
-                String.valueOf(qtdRelatosPendentes.getQtdRelatosPendentesClassificacao()),
-                PENDENTE_CLASSIFICACAO.getSliceColor()));
-        entries.add(PieEntry.create(
-                PENDENTE_FECHAMENTO.getSliceDescription(),
-                qtdRelatosPendentes.getQtdRelatosPendentesFechamento(),
-                String.valueOf(qtdRelatosPendentes.getQtdRelatosPendentesFechamento()),
-                PENDENTE_FECHAMENTO.getSliceColor()));
+        if (qtdRelatosPendentes.getQtdRelatosPendentesClassificacao() != 0 ||
+                qtdRelatosPendentes.getQtdRelatosPendentesFechamento() != 0) {
+            entries.add(PieEntry.create(
+                    PENDENTE_CLASSIFICACAO.getSliceDescription(),
+                    qtdRelatosPendentes.getQtdRelatosPendentesClassificacao(),
+                    String.valueOf(qtdRelatosPendentes.getQtdRelatosPendentesClassificacao()),
+                    PENDENTE_CLASSIFICACAO.getSliceColor()));
+
+            entries.add(PieEntry.create(
+                    PENDENTE_FECHAMENTO.getSliceDescription(),
+                    qtdRelatosPendentes.getQtdRelatosPendentesFechamento(),
+                    String.valueOf(qtdRelatosPendentes.getQtdRelatosPendentesFechamento()),
+                    PENDENTE_FECHAMENTO.getSliceColor()));
+        }
         final PieData pieData = new PieData(entries);
         return PieChartComponent.createDefault(component, pieData, SliceValueMode.VALUE_REPRESENTATION);
     }

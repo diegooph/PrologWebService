@@ -298,7 +298,7 @@ public interface RelatorioPneuDao {
      */
     List<QuantidadeAfericao> getQtdAfericoesByTipoByData(@NotNull final List<Long> codUnidades,
                                                          @NotNull final Date dataInicial,
-                                                         @NotNull final Date dataFinal) throws SQLException;
+                                                         @NotNull final Date dataFinal) throws Throwable;
 
     /**
      * Busca a quantidade de serviços abertos para cada {@link TipoServico}.
@@ -402,4 +402,27 @@ public interface RelatorioPneuDao {
     List<QuantidadeAfericao> getQtdAfericoesRealizadasPorDiaByTipo(
             @NotNull final List<Long> codUnidades,
             final int diasRetroativosParaBuscar) throws Throwable;
+
+    /**
+     * Método buscar o relatório que calcula a validade de um pneu através do DOT. {@link Report report}.
+     *
+     * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
+     * @param userToken   Código token do usuário que requisitou o relatório.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    Report getVencimentoDotReport(@NotNull final List<Long> codUnidades,
+                                  @NotNull final String userToken) throws Throwable;
+
+    /**
+     * Método buscar o relatório que calcula a validade de um pneu através do DOT.
+     *
+     * @param out         Streaming onde os dados serão escritos.
+     * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
+     * @param userToken   Código token do usuário que requisitou o relatório.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    void getVencimentoDotCsv(@NotNull final OutputStream out,
+                             @NotNull final List<Long> codUnidades,
+                             @NotNull final String userToken) throws Throwable;
 }

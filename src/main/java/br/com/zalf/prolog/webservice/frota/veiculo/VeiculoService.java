@@ -149,14 +149,45 @@ public final class VeiculoService {
         }
     }
 
-    public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) {
+    @NotNull
+    public List<Marca> getMarcasVeiculosNivelProLog() throws ProLogException {
         try {
+            return dao.getMarcasVeiculosNivelProLog();
+        } catch (final Throwable t) {
+            final String errorMessage = "Erro ao buscar marcas de veículos";
+            Log.e(TAG, errorMessage, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, errorMessage);
+        }
+    }
+
+    @NotNull
+    public List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws ProLogException {
+        try {
+            return dao.getMarcasModelosVeiculosByEmpresa(codEmpresa);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar marcas e modelos de veículos da empresa %d", codEmpresa), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar marcas e modelos de veículos");
+        }
+    }
+
+    @NotNull
+    public Long insertModeloVeiculo(Modelo modelo, Long codEmpresa, Long codMarca) throws ProLogException {
+        try {
+            if (modelo.getNome().trim().isEmpty()) {
+                throw new NullPointerException("Erro!\nModelo sem nome.");
+            }
             return dao.insertModeloVeiculo(modelo, codEmpresa, codMarca);
-        } catch (SQLException | NullPointerException e) {
-            Log.e(TAG, String.format("Erro ao inserir o modelo de veículo. \n" +
-                    "Empresa: %d \n" +
-                    "codMarca: %d", codEmpresa, codMarca), e);
-            return false;
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao inserir o modelo de veículo.\n" +
+                    "Empresa: %d\n" +
+                    "codMarca: %d", codEmpresa, codMarca), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao cadastrar modelo de veículo, tente novamente");
         }
     }
 

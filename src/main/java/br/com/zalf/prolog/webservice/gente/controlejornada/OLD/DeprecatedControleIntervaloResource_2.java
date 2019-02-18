@@ -1,17 +1,16 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.ResponseIntervalo;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,7 +26,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Deprecated
 public final class DeprecatedControleIntervaloResource_2 {
-
+    @NotNull
     private final DeprecatedControleIntervaloService_2 service = new DeprecatedControleIntervaloService_2();
 
     /**
@@ -82,75 +81,5 @@ public final class DeprecatedControleIntervaloResource_2 {
                                                     @QueryParam("limit") long limit,
                                                     @QueryParam("offset") long offset) {
         return service.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
-            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
-            Pilares.Gente.Relatorios.INTERVALOS})
-    @Path("/tipos/{codUnidade}/{codTipoIntervalo}")
-    public TipoMarcacao getTipoIntervalo(@PathParam("codUnidade") @Required final Long codUnidade,
-                                          @PathParam("codTipoIntervalo") @Required final Long codTipoIntervalo) {
-        return service.getTipoIntervalo(codUnidade, codTipoIntervalo);
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
-            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
-            Pilares.Gente.Relatorios.INTERVALOS})
-    @Path("/tipos/{codUnidade}/resumidos")
-    public List<TipoMarcacao> getTiposIntervalosResumidos(@Required @PathParam("codUnidade") Long codUnidade,
-                                                           @Optional @QueryParam("apenasAtivos")
-                                                           @DefaultValue("true") boolean apenasAtivos) {
-        return service.getTiposIntervalos(codUnidade, apenasAtivos, false);
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
-            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
-            Pilares.Gente.Relatorios.INTERVALOS})
-    @Path("/tipos/{codUnidade}/completos")
-    public List<TipoMarcacao> getTiposIntervalosCompletos(@Required @PathParam("codUnidade") Long codUnidade,
-                                                           @Optional @QueryParam("apenasAtivos")
-                                                           @DefaultValue("true") boolean apenasAtivos) {
-        return service.getTiposIntervalos(codUnidade, apenasAtivos, true);
-    }
-
-    @POST
-    @Path("/tipos")
-    @Secured(permissions = Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO)
-    public AbstractResponse insertTipoIntervalo(TipoMarcacao tipoIntervalo) {
-        return service.insertTipoIntervalo(tipoIntervalo);
-    }
-
-    @PUT
-    @Path("/tipos")
-    @Secured(permissions = Pilares.Gente.Intervalo.ALTERAR_TIPO_INTERVALO)
-    public Response updateTipoInvervalo(TipoMarcacao tipoIntervalo) {
-        if(service.updateTipoIntervalo(tipoIntervalo)) {
-            return Response.ok("Tipo de intervalo editado com sucesso");
-        } else {
-            return Response.error("Erro ao editar o tipo de intervalo");
-        }
-    }
-
-    @PUT
-    @Path("/tipos/{codUnidade}/{codTipoIntervalo}/status-ativo")
-    @Secured(permissions = Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO)
-    public Response inativarTipoIntervalo(@Required @PathParam("codUnidade") Long codUnidade,
-                                          @Required @PathParam("codTipoIntervalo") Long codTipoIntervalo,
-                                          @Required final TipoMarcacao tipoIntervalo) throws ProLogException {
-        service.updateStatusAtivo(codUnidade, codTipoIntervalo, tipoIntervalo);
-        if (tipoIntervalo.isAtivo()) {
-            return Response.ok("Tipo de marcação ativada com sucesso");
-        } else {
-            return Response.ok("Tipo de marcação inativada com sucesso");
-        }
     }
 }

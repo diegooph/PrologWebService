@@ -15,12 +15,8 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class ProdutividadeRelatorioTest extends BaseTest {
-
-    @Override
-    public void initialize() {
-        DATA_INICIAL = LocalDate.parse("2018-02-01");
-        DATA_FINAL = LocalDate.parse("2018-02-28");
-    }
+    private static final LocalDate DATA_INICIAL = LocalDate.parse("2018-03-18");
+    private static final LocalDate DATA_FINAL = LocalDate.parse("2018-04-19");
 
     @Test
     public void testGetProdutividadeColaboradorRelatorio() throws SQLException {

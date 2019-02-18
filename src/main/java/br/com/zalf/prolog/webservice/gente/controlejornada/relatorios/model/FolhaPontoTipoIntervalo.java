@@ -1,10 +1,16 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
+package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model;
 
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Time;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 23/04/2018
@@ -50,6 +56,29 @@ public final class FolhaPontoTipoIntervalo extends TipoMarcacao {
         return folhaTipo;
     }
 
+    @NotNull
+    public static FolhaPontoTipoIntervalo getDummy() {
+        final FolhaPontoTipoIntervalo folhaTipo = new FolhaPontoTipoIntervalo();
+        folhaTipo.setCodigo(1L);
+        folhaTipo.setCodigoPorUnidade(1L);
+        folhaTipo.setAtivo(true);
+        final List<Cargo> cargos = new ArrayList<>();
+        cargos.add(new Cargo(180L, "Motorista"));
+        folhaTipo.setCargos(cargos);
+        folhaTipo.setHorarioSugerido(Time.valueOf("12:00:00"));
+        folhaTipo.setIcone(Icone.JORNADA);
+        folhaTipo.setNome("Jornada");
+        folhaTipo.setTempoLimiteEstouro(Duration.ofHours(2));
+        folhaTipo.setTempoRecomendado(Duration.ofHours(1));
+        final Unidade unidade = new Unidade();
+        unidade.setNome("Zalf Sistemas");
+        unidade.setCodigo(5L);
+        folhaTipo.setUnidade(unidade);
+        folhaTipo.setTempoTotalTipoIntervalo(Duration.ofHours(6));
+        folhaTipo.setTempoTotalHorasNoturnas(Duration.ofSeconds(2));
+        return folhaTipo;
+    }
+
     public Duration getTempoTotalTipoIntervalo() {
         return tempoTotalTipoIntervalo;
     }
@@ -74,5 +103,13 @@ public final class FolhaPontoTipoIntervalo extends TipoMarcacao {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    public void sumTempoTotalTipoIntervalo(final long tempoTotalTipoIntervaloSegundos) {
+        this.tempoTotalTipoIntervalo = tempoTotalTipoIntervalo.plusSeconds(tempoTotalTipoIntervaloSegundos);
+    }
+
+    public void sumTempoTotalHorasNoturnas(final long tempoTotalHorasNoturnasSegundos) {
+        this.tempoTotalHorasNoturnas = tempoTotalHorasNoturnas.plusSeconds(tempoTotalHorasNoturnasSegundos);
     }
 }
