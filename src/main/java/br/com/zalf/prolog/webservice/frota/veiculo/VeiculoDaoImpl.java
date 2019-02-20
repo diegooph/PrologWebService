@@ -318,7 +318,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO VEICULO_TIPO(COD_EMPRESA, NOME, STATUS_ATIVO) VALUES (?,?,?)");
             stmt.setLong(1, tipoVeiculo.getCodEmpresa());
-            stmt.setString(2, tipoVeiculo.getNome());
+            stmt.setString(2, tipoVeiculo.getNome().trim());
             stmt.setBoolean(3, true);
             final int count = stmt.executeUpdate();
             if (count == 0) {
