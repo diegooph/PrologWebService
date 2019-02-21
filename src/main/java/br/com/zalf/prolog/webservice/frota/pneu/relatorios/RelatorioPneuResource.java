@@ -176,8 +176,8 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Produces("application/csv")
     @Path("/dados-gerais-afericoes/csv")
+    @Produces("application/csv")
     public StreamingOutput getDadosGeraisAfericoesCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
@@ -199,8 +199,8 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Produces("application/csv")
     @Path("/cronograma-afericoes-placas/csv")
+    @Produces("application/csv")
     public StreamingOutput getCronogramaAfericoesPlacasCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @HeaderParam("Authorization") @Required final String userToken) {
@@ -217,8 +217,8 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Produces("application/csv")
     @Path("/dados-gerais-movimentacoes/csv")
+    @Produces("application/csv")
     public StreamingOutput getDadosGeraisMovimentacoesCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
@@ -240,8 +240,8 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Produces("application/csv")
     @Path("/vencimento-dot/csv")
+    @Produces("application/csv")
     public StreamingOutput getVencimentoDotCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @HeaderParam("Authorization") @Required final String userToken) {
