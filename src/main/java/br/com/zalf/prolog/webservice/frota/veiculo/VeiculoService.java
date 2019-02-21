@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -23,8 +22,6 @@ public final class VeiculoService {
     private static final String TAG = VeiculoService.class.getSimpleName();
     @NotNull
     private final VeiculoDao dao = Injection.provideVeiculoDao();
-    @NotNull
-    private final VeiculoExceptionHandler exceptionHandler = Injection.provideVeiculoExceptionHandler();
 
     public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos) {
         try {
@@ -39,7 +36,8 @@ public final class VeiculoService {
         }
     }
 
-    public List<TipoVeiculo> getTipoVeiculosByEmpresa(String userToken, Long codEmpresa) throws ProLogException {
+    @NotNull
+    List<TipoVeiculo> getTipoVeiculosByEmpresa(final String userToken, final Long codEmpresa) throws ProLogException {
         try {
             return RouterVeiculo
                     .create(dao, userToken)
@@ -48,8 +46,9 @@ public final class VeiculoService {
             Log.e(TAG, String.format("Erro ao buscar os tipos de veículos ativos da empresa. \n" +
                     "Empresa: %d \n" +
                     "userToken: %s", codEmpresa, userToken), throwable);
-            throw exceptionHandler.map(throwable, "Erro ao buscar os tipos de veículo da empresa: "
-                    + codEmpresa);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar os tipos de veículo da empresa: " + codEmpresa);
         }
     }
 
@@ -67,13 +66,16 @@ public final class VeiculoService {
         }
     }
 
-    public void insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo) throws ProLogException {
+    @NotNull
+    Response insertTipoVeiculoPorEmpresa(final TipoVeiculo tipoVeiculo) throws ProLogException {
         try {
             dao.insertTipoVeiculoPorEmpresa(tipoVeiculo);
+            return Response.ok("Tipo de veículo inserido com sucesso");
         } catch (Throwable e) {
-            final String errorMessage = "Erro ao inserir o tipo de veículo";
             Log.e(TAG, "Erro ao inserir o tipo de veículo", e);
-            throw exceptionHandler.map(e, errorMessage);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao inserir o tipo de veículo, tente novamente");
         }
     }
 
@@ -134,7 +136,7 @@ public final class VeiculoService {
             final String errorMessage = "Erro ao inserir o veículo";
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                     "Unidade: %d", codUnidade), e);
-            throw exceptionHandler.map(e, errorMessage);
+            throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
         }
     }
 
@@ -247,9 +249,9 @@ public final class VeiculoService {
     }
 
     @NotNull
-    Response updateTipoVeiculo(final TipoVeiculo tipo) throws ProLogException {
+    Response updateTipoVeiculo(final TipoVeiculo tipoVeiculo) throws ProLogException {
         try {
-            dao.updateTipoVeiculo(tipo);
+            dao.updateTipoVeiculo(tipoVeiculo);
             return Response.ok("Tipo de veículo atualizado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atualizar o tipo de veículo", t);
@@ -259,26 +261,28 @@ public final class VeiculoService {
         }
     }
 
-
-    Response deleteTipoVeiculoByEmpresa(final Long codTipo,
-                                        final Long codEmpresa) throws ProLogException {
+    @NotNull
+    Response deleteTipoVeiculoByEmpresa(final Long codEmpresa, final Long codTipoVeiculo) throws ProLogException {
         try {
-            dao.deleteTipoVeiculoByEmpresa(codTipo, codEmpresa);
+            dao.deleteTipoVeiculoByEmpresa(codEmpresa, codTipoVeiculo);
             return Response.ok("Tipo de veículo deletado com sucesso");
         } catch (final Throwable e) {
-            final String msg = "Erro ao deletar tipo de veículo";
-            Log.e(TAG, msg, e);
-            throw exceptionHandler.map(e, msg);
+            Log.e(TAG, "Erro ao deletar tipo de veículo", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao deletar tipo de veículo, tente novamente");
         }
     }
 
     @NotNull
-    public TipoVeiculo getTipoVeiculo(Long codTipo) throws ProLogException {
+    public TipoVeiculo getTipoVeiculo(final Long codTipoVeiculo) throws ProLogException {
         try {
-            return dao.getTipoVeiculo(codTipo);
+            return dao.getTipoVeiculo(codTipoVeiculo);
         } catch (final Throwable throwable) {
-            Log.e(TAG, String.format("Erro ao buscar tipo de veículo: %d", codTipo), throwable);
-            throw exceptionHandler.map(throwable, "Erro ao buscar o tipo de veículo, tente novamente");
+            Log.e(TAG, String.format("Erro ao buscar tipo de veículo: %d", codTipoVeiculo), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar o tipo de veículo, tente novamente");
         }
     }
 

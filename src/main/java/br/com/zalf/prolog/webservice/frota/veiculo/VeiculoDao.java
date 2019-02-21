@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -94,23 +95,22 @@ public interface VeiculoDao {
                               final boolean withPneus) throws Throwable;
 
     /**
-     * busca o tipo de veículo pela empresa
+     * Método utilizado para buscar a lista de {@link TipoVeiculo tipos de veículos} da empresa.
      *
-     * @param codEmpresa código da unidade
-     * @return uma lista de tipos de veículos
-     * @throws Throwable caso ocorrer erro no banco
+     * @param codEmpresa Código da {@link Empresa empresa} que será buscado os tipos de veículos.
+     * @return {@link List<TipoVeiculo> Lista de tipos de veículos} disponíveis na empresa.
+     * @throws Throwable Se algum erro ocorrer na busca dos tipos de veículos.
      */
     @NotNull
     List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
-     * insere um tipo de veículo
+     * Insere um {@link TipoVeiculo tipo de veículo} no banco de dados.
      *
-     * @param tipoVeiculo descrição do tipo do veículo
-     * @return valor referente a operação
-     * @throws SQLException se ocorrer erro no banco
+     * @param tipoVeiculo Objeto contendo as informações do tipo de veículo a ser inserido.
+     * @throws Throwable Caso ocorra algum erro ao salvar no banco de dados.
      */
-    void insertTipoVeiculoPorEmpresa(TipoVeiculo tipoVeiculo) throws Throwable;
+    void insertTipoVeiculoPorEmpresa(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable;
 
     /**
      * busca os eixos
@@ -244,27 +244,35 @@ public interface VeiculoDao {
     boolean deleteModelo(Long codModelo, Long codUnidade) throws SQLException;
 
     /**
-     * atualiza um tipo de veículo
+     * Atualiza as informações de um {@link TipoVeiculo tipo de veículo}.
+     * Atualmente este método apenas atualiza o {@link TipoVeiculo#nome} do tipo de veículo.
      *
-     * @param tipo
-     * @return
-     * @throws SQLException
+     * @param tipoVeiculo Objeto contendo as novas informações para o tipo do veículo.
+     * @throws Throwable Se algum erro ocorrer no processo de atualização.
      */
-    void updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws Throwable;
+    void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable;
 
     /**
-     * deleta um tipo de veículo, apenas se não tiver nenhuma placa vinculada
+     * Método utilizado para deletar um {@link TipoVeiculo tipo de veículo} de uma empresa.
+     * A deleção do tipo de veículo só acontece se o {@link TipoVeiculo#codigo} não tiver nenhuma placa associada.
      *
-     * @param codTipo
-     * @param codEmpresa
-     * @return
-     * @throws SQLException
+     * @param codEmpresa     Código da {@link Empresa empresa} à qual o tipo de veículo pertence.
+     * @param codTipoVeiculo Código do {@link TipoVeiculo tipo de veículo} a ser deletado.
+     * @throws Throwable Se algum problema acontecer no processo de deleção.
      */
-    void deleteTipoVeiculoByEmpresa(@NotNull final Long codTipo,
-                                    @NotNull final Long codEmpresa) throws Throwable;
+    void deleteTipoVeiculoByEmpresa(@NotNull final Long codEmpresa,
+                                    @NotNull final Long codTipoVeiculo) throws Throwable;
 
+    /**
+     * Método utilizado para buscar um {@link TipoVeiculo tipo de veículo} específico através
+     * do <code>codTipoVeiculo</code>.
+     *
+     * @param codTipoVeiculo {@link TipoVeiculo#codigo Código} do tipo de veículo a ser buscado.
+     * @return {@link TipoVeiculo Tipo de veículo} do código especificado.
+     * @throws Throwable Se ocorrer algum erro na busca das informações
+     */
     @NotNull
-    TipoVeiculo getTipoVeiculo(@NotNull final Long codTipo) throws Throwable;
+    TipoVeiculo getTipoVeiculo(@NotNull final Long codTipoVeiculo) throws Throwable;
 
     /**
      * Aplica um pneu à uma posição específico do veículo.

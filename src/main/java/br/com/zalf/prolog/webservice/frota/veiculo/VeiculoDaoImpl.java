@@ -270,17 +270,25 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE COD_EMPRESA = ? AND STATUS_ATIVO = TRUE;");
+            stmt = conn.prepareStatement(
+                    "SELECT " +
+                            "  VT.COD_EMPRESA, " +
+                            "  VT.CODIGO, " +
+                            "  VT.NOME " +
+                            "FROM VEICULO_TIPO VT " +
+                            "WHERE VT.COD_EMPRESA = ? " +
+                            "      AND VT.STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
-            final List<TipoVeiculo> listTipo = new ArrayList<>();
+            final List<TipoVeiculo> tiposVeiculos = new ArrayList<>();
+            // TODO - Será que devemos lançar exceção se !if(rSet.next)?
             while (rSet.next()) {
-                listTipo.add(new TipoVeiculo(
+                tiposVeiculos.add(new TipoVeiculo(
                         rSet.getLong("COD_EMPRESA"),
                         rSet.getLong("CODIGO"),
                         rSet.getString("NOME")));
             }
-            return listTipo;
+            return tiposVeiculos;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -288,14 +296,14 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @NotNull
     @Override
-    public TipoVeiculo getTipoVeiculo(@NotNull final Long codTipo) throws Throwable {
+    public TipoVeiculo getTipoVeiculo(@NotNull final Long codTipoVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE CODIGO = ?;");
-            stmt.setLong(1, codTipo);
+            stmt = conn.prepareStatement("SELECT VT.CODIGO, VT.NOME FROM VEICULO_TIPO VT WHERE VT.CODIGO = ?;");
+            stmt.setLong(1, codTipoVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final TipoVeiculo tipo = new TipoVeiculo();
@@ -303,7 +311,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 tipo.setNome(rSet.getString("NOME"));
                 return tipo;
             } else {
-                throw new IllegalStateException("Tipo de veículo não encontrado com o código: " + codTipo);
+                throw new IllegalStateException("Tipo de veículo não encontrado com o código: " + codTipoVeiculo);
             }
         } finally {
             close(conn, stmt, rSet);
@@ -316,7 +324,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO VEICULO_TIPO(COD_EMPRESA, NOME, STATUS_ATIVO) VALUES (?,?,?)");
+            stmt = conn.prepareStatement(
+                    "INSERT INTO VEICULO_TIPO(COD_EMPRESA, NOME, STATUS_ATIVO) VALUES (?, ?, ?)");
             stmt.setLong(1, tipoVeiculo.getCodEmpresa());
             stmt.setString(2, tipoVeiculo.getNome().trim());
             stmt.setBoolean(3, true);
@@ -330,36 +339,35 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipo) throws Throwable {
+    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE veiculo_tipo SET nome = ? WHERE codigo = ?;");
-            stmt.setString(1, tipo.getNome());
-            stmt.setLong(2, tipo.getCodigo());
-            stmt.executeUpdate();
+            stmt = conn.prepareStatement("UPDATE VEICULO_TIPO SET NOME = ? WHERE CODIGO = ?;");
+            stmt.setString(1, tipoVeiculo.getNome().trim());
+            stmt.setLong(2, tipoVeiculo.getCodigo());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao atualizar o tipo de veículo: " + tipoVeiculo.getCodigo());
+            }
         } finally {
             close(conn, stmt);
         }
     }
 
     @Override
-    public void deleteTipoVeiculoByEmpresa(@NotNull final Long codTipo,
-                                           @NotNull final Long codEmpresa) throws Throwable {
+    public void deleteTipoVeiculoByEmpresa(@NotNull final Long codEmpresa,
+                                           @NotNull final Long codTipoVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM veiculo_tipo WHERE codigo = ? AND cod_empresa = ?");
-            stmt.setLong(1, codTipo);
+            stmt = conn.prepareStatement("DELETE FROM VEICULO_TIPO WHERE CODIGO = ? AND COD_EMPRESA = ?");
+            stmt.setLong(1, codTipoVeiculo);
             stmt.setLong(2, codEmpresa);
-            stmt.executeUpdate();
-        } catch (final Throwable e) {
-            if (conn != null) {
-                conn.rollback();
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao deletar o tipo de veículo: " + codTipoVeiculo);
             }
-            throw e;
         } finally {
             close(conn, stmt);
         }
