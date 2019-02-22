@@ -6,8 +6,8 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
@@ -17,6 +17,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.google.common.annotations.VisibleForTesting;
@@ -36,6 +37,7 @@ import java.util.Optional;
  */
 public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
     private VeiculoDao veiculoDao;
+    private TipoVeiculoDao tipoVeiculoDao;
     private ChecklistDao checklistDao;
     private AfericaoDao afericaoDao;
     private ColaboradorDao colaboradorDao;
@@ -145,7 +147,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
-        return veiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
+        return tipoVeiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
     }
 
     @NotNull
@@ -279,6 +281,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     public static final class Builder {
         private VeiculoDao veiculoDao;
+        private TipoVeiculoDao tipoVeiculoDao;
         private ChecklistDao checklistDao;
         private AfericaoDao afericaoDao;
         private ColaboradorDao colaboradorDao;
@@ -291,6 +294,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
         public Builder withVeiculoDao(VeiculoDao veiculoDao) {
             this.veiculoDao = veiculoDao;
+            return this;
+        }
+
+        public Builder withTipoVeiculoDao(TipoVeiculoDao tipoVeiculoDao) {
+            this.tipoVeiculoDao = tipoVeiculoDao;
             return this;
         }
 
