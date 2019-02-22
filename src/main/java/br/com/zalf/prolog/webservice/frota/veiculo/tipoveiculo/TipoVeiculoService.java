@@ -15,14 +15,14 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class TipoVeiculoService {
+public final class TipoVeiculoService {
     @NotNull
     private static final String TAG = TipoVeiculoService.class.getSimpleName();
     @NotNull
     private final TipoVeiculoDao dao = new TipoVeiculoDaoImpl();
 
     @NotNull
-    Response insertTipoVeiculoPorEmpresa(final TipoVeiculo tipoVeiculo) throws ProLogException {
+    public Response insertTipoVeiculoPorEmpresa(final TipoVeiculo tipoVeiculo) throws ProLogException {
         try {
             dao.insertTipoVeiculoPorEmpresa(tipoVeiculo);
             return Response.ok("Tipo de veículo inserido com sucesso");
@@ -35,7 +35,7 @@ final class TipoVeiculoService {
     }
 
     @NotNull
-    Response updateTipoVeiculo(final TipoVeiculo tipoVeiculo) throws ProLogException {
+    public Response updateTipoVeiculo(final TipoVeiculo tipoVeiculo) throws ProLogException {
         try {
             dao.updateTipoVeiculo(tipoVeiculo);
             return Response.ok("Tipo de veículo atualizado com sucesso");
@@ -48,7 +48,7 @@ final class TipoVeiculoService {
     }
 
     @NotNull
-    List<TipoVeiculo> getTiposVeiculosByEmpresa(final String userToken, final Long codEmpresa) throws ProLogException {
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(final String userToken, final Long codEmpresa) throws ProLogException {
         try {
             return RouterTipoVeiculo
                     .create(dao, userToken)
@@ -64,7 +64,7 @@ final class TipoVeiculoService {
     }
 
     @NotNull
-    TipoVeiculo getTipoVeiculo(final Long codTipoVeiculo) throws ProLogException {
+    public TipoVeiculo getTipoVeiculo(final Long codTipoVeiculo) throws ProLogException {
         try {
             return dao.getTipoVeiculo(codTipoVeiculo);
         } catch (final Throwable throwable) {
@@ -76,7 +76,7 @@ final class TipoVeiculoService {
     }
 
     @NotNull
-    Response deleteTipoVeiculoByEmpresa(final Long codEmpresa, final Long codTipoVeiculo) throws ProLogException {
+    public Response deleteTipoVeiculoByEmpresa(final Long codEmpresa, final Long codTipoVeiculo) throws ProLogException {
         try {
             dao.deleteTipoVeiculoByEmpresa(codEmpresa, codTipoVeiculo);
             return Response.ok("Tipo de veículo deletado com sucesso");

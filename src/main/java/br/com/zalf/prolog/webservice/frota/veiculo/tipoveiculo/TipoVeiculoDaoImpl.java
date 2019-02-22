@@ -95,11 +95,18 @@ final class TipoVeiculoDaoImpl extends DatabaseConnection implements TipoVeiculo
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT VT.CODIGO, VT.NOME FROM VEICULO_TIPO VT WHERE VT.CODIGO = ?;");
+            stmt = conn.prepareStatement(
+                    "SELECT " +
+                            "VT.COD_EMPRESA, " +
+                            "VT.CODIGO, " +
+                            "VT.NOME " +
+                            "FROM VEICULO_TIPO VT " +
+                            "WHERE VT.CODIGO = ?;");
             stmt.setLong(1, codTipoVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final TipoVeiculo tipoVeiculo = new TipoVeiculo();
+                tipoVeiculo.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
                 tipoVeiculo.setCodigo(rSet.getLong("CODIGO"));
                 tipoVeiculo.setNome(rSet.getString("NOME"));
                 return tipoVeiculo;
