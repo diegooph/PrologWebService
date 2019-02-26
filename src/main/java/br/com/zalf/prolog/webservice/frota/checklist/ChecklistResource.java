@@ -3,9 +3,10 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
@@ -29,8 +30,9 @@ public class ChecklistResource {
 
     @POST
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-    public AbstractResponse insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
-        final Long codChecklist = service.insert(checklist, userToken);
+    public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
+                                   @Required final Checklist checklist) throws ProLogException {
+        final Long codChecklist = service.insert(userToken, checklist);
         if (codChecklist != null) {
             return ResponseWithCod.ok("Checklist inserido com sucesso", codChecklist);
         } else {
@@ -170,7 +172,7 @@ public class ChecklistResource {
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     @Deprecated
     public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
-                                               @PathParam("codFuncao") Long codFuncao) {
+                                               @PathParam("codFuncao") Long codFuncao) throws ProLogException {
         return new ChecklistModeloService().getUrlImagensPerguntas(codUnidade, codFuncao);
     }
 

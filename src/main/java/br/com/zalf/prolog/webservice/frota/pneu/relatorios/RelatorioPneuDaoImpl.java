@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.*;
 import java.sql.Date;
-import java.time.LocalDate;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -504,31 +504,36 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     @Override
     public List<QuantidadeAfericao> getQtdAfericoesByTipoByData(@NotNull final List<Long> codUnidades,
                                                                 @NotNull final Date dataInicial,
-                                                                @NotNull final Date dataFinal) throws SQLException {
+                                                                @NotNull final Date dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "PUBLIC.FUNC_PNEU_RELATORIO_QUANTIDADE_AFERICOES_POR_TIPO_MEDICAO_COLETADA(?, ?, ?);");
+                    "PUBLIC.FUNC_PNEU_RELATORIO_QTD_AFERICOES_POR_TIPO_MEDICAO_COLETADA(?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setDate(2, dataInicial);
             stmt.setDate(3, dataFinal);
             rSet = stmt.executeQuery();
-            final List<QuantidadeAfericao> qtdAfericoes = new ArrayList<>();
-            while (rSet.next()) {
-                qtdAfericoes.add(
-                        new QuantidadeAfericao(
-                                rSet.getDate("DATA_REFERENCIA"),
-                                rSet.getString("DATA_REFERENCIA_FORMATADA"),
-                                rSet.getInt("QTD_AFERICAO_PRESSAO"),
-                                rSet.getInt("QTD_AFERICAO_SULCO"),
-                                rSet.getInt("QTD_AFERICAO_SULCO_PRESSAO")));
+            if (rSet.next()) {
+                final List<QuantidadeAfericao> qtdAfericoes = new ArrayList<>();
+                while (rSet.next()) {
+                    qtdAfericoes.add(
+                            new QuantidadeAfericao(
+                                    rSet.getDate("DATA_REFERENCIA"),
+                                    rSet.getString("DATA_REFERENCIA_FORMATADA"),
+                                    rSet.getInt("QTD_AFERICAO_SULCO"),
+                                    rSet.getInt("QTD_AFERICAO_PRESSAO"),
+                                    rSet.getInt("QTD_AFERICAO_SULCO_PRESSAO")));
+                }
+                return qtdAfericoes;
+            } else {
+                throw new IllegalStateException("Erro ao buscar as informações de aferições realizadas para as " +
+                        "unidades: " + codUnidades);
             }
-            return qtdAfericoes;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -819,6 +824,60 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    @Override
+    public Report getVencimentoDotReport(@NotNull final List<Long> codUnidades,
+                                         @NotNull final String userToken) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getVencimentoDotStmt(conn, codUnidades, userToken);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getVencimentoDotCsv(@NotNull final OutputStream out,
+                                    @NotNull final List<Long> codUnidades,
+                                    @NotNull final String userToken) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getVencimentoDotStmt(conn, codUnidades, userToken);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(out)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private PreparedStatement getVencimentoDotStmt(@NotNull final Connection conn,
+                                                   @NotNull final List<Long> codUnidades,
+                                                   @NotNull final String userToken) throws Throwable {
+        final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(userToken, conn);
+        final LocalDateTime dataHoraAtual = Now.localDateTimeUtc()
+                .atZone(ZoneOffset.UTC)
+                .withZoneSameInstant(zoneId)
+                .toLocalDateTime();
+        final PreparedStatement stmt =
+                conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_VALIDADE_DOT(?, ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        stmt.setObject(2, dataHoraAtual);
+        return stmt;
     }
 
     @NotNull

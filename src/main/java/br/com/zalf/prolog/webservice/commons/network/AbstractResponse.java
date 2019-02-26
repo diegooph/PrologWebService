@@ -24,4 +24,8 @@ public abstract class AbstractResponse {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public boolean isOk() {
+        return status.equals(OK);
+    }
 }

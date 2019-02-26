@@ -36,7 +36,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
             "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
             "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
-            "WHERE V.PLACA = ?";
+            "WHERE V.PLACA = ?;";
 
     public VeiculoDaoImpl() {
 
@@ -49,7 +49,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO VEICULO (PLACA, COD_UNIDADE, KM, STATUS_ATIVO," +
-                    " COD_TIPO, COD_MODELO, COD_EIXOS, COD_UNIDADE_CADASTRO)  VALUES (?,?,?,?,?,?,?,?)");
+                    " COD_TIPO, COD_MODELO, COD_EIXOS, COD_UNIDADE_CADASTRO)  VALUES (?,?,?,?,?,?,?,?);");
             stmt.setString(1, veiculo.getPlaca().toUpperCase());
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, veiculo.getKmAtual());
@@ -452,35 +452,99 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return marcas;
     }
 
+    @NotNull
+    @Override
+    public List<Marca> getMarcasVeiculosNivelProLog() throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_MARCAS_NIVEL_PROLOG();");
+            rSet = stmt.executeQuery();
+            final List<Marca> marcas = new ArrayList<>();
+            while (rSet.next()) {
+                final Marca marca = new Marca();
+                marca.setCodigo(rSet.getLong("COD_MARCA"));
+                marca.setNome(rSet.getString("NOME_MARCA"));
+                marcas.add(marca);
+            }
+            return marcas;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_MARCAS_MODELOS_EMPRESA(?);");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            final List<Marca> marcas = new ArrayList<>();
+            Long codMarcaAnterior = null;
+            List<Modelo> modelos = null;
+            while (rSet.next()) {
+                if (codMarcaAnterior == null || !codMarcaAnterior.equals(rSet.getLong("COD_MARCA"))) {
+                    final Marca marca = new Marca();
+                    marca.setNome(rSet.getString("NOME_MARCA"));
+                    marca.setCodigo(rSet.getLong("COD_MARCA"));
+                    modelos = new ArrayList<>();
+                    marca.setModelos(modelos);
+                    marcas.add(marca);
+                }
+                // No caso de iterar e ficar na mesma marca, seria apenas necessário criar um novo modelo, como isso
+                // sempre acontece, não precisamos de um if específico acima para tratar isso.
+
+                // Modelos são adicionados na lista por referência. O if abaixo é necessário para os casos onde a
+                // empresa não possui nenhum modelo para alguma marca.
+                if (rSet.getLong("COD_MODELO") > 0) {
+                    modelos.add(createModelo(rSet));
+                }
+                codMarcaAnterior = rSet.getLong("COD_MARCA");
+            }
+            return marcas;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     private ModeloVeiculo createModelo(ResultSet rSet) throws SQLException {
         ModeloVeiculo modelo = new ModeloVeiculo();
         modelo.setCodigo(rSet.getLong("COD_MODELO"));
-        modelo.setNome(rSet.getString("MODELO"));
+        modelo.setNome(rSet.getString("NOME_MODELO"));
         return modelo;
     }
 
+    @NotNull
     @Override
-    public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException, NullPointerException {
+    public Long insertModeloVeiculo(@NotNull final Modelo modelo,
+                                    @NotNull final Long codEmpresa,
+                                    @NotNull final Long codMarca) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            if (modelo.getNome().trim().isEmpty()) {
-                throw new NullPointerException("Modelo sem nome!");
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?) " +
+                    "RETURNING CODIGO");
+            stmt.setString(1, modelo.getNome());
+            stmt.setLong(2, codMarca);
+            stmt.setLong(3, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
             } else {
-                conn = getConnection();
-                stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?)");
-                stmt.setString(1, modelo.getNome());
-                stmt.setLong(2, codMarca);
-                stmt.setLong(3, codEmpresa);
-                int count = stmt.executeUpdate();
-                if (count == 0) {
-                    throw new SQLException("Erro ao cadastrar o modelo do veículo");
-                }
+                throw new SQLException("Erro ao cadastrar o modelo do veículo");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt, rSet);
         }
-        return true;
     }
 
     @Override

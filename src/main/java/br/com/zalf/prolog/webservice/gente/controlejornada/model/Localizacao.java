@@ -10,6 +10,12 @@ public class Localizacao {
     private String longitude;
 
     public Localizacao() {
+
+    }
+
+    public Localizacao(final String latitude, final String longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getLatitude() {

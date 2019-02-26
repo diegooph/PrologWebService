@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
@@ -92,7 +93,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
             throw new GenericException("Erro ao inserir pneu da linha: " + linha + " -- " + e.getMessage());
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -112,7 +113,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
             throw e;
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -122,16 +123,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                                 @NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Long codPneu;
         try {
-            // Se um pneu tem número ímpar de sulcos, o valor do sulco central deve ser duplicado nos dois campos de
-            // de sulco central.
-            if (pneu.temQtdImparSulcos()) {
-                if (!pneu.getSulcosAtuais().getCentralInterno().equals(pneu.getSulcosAtuais().getCentralExterno())) {
-                    throw new IllegalStateException("Um pneu com número ímpar de sulcos deve ter seus sulcos centrais iguais");
-                }
-            }
-
             stmt = conn.prepareStatement("INSERT INTO pneu (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, "
                     + "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, altura_sulco_central_externo, "
                     + "altura_sulco_externo, cod_unidade, status, vida_atual, vida_total, cod_modelo_banda, dot, valor, "
@@ -143,10 +135,14 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setDouble(4, pneu.getPressaoCorreta());
             // Pressão atual.
             stmt.setDouble(5, 0L);
-            stmt.setDouble(6, pneu.getSulcosAtuais().getInterno());
-            stmt.setDouble(7, pneu.getSulcosAtuais().getCentralInterno());
-            stmt.setDouble(8, pneu.getSulcosAtuais().getCentralExterno());
-            stmt.setDouble(9, pneu.getSulcosAtuais().getExterno());
+
+            // Deixamos aqui apenas para tornar explícito que ao inserir um pneu seus valores de sulco são setados
+            // para null.
+            stmt.setNull(6, SqlType.REAL.asIntTypeJava());
+            stmt.setNull(7, SqlType.REAL.asIntTypeJava());
+            stmt.setNull(8, SqlType.REAL.asIntTypeJava());
+            stmt.setNull(9, SqlType.REAL.asIntTypeJava());
+
             stmt.setLong(10, codUnidade);
             stmt.setString(11, pneu.getStatus().asString());
             stmt.setInt(12, pneu.getVidaAtual());
@@ -167,6 +163,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(19, codUnidade);
 
             rSet = stmt.executeQuery();
+            Long codPneu;
             if (rSet.next()) {
                 codPneu = rSet.getLong("CODIGO");
                 pneu.setCodigo(codPneu);
@@ -183,11 +180,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             if (fotosCadastro != null && !fotosCadastro.isEmpty()) {
                 insertFotosCadastroPneu(pneu.getCodigo(), fotosCadastro, conn);
             }
+
+            return codPneu;
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
-        return codPneu;
     }
 
     @Override

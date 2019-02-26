@@ -296,4 +296,27 @@ public class RelatorioPneuService {
             throw new RuntimeException(e);
         }
     }
+
+    public Report getVencimentoDotReport(@NotNull final List<Long> codUnidades,
+                                         @NotNull final String userToken) throws ProLogException {
+        try {
+            return dao.getVencimentoDotReport(codUnidades, userToken);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao gerar relatório de vencimento de DOT (REPORT)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    public void getVencimentoDotCsv(@NotNull final OutputStream out,
+                                    @NotNull final List<Long> codUnidades,
+                                    @NotNull final String userToken) {
+        try {
+            dao.getVencimentoDotCsv(out, codUnidades, userToken);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao gerar relatório de vencimento de DOT (CSV)", throwable);
+            throw new RuntimeException(throwable);
+        }
+    }
 }

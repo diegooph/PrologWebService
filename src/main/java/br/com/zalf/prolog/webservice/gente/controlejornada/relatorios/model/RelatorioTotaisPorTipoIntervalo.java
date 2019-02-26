@@ -1,8 +1,8 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
+package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model;
 
 import br.com.zalf.prolog.webservice.commons.report.CsvReport;
 import br.com.zalf.prolog.webservice.commons.util.date.Durations;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,9 +31,11 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
     @NotNull
     private final List<TipoMarcacao> tiposIntervalos;
     @NotNull
-    private final Map<Long, Integer> tipoIntervaloIndexColuna;
+    private final Map<Long, Integer> tipoIntervaloTotalIndexColuna;
+    @NotNull
+    private final Map<Long, Integer> tipoIntervaloHorasNoturnasIndexColuna;
 
-    RelatorioTotaisPorTipoIntervalo(@NotNull final ResultSet rSet,
+    public RelatorioTotaisPorTipoIntervalo(@NotNull final ResultSet rSet,
                                     @NotNull final List<TipoMarcacao> tiposIntervalos,
                                     @Nullable final Long codTipoIntervaloFiltrado) {
         this.rSet = rSet;
@@ -46,7 +48,8 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         } else {
             this.tiposIntervalos = tiposIntervalos;
         }
-        this.tipoIntervaloIndexColuna = new HashMap<>(tiposIntervalos.size());
+        this.tipoIntervaloTotalIndexColuna = new HashMap<>(tiposIntervalos.size());
+        this.tipoIntervaloHorasNoturnasIndexColuna = new HashMap<>(tiposIntervalos.size());
     }
 
     @NotNull
@@ -83,14 +86,21 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         final List<String> linhaAtual = table.get(cpfColaborador);
         if (linhaAtual != null) {
             final long tempoTotalMillis = rSet.getLong("TEMPO_TOTAL_MILLIS");
+            final long tempoTotalHorasNoturnasMillis = rSet.getLong("TEMPO_TOTAL_HORAS_NOTURNAS_MILLIS");
             final Long codTipoIntervalo = rSet.getLong("COD_TIPO_INTERVALO");
             // A query retorna o tempo total em todos os tipos de intervalo, não só os que o colaborador marcou. Caso
             // um filtro esteja aplicado, podemos não ter a coluna para um determinado tipo no relatório, por isso
             // precisamos verificar se é diferente de null.
-            final Integer coluna = tipoIntervaloIndexColuna.get(codTipoIntervalo);
-            if (coluna != null) {
-                linhaAtual.set(coluna, tempoTotalMillis != 0
-                        ? Durations.formatDuration(tempoTotalMillis, Durations.Format.HH_MM_SS)
+            final Integer colunaTotal = tipoIntervaloTotalIndexColuna.get(codTipoIntervalo);
+            if (colunaTotal != null) {
+                linhaAtual.set(colunaTotal, tempoTotalMillis != 0
+                        ? Durations.formatDurationHandleNegative(tempoTotalMillis, Durations.Format.HH_MM_SS)
+                        : ZERO_HORAS);
+            }
+            final Integer colunaHorasNoturnas = tipoIntervaloHorasNoturnasIndexColuna.get(codTipoIntervalo);
+            if (colunaHorasNoturnas != null) {
+                linhaAtual.set(colunaHorasNoturnas, tempoTotalHorasNoturnasMillis != 0
+                        ? Durations.formatDurationHandleNegative(tempoTotalHorasNoturnasMillis, Durations.Format.HH_MM_SS)
                         : ZERO_HORAS);
             }
         } else {
@@ -99,11 +109,18 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
             linha.set(COLUNA_NOME_COLABORADOR, rSet.getString("NOME"));
             linha.set(COLUNA_CARGO_COLABORADOR, rSet.getString("CARGO"));
             final long tempoTotalMillis = rSet.getLong("TEMPO_TOTAL_MILLIS");
+            final long tempoTotalHorasNoturnasMillis = rSet.getLong("TEMPO_TOTAL_HORAS_NOTURNAS_MILLIS");
             final Long codTipoIntervalo = rSet.getLong("COD_TIPO_INTERVALO");
-            final Integer coluna = tipoIntervaloIndexColuna.get(codTipoIntervalo);
+            final Integer coluna = tipoIntervaloTotalIndexColuna.get(codTipoIntervalo);
             if (coluna != null) {
                 linha.set(coluna, tempoTotalMillis != 0
-                        ? Durations.formatDuration(tempoTotalMillis, Durations.Format.HH_MM_SS)
+                        ? Durations.formatDurationHandleNegative(tempoTotalMillis, Durations.Format.HH_MM_SS)
+                        : ZERO_HORAS);
+            }
+            final Integer colunaHorasNoturnas = tipoIntervaloHorasNoturnasIndexColuna.get(codTipoIntervalo);
+            if (colunaHorasNoturnas != null) {
+                linha.set(colunaHorasNoturnas, tempoTotalHorasNoturnasMillis != 0
+                        ? Durations.formatDurationHandleNegative(tempoTotalHorasNoturnasMillis, Durations.Format.HH_MM_SS)
                         : ZERO_HORAS);
             }
             table.put(cpfColaborador, linha);
@@ -117,8 +134,10 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         header.add("NOME");
         header.add("CARGO");
         for (final TipoMarcacao tipoIntervalo : tiposIntervalos) {
-            header.add(tipoIntervalo.getNome());
-            tipoIntervaloIndexColuna.put(tipoIntervalo.getCodigo(), header.size() - 1);
+            header.add(String.format("%d - %s - TOTAL", tipoIntervalo.getCodigoPorUnidade(), tipoIntervalo.getNome()));
+            tipoIntervaloTotalIndexColuna.put(tipoIntervalo.getCodigo(), header.size() - 1);
+            header.add(String.format("%d - %s  - HORAS NOTURNAS", tipoIntervalo.getCodigoPorUnidade(), tipoIntervalo.getNome()));
+            tipoIntervaloHorasNoturnasIndexColuna.put(tipoIntervalo.getCodigo(), header.size() - 1);
         }
         return header;
     }

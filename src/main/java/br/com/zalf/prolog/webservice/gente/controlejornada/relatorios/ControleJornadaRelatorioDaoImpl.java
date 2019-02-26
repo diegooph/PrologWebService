@@ -1,14 +1,17 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 
+import br.com.zalf.prolog.webservice.Filtros;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDaoImpl_2;
-import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloDao_2;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.RelatorioTotaisPorTipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDao;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +19,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +41,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -56,7 +58,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -72,7 +74,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -89,7 +91,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -105,7 +107,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -122,7 +124,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -139,7 +141,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -156,7 +158,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -176,7 +178,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -210,15 +212,58 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             stmt.setString(6, zoneId.getId());
             rSet = stmt.executeQuery();
 
-            final DeprecatedControleIntervaloDao_2 dao = new DeprecatedControleIntervaloDaoImpl_2();
+            final TipoMarcacaoDao dao = Injection.provideTipoMarcacaoDao();
             return ControleJornadaRelatorioConverter.createFolhaPontoRelatorio(
                     rSet,
-                    dao.getTiposIntervalosByUnidade(codUnidade, true, false),
+                    dao.getTiposMarcacoes(codUnidade, true, false),
                     dataInicial,
                     dataFinal,
                     zoneId);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<FolhaPontoJornadaRelatorio> getFolhaPontoJornadaRelatorio(
+            @NotNull final Long codUnidade,
+            @NotNull final String codTipoIntervalo,
+            @NotNull final String cpf,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_MARCACAO_RELATORIO_FOLHA_PONTO_JORNADA(?, ?, ?, ?, ?, ?);");
+            stmt.setLong(1, codUnidade);
+            if (Filtros.isFiltroTodos(codTipoIntervalo)) {
+                stmt.setNull(2, Types.BIGINT);
+            } else {
+                stmt.setLong(2, Long.parseLong(codTipoIntervalo));
+            }
+            if (Filtros.isFiltroTodos(cpf)) {
+                stmt.setNull(3, Types.BIGINT);
+            } else {
+                stmt.setLong(3, Long.parseLong(cpf));
+            }
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            stmt.setString(6, zoneId.getId());
+
+            rSet = stmt.executeQuery();
+            final TipoMarcacaoDao tipoMarcacaoDao = Injection.provideTipoMarcacaoDao();
+            return ControleJornadaRelatorioConverter.createFolhaPontoJornadaRelatorio(
+                    rSet,
+                    tipoMarcacaoDao.getTiposMarcacoes(codUnidade, false, false),
+                    tipoMarcacaoDao.getForumaCalculoJornada(codUnidade),
+                    zoneId);
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 
@@ -237,7 +282,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -256,7 +301,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -273,17 +318,17 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             conn = getConnection();
             stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            final DeprecatedControleIntervaloDao_2 dao = new DeprecatedControleIntervaloDaoImpl_2();
+            final TipoMarcacaoDao dao = Injection.provideTipoMarcacaoDao();
             new CsvWriter
                     .Builder(out)
                     .withCsvReport(new RelatorioTotaisPorTipoIntervalo(
                             rSet,
-                            dao.getTiposIntervalosByUnidade(codUnidade, true,false),
+                            dao.getTiposMarcacoes(codUnidade, true, false),
                             codTipoIntervalo.equals("%") ? null : Long.parseLong(codTipoIntervalo)))
                     .build()
                     .write();
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -302,7 +347,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -312,16 +357,15 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                                                                @NotNull final LocalDate dataInicial,
                                                                @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM FUNC_INTERVALOS_GET_TOTAL_TEMPO_POR_TIPO_INTERVALO(?, ?, ?, ?, ?);");
+                "SELECT * FROM FUNC_MARCACAO_GET_TEMPO_TOTAL_POR_TIPO_MARCACAO(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         if (codTipoIntervalo.equals("%")) {
             stmt.setNull(2, Types.BIGINT);
         } else {
             stmt.setLong(2, Long.parseLong(codTipoIntervalo));
         }
-        stmt.setObject(3, dataInicial.atTime(LocalTime.MIN));
-        stmt.setObject(4, dataFinal.atTime(LocalTime.MAX));
-        stmt.setObject(5, Now.localDateTimeUtc());
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
         return stmt;
     }
 

@@ -50,7 +50,8 @@ public final class DashboardPneuResource {
     @GET
     @Path("/quantidade-afericoes-semana-atual/{codComponente}")
     public VerticalComboChartComponent getQtAfericoesByTipoByData(@PathParam("codComponente") Integer codComponente,
-                                                                  @QueryParam("codUnidades") List<Long> codUnidades) {
+                                                                  @QueryParam("codUnidades") List<Long> codUnidades)
+            throws ProLogException {
         return service.getQtdAfericoesUltimaSemana(codComponente, codUnidades);
     }
 

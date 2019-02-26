@@ -1,9 +1,11 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.model;
+package br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Time;
 import java.time.Duration;
@@ -33,6 +35,14 @@ public class TipoMarcacao {
     private boolean ativo;
     @SerializedName("tempoLimiteEstouroSegundos")
     private Duration tempoLimiteEstouro;
+
+    /**
+     * Indica se esse tipo representa a jornada do colaborador.
+     */
+    private boolean tipoJornada;
+
+    @Nullable
+    private FormulaCalculoJornada formulaCalculoJornada;
 
     public TipoMarcacao() {
 
@@ -116,6 +126,23 @@ public class TipoMarcacao {
 
     public void setCodigoPorUnidade(final Long codigoPorUnidade) {
         this.codigoPorUnidade = codigoPorUnidade;
+    }
+
+    public boolean isTipoJornada() {
+        return tipoJornada;
+    }
+
+    public void setTipoJornada(final boolean tipoJornada) {
+        this.tipoJornada = tipoJornada;
+    }
+
+    @Nullable
+    public FormulaCalculoJornada getFormulaCalculoJornada() {
+        return formulaCalculoJornada;
+    }
+
+    public void setFormulaCalculoJornada(@Nullable final FormulaCalculoJornada formulaCalculoJornada) {
+        this.formulaCalculoJornada = formulaCalculoJornada;
     }
 
     @Override

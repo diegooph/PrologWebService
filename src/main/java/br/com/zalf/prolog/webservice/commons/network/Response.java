@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.commons.network;
 /**
  * Objeto utilizado pelo WS para dar feedback das requisições.
  */
-public class Response extends AbstractResponse{
+public class Response extends AbstractResponse {
 
 	public Response() {
 	}

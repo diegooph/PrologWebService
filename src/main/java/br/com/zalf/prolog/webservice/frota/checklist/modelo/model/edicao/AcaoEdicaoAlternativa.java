@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.modelo;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public enum AcaoEdicaoAlternativa {
     DELETADA("DELETADA"),
     ALTERADA("ALTERADA"),
+    ALTERADA_ORDENACAO("ALTERADA_ORDENACAO"),
     CRIADA("CRIADA");
 
     @NotNull
