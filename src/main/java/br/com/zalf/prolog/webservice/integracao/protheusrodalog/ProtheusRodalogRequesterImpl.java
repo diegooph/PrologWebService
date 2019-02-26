@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
+import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.CronogramaAfericaoProtheusRodalog;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,7 +20,7 @@ public class ProtheusRodalogRequesterImpl implements ProtheusRodalogRequester {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
+    public CronogramaAfericaoProtheusRodalog getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
         // TODO - implementar a busca do cronograma de aferição do Protheus - Rodalog
         return null;
     }
