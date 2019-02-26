@@ -31,9 +31,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     }
 
+    @Nullable
     @Override
-    public Long insert(@NotNull final Afericao afericao,
-                       @NotNull final Long codUnidade) throws Throwable {
+    public Long insert(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -81,7 +81,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             throw e;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
 
         if (codAfericao != null && codAfericao != 0) {
@@ -112,7 +112,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(configuracao.getVariacaoAceitaSulcoMaiorMilimetros());
             return novaAfericao;
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -231,7 +231,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             cronogramaAfericao.calcularTotalVeiculos(cronogramaAfericao);
             return cronogramaAfericao;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

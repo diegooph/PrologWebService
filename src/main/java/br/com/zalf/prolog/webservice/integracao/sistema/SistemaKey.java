@@ -7,7 +7,8 @@ import com.sun.istack.internal.NotNull;
  * Created by luiz on 18/07/17.
  */
 public enum SistemaKey {
-    AVACORP_AVILAN("AVACORP_AVILAN");
+    AVACORP_AVILAN("AVACORP_AVILAN"),
+    PROTHEUS_RODALOG("PROTHEUS_RODALOG");
 
     private final String key;
 

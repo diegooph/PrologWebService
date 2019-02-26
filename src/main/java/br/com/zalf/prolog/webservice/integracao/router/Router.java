@@ -101,7 +101,7 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Throwable {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
         if (getSistema() != null) {
             return getSistema().getCronogramaAfericao(codUnidade);
         } else {
@@ -111,9 +111,9 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
-                                                  @NotNull String placaVeiculo,
-                                                  @NotNull String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
+                                                  @NotNull final String placaVeiculo,
+                                                  @NotNull final String tipoAfericao) throws Throwable {
         if (getSistema() != null) {
             return getSistema().getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
         } else {
@@ -144,12 +144,13 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @Nullable
     @Override
-    public Long insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Throwable {
+    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insertAfericao(afericao, codUnidade);
+            return getSistema().insertAfericao(codUnidade, afericao);
         } else {
-            return integradorProLog.insertAfericao(afericao, codUnidade);
+            return integradorProLog.insertAfericao(codUnidade, afericao);
         }
     }
 

@@ -20,8 +20,8 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
     @Nullable
     @Override
-    public SistemaKey getSistemaKey(@NotNull String userToken,
-                                    @NotNull RecursoIntegrado recursoIntegrado) throws Exception {
+    public SistemaKey getSistemaKey(@NotNull final String userToken,
+                                    @NotNull final RecursoIntegrado recursoIntegrado) throws Exception {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -52,7 +52,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 throw new IllegalStateException();
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -74,7 +74,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 return rSet.getString("COD_UNIDADE_CLIENTE");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
 
         throw new IllegalStateException("Código da unidade do cliente não encontrado para o código da unidade do " +

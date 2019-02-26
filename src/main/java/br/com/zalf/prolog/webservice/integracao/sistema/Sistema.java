@@ -71,7 +71,7 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Throwable {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
         return getIntegradorProLog().getCronogramaAfericao(codUnidade);
     }
 
@@ -98,9 +98,10 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
     }
 
+    @Nullable
     @Override
-    public Long insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Throwable {
-        return getIntegradorProLog().insertAfericao(afericao, codUnidade);
+    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+        return getIntegradorProLog().insertAfericao(codUnidade, afericao);
     }
 
     @NotNull
