@@ -190,4 +190,9 @@ public final class PneuAfericaoProtheusRodalog {
     public void setModeloBanda(final ModeloBandaProtheusRodalog modeloBanda) {
         this.modeloBanda = modeloBanda;
     }
+
+    public boolean isRecapado() {
+        // Se vidaAtual > 1 significa que o pneu já sofreu recape.
+        return vidaAtual > 1;
+    }
 }

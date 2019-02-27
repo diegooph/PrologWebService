@@ -27,15 +27,13 @@ public class ProtheusRodalog extends Sistema {
 
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
-        // TODO - Utilizar o requester para enviar os dados;
-        return null;
+        return requester.insert(codUnidade, ProtheusRodalogConverter.convertAfericao(afericao));
     }
 
     @NotNull
     @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
-        // TODO - Utilizar o requester e realizar a conversão do objeto;
-        return null;
+        return ProtheusRodalogConverter.convertCronogramaAfericao(requester.getCronogramaAfericao(codUnidade));
     }
 
     @NotNull
@@ -43,7 +41,7 @@ public class ProtheusRodalog extends Sistema {
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
                                                   @NotNull final String placaVeiculo,
                                                   @NotNull final String tipoAfericao) throws Throwable {
-        // TODO - Utilizar o requester e realizar a conversão do objeto;
-        return null;
+        return ProtheusRodalogConverter.convertNovaAfericaoPlaca(
+                requester.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao));
     }
 }

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.AfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.CronogramaAfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,8 @@ import org.jetbrains.annotations.NotNull;
 public class ProtheusRodalogRequesterImpl implements ProtheusRodalogRequester {
     @NotNull
     @Override
-    public Long insert(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+    public Long insert(@NotNull final Long codUnidade,
+                       @NotNull final AfericaoProtheusRodalog afericao) throws Throwable {
         // TODO - implementar o envio dos dados para o Protheus - Rodalog
         return null;
     }

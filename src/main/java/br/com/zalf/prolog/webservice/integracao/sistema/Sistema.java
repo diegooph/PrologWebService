@@ -178,14 +178,17 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 
+    @NotNull
     protected IntegradorProLog getIntegradorProLog() {
         return integradorProLog;
     }
 
+    @NotNull
     protected SistemaKey getSistemaKey() {
         return sistemaKey;
     }
 
+    @NotNull
     protected String getUserToken() {
         return userToken;
     }
