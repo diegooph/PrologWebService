@@ -6,6 +6,15 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColeta
  * Created on 26/02/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * <p>
+ * Neste objeto estão as informações referentes às {@link PlacaAfericaoProtheusRodalog placas} que estão listadas no
+ * {@link CronogramaAfericaoProtheusRodalog cronograma de aferição}, bem como algumas informações extras para montar
+ * o cronograma corretamente no Aplicativo.
+ * <p>
+ * Todas as informações disponíveis neste objeto serão providas através de um endpoint integrado, e é de total
+ * responsabilidade do endpoint prover as informações seguindo o padrão e estrutura deste objeto.
+ * <p>
+ * {@see protheusrodalog}
  */
 public final class PlacaAfericaoProtheusRodalog {
     /**

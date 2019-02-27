@@ -8,6 +8,20 @@ import java.util.List;
  * Created on 26/02/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * <p>
+ * O objeto {@link CronogramaAfericaoProtheusRodalog Cronograma de Aferição} compoẽm as informações necessárias para
+ * montar a tela de cronograma no Aplicativo do ProLog.
+ * Este objeto em específico é utilizado apenas para a integração entre o ProLog e o ERP Protheus, da Empresa Rodalog.
+ * As informações presentes neste objeto não serão providas pelo ProLog, todas serão buscadas em um endpoint integrado.
+ * É de responsabilidade deste endpoint, prover todas as informações, na estrutura estabelecida por este objeto.
+ * <p>
+ * Utilizamos uma classe específica para não termos dependências entre diferentes integrações, assim, se outras
+ * empresas necessitarem de um tratamento diferente, um tipo diferentes de atributo, não esbarramos na complexidade
+ * de ter que manter compatibilidade entre várias integrações.
+ * Evitamos também o grau de impacto de pequenas alterações. Uma melhoria aplicada para a integração da empresa Rodalog
+ * ficará restrita aos objetos criados para a integração desta empresa.
+ * <p>
+ * {@see protheusrodalog}
  */
 public final class CronogramaAfericaoProtheusRodalog {
     /**

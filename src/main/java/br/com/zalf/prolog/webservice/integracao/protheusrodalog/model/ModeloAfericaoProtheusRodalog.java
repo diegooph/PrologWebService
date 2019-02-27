@@ -8,6 +8,16 @@ import java.util.List;
  * Created on 26/02/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * <p>
+ * Este objeto consiste nas informações de cada {@link ModeloAfericaoProtheusRodalog modelo de veículo} disponível para
+ * a aferição dentro do {@link CronogramaAfericaoProtheusRodalog cronograma de aferição}.
+ * Utilizado apenas para a integração entre ProLog e Protheus, da empresa Rodalog.
+ * <p>
+ * Todas as informações presentes neste objeto são recebidas através de um endpoint integrado. Assim, é de
+ * responsábilidade do endpoint, fornecer as informações necessárias no padrão especificado por este objeto para que a
+ * integração funcione corretamente.
+ * <p>
+ * {@see protheusrodalog}
  */
 public final class ModeloAfericaoProtheusRodalog {
     /**
