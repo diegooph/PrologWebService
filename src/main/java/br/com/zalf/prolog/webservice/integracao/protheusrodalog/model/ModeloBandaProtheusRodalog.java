@@ -16,7 +16,7 @@ public final class ModeloBandaProtheusRodalog {
     /**
      * Código único que indentifica este modelo de banda no banco de dados.
      */
-    private Double codigo;
+    private Long codigo;
 
     /**
      * Atributo alfanumérico que representa o nome deste modelo de banda.
@@ -36,11 +36,11 @@ public final class ModeloBandaProtheusRodalog {
     public ModeloBandaProtheusRodalog() {
     }
 
-    public Double getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(final Double codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 

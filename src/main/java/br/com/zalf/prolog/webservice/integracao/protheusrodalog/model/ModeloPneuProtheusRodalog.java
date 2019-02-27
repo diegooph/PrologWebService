@@ -13,7 +13,7 @@ public final class ModeloPneuProtheusRodalog {
     /**
      * Código único que indentifica este modelo de pneu no banco de dados.
      */
-    private Double codigo;
+    private Long codigo;
 
     /**
      * Atributo alfanumérico que representa o nome deste modelo de pneu.
@@ -33,11 +33,11 @@ public final class ModeloPneuProtheusRodalog {
     public ModeloPneuProtheusRodalog() {
     }
 
-    public Double getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(final Double codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
