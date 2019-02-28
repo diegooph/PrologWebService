@@ -54,7 +54,7 @@ public class ProtheusRodalogRequesterImpl implements ProtheusRodalogRequester {
             if (response.isSuccessful() && response.body() != null) {
                 return response.body();
             } else {
-                if (response.errorBody() != null) {
+                if (response.errorBody() == null) {
                     throw new IllegalStateException("[INTEGRACAO - RODALOG] O corpo da requisição está vazio");
                 }
                 throw new IllegalStateException(

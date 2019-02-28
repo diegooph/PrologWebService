@@ -1,20 +1,17 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog;
 
-import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.AfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.CronogramaAfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import org.jetbrains.annotations.NotNull;
-import retrofit2.http.Query;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,20 +21,19 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@Path("/dummies/rodalog-protheus/")
+@Path("/dummies/rodalog-protheus")
 @DebugLog
 @ResourceDebugOnly
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class DummyProtheusRodalogResource extends DummyData {
+public class DummyProtheusRodalogResource {
 
     @POST
-    @LogIntegracaoRequest
-    @Path("inserir-afericao")
+    @Path("/inserir-afericao")
     @UsedBy(platforms = Platform.INTEGRACOES)
-    public Long resolverMultiplosItensDummies(
+    public Long insertAfericao(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @Query("codUnidade") @Required final Long codUnidade,
+            @QueryParam("codUnidade") @Required final Long codUnidade,
             @Required final AfericaoProtheusRodalog afericao) throws ProLogException {
         if (!tokenIntegracao.equals("tk33g4sbev1vi5l53okcugdsuk0q8lgtu8l14knuroqju9orob2")) {
             throw new GenericException("Token errado");
@@ -54,27 +50,27 @@ public class DummyProtheusRodalogResource extends DummyData {
         return 1210L;
     }
 
-    private boolean validaAfericao(@NotNull final AfericaoProtheusRodalog afericao) {
-        return afericao.equals(AfericaoProtheusRodalog.getAfericaoDummy());
-    }
-
     @GET
     @UsedBy(platforms = Platform.INTEGRACOES)
-    @Path("buscar-cronograma")
+    @Path("/buscar-cronograma")
     public CronogramaAfericaoProtheusRodalog getCronogramaAfericao(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @Query("codUnidade") @Required final Long codUnidade) {
+            @QueryParam("codUnidade") @Required final Long codUnidade) {
         return CronogramaAfericaoProtheusRodalog.createCronogramaDummy();
     }
 
     @GET
     @UsedBy(platforms = Platform.INTEGRACOES)
-    @Path("nova-afericao")
+    @Path("/nova-afericao")
     public NovaAfericaoPlacaProtheusRodalog getNovaAfericaoPlaca(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @Query("codUnidade") @Required final Long codUnidade,
-            @Query("placa") @Required final String placa,
-            @Query("tipoAfericao") @Required final String tipoAfericao) {
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("placa") @Required final String placa,
+            @QueryParam("tipoAfericao") @Required final String tipoAfericao) {
         return NovaAfericaoPlacaProtheusRodalog.createNovaAfericaoDummy();
+    }
+
+    private boolean validaAfericao(@NotNull final AfericaoProtheusRodalog afericao) {
+        return afericao.equals(AfericaoProtheusRodalog.getAfericaoDummy());
     }
 }

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.data;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -11,21 +11,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ProtheusRodalogRestClient {
-    @NotNull
-    private static final Retrofit sRetrofit;
+    @Nullable
+    private static Retrofit retrofit;
 
-    static {
-        // TODO - Setar URL de comunicação (ou buscar no BD)
-        sRetrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
-                .baseUrl("")
-                .build();
+    public static Retrofit getRetrofit() {
+        if (retrofit == null) {
+            // TODO - Setar URL de comunicação (ou buscar no BD)
+            retrofit = new Retrofit.Builder()
+                    .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
+                    .baseUrl("http://192.168.0.99:8080/prolog/v2/")
+                    .build();
+        }
+        return retrofit;
     }
 
     private ProtheusRodalogRestClient() {
     }
 
     public static <T> T getService(final Class<T> serviceClass) {
-        return sRetrofit.create(serviceClass);
+        return ProtheusRodalogRestClient.getRetrofit().create(serviceClass);
     }
 }
