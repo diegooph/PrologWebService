@@ -74,7 +74,6 @@ final class TipoVeiculoDaoImpl extends DatabaseConnection implements TipoVeiculo
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             final List<TipoVeiculo> tiposVeiculos = new ArrayList<>();
-            // TODO - Será que devemos lançar exceção se !if(rSet.next)?
             while (rSet.next()) {
                 tiposVeiculos.add(new TipoVeiculo(
                         rSet.getLong("COD_EMPRESA"),
