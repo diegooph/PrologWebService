@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 26/02/19.
@@ -59,6 +60,20 @@ public final class PlacaAfericaoProtheusRodalog {
     private Boolean podeAferirEstepe;
 
     public PlacaAfericaoProtheusRodalog() {
+    }
+
+    @NotNull
+    public static PlacaAfericaoProtheusRodalog getPlacaAfericaoDummy() {
+        final PlacaAfericaoProtheusRodalog placa = new PlacaAfericaoProtheusRodalog();
+        placa.setPlaca("PRO0001");
+        placa.setIntervaloDiasUltimaAfericaoSulco(3);
+        placa.setIntervaloDiasUltimaAfericaoPressao(5);
+        placa.setQuantidadePneusAplicados(4);
+        placa.setPodeAferirEstepe(true);
+        placa.setPodeAferirPressao(true);
+        placa.setPodeAferirSulco(true);
+        placa.setPodeAferirSulcoPressao(true);
+        return placa;
     }
 
     public String getPlaca() {

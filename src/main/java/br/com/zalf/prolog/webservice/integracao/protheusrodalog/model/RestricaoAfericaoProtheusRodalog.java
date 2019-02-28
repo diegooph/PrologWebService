@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 26/02/19.
  *
@@ -61,6 +63,18 @@ public final class RestricaoAfericaoProtheusRodalog {
     private Integer periodoDiasAfericaoSulco;
 
     public RestricaoAfericaoProtheusRodalog() {
+    }
+
+    @NotNull
+    static RestricaoAfericaoProtheusRodalog getRestricaoDummy() {
+        final RestricaoAfericaoProtheusRodalog restricao = new RestricaoAfericaoProtheusRodalog();
+        restricao.setToleranciaCalibragem(10.0);
+        restricao.setToleranciaInspecao(30.0);
+        restricao.setSulcoMinimoRecape(3.5);
+        restricao.setSulcoMinimoDescarte(1.5);
+        restricao.setPeriodoDiasAfericaoPressao(7);
+        restricao.setPeriodoDiasAfericaoSulco(30);
+        return restricao;
     }
 
     public Double getToleranciaCalibragem() {

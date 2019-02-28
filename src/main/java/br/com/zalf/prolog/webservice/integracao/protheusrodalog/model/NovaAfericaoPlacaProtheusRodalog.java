@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -70,6 +72,28 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     private List<PneuAfericaoProtheusRodalog> estepesVeiculo;
 
     public NovaAfericaoPlacaProtheusRodalog() {
+    }
+
+    @NotNull
+    public static NovaAfericaoPlacaProtheusRodalog createNovaAfericaoDummy() {
+        final NovaAfericaoPlacaProtheusRodalog novaAfericao = new NovaAfericaoPlacaProtheusRodalog();
+        novaAfericao.setPlaca("PRO0001");
+        novaAfericao.setCodDiagrama(11);
+        novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(2.0);
+        novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(2.0);
+        novaAfericao.setDeveAferirEstepes(true);
+        novaAfericao.setRestricao(RestricaoAfericaoProtheusRodalog.getRestricaoDummy());
+        final List<PneuAfericaoProtheusRodalog> pneusVeiculo = new ArrayList<>();
+        for (int i = 0; i < 1; i++) {
+            pneusVeiculo.add(PneuAfericaoProtheusRodalog.getPneuAfericaoDummy(false));
+        }
+        novaAfericao.setPneusVeiculo(pneusVeiculo);
+        final List<PneuAfericaoProtheusRodalog> estepes = new ArrayList<>();
+        for (int i = 0; i < 1; i++) {
+            estepes.add(PneuAfericaoProtheusRodalog.getPneuAfericaoDummy(true));
+        }
+        novaAfericao.setEstepesVeiculo(estepes);
+        return novaAfericao;
     }
 
     public String getPlaca() {

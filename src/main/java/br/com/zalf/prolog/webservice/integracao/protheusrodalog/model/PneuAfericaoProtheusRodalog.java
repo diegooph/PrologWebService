@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 26/02/19.
@@ -85,6 +86,25 @@ public final class PneuAfericaoProtheusRodalog {
     private ModeloBandaProtheusRodalog modeloBanda;
 
     public PneuAfericaoProtheusRodalog() {
+    }
+
+    @NotNull
+    static PneuAfericaoProtheusRodalog getPneuAfericaoDummy(final boolean isEstepe) {
+        final PneuAfericaoProtheusRodalog pneu = new PneuAfericaoProtheusRodalog();
+        pneu.setCodigoCliente("PN01");
+        pneu.setCodigo(101010L);
+        pneu.setCodUnidadeAlocado(29L);
+        pneu.setVidaAtual(2);
+        pneu.setPosicao(isEstepe ? 901 : 111);
+        pneu.setPressaoAtual(105.0);
+        pneu.setPressaoCorreta(115.0);
+        pneu.setSulcoInternoAtual(10.0);
+        pneu.setSulcoCentralInternoAtual(10.0);
+        pneu.setSulcoCentralExternoAtual(10.0);
+        pneu.setSulcoExternoAtual(10.0);
+        pneu.setModeloPneu(ModeloPneuProtheusRodalog.getModeloPneuDummy());
+        pneu.setModeloBanda(ModeloBandaProtheusRodalog.getModeloPneuDummy());
+        return pneu;
     }
 
     public String getCodigoCliente() {

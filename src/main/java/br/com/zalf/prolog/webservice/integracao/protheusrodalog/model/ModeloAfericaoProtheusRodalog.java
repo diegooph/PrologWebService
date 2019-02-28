@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,6 +57,22 @@ public final class ModeloAfericaoProtheusRodalog {
     private List<PlacaAfericaoProtheusRodalog> placasAfericao;
 
     public ModeloAfericaoProtheusRodalog() {
+    }
+
+    @NotNull
+    public static ModeloAfericaoProtheusRodalog getModeloAfericaoDummy() {
+        final ModeloAfericaoProtheusRodalog modeloAfericao = new ModeloAfericaoProtheusRodalog();
+        modeloAfericao.setNomeModelo("TOCO");
+        modeloAfericao.setQtdPlacasSulcoOk(3);
+        modeloAfericao.setQtdPlacasPressaoOk(4);
+        modeloAfericao.setQtdPlacasSulcoPressaoOk(2);
+        modeloAfericao.setTotalPlacasModelo(4);
+        final List<PlacaAfericaoProtheusRodalog> placasAfericao = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            placasAfericao.add(PlacaAfericaoProtheusRodalog.getPlacaAfericaoDummy());
+        }
+        modeloAfericao.setPlacasAfericao(placasAfericao);
+        return modeloAfericao;
     }
 
     public String getNomeModelo() {

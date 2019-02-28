@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -75,6 +77,24 @@ public final class AfericaoProtheusRodalog {
     public AfericaoProtheusRodalog() {
     }
 
+    @NotNull
+    public static AfericaoProtheusRodalog getAfericaoDummy() {
+        final AfericaoProtheusRodalog afericao = new AfericaoProtheusRodalog();
+        afericao.setPlacaAfericao("PRO0001");
+        afericao.setCodUnidade(29L);
+        afericao.setCpfColaboradorAfericao("000.000.000-00");
+        afericao.setKmMomentoAfericao(101010L);
+        afericao.setTempoRealizacaoAfericaoInMillis(90000L);
+        afericao.setDataHora(OffsetDateTime.now());
+        afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO_PRESSAO);
+        final List<MedicaoAfericaoProtheusRodalog> medicoes = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            medicoes.add(MedicaoAfericaoProtheusRodalog.getMedicaoDummy());
+        }
+        afericao.setMedicoes(medicoes);
+        return afericao;
+    }
+
     public String getPlacaAfericao() {
         return placaAfericao;
     }
@@ -137,5 +157,36 @@ public final class AfericaoProtheusRodalog {
 
     public void setMedicoes(final List<MedicaoAfericaoProtheusRodalog> medicoes) {
         this.medicoes = medicoes;
+    }
+
+    public boolean equals(@NotNull final AfericaoProtheusRodalog afericao) {
+        if (!this.placaAfericao.equals(afericao.getPlacaAfericao())) {
+            return false;
+        }
+        if (!this.codUnidade.equals(afericao.getCodUnidade())) {
+            return false;
+        }
+        if (!this.cpfColaboradorAfericao.equals(afericao.getCpfColaboradorAfericao())) {
+            return false;
+        }
+        if (!this.kmMomentoAfericao.equals(afericao.getKmMomentoAfericao())) {
+            return false;
+        }
+        if (!this.tempoRealizacaoAfericaoInMillis.equals(afericao.getTempoRealizacaoAfericaoInMillis())) {
+            return false;
+        }
+        if (!this.tipoMedicaoColetadaAfericao.equals(afericao.getTipoMedicaoColetadaAfericao())) {
+            return false;
+        }
+        if (this.medicoes.size() != afericao.getMedicoes().size()) {
+            return false;
+        }
+        for (int i = 0; i < this.medicoes.size(); i++) {
+            if (!this.medicoes.get(i).equals(afericao.getMedicoes().get(i))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

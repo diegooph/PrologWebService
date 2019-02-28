@@ -28,7 +28,7 @@ public class SistemaProtheusRodalog extends Sistema {
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
-        return requester.insert(tokenIntegracao, codUnidade, ProtheusRodalogConverter.convertAfericao(afericao));
+        return requester.insertAfericao(tokenIntegracao, codUnidade, ProtheusRodalogConverter.convertAfericao(afericao));
     }
 
     @NotNull

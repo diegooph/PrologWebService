@@ -14,9 +14,9 @@ import org.jetbrains.annotations.NotNull;
 public interface ProtheusRodalogRequester extends Requester {
 
     @NotNull
-    Long insert(@NotNull final String tokenIntegracao,
-                @NotNull final Long codUnidade,
-                @NotNull final AfericaoProtheusRodalog afericao) throws Throwable;
+    Long insertAfericao(@NotNull final String tokenIntegracao,
+                        @NotNull final Long codUnidade,
+                        @NotNull final AfericaoProtheusRodalog afericao) throws Throwable;
 
     @NotNull
     CronogramaAfericaoProtheusRodalog getCronogramaAfericao(@NotNull final String tokenIntegracao,

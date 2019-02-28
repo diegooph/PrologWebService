@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,6 +68,23 @@ public final class CronogramaAfericaoProtheusRodalog {
     private List<ModeloAfericaoProtheusRodalog> modelosPlacasAfericao;
 
     public CronogramaAfericaoProtheusRodalog() {
+    }
+
+    @NotNull
+    public static CronogramaAfericaoProtheusRodalog createCronogramaDummy() {
+        final CronogramaAfericaoProtheusRodalog cronograma = new CronogramaAfericaoProtheusRodalog();
+        cronograma.setMetaDiasAfericaoPressao(7);
+        cronograma.setMetaDiasAfericaoSulco(30);
+        cronograma.setTotalPlacasSulcosOk(5);
+        cronograma.setTotalPlacasPressaoOk(6);
+        cronograma.setTotalPlacasSulcoPressaoOk(4);
+        cronograma.setTotalPlacas(7);
+        final List<ModeloAfericaoProtheusRodalog> modelosPlacasAfericao = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            modelosPlacasAfericao.add(ModeloAfericaoProtheusRodalog.getModeloAfericaoDummy());
+        }
+        cronograma.setModelosPlacasAfericao(modelosPlacasAfericao);
+        return cronograma;
     }
 
     public Integer getMetaDiasAfericaoSulco() {

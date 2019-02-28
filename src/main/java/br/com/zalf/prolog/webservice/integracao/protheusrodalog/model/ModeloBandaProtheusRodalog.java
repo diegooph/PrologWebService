@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 26/02/19.
  *
@@ -34,6 +36,16 @@ public final class ModeloBandaProtheusRodalog {
     private Double alturaSulcos;
 
     public ModeloBandaProtheusRodalog() {
+    }
+
+    @NotNull
+    static ModeloBandaProtheusRodalog getModeloPneuDummy() {
+        final ModeloBandaProtheusRodalog modeloBanda = new ModeloBandaProtheusRodalog();
+        modeloBanda.setCodigo(100L);
+        modeloBanda.setNomeModelo("BND 10");
+        modeloBanda.setQuantidadeSulcos(3);
+        modeloBanda.setAlturaSulcos(13.0);
+        return modeloBanda;
     }
 
     public Long getCodigo() {

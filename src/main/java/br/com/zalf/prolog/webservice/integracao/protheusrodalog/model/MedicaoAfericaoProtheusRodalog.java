@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 27/02/19.
  *
@@ -65,6 +67,20 @@ public final class MedicaoAfericaoProtheusRodalog {
     public MedicaoAfericaoProtheusRodalog() {
     }
 
+    @NotNull
+    static MedicaoAfericaoProtheusRodalog getMedicaoDummy() {
+        final MedicaoAfericaoProtheusRodalog medida = new MedicaoAfericaoProtheusRodalog();
+        medida.setCodigoCliente("PN01");
+        medida.setCodigo(1L);
+        medida.setVidaAtual(2);
+        medida.setPressaoAtual(110.0);
+        medida.setSulcoInterno(15.4);
+        medida.setSulcoCentralInterno(15.5);
+        medida.setSulcoCentralExterno(15.6);
+        medida.setSulcoExterno(15.7);
+        return medida;
+    }
+
     public String getCodigoCliente() {
         return codigoCliente;
     }
@@ -127,5 +143,34 @@ public final class MedicaoAfericaoProtheusRodalog {
 
     public void setSulcoExterno(final Double sulcoExterno) {
         this.sulcoExterno = sulcoExterno;
+    }
+
+    public boolean equals(@NotNull final MedicaoAfericaoProtheusRodalog medida) {
+        if (!this.codigoCliente.equals(medida.getCodigoCliente())) {
+            return false;
+        }
+        if (!this.codigo.equals(medida.getCodigo())) {
+            return false;
+        }
+        if (!this.vidaAtual.equals(medida.getVidaAtual())) {
+            return false;
+        }
+        if (!this.pressaoAtual.equals(medida.getPressaoAtual())) {
+            return false;
+        }
+        if (!this.sulcoInterno.equals(medida.getSulcoInterno())) {
+            return false;
+        }
+        if (!this.sulcoCentralInterno.equals(medida.getSulcoCentralInterno())) {
+            return false;
+        }
+        if (!this.sulcoCentralExterno.equals(medida.getSulcoCentralExterno())) {
+            return false;
+        }
+        if (!this.sulcoExterno.equals(medida.getSulcoExterno())) {
+            return false;
+        }
+
+        return true;
     }
 }

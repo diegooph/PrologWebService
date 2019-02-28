@@ -18,9 +18,9 @@ import retrofit2.Response;
 public class ProtheusRodalogRequesterImpl implements ProtheusRodalogRequester {
     @NotNull
     @Override
-    public Long insert(@NotNull final String tokenIntegracao,
-                       @NotNull final Long codUnidade,
-                       @NotNull final AfericaoProtheusRodalog afericao) throws Throwable {
+    public Long insertAfericao(@NotNull final String tokenIntegracao,
+                               @NotNull final Long codUnidade,
+                               @NotNull final AfericaoProtheusRodalog afericao) throws Throwable {
         final ProtheusRodalogRest service = ProtheusRodalogRestClient.getService(ProtheusRodalogRest.class);
         final Call<Long> call = service.insertAfericao(tokenIntegracao, codUnidade, afericao);
         return handleResponse(call.execute());
