@@ -27,13 +27,15 @@ public class SistemaProtheusRodalog extends Sistema {
 
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
-        return requester.insert(codUnidade, ProtheusRodalogConverter.convertAfericao(afericao));
+        final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
+        return requester.insert(tokenIntegracao, codUnidade, ProtheusRodalogConverter.convertAfericao(afericao));
     }
 
     @NotNull
     @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
-        return ProtheusRodalogConverter.convertCronogramaAfericao(requester.getCronogramaAfericao(codUnidade));
+        final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
+        return ProtheusRodalogConverter.convertCronogramaAfericao(requester.getCronogramaAfericao(tokenIntegracao, codUnidade));
     }
 
     @NotNull
@@ -41,7 +43,8 @@ public class SistemaProtheusRodalog extends Sistema {
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
                                                   @NotNull final String placaVeiculo,
                                                   @NotNull final String tipoAfericao) throws Throwable {
+        final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
         return ProtheusRodalogConverter.convertNovaAfericaoPlaca(
-                requester.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao));
+                requester.getNovaAfericaoPlaca(tokenIntegracao, codUnidade, placaVeiculo, tipoAfericao));
     }
 }

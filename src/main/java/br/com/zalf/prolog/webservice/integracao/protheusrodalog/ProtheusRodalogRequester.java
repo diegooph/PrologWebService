@@ -14,13 +14,17 @@ import org.jetbrains.annotations.NotNull;
 public interface ProtheusRodalogRequester extends Requester {
 
     @NotNull
-    Long insert(@NotNull final Long codUnidade, @NotNull final AfericaoProtheusRodalog afericao) throws Throwable;
+    Long insert(@NotNull final String tokenIntegracao,
+                @NotNull final Long codUnidade,
+                @NotNull final AfericaoProtheusRodalog afericao) throws Throwable;
 
     @NotNull
-    CronogramaAfericaoProtheusRodalog getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable;
+    CronogramaAfericaoProtheusRodalog getCronogramaAfericao(@NotNull final String tokenIntegracao,
+                                                            @NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
-    NovaAfericaoPlacaProtheusRodalog getNovaAfericaoPlaca(@NotNull final Long codUnidade,
+    NovaAfericaoPlacaProtheusRodalog getNovaAfericaoPlaca(@NotNull final String tokenIntegracao,
+                                                          @NotNull final Long codUnidade,
                                                           @NotNull final String placa,
                                                           @NotNull final String tipoAfericao) throws Throwable;
 }

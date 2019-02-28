@@ -130,6 +130,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getCodUnidadeErpClienteByCodUnidadeProLog(codUnidadeProLog);
     }
 
+    @NotNull
+    @Override
+    public String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+
+        return integracaoDao.getTokenIntegracaoByCodUnidadeProLog(codUnidadeProLog);
+    }
+
     //
     //
     // Operações Integradas

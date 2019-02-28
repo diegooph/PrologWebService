@@ -18,30 +18,33 @@ import retrofit2.Response;
 public class ProtheusRodalogRequesterImpl implements ProtheusRodalogRequester {
     @NotNull
     @Override
-    public Long insert(@NotNull final Long codUnidade,
+    public Long insert(@NotNull final String tokenIntegracao,
+                       @NotNull final Long codUnidade,
                        @NotNull final AfericaoProtheusRodalog afericao) throws Throwable {
         final ProtheusRodalogRest service = ProtheusRodalogRestClient.getService(ProtheusRodalogRest.class);
-        final Call<Long> call = service.insertAfericao("", codUnidade, afericao);
+        final Call<Long> call = service.insertAfericao(tokenIntegracao, codUnidade, afericao);
         return handleResponse(call.execute());
     }
 
     @NotNull
     @Override
-    public CronogramaAfericaoProtheusRodalog getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
+    public CronogramaAfericaoProtheusRodalog getCronogramaAfericao(@NotNull final String tokenIntegracao,
+                                                                   @NotNull final Long codUnidade) throws Throwable {
         final ProtheusRodalogRest service = ProtheusRodalogRestClient.getService(ProtheusRodalogRest.class);
         final Call<CronogramaAfericaoProtheusRodalog> call =
-                service.getCronogramaAfericao("", codUnidade);
+                service.getCronogramaAfericao(tokenIntegracao, codUnidade);
         return handleResponse(call.execute());
     }
 
     @NotNull
     @Override
-    public NovaAfericaoPlacaProtheusRodalog getNovaAfericaoPlaca(@NotNull final Long codUnidade,
+    public NovaAfericaoPlacaProtheusRodalog getNovaAfericaoPlaca(@NotNull final String tokenIntegracao,
+                                                                 @NotNull final Long codUnidade,
                                                                  @NotNull final String placa,
                                                                  @NotNull final String tipoAfericao) throws Throwable {
         final ProtheusRodalogRest service = ProtheusRodalogRestClient.getService(ProtheusRodalogRest.class);
         final Call<NovaAfericaoPlacaProtheusRodalog> call =
-                service.getNovaAfericaoPlaca("", codUnidade, placa, tipoAfericao);
+                service.getNovaAfericaoPlaca(tokenIntegracao, codUnidade, placa, tipoAfericao);
         return handleResponse(call.execute());
     }
 

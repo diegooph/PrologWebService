@@ -80,4 +80,30 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         throw new IllegalStateException("Código da unidade do cliente não encontrado para o código da unidade do " +
                 "ProLog: " + codUnidadeProLog);
     }
+
+    @NotNull
+    @Override
+    public String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
+        Preconditions.checkNotNull(codUnidadeProLog, "codUnidadeProLog não pode ser null!");
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT TI.TOKEN_INTEGRACAO " +
+                    "FROM INTEGRACAO.TOKEN_INTEGRACAO TI " +
+                    "WHERE TI.COD_EMPRESA = (SELECT COD_EMPRESA FROM UNIDADE WHERE CODIGO = ?)");
+            stmt.setLong(1, codUnidadeProLog);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getString("TOKEN_INTEGRACAO");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+
+        throw new IllegalStateException(
+                "Nenhum token encontrado para o código da unidade do ProLog: " + codUnidadeProLog);
+    }
 }

@@ -48,4 +48,17 @@ public interface IntegracaoDao {
      */
     @NotNull
     String getCodUnidadeErpClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws SQLException;
+
+    /**
+     * Método necessário para buscar o token utilizado para autenticações de requisições em métodos integrados. No banco
+     * de dados o token é geral para a empresa.
+     * O método executa a busca do token verificando se o {@code codUnidadeProLog} pertence à empresa que possue o token
+     * cadastrado no banco de dados.
+     *
+     * @param codUnidadeProLog Código da {@link Unidade unidade} do ProLog.
+     * @return Valor alfanumérico, podendo conter letras e números em um posições aleatórias, mas de tamanho fixo.
+     * @throws Throwable Caso ocorra algum problema na busca do token.
+     */
+    @NotNull
+    String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable;
 }
