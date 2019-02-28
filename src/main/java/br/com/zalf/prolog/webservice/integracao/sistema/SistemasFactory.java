@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.sistema;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
-import br.com.zalf.prolog.webservice.integracao.protheusrodalog.ProtheusRodalog;
+import br.com.zalf.prolog.webservice.integracao.protheusrodalog.SistemaProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.ProtheusRodalogRequesterImpl;
 import com.sun.istack.internal.NotNull;
 
@@ -25,7 +25,7 @@ public final class SistemasFactory {
             case AVACORP_AVILAN:
                 return new AvaCorpAvilan(new AvaCorpAvilanRequesterImpl(), sistemaKey, integradorProLog, userToken);
             case PROTHEUS_RODALOG:
-                return new ProtheusRodalog(new ProtheusRodalogRequesterImpl(), sistemaKey, integradorProLog, userToken);
+                return new SistemaProtheusRodalog(new ProtheusRodalogRequesterImpl(), sistemaKey, integradorProLog, userToken);
             default:
                 throw new IllegalStateException("Nenhum sistema encontrado com a chave: " + sistemaKey.getKey());
         }

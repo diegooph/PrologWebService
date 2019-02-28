@@ -13,14 +13,14 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ProtheusRodalog extends Sistema {
+public class SistemaProtheusRodalog extends Sistema {
     @NotNull
     private final ProtheusRodalogRequesterImpl requester;
 
-    public ProtheusRodalog(@NotNull final ProtheusRodalogRequesterImpl requester,
-                           @NotNull final SistemaKey sistemaKey,
-                           @NotNull final IntegradorProLog integradorProLog,
-                           @NotNull final String userToken) {
+    public SistemaProtheusRodalog(@NotNull final ProtheusRodalogRequesterImpl requester,
+                                  @NotNull final SistemaKey sistemaKey,
+                                  @NotNull final IntegradorProLog integradorProLog,
+                                  @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, userToken);
         this.requester = requester;
     }
