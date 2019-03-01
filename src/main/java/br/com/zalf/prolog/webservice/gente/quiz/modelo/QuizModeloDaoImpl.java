@@ -1,11 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.quiz.modelo;
 
-import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
@@ -16,16 +17,15 @@ import java.sql.*;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Zalf on 04/01/17.
  */
-public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloDao {
+public final class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloDao {
 
     @Override
-    public List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws SQLException {
+    public List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -78,7 +78,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
     }
 
     @Override
-    public ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) throws SQLException {
+    public ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -172,27 +172,39 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         }
     }
 
+    @NotNull
     @Override
-    public List<ModeloQuiz> getModelosQuizByCodUnidade(Long codUnidade) throws SQLException {
+    public List<ModeloQuizListagem> getModelosQuizzesByCodUnidade(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<ModeloQuiz> quizzes = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CODIGO, NOME FROM QUIZ_MODELO WHERE COD_UNIDADE = ? ORDER BY 1;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_QUIZ_GET_LISTAGEM_MODELOS(?, ?);");
             stmt.setLong(1, codUnidade);
+            stmt.setObject(2, Now.offsetDateTimeUtc());
             rSet = stmt.executeQuery();
+            final List<ModeloQuizListagem> modelos = new ArrayList<>();
+            Set<String> cargosLiberados = null;
+            Long codModeloAnterior = null;
             while (rSet.next()) {
-                final ModeloQuiz modeloQuiz = new ModeloQuiz();
-                modeloQuiz.setCodigo(rSet.getLong("CODIGO"));
-                modeloQuiz.setNome(rSet.getString("NOME"));
-                quizzes.add(modeloQuiz);
+                final Long codModeloAtual = rSet.getLong("COD_MODELO_QUIZ");
+                if (codModeloAnterior == null || !codModeloAnterior.equals(codModeloAtual)) {
+                    // Usamos um LinkedHashSet para manter a ordem dos nomes dos cargos.
+                    cargosLiberados = new LinkedHashSet<>();
+                    modelos.add(QuizModeloConverter.createModeloQuizListagem(rSet, cargosLiberados));
+                }
+
+                // O if abaixo é necessário para os casos onde o modelo não possua nenhum cargo liberado.
+                if (rSet.getString("NOME_CARGO_LIBERADO") != null) {
+                    cargosLiberados.add(rSet.getString("NOME_CARGO_LIBERADO"));
+                }
+                codModeloAnterior = codModeloAtual;
             }
+            return modelos;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
-        return quizzes;
     }
 
     @Override
@@ -255,7 +267,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return funcoes;
     }
 
-    private List<PerguntaQuiz> getPerguntasQuiz(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException {
+    private List<PerguntaQuiz> getPerguntasQuiz(Long codModeloQuiz, Long codUnidade, Connection conn) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<PerguntaQuiz> perguntas = new ArrayList<>();
@@ -279,7 +291,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
     }
 
     private List<Alternativa> getAlternativasPerguntaQuiz(Long codModeloQuiz, Long codUnidade, Long codPergunta,
-                                                          String tipoPergunta, Connection conn) throws SQLException {
+                                                          String tipoPergunta, Connection conn) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<Alternativa> alternativas = new ArrayList<>();

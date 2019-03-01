@@ -18,27 +18,28 @@ public interface QuizModeloDao {
      * @param codUnidade           codUnidade
      * @param codFuncaoColaborador codigo do cargo do colaborador ou % para todos
      * @return lista de ModeloQuiz completos, com perguntas e alternativas
-     * @throws SQLException caso não seja possível realizar as buscas
+     * @throws Throwable caso não seja possível realizar as buscas
      */
-    List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws SQLException;
+    List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws Throwable;
 
     /**
      * Busca um único modelo de quiz
      * @param codUnidade codUnidade
      * @param codModeloQuiz codModeloQuiz
      * @return um modelo de quiz completo
-     * @throws SQLException caso não seja possível realizar a busca
+     * @throws Throwable caso não seja possível realizar a busca
      */
-    ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) throws SQLException;
+    ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) throws Throwable;
 
     /**
-     * Busca apenas o nome dos modelos de quiz cadastrados para determinada unidade
+     * Busca os modelos de quizzes existentes para a unidade buscada.
      *
-     * @param codUnidade código da unidade
-     * @return lista de strings
-     * @throws SQLException caso não seja possível
+     * @param codUnidade código da unidade.
+     * @return uma lista contendo todos os modelos de quizzes que a unidade possui.
+     * @throws Throwable caso qualquer erro aconteça.
      */
-    List<ModeloQuiz> getModelosQuizByCodUnidade(Long codUnidade) throws SQLException;
+    @NotNull
+    List<ModeloQuizListagem> getModelosQuizzesByCodUnidade(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Insere um modelo de Quiz
