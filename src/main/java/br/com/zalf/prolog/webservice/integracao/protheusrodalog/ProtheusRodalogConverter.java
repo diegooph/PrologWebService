@@ -92,8 +92,7 @@ final class ProtheusRodalogConverter {
     private static Veiculo convertVeiculo(@NotNull final NovaAfericaoPlacaProtheusRodalog novaAfericaoRodalog,
                                           @NotNull final DiagramaVeiculo diagramaVeiculo) {
         final Veiculo veiculo = new Veiculo();
-        // TODO - Esta informação deverá vir no objeto da integração
-        veiculo.setCodUnidadeAlocado(29L);
+        veiculo.setCodUnidadeAlocado(novaAfericaoRodalog.getCodUnidadePlacaAlocada());
         veiculo.setPlaca(novaAfericaoRodalog.getPlaca());
         veiculo.setDiagrama(diagramaVeiculo);
         veiculo.setListPneus(convertPneus(novaAfericaoRodalog.getPneusVeiculo()));

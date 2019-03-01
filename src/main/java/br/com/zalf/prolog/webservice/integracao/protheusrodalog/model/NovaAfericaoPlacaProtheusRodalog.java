@@ -19,6 +19,11 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     private String placa;
 
     /**
+     * Atributo numérico que representa o código da {@link Unidade unidade} em que a placa está alocada.
+     */
+    private Long codUnidadePlacaAlocada;
+
+    /**
      * Atributo numérico que indica qual o diagrama do véiculo que será aferido. Diagrama consiste na organização dos
      * pneus nos eixos do veículo, exemplos:
      * * Diagrama TOCO - possui 2 eixos e 2 pneus cada eixo;
@@ -78,6 +83,7 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     public static NovaAfericaoPlacaProtheusRodalog createNovaAfericaoDummy() {
         final NovaAfericaoPlacaProtheusRodalog novaAfericao = new NovaAfericaoPlacaProtheusRodalog();
         novaAfericao.setPlaca("PRO0001");
+        novaAfericao.setCodUnidadePlacaAlocada(29L);
         novaAfericao.setCodDiagrama(1);
         novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(2.0);
         novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(2.0);
@@ -102,6 +108,14 @@ public final class NovaAfericaoPlacaProtheusRodalog {
 
     public void setPlaca(final String placa) {
         this.placa = placa;
+    }
+
+    public Long getCodUnidadePlacaAlocada() {
+        return codUnidadePlacaAlocada;
+    }
+
+    public void setCodUnidadePlacaAlocada(final Long codUnidadePlacaAlocada) {
+        this.codUnidadePlacaAlocada = codUnidadePlacaAlocada;
     }
 
     public Integer getCodDiagrama() {
