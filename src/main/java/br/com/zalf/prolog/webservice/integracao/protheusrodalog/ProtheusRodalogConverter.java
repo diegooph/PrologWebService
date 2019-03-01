@@ -115,6 +115,7 @@ final class ProtheusRodalogConverter {
         pneu.setCodigo(pneuRodalog.getCodigo());
         pneu.setCodUnidadeAlocado(pneuRodalog.getCodUnidadeAlocado());
         pneu.setVidaAtual(pneuRodalog.getVidaAtual());
+        pneu.setVidasTotal(pneuRodalog.getVidaTotal());
         pneu.setPosicao(pneuRodalog.getPosicao());
         pneu.setPressaoCorreta(pneuRodalog.getPressaoCorreta());
         pneu.setPressaoAtual(pneuRodalog.getPressaoAtual());

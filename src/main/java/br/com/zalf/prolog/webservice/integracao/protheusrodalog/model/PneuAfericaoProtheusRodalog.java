@@ -39,6 +39,12 @@ public final class PneuAfericaoProtheusRodalog {
     private Integer vidaAtual;
 
     /**
+     * Número inteiro que representa o total de vidas do pneu. Pode-se interpretar este atributo como o total de recapes
+     * que o pneu pode sofrer ao longo de toda a duração dele.
+     */
+    private Integer vidaTotal;
+
+    /**
      * Número inteiro que representa a posição em que o pneu está aplicado no véiculo.
      */
     private Integer posicao;
@@ -95,6 +101,7 @@ public final class PneuAfericaoProtheusRodalog {
         pneu.setCodigo(101010L);
         pneu.setCodUnidadeAlocado(29L);
         pneu.setVidaAtual(2);
+        pneu.setVidaTotal(3);
         pneu.setPosicao(isEstepe ? 901 : 111);
         pneu.setPressaoAtual(105.0);
         pneu.setPressaoCorreta(115.0);
@@ -137,6 +144,14 @@ public final class PneuAfericaoProtheusRodalog {
 
     public void setVidaAtual(final Integer vidaAtual) {
         this.vidaAtual = vidaAtual;
+    }
+
+    public Integer getVidaTotal() {
+        return vidaTotal;
+    }
+
+    public void setVidaTotal(final Integer vidaTotal) {
+        this.vidaTotal = vidaTotal;
     }
 
     public Integer getPosicao() {
