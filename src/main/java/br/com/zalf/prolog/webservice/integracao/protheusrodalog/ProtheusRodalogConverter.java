@@ -26,7 +26,7 @@ final class ProtheusRodalogConverter {
             afericaoRodalog.setCpfColaboradorAfericao(afericao.getColaborador().getCpfAsString());
             afericaoRodalog.setKmMomentoAfericao(((AfericaoPlaca) afericao).getKmMomentoAfericao());
             afericaoRodalog.setTempoRealizacaoAfericaoInMillis(afericao.getTempoRealizacaoAfericaoInMillis());
-            // TODO - setar a dataHora da afericao
+            afericaoRodalog.setDataHora(afericao.getDataHora());
             afericaoRodalog.setTipoMedicaoColetadaAfericao(
                     convertTipoMedicao(afericao.getTipoMedicaoColetadaAfericao()));
             afericaoRodalog.setMedicoes(convertPneusAferidos(afericao.getPneusAferidos()));
