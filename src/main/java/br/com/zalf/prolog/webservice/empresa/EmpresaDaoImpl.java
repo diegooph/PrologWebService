@@ -240,29 +240,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public List<Cargo> getCargosByCodUnidade(Long codUnidade) throws SQLException {
-        final List<Cargo> listCargo = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT F.CODIGO, F.NOME\n" +
-                    "FROM FUNCAO F JOIN UNIDADE U ON U.cod_empresa = F.cod_empresa\n" +
-                    "WHERE U.codigo = ?\n" +
-                    "ORDER BY 2;");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                listCargo.add(createCargo(rSet));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return listCargo;
-    }
-
-    @Override
     public Cargo getCargo(Long codEmpresa, Long codCargo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
