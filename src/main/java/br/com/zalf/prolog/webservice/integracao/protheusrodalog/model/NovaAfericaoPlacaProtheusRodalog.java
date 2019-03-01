@@ -78,7 +78,7 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     public static NovaAfericaoPlacaProtheusRodalog createNovaAfericaoDummy() {
         final NovaAfericaoPlacaProtheusRodalog novaAfericao = new NovaAfericaoPlacaProtheusRodalog();
         novaAfericao.setPlaca("PRO0001");
-        novaAfericao.setCodDiagrama(11);
+        novaAfericao.setCodDiagrama(1);
         novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(2.0);
         novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(2.0);
         novaAfericao.setDeveAferirEstepes(true);

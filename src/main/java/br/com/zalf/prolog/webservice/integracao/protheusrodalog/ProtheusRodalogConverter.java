@@ -52,28 +52,42 @@ final class ProtheusRodalogConverter {
 
     @NotNull
     static NovaAfericaoPlaca convertNovaAfericaoPlaca(
-            @NotNull final NovaAfericaoPlacaProtheusRodalog novaAfericaoRodalog) {
+            @NotNull final NovaAfericaoPlacaProtheusRodalog novaAfericaoRodalog,
+            @NotNull final DiagramaVeiculo diagramaVeiculo) {
         final NovaAfericaoPlaca novaAfericaoPlaca = new NovaAfericaoPlaca();
         novaAfericaoPlaca.setVariacaoAceitaSulcoMaiorMilimetros(
                 novaAfericaoRodalog.getVariacaoAceitaSulcoMaiorMilimetros());
         novaAfericaoPlaca.setVariacaoAceitaSulcoMenorMilimetros(
                 novaAfericaoRodalog.getVariacaoAceitaSulcoMenorMilimetros());
         novaAfericaoPlaca.setDeveAferirEstepes(novaAfericaoRodalog.getDeveAferirEstepes());
-        novaAfericaoPlaca.setVeiculo(convertVeiculo(novaAfericaoRodalog));
+        if (novaAfericaoRodalog.getRestricao() == null) {
+            throw new IllegalStateException("Nenhuma informação de restrição foi enviada");
+        }
+        novaAfericaoPlaca.setRestricao(convertRestricao(novaAfericaoRodalog.getRestricao()));
+        novaAfericaoPlaca.setVeiculo(convertVeiculo(novaAfericaoRodalog, diagramaVeiculo));
         novaAfericaoPlaca.setEstepesVeiculo(convertPneus(novaAfericaoRodalog.getEstepesVeiculo()));
         return novaAfericaoPlaca;
     }
 
     @NotNull
-    private static Veiculo convertVeiculo(@NotNull final NovaAfericaoPlacaProtheusRodalog novaAfericaoRodalog) {
+    private static Restricao convertRestricao(@NotNull final RestricaoAfericaoProtheusRodalog restricaoRodalog) {
+        final Restricao restricao = new Restricao();
+        restricao.setToleranciaCalibragem(restricaoRodalog.getToleranciaCalibragem());
+        restricao.setToleranciaInspecao(restricaoRodalog.getToleranciaInspecao());
+        restricao.setSulcoMinimoDescarte(restricaoRodalog.getSulcoMinimoDescarte());
+        restricao.setSulcoMinimoRecape(restricaoRodalog.getSulcoMinimoRecape());
+        restricao.setPeriodoDiasAfericaoPressao(restricaoRodalog.getPeriodoDiasAfericaoPressao());
+        restricao.setPeriodoDiasAfericaoSulco(restricaoRodalog.getPeriodoDiasAfericaoSulco());
+        return restricao;
+    }
+
+    @NotNull
+    private static Veiculo convertVeiculo(@NotNull final NovaAfericaoPlacaProtheusRodalog novaAfericaoRodalog,
+                                          @NotNull final DiagramaVeiculo diagramaVeiculo) {
         final Veiculo veiculo = new Veiculo();
+        // TODO - Esta informação deverá vir no objeto da integração
+        veiculo.setCodUnidadeAlocado(29L);
         veiculo.setPlaca(novaAfericaoRodalog.getPlaca());
-        final DiagramaVeiculo diagramaVeiculo =
-                new DiagramaVeiculo(
-                        novaAfericaoRodalog.getCodDiagrama().shortValue(),
-                        null,
-                        null,
-                        null);
         veiculo.setDiagrama(diagramaVeiculo);
         veiculo.setListPneus(convertPneus(novaAfericaoRodalog.getPneusVeiculo()));
         return veiculo;

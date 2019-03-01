@@ -11,7 +11,6 @@ import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.Cronograma
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
-import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -44,9 +43,7 @@ public class DummyProtheusRodalogResource {
         if (afericao == null) {
             throw new GenericException("Aferição é null");
         }
-        if (!validaAfericao(afericao)) {
-            throw new GenericException("O objeto aferição não está no padrão");
-        }
+
         return 1210L;
     }
 
@@ -68,9 +65,5 @@ public class DummyProtheusRodalogResource {
             @QueryParam("placa") @Required final String placa,
             @QueryParam("tipoAfericao") @Required final String tipoAfericao) {
         return NovaAfericaoPlacaProtheusRodalog.createNovaAfericaoDummy();
-    }
-
-    private boolean validaAfericao(@NotNull final AfericaoProtheusRodalog afericao) {
-        return afericao.equals(AfericaoProtheusRodalog.getAfericaoDummy());
     }
 }

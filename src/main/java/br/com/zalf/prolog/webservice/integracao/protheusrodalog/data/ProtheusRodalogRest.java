@@ -15,18 +15,18 @@ import retrofit2.http.*;
  */
 public interface ProtheusRodalogRest {
 
-    @POST("/dummies/rodalog-protheus/inserir-afericao")
+    @POST("dummies/rodalog-protheus/inserir-afericao")
     Call<Long> insertAfericao(
             @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Query("codUnidade") @Required final Long codUnidade,
             @Body @Required final AfericaoProtheusRodalog afericao);
 
-    @GET("/dummies/rodalog-protheus/buscar-cronograma")
+    @GET("dummies/rodalog-protheus/buscar-cronograma")
     Call<CronogramaAfericaoProtheusRodalog> getCronogramaAfericao(
             @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Query("codUnidade") @Required final Long codUnidade);
 
-    @GET("/dummies/rodalog-protheus/nova-afericao")
+    @GET("dummies/rodalog-protheus/nova-afericao")
     Call<NovaAfericaoPlacaProtheusRodalog> getNovaAfericaoPlaca(
             @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Query("codUnidade") @Required final Long codUnidade,
