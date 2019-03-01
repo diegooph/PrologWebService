@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Stage
+* Cria novos métodos de busca para a listagem de cargos (PL-1656)
+
 <a name="v0.0.85"></a>
 ## Version [v0.0.85](https://github.com/luizfp/PrologWebService/compare/v0.0.84...v0.0.85) (release-date) [unreleased]
 
