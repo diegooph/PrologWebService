@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -39,18 +38,18 @@ public final class PlacaAfericaoProtheusRodalog {
     private Integer quantidadePneusAplicados;
 
     /**
-     * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoColetadaAfericao#SULCO}.
+     * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoAfericaoProtheusRodalog#SULCO}.
      */
     private Boolean podeAferirSulco;
 
     /**
-     * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoColetadaAfericao#PRESSAO}.
+     * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoAfericaoProtheusRodalog#PRESSAO}.
      */
     private Boolean podeAferirPressao;
 
     /**
-     * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoColetadaAfericao#SULCO} e
-     * do tipo {@link TipoMedicaoColetadaAfericao#PRESSAO}.
+     * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoAfericaoProtheusRodalog#SULCO} e
+     * do tipo {@link TipoMedicaoAfericaoProtheusRodalog#PRESSAO}.
      */
     private Boolean podeAferirSulcoPressao;
 

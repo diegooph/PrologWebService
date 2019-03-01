@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
+import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.TipoMedicaoAfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +50,11 @@ public class SistemaProtheusRodalog extends Sistema {
                                                   @NotNull final String tipoAfericao) throws Throwable {
         final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
         final NovaAfericaoPlacaProtheusRodalog novaAfericaoPlaca =
-                requester.getNovaAfericaoPlaca(tokenIntegracao, codUnidade, placaVeiculo, tipoAfericao);
+                requester.getNovaAfericaoPlaca(
+                        tokenIntegracao,
+                        codUnidade,
+                        placaVeiculo,
+                        TipoMedicaoAfericaoProtheusRodalog.fromString(tipoAfericao));
         if (novaAfericaoPlaca.getCodDiagrama() == null) {
             throw new IllegalStateException("Código do diagrama é null");
         }

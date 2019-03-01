@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -28,32 +27,32 @@ import java.util.List;
 public final class CronogramaAfericaoProtheusRodalog {
     /**
      * Número inteiro que representa a cada quantos dias a aferição do tipo
-     * {@link TipoMedicaoColetadaAfericao#SULCO} deve ser realizada.
+     * {@link TipoMedicaoAfericaoProtheusRodalog#SULCO} deve ser realizada.
      */
     private Integer metaDiasAfericaoSulco;
 
     /**
      * Número inteiro que representa a cada quantos dias a aferição do tipo
-     * {@link TipoMedicaoColetadaAfericao#PRESSAO} deve ser realizada.
+     * {@link TipoMedicaoAfericaoProtheusRodalog#PRESSAO} deve ser realizada.
      */
     private Integer metaDiasAfericaoPressao;
 
     /**
      * Número inteiro que representa o total de placas que estão com a aferição do tipo
-     * {@link TipoMedicaoColetadaAfericao#SULCO} dentro do prazo estipulado.
+     * {@link TipoMedicaoAfericaoProtheusRodalog#SULCO} dentro do prazo estipulado.
      */
     private Integer totalPlacasSulcosOk;
 
     /**
      * Número inteiro que representa o total de placas que estão com a aferição do tipo
-     * {@link TipoMedicaoColetadaAfericao#PRESSAO} dentro do prazo estipulado.
+     * {@link TipoMedicaoAfericaoProtheusRodalog#PRESSAO} dentro do prazo estipulado.
      */
     private Integer totalPlacasPressaoOk;
 
     /**
      * Número inteiro que representa o total de placas que estão com a aferição do tipo
-     * {@link TipoMedicaoColetadaAfericao#SULCO} e aferição do tipo {@link TipoMedicaoColetadaAfericao#PRESSAO}
-     * dentro do prazo estipulado.
+     * {@link TipoMedicaoAfericaoProtheusRodalog#SULCO} e aferição do tipo
+     * {@link TipoMedicaoAfericaoProtheusRodalog#PRESSAO} dentro do prazo estipulado.
      */
     private Integer totalPlacasSulcoPressaoOk;
 

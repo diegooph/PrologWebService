@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,20 +28,20 @@ public final class ModeloAfericaoProtheusRodalog {
 
     /**
      * Número inteiro que representa a quantidade de placas que estão com a aferição do tipo
-     * {@link TipoMedicaoColetadaAfericao#SULCO} dentro do prazo estipulado.
+     * {@link TipoMedicaoAfericaoProtheusRodalog#SULCO} dentro do prazo estipulado.
      */
     private Integer qtdPlacasSulcoOk;
 
     /**
      * Número inteiro que representa a quantidade de placas que estão com a aferição do tipo
-     * {@link TipoMedicaoColetadaAfericao#PRESSAO} dentro do prazo estipulado.
+     * {@link TipoMedicaoAfericaoProtheusRodalog#PRESSAO} dentro do prazo estipulado.
      */
     private Integer qtdPlacasPressaoOk;
 
     /**
      * Número inteiro que representa a quantidade de placas que estão com a aferição do tipo
-     * {@link TipoMedicaoColetadaAfericao#SULCO} e a aferiçã do tipo {@link TipoMedicaoColetadaAfericao#PRESSAO}
-     * dentro do prazo estipulado.
+     * {@link TipoMedicaoAfericaoProtheusRodalog#SULCO} e a aferiçã do tipo
+     * {@link TipoMedicaoAfericaoProtheusRodalog#PRESSAO} dentro do prazo estipulado.
      */
     private Integer qtdPlacasSulcoPressaoOk;
 

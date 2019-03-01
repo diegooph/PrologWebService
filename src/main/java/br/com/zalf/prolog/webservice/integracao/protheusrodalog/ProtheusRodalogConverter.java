@@ -27,7 +27,8 @@ final class ProtheusRodalogConverter {
             afericaoRodalog.setKmMomentoAfericao(((AfericaoPlaca) afericao).getKmMomentoAfericao());
             afericaoRodalog.setTempoRealizacaoAfericaoInMillis(afericao.getTempoRealizacaoAfericaoInMillis());
             // TODO - setar a dataHora da afericao
-            afericaoRodalog.setTipoMedicaoColetadaAfericao(afericao.getTipoMedicaoColetadaAfericao());
+            afericaoRodalog.setTipoMedicaoColetadaAfericao(
+                    convertTipoMedicao(afericao.getTipoMedicaoColetadaAfericao()));
             afericaoRodalog.setMedicoes(convertPneusAferidos(afericao.getPneusAferidos()));
             return afericaoRodalog;
         } else {
@@ -67,6 +68,12 @@ final class ProtheusRodalogConverter {
         novaAfericaoPlaca.setVeiculo(convertVeiculo(novaAfericaoRodalog, diagramaVeiculo));
         novaAfericaoPlaca.setEstepesVeiculo(convertPneus(novaAfericaoRodalog.getEstepesVeiculo()));
         return novaAfericaoPlaca;
+    }
+
+    @NotNull
+    private static TipoMedicaoAfericaoProtheusRodalog convertTipoMedicao(
+            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) {
+        return TipoMedicaoAfericaoProtheusRodalog.fromString(tipoMedicaoColetadaAfericao.asString());
     }
 
     @NotNull

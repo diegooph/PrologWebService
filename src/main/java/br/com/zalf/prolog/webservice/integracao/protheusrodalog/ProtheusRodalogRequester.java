@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusrodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.AfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.CronogramaAfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
+import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.TipoMedicaoAfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.sistema.Requester;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,8 +24,9 @@ public interface ProtheusRodalogRequester extends Requester {
                                                             @NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
-    NovaAfericaoPlacaProtheusRodalog getNovaAfericaoPlaca(@NotNull final String tokenIntegracao,
-                                                          @NotNull final Long codUnidade,
-                                                          @NotNull final String placa,
-                                                          @NotNull final String tipoAfericao) throws Throwable;
+    NovaAfericaoPlacaProtheusRodalog getNovaAfericaoPlaca(
+            @NotNull final String tokenIntegracao,
+            @NotNull final Long codUnidade,
+            @NotNull final String placa,
+            @NotNull final TipoMedicaoAfericaoProtheusRodalog tipoAfericao) throws Throwable;
 }

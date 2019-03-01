@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -60,13 +59,13 @@ public final class AfericaoProtheusRodalog {
     private LocalDateTime dataHora;
 
     /**
-     * Constante alfanumérica que representa o {@link TipoMedicaoColetadaAfericao tipo de medição} que foi utilizado
-     * para a captura de informações, podem ter sido utilizados 3 tipos:
-     * *{@link TipoMedicaoColetadaAfericao#SULCO}
-     * *{@link TipoMedicaoColetadaAfericao#PRESSAO}
-     * *{@link TipoMedicaoColetadaAfericao#SULCO_PRESSAO}
+     * Constante alfanumérica que representa o {@link TipoMedicaoAfericaoProtheusRodalog tipo de medição} que foi
+     * utilizado para a captura de informações, podem ter sido utilizados 3 tipos:
+     * *{@link TipoMedicaoAfericaoProtheusRodalog#SULCO}
+     * *{@link TipoMedicaoAfericaoProtheusRodalog#PRESSAO}
+     * *{@link TipoMedicaoAfericaoProtheusRodalog#SULCO_PRESSAO}
      */
-    private TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao;
+    private TipoMedicaoAfericaoProtheusRodalog tipoMedicaoColetadaAfericao;
 
     /**
      * Objeto que contém a lista de {@link MedicaoAfericaoProtheusRodalog medidas} captuadas em cada pneu aplicado no
@@ -86,7 +85,7 @@ public final class AfericaoProtheusRodalog {
         afericao.setKmMomentoAfericao(101010L);
         afericao.setTempoRealizacaoAfericaoInMillis(90000L);
         afericao.setDataHora(LocalDateTime.now());
-        afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO_PRESSAO);
+        afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoAfericaoProtheusRodalog.SULCO_PRESSAO);
         final List<MedicaoAfericaoProtheusRodalog> medicoes = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             medicoes.add(MedicaoAfericaoProtheusRodalog.getMedicaoDummy());
@@ -143,11 +142,11 @@ public final class AfericaoProtheusRodalog {
         this.dataHora = dataHora;
     }
 
-    public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao() {
+    public TipoMedicaoAfericaoProtheusRodalog getTipoMedicaoColetadaAfericao() {
         return tipoMedicaoColetadaAfericao;
     }
 
-    public void setTipoMedicaoColetadaAfericao(final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) {
+    public void setTipoMedicaoColetadaAfericao(final TipoMedicaoAfericaoProtheusRodalog tipoMedicaoColetadaAfericao) {
         this.tipoMedicaoColetadaAfericao = tipoMedicaoColetadaAfericao;
     }
 

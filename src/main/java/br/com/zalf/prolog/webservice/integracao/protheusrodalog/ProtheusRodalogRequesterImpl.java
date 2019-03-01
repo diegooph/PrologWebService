@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusrodalog.data.ProtheusRod
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.AfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.CronogramaAfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
+import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.TipoMedicaoAfericaoProtheusRodalog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
@@ -38,13 +39,14 @@ public class ProtheusRodalogRequesterImpl implements ProtheusRodalogRequester {
 
     @NotNull
     @Override
-    public NovaAfericaoPlacaProtheusRodalog getNovaAfericaoPlaca(@NotNull final String tokenIntegracao,
-                                                                 @NotNull final Long codUnidade,
-                                                                 @NotNull final String placa,
-                                                                 @NotNull final String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlacaProtheusRodalog getNovaAfericaoPlaca(
+            @NotNull final String tokenIntegracao,
+            @NotNull final Long codUnidade,
+            @NotNull final String placa,
+            @NotNull final TipoMedicaoAfericaoProtheusRodalog tipoAfericao) throws Throwable {
         final ProtheusRodalogRest service = ProtheusRodalogRestClient.getService(ProtheusRodalogRest.class);
         final Call<NovaAfericaoPlacaProtheusRodalog> call =
-                service.getNovaAfericaoPlaca(tokenIntegracao, codUnidade, placa, tipoAfericao);
+                service.getNovaAfericaoPlaca(tokenIntegracao, codUnidade, placa, tipoAfericao.asString());
         return handleResponse(call.execute());
     }
 
