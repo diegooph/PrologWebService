@@ -144,33 +144,4 @@ public final class MedicaoAfericaoProtheusRodalog {
     public void setSulcoExterno(final Double sulcoExterno) {
         this.sulcoExterno = sulcoExterno;
     }
-
-    public boolean equals(@NotNull final MedicaoAfericaoProtheusRodalog medida) {
-        if (!this.codigoCliente.equals(medida.getCodigoCliente())) {
-            return false;
-        }
-        if (!this.codigo.equals(medida.getCodigo())) {
-            return false;
-        }
-        if (!this.vidaAtual.equals(medida.getVidaAtual())) {
-            return false;
-        }
-        if (!this.pressaoAtual.equals(medida.getPressaoAtual())) {
-            return false;
-        }
-        if (!this.sulcoInterno.equals(medida.getSulcoInterno())) {
-            return false;
-        }
-        if (!this.sulcoCentralInterno.equals(medida.getSulcoCentralInterno())) {
-            return false;
-        }
-        if (!this.sulcoCentralExterno.equals(medida.getSulcoCentralExterno())) {
-            return false;
-        }
-        if (!this.sulcoExterno.equals(medida.getSulcoExterno())) {
-            return false;
-        }
-
-        return true;
-    }
 }

@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +57,7 @@ public final class AfericaoProtheusRodalog {
      * <p>
      * A data e hora estão no padrão UTC, exemplo: "2019-02-21T15:30:00-03:00"
      */
-    private OffsetDateTime dataHora;
+    private LocalDateTime dataHora;
 
     /**
      * Constante alfanumérica que representa o {@link TipoMedicaoColetadaAfericao tipo de medição} que foi utilizado
@@ -85,7 +85,7 @@ public final class AfericaoProtheusRodalog {
         afericao.setCpfColaboradorAfericao("000.000.000-00");
         afericao.setKmMomentoAfericao(101010L);
         afericao.setTempoRealizacaoAfericaoInMillis(90000L);
-        afericao.setDataHora(OffsetDateTime.now());
+        afericao.setDataHora(LocalDateTime.now());
         afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO_PRESSAO);
         final List<MedicaoAfericaoProtheusRodalog> medicoes = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -135,11 +135,11 @@ public final class AfericaoProtheusRodalog {
         this.tempoRealizacaoAfericaoInMillis = tempoRealizacaoAfericaoInMillis;
     }
 
-    public OffsetDateTime getDataHora() {
+    public LocalDateTime getDataHora() {
         return dataHora;
     }
 
-    public void setDataHora(final OffsetDateTime dataHora) {
+    public void setDataHora(final LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
 
