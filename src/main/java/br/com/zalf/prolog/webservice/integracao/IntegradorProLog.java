@@ -6,10 +6,15 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OrdemServicoDao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoItensOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -37,6 +42,7 @@ import java.util.Optional;
 public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
     private VeiculoDao veiculoDao;
     private ChecklistDao checklistDao;
+    private OrdemServicoDao ordemServicoDao;
     private AfericaoDao afericaoDao;
     private ColaboradorDao colaboradorDao;
     private IntegracaoDao integracaoDao;
@@ -46,12 +52,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private IntegradorProLog(@NotNull final String userToken,
                              VeiculoDao veiculoDao,
                              ChecklistDao checklistDao,
+                             OrdemServicoDao ordemServicoDao,
                              AfericaoDao afericaoDao,
                              ColaboradorDao colaboradorDao,
                              IntegracaoDao integracaoDao) {
         this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.veiculoDao = veiculoDao;
         this.checklistDao = checklistDao;
+        this.ordemServicoDao = ordemServicoDao;
         this.afericaoDao = afericaoDao;
         this.colaboradorDao = colaboradorDao;
         this.integracaoDao = integracaoDao;
@@ -63,6 +71,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 userToken,
                 Injection.provideVeiculoDao(),
                 Injection.provideChecklistDao(),
+                Injection.provideOrdemServicoDao(),
                 Injection.provideAfericaoDao(),
                 Injection.provideColaboradorDao(),
                 Injection.provideIntegracaoDao());
@@ -288,9 +297,31 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return checklistDao.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 
+    @NotNull
+    @Override
+    public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
+            @Nullable final Long codUnidade,
+            @Nullable final Long codOrdemServico,
+            @Nullable final String placaVeiculo,
+            @Nullable final StatusItemOrdemServico statusItens) throws Throwable {
+        return ordemServicoDao
+                .getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
+    }
+
+    @Override
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        ordemServicoDao.resolverItem(item);
+    }
+
+    @Override
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        ordemServicoDao.resolverItens(itensResolucao);
+    }
+
     public static final class Builder {
         private VeiculoDao veiculoDao;
         private ChecklistDao checklistDao;
+        private OrdemServicoDao ordemServicoDao;
         private AfericaoDao afericaoDao;
         private ColaboradorDao colaboradorDao;
         private IntegracaoDao integracaoDao;
@@ -307,6 +338,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
         public Builder withChecklistDao(ChecklistDao checklistDao) {
             this.checklistDao = checklistDao;
+            return this;
+        }
+
+        public Builder withOrdemServicoDao(OrdemServicoDao ordemServicoDao) {
+            this.ordemServicoDao = ordemServicoDao;
             return this;
         }
 

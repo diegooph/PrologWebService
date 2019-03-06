@@ -3,8 +3,10 @@ package br.com.zalf.prolog.webservice.integracao.sistema;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
-import br.com.zalf.prolog.webservice.integracao.protheusrodalog.SistemaProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.ProtheusRodalogRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.protheusrodalog.SistemaProtheusRodalog;
+import br.com.zalf.prolog.webservice.integracao.transport.SistemaTransportTranslecchi;
+import br.com.zalf.prolog.webservice.integracao.transport.model.TransportTranslecchiRequesterImpl;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -24,6 +26,12 @@ public final class SistemasFactory {
         switch (sistemaKey) {
             case AVACORP_AVILAN:
                 return new AvaCorpAvilan(new AvaCorpAvilanRequesterImpl(), sistemaKey, integradorProLog, userToken);
+            case TRANSPORT_TRANSLECCHI:
+                return new SistemaTransportTranslecchi(
+                        new TransportTranslecchiRequesterImpl(),
+                        sistemaKey,
+                        integradorProLog,
+                        userToken);
             case PROTHEUS_RODALOG:
                 return new SistemaProtheusRodalog(new ProtheusRodalogRequesterImpl(), sistemaKey, integradorProLog, userToken);
             default:

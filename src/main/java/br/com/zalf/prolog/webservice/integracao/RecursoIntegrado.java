@@ -11,6 +11,7 @@ import com.sun.istack.internal.NotNull;
  */
 public enum RecursoIntegrado {
     CHECKLIST("CHECKLIST"),
+    CHECKLIST_ORDEM_SERVICO("CHECKLIST_ORDEM_SERVICO"),
     VEICULOS("VEICULOS"),
     AFERICAO("AFERICAO");
 
