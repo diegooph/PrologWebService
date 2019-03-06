@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class RouterChecklistOrdemServico extends Router {
+public final class RouterChecklistOrdemServico extends Router {
 
     public static RouterChecklistOrdemServico create(@NotNull final OrdemServicoDao ordemServicoDao,
                                                      @NotNull final String userToken) {
