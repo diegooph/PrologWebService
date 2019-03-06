@@ -130,6 +130,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getCodUnidadeErpClienteByCodUnidadeProLog(codUnidadeProLog);
     }
 
+    @NotNull
+    @Override
+    public String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+
+        return integracaoDao.getTokenIntegracaoByCodUnidadeProLog(codUnidadeProLog);
+    }
+
     //
     //
     // Operações Integradas
@@ -162,7 +172,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Throwable {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
         return afericaoDao.getCronogramaAfericao(codUnidade);
     }
 
@@ -189,9 +199,10 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
     }
 
+    @Nullable
     @Override
-    public Long insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Throwable {
-        return afericaoDao.insert(afericao, codUnidade);
+    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+        return afericaoDao.insert(codUnidade, afericao);
     }
 
     @NotNull
