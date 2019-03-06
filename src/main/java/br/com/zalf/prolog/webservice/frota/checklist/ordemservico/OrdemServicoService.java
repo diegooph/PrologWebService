@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
+import br.com.zalf.prolog.webservice.integracao.router.RouterChecklistOrdemServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,6 +108,7 @@ final class OrdemServicoService {
 
     @NotNull
     HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
+            @NotNull final String userToken,
             @Nullable final Long codUnidade,
             @Nullable final Long codOrdemServico,
             @Nullable final String placaVeiculo,
@@ -116,7 +118,9 @@ final class OrdemServicoService {
                 throw new IllegalStateException("Já que a placa é nula, você deve filtrar por código da unidade e da O.S.");
             }
 
-            return dao.getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
+            return RouterChecklistOrdemServico
+                    .create(dao, userToken)
+                    .getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar holder de resolução de múltiplos itens para a placa: " + placaVeiculo, t);
             throw Injection
@@ -126,9 +130,10 @@ final class OrdemServicoService {
     }
 
     @NotNull
-    Response resolverItem(@NotNull final ResolverItemOrdemServico item) throws ProLogException {
+    Response resolverItem(@NotNull final String userToken,
+                          @NotNull final ResolverItemOrdemServico item) throws ProLogException {
         try {
-            dao.resolverItem(item);
+            RouterChecklistOrdemServico.create(dao, userToken).resolverItem(item);
             return Response.ok("Item resolvido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver item", t);
@@ -140,9 +145,10 @@ final class OrdemServicoService {
 
 
     @NotNull
-    Response resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
+    Response resolverItens(@NotNull final String userToken,
+                           @NotNull final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
         try {
-            dao.resolverItens(itensResolucao);
+            RouterChecklistOrdemServico.create(dao, userToken).resolverItens(itensResolucao);
             return Response.ok("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver itens", t);

@@ -115,26 +115,30 @@ public final class OrdemServicoResource {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
+            @HeaderParam("Authorization") @Required final String userToken,
             @QueryParam("codUnidade") @Optional final Long codUnidade,
             @QueryParam("codOrdemServico") @Optional final Long codOrdemServico,
             @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
             @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens) throws ProLogException {
-        return service.getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
+        return service
+                .getHolderResolucaoMultiplosItens(userToken, codUnidade, codOrdemServico, placaVeiculo, statusItens);
     }
 
     @POST
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/resolver-item")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
-    public Response resolverItem(ResolverItemOrdemServico item) throws ProLogException {
-        return service.resolverItem(item);
+    public Response resolverItem(@HeaderParam("Authorization") @Required final String userToken,
+                                 @Required final ResolverItemOrdemServico item) throws ProLogException {
+        return service.resolverItem(userToken, item);
     }
 
     @POST
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/resolver-multiplos-itens")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
-    public Response resolverItens(ResolverMultiplosItensOs itensResolucao) throws ProLogException {
-        return service.resolverItens(itensResolucao);
+    public Response resolverItens(@HeaderParam("Authorization") @Required final String userToken,
+                                  @Required final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
+        return service.resolverItens(userToken, itensResolucao);
     }
 }
