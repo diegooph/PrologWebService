@@ -18,24 +18,6 @@ import java.sql.SQLException;
 import java.util.*;
 
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
-    private static final String VEICULOS_BY_PLACA = "SELECT " +
-            "V.*, " +
-            "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
-            "MV.NOME AS MODELO, " +
-            "EV.NOME AS EIXOS, " +
-            "EV.DIANTEIRO, " +
-            "EV.TRASEIRO, " +
-            "EV.CODIGO AS COD_EIXOS, " +
-            "tv.nome AS TIPO, " +
-            "MAV.NOME AS MARCA, " +
-            "MAV.CODIGO AS COD_MARCA  " +
-            "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
-            "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
-            "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO AND TV.COD_UNIDADE = V.COD_UNIDADE " +
-            "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
-            "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
-            "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
-            "WHERE V.PLACA = ?;";
 
     public VeiculoDaoImpl() {
 
@@ -244,7 +226,24 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement(VEICULOS_BY_PLACA);
+            stmt = conn.prepareStatement("SELECT " +
+                    "V.*, " +
+                    "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
+                    "MV.NOME AS MODELO, " +
+                    "EV.NOME AS EIXOS, " +
+                    "EV.DIANTEIRO, " +
+                    "EV.TRASEIRO, " +
+                    "EV.CODIGO AS COD_EIXOS, " +
+                    "tv.nome AS TIPO, " +
+                    "MAV.NOME AS MARCA, " +
+                    "MAV.CODIGO AS COD_MARCA  " +
+                    "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
+                    "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
+                    "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO " +
+                    "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
+                    "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
+                    "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
+                    "WHERE V.PLACA = ?;");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -575,10 +574,10 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT *\n" +
-                    "FROM veiculo_diagrama AS vd\n" +
-                    "  JOIN veiculo_tipo AS vt\n" +
-                    "    ON vd.codigo = vt.cod_diagrama\n" +
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM veiculo_diagrama AS vd " +
+                    "  JOIN veiculo_tipo AS vt " +
+                    "    ON vd.codigo = vt.cod_diagrama " +
                     "WHERE vd.codigo = ?");
             stmt.setShort(1, codDiagrama);
             rSet = stmt.executeQuery();
@@ -659,10 +658,10 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT vd.*\n" +
-                    "FROM veiculo v JOIN veiculo_tipo vt on v.cod_tipo = vt.codigo and v.cod_unidade = vt.cod_unidade\n" +
-                    "JOIN veiculo_diagrama vd on vd.codigo = vt.cod_diagrama\n" +
-                    "WHERE v.placa = ?");
+            stmt = conn.prepareStatement("SELECT VD.* " +
+                    "FROM VEICULO V JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO " +
+                    "JOIN VEICULO_DIAGRAMA VD ON VD.CODIGO = VT.COD_DIAGRAMA " +
+                    "WHERE V.PLACA = ?");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
