@@ -91,8 +91,10 @@ public class IntegracaoOrdemServicoTransportTest {
 
     @Test
     public void testResolveItensPendentes() throws ProLogException {
+        // Fazemos -1 para utilizar o código na busca
+        final Long codUltimoItemPendenteSincronizado = getCodUltimoItemPendente() - 1;
         final List<ItemPendenteIntegracaoTransport> itensPendentes =
-                service.getItensPendentes(TOKEN_TRANSLECCHI, 1L);
+                service.getItensPendentes(TOKEN_TRANSLECCHI, codUltimoItemPendenteSincronizado);
 
         final List<ItemResolvidoIntegracaoTransport> itensResolvidos = new ArrayList<>();
         for (final ItemPendenteIntegracaoTransport itemPendente : itensPendentes) {
@@ -105,6 +107,21 @@ public class IntegracaoOrdemServicoTransportTest {
         Assert.assertNotNull(successResponseIntegracao);
         Assert.assertNotNull(successResponseIntegracao.getMsg());
         System.out.println(GsonUtils.getGson().toJson(itensPendentes));
+    }
+
+    @NotNull
+    private Long getCodUltimoItemPendente() throws ProLogException {
+        Long codigo = 0L;
+        final List<ItemPendenteIntegracaoTransport> itensPendentes =
+                service.getItensPendentes(TOKEN_TRANSLECCHI, 0L);
+
+        for (final ItemPendenteIntegracaoTransport itemPendente : itensPendentes) {
+            if (itemPendente.getCodItemOrdemServico() > codigo) {
+                codigo = itemPendente.getCodItemOrdemServico();
+            }
+        }
+
+        return codigo;
     }
 
     @NotNull
