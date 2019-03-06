@@ -362,7 +362,13 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         }
 
         public IntegradorProLog build() {
-            return new IntegradorProLog(userToken, veiculoDao, checklistDao, afericaoDao, colaboradorDao,
+            return new IntegradorProLog(
+                    userToken,
+                    veiculoDao,
+                    checklistDao,
+                    ordemServicoDao,
+                    afericaoDao,
+                    colaboradorDao,
                     integracaoDao);
         }
     }

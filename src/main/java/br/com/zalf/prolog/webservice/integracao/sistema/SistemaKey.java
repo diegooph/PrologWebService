@@ -11,9 +11,10 @@ public enum SistemaKey {
     TRANSPORT_TRANSLECCHI("TRANSPORT_TRANSLECCHI"),
     PROTHEUS_RODALOG("PROTHEUS_RODALOG");
 
+    @NotNull
     private final String key;
 
-    SistemaKey(String key) {
+    SistemaKey(@NotNull final String key) {
         this.key = key;
     }
 
@@ -22,6 +23,7 @@ public enum SistemaKey {
         return key;
     }
 
+    @NotNull
     public static SistemaKey fromString(@NotNull final String key) {
         Preconditions.checkNotNull(key, "key não pode ser nula!");
 

@@ -18,7 +18,7 @@ public enum RecursoIntegrado {
     @NotNull
     private final String key;
 
-    RecursoIntegrado(String key) {
+    RecursoIntegrado(@NotNull final String key) {
         this.key = key;
     }
 
@@ -27,6 +27,7 @@ public enum RecursoIntegrado {
         return key;
     }
 
+    @NotNull
     public static RecursoIntegrado fromString(@NotNull final String key) {
         Preconditions.checkNotNull(key, "key não pode ser nula!");
 

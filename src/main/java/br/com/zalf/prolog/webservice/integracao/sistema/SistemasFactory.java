@@ -33,7 +33,11 @@ public final class SistemasFactory {
                         integradorProLog,
                         userToken);
             case PROTHEUS_RODALOG:
-                return new SistemaProtheusRodalog(new ProtheusRodalogRequesterImpl(), sistemaKey, integradorProLog, userToken);
+                return new SistemaProtheusRodalog(
+                        new ProtheusRodalogRequesterImpl(),
+                        sistemaKey,
+                        integradorProLog,
+                        userToken);
             default:
                 throw new IllegalStateException("Nenhum sistema encontrado com a chave: " + sistemaKey.getKey());
         }

@@ -169,8 +169,17 @@ public abstract class Sistema implements OperacoesIntegradas {
                                               final int limit,
                                               final long offset,
                                               final boolean resumido) throws Exception {
-        return getIntegradorProLog().getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo,
-                dataInicial, dataFinal, limit, offset, resumido);
+        return getIntegradorProLog()
+                .getTodosChecklists(
+                        codUnidade,
+                        codEquipe,
+                        codTipoVeiculo,
+                        placaVeiculo,
+                        dataInicial,
+                        dataFinal,
+                        limit,
+                        offset,
+                        resumido);
     }
 
     @NotNull
