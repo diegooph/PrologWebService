@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
@@ -23,6 +25,19 @@ public final class SistemaTransportTranslecchi extends Sistema {
                                        @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, userToken);
         this.requester = requester;
+    }
+
+    @Override
+    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
+        requester.insertModeloChecklist(modeloChecklist);
+    }
+
+    @Override
+    public void updateModeloChecklist(@NotNull final String token,
+                                      @NotNull final Long codUnidade,
+                                      @NotNull final Long codModelo,
+                                      @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
+        requester.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
     }
 
     @Override

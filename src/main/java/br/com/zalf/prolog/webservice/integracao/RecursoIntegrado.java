@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import com.google.common.base.Preconditions;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Constantes definindo quais recursos são possíveis de serem integrados com o ProLog. Caso uma empresa integre o
@@ -11,6 +11,7 @@ import com.sun.istack.internal.NotNull;
  */
 public enum RecursoIntegrado {
     CHECKLIST("CHECKLIST"),
+    CHECKLIST_MODELO("CHECKLIST_MODELO"),
     CHECKLIST_ORDEM_SERVICO("CHECKLIST_ORDEM_SERVICO"),
     VEICULOS("VEICULOS"),
     AFERICAO("AFERICAO");

@@ -12,11 +12,12 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
+import br.com.zalf.prolog.webservice.integracao.router.RouterModeloChecklist;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
@@ -33,9 +34,10 @@ public final class ChecklistModeloService {
     private final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
 
     @NotNull
-    Response insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
+    Response insertModeloChecklist(@NotNull final String token,
+                                   @NotNull final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
         try {
-            dao.insertModeloChecklist(modeloChecklist);
+            RouterModeloChecklist.create(dao, token).insertModeloChecklist(modeloChecklist);
             return Response.ok("Modelo de checklist inserido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir modelo de checklist", t);
@@ -78,7 +80,9 @@ public final class ChecklistModeloService {
                                    @NotNull final Long codModelo,
                                    @NotNull final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
         try {
-            dao.updateModeloChecklist(TokenCleaner.getOnlyToken(token), codUnidade, codModelo, modeloChecklist);
+            RouterModeloChecklist
+                    .create(dao, token)
+                    .updateModeloChecklist(TokenCleaner.getOnlyToken(token), codUnidade, codModelo, modeloChecklist);
             return Response.ok("Modelo de checklist atualizado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atualizar modelo de checklist", t);
