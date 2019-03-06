@@ -23,7 +23,7 @@ public class RouterTipoVeiculo extends Router {
                         .withTipoVeiculoDao(tipoVeiculoDao)
                         .build(),
                 userToken,
-                RecursoIntegrado.VEICULOS);
+                RecursoIntegrado.TIPO_VEICULO);
     }
 
     private RouterTipoVeiculo(@NotNull final IntegracaoDao integracaoDao,
