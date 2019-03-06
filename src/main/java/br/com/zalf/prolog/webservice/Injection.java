@@ -74,6 +74,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
@@ -428,6 +430,11 @@ public final class Injection {
     @NotNull
     public static AcompanhamentoViagemDao provideAcompanhamentoViagemDao() {
         return new AcompanhamentoViagemDaoImpl();
+    }
+
+    @NotNull
+    public static TipoVeiculoDao provideTipoVeiculoDao() {
+        return new TipoVeiculoDaoImpl();
     }
 
     // ================================================

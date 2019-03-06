@@ -26,10 +26,10 @@ public class RouterTipoVeiculo extends Router {
                 RecursoIntegrado.VEICULOS);
     }
 
-    RouterTipoVeiculo(@NotNull final IntegracaoDao integracaoDao,
-                      @NotNull final IntegradorProLog integradorProLog,
-                      @NotNull final String userToken,
-                      @NotNull final RecursoIntegrado recursoIntegrado) {
+    private RouterTipoVeiculo(@NotNull final IntegracaoDao integracaoDao,
+                              @NotNull final IntegradorProLog integradorProLog,
+                              @NotNull final String userToken,
+                              @NotNull final RecursoIntegrado recursoIntegrado) {
         super(integracaoDao, integradorProLog, userToken, recursoIntegrado);
     }
 }

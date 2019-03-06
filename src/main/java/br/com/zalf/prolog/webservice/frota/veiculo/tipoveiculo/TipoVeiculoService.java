@@ -19,7 +19,7 @@ public final class TipoVeiculoService {
     @NotNull
     private static final String TAG = TipoVeiculoService.class.getSimpleName();
     @NotNull
-    private final TipoVeiculoDao dao = new TipoVeiculoDaoImpl();
+    private final TipoVeiculoDao dao = Injection.provideTipoVeiculoDao();
 
     @NotNull
     public Response insertTipoVeiculoPorEmpresa(final TipoVeiculo tipoVeiculo) throws ProLogException {
@@ -54,12 +54,12 @@ public final class TipoVeiculoService {
                     .create(dao, userToken)
                     .getTiposVeiculosByEmpresa(codEmpresa);
         } catch (final Throwable throwable) {
-            Log.e(TAG, String.format("Erro ao buscar os tipos de veículos ativos da empresa. \n" +
-                    "Empresa: %d \n" +
+            Log.e(TAG, String.format("Erro ao buscar os tipos de veículos ativos da empresa.\n" +
+                    "Empresa: %d\n" +
                     "userToken: %s", codEmpresa, userToken), throwable);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(throwable, "Erro ao buscar os tipos de veículo da empresa: " + codEmpresa);
+                    .map(throwable, "Erro ao buscar os tipos de veículos, tente novamente");
         }
     }
 

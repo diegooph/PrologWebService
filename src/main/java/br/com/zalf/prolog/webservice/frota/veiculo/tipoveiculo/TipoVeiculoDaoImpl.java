@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class TipoVeiculoDaoImpl extends DatabaseConnection implements TipoVeiculoDao {
+public final class TipoVeiculoDaoImpl extends DatabaseConnection implements TipoVeiculoDao {
 
     @Override
     public void insertTipoVeiculoPorEmpresa(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {

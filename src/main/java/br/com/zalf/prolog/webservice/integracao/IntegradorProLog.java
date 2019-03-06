@@ -47,12 +47,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     private IntegradorProLog(@NotNull final String userToken,
                              VeiculoDao veiculoDao,
+                             TipoVeiculoDao tipoVeiculoDao,
                              ChecklistDao checklistDao,
                              AfericaoDao afericaoDao,
                              ColaboradorDao colaboradorDao,
                              IntegracaoDao integracaoDao) {
         this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.veiculoDao = veiculoDao;
+        this.tipoVeiculoDao = tipoVeiculoDao;
         this.checklistDao = checklistDao;
         this.afericaoDao = afericaoDao;
         this.colaboradorDao = colaboradorDao;
@@ -64,6 +66,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return new IntegradorProLog(
                 userToken,
                 Injection.provideVeiculoDao(),
+                Injection.provideTipoVeiculoDao(),
                 Injection.provideChecklistDao(),
                 Injection.provideAfericaoDao(),
                 Injection.provideColaboradorDao(),
@@ -323,7 +326,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         }
 
         public IntegradorProLog build() {
-            return new IntegradorProLog(userToken, veiculoDao, checklistDao, afericaoDao, colaboradorDao,
+            return new IntegradorProLog(userToken, veiculoDao, tipoVeiculoDao, checklistDao, afericaoDao, colaboradorDao,
                     integracaoDao);
         }
     }
