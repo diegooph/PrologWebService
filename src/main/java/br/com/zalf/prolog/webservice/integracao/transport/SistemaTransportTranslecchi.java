@@ -1,7 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoItensOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
@@ -9,7 +7,6 @@ import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.transport.model.TransportTranslecchiRequesterImpl;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 06/03/19.
@@ -26,16 +23,6 @@ public final class SistemaTransportTranslecchi extends Sistema {
                                        @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, userToken);
         this.requester = requester;
-    }
-
-    @NotNull
-    @Override
-    public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
-            @Nullable final Long codUnidade,
-            @Nullable final Long codOrdemServico,
-            @Nullable final String placaVeiculo,
-            @Nullable final StatusItemOrdemServico statusItens) throws Throwable {
-        return requester.getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
     }
 
     @Override

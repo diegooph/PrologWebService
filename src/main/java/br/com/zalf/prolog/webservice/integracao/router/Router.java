@@ -7,8 +7,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoItensOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
@@ -290,22 +288,6 @@ public abstract class Router implements OperacoesIntegradas {
             return getSistema().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
         } else {
             return integradorProLog.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
-        }
-    }
-
-    @NotNull
-    @Override
-    public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
-            @Nullable final Long codUnidade,
-            @Nullable final Long codOrdemServico,
-            @Nullable final String placaVeiculo,
-            @Nullable final StatusItemOrdemServico statusItens) throws Throwable {
-        if (getSistema() != null) {
-            return getSistema()
-                    .getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
-        } else {
-            return integradorProLog
-                    .getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
         }
     }
 

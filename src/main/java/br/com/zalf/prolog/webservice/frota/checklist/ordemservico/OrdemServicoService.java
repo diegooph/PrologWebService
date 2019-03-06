@@ -108,7 +108,6 @@ final class OrdemServicoService {
 
     @NotNull
     HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
-            @NotNull final String userToken,
             @Nullable final Long codUnidade,
             @Nullable final Long codOrdemServico,
             @Nullable final String placaVeiculo,
@@ -118,9 +117,7 @@ final class OrdemServicoService {
                 throw new IllegalStateException("Já que a placa é nula, você deve filtrar por código da unidade e da O.S.");
             }
 
-            return RouterChecklistOrdemServico
-                    .create(dao, userToken)
-                    .getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
+            return dao.getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar holder de resolução de múltiplos itens para a placa: " + placaVeiculo, t);
             throw Injection

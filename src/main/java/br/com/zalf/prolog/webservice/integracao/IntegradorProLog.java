@@ -11,8 +11,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OrdemServicoDao;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoItensOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
@@ -295,17 +293,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                                                       @NotNull final LocalDate dataFinal,
                                                       final boolean itensCriticosRetroativos) throws Throwable {
         return checklistDao.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
-    }
-
-    @NotNull
-    @Override
-    public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
-            @Nullable final Long codUnidade,
-            @Nullable final Long codOrdemServico,
-            @Nullable final String placaVeiculo,
-            @Nullable final StatusItemOrdemServico statusItens) throws Throwable {
-        return ordemServicoDao
-                .getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
     }
 
     @Override

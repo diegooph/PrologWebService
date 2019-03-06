@@ -115,13 +115,12 @@ public final class OrdemServicoResource {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
     public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
-            @HeaderParam("Authorization") @Required final String userToken,
             @QueryParam("codUnidade") @Optional final Long codUnidade,
             @QueryParam("codOrdemServico") @Optional final Long codOrdemServico,
             @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
             @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens) throws ProLogException {
         return service
-                .getHolderResolucaoMultiplosItens(userToken, codUnidade, codOrdemServico, placaVeiculo, statusItens);
+                .getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
     }
 
     @POST
