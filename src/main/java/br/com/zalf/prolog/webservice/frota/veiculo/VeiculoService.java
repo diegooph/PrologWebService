@@ -110,6 +110,7 @@ public final class VeiculoService {
         }
     }
 
+    @Deprecated
     public List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) {
         try {
             return dao.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);

@@ -303,6 +303,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @Deprecated
     @Override
     public List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException {
         Connection conn = null;

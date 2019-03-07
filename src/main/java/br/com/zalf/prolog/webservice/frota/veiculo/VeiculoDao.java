@@ -121,6 +121,7 @@ public interface VeiculoDao {
      * @return lista de marcas
      * @throws SQLException se ocorrer erro no banco
      */
+    @Deprecated
     List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException;
 
     /**
