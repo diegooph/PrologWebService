@@ -37,7 +37,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             dao.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
             return new SuccessResponseIntegracao("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao salvar os itens resolvidos na Integração", t);
+            Log.e(TAG, "[INTEGRACAO - TRANSLECCHI] Erro ao salvar os itens resolvidos na Integração", t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao salvar itens resolvidos na integração");
@@ -58,7 +58,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             ensureValidToken(tokenIntegracao, TAG);
             return dao.getItensPendentes(tokenIntegracao, codUltimoItemPendenteSincronizado);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar os itens pendentes na Integração\n" +
+            Log.e(TAG, String.format("[INTEGRACAO - TRANSLECCHI] Erro ao buscar os itens pendentes na Integração\n" +
                     "Código do último item pendente sincronizado: %d", codUltimoItemPendenteSincronizado), t);
             throw Injection
                     .provideProLogExceptionHandler()
@@ -79,7 +79,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             }
             return verifyItensDummy(itensResolvidos);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao resolver itens pendentes", t);
+            Log.e(TAG, "[INTEGRACAO - TRANSLECCHI] Erro ao resolver itens pendentes", t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao resolver itens pendentes");
@@ -99,7 +99,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             }
             return getDummy();
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar os itens pendentes na Integração\n" +
+            Log.e(TAG, String.format("[INTEGRACAO - TRANSLECCHI] Erro ao buscar os itens pendentes na Integração\n" +
                     "Código do último item pendente sincronizado: %d", codUltimoItemPendenteSincronizado), t);
             throw Injection
                     .provideProLogExceptionHandler()
