@@ -57,13 +57,8 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO VACTA " +
-                    "WHERE VACTA.COD_EMPRESA_TIPO_VEICULO = (SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?) " +
-                    "AND (VACTA.COD_UNIDADE_CONFIGURACAO = ? OR VACTA.COD_UNIDADE_CONFIGURACAO IS NULL) " +
-                    "AND VACTA.STATUS_ATIVO_TIPO_VEICULO = TRUE;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(?);");
             stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             final List<ConfiguracaoTipoVeiculoAferivel> configTipoAfericao = new ArrayList<>();
             while (rSet.next()) {
