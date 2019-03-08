@@ -44,7 +44,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
                 }
             }
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -55,20 +55,24 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<ConfiguracaoTipoVeiculoAferivel> configTipoAfericao = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO " +
-                    "WHERE COD_UNIDADE = ? AND STATUS_ATIVO = TRUE;");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO VACTA " +
+                    "WHERE VACTA.COD_EMPRESA_TIPO_VEICULO = (SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?) " +
+                    "AND (VACTA.COD_UNIDADE_CONFIGURACAO = ? OR VACTA.COD_UNIDADE_CONFIGURACAO IS NULL) " +
+                    "AND VACTA.STATUS_ATIVO_TIPO_VEICULO = TRUE;");
             stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
+            final List<ConfiguracaoTipoVeiculoAferivel> configTipoAfericao = new ArrayList<>();
             while (rSet.next()) {
                 configTipoAfericao.add(ConfiguracaoConverter.createConfiguracaoTipoVeiculoAfericao(rSet));
             }
+            return configTipoAfericao;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
-        return configTipoAfericao;
     }
 
     @Override
@@ -98,7 +102,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
             if (conn != null) {
                 conn.rollback();
             }
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -120,7 +124,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
             }
             return configuracoes;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -144,7 +148,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
                 throw new SQLException("Erro ao inserir item na tabela escala");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -170,7 +174,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
                 return false;
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
         return true;
     }
