@@ -17,7 +17,8 @@ public final class TransportTranslecchiRequesterImpl implements TransportTransle
 
     @Override
     public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
-        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Transport");
+        throw new BloqueadoIntegracaoException("Devido à integração com o Sistema Transport, " +
+                "a criação de modelos de checklist está bloqueada.");
     }
 
     @Override
@@ -25,7 +26,8 @@ public final class TransportTranslecchiRequesterImpl implements TransportTransle
                                       @NotNull final Long codUnidade,
                                       @NotNull final Long codModelo,
                                       @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
-        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Transport");
+        throw new BloqueadoIntegracaoException("Devido à integração com o Sistema Transport, " +
+                "a atualização de modelos de checklist está bloqueada.");
     }
 
     @Override
