@@ -59,7 +59,8 @@ public final class QuizModeloConverter {
     @NotNull
     public static Alternativa createAlternativa(@NotNull final ResultSet rSet,
                                                 @NotNull final String tipoPergunta) throws Throwable {
-        if (tipoPergunta.equals(PerguntaQuiz.TIPO_MULTIPLE_CHOICE) || tipoPergunta.equals(PerguntaQuiz.TIPO_SINGLE_CHOICE)) {
+        if (tipoPergunta.equals(PerguntaQuiz.TIPO_MULTIPLE_CHOICE)
+                || tipoPergunta.equals(PerguntaQuiz.TIPO_SINGLE_CHOICE)) {
             final AlternativaEscolhaQuiz alternativa = new AlternativaEscolhaQuiz();
             alternativa.setCodigo(rSet.getLong("CODIGO"));
             alternativa.setAlternativa(rSet.getString("ALTERNATIVA"));

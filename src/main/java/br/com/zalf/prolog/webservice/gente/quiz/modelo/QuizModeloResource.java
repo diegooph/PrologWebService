@@ -5,8 +5,8 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -23,12 +23,37 @@ public final class QuizModeloResource {
     @NotNull
     private final QuizModeloService service = new QuizModeloService();
 
+    @POST
+    @Secured
+    @Path("/{codUnidade}")
+    public AbstractResponse insertModeloQuiz(@PathParam("codUnidade") @Required final Long codUnidade,
+                                             @Required final ModeloQuiz modeloQuiz) throws ProLogException {
+        return service.insertModeloQuiz(codUnidade, modeloQuiz);
+    }
+
+    @PUT
+    @Secured
+    @Path("/{codUnidade}")
+    public Response updateModeloQuiz(@PathParam("codUnidade") @Required final Long codUnidade,
+                                     @Required final ModeloQuiz modeloQuiz) throws ProLogException {
+        return service.updateModeloQuiz(codUnidade, modeloQuiz);
+    }
+
+    @PUT
+    @Secured
+    @Path("/funcoes/{codUnidade}/{codModeloQuiz}")
+    public Response updateCargosModeloQuiz(@PathParam("codUnidade") @Required final Long codUnidade,
+                                           @PathParam("codModeloQuiz") @Required final Long codModeloQuiz,
+                                           @Required final List<Cargo> funcoes) throws ProLogException {
+        return service.updateCargosModeloQuiz(codUnidade, codModeloQuiz, funcoes);
+    }
+
     @GET
     @Secured(permissions = {Pilares.Gente.Quiz.Modelo.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR})
     @Path("/{codUnidade}/{codFuncaoColaborador}")
     public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(
-            @PathParam("codUnidade") Long codUnidade,
-            @PathParam("codFuncaoColaborador") Long codFuncaoColaborador) {
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codFuncaoColaborador") @Required final Long codFuncaoColaborador) throws ProLogException {
         return service.getModelosQuizDisponiveisByCodUnidadeByCodFuncao(codUnidade, codFuncaoColaborador);
     }
 
@@ -37,50 +62,18 @@ public final class QuizModeloResource {
             Pilares.Gente.Quiz.Modelo.CRIAR,
             Pilares.Gente.Quiz.Modelo.VISUALIZAR,
             Pilares.Gente.Quiz.Modelo.ALTERAR})
-    @Path("/listagens/{codUnidade}")
-    public List<ModeloQuizListagem> getModelosQuizzesByCodUnidade(@PathParam("codUnidade") Long codUnidade)
-            throws ProLogException {
+    @Path("/listagem")
+    public List<ModeloQuizListagem> getModelosQuizzesByCodUnidade(
+            @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
         return service.getModelosQuizzesByCodUnidade(codUnidade);
     }
 
     @GET
     @Secured
     @Path("/{codUnidade}/{codModeloQuiz}/completos")
-    public ModeloQuiz getModeloQuiz(@PathParam("codUnidade") Long codUnidade,
-                                    @PathParam("codModeloQuiz") Long codModeloQuiz) {
+    public ModeloQuiz getModeloQuiz(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codModeloQuiz") @Required final Long codModeloQuiz) throws ProLogException {
         return service.getModeloQuiz(codUnidade, codModeloQuiz);
-    }
-
-    @POST
-    @Secured
-    @Path("/{codUnidade}")
-    public AbstractResponse insertModeloQuiz(@Required ModeloQuiz modeloQuiz,
-                                             @PathParam("codUnidade") @Required Long codUnidade) throws
-            ProLogException {
-        return service.insertModeloQuiz(modeloQuiz, codUnidade);
-    }
-
-    @PUT
-    @Secured
-    @Path("/{codUnidade}")
-    public Response updateModeloQuiz(ModeloQuiz modeloQuiz, @PathParam("codUnidade") Long codUnidade) {
-        if (service.updateModeloQuiz(modeloQuiz, codUnidade)) {
-            return Response.ok("Modelo de quiz atualizado com sucesso");
-        } else {
-            return Response.error("Erro ao atualizar o quiz");
-        }
-    }
-
-    @PUT
-    @Secured
-    @Path("/funcoes/{codUnidade}/{codModeloQuiz}")
-    public Response updateCargosModeloQuiz(List<Cargo> funcoes,
-                                           @PathParam("codModeloQuiz") Long codModeloQuiz,
-                                           @PathParam("codUnidade") Long codUnidade) {
-        if (service.updateCargosModeloQuiz(funcoes, codModeloQuiz, codUnidade)) {
-            return Response.ok("Funções alteradas com sucesso");
-        } else {
-            return Response.error("Erro ao alterar as funções vinculadas ao quiz");
-        }
     }
 }
