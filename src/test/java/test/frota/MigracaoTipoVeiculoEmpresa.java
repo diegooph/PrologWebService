@@ -35,6 +35,8 @@ public class MigracaoTipoVeiculoEmpresa {
         TIPOS_TROCARAM_DE_NOME.put(230L, 73L);
         TIPOS_TROCARAM_DE_NOME.put(349L, 97L);
         TIPOS_TROCARAM_DE_NOME.put(358L, 99L);
+        TIPOS_TROCARAM_DE_NOME.put(376L, 101L);
+        TIPOS_TROCARAM_DE_NOME.put(377L, 101L);
     }
 
     @Before
