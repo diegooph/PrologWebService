@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controlejornada.model;
+package br.com.zalf.prolog.webservice.commons;
 
 import com.google.common.base.Preconditions;
 import com.sun.istack.internal.NotNull;

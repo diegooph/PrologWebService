@@ -12,7 +12,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andame
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ViagemEmAndamento;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ColaboradorEmDescanso;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
