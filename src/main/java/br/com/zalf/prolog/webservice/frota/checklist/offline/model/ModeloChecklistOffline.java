@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.offline;
+package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import org.jetbrains.annotations.NotNull;

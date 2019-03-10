@@ -1,10 +1,10 @@
-package br.com.zalf.prolog.webservice.frota.checklist.offline;
+package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
 
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import org.jetbrains.annotations.NotNull;
 
-import static br.com.zalf.prolog.webservice.frota.checklist.offline.EstadoChecklistOfflineSupport.*;
+import static br.com.zalf.prolog.webservice.frota.checklist.offline.model.EstadoChecklistOfflineSupport.*;
 
 /**
  * Created on 10/03/19

@@ -36,6 +36,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDao;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.OrdemServicoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.OrdemServicoRelatorioDaoImpl;
@@ -428,6 +430,11 @@ public final class Injection {
     @NotNull
     public static AcompanhamentoViagemDao provideAcompanhamentoViagemDao() {
         return new AcompanhamentoViagemDaoImpl();
+    }
+
+    @NotNull
+    public static ChecklistOfflineDao provideChecklistOfflineDao() {
+        return new ChecklistOfflineDaoImpl();
     }
 
     // ================================================
