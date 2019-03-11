@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+### Stage
+* Cria novo package e estrutra de DAO para os métodos dos tipos de veículos (PL-1718)
+* Cria testes para validar métodos dos tipos de veículos (PL-1719)
+
+
 <a name="v0.0.85"></a>
 ## Version [v0.0.85](https://github.com/luizfp/PrologWebService/compare/v0.0.84...v0.0.85) (release-date) [unreleased]
 
