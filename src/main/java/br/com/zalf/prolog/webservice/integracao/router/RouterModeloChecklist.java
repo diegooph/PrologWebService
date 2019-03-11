@@ -22,7 +22,7 @@ public class RouterModeloChecklist extends Router {
                         .withChecklistModeloDao(checklistModeloDao)
                         .build(),
                 userToken,
-                RecursoIntegrado.CHECKLIST);
+                RecursoIntegrado.CHECKLIST_MODELO);
     }
 
     private RouterModeloChecklist(@NotNull final IntegracaoDao integracaoDao,

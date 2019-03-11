@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
+import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
@@ -7,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.transport.model.TransportTranslecchiRequester;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,20 +16,17 @@ import org.jetbrains.annotations.NotNull;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class SistemaTransportTranslecchi extends Sistema {
-    @NotNull
-    private final TransportTranslecchiRequester requester;
 
-    public SistemaTransportTranslecchi(@NotNull final TransportTranslecchiRequester requester,
-                                       @NotNull final SistemaKey sistemaKey,
+    public SistemaTransportTranslecchi(@NotNull final SistemaKey sistemaKey,
                                        @NotNull final IntegradorProLog integradorProLog,
                                        @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, userToken);
-        this.requester = requester;
     }
 
     @Override
     public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
-        requester.insertModeloChecklist(modeloChecklist);
+        throw new BloqueadoIntegracaoException("Devido à integração com o Sistema Transport, " +
+                "a criação de modelos de checklist está bloqueada.");
     }
 
     @Override
@@ -37,16 +34,17 @@ public final class SistemaTransportTranslecchi extends Sistema {
                                       @NotNull final Long codUnidade,
                                       @NotNull final Long codModelo,
                                       @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
-        requester.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
+        throw new BloqueadoIntegracaoException("Devido à integração com o Sistema Transport, " +
+                "a atualização de modelos de checklist está bloqueada.");
     }
 
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
-        requester.resolverItem(item);
+        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Transport");
     }
 
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
-        requester.resolverItens(itensResolucao);
+        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Transport");
     }
 }
