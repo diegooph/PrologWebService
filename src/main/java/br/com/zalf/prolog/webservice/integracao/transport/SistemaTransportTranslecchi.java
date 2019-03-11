@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.transport.model.TransportTranslecchiRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.transport.model.TransportTranslecchiRequester;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,9 +17,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class SistemaTransportTranslecchi extends Sistema {
     @NotNull
-    private final TransportTranslecchiRequesterImpl requester;
+    private final TransportTranslecchiRequester requester;
 
-    public SistemaTransportTranslecchi(@NotNull final TransportTranslecchiRequesterImpl requester,
+    public SistemaTransportTranslecchi(@NotNull final TransportTranslecchiRequester requester,
                                        @NotNull final SistemaKey sistemaKey,
                                        @NotNull final IntegradorProLog integradorProLog,
                                        @NotNull final String userToken) {
