@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +30,7 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement(
                     "SELECT * FROM INTEGRACAO.FUNC_INTEGRACAO_RESOLVE_ITENS_PENDENTES_EMPRESA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-            final LocalDateTime dataHoraSincroniaResolucao = LocalDateTime.now();
+            final LocalDateTime dataHoraSincroniaResolucao = Now.localDateTimeUtc();
             for (final ItemResolvidoIntegracaoTransport itensResolvido : itensResolvidos) {
                 stmt.setLong(1, itensResolvido.getCodUnidadeOrdemServico());
                 stmt.setLong(2, itensResolvido.getCodOrdemServico());
