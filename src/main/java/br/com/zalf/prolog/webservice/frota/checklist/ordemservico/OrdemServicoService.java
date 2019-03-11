@@ -130,7 +130,9 @@ final class OrdemServicoService {
     Response resolverItem(@NotNull final String userToken,
                           @NotNull final ResolverItemOrdemServico item) throws ProLogException {
         try {
-            RouterChecklistOrdemServico.create(dao, userToken).resolverItem(item);
+            RouterChecklistOrdemServico
+                    .create(dao, userToken)
+                    .resolverItem(item);
             return Response.ok("Item resolvido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver item", t);
@@ -145,7 +147,9 @@ final class OrdemServicoService {
     Response resolverItens(@NotNull final String userToken,
                            @NotNull final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
         try {
-            RouterChecklistOrdemServico.create(dao, userToken).resolverItens(itensResolucao);
+            RouterChecklistOrdemServico
+                    .create(dao, userToken)
+                    .resolverItens(itensResolucao);
             return Response.ok("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver itens", t);
