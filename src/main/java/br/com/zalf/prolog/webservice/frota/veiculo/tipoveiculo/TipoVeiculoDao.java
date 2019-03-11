@@ -33,7 +33,7 @@ public interface TipoVeiculoDao {
     /**
      * Método utilizado para buscar a lista de {@link TipoVeiculo tipos de veículos} da empresa.
      *
-     * @param codEmpresa Código da {@link Empresa empresa} que será buscado os tipos de veículos.
+     * @param codEmpresa Código da {@link Empresa empresa} para a qual serão buscados os tipos de veículos.
      * @return {@link List <TipoVeiculo> Lista de tipos de veículos} disponíveis na empresa.
      * @throws Throwable Se algum erro ocorrer na busca dos tipos de veículos.
      */
@@ -46,18 +46,18 @@ public interface TipoVeiculoDao {
      *
      * @param codTipoVeiculo {@link TipoVeiculo#codigo Código} do tipo de veículo a ser buscado.
      * @return {@link TipoVeiculo Tipo de veículo} do código especificado.
-     * @throws Throwable Se ocorrer algum erro na busca das informações
+     * @throws Throwable Se ocorrer algum erro na busca das informações.
      */
     @NotNull
     TipoVeiculo getTipoVeiculo(@NotNull final Long codTipoVeiculo) throws Throwable;
 
     /**
      * Método utilizado para deletar um {@link TipoVeiculo tipo de veículo} de uma empresa.
-     * A deleção do tipo de veículo só acontece se o {@link TipoVeiculo#codigo} não tiver nenhuma placa associada.
+     * A deleção do tipo de veículo só acontece se o {@link TipoVeiculo#codigo} não tiver nenhum vínculo no sistema.
      *
      * @param codEmpresa     Código da {@link Empresa empresa} à qual o tipo de veículo pertence.
      * @param codTipoVeiculo Código do {@link TipoVeiculo tipo de veículo} a ser deletado.
-     * @throws Throwable Se algum problema acontecer no processo de deleção.
+     * @throws Throwable Se algum problema ocorrer no processo de deleção.
      */
     void deleteTipoVeiculoByEmpresa(@NotNull final Long codEmpresa,
                                     @NotNull final Long codTipoVeiculo) throws Throwable;

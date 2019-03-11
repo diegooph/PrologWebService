@@ -31,7 +31,7 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
             stmt.setBoolean(3, true);
             final int count = stmt.executeUpdate();
             if (count == 0) {
-                throw new SQLException("Erro ao cadastrar o tipo de veículo");
+                throw new SQLException("Erro ao inserir o tipo de veículo");
             }
         } finally {
             close(conn, stmt);
