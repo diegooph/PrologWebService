@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
@@ -24,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.*;
 import java.time.Clock;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -296,19 +299,24 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                     "  KM = ?, " +
                     "  STATUS_RESOLUCAO = ?, " +
                     "  DATA_HORA_CONSERTO = ?, " +
+                    "  DATA_HORA_INICIO_RESOLUCAO = ?, " +
+                    "  DATA_HORA_FIM_RESOLUCAO = ?, " +
                     "  FEEDBACK_CONSERTO = ? " +
                     "WHERE COD_UNIDADE = ? " +
                     "      AND CODIGO = ? " +
                     "      AND DATA_HORA_CONSERTO IS NULL;");
             final Long cpf = item.getCpfColaboradoResolucao();
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(item.getCodUnidadeOrdemServico(), conn);
             stmt.setLong(1, cpf);
-            stmt.setLong(2, item.getDuracaoResolucaoItem().toMillis());
+            stmt.setLong(2, item.getDuracaoResolucaoMillis());
             stmt.setLong(3, item.getKmColetadoVeiculo());
             stmt.setString(4, StatusItemOrdemServico.RESOLVIDO.asString());
-            stmt.setObject(5, OffsetDateTime.now(Clock.systemUTC()));
-            stmt.setString(6, item.getFeedbackResolucao().trim());
-            stmt.setLong(7, item.getCodUnidadeOrdemServico());
-            stmt.setLong(8, item.getCodItemResolvido());
+            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setObject(6, item.getDataHoraInicioResolucao().atZone(zoneId).toOffsetDateTime());
+            stmt.setObject(7, item.getDataHoraFimResolucao().atZone(zoneId).toOffsetDateTime());
+            stmt.setString(8, item.getFeedbackResolucao().trim());
+            stmt.setLong(9, item.getCodUnidadeOrdemServico());
+            stmt.setLong(10, item.getCodItemResolvido());
             if (stmt.executeUpdate() > 0) {
                 updateStatusOs(conn, item.getCodOrdemServico(), item.getCodUnidadeOrdemServico());
                 final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
@@ -340,17 +348,22 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                     "  KM = ?, " +
                     "  STATUS_RESOLUCAO = ?, " +
                     "  DATA_HORA_CONSERTO = ?, " +
+                    "  DATA_HORA_INICIO_RESOLUCAO = ?, " +
+                    "  DATA_HORA_FIM_RESOLUCAO = ?, " +
                     "  FEEDBACK_CONSERTO = ? " +
                     "WHERE COD_UNIDADE = ? AND CODIGO = ANY (?) AND DATA_HORA_CONSERTO IS NULL;");
-            final OffsetDateTime now = OffsetDateTime.now(Clock.systemUTC());
+            final OffsetDateTime now = Now.offsetDateTimeUtc();
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(itensResolucao.getCodUnidadeOrdemServico(), conn);
             stmt.setLong(1, itensResolucao.getCpfColaboradorResolucao());
-            stmt.setLong(2, itensResolucao.getDuracaoResolucaoItens().toMillis());
+            stmt.setLong(2, itensResolucao.getDuracaoResolucaoMillis());
             stmt.setLong(3, itensResolucao.getKmColetadoVeiculo());
             stmt.setString(4, StatusItemOrdemServico.RESOLVIDO.asString());
             stmt.setObject(5, now);
-            stmt.setString(6, itensResolucao.getFeedbackResolucao().trim());
-            stmt.setLong(7, itensResolucao.getCodUnidadeOrdemServico());
-            stmt.setArray(8, PostgresUtils.listToArray(conn, SqlType.BIGINT, itensResolucao.getCodigosItens()));
+            stmt.setObject(6, itensResolucao.getDataHoraInicioResolucao().atZone(zoneId).toOffsetDateTime());
+            stmt.setObject(7, itensResolucao.getDataHoraFimResolucao().atZone(zoneId).toOffsetDateTime());
+            stmt.setString(8, itensResolucao.getFeedbackResolucao().trim());
+            stmt.setLong(9, itensResolucao.getCodUnidadeOrdemServico());
+            stmt.setArray(10, PostgresUtils.listToArray(conn, SqlType.BIGINT, itensResolucao.getCodigosItens()));
             if (stmt.executeUpdate() == itensResolucao.getCodigosItens().size()) {
                 fechaOrdensServicosComBaseItens(
                         conn,

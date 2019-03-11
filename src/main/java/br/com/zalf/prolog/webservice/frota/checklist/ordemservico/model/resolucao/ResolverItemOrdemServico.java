@@ -3,10 +3,10 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluc
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Classe que contém as informações do Conserto de um Item de uma Ordem de Serviço.
@@ -42,10 +42,14 @@ public final class ResolverItemOrdemServico {
     private long kmColetadoVeiculo;
 
     /**
-     * Duração da resolução do Item.
+     * A data e hora em que a resolução do item foi iniciada pelo colaborador.
      */
-    @SerializedName("duracaoResolucaoItemEmSegundos")
-    private Duration duracaoResolucaoItem;
+    private LocalDateTime dataHoraInicioResolucao;
+
+    /**
+     * A data e hora em que a resolução do item foi finalizada pelo colaborador.
+     */
+    private LocalDateTime dataHoraFimResolucao;
 
     /**
      * Código da Ordem de Serviço a qual o Item pertence.
@@ -69,7 +73,8 @@ public final class ResolverItemOrdemServico {
         resolverItem.setFeedbackResolucao("Resolvido!");
         resolverItem.setPlacaVeiculo("AAA1234");
         resolverItem.setKmColetadoVeiculo(1234L);
-        resolverItem.setDuracaoResolucaoItem(Duration.ofMinutes(10));
+        resolverItem.setDataHoraInicioResolucao(LocalDateTime.now());
+        resolverItem.setDataHoraFimResolucao(LocalDateTime.now().plusDays(1));
         resolverItem.setCodOrdemServico(10L);
         resolverItem.setCodUnidadeOrdemServico(5L);
         return resolverItem;
@@ -115,12 +120,20 @@ public final class ResolverItemOrdemServico {
         this.kmColetadoVeiculo = kmColetadoVeiculo;
     }
 
-    public Duration getDuracaoResolucaoItem() {
-        return duracaoResolucaoItem;
+    public LocalDateTime getDataHoraInicioResolucao() {
+        return dataHoraInicioResolucao;
     }
 
-    public void setDuracaoResolucaoItem(final Duration duracaoResolucaoItem) {
-        this.duracaoResolucaoItem = duracaoResolucaoItem;
+    public void setDataHoraInicioResolucao(final LocalDateTime dataHoraInicioResolucao) {
+        this.dataHoraInicioResolucao = dataHoraInicioResolucao;
+    }
+
+    public LocalDateTime getDataHoraFimResolucao() {
+        return dataHoraFimResolucao;
+    }
+
+    public void setDataHoraFimResolucao(final LocalDateTime dataHoraFimResolucao) {
+        this.dataHoraFimResolucao = dataHoraFimResolucao;
     }
 
     public Long getCodOrdemServico() {
@@ -137,5 +150,9 @@ public final class ResolverItemOrdemServico {
 
     public void setCodUnidadeOrdemServico(final Long codUnidadeOrdemServico) {
         this.codUnidadeOrdemServico = codUnidadeOrdemServico;
+    }
+
+    public long getDuracaoResolucaoMillis() {
+        return ChronoUnit.MILLIS.between(dataHoraInicioResolucao, dataHoraFimResolucao);
     }
 }
