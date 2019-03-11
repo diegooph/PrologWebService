@@ -1,6 +1,7 @@
 package test.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoService;
@@ -37,10 +38,12 @@ public class TipoVeiculoTest extends BaseTest {
         final TipoVeiculo tipoVeiculoCriado = new TipoVeiculo();
         tipoVeiculoCriado.setCodEmpresa(COD_EMPRESA_ZALF);
         tipoVeiculoCriado.setNome("Tipo Teste");
-        final Response response = service.insertTipoVeiculoPorEmpresa(tipoVeiculoCriado);
+        final ResponseWithCod response = service.insertTipoVeiculoPorEmpresa(tipoVeiculoCriado);
 
         Assert.assertNotNull(response);
         Assert.assertTrue(response.isOk());
+        Assert.assertNotNull(response.getCodigo());
+        Assert.assertTrue(response.getCodigo() > 0L);
 
         final List<TipoVeiculo> tiposVeiculos =
                 service.getTiposVeiculosByEmpresa(getValidToken(CPF_COLABORADOR.toString()), COD_EMPRESA_ZALF);
@@ -86,43 +89,38 @@ public class TipoVeiculoTest extends BaseTest {
 
     @Test
     public void testDeleteTipoVeiculoEmpresa() throws Throwable {
-        List<TipoVeiculo> tiposVeiculos =
+        final TipoVeiculo tipoVeiculoCriado = new TipoVeiculo();
+        tipoVeiculoCriado.setCodEmpresa(COD_EMPRESA_ZALF);
+        tipoVeiculoCriado.setNome("Tipo Teste");
+
+        final ResponseWithCod responseInsert = service.insertTipoVeiculoPorEmpresa(tipoVeiculoCriado);
+        Assert.assertNotNull(responseInsert);
+        Assert.assertTrue(responseInsert.isOk());
+        Assert.assertNotNull(responseInsert.getCodigo());
+        Assert.assertTrue(responseInsert.getCodigo() > 0L);
+        tipoVeiculoCriado.setCodigo(responseInsert.getCodigo());
+
+        // Deleta.
+        final Response responseDelete = service.deleteTipoVeiculoByEmpresa(
+                COD_EMPRESA_ZALF,
+                tipoVeiculoCriado.getCodigo());
+
+        Assert.assertNotNull(responseDelete);
+        Assert.assertTrue(responseDelete.isOk());
+
+        final List<TipoVeiculo> tiposVeiculos =
                 service.getTiposVeiculosByEmpresa(getValidToken(CPF_COLABORADOR.toString()), COD_EMPRESA_ZALF);
 
         Assert.assertNotNull(tiposVeiculos);
         Assert.assertFalse(tiposVeiculos.isEmpty());
 
-        Collections.shuffle(tiposVeiculos);
-
-        final TipoVeiculo tipoVeiculoSorteado = tiposVeiculos.get(0);
-        Assert.assertNotNull(tipoVeiculoSorteado);
-        final Response response = service.deleteTipoVeiculoByEmpresa(COD_EMPRESA_ZALF, tipoVeiculoSorteado.getCodigo());
-
-        Assert.assertNotNull(response);
-        Assert.assertTrue(response.isOk());
-
-        // Ao buscar todos os tipos da empresa, o tipo deletado não deve estar presente.
-        tiposVeiculos = service.getTiposVeiculosByEmpresa(getValidToken(CPF_COLABORADOR.toString()), COD_EMPRESA_ZALF);
-
-        Assert.assertNotNull(tiposVeiculos);
-        Assert.assertFalse(tiposVeiculos.isEmpty());
-
         boolean estaNaListagem = false;
-        for (TipoVeiculo tipoVeiculo : tiposVeiculos) {
-            if (tipoVeiculo.getNome().equals(tipoVeiculoSorteado.getNome())
-                    && tipoVeiculo.getCodEmpresa().equals(tipoVeiculoSorteado.getCodEmpresa())) {
+        for (final TipoVeiculo tipoVeiculo : tiposVeiculos) {
+            if (tipoVeiculo.getCodigo().equals(tipoVeiculoCriado.getCodigo())) {
                 estaNaListagem = true;
             }
         }
         Assert.assertFalse(estaNaListagem);
-
-        // Ao buscar através do código, o tipo de veículo deve ser retornado.
-        final TipoVeiculo tipoVeiculoBuscado = service.getTipoVeiculo(tipoVeiculoSorteado.getCodigo());
-
-        Assert.assertNotNull(tipoVeiculoBuscado);
-        Assert.assertEquals(tipoVeiculoSorteado.getCodigo(), tipoVeiculoBuscado.getCodigo());
-        Assert.assertEquals(tipoVeiculoSorteado.getCodEmpresa(), tipoVeiculoBuscado.getCodEmpresa());
-        Assert.assertEquals(tipoVeiculoSorteado.getNome(), tipoVeiculoBuscado.getNome());
     }
 
     @Test
@@ -140,7 +138,7 @@ public class TipoVeiculoTest extends BaseTest {
             Assert.assertNotNull(tipoVeiculo.getCodEmpresa());
             Assert.assertEquals(tipoVeiculo.getCodEmpresa(), COD_EMPRESA_ZALF);
             Assert.assertNotNull(tipoVeiculo.getNome());
-            Assert.assertTrue(tipoVeiculo.getNome().trim().isEmpty());
+            Assert.assertFalse(tipoVeiculo.getNome().trim().isEmpty());
         });
     }
 
@@ -162,6 +160,6 @@ public class TipoVeiculoTest extends BaseTest {
         Assert.assertNotNull(tipoVeiculo.getCodEmpresa());
         Assert.assertEquals(tipoVeiculo.getCodEmpresa(), COD_EMPRESA_ZALF);
         Assert.assertNotNull(tipoVeiculo.getNome());
-        Assert.assertTrue(tipoVeiculo.getNome().trim().isEmpty());
+        Assert.assertFalse(tipoVeiculo.getNome().trim().isEmpty());
     }
 }

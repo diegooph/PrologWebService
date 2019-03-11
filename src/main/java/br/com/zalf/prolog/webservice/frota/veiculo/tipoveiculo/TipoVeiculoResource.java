@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -29,7 +30,7 @@ public final class TipoVeiculoResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos-veiculos")
-    public Response insertTipoVeiculoPorEmpresa(@Required final TipoVeiculo tipoVeiculo) throws ProLogException {
+    public ResponseWithCod insertTipoVeiculoPorEmpresa(@Required final TipoVeiculo tipoVeiculo) throws ProLogException {
         return service.insertTipoVeiculoPorEmpresa(tipoVeiculo);
     }
 

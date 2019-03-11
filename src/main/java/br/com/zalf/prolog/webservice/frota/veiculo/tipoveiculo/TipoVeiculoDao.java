@@ -17,9 +17,11 @@ public interface TipoVeiculoDao {
      * Insere um {@link TipoVeiculo tipo de veículo} no banco de dados.
      *
      * @param tipoVeiculo Objeto contendo as informações do tipo de veículo a ser inserido.
+     * @return O código do {@link TipoVeiculo tipo de veículo} inserido.
      * @throws Throwable Caso ocorra algum erro ao salvar no banco de dados.
      */
-    void insertTipoVeiculoPorEmpresa(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable;
+    @NotNull
+    Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable;
 
     /**
      * Atualiza as informações de um {@link TipoVeiculo tipo de veículo}.

@@ -18,23 +18,27 @@ import java.util.List;
  */
 public final class TipoVeiculoDaoImpl extends DatabaseConnection implements TipoVeiculoDao {
 
+    @NotNull
     @Override
-    public void insertTipoVeiculoPorEmpresa(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+    public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "INSERT INTO VEICULO_TIPO(COD_EMPRESA, NOME, STATUS_ATIVO) VALUES (?, ?, ?)");
+                    "INSERT INTO VEICULO_TIPO(COD_EMPRESA, NOME, STATUS_ATIVO) VALUES (?, ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, tipoVeiculo.getCodEmpresa());
             stmt.setString(2, tipoVeiculo.getNome().trim());
             stmt.setBoolean(3, true);
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
                 throw new SQLException("Erro ao inserir o tipo de veículo");
             }
         } finally {
-            close(conn, stmt);
+            close(conn, stmt, rSet);
         }
     }
 

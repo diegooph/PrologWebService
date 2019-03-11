@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -22,10 +23,11 @@ public final class TipoVeiculoService {
     private final TipoVeiculoDao dao = Injection.provideTipoVeiculoDao();
 
     @NotNull
-    public Response insertTipoVeiculoPorEmpresa(final TipoVeiculo tipoVeiculo) throws ProLogException {
+    public ResponseWithCod insertTipoVeiculoPorEmpresa(final TipoVeiculo tipoVeiculo) throws ProLogException {
         try {
-            dao.insertTipoVeiculoPorEmpresa(tipoVeiculo);
-            return Response.ok("Tipo de veículo inserido com sucesso");
+            return ResponseWithCod.ok(
+                    "Tipo de veículo inserido com sucesso",
+                    dao.insertTipoVeiculo(tipoVeiculo));
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao inserir o tipo de veículo", e);
             throw Injection
