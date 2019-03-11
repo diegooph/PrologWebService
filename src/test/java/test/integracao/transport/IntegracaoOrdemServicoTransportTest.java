@@ -36,7 +36,7 @@ public class IntegracaoOrdemServicoTransportTest {
     }
 
     @Test
-    public void testBuscaAfericoes() throws ProLogException {
+    public void testBuscaItensPendentes() throws ProLogException {
         final List<ItemPendenteIntegracaoTransport> itensPendentes =
                 service.getItensPendentes(TOKEN_TRANSLECCHI, 10L);
 
@@ -64,7 +64,10 @@ public class IntegracaoOrdemServicoTransportTest {
             Assert.assertEquals(itemPendenteIntegracaoTransport.getStatusItemOrdemServico(), StatusItemOrdemServico.PENDENTE);
             Assert.assertNotNull(itemPendenteIntegracaoTransport.getPrazoResolucaoItemHoras());
             final Integer prazo = itemPendenteIntegracaoTransport.getPrazoResolucaoItemHoras();
-            Assert.assertTrue(prazo == 1 || prazo == 48 || prazo == 720);
+            Assert.assertTrue(
+                    prazo == PrioridadeAlternativa.CRITICA.getPrazoResolucaoHoras()
+                            || prazo == PrioridadeAlternativa.ALTA.getPrazoResolucaoHoras()
+                            || prazo == PrioridadeAlternativa.BAIXA.getPrazoResolucaoHoras());
             Assert.assertNotNull(itemPendenteIntegracaoTransport.getQtdApontamentos());
             Assert.assertTrue(itemPendenteIntegracaoTransport.getQtdApontamentos() > 0);
             Assert.assertNotNull(itemPendenteIntegracaoTransport.getCodChecklistPrimeiroApontamento());
@@ -78,6 +81,7 @@ public class IntegracaoOrdemServicoTransportTest {
             Assert.assertNotNull(itemPendenteIntegracaoTransport.getDescricaoAlternativa());
             Assert.assertFalse(itemPendenteIntegracaoTransport.getDescricaoAlternativa().isEmpty());
             Assert.assertNotNull(itemPendenteIntegracaoTransport.getTipoOutros());
+            // TODO: Verificar esse if e o tratamento do NOK.
             if (!itemPendenteIntegracaoTransport.getTipoOutros()) {
                 Assert.assertEquals(itemPendenteIntegracaoTransport.getDescricaoTipoOutros(), "NOK");
             }
@@ -91,7 +95,7 @@ public class IntegracaoOrdemServicoTransportTest {
 
     @Test
     public void testResolveItensPendentes() throws ProLogException {
-        // Fazemos -1 para utilizar o código na busca
+        // Fazemos -1 para utilizar o código na busca.
         final Long codUltimoItemPendenteSincronizado = getCodUltimoItemPendente() - 1;
         final List<ItemPendenteIntegracaoTransport> itensPendentes =
                 service.getItensPendentes(TOKEN_TRANSLECCHI, codUltimoItemPendenteSincronizado);

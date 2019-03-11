@@ -11,6 +11,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum PrioridadeAlternativa implements PieSlice {
     CRITICA("CRITICA") {
+
+        @Override
+        public int getPrazoResolucaoHoras() {
+            return 1;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -24,6 +30,12 @@ public enum PrioridadeAlternativa implements PieSlice {
         }
     },
     ALTA("ALTA") {
+
+        @Override
+        public int getPrazoResolucaoHoras() {
+            return 48;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -37,6 +49,12 @@ public enum PrioridadeAlternativa implements PieSlice {
         }
     },
     BAIXA("BAIXA") {
+
+        @Override
+        public int getPrazoResolucaoHoras() {
+            return 720;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -66,6 +84,8 @@ public enum PrioridadeAlternativa implements PieSlice {
     public String toString() {
         return asString();
     }
+
+    public abstract int getPrazoResolucaoHoras();
 
     public static PrioridadeAlternativa fromString(String text) throws IllegalArgumentException {
         if (text != null) {
