@@ -81,9 +81,10 @@ public class IntegracaoOrdemServicoTransportTest {
             Assert.assertNotNull(itemPendenteIntegracaoTransport.getDescricaoAlternativa());
             Assert.assertFalse(itemPendenteIntegracaoTransport.getDescricaoAlternativa().isEmpty());
             Assert.assertNotNull(itemPendenteIntegracaoTransport.getTipoOutros());
-            // TODO: Verificar esse if e o tratamento do NOK.
-            if (!itemPendenteIntegracaoTransport.getTipoOutros()) {
-                Assert.assertEquals(itemPendenteIntegracaoTransport.getDescricaoTipoOutros(), "NOK");
+            if (itemPendenteIntegracaoTransport.getTipoOutros()) {
+                Assert.assertNotNull(itemPendenteIntegracaoTransport.getDescricaoTipoOutros());
+            } else {
+                Assert.assertNull(itemPendenteIntegracaoTransport.getDescricaoTipoOutros());
             }
             Assert.assertNotNull(itemPendenteIntegracaoTransport.getPrioridadeAlternativa());
             Assert.assertTrue(
