@@ -37,7 +37,9 @@ public final class ChecklistModeloService {
     Response insertModeloChecklist(@NotNull final String token,
                                    @NotNull final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
         try {
-            RouterModeloChecklist.create(dao, token).insertModeloChecklist(modeloChecklist);
+            RouterModeloChecklist
+                    .create(dao, token)
+                    .insertModeloChecklist(modeloChecklist);
             return Response.ok("Modelo de checklist inserido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir modelo de checklist", t);
