@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Stage
+* Salva data/hora de início e fim da resolução de itens de O.S. (PL-1809)
+
 <a name="v0.0.85"></a>
 ## Version [v0.0.85](https://github.com/luizfp/PrologWebService/compare/v0.0.84...v0.0.85) (release-date) [unreleased]
 
