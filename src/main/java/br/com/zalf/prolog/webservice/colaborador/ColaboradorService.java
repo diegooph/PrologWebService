@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.AmazonCredentialsProvider;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorExceptionHandler;
 import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorValidator;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
@@ -25,10 +24,9 @@ import java.util.List;
  * Classe ColaboradorService responsavel por comunicar-se com a interface DAO
  */
 public class ColaboradorService {
-
     private static final String TAG = ColaboradorService.class.getSimpleName();
+    @NotNull
     private final ColaboradorDao dao = Injection.provideColaboradorDao();
-    private final ColaboradorExceptionHandler exceptionHandler = Injection.provideColaboradorExceptionHandler();
 
     public void insert(Colaborador colaborador) throws ProLogException {
         try {
@@ -37,7 +35,9 @@ public class ColaboradorService {
         } catch (Throwable e) {
             final String errorMessage = "Erro ao inserir o colaborador";
             Log.e(TAG, errorMessage, e);
-            throw exceptionHandler.map(e, errorMessage);
+            throw Injection
+                    .provideColaboradorExceptionHandler()
+                    .map(e, errorMessage);
         }
     }
 
@@ -48,7 +48,9 @@ public class ColaboradorService {
         } catch (Throwable e) {
             final String errorMessage = "Erro ao atualizar colaborador";
             Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
-            throw exceptionHandler.map(e, errorMessage);
+            throw Injection
+                    .provideColaboradorExceptionHandler()
+                    .map(e, errorMessage);
         }
     }
 
@@ -72,12 +74,27 @@ public class ColaboradorService {
         }
     }
 
-    public Colaborador getByCpf(Long cpf) {
+    @NotNull
+    public Colaborador getByCpf(final Long cpf) throws ProLogException {
         try {
             return dao.getByCpf(cpf, false);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o colaborador %d", cpf), e);
-            return null;
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar o colaborador com CPF %d", cpf), throwable);
+            throw Injection
+                    .provideColaboradorExceptionHandler()
+                    .map(throwable, "Erro ao buscar colaborador, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Colaborador getByToken(final String token) throws ProLogException {
+        try {
+            return dao.getByToken(token);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar o colaborador com token %s", token), throwable);
+            throw Injection
+                    .provideColaboradorExceptionHandler()
+                    .map(throwable, "Erro ao buscar colaborador, tente novamente");
         }
     }
 
@@ -97,7 +114,9 @@ public class ColaboradorService {
         } catch (final Throwable e) {
             final String errorMessage = "Erro ao buscar os colaboradores";
             Log.e(TAG, String.format("Erro ao buscar todos os colaboradores da unidade %d", codUnidade), e);
-            throw exceptionHandler.map(e, errorMessage);
+            throw Injection
+                    .provideColaboradorExceptionHandler()
+                    .map(e, errorMessage);
         }
     }
 
@@ -107,7 +126,9 @@ public class ColaboradorService {
         } catch (final Throwable e) {
             final String errorMessage = "Erro ao buscar os colaboradores";
             Log.e(TAG, String.format("Erro ao buscar todos os colaboradores da empresa %d", codEmrpesa), e);
-            throw exceptionHandler.map(e, errorMessage);
+            throw Injection
+                    .provideColaboradorExceptionHandler()
+                    .map(e, errorMessage);
         }
     }
 

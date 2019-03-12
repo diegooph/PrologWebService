@@ -40,8 +40,9 @@ public class MovimentacaoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    public AbstractResponse insert(@Required final ProcessoMovimentacao movimentacao) throws ProLogException {
-        return service.insert(movimentacao);
+    public AbstractResponse insert(@HeaderParam("Authorization") String userToken,
+                                   @Required final ProcessoMovimentacao movimentacao) throws ProLogException {
+        return service.insert(userToken, movimentacao);
     }
 
     @POST

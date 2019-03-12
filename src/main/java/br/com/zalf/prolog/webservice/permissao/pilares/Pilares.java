@@ -63,6 +63,12 @@ public final class Pilares {
 
                 public static final int MOVIMENTAR_GERAL = 120;
                 public static final int MOVIMENTAR_ANALISE_TO_DESCARTE = 125;
+                //-- ‘Movimentação - Veículo / Estoque (Veículo -> Estoque • Estoque -> Veículo • Veículo -> Veículo)’
+                //-- ‘Movimentação - Análise (Estoque ou Veículo -> Análise • Análise -> Estoque)’
+                //-- ‘Movimentação - Descarte (Estoque ou Veículo ou Análise -> Descarte)’
+                public static final int MOVIMENTAR_VEICULO_ESTOQUE = 1;
+                public static final int MOVIMENTAR_ANALISE = 1;
+                public static final int MOVIMENTAR_DESCARTE = 1;
                 public static final int CADASTRAR_MOTIVOS_DESCARTE = 123;
                 public static final int EDITAR_MOTIVOS_DESCARTE = 124;
             }

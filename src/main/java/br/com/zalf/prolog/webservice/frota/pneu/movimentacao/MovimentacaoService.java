@@ -1,13 +1,18 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PermissoesMovimentacaoValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
+import br.com.zalf.prolog.webservice.permissao.Visao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -21,8 +26,19 @@ public class MovimentacaoService {
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @NotNull
-    public AbstractResponse insert(@NotNull final ProcessoMovimentacao movimentacao) throws ProLogException {
+    public AbstractResponse insert(final String userToken,
+                                   final ProcessoMovimentacao movimentacao) throws ProLogException {
         try {
+            final ColaboradorService colaboradorService = new ColaboradorService();
+            final Colaborador colaborador = colaboradorService.getByToken(userToken);
+            final Visao visaoColaborador = colaborador.getVisao();
+            final List<Movimentacao> movimentacoes = movimentacao.getMovimentacoes();
+
+            // Verifica se o colaborador tem permissão para fazer todas as movimentações que está tentando.
+            final PermissoesMovimentacaoValidator validatorPermissoes = new PermissoesMovimentacaoValidator();
+            validatorPermissoes.verificaMovimentacoesRealizadas(visaoColaborador, movimentacoes);
+
+            // Segue o fluxo.
             final Long codigo = dao.insert(Injection.provideServicoDao(), movimentacao, true);
             return ResponseWithCod.ok("Movimentações realizadas com sucesso", codigo);
         } catch (Throwable e) {
