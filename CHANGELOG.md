@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Stage
+* Cria integração de ordens de serviço do checklist com o sistema Transport da Translecchi
+
 <a name="v0.0.85"></a>
 ## Version [v0.0.85](https://github.com/luizfp/PrologWebService/compare/v0.0.84...v0.0.85) (release-date) [unreleased]
 
