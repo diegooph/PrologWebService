@@ -11,28 +11,35 @@ import br.com.zalf.prolog.webservice.integracao.transport.IntegracaoTransportSer
 import br.com.zalf.prolog.webservice.integracao.transport.ItemPendenteIntegracaoTransport;
 import br.com.zalf.prolog.webservice.integracao.transport.ItemResolvidoIntegracaoTransport;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import test.BaseTest;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.*;
+
 /**
  * Created on 01/02/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class IntegracaoOrdemServicoTransportTest {
+public class IntegracaoOrdemServicoTransportTest extends BaseTest {
     private static final String TOKEN_TRANSLECCHI = "pdgcvsvt1bnhbaqt4ldlhq6i4d5v2ve1jd6g36gmtqgfpikpi7q";
     private IntegracaoTransportService service;
 
-    @Before
-    public void initialize() {
+    @Override
+    public void initialize() throws Throwable {
         DatabaseManager.init();
         service = new IntegracaoTransportService();
+    }
+
+    @Override
+    public void destroy() {
+        DatabaseManager.finish();
+        service = null;
     }
 
     @Test
@@ -40,54 +47,54 @@ public class IntegracaoOrdemServicoTransportTest {
         final List<ItemPendenteIntegracaoTransport> itensPendentes =
                 service.getItensPendentes(TOKEN_TRANSLECCHI, 10L);
 
-        Assert.assertNotNull(itensPendentes);
-        Assert.assertTrue(itensPendentes.size() > 0);
+        assertNotNull(itensPendentes);
+        assertTrue(itensPendentes.size() > 0);
 
         itensPendentes.forEach(itemPendenteIntegracaoTransport -> {
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getPlacaVeiculo());
-            Assert.assertFalse(itemPendenteIntegracaoTransport.getPlacaVeiculo().isEmpty());
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getKmAberturaServico());
-            Assert.assertTrue(itemPendenteIntegracaoTransport.getKmAberturaServico() >= 0);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getCodOrdemServico());
-            Assert.assertTrue(itemPendenteIntegracaoTransport.getCodOrdemServico() > 0);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getCodUnidadeOrdemServico());
-            Assert.assertTrue(itemPendenteIntegracaoTransport.getCodUnidadeOrdemServico() > 0);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getStatusOrdemServico());
-            Assert.assertEquals(itemPendenteIntegracaoTransport.getStatusOrdemServico(), StatusOrdemServico.ABERTA);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getDataHoraAberturaServico());
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getCodItemOrdemServico());
-            Assert.assertTrue(itemPendenteIntegracaoTransport.getCodItemOrdemServico() > 0);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getCodUnidadeItemOrdemServico());
-            Assert.assertTrue(itemPendenteIntegracaoTransport.getCodUnidadeItemOrdemServico() > 0);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getDataHoraPrimeiroApontamento());
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getStatusItemOrdemServico());
-            Assert.assertEquals(itemPendenteIntegracaoTransport.getStatusItemOrdemServico(), StatusItemOrdemServico.PENDENTE);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getPrazoResolucaoItemHoras());
+            assertNotNull(itemPendenteIntegracaoTransport.getPlacaVeiculo());
+            assertFalse(itemPendenteIntegracaoTransport.getPlacaVeiculo().isEmpty());
+            assertNotNull(itemPendenteIntegracaoTransport.getKmAberturaServico());
+            assertTrue(itemPendenteIntegracaoTransport.getKmAberturaServico() >= 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getCodOrdemServico());
+            assertTrue(itemPendenteIntegracaoTransport.getCodOrdemServico() > 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getCodUnidadeOrdemServico());
+            assertTrue(itemPendenteIntegracaoTransport.getCodUnidadeOrdemServico() > 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getStatusOrdemServico());
+            assertEquals(itemPendenteIntegracaoTransport.getStatusOrdemServico(), StatusOrdemServico.ABERTA);
+            assertNotNull(itemPendenteIntegracaoTransport.getDataHoraAberturaServico());
+            assertNotNull(itemPendenteIntegracaoTransport.getCodItemOrdemServico());
+            assertTrue(itemPendenteIntegracaoTransport.getCodItemOrdemServico() > 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getCodUnidadeItemOrdemServico());
+            assertTrue(itemPendenteIntegracaoTransport.getCodUnidadeItemOrdemServico() > 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getDataHoraPrimeiroApontamento());
+            assertNotNull(itemPendenteIntegracaoTransport.getStatusItemOrdemServico());
+            assertEquals(itemPendenteIntegracaoTransport.getStatusItemOrdemServico(), StatusItemOrdemServico.PENDENTE);
+            assertNotNull(itemPendenteIntegracaoTransport.getPrazoResolucaoItemHoras());
             final Integer prazo = itemPendenteIntegracaoTransport.getPrazoResolucaoItemHoras();
-            Assert.assertTrue(
+            assertTrue(
                     prazo == PrioridadeAlternativa.CRITICA.getPrazoResolucaoHoras()
                             || prazo == PrioridadeAlternativa.ALTA.getPrazoResolucaoHoras()
                             || prazo == PrioridadeAlternativa.BAIXA.getPrazoResolucaoHoras());
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getQtdApontamentos());
-            Assert.assertTrue(itemPendenteIntegracaoTransport.getQtdApontamentos() > 0);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getCodChecklistPrimeiroApontamento());
-            Assert.assertTrue(itemPendenteIntegracaoTransport.getCodChecklistPrimeiroApontamento() > 0);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getCodPergunta());
-            Assert.assertTrue(itemPendenteIntegracaoTransport.getCodPergunta() > 0);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getDescricaoPergunta());
-            Assert.assertFalse(itemPendenteIntegracaoTransport.getDescricaoPergunta().isEmpty());
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getCodAlternativaPergunta());
-            Assert.assertTrue(itemPendenteIntegracaoTransport.getCodAlternativaPergunta() > 0);
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getDescricaoAlternativa());
-            Assert.assertFalse(itemPendenteIntegracaoTransport.getDescricaoAlternativa().isEmpty());
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getTipoOutros());
+            assertNotNull(itemPendenteIntegracaoTransport.getQtdApontamentos());
+            assertTrue(itemPendenteIntegracaoTransport.getQtdApontamentos() > 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getCodChecklistPrimeiroApontamento());
+            assertTrue(itemPendenteIntegracaoTransport.getCodChecklistPrimeiroApontamento() > 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getCodPergunta());
+            assertTrue(itemPendenteIntegracaoTransport.getCodPergunta() > 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getDescricaoPergunta());
+            assertFalse(itemPendenteIntegracaoTransport.getDescricaoPergunta().isEmpty());
+            assertNotNull(itemPendenteIntegracaoTransport.getCodAlternativaPergunta());
+            assertTrue(itemPendenteIntegracaoTransport.getCodAlternativaPergunta() > 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getDescricaoAlternativa());
+            assertFalse(itemPendenteIntegracaoTransport.getDescricaoAlternativa().isEmpty());
+            assertNotNull(itemPendenteIntegracaoTransport.getTipoOutros());
             if (itemPendenteIntegracaoTransport.getTipoOutros()) {
-                Assert.assertNotNull(itemPendenteIntegracaoTransport.getDescricaoTipoOutros());
+                assertNotNull(itemPendenteIntegracaoTransport.getDescricaoTipoOutros());
             } else {
-                Assert.assertNull(itemPendenteIntegracaoTransport.getDescricaoTipoOutros());
+                assertNull(itemPendenteIntegracaoTransport.getDescricaoTipoOutros());
             }
-            Assert.assertNotNull(itemPendenteIntegracaoTransport.getPrioridadeAlternativa());
-            Assert.assertTrue(
+            assertNotNull(itemPendenteIntegracaoTransport.getPrioridadeAlternativa());
+            assertTrue(
                     itemPendenteIntegracaoTransport.getPrioridadeAlternativa() == PrioridadeAlternativa.BAIXA
                     || itemPendenteIntegracaoTransport.getPrioridadeAlternativa() == PrioridadeAlternativa.ALTA
                     || itemPendenteIntegracaoTransport.getPrioridadeAlternativa() == PrioridadeAlternativa.CRITICA);
@@ -109,8 +116,8 @@ public class IntegracaoOrdemServicoTransportTest {
         final SuccessResponseIntegracao successResponseIntegracao =
                 service.resolverMultiplosItens(TOKEN_TRANSLECCHI, itensResolvidos);
 
-        Assert.assertNotNull(successResponseIntegracao);
-        Assert.assertNotNull(successResponseIntegracao.getMsg());
+        assertNotNull(successResponseIntegracao);
+        assertNotNull(successResponseIntegracao.getMsg());
         System.out.println(GsonUtils.getGson().toJson(itensPendentes));
     }
 
