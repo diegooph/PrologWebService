@@ -32,18 +32,26 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
             }
 
             if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.BD_GENERIC_ERROR_CODE.getErrorCode())) {
-                if (sqlException instanceof BatchUpdateException) {
+                if (sqlException instanceof PSQLException) {
+                    return new GenericException(getPSQLErrorMessage(sqlException));
+                } else if (sqlException instanceof BatchUpdateException) {
                     if (sqlException.getNextException() instanceof PSQLException) {
-                        return new GenericException(
-                                ((PSQLException) sqlException.getNextException()).getServerErrorMessage().getMessage());
+                        return new GenericException(getPSQLErrorMessage(sqlException));
                     }
                 }
             }
         } catch (final Throwable t) {
+            // Se acontecer algum outro erro ao tentarmos mapear o erro principal, realizamos o fallBack para a
+            // mensagem recebida lançando uma exception genérica.
             return new GenericException(fallBackErrorMessage);
         }
 
         return new DataAccessException(fallBackErrorMessage);
+    }
+
+    @NotNull
+    private String getPSQLErrorMessage(@NotNull final SQLException sqlException) throws Throwable {
+        return ((PSQLException) sqlException.getNextException()).getServerErrorMessage().getMessage();
     }
 
     @Nullable
