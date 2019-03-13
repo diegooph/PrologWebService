@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement(
                     "SELECT * FROM INTEGRACAO.FUNC_INTEGRACAO_RESOLVE_ITENS_PENDENTES_EMPRESA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-            final LocalDateTime dataHoraSincroniaResolucao = Now.localDateTimeUtc();
+            final OffsetDateTime dataHoraSincroniaResolucao = Now.offsetDateTimeUtc();
             for (final ItemResolvidoIntegracaoTransport itensResolvido : itensResolvidos) {
                 stmt.setLong(1, itensResolvido.getCodUnidadeOrdemServico());
                 stmt.setLong(2, itensResolvido.getCodOrdemServico());
