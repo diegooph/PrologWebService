@@ -51,8 +51,8 @@ public final class PermissoesMovimentacaoValidator {
                 if (!permissoesColaborador.hasAccessToFunction(codPermissaoProLog)) {
                     throw new GenericException(String.format(
                             "Você não tem permissão para realizar uma movimentação do(a) %s para o(a) %s",
-                            tipoOrigem.asString(),
-                            tipoDestino.asString()));
+                            tipoOrigem.getStringPermissoesValidator(),
+                            tipoDestino.getStringPermissoesValidator()));
                 }
             } else {
                 throw new IllegalStateException();

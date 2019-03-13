@@ -43,7 +43,9 @@ public class RecapadoraResource {
             Pilares.Frota.Recapadora.VISUALIZACAO,
             Pilares.Frota.Recapadora.CADASTRO,
             Pilares.Frota.Recapadora.EDICAO,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/{codEmpresa}")
     public List<Recapadora> getRecapadoras(@PathParam("codEmpresa") @Required Long codEmpresa,
@@ -55,7 +57,9 @@ public class RecapadoraResource {
     @Secured(permissions = {
             Pilares.Frota.Recapadora.VISUALIZACAO,
             Pilares.Frota.Recapadora.EDICAO,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @UsedBy(platforms = {Platform.WEBSITE})
     @Path("/{codEmpresa}/{codRecapadora}")
     public Recapadora getRecapadora(@PathParam("codEmpresa") Long codEmpresa,

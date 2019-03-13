@@ -70,6 +70,8 @@ public class MovimentacaoResource {
     @Secured(permissions = {
             Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_DESCARTE,
             Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/motivos-descarte/{codEmpresa}")
