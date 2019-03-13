@@ -37,8 +37,9 @@ public class MovimentacaoResource {
 
     @POST
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public AbstractResponse insert(@HeaderParam("Authorization") String userToken,
                                    @Required final ProcessoMovimentacao movimentacao) throws ProLogException {
@@ -67,8 +68,9 @@ public class MovimentacaoResource {
 
     @GET
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
+            Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/motivos-descarte/{codEmpresa}")
     public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") @Required final Long codEmpresa,

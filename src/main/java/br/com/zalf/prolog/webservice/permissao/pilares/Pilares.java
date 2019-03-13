@@ -61,14 +61,14 @@ public final class Pilares {
                 private Movimentacao() {
                 }
 
-                public static final int MOVIMENTAR_GERAL = 120;
-                public static final int MOVIMENTAR_ANALISE_TO_DESCARTE = 125;
                 //-- ‘Movimentação - Veículo / Estoque (Veículo -> Estoque • Estoque -> Veículo • Veículo -> Veículo)’
+                public static final int MOVIMENTAR_VEICULO_ESTOQUE = 142;
+
                 //-- ‘Movimentação - Análise (Estoque ou Veículo -> Análise • Análise -> Estoque)’
+                public static final int MOVIMENTAR_ANALISE = 143;
+
                 //-- ‘Movimentação - Descarte (Estoque ou Veículo ou Análise -> Descarte)’
-                public static final int MOVIMENTAR_VEICULO_ESTOQUE = 1;
-                public static final int MOVIMENTAR_ANALISE = 1;
-                public static final int MOVIMENTAR_DESCARTE = 1;
+                public static final int MOVIMENTAR_DESCARTE = 144;
                 public static final int CADASTRAR_MOTIVOS_DESCARTE = 123;
                 public static final int EDITAR_MOTIVOS_DESCARTE = 124;
             }

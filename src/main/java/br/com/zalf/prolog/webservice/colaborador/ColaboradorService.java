@@ -148,15 +148,17 @@ public class ColaboradorService {
             final Colaborador colaborador = loginHolder.getColaborador();
 
             // Se usuário tem acesso aos relatos, precisamos também setar essas informações no LoginHolder.
-            if (colaborador.getVisao().hasAccessToFunction(Pilares.SEGURANCA, Pilares.Seguranca.Relato.REALIZAR)) {
+            if (colaborador.getVisao().hasAccessToFunction(Pilares.Seguranca.Relato.REALIZAR)) {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
                 final RelatoDao relatoDao = Injection.provideRelatoDao();
                 loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
                         colaborador.getUnidade().getCodigo(),
                         colaborador.getSetor().getCodigo()));
-            } else if (colaborador.getVisao().hasAccessToFunction(Pilares.FROTA, Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL)) {
+            } else if (colaborador.getVisao().hasAccessToFunction(Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE)
+                    || colaborador.getVisao().hasAccessToFunction(Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE)
+                    || colaborador.getVisao().hasAccessToFunction(Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE)) {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
-            } else if (colaborador.getVisao().hasAccessToFunction(Pilares.FROTA, Pilares.Frota.Pneu.CADASTRAR)) {
+            } else if (colaborador.getVisao().hasAccessToFunction(Pilares.Frota.Pneu.CADASTRAR)) {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             }
 

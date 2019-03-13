@@ -47,7 +47,7 @@ public class PneuTipoServicoResource {
             Pilares.Frota.Recapadora.TipoServico.CADASTRO,
             Pilares.Frota.Recapadora.TipoServico.EDICAO,
             Pilares.Frota.Recapadora.TipoServico.VISUALIZACAO,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/{codEmpresa}")
     public List<PneuTipoServico> getPneuTiposServicos(
@@ -62,7 +62,7 @@ public class PneuTipoServicoResource {
             Pilares.Frota.Recapadora.TipoServico.CADASTRO,
             Pilares.Frota.Recapadora.TipoServico.EDICAO,
             Pilares.Frota.Recapadora.TipoServico.VISUALIZACAO,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE})
     @UsedBy(platforms = {Platform.WEBSITE})
     @Path("/{codEmpresa}/{codTipoServico}")
     public PneuTipoServico getPneuTipoServico(
