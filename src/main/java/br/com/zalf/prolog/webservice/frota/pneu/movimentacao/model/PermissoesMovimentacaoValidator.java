@@ -39,14 +39,15 @@ public final class PermissoesMovimentacaoValidator {
         processoToPermissaoNecessaria.put(ANALISE.asString().concat(DESCARTE.asString()), MOVIMENTAR_DESCARTE);
     }
 
-    public void verificaMovimentacoesRealizadas(@NotNull final Visao permissoesColaborador,
-                                                @NotNull final List<Movimentacao> movimentacoes) throws ProLogException {
+    public void verificaMovimentacoesRealizadas(
+            @NotNull final Visao permissoesColaborador,
+            @NotNull final List<Movimentacao> movimentacoes) throws ProLogException {
         for (final Movimentacao movimentacao : movimentacoes) {
             final OrigemDestinoEnum tipoOrigem = movimentacao.getOrigem().getTipo();
             final OrigemDestinoEnum tipoDestino = movimentacao.getDestino().getTipo();
 
-            final Integer codPermissaoProLog = processoToPermissaoNecessaria.get(tipoOrigem.asString()
-                    .concat(tipoDestino.asString()));
+            final Integer codPermissaoProLog =
+                    processoToPermissaoNecessaria.get(tipoOrigem.asString().concat(tipoDestino.asString()));
             if (codPermissaoProLog != null) {
                 if (!permissoesColaborador.hasAccessToFunction(codPermissaoProLog)) {
                     throw new GenericException(String.format(
@@ -55,7 +56,7 @@ public final class PermissoesMovimentacaoValidator {
                             tipoDestino.getStringPermissoesValidator()));
                 }
             } else {
-                throw new IllegalStateException();
+                throw new IllegalStateException("Código de permisssão não mapeada para movimentação");
             }
         }
     }

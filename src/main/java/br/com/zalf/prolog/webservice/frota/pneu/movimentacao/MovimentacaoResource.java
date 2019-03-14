@@ -61,7 +61,7 @@ public class MovimentacaoResource {
     @Path("/motivos-descarte/{codEmpresa}/{codMotivo}/status")
     public Response updateMotivoStatus(@PathParam("codEmpresa") @Required final Long codEmpresa,
                                        @PathParam("codMotivo") @Required final Long codMotivo,
-                                       final Motivo motivo) throws ProLogException {
+                                       @Required final Motivo motivo) throws ProLogException {
         service.updateMotivoStatus(codEmpresa, codMotivo, motivo);
         return Response.ok("Motivo atualizado com sucesso");
     }
@@ -75,9 +75,9 @@ public class MovimentacaoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/motivos-descarte/{codEmpresa}")
-    public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") @Required final Long codEmpresa,
-                                         @QueryParam("apenasAtivos") @Required final Boolean apenasAtivos)
-            throws ProLogException {
+    public List<Motivo> getMotivosAtivos(
+            @PathParam("codEmpresa") @Required final Long codEmpresa,
+            @QueryParam("apenasAtivos") @Required final Boolean apenasAtivos) throws ProLogException {
         return service.getMotivos(codEmpresa, apenasAtivos);
     }
 }
