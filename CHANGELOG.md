@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.85"></a>
-## Version [v0.0.85](https://github.com/luizfp/PrologWebService/compare/v0.0.84...v0.0.85) (release-date) [unreleased]
+## Version [v0.0.85](https://github.com/luizfp/PrologWebService/compare/v0.0.84...v0.0.85) (2019-03-15)
 
 ### Features
 * Cria relatório de vencimento de dot dos pneus
