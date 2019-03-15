@@ -40,7 +40,7 @@ import java.util.List;
 @AppVersionCodeHandler(
         implementation = DefaultAppVersionCodeHandler.class,
         /* A partir da versão 68 o App coleta e envia a data/hora de início e fim de resolução dos itens de O.S. */
-        targetVersionCode = 68,
+        targetVersionCode = 67,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class OrdemServicoResource {
@@ -136,15 +136,17 @@ public final class OrdemServicoResource {
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/resolver-item")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
-    public Response resolverItem(ResolverItemOrdemServico item) throws ProLogException {
-        return service.resolverItem(item);
+    public Response resolverItem(@HeaderParam("Authorization") @Required final String token,
+                                 @Required final ResolverItemOrdemServico item) throws ProLogException {
+        return service.resolverItem(token, item);
     }
 
     @POST
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/resolver-multiplos-itens")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
-    public Response resolverItens(ResolverMultiplosItensOs itensResolucao) throws ProLogException {
-        return service.resolverItens(itensResolucao);
+    public Response resolverItens(@HeaderParam("Authorization") @Required final String token,
+                                  @Required final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
+        return service.resolverItens(token, itensResolucao);
     }
 }
