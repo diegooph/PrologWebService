@@ -80,6 +80,10 @@ public class PneuResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Path("/{codUnidade}/{status}")
+    @AppVersionCodeHandler(
+            targetVersionCode = 68,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,
                                                   @PathParam("status") String status) {
         return service.getPneuByCodUnidadeByStatus(codUnidade, status);
