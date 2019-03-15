@@ -118,7 +118,9 @@ public class VeiculoResource {
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Path("/byTipo/{codUnidade}/{codTipo}")
     @UsedBy(platforms = Platform.ANDROID)
     public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
@@ -138,7 +140,9 @@ public class VeiculoResource {
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Path("/{codUnidade}/tipo")
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
@@ -218,7 +222,10 @@ public class VeiculoResource {
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Path("/com-pneus/{placa}")
     @AppVersionCodeHandler(
             implementation = DefaultAppVersionCodeHandler.class,

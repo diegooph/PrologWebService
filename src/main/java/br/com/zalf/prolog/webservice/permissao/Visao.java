@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.permissao;
 
+import br.com.zalf.prolog.webservice.commons.util.MathUtils;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -23,24 +24,29 @@ public class Visao {
         this.pilares = pilares;
     }
 
-    public boolean hasAccessToFunction(int codPilar, int codPermissao) {
+    @Deprecated
+    public boolean hasAccessToFunction(final int codPilar, final int codPermissao) {
+        return hasAccessToFunction(codPermissao);
+    }
+
+    public boolean hasAccessToFunction(final int codPermissao) {
         if (pilares == null)
             return false;
 
-        for (Pilar pilar : pilares) {
+        // O primeiro dígito de uma permissão é sempre o código do pilar.
+        final int codPilar = MathUtils.getNthDigit(codPermissao, 1);
+        for (final Pilar pilar : pilares) {
             if (pilar.codigo == codPilar) {
                 if (pilar.funcoes == null)
                     return false;
 
-                for (FuncaoProLog funcao : pilar.funcoes) {
+                for (final FuncaoProLog funcao : pilar.funcoes) {
                     if (funcao != null && funcao.getCodigo() == codPermissao)
                         return true;
                 }
-
                 return false;
             }
         }
-
         return false;
     }
 
