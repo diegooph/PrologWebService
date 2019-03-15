@@ -40,7 +40,7 @@ import java.util.List;
 @AppVersionCodeHandler(
         implementation = DefaultAppVersionCodeHandler.class,
         /* A partir da versão 68 o App coleta e envia a data/hora de início e fim de resolução dos itens de O.S. */
-        targetVersionCode = 67,
+        targetVersionCode = 68,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class OrdemServicoResource {
