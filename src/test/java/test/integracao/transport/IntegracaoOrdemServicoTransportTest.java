@@ -118,7 +118,7 @@ public class IntegracaoOrdemServicoTransportTest extends BaseTest {
 
         assertNotNull(successResponseIntegracao);
         assertNotNull(successResponseIntegracao.getMsg());
-        System.out.println(GsonUtils.getGson().toJson(itensPendentes));
+        System.out.println(GsonUtils.getGson().toJson(itensResolvidos));
     }
 
     @NotNull
@@ -147,7 +147,9 @@ public class IntegracaoOrdemServicoTransportTest extends BaseTest {
         item.setKmColetadoVeiculo(itemPendente.getKmAberturaServico() + 100);
         item.setDuracaoResolucaoItemEmMilissegundos(Duration.ofMinutes(15L).toMillis());
         item.setFeedbackResolucao("Fechando item através de teste de integração");
-        item.setDataHoraResolucao(LocalDateTime.now());
+        item.setDataHoraResolvidoProLog(LocalDateTime.now());
+        item.setDataHoraInicioResolucao(LocalDateTime.now().minusDays(3));
+        item.setDataHoraFimResolucao(LocalDateTime.now().minusDays(2));
         return item;
     }
 }
