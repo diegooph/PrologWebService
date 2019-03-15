@@ -20,7 +20,7 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
 
     private Long codColaboradorResolucao;
     private String nomeColaboradorResolucao;
-    private LocalDateTime dataHoraResolucao;
+    private LocalDateTime dataHoraResolvidoProLog;
     private String feedbackResolucao;
     /**
      * A data e hora em que a resolução do item foi iniciada pelo colaborador.
@@ -55,7 +55,7 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
         // Resolvido.
         item.setCodColaboradorResolucao(10L);
         item.setNomeColaboradorResolucao("ProLoggerson");
-        item.setDataHoraResolucao(LocalDateTime.now());
+        item.setDataHoraResolvidoProLog(LocalDateTime.now());
         item.setFeedbackResolucao("Feedback Fechamento");
         item.setDataHoraInicioResolucao(LocalDateTime.now().minusDays(2));
         item.setDataHoraFimResolucao(LocalDateTime.now().minusDays(1));
@@ -80,12 +80,12 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
         this.nomeColaboradorResolucao = nomeColaboradorResolucao;
     }
 
-    public LocalDateTime getDataHoraResolucao() {
-        return dataHoraResolucao;
+    public LocalDateTime getDataHoraResolvidoProLog() {
+        return dataHoraResolvidoProLog;
     }
 
-    public void setDataHoraResolucao(final LocalDateTime dataHoraResolucao) {
-        this.dataHoraResolucao = dataHoraResolucao;
+    public void setDataHoraResolvidoProLog(final LocalDateTime dataHoraResolvidoProLog) {
+        this.dataHoraResolvidoProLog = dataHoraResolvidoProLog;
     }
 
     public String getFeedbackResolucao() {

@@ -141,7 +141,7 @@ final class OrdemServicoConverter {
             final ItemOrdemServicoResolvido resolvido = (ItemOrdemServicoResolvido) item;
             resolvido.setCodColaboradorResolucao(rSet.getLong("COD_COLABORADOR_RESOLUCAO"));
             resolvido.setNomeColaboradorResolucao(rSet.getString("NOME_COLABORADOR_RESOLUCAO"));
-            resolvido.setDataHoraResolucao(rSet.getObject("DATA_HORA_RESOLUCAO", LocalDateTime.class));
+            resolvido.setDataHoraResolvidoProLog(rSet.getObject("DATA_HORA_RESOLUCAO", LocalDateTime.class));
             resolvido.setFeedbackResolucao(rSet.getString("FEEDBACK_RESOLUCAO"));
             resolvido.setDataHoraInicioResolucao(rSet.getObject("DATA_HORA_INICIO_RESOLUCAO", LocalDateTime.class));
             resolvido.setDataHoraFimResolucao(rSet.getObject("DATA_HORA_FIM_RESOLUCAO", LocalDateTime.class));
