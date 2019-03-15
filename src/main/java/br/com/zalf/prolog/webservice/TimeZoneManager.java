@@ -28,7 +28,7 @@ public final class TimeZoneManager extends DatabaseConnection {
             connection = getConnection();
             return getZoneIdForCodUnidade(codUnidade, connection);
         } finally {
-            closeConnection(connection, null, null);
+            close(connection);
         }
     }
 
@@ -47,7 +47,7 @@ public final class TimeZoneManager extends DatabaseConnection {
                 throw new SQLException("Erro ao buscar o timezone para a unidade: " + codUnidade);
             }
         } finally {
-            closeConnection(null, statement, resultSet);
+            close(statement, resultSet);
         }
     }
 
@@ -67,7 +67,18 @@ public final class TimeZoneManager extends DatabaseConnection {
                 throw new SQLException("Erro ao buscar o timezone para o cpf: " + cpf);
             }
         } finally {
-            closeConnection(null, statement, resultSet);
+            close(statement, resultSet);
+        }
+    }
+
+    @NotNull
+    public static ZoneId getZoneIdForToken(@NotNull final String token) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = getConnection();
+            return getZoneIdForToken(token, connection);
+        } finally {
+            close(connection);
         }
     }
 
@@ -88,7 +99,7 @@ public final class TimeZoneManager extends DatabaseConnection {
                 throw new SQLException("Erro ao buscar o timezone para o token: " + token);
             }
         } finally {
-            closeConnection(null, statement, resultSet);
+            close(statement, resultSet);
         }
     }
 }

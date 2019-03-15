@@ -17,6 +17,10 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +37,12 @@ import java.util.List;
 @Path("/checklists/ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@AppVersionCodeHandler(
+        implementation = DefaultAppVersionCodeHandler.class,
+        /* A partir da versão 68 o App coleta e envia a data/hora de início e fim de resolução dos itens de O.S. */
+        targetVersionCode = 67,
+        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class OrdemServicoResource {
     @NotNull
     private final OrdemServicoService service = new OrdemServicoService();
@@ -126,15 +136,17 @@ public final class OrdemServicoResource {
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/resolver-item")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
-    public Response resolverItem(ResolverItemOrdemServico item) throws ProLogException {
-        return service.resolverItem(item);
+    public Response resolverItem(@HeaderParam("Authorization") @Required final String token,
+                                 @Required final ResolverItemOrdemServico item) throws ProLogException {
+        return service.resolverItem(token, item);
     }
 
     @POST
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/resolver-multiplos-itens")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
-    public Response resolverItens(ResolverMultiplosItensOs itensResolucao) throws ProLogException {
-        return service.resolverItens(itensResolucao);
+    public Response resolverItens(@HeaderParam("Authorization") @Required final String token,
+                                  @Required final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
+        return service.resolverItens(token, itensResolucao);
     }
 }
