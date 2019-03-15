@@ -25,4 +25,9 @@ public class RandomUtils {
         }
         return sb.toString();
     }
+
+    @NotNull
+    public static boolean randomBoolean() {
+        return RANDOM.nextBoolean();
+    }
 }

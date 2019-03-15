@@ -34,7 +34,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class MovimentacaoTest extends BaseTest {
-
+    private static final String TOKEN_COLABORADOR = "TOKEN";
     private static final long COD_PNEU_TESTE = 2399L;
 
     private MovimentacaoService movimentacaoService;
@@ -52,7 +52,7 @@ public class MovimentacaoTest extends BaseTest {
     public void testInsertMovimentacaoEstoqueToAnalise() throws ProLogException {
         // Move pneu ESTOQUE --> ANALISE
         final ProcessoMovimentacao processoMovimentacaoAnalise = createProcessoMovimentacaoAnalise();
-        final AbstractResponse response = movimentacaoService.insert(processoMovimentacaoAnalise);
+        final AbstractResponse response = movimentacaoService.insert(TOKEN_COLABORADOR, processoMovimentacaoAnalise);
 
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getStatus());
@@ -88,7 +88,7 @@ public class MovimentacaoTest extends BaseTest {
     public void testInsertMovimentacaoAnaliseToEstoque() throws ProLogException {
         // Move o mesmo pneu ANALISE --> ESTOQUE
         final ProcessoMovimentacao processoMovimentacaoEstoque = createProcessoMovimentacaoEstoque();
-        final AbstractResponse response = movimentacaoService.insert(processoMovimentacaoEstoque);
+        final AbstractResponse response = movimentacaoService.insert(TOKEN_COLABORADOR, processoMovimentacaoEstoque);
 
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getStatus());

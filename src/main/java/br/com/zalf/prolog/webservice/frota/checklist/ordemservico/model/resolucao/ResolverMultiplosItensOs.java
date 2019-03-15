@@ -3,10 +3,10 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluc
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +29,14 @@ public final class ResolverMultiplosItensOs {
     private String placaVeiculo;
 
     /**
-     * Duração da resolução dos itens.
+     * A data e hora em que a resolução do item foi iniciada pelo colaborador.
      */
-    @SerializedName("duracaoResolucaoItensEmSegundos")
-    private Duration duracaoResolucaoItens;
+    private LocalDateTime dataHoraInicioResolucao;
+
+    /**
+     * A data e hora em que a resolução do item foi finalizada pelo colaborador.
+     */
+    private LocalDateTime dataHoraFimResolucao;
 
     /**
      * Quilometragem do {@link Veiculo} no momento de resolução dos Itens.
@@ -63,7 +67,8 @@ public final class ResolverMultiplosItensOs {
         final ResolverMultiplosItensOs resolverItens = new ResolverMultiplosItensOs();
         resolverItens.setCpfColaboradorResolucao(12345678987L);
         resolverItens.setPlacaVeiculo("AAA1234");
-        resolverItens.setDuracaoResolucaoItens(Duration.ofMinutes(10));
+        resolverItens.setDataHoraInicioResolucao(LocalDateTime.now());
+        resolverItens.setDataHoraFimResolucao(LocalDateTime.now().plusDays(1));
         resolverItens.setKmColetadoVeiculo(234000);
         resolverItens.setFeedbackResolucao("Tudo resolvido!");
         resolverItens.setCodUnidadeOrdemServico(5L);
@@ -99,12 +104,20 @@ public final class ResolverMultiplosItensOs {
         this.cpfColaboradorResolucao = cpfColaboradorResolucao;
     }
 
-    public Duration getDuracaoResolucaoItens() {
-        return duracaoResolucaoItens;
+    public LocalDateTime getDataHoraInicioResolucao() {
+        return dataHoraInicioResolucao;
     }
 
-    public void setDuracaoResolucaoItens(final Duration duracaoResolucaoItens) {
-        this.duracaoResolucaoItens = duracaoResolucaoItens;
+    public void setDataHoraInicioResolucao(final LocalDateTime dataHoraInicioResolucao) {
+        this.dataHoraInicioResolucao = dataHoraInicioResolucao;
+    }
+
+    public LocalDateTime getDataHoraFimResolucao() {
+        return dataHoraFimResolucao;
+    }
+
+    public void setDataHoraFimResolucao(final LocalDateTime dataHoraFimResolucao) {
+        this.dataHoraFimResolucao = dataHoraFimResolucao;
     }
 
     public long getKmColetadoVeiculo() {
@@ -129,5 +142,9 @@ public final class ResolverMultiplosItensOs {
 
     public void setCodigosItens(final List<Long> codigosItens) {
         this.codigosItens = codigosItens;
+    }
+
+    public long getDuracaoResolucaoMillis() {
+        return ChronoUnit.MILLIS.between(dataHoraInicioResolucao, dataHoraFimResolucao);
     }
 }

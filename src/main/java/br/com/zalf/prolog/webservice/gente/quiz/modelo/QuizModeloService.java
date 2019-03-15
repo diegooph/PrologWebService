@@ -3,91 +3,110 @@ package br.com.zalf.prolog.webservice.gente.quiz.modelo;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
  * Created by Zalf on 05/01/17.
  */
-public class QuizModeloService {
+public final class QuizModeloService {
     private static final String TAG = QuizModeloService.class.getSimpleName();
     @NotNull
     private final QuizModeloDao dao = Injection.provideQuizModeloDao();
-    @NotNull
-    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @NotNull
-    public AbstractResponse insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws ProLogException {
+    AbstractResponse insertModeloQuiz(final Long codUnidade,
+                                      final ModeloQuiz modeloQuiz) throws ProLogException {
         try {
-            QuizModeloValidator.validaQuizModelo(modeloQuiz, codUnidade);
+            QuizModeloValidator.validaQuizModelo(codUnidade, modeloQuiz);
             return ResponseWithCod.ok(
                     "Quiz criado com sucesso",
-                    dao.insertModeloQuiz(modeloQuiz, codUnidade));
+                    dao.insertModeloQuiz(codUnidade, modeloQuiz));
         } catch (final Throwable e) {
-            final String errorMessage = "Erro ao inserir o modelo de quiz";
-            Log.e(TAG, errorMessage, e);
-            throw exceptionHandler.map(e, errorMessage);
+            Log.e(TAG, "Erro ao inserir o modelo de quiz", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao inserir o modelo de quiz, tente novamente");
         }
     }
 
-    public boolean updateModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) {
+    @NotNull
+    Response updateModeloQuiz(final Long codUnidade, final ModeloQuiz modeloQuiz) throws ProLogException {
         try {
-            return dao.updateModeloQuiz(modeloQuiz, codUnidade);
-        } catch (SQLException e) {
+            dao.updateModeloQuiz(codUnidade, modeloQuiz);
+            return Response.ok("Modelo de quiz atualizado com sucesso");
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao atualizar o modelo de quiz. \n" +
-                    "codUnidade: %d", codUnidade), e);
-            return false;
+                    "codUnidade: %d", codUnidade), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o modelo de quiz, tente novamente");
         }
     }
 
-    public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(Long codUnidade, Long
-            codFuncaoColaborador) {
+    @NotNull
+    Response updateCargosModeloQuiz(final Long codUnidade,
+                                    final Long codModeloQuiz,
+                                    final List<Cargo> funcoes) throws ProLogException {
         try {
-            return dao.getModelosQuizDisponiveis(codUnidade, codFuncaoColaborador);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar os modelos de quiz. \n" +
-                    "codUnidade: %d \n" +
-                    "codFuncaoColaborador: %d", codUnidade, codFuncaoColaborador), e);
-            return null;
-        }
-    }
-
-    public List<ModeloQuiz> getModelosQuizByCodUnidade(Long codUnidade) {
-        try {
-            return dao.getModelosQuizByCodUnidade(codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar os modelos de quiz da unidade. \n" +
-                    "codUnidade: %d", codUnidade), e);
-            return null;
-        }
-    }
-
-    public ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) {
-        try {
-            return dao.getModeloQuiz(codUnidade, codModeloQuiz);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o modelo de quiz. \n" +
-                    "codUnidade: %d \n" +
-                    "codModeloQuiz: %d", codUnidade, codModeloQuiz), e);
-            return null;
-        }
-    }
-
-    public boolean updateCargosModeloQuiz(List<Cargo> funcoes, Long codModeloQuiz, Long codUnidade) {
-        try {
-            return dao.updateCargosModeloQuiz(funcoes, codModeloQuiz, codUnidade);
-        } catch (SQLException e) {
+            dao.updateCargosModeloQuiz(codUnidade, codModeloQuiz, funcoes);
+            return Response.ok("Funções alteradas com sucesso");
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao atualizar os cargos do modelo de quiz. \n" +
                     "codUnidade: %d \n" +
-                    "codModeloQuiz: %d", codUnidade, codModeloQuiz), e);
-            return false;
+                    "codModeloQuiz: %d", codUnidade, codModeloQuiz), t);
+            final String fallbackMessage = "Erro ao alterar as funções vinculadas ao modelo de quiz, tente novamente";
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, fallbackMessage);
         }
     }
 
+    @NotNull
+    List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(
+            final Long codUnidade,
+            final Long codFuncaoColaborador) throws ProLogException {
+        try {
+            return dao.getModelosQuizDisponiveis(codUnidade, codFuncaoColaborador);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar os modelos de quiz. \n" +
+                    "codUnidade: %d \n" +
+                    "codFuncaoColaborador: %d", codUnidade, codFuncaoColaborador), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar os modelos de quizzes, tente novamente");
+        }
+    }
+
+    @NotNull
+    List<ModeloQuizListagem> getModelosQuizzesByCodUnidade(final Long codUnidade) throws ProLogException {
+        try {
+            return dao.getModelosQuizzesByCodUnidade(codUnidade);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar os modelos de quizzes da unidade. \n" +
+                    "codUnidade: %d", codUnidade), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar os modelos de quizzes, tente novamente");
+        }
+    }
+
+    @NotNull
+    ModeloQuiz getModeloQuiz(final Long codUnidade, final Long codModeloQuiz) throws ProLogException {
+        try {
+            return dao.getModeloQuiz(codUnidade, codModeloQuiz);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar o modelo de quiz. \n" +
+                    "codUnidade: %d \n" +
+                    "codModeloQuiz: %d", codUnidade, codModeloQuiz), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar o modelo de quiz, tente novamente");
+        }
+    }
 }

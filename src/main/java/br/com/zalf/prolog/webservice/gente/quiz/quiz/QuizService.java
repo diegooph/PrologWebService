@@ -38,11 +38,11 @@ public class QuizService {
     public Quiz getByCod(Long codUnidade, Long codQuiz, Long codModeloQuiz) {
         try {
             return dao.getByCod(codUnidade, codQuiz, codModeloQuiz);
-        } catch (SQLException e) {
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar um quiz. \n" +
                     "codUnidade: %d \n" +
                     "codQuiz: %d \n" +
-                    "codModeloQuiz: %d", codUnidade, codQuiz, codModeloQuiz), e);
+                    "codModeloQuiz: %d", codUnidade, codQuiz, codModeloQuiz), t);
             return null;
         }
     }
