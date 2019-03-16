@@ -16,7 +16,7 @@ public class ChecklistOfflineService {
     @NotNull
     private final ChecklistOfflineDao dao = Injection.provideChecklistOfflineDao();
 
-    public boolean getChecklistOfflineAtivoEmpresa(@NotNull final Long cpfColaborador) throws ProLogException {
+    public boolean getChecklistOfflineAtivoEmpresa(final Long cpfColaborador) throws ProLogException {
         try {
             return dao.getChecklistOfflineAtivoEmpresa(cpfColaborador);
         } catch (Throwable t) {

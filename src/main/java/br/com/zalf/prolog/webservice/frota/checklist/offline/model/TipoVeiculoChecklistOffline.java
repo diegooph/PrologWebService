@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class TipoVeiculoChecklistOffline {
+    /**
+     * Número que representa o código do tipo de veículo. Identificador único para o tipo de veículo.
+     */
     @NotNull
     private final Long codTipoVeiculo;
 

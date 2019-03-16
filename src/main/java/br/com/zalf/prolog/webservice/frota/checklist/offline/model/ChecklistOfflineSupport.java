@@ -14,8 +14,22 @@ import static br.com.zalf.prolog.webservice.frota.checklist.offline.model.Estado
 public abstract class ChecklistOfflineSupport {
     @NotNull
     public static final String HEADER_NAME_VERSAO_DADOS_CHECKLIST = "ProLog-Versao-Dados-Checklist";
+
+    /**
+     * Código da Unidade a qual os dados presentes neste objeto pertencem.
+     */
     @NotNull
     private final Long codUnidadeDados;
+
+    /**
+     * Objeto que contém as informações do checklist offline de acordo com os estados dos dados.
+     * Esses estados podem ser:
+     *
+     * * {@link EstadoChecklistOfflineSupport#ATUALIZADO}
+     * * {@link EstadoChecklistOfflineSupport#ATUALIZACAO_FORCADA}
+     * * {@link EstadoChecklistOfflineSupport#DESATUALIZADO}
+     * * {@link EstadoChecklistOfflineSupport#SEM_DADOS}
+     */
     @NotNull
     private final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport;
 
@@ -25,6 +39,7 @@ public abstract class ChecklistOfflineSupport {
         this.estadoChecklistOfflineSupport = estadoChecklistOfflineSupport;
     }
 
+    @NotNull
     public static RuntimeTypeAdapterFactory<ChecklistOfflineSupport> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
                 .of(ChecklistOfflineSupport.class, "estadoChecklistOfflineSupport")
@@ -32,5 +47,15 @@ public abstract class ChecklistOfflineSupport {
                 .registerSubtype(ChecklistOfflineSupportAtualizacaoForcada.class, ATUALIZACAO_FORCADA.asString())
                 .registerSubtype(ChecklistOfflineSupportDesatualizado.class, DESATUALIZADO.asString())
                 .registerSubtype(ChecklistOfflineSupportSemDados.class, SEM_DADOS.asString());
+    }
+
+    @NotNull
+    public Long getCodUnidadeDados() {
+        return codUnidadeDados;
+    }
+
+    @NotNull
+    public EstadoChecklistOfflineSupport getEstadoChecklistOfflineSupport() {
+        return estadoChecklistOfflineSupport;
     }
 }

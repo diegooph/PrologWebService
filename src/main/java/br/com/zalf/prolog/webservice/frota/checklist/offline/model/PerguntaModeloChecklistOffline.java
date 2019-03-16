@@ -10,16 +10,44 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class PerguntaModeloChecklistOffline {
+    /**
+     * Código único de identificação da pergunta.
+     */
     @NotNull
     private final Long codigo;
+
+    /**
+     * Alfanumérico que representa o texto descritivo da pergunta.
+     */
     @NotNull
     private final String descricao;
+
+    /**
+     * Código único de identificação da imagem ilustrativa associada a essa pergunta.
+     */
     @NotNull
     private final Long codImagem;
+
+    /**
+     * Alfanumérico que representa o local onde esta imagem está disponível para ser acessada e baixada.
+     */
     @NotNull
     private final String urlImagem;
+
+    /**
+     * Atributo numérico que denota a ordem que essa pergunta será exibida na realização do checklist.
+     */
     private final int ordemExibicao;
+
+    /**
+     * Atributo booleano que representa se a pergunta pode possuir uma única resposta, caso <code>TRUE</code>, ou
+     * várias respostas, caso <code>FALSE</code>.
+     */
     private final boolean singleChoice;
+
+    /**
+     * {@link AlternativaModeloChecklistOffline Alternativas} disponíveis para está pergunta.
+     */
     @NotNull
     private final List<AlternativaModeloChecklistOffline> alternativas;
 
@@ -59,12 +87,10 @@ public final class PerguntaModeloChecklistOffline {
         return urlImagem;
     }
 
-    @NotNull
     public int getOrdemExibicao() {
         return ordemExibicao;
     }
 
-    @NotNull
     public boolean isSingleChoice() {
         return singleChoice;
     }

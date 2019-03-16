@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class CargoChecklistOffline {
+    /**
+     * Número que representa o código do o cargo. Identificador único para o cargo.
+     */
     @NotNull
     private final Long codCargo;
 

@@ -8,10 +8,21 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class VeiculoChecklistOffline {
+    /**
+     * Número único que identifica o veículo.
+     */
     @NotNull
     private final Long codVeiculo;
+
+    /**
+     * Valor alfanumérico que representa a placa do veículo.
+     */
     @NotNull
     private final String placaVeiculo;
+
+    /**
+     * Código de identificação do tipo de veículo a qual a {@code placaVeiculo placa} pertence.
+     */
     @NotNull
     private final Long codTipoVeiculo;
 

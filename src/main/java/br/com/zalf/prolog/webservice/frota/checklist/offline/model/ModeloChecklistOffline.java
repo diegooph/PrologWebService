@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -11,31 +10,54 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ModeloChecklistOffline {
+    /**
+     * Número que representa o código que o modelo de checklist possui. Identificador único do modelo de checklist.
+     */
     @NotNull
     private final Long codModelo;
+
+    /**
+     * Valor alfanumérico que representa o nome do modelo do checklist. Identificador para o usuário.
+     */
     @NotNull
     private final String nomeModelo;
+
+    /**
+     * Código da unidade a qual o modelo de checklist está vinculado.
+     */
     @NotNull
     private final Long codUnidadeModelo;
+
+    /**
+     * {@link CargoChecklistOffline Cargos} que estão configurados para realizar este modelo de checklist.
+     */
     @NotNull
     private final List<CargoChecklistOffline> cargosLiberados;
+
+    /**
+     * {@link TipoVeiculoChecklistOffline Tipos de veículos} que possuem vínculo com este modelo de checklist.
+     */
     @NotNull
     private final List<TipoVeiculoChecklistOffline> tiposVeiculosLiberados;
+
+    /**
+     * {@link PerguntaModeloChecklistOffline Perguntas} que o modelo de checklist offline possui.
+     */
     @NotNull
-    private final List<PerguntaModeloChecklist> perguntasModeloChecklist;
+    private final List<PerguntaModeloChecklistOffline> perguntasModeloChecklistOffline;
 
     public ModeloChecklistOffline(@NotNull final Long codModelo,
                                   @NotNull final String nomeModelo,
                                   @NotNull final Long codUnidadeModelo,
                                   @NotNull final List<CargoChecklistOffline> cargosLiberados,
                                   @NotNull final List<TipoVeiculoChecklistOffline> tiposVeiculosLiberados,
-                                  @NotNull final List<PerguntaModeloChecklist> perguntasModeloChecklist) {
+                                  @NotNull final List<PerguntaModeloChecklistOffline> perguntasModeloChecklistOffline) {
         this.codModelo = codModelo;
         this.nomeModelo = nomeModelo;
         this.codUnidadeModelo = codUnidadeModelo;
         this.cargosLiberados = cargosLiberados;
         this.tiposVeiculosLiberados = tiposVeiculosLiberados;
-        this.perguntasModeloChecklist = perguntasModeloChecklist;
+        this.perguntasModeloChecklistOffline = perguntasModeloChecklistOffline;
     }
 
     @NotNull
@@ -64,7 +86,7 @@ public final class ModeloChecklistOffline {
     }
 
     @NotNull
-    public List<PerguntaModeloChecklist> getPerguntasModeloChecklist() {
-        return perguntasModeloChecklist;
+    public List<PerguntaModeloChecklistOffline> getPerguntasModeloChecklistOffline() {
+        return perguntasModeloChecklistOffline;
     }
 }
