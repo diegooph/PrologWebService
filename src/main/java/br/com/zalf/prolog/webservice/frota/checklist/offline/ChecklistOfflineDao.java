@@ -1,6 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
+import br.com.zalf.prolog.webservice.frota.checklist.offline.model.DadosChecklistOfflineUnidade;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.model.EmpresaChecklistOffline;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.model.ModeloChecklistOffline;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.model.VeiculoChecklistOffline;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Created on 10/03/19.
@@ -8,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public interface ChecklistOfflineDao {
+
     /**
      * Método utilizado para identificar se a empresa do colaborador, representado pelo {@code cpfColaborador cpf},
      * está liberada para realizar o checklist offline.
@@ -20,4 +27,12 @@ public interface ChecklistOfflineDao {
      * @throws Throwable Caso ocorrer algum erro na busca dos dados.
      */
     boolean getChecklistOfflineAtivoEmpresa(@NotNull final Long cpfColaborador) throws Throwable;
+
+    DadosChecklistOfflineUnidade getVersaoDadosAtual(@NotNull final Long codUnidade) throws Throwable;
+
+    List<ModeloChecklistOffline> getModelosChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
+
+    List<VeiculoChecklistOffline> getVeiculosChecklistOffline(Long codUnidade);
+
+    EmpresaChecklistOffline getEmpresaChecklistOffline(Long codUnidade);
 }
