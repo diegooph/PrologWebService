@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -30,8 +31,9 @@ public final class PerguntaModeloChecklistOffline {
 
     /**
      * Alfanumérico que representa o local onde esta imagem está disponível para ser acessada e baixada.
+     * Este atributo pode ser nulo para o caso de não ter nenhuma imagem associada à pergunta.
      */
-    @NotNull
+    @Nullable
     private final String urlImagem;
 
     /**
@@ -51,13 +53,13 @@ public final class PerguntaModeloChecklistOffline {
     @NotNull
     private final List<AlternativaModeloChecklistOffline> alternativas;
 
-    public PerguntaModeloChecklistOffline(@NotNull final Long codigo,
-                                          @NotNull final String descricao,
-                                          @NotNull final Long codImagem,
-                                          @NotNull final String urlImagem,
-                                          final int ordemExibicao,
-                                          final boolean singleChoice,
-                                          @NotNull final List<AlternativaModeloChecklistOffline> alternativas) {
+    PerguntaModeloChecklistOffline(@NotNull final Long codigo,
+                                   @NotNull final String descricao,
+                                   @NotNull final Long codImagem,
+                                   @Nullable final String urlImagem,
+                                   final int ordemExibicao,
+                                   final boolean singleChoice,
+                                   @NotNull final List<AlternativaModeloChecklistOffline> alternativas) {
         this.codigo = codigo;
         this.descricao = descricao;
         this.codImagem = codImagem;
@@ -82,7 +84,7 @@ public final class PerguntaModeloChecklistOffline {
         return codImagem;
     }
 
-    @NotNull
+    @Nullable
     public String getUrlImagem() {
         return urlImagem;
     }

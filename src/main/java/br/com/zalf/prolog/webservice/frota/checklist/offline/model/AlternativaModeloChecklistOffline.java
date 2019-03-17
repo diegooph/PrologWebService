@@ -32,10 +32,10 @@ public final class AlternativaModeloChecklistOffline {
      */
     private final int ordemExibicao;
 
-    public AlternativaModeloChecklistOffline(@NotNull final Long codigo,
-                                             @NotNull final String descricao,
-                                             final boolean tipoOutros,
-                                             final int ordemExibicao) {
+    AlternativaModeloChecklistOffline(@NotNull final Long codigo,
+                                      @NotNull final String descricao,
+                                      final boolean tipoOutros,
+                                      final int ordemExibicao) {
         this.codigo = codigo;
         this.descricao = descricao;
         this.tipoOutros = tipoOutros;

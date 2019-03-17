@@ -25,7 +25,7 @@ public final class ColaboradorChecklistOffline {
     @NotNull
     private final Long codCargoColaborador;
     @NotNull
-    private final Long codPermissaoColaborador;
+    private final Integer codPermissaoColaborador;
 
     public ColaboradorChecklistOffline(@NotNull final Long codEmpresaColaborador,
                                        @NotNull final Long codRegionalColaborador,
@@ -34,7 +34,7 @@ public final class ColaboradorChecklistOffline {
                                        @NotNull final String cpfColaborador,
                                        @NotNull final LocalDateTime dataNascimentoColaborador,
                                        @NotNull final Long codCargoColaborador,
-                                       @NotNull final Long codPermissaoColaborador) {
+                                       @NotNull final Integer codPermissaoColaborador) {
         this.codEmpresaColaborador = codEmpresaColaborador;
         this.codRegionalColaborador = codRegionalColaborador;
         this.codUnidadeColaborador = codUnidadeColaborador;
@@ -81,7 +81,7 @@ public final class ColaboradorChecklistOffline {
     }
 
     @NotNull
-    public Long getCodPermissaoColaborador() {
+    public Integer getCodPermissaoColaborador() {
         return codPermissaoColaborador;
     }
 }

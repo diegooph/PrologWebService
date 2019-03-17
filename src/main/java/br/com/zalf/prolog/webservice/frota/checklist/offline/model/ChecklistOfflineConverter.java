@@ -36,7 +36,7 @@ public final class ChecklistOfflineConverter {
                 rSet.getLong("COD_PERGUNTA"),
                 rSet.getString("DESCRICAO_PERGUNTA"),
                 rSet.getLong("COD_IMAGEM"),
-                rSet.getString("URL_IMAGEM") == null ? "" : rSet.getString("URL_IMAGEM"),
+                rSet.getString("URL_IMAGEM"),
                 rSet.getInt("PERGUNTA_ORDEM_EXIBICAO"),
                 rSet.getBoolean("SINGLE_CHOICE"),
                 alternativas);
@@ -47,7 +47,7 @@ public final class ChecklistOfflineConverter {
             @NotNull final Long codUnidadeModeloChecklist,
             @NotNull final Long codModeloCheklist,
             @NotNull final String nomeModeloChecklist,
-            @NotNull final List<PerguntaModeloChecklistOffline> perguntas) throws SQLException {
+            @NotNull final List<PerguntaModeloChecklistOffline> perguntas) {
         return new ModeloChecklistOffline(
                 codModeloCheklist,
                 nomeModeloChecklist,
