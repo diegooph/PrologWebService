@@ -44,12 +44,14 @@ public final class ChecklistOfflineConverter {
 
     @NotNull
     public static ModeloChecklistOffline createModeloChecklistOffline(
-            @NotNull final ResultSet rSet,
+            @NotNull final Long codUnidadeModeloChecklist,
+            @NotNull final Long codModeloCheklist,
+            @NotNull final String nomeModeloChecklist,
             @NotNull final List<PerguntaModeloChecklistOffline> perguntas) throws SQLException {
         return new ModeloChecklistOffline(
-                rSet.getLong("COD_MODELO_CHECKLIST"),
-                rSet.getString("NOME_MODELO_CHECKLIST"),
-                rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST"),
+                codModeloCheklist,
+                nomeModeloChecklist,
+                codUnidadeModeloChecklist,
                 new ArrayList<>(),
                 new ArrayList<>(),
                 perguntas);

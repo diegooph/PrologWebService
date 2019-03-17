@@ -1,7 +1,9 @@
 package test.frota.checklist.offline;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,5 +34,11 @@ public class ChecklistOfflineTest extends BaseTest {
         final boolean checklistOfflineAtivoEmpresa = service.getChecklistOfflineAtivoEmpresa(CPF_COLABORADOR);
 
         Assert.assertTrue(checklistOfflineAtivoEmpresa);
+    }
+
+    @Test
+    public void getModelosChecklistOffline() throws Throwable {
+        final ChecklistOfflineDao dao = Injection.provideChecklistOfflineDao();
+        dao.getModelosChecklistOffline(5L);
     }
 }

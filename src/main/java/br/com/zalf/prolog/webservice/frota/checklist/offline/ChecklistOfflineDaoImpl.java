@@ -88,6 +88,8 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
 
             Long codModeloChecklistAnterior = null;
             Long codPerguntaAnterior = null;
+            String nomeModeloChecklistAnterior = null;
+            Long codUnidadeModeloChecklistAnterior = null;
             while (rSet.next()) {
                 final Long codModeloChecklistAtual = rSet.getLong("COD_MODELO_CHECKLIST");
                 if (codModeloChecklistAnterior == null) {
@@ -102,8 +104,13 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                 if (!codModeloChecklistAnterior.equals(codModeloChecklistAtual)) {
                     alternativas.add(ChecklistOfflineConverter.createAlternativaModeloChecklistOffline(rSet));
                     perguntas.add(ChecklistOfflineConverter.createPerguntaModeloChecklistOffline(rSet, alternativas));
+                    //noinspection ConstantConditions
                     modelosChecklistOffline.add(
-                            ChecklistOfflineConverter.createModeloChecklistOffline(rSet, perguntas));
+                            ChecklistOfflineConverter.createModeloChecklistOffline(
+                                    codUnidadeModeloChecklistAnterior,
+                                    codModeloChecklistAnterior,
+                                    nomeModeloChecklistAnterior,
+                                    perguntas));
                     perguntas = new ArrayList<>();
                     alternativas = new ArrayList<>();
                 } else {
@@ -117,10 +124,17 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
 
                 codModeloChecklistAnterior = codModeloChecklistAtual;
                 codPerguntaAnterior = codPerguntaAtual;
-            }
-            if (codModeloChecklistAnterior != null) {
-                perguntas.add(ChecklistOfflineConverter.createPerguntaModeloChecklistOffline(rSet, alternativas));
-                modelosChecklistOffline.add(ChecklistOfflineConverter.createModeloChecklistOffline(rSet, perguntas));
+                nomeModeloChecklistAnterior = rSet.getString("NOME_MODELO_CHECKLIST");
+                codUnidadeModeloChecklistAnterior = rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST");
+                if (rSet.isLast()) {
+                    perguntas.add(ChecklistOfflineConverter.createPerguntaModeloChecklistOffline(rSet, alternativas));
+                    modelosChecklistOffline.add(
+                            ChecklistOfflineConverter.createModeloChecklistOffline(
+                                    codUnidadeModeloChecklistAnterior,
+                                    codModeloChecklistAnterior,
+                                    nomeModeloChecklistAnterior,
+                                    perguntas));
+                }
             }
         } finally {
             close(conn, stmt, rSet);
