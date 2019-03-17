@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * Created on 10/03/19
@@ -21,7 +21,7 @@ public final class ColaboradorChecklistOffline {
     @NotNull
     private final String cpfColaborador;
     @NotNull
-    private final LocalDateTime dataNascimentoColaborador;
+    private final LocalDate dataNascimentoColaborador;
     @NotNull
     private final Long codCargoColaborador;
     @NotNull
@@ -32,7 +32,7 @@ public final class ColaboradorChecklistOffline {
                                        @NotNull final Long codUnidadeColaborador,
                                        @NotNull final Long codColaborador,
                                        @NotNull final String cpfColaborador,
-                                       @NotNull final LocalDateTime dataNascimentoColaborador,
+                                       @NotNull final LocalDate dataNascimentoColaborador,
                                        @NotNull final Long codCargoColaborador,
                                        @NotNull final Integer codPermissaoColaborador) {
         this.codEmpresaColaborador = codEmpresaColaborador;
@@ -71,7 +71,7 @@ public final class ColaboradorChecklistOffline {
     }
 
     @NotNull
-    public LocalDateTime getDataNascimentoColaborador() {
+    public LocalDate getDataNascimentoColaborador() {
         return dataNascimentoColaborador;
     }
 
