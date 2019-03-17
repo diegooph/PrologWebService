@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,13 +46,27 @@ public final class ChecklistOfflineConverter {
             @NotNull final Long codUnidadeModeloChecklist,
             @NotNull final Long codModeloCheklist,
             @NotNull final String nomeModeloChecklist,
+            @NotNull final List<CargoChecklistOffline> cargosLiberados,
+            @NotNull final List<TipoVeiculoChecklistOffline> tiposVeiculosLiberados,
             @NotNull final List<PerguntaModeloChecklistOffline> perguntas) {
         return new ModeloChecklistOffline(
                 codModeloCheklist,
                 nomeModeloChecklist,
                 codUnidadeModeloChecklist,
-                new ArrayList<>(),
-                new ArrayList<>(),
+                cargosLiberados,
+                tiposVeiculosLiberados,
                 perguntas);
+    }
+
+    @NotNull
+    public static CargoChecklistOffline createCargoChecklistOffline(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new CargoChecklistOffline(rSet.getLong("COD_CARGO"));
+    }
+
+    @NotNull
+    public static TipoVeiculoChecklistOffline createTipoVeiculoChecklistOffline(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new TipoVeiculoChecklistOffline(rSet.getLong("COD_TIPO_VEICULO"));
     }
 }

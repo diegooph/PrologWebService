@@ -83,58 +83,89 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OFFLINE_GET_MODELOS_DISPONIVEIS(?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
+            ModeloChecklistOffline modelo = null;
+            PerguntaModeloChecklistOffline pergunta = null;
             List<PerguntaModeloChecklistOffline> perguntas = new ArrayList<>();
             List<AlternativaModeloChecklistOffline> alternativas = new ArrayList<>();
-
-            Long codModeloChecklistAnterior = null;
-            Long codPerguntaAnterior = null;
-            String nomeModeloChecklistAnterior = null;
-            Long codUnidadeModeloChecklistAnterior = null;
+            List<CargoChecklistOffline> cargos = new ArrayList<>();
+            List<TipoVeiculoChecklistOffline> tiposVeiculos = new ArrayList<>();
             while (rSet.next()) {
-                final Long codModeloChecklistAtual = rSet.getLong("COD_MODELO_CHECKLIST");
-                if (codModeloChecklistAnterior == null) {
-                    codModeloChecklistAnterior = codModeloChecklistAtual;
-                }
-
-                final Long codPerguntaAtual = rSet.getLong("COD_PERGUNTA");
-                if (codPerguntaAnterior == null) {
-                    codPerguntaAnterior = codPerguntaAtual;
-                }
-
-                if (!codModeloChecklistAnterior.equals(codModeloChecklistAtual)) {
+                if (perguntas.isEmpty() && alternativas.isEmpty()) {
+                    // Estamos na primeira linha.
+                    // Precisamos inicializar o modelo com as primeiras informações do resultSet.
                     alternativas.add(ChecklistOfflineConverter.createAlternativaModeloChecklistOffline(rSet));
-                    perguntas.add(ChecklistOfflineConverter.createPerguntaModeloChecklistOffline(rSet, alternativas));
-                    //noinspection ConstantConditions
-                    modelosChecklistOffline.add(
-                            ChecklistOfflineConverter.createModeloChecklistOffline(
-                                    codUnidadeModeloChecklistAnterior,
-                                    codModeloChecklistAnterior,
-                                    nomeModeloChecklistAnterior,
-                                    perguntas));
-                    perguntas = new ArrayList<>();
-                    alternativas = new ArrayList<>();
-                } else {
-                    if (!codPerguntaAnterior.equals(codPerguntaAtual)) {
-                        perguntas.add(
-                                ChecklistOfflineConverter.createPerguntaModeloChecklistOffline(rSet, alternativas));
-                        alternativas = new ArrayList<>();
+                    pergunta = ChecklistOfflineConverter.createPerguntaModeloChecklistOffline(rSet, alternativas);
+                    perguntas.add(pergunta);
+                    modelo = ChecklistOfflineConverter.createModeloChecklistOffline(
+                            rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST"),
+                            rSet.getLong("COD_MODELO_CHECKLIST"),
+                            rSet.getString("NOME_MODELO_CHECKLIST"),
+                            cargos,
+                            tiposVeiculos,
+                            perguntas);
+                } else
+                    // Processamos Pergunta/Alternativas apenas se não tem cargo ou tipo de veículo para processar.
+                    if (rSet.getLong("COD_CARGO") <= 0
+                            && rSet.getLong("COD_TIPO_VEICULO") <= 0) {
+                        if (modelo != null
+                                && !modelo.getCodModelo().equals(rSet.getLong("COD_MODELO_CHECKLIST"))) {
+                            // Trocou de modelo.
+                            modelosChecklistOffline.add(modelo);
+
+                            // Precisamos criar as informações do novo modelo e o modelo em si.
+                            alternativas = new ArrayList<>();
+                            alternativas.add(ChecklistOfflineConverter.createAlternativaModeloChecklistOffline(rSet));
+                            perguntas = new ArrayList<>();
+                            pergunta = ChecklistOfflineConverter
+                                    .createPerguntaModeloChecklistOffline(rSet, alternativas);
+                            perguntas.add(pergunta);
+                            cargos = new ArrayList<>();
+                            tiposVeiculos = new ArrayList<>();
+                            modelo = ChecklistOfflineConverter.createModeloChecklistOffline(
+                                    rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST"),
+                                    rSet.getLong("COD_MODELO_CHECKLIST"),
+                                    rSet.getString("NOME_MODELO_CHECKLIST"),
+                                    cargos,
+                                    tiposVeiculos,
+                                    perguntas);
+                        } else {
+                            if (pergunta != null
+                                    && pergunta.getCodigo().equals(rSet.getLong("COD_PERGUNTA"))) {
+                                // Mesma pergunta.
+                                // Precisamos processar apenas a nova alternativa.
+                                alternativas.add(
+                                        ChecklistOfflineConverter.createAlternativaModeloChecklistOffline(rSet));
+                            } else {
+                                // Trocou de pergunta.
+                                // Precisamos criar a nova pergunta e adicionar a ela a nova alternativa;
+                                alternativas = new ArrayList<>();
+                                alternativas.add(
+                                        ChecklistOfflineConverter.createAlternativaModeloChecklistOffline(rSet));
+                                pergunta = ChecklistOfflineConverter
+                                        .createPerguntaModeloChecklistOffline(rSet, alternativas);
+                                perguntas.add(pergunta);
+                            }
+                        }
+                    } else {
+                        // Processamos cargo ou tipo de veículo do modelo de checklist.
+                        if (modelo != null
+                                && modelo.getCodModelo().equals(rSet.getLong("COD_MODELO_CHECKLIST"))
+                                && rSet.getLong("COD_CARGO") > 0) {
+                            // Adicionamos os cargos do modelo de checklist.
+                            cargos.add(ChecklistOfflineConverter.createCargoChecklistOffline(rSet));
+                        }
+                        if (modelo != null
+                                && modelo.getCodModelo().equals(rSet.getLong("COD_MODELO_CHECKLIST"))
+                                && rSet.getLong("COD_TIPO_VEICULO") > 0) {
+                            // Adicionamos os tipos de veículo do modelo de checklist.
+                            tiposVeiculos.add(ChecklistOfflineConverter.createTipoVeiculoChecklistOffline(rSet));
+                        }
                     }
-                    alternativas.add(ChecklistOfflineConverter.createAlternativaModeloChecklistOffline(rSet));
-                }
-
-                codModeloChecklistAnterior = codModeloChecklistAtual;
-                codPerguntaAnterior = codPerguntaAtual;
-                nomeModeloChecklistAnterior = rSet.getString("NOME_MODELO_CHECKLIST");
-                codUnidadeModeloChecklistAnterior = rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST");
-                if (rSet.isLast()) {
-                    perguntas.add(ChecklistOfflineConverter.createPerguntaModeloChecklistOffline(rSet, alternativas));
-                    modelosChecklistOffline.add(
-                            ChecklistOfflineConverter.createModeloChecklistOffline(
-                                    codUnidadeModeloChecklistAnterior,
-                                    codModeloChecklistAnterior,
-                                    nomeModeloChecklistAnterior,
-                                    perguntas));
-                }
+            }
+            // Não podemos retornar modelo = null caso não retornar nenhum dado do banco,
+            // nesse caso não setamos o modelo.
+            if (modelo != null) {
+                modelosChecklistOffline.add(modelo);
             }
         } finally {
             close(conn, stmt, rSet);
