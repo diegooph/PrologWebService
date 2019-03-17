@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -68,5 +69,19 @@ public final class ChecklistOfflineConverter {
     public static TipoVeiculoChecklistOffline createTipoVeiculoChecklistOffline(
             @NotNull final ResultSet rSet) throws SQLException {
         return new TipoVeiculoChecklistOffline(rSet.getLong("COD_TIPO_VEICULO"));
+    }
+
+    @NotNull
+    public static ColaboradorChecklistOffline createColaboradorChecklistOffline(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new ColaboradorChecklistOffline(
+                rSet.getLong("COD_EMPRESA_COLABORADOR"),
+                rSet.getLong("COD_REGIONAL_COLABORADOR"),
+                rSet.getLong("COD_UNIDADE_COLABORADOR"),
+                rSet.getLong("COD_COLABORADOR"),
+                rSet.getString("CPF_COLABORADOR"),
+                rSet.getObject("DATA_NASCIMENTO", LocalDate.class),
+                rSet.getLong("COD_CARGO_COLABORADOR"),
+                rSet.getInt("COD_PERMISSAO_COLABORADOR"));
     }
 }

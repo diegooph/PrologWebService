@@ -30,6 +30,12 @@ public final class ChecklistOfflineSupportAtualizacaoForcada extends ChecklistOf
     private final List<ModeloChecklistOffline> modelosChecklistsDisponiveis;
 
     /**
+     * {@link ColaboradorChecklistOffline Colaboradores} que possuem acesso ao checklist offline.
+     */
+    @NotNull
+    private final List<ColaboradorChecklistOffline> colaboradoresChecklistOffline;
+
+    /**
      * {@link VeiculoChecklistOffline Veículos} disponíveis para realizar checklist offline.
      */
     @NotNull
@@ -46,12 +52,14 @@ public final class ChecklistOfflineSupportAtualizacaoForcada extends ChecklistOf
             @NotNull final String tokenSincronizacaoDadosUnidade,
             @NotNull final Long versaoDadosUnidadeChecklist,
             @NotNull final List<ModeloChecklistOffline> modelosChecklistsDisponiveis,
+            @NotNull final List<ColaboradorChecklistOffline> colaboradoresChecklistOffline,
             @NotNull final List<VeiculoChecklistOffline> veiculosChecklistOffline,
             @NotNull final EmpresaChecklistOffline empresaChecklistOffline) {
         super(codUnidadeDados, EstadoChecklistOfflineSupport.ATUALIZACAO_FORCADA);
         this.tokenSincronizacaoDadosUnidade = tokenSincronizacaoDadosUnidade;
         this.versaoDadosUnidadeChecklist = versaoDadosUnidadeChecklist;
         this.modelosChecklistsDisponiveis = modelosChecklistsDisponiveis;
+        this.colaboradoresChecklistOffline = colaboradoresChecklistOffline;
         this.veiculosChecklistOffline = veiculosChecklistOffline;
         this.empresaChecklistOffline = empresaChecklistOffline;
     }
@@ -69,6 +77,11 @@ public final class ChecklistOfflineSupportAtualizacaoForcada extends ChecklistOf
     @NotNull
     public List<ModeloChecklistOffline> getModelosChecklistsDisponiveis() {
         return modelosChecklistsDisponiveis;
+    }
+
+    @NotNull
+    public List<ColaboradorChecklistOffline> getColaboradoresChecklistOffline() {
+        return colaboradoresChecklistOffline;
     }
 
     @NotNull

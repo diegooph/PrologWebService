@@ -40,6 +40,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         }
     }
 
+    @NotNull
     @Override
     public DadosChecklistOfflineUnidade getVersaoDadosAtual(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
@@ -72,6 +73,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         }
     }
 
+    @NotNull
     @Override
     public List<ModeloChecklistOffline> getModelosChecklistOffline(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
@@ -171,6 +173,28 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             close(conn, stmt, rSet);
         }
         return modelosChecklistOffline;
+    }
+
+    @NotNull
+    @Override
+    public List<ColaboradorChecklistOffline> getColaboradoresChecklistOffline(
+            @NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<ColaboradorChecklistOffline> colaboradores = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OFFLINE_GET_COLABORADORES_DISPONIVEIS(?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                colaboradores.add(ChecklistOfflineConverter.createColaboradorChecklistOffline(rSet));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return colaboradores;
     }
 
     @Override

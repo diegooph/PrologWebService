@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
-import br.com.zalf.prolog.webservice.frota.checklist.offline.model.DadosChecklistOfflineUnidade;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.model.EmpresaChecklistOffline;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.model.ModeloChecklistOffline;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.model.VeiculoChecklistOffline;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -28,9 +25,14 @@ public interface ChecklistOfflineDao {
      */
     boolean getChecklistOfflineAtivoEmpresa(@NotNull final Long cpfColaborador) throws Throwable;
 
+    @NotNull
     DadosChecklistOfflineUnidade getVersaoDadosAtual(@NotNull final Long codUnidade) throws Throwable;
 
+    @NotNull
     List<ModeloChecklistOffline> getModelosChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
+
+    @NotNull
+    List<ColaboradorChecklistOffline> getColaboradoresChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
 
     List<VeiculoChecklistOffline> getVeiculosChecklistOffline(Long codUnidade);
 

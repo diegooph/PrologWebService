@@ -50,9 +50,9 @@ public class ChecklistOfflineService {
                             dadosChecklistOffline.getTokenSincronizacaoMarcacao(),
                             dadosChecklistOffline.getVersaoDadosBanco(),
                             dao.getModelosChecklistOffline(codUnidade),
+                            dao.getColaboradoresChecklistOffline(codUnidade),
                             dao.getVeiculosChecklistOffline(codUnidade),
-                            dao.getEmpresaChecklistOffline(codUnidade)
-                    );
+                            dao.getEmpresaChecklistOffline(codUnidade));
                 case DESATUALIZADO:
                     //noinspection ConstantConditions
                     return new ChecklistOfflineSupportDesatualizado(
@@ -60,9 +60,9 @@ public class ChecklistOfflineService {
                             dadosChecklistOffline.getTokenSincronizacaoMarcacao(),
                             dadosChecklistOffline.getVersaoDadosBanco(),
                             dao.getModelosChecklistOffline(codUnidade),
+                            dao.getColaboradoresChecklistOffline(codUnidade),
                             dao.getVeiculosChecklistOffline(codUnidade),
-                            dao.getEmpresaChecklistOffline(codUnidade)
-                    );
+                            dao.getEmpresaChecklistOffline(codUnidade));
                 case SEM_DADOS:
                     return new ChecklistOfflineSupportSemDados(dadosChecklistOffline.getCodUnidade());
                 default:
