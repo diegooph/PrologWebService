@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class CargoChecklistOffline {
     /**
-     * Número que representa o código do o cargo. Identificador único para o cargo.
+     * Número que representa o código do cargo. Identificador único para o cargo.
      */
     @NotNull
     private final Long codCargo;

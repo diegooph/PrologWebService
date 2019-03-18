@@ -42,7 +42,7 @@ public final class ChecklistOfflineSupportDesatualizado extends ChecklistOffline
     private final List<VeiculoChecklistOffline> veiculosChecklistOffline;
 
     /**
-     * Informações da Empresa a qual os dados do checklist se refere.
+     * Informações da Empresa a qual os dados do checklist se referem.
      */
     @NotNull
     private final EmpresaChecklistOffline empresaChecklistOffline;
