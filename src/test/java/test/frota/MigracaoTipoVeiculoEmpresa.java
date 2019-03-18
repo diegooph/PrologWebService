@@ -16,47 +16,41 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 /**
- * Created on 18/02/19
- * <p>
- * Teste para validar a migração dos tipos veículos que antes eram cadastrados por Unidade para agora serem a nível de
- * Empresa.
+ * Teste para validar a migração dos tipos de veículos que antes eram cadastrados por Unidade para agora serem a nível
+ * de Empresa.
  * <p>
  * Esse teste deve garantir que nenhum tipo de veículo se perdeu no processo de migração de dados.
  * <p>
  * Buscamos fazer essa validação utilizando tabelas de backup e comparações com os dados após a migraçõa ser rodada.
  * <p>
- * A tabela <code>veiculo_tipo_backup</code> contém as informações pré migração. A estrutura dessa tabela é a antiga
+ * A tabela <code>VEICULO_TIPO_BACKUP</code> contém as informações pré migração. A estrutura dessa tabela é a antiga
  * onde os dados são referentes à Unidade.
  * <p>
- * A tabela <code>veiculo_tipo</code> contém os dados pós migração. Essa passa a ser a tabela oficial para a utilização
+ * A tabela <code>VEICULO_TIPO</code> contém os dados pós migração. Essa passa a ser a tabela oficial para a utilização
  * no ProLog. Ela possui seus dados já a nível de Empresa.
  *
  * <i>Sobre o Processo de validação:</i>
  * <p>
  * Para criar a migração de tipos de veículos foi necessária uma extensa análise, onde, para cada Unidade de cada
- * Empresa avaliamos se havia tipos de veículos iguais ou nomes identicos que remetiam ao mesmo tipo.
+ * Empresa avaliamos se havia tipos de veículos iguais ou nomes idênticos que remetiam ao mesmo tipo.
  * Para os casos em que os nomes eram iguais foi necessário apenas a alteração do código da Unidade para o código da
- * Empresa e um código único para a identificação daquele modelo dentro da empresa.
- * Por outro lado, os casos em que Unidades possuiam  tipos de veículos semelhantes porém com nomes diferentes, foi
- * necessário, além da alteração do código de Unidade para codígo de Empresa e do código únido de identificação, a
+ * Empresa e um código único para a identificação daquele tipo dentro da empresa.
+ * Por outro lado, os casos em que Unidades possuiam tipos de veículos semelhantes porém com nomes diferentes, foi
+ * necessário, além da alteração do código de Unidade para codígo de Empresa e do código único de identificação, a
  * alteração do nome do tipo de veículo.
  * <p>
  * Os casos em que a alteração de nome fez-se necessário estão mapeados na estrutura de mapeamento dentro do teste,
  * chamada {@code TIPOS_TROCARAM_DE_NOME}. Ela vincula o código do tipo de veículo que trocou de nome e a qual empresa
  * ele pertence, respectivamente.
  * <p>
- * O método de validação, utiliza as informações de antes e depois da migração, comparando para saber se nenhuma
- * informação se perdeu no processo.
+ * O método de validação garante que um tipo de veículo que se manteve na nova tabela, tem os mesmos parâmetros de
+ * nome, diagrama e status do tipo de mesmo código na tabela antiga.
  * <p>
- * Para validar, comparamos os dados de backup para saber se TODOS estão presentes na tabela nova que agora é por
- * empresa.
- * Se algum tipo estiver faltando, sinalizamos um erro.
- * Ao caso que, se todos os tipos estiverem mapeados, a migração foi executada com sucesso.
+ * Created on 18/02/19
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class MigracaoTipoVeiculoEmpresa {
-    private static final String TAG = MigracaoTipoVeiculoEmpresa.class.getSimpleName();
     // CodTipo e CodEmpresa, respectivamente.
     private static final Map<Long, Long> TIPOS_TROCARAM_DE_NOME;
 
@@ -90,35 +84,40 @@ public class MigracaoTipoVeiculoEmpresa {
         final Map<Long, TipoVeiculoTest> tiposAntesMigration = getTiposAntesMigration(connection);
         final Map<Long, TipoVeiculoTest> tiposDepoisMigration = getTiposDepoisMigration(connection);
 
-        assertNotNull(tiposAntesMigration);
-        assertNotNull(tiposDepoisMigration);
-        assertTrue(tiposAntesMigration.size() > 0);
-        assertTrue(tiposDepoisMigration.size() > 0);
+        try {
+            assertNotNull(tiposAntesMigration);
 
-        // Alguns tipos foram deletados pois existiam em mais de uma unidade
-        assertNotEquals(tiposAntesMigration.size(), tiposDepoisMigration.size());
+            assertNotNull(tiposDepoisMigration);
+            assertTrue(tiposAntesMigration.size() > 0);
+            assertTrue(tiposDepoisMigration.size() > 0);
 
-        tiposDepoisMigration.forEach((codTipo, depois) -> {
-            final TipoVeiculoTest antes = tiposAntesMigration.get(codTipo);
+            // Alguns tipos foram deletados pois existiam em mais de uma unidade.
+            assertNotEquals(tiposAntesMigration.size(), tiposDepoisMigration.size());
 
-            assertNotNull("O código se perdeu na migração, COD: " + codTipo, antes);
+            tiposDepoisMigration.forEach((codTipo, depois) -> {
+                final TipoVeiculoTest antes = tiposAntesMigration.get(codTipo);
 
-            assertEquals("COD: " + depois.getCodigo(), antes.getCodigo(), depois.getCodigo());
-            assertEquals("COD: " + depois.getCodigo(), antes.getCodEmpresa(), depois.getCodEmpresa());
-            final Long codEmpresaTrocaNome = TIPOS_TROCARAM_DE_NOME.get(depois.getCodigo());
-            if (codEmpresaTrocaNome != null && codEmpresaTrocaNome.equals(depois.getCodEmpresa())) {
-                System.out.println("Tipo "
-                        + depois.getCodigo()
-                        + " da Empresa "
-                        + depois.getCodEmpresa()
-                        + " trocou de nome e não foi verificado.\n"
-                        + "  " + antes.getNome() + " --> " + depois.getNome() + "\n\n");
-            } else {
-                assertEquals("COD: " + depois.getCodigo(), antes.getNome(), depois.getNome());
-            }
-            assertEquals("COD: " + depois.getCodigo(), antes.isStatusAtivo(), depois.isStatusAtivo());
-            assertEquals("COD: " + depois.getCodigo(), antes.getCodDiagrama(), depois.getCodDiagrama());
-        });
+                assertNotNull("O código se perdeu na migração, COD: " + codTipo, antes);
+
+                assertEquals("COD: " + depois.getCodigo(), antes.getCodigo(), depois.getCodigo());
+                assertEquals("COD: " + depois.getCodigo(), antes.getCodEmpresa(), depois.getCodEmpresa());
+                final Long codEmpresaTrocaNome = TIPOS_TROCARAM_DE_NOME.get(depois.getCodigo());
+                if (codEmpresaTrocaNome != null && codEmpresaTrocaNome.equals(depois.getCodEmpresa())) {
+                    System.out.println("Tipo "
+                            + depois.getCodigo()
+                            + " da Empresa "
+                            + depois.getCodEmpresa()
+                            + " trocou de nome e não foi verificado.\n"
+                            + "  " + antes.getNome() + " --> " + depois.getNome() + "\n\n");
+                } else {
+                    assertEquals("COD: " + depois.getCodigo(), antes.getNome(), depois.getNome());
+                }
+                assertEquals("COD: " + depois.getCodigo(), antes.isStatusAtivo(), depois.isStatusAtivo());
+                assertEquals("COD: " + depois.getCodigo(), antes.getCodDiagrama(), depois.getCodDiagrama());
+            });
+        } finally {
+            DatabaseConnection.close(connection);
+        }
     }
 
     @NotNull
