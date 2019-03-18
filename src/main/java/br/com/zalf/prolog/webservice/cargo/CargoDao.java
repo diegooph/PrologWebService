@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.cargo;
 
 import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
+import br.com.zalf.prolog.webservice.cargo.model.CargoTodos;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -12,6 +13,9 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public interface CargoDao {
+
+    @NotNull
+    List<CargoTodos> getTodosCargosUnidade(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Busca os cargos que estão em uso na unidade informada como parâmetro. Entende-se um cargo como <b>em uso</b>,

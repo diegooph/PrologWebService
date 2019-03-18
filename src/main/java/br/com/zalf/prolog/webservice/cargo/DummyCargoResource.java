@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.cargo;
 import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
+import br.com.zalf.prolog.webservice.cargo.model.CargoTodos;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
@@ -27,6 +28,17 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class DummyCargoResource extends DummyData {
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/cargos-todos-unidade")
+    public List<CargoTodos> getCargosTodosUnidade() {
+        final List<CargoTodos> cargos = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            cargos.add(CargoTodos.createDummy());
+        }
+        return cargos;
+    }
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)

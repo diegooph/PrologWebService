@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.cargo;
 
 import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
+import br.com.zalf.prolog.webservice.cargo.model.CargoTodos;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -15,6 +16,13 @@ public final class CargoConverter {
 
     private CargoConverter() {
         throw new IllegalStateException(CargoConverter.class.getSimpleName() + " cannot be instantiated!");
+    }
+
+    @NotNull
+    static CargoTodos createCargoTodos(@NotNull final ResultSet rSet) throws Throwable {
+        return new CargoTodos(
+                rSet.getLong("COD_CARGO"),
+                rSet.getString("NOME_CARGO"));
     }
 
     @NotNull
