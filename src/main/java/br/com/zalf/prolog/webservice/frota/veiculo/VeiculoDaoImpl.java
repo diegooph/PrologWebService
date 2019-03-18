@@ -669,7 +669,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 return createDiagramaVeiculo(rSet, conn);
             }
         } finally {
-            close(stmt);
+            close(stmt, rSet);
         }
         return Optional.empty();
     }
