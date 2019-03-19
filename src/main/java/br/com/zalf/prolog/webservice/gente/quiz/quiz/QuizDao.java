@@ -14,5 +14,5 @@ public interface QuizDao {
 
     List<Quiz> getRealizadosByColaborador(Long cpf, int limit, int offset) throws SQLException;
 
-    Quiz getByCod(Long codUnidade, Long codQuiz, Long codModeloQuiz) throws SQLException;
+    Quiz getByCod(Long codUnidade, Long codQuiz, Long codModeloQuiz) throws Throwable;
 }

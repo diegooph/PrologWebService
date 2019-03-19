@@ -18,7 +18,7 @@ public class ColaboradorValidator {
     private static final int MAX_LENGTH_PIS = 11;
 
     private ColaboradorValidator() {
-        throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
+        throw new IllegalStateException(ColaboradorValidator.class.getSimpleName() + " cannot be instantiated!");
     }
 
     public static void validacaoAtributosColaborador(@NotNull final Colaborador colaborador) throws GenericException {

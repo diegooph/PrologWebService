@@ -16,6 +16,8 @@ import java.util.List;
  */
 public final class ColaboradorEmViagem {
     @NotNull
+    private final Long cpfColaborador;
+    @NotNull
     private final String nomeColaborador;
     @NotNull
     private final LocalDateTime dataHoraInicioJornada;
@@ -30,13 +32,15 @@ public final class ColaboradorEmViagem {
     private final int qtdMarcacoesDentroJornada;
     private final boolean inicioJornadaAjustada;
 
-    public ColaboradorEmViagem(@NotNull final String nomeColaborador,
+    public ColaboradorEmViagem(@NotNull final Long cpfColaborador,
+                               @NotNull final String nomeColaborador,
                                @NotNull final LocalDateTime dataHoraInicioJornada,
                                @NotNull final Duration jornadaBruta,
                                @NotNull final Duration jornadaLiquida,
                                @NotNull final List<MarcacaoDentroJornada> marcacoesDentroJornada,
                                final int qtdMarcacoesDentroJornada,
                                final boolean inicioJornadaAjustada) {
+        this.cpfColaborador = cpfColaborador;
         this.nomeColaborador = nomeColaborador;
         this.dataHoraInicioJornada = dataHoraInicioJornada;
         this.jornadaBruta = jornadaBruta;
@@ -53,6 +57,7 @@ public final class ColaboradorEmViagem {
         marcacoesDentroJornada.add(MarcacaoDentroJornada.createDummy(true));
 
         return new ColaboradorEmViagem(
+                3383283194L,
                 "João Carlos de Souza",
                 LocalDateTime.now().minus(5, ChronoUnit.HOURS),
                 Duration.ofHours(5),
@@ -60,6 +65,11 @@ public final class ColaboradorEmViagem {
                 marcacoesDentroJornada,
                 marcacoesDentroJornada.size(),
                 true);
+    }
+
+    @NotNull
+    public Long getCpfColaborador() {
+        return cpfColaborador;
     }
 
     @NotNull

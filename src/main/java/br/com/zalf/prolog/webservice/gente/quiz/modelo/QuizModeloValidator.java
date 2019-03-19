@@ -23,8 +23,8 @@ final class QuizModeloValidator {
         throw new IllegalStateException(QuizModeloValidator.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static void validaQuizModelo(@Nullable final ModeloQuiz modeloQuiz,
-                                 @Nullable final Long codUnidade) throws GenericException {
+    static void validaQuizModelo(@Nullable final Long codUnidade,
+                                 @Nullable final ModeloQuiz modeloQuiz) throws GenericException {
         try {
             if (modeloQuiz == null) {
                 throw new GenericException("Erro ao criar quiz, tente enviar novamente" +
