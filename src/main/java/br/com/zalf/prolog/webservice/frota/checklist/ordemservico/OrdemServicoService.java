@@ -132,7 +132,7 @@ final class OrdemServicoService {
                           final ResolverItemOrdemServico item) throws ProLogException {
         try {
             RouterChecklistOrdemServico
-                    .create(dao, userToken)
+                    .create(dao, token)
                     .resolverItem(item);
             OrdemServicoValidator.validaResolucaoItem(TimeZoneManager.getZoneIdForToken(token), item);
             dao.resolverItem(item);
@@ -151,7 +151,7 @@ final class OrdemServicoService {
                            final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
         try {
             RouterChecklistOrdemServico
-                    .create(dao, userToken)
+                    .create(dao, token)
                     .resolverItens(itensResolucao);
             OrdemServicoValidator.validaResolucaoMultiplosItens(TimeZoneManager.getZoneIdForToken(token), itensResolucao);
             dao.resolverItens(itensResolucao);

@@ -39,9 +39,9 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
                 stmt.setLong(5, itensResolvido.getKmColetadoVeiculo());
                 stmt.setLong(6, itensResolvido.getDuracaoResolucaoItemEmMilissegundos());
                 stmt.setString(7, itensResolvido.getFeedbackResolucao());
-                stmt.setObject(8, itensResolvido.getDataHoraResolvidoProLog());
-                stmt.setObject(9, itensResolvido.getDataHoraInicioResolucao());
-                stmt.setObject(10,itensResolvido.getDataHoraFimResolucao());
+                stmt.setObject(8, itensResolvido.getDataHoraResolvidoProLog().atOffset(ZoneOffset.UTC));
+                stmt.setObject(9, itensResolvido.getDataHoraInicioResolucao().atOffset(ZoneOffset.UTC));
+                stmt.setObject(10,itensResolvido.getDataHoraFimResolucao().atOffset(ZoneOffset.UTC));
                 stmt.setString(11, tokenIntegracao);
                 stmt.setObject(12, dataHoraAtual.atOffset(ZoneOffset.UTC));
                 stmt.addBatch();
