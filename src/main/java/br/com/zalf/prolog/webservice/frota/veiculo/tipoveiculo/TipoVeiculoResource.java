@@ -52,7 +52,9 @@ public final class TipoVeiculoResource {
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Path("/tipos-veiculos")
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     public List<TipoVeiculo> getTiposVeiculosByEmpresa(
@@ -98,7 +100,9 @@ public final class TipoVeiculoResource {
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Path("/{codUnidade}/tipo")
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     public List<TipoVeiculo> getTiposVeiculosByUnidade(@HeaderParam("Authorization") @Required final String userToken,

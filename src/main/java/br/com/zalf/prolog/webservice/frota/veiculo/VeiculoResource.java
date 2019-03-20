@@ -7,10 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -119,27 +116,6 @@ public final class VeiculoResource {
                                           @PathParam("codTipo") String codTipo,
                                           @HeaderParam("Authorization") String userToken) {
         return service.getVeiculosByTipo(codUnidade, codTipo, userToken);
-    }
-
-    @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
-            Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
-            Pilares.Frota.Checklist.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
-            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
-            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
-    @Path("/{codUnidade}/tipo")
-    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
-                                                      @PathParam("codUnidade") Long codUnidade) {
-        return service.getTipoVeiculosByUnidade(userToken, codUnidade);
     }
 
     @GET
