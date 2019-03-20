@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum SqlErrorCodes {
     UNIQUE_VIOLATION("23505"),
-    BD_GENERIC_ERROR_CODE("GEMSG");
+    BD_GENERIC_ERROR_CODE("SA1A1");
 
     @NotNull
     private final String errorCode;
