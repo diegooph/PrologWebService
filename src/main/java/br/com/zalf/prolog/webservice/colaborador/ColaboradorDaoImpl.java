@@ -233,7 +233,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
     @NotNull
     @Override
-    public Colaborador getByToken(@NotNull String token) throws SQLException {
+    public Colaborador getByToken(@NotNull final String token) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -261,11 +261,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 final Colaborador c = createColaborador(rSet);
                 c.setVisao(getVisaoByCpf(c.getCpf()));
                 return c;
+            } else {
+                throw new IllegalStateException("Colaborador não encontrado com o token: " + token);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
-        return null;
     }
 
     @NotNull

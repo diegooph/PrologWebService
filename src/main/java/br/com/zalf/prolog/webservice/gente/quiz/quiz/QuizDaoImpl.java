@@ -96,7 +96,7 @@ public class QuizDaoImpl extends DatabaseConnection implements QuizDao {
     }
 
     @Override
-    public Quiz getByCod(Long codUnidade, Long codQuiz, Long codModeloQuiz) throws SQLException {
+    public Quiz getByCod(Long codUnidade, Long codQuiz, Long codModeloQuiz) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -175,7 +175,7 @@ public class QuizDaoImpl extends DatabaseConnection implements QuizDao {
     }
 
     private List<PerguntaQuiz> getPerguntasByCodQuiz(Long codQuiz, Long codUnidade, Long codModeloQuiz, Connection
-            conn) throws SQLException {
+            conn) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<PerguntaQuiz> perguntas = new ArrayList<>();
@@ -204,7 +204,7 @@ public class QuizDaoImpl extends DatabaseConnection implements QuizDao {
 
     private List<Alternativa> getAlternativasPergunta(Long codPergunta, Long codUnidade, Long codQuiz,
                                                       Long codModeloQuiz, String tipoPergunta, Connection conn)
-            throws SQLException {
+            throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<Alternativa> alternativas = new ArrayList<>();

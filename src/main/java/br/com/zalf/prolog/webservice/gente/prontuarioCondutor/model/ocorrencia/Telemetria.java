@@ -10,6 +10,16 @@ public class Telemetria extends Ocorrencia {
     private int excessoVelocidade3;
     private int forcaG;
     private int frenagemBrusca;
+
+    /**
+     * O Power On acontece quando o sistema é desativado por mais de 10 minutos. Por exemplo: se a
+     * chave geral da bateria for desligada por mais de 10 minutos, teremos um Power On.
+     *
+     * Não confunda desligamento da chave com o desligar do veículo, o exemplo fornecido trata da
+     * chave geral da bateria, que corta toda a alimentação da carreta.
+     *
+     * Um Power On também poderia acontecer por desligamento de fios, o que seria algo mais grave.
+     */
     private int powerOn;
 
     public Telemetria() {

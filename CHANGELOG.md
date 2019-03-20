@@ -6,9 +6,21 @@ Change Log
 * Cria testes para validar métodos dos tipos de veículos (PL-1719)
 
 
-<a name="v0.0.85"></a>
-## Version [v0.0.85](https://github.com/luizfp/PrologWebService/compare/v0.0.84...v0.0.85) (release-date) [unreleased]
+<a name="v0.0.86"></a>
+## Version [v0.0.86](https://github.com/luizfp/PrologWebService/compare/v0.0.85...v0.0.86) (release-date) [unreleased]
 
+
+<a name="v0.0.85"></a>
+## Version [v0.0.85](https://github.com/luizfp/PrologWebService/compare/v0.0.84...v0.0.85) (2019-03-15)
+
+### Features
+* Cria relatório de vencimento de dot dos pneus
+* Cria método de busca dos modelos de quizzes para listagem (PL-1743)
+
+### Refactors
+* Cria e verifica novas permissões das movimentações (PL-1812)
+* Salva data/hora de início e fim da resolução de itens de O.S. (PL-1809)
+* Adiciona data/hora de início e fim de resolução ao buscar itens de O.S. (PL-1821)
 
 <a name="v0.0.84"></a>
 ## Version [v0.0.84](https://github.com/luizfp/PrologWebService/compare/v0.0.83...v0.0.84) (2019-02-09)

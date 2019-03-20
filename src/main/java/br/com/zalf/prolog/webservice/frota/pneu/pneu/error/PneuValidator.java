@@ -12,11 +12,13 @@ import java.math.BigDecimal;
 
 import static br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.isDotValid;
 
-public class PneuValidator {
-
+public final class PneuValidator {
     private static final int VIDA_PNEU_NOVO = 1;
     private static final int VIDA_MAXIMA = 6;
-    private static final int PARIDADE = 0;
+
+    private PneuValidator() {
+        throw new IllegalStateException(PneuValidator.class.getSimpleName() + " cannot be instantiated!");
+    }
 
     public static void validacaoAtributosPneu(@NotNull final Pneu pneu, Long codUnidade) throws GenericException {
         try {
