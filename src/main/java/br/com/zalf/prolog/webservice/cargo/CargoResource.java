@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.cargo;
 
 import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
-import br.com.zalf.prolog.webservice.cargo.model.CargoTodos;
+import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -27,7 +27,7 @@ public final class CargoResource {
     @GET
     @Secured
     @Path("/todos")
-    public List<CargoTodos> getTodosCargosUnidade(@QueryParam("codUnidade") @Required Long codUnidade)
+    public List<CargoSelecao> getTodosCargosUnidade(@QueryParam("codUnidade") @Required Long codUnidade)
             throws ProLogException {
         return service.getTodosCargosUnidade(codUnidade);
     }

@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.cargo;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
-import br.com.zalf.prolog.webservice.cargo.model.CargoTodos;
+import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ public final class CargoService {
     private final CargoDao dao = Injection.provideCargoDao();
 
     @NotNull
-    public List<CargoTodos> getTodosCargosUnidade(final Long codUnidade) throws ProLogException {
+    public List<CargoSelecao> getTodosCargosUnidade(final Long codUnidade) throws ProLogException {
         try {
             return dao.getTodosCargosUnidade(codUnidade);
         } catch (final Throwable throwable) {
