@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo;
 
+import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -27,10 +28,12 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "INSERT INTO VEICULO_TIPO(COD_EMPRESA, NOME, STATUS_ATIVO) VALUES (?, ?, ?) RETURNING CODIGO;");
+                    "INSERT INTO VEICULO_TIPO(COD_EMPRESA, COD_DIAGRAMA, NOME, STATUS_ATIVO) " +
+                            "VALUES (?, ?, ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, tipoVeiculo.getCodEmpresa());
-            stmt.setString(2, tipoVeiculo.getNome().trim());
-            stmt.setBoolean(3, true);
+            stmt.setLong(2, tipoVeiculo.getCodDiagrama());
+            stmt.setString(3, tipoVeiculo.getNome().trim());
+            stmt.setBoolean(4, true);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -46,16 +49,19 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
     public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE VEICULO_TIPO SET NOME = ? WHERE CODIGO = ?;");
-            stmt.setString(1, tipoVeiculo.getNome().trim());
-            stmt.setLong(2, tipoVeiculo.getCodigo());
-            if (stmt.executeUpdate() == 0) {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_UPDATE_TIPO_VEICULO(?, ?, ?);");
+            stmt.setLong(1, tipoVeiculo.getCodigo());
+            stmt.setString(2, tipoVeiculo.getNome().trim());
+            stmt.setLong(3, tipoVeiculo.getCodDiagrama());
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || rSet.getInt(1) <= 0) {
                 throw new SQLException("Erro ao atualizar o tipo de veículo: " + tipoVeiculo.getCodigo());
             }
         } finally {
-            close(conn, stmt);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -70,6 +76,7 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
             stmt = conn.prepareStatement(
                     "SELECT " +
                             "  VT.COD_EMPRESA, " +
+                            "  VT.COD_DIAGRAMA, " +
                             "  VT.CODIGO, " +
                             "  VT.NOME " +
                             "FROM VEICULO_TIPO VT " +
@@ -81,6 +88,7 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
             while (rSet.next()) {
                 tiposVeiculos.add(new TipoVeiculo(
                         rSet.getLong("COD_EMPRESA"),
+                        NullIf.equalOrLess(rSet.getLong("COD_DIAGRAMA"), 0),
                         rSet.getLong("CODIGO"),
                         rSet.getString("NOME")));
             }
@@ -101,6 +109,7 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
             stmt = conn.prepareStatement(
                     "SELECT " +
                             "VT.COD_EMPRESA, " +
+                            "VT.COD_DIAGRAMA, " +
                             "VT.CODIGO, " +
                             "VT.NOME " +
                             "FROM VEICULO_TIPO VT " +
@@ -108,11 +117,11 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
             stmt.setLong(1, codTipoVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final TipoVeiculo tipoVeiculo = new TipoVeiculo();
-                tipoVeiculo.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
-                tipoVeiculo.setCodigo(rSet.getLong("CODIGO"));
-                tipoVeiculo.setNome(rSet.getString("NOME"));
-                return tipoVeiculo;
+                return new TipoVeiculo(
+                        rSet.getLong("COD_EMPRESA"),
+                        NullIf.equalOrLess(rSet.getLong("COD_DIAGRAMA"), 0),
+                        rSet.getLong("CODIGO"),
+                        rSet.getString("NOME"));
             } else {
                 throw new IllegalStateException("Tipo de veículo não encontrado com o código: " + codTipoVeiculo);
             }

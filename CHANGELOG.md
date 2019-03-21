@@ -4,6 +4,7 @@ Change Log
 ### Stage
 * Cria novo package e estrutra de DAO para os métodos dos tipos de veículos (PL-1718)
 * Cria testes para validar métodos dos tipos de veículos (PL-1719)
+* Altera insert/update do tipo de veículo para passar a vincular o diagrama (PL-1830)
 
 
 <a name="v0.0.86"></a>

@@ -5,11 +5,13 @@ package br.com.zalf.prolog.webservice.frota.veiculo.model;
  */
 public class TipoVeiculo {
     private Long codEmpresa;
+    private Long codDiagrama;
     private Long codigo;
     private String nome;
 
-    public TipoVeiculo(Long codEmpresa, Long codigo, String nome) {
+    public TipoVeiculo(Long codEmpresa, Long codDiagrama, Long codigo, String nome) {
         this.codEmpresa = codEmpresa;
+        this.codDiagrama = codDiagrama;
         this.codigo = codigo;
         this.nome = nome;
     }
@@ -24,6 +26,14 @@ public class TipoVeiculo {
 
     public void setCodEmpresa(final Long codEmpresa) {
         this.codEmpresa = codEmpresa;
+    }
+
+    public Long getCodDiagrama() {
+        return codDiagrama;
+    }
+
+    public void setCodDiagrama(final Long codDiagrama) {
+        this.codDiagrama = codDiagrama;
     }
 
     public Long getCodigo() {
