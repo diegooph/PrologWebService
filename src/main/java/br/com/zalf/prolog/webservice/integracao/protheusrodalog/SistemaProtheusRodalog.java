@@ -33,14 +33,18 @@ public class SistemaProtheusRodalog extends Sistema {
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
-        return requester.insertAfericao(tokenIntegracao, codUnidade, ProtheusRodalogConverter.convertAfericao(afericao));
+        return requester.insertAfericao(
+                tokenIntegracao,
+                codUnidade,
+                ProtheusRodalogConverter.convertAfericao(afericao));
     }
 
     @NotNull
     @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
         final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
-        return ProtheusRodalogConverter.convertCronogramaAfericao(requester.getCronogramaAfericao(tokenIntegracao, codUnidade));
+        return ProtheusRodalogConverter
+                .convertCronogramaAfericao(requester.getCronogramaAfericao(tokenIntegracao, codUnidade));
     }
 
     @NotNull
@@ -56,13 +60,16 @@ public class SistemaProtheusRodalog extends Sistema {
                         placaVeiculo,
                         TipoMedicaoAfericaoProtheusRodalog.fromString(tipoAfericao));
         if (novaAfericaoPlaca.getCodDiagrama() == null) {
-            throw new IllegalStateException("Código do diagrama é null");
+            throw new IllegalStateException("[INTEGRACAO - RODALOG] O código do diagrama é null\n" +
+                    "CodUnidade: " + codUnidade +
+                    "Placa: " + placaVeiculo);
         }
         final Optional<DiagramaVeiculo> diagramaVeiculo =
                 getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(novaAfericaoPlaca.getCodDiagrama().shortValue());
         if (!diagramaVeiculo.isPresent()) {
             throw new IllegalStateException(
-                    "Nenhum diagrama encontrado para o código: " + novaAfericaoPlaca.getCodDiagrama());
+                    "[INTEGRACAO - RODALOG] Nenhum diagrama encontrado para o código: "
+                            + novaAfericaoPlaca.getCodDiagrama());
         }
         return ProtheusRodalogConverter.convertNovaAfericaoPlaca(novaAfericaoPlaca, diagramaVeiculo.get());
     }

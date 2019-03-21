@@ -63,7 +63,7 @@ public class ProtheusRodalogRequesterImpl implements ProtheusRodalogRequester {
                         "[INTEGRACAO - RODALOG] A requisição retornou código de erro: " + response.code());
             }
         } else {
-            throw new IllegalStateException("[INTEGRACAO - RODALOG] Erro ao executar envio da aferição");
+            throw new IllegalStateException("[INTEGRACAO - RODALOG] Nunhuma resposta obtida da integração");
         }
     }
 }

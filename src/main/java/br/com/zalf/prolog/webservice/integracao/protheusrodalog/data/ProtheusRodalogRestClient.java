@@ -16,10 +16,9 @@ public final class ProtheusRodalogRestClient {
 
     public static Retrofit getRetrofit() {
         if (retrofit == null) {
-            // TODO - Setar URL de comunicação (ou buscar no BD)
             retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
-                    .baseUrl("http://192.168.0.99:8080/prolog/v2/")
+                    .baseUrl("http://192.168.221.213:8086/rest/")
                     .build();
         }
         return retrofit;

@@ -654,7 +654,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             conn = getConnection();
             return internalGetDiagramaVeiculoByPlaca(conn, placa);
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -680,8 +680,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 return createDiagramaVeiculo(rSet, conn);
             }
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
         return Optional.empty();
     }
