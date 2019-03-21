@@ -25,7 +25,14 @@ public interface TipoVeiculoDao {
 
     /**
      * Atualiza as informações de um {@link TipoVeiculo tipo de veículo}.
-     * Atualmente este método apenas atualiza o {@link TipoVeiculo#nome} do tipo de veículo.
+     * Atualmente este método atualiza as informações baseado na seguinte lógica:
+     *
+     * Se estiver atualizando um tipo que não tenha nenhum diagrama vinculado, um será vinculado caso tenha sido
+     * enviado no atributo {@link TipoVeiculo#codDiagrama};
+     * Se for um tipo que já tenha diagrama e o diagrama enviado for igual, vai atualizar apenas o nome;
+     * E se o código de diagrama enviado em ({@link TipoVeiculo#codDiagrama}) for diferente do código atual do tipo no
+     * banco, retornará um erro, pois um tipo não pode ter seu código de diagrama trocado, já que isso impactaria nos
+     * pneus atualmente vinculados.
      *
      * @param tipoVeiculo Objeto contendo as novas informações para o tipo do veículo.
      * @throws Throwable Se algum erro ocorrer no processo de atualização.
