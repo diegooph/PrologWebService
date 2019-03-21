@@ -22,7 +22,9 @@ public final class ItemResolvidoIntegracaoTransport {
     private Long kmColetadoVeiculo;
     private Long duracaoResolucaoItemEmMilissegundos;
     private String feedbackResolucao;
-    private LocalDateTime dataHoraResolucao;
+    private LocalDateTime dataHoraResolvidoProLog;
+    private LocalDateTime dataHoraInicioResolucao;
+    private LocalDateTime dataHoraFimResolucao;
 
     public ItemResolvidoIntegracaoTransport() {
     }
@@ -38,7 +40,9 @@ public final class ItemResolvidoIntegracaoTransport {
         item.setKmColetadoVeiculo(90051L);
         item.setDuracaoResolucaoItemEmMilissegundos(900000L);
         item.setFeedbackResolucao("Item foi consertado.");
-        item.setDataHoraResolucao(LocalDateTime.now());
+        item.setDataHoraResolvidoProLog(LocalDateTime.now());
+        item.setDataHoraInicioResolucao(LocalDateTime.now());
+        item.setDataHoraFimResolucao(LocalDateTime.now());
         return item;
     }
 
@@ -106,11 +110,27 @@ public final class ItemResolvidoIntegracaoTransport {
         this.feedbackResolucao = feedbackResolucao;
     }
 
-    public LocalDateTime getDataHoraResolucao() {
-        return dataHoraResolucao;
+    public LocalDateTime getDataHoraResolvidoProLog() {
+        return dataHoraResolvidoProLog;
     }
 
-    public void setDataHoraResolucao(final LocalDateTime dataHoraResolucao) {
-        this.dataHoraResolucao = dataHoraResolucao;
+    public void setDataHoraResolvidoProLog(final LocalDateTime dataHoraResolvidoProLog) {
+        this.dataHoraResolvidoProLog = dataHoraResolvidoProLog;
+    }
+
+    public LocalDateTime getDataHoraInicioResolucao() {
+        return dataHoraInicioResolucao;
+    }
+
+    public void setDataHoraInicioResolucao(final LocalDateTime dataHoraInicioResolucao) {
+        this.dataHoraInicioResolucao = dataHoraInicioResolucao;
+    }
+
+    public LocalDateTime getDataHoraFimResolucao() {
+        return dataHoraFimResolucao;
+    }
+
+    public void setDataHoraFimResolucao(final LocalDateTime dataHoraFimResolucao) {
+        this.dataHoraFimResolucao = dataHoraFimResolucao;
     }
 }

@@ -8,7 +8,7 @@ import com.sun.istack.internal.Nullable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ModeloQuiz {
+public final class ModeloQuiz {
     private Long codigo;
     private String nome;
     @Nullable

@@ -20,8 +20,17 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
 
     private Long codColaboradorResolucao;
     private String nomeColaboradorResolucao;
-    private LocalDateTime dataHoraResolucao;
+    private LocalDateTime dataHoraResolvidoProLog;
     private String feedbackResolucao;
+    /**
+     * A data e hora em que a resolução do item foi iniciada pelo colaborador.
+     */
+    private LocalDateTime dataHoraInicioResolucao;
+
+    /**
+     * A data e hora em que a resolução do item foi finalizada pelo colaborador.
+     */
+    private LocalDateTime dataHoraFimResolucao;
     @SerializedName("duracaoResolucaoEmSegundos")
     private Duration duracaoResolucao;
     private long kmVeiculoColetadoResolucao;
@@ -46,8 +55,10 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
         // Resolvido.
         item.setCodColaboradorResolucao(10L);
         item.setNomeColaboradorResolucao("ProLoggerson");
-        item.setDataHoraResolucao(LocalDateTime.now());
+        item.setDataHoraResolvidoProLog(LocalDateTime.now());
         item.setFeedbackResolucao("Feedback Fechamento");
+        item.setDataHoraInicioResolucao(LocalDateTime.now().minusDays(2));
+        item.setDataHoraFimResolucao(LocalDateTime.now().minusDays(1));
         item.setDuracaoResolucao(Duration.ofMinutes(10));
         item.setKmVeiculoColetadoResolucao(1000);
         return item;
@@ -69,12 +80,12 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
         this.nomeColaboradorResolucao = nomeColaboradorResolucao;
     }
 
-    public LocalDateTime getDataHoraResolucao() {
-        return dataHoraResolucao;
+    public LocalDateTime getDataHoraResolvidoProLog() {
+        return dataHoraResolvidoProLog;
     }
 
-    public void setDataHoraResolucao(final LocalDateTime dataHoraResolucao) {
-        this.dataHoraResolucao = dataHoraResolucao;
+    public void setDataHoraResolvidoProLog(final LocalDateTime dataHoraResolvidoProLog) {
+        this.dataHoraResolvidoProLog = dataHoraResolvidoProLog;
     }
 
     public String getFeedbackResolucao() {
@@ -83,6 +94,22 @@ public final class ItemOrdemServicoResolvido extends ItemOrdemServicoVisualizaca
 
     public void setFeedbackResolucao(final String feedbackResolucao) {
         this.feedbackResolucao = feedbackResolucao;
+    }
+
+    public LocalDateTime getDataHoraInicioResolucao() {
+        return dataHoraInicioResolucao;
+    }
+
+    public void setDataHoraInicioResolucao(final LocalDateTime dataHoraInicioResolucao) {
+        this.dataHoraInicioResolucao = dataHoraInicioResolucao;
+    }
+
+    public LocalDateTime getDataHoraFimResolucao() {
+        return dataHoraFimResolucao;
+    }
+
+    public void setDataHoraFimResolucao(final LocalDateTime dataHoraFimResolucao) {
+        this.dataHoraFimResolucao = dataHoraFimResolucao;
     }
 
     public Duration getDuracaoResolucao() {

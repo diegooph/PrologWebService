@@ -10,7 +10,7 @@ import com.sun.istack.internal.NotNull;
 /**
  * Created by luiz on 21/07/17.
  */
-public class RouterAfericao extends Router {
+public final class RouterAfericao extends Router {
 
     public static RouterAfericao create(@NotNull final AfericaoDao afericaoDao, @NotNull final String userToken) {
         return new RouterAfericao(

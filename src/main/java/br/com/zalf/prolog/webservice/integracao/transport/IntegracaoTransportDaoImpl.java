@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +22,15 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
     @Override
     public void resolverMultiplosItens(
             @NotNull final String tokenIntegracao,
+            @NotNull final LocalDateTime dataHoraAtual,
             @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_INTEGRACAO_RESOLVE_ITENS_PENDENTES_EMPRESA(?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM INTEGRACAO.FUNC_INTEGRACAO_RESOLVE_ITENS_PENDENTES_EMPRESA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             for (final ItemResolvidoIntegracaoTransport itensResolvido : itensResolvidos) {
                 stmt.setLong(1, itensResolvido.getCodUnidadeOrdemServico());
                 stmt.setLong(2, itensResolvido.getCodOrdemServico());
@@ -36,8 +39,11 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
                 stmt.setLong(5, itensResolvido.getKmColetadoVeiculo());
                 stmt.setLong(6, itensResolvido.getDuracaoResolucaoItemEmMilissegundos());
                 stmt.setString(7, itensResolvido.getFeedbackResolucao());
-                stmt.setObject(8, itensResolvido.getDataHoraResolucao());
-                stmt.setString(9, tokenIntegracao);
+                stmt.setObject(8, itensResolvido.getDataHoraResolvidoProLog().atOffset(ZoneOffset.UTC));
+                stmt.setObject(9, itensResolvido.getDataHoraInicioResolucao().atOffset(ZoneOffset.UTC));
+                stmt.setObject(10,itensResolvido.getDataHoraFimResolucao().atOffset(ZoneOffset.UTC));
+                stmt.setString(11, tokenIntegracao);
+                stmt.setObject(12, dataHoraAtual.atOffset(ZoneOffset.UTC));
                 stmt.addBatch();
             }
             // Verificamos apenas se a quantidade de vezes que a function executou bate com a quantidade de itens.
@@ -67,7 +73,7 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_INTEGRACAO_BUSCA_ITENS_OS_EMPRESA(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_INTEGRACAO_BUSCA_ITENS_OS_EMPRESA(?, ?);");
             stmt.setLong(1, codUltimoItemPendenteSincronizado);
             stmt.setString(2, tokenIntegracao);
             rSet = stmt.executeQuery();

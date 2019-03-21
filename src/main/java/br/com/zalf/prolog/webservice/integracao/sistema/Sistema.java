@@ -1,10 +1,14 @@
 package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -123,6 +127,19 @@ public abstract class Sistema implements OperacoesIntegradas {
                 .getAfericoesPlacas(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
     }
 
+    @Override
+    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
+        getIntegradorProLog().insertModeloChecklist(modeloChecklist);
+    }
+
+    @Override
+    public void updateModeloChecklist(@NotNull final String token,
+                                      @NotNull final Long codUnidade,
+                                      @NotNull final Long codModelo,
+                                      @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
+        getIntegradorProLog().updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
+    }
+
     @NotNull
     @Override
     public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
@@ -165,8 +182,17 @@ public abstract class Sistema implements OperacoesIntegradas {
                                               final int limit,
                                               final long offset,
                                               final boolean resumido) throws Exception {
-        return getIntegradorProLog().getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo,
-                dataInicial, dataFinal, limit, offset, resumido);
+        return getIntegradorProLog()
+                .getTodosChecklists(
+                        codUnidade,
+                        codEquipe,
+                        codTipoVeiculo,
+                        placaVeiculo,
+                        dataInicial,
+                        dataFinal,
+                        limit,
+                        offset,
+                        resumido);
     }
 
     @NotNull
@@ -176,6 +202,16 @@ public abstract class Sistema implements OperacoesIntegradas {
                                                       @NotNull final LocalDate dataFinal,
                                                       final boolean itensCriticosRetroativos) throws Throwable {
         return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
+    }
+
+    @Override
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        getIntegradorProLog().resolverItem(item);
+    }
+
+    @Override
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        getIntegradorProLog().resolverItens(itensResolucao);
     }
 
     @NotNull

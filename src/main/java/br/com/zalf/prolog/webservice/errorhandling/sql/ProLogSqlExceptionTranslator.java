@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.errorhandling.sql;
 
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.postgresql.util.PSQLException;
 
+import java.sql.BatchUpdateException;
 import java.sql.SQLException;
-
-import static br.com.zalf.prolog.webservice.errorhandling.sql.SqlErrorCodes.UNIQUE_VIOLATION;
 
 /**
  * Created on 18/06/2018
@@ -19,17 +20,38 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
     @Override
     public final ProLogException doTranslate(@NotNull final SQLException sqlException,
                                              @NotNull final String fallBackErrorMessage) {
-        // Primeiro tentamos a tradução personalizada.
-        final ProLogException proLogException = customTranslate(sqlException, fallBackErrorMessage);
-        if (proLogException != null) {
-            return proLogException;
-        }
+        try {
+            // Primeiro tentamos a tradução personalizada.
+            final ProLogException proLogException = customTranslate(sqlException, fallBackErrorMessage);
+            if (proLogException != null) {
+                return proLogException;
+            }
 
-        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.UNIQUE_VIOLATION.getErrorCode())) {
-            return new DuplicateKeyException("Este recurso já existe no banco de dados");
+            if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.UNIQUE_VIOLATION.getErrorCode())) {
+                return new DuplicateKeyException("Este recurso já existe no banco de dados");
+            }
+
+            if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.BD_GENERIC_ERROR_CODE.getErrorCode())) {
+                if (sqlException instanceof PSQLException) {
+                    return new GenericException(getPSQLErrorMessage(sqlException));
+                } else if (sqlException instanceof BatchUpdateException) {
+                    if (sqlException.getNextException() instanceof PSQLException) {
+                        return new GenericException(getPSQLErrorMessage(sqlException));
+                    }
+                }
+            }
+        } catch (final Throwable t) {
+            // Se acontecer algum outro erro ao tentarmos mapear o erro principal, realizamos o fallBack para a
+            // mensagem recebida lançando uma exception genérica.
+            return new GenericException(fallBackErrorMessage);
         }
 
         return new DataAccessException(fallBackErrorMessage);
+    }
+
+    @NotNull
+    private String getPSQLErrorMessage(@NotNull final SQLException sqlException) throws Throwable {
+        return ((PSQLException) sqlException.getNextException()).getServerErrorMessage().getMessage();
     }
 
     @Nullable

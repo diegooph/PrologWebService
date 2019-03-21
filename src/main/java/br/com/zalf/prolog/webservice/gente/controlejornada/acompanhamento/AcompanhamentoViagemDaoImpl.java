@@ -82,8 +82,10 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
             Long cpfAnterior = null;
             List<MarcacaoDentroJornada> marcacoes = null;
             while (rSet.next()) {
-                if (cpfAnterior == null || !cpfAnterior.equals(rSet.getLong("CPF_COLABORADOR"))) {
+                final Long cpfAtual = rSet.getLong("CPF_COLABORADOR");
+                if (cpfAnterior == null || !cpfAnterior.equals(cpfAtual)) {
                     final ColaboradorEmViagem colaboradorEmViagem = new ColaboradorEmViagem(
+                            cpfAtual,
                             rSet.getString("NOME_COLABORADOR"),
                             rSet.getObject("DATA_HORA_INICIO_JORNADA", LocalDateTime.class),
                             Duration.ofSeconds(rSet.getLong("DURACAO_JORNADA_BRUTA_SEGUNDOS")),
@@ -98,7 +100,7 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                 if (rSet.getLong("COD_TIPO_MARCACAO") > 0) {
                     marcacoes.add(createMarcacaoDentroJornada(rSet));
                 }
-                cpfAnterior = rSet.getLong("CPF_COLABORADOR");
+                cpfAnterior = cpfAtual;
             }
             return new ViagemEmAndamento(viagens, viagens.size());
         } finally {
