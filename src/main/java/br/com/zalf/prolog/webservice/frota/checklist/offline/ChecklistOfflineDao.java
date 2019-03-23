@@ -60,7 +60,24 @@ public interface ChecklistOfflineDao {
     @NotNull
     List<ColaboradorChecklistOffline> getColaboradoresChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
 
-    List<VeiculoChecklistOffline> getVeiculosChecklistOffline(Long codUnidade);
+    /**
+     * Método utilizado para buscar as {@link VeiculoChecklistOffline placas} que estão associadas a qualquer modelo
+     * de checklist ativo e com permissões associadas, da Unidade.
+     *
+     * @param codUnidade Código da Unidade de onde as {@link VeiculoChecklistOffline placas} serão buscados.
+     * @return Uma lista de {@link VeiculoChecklistOffline placas} contendo as informações buscadas.
+     * @throws Throwable Se algum erro acontecer na busca das placas
+     */
+    @NotNull
+    List<VeiculoChecklistOffline> getVeiculosChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
 
-    EmpresaChecklistOffline getEmpresaChecklistOffline(Long codUnidade);
+    /**
+     * Método utilizado para buscar as infomações da empresa a qual o {@code codUnidade} está vinculado.
+     *
+     * @param codUnidade Código da Unidade pelo qual será buscado os dados da Empresa.
+     * @return Informações da {@link EmpresaChecklistOffline empresa}.
+     * @throws Throwable Se algum erro ocorrer na busca das informações da empresa.
+     */
+    @NotNull
+    EmpresaChecklistOffline getEmpresaChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
 }

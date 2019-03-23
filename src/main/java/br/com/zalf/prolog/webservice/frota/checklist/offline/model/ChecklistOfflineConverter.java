@@ -84,4 +84,25 @@ public final class ChecklistOfflineConverter {
                 rSet.getLong("COD_CARGO_COLABORADOR"),
                 rSet.getInt("COD_PERMISSAO_COLABORADOR"));
     }
+
+    @NotNull
+    public static VeiculoChecklistOffline createVeiculoChecklistOffline(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new VeiculoChecklistOffline(
+                rSet.getLong("COD_VEICULO"),
+                rSet.getString("PLACA_VEICULO"),
+                rSet.getLong("COD_TIPO_VEICULO"));
+    }
+
+    @NotNull
+    public static EmpresaChecklistOffline createEmpresaChecklistOffline(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new EmpresaChecklistOffline(
+                rSet.getLong("COD_EMPRESA"),
+                rSet.getString("NOME_EMPRESA"),
+                rSet.getLong("COD_REGIONAL"),
+                rSet.getString("NOME_REGIONAL"),
+                rSet.getLong("COD_UNIDADE"),
+                rSet.getString("NOME_UNIDADE"));
+    }
 }

@@ -199,13 +199,45 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         return colaboradores;
     }
 
+    @NotNull
     @Override
-    public List<VeiculoChecklistOffline> getVeiculosChecklistOffline(final Long codUnidade) {
-        return null;
+    public List<VeiculoChecklistOffline> getVeiculosChecklistOffline(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<VeiculoChecklistOffline> veiculos = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OFFLINE_GET_PLACAS_DISPONIVEIS(?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                veiculos.add(ChecklistOfflineConverter.createVeiculoChecklistOffline(rSet));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return veiculos;
     }
 
+    @NotNull
     @Override
-    public EmpresaChecklistOffline getEmpresaChecklistOffline(final Long codUnidade) {
-        return null;
+    public EmpresaChecklistOffline getEmpresaChecklistOffline(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OFFLINE_GET_INFORMACOES_EMPRESA(?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return ChecklistOfflineConverter.createEmpresaChecklistOffline(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar inforações da empresa para a unidade: " + codUnidade);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 }
