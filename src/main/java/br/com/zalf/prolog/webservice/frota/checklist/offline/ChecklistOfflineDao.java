@@ -25,12 +25,38 @@ public interface ChecklistOfflineDao {
      */
     boolean getChecklistOfflineAtivoEmpresa(@NotNull final Long cpfColaborador) throws Throwable;
 
+    /**
+     * Este método é utilizado internamente para a validação da versão dos dados da Unidade em comparação com a versão
+     * dos dados recebidos na requisição.
+     *
+     * @param codUnidade Código da Unidade de onde os dados serão buscados.
+     * @return Objeto {@link DadosChecklistOfflineUnidade} contendo as informações relacionadas ao checklist offline.
+     * @throws Throwable Caso algum erro aconteça na execução da busca dos dados.
+     * @see ChecklistOfflineService#getDadosChecklistOffline(Long, Long, boolean)
+     */
     @NotNull
     DadosChecklistOfflineUnidade getVersaoDadosAtual(@NotNull final Long codUnidade) throws Throwable;
 
+    /**
+     * Método utilizado para buscar os {@link ModeloChecklistOffline modelos de checklists} aptos a serem
+     * realizados de forma offline.
+     *
+     * @param codUnidade Código da Unidade dos modelos de checklist.
+     * @return Uma lista de {@link ModeloChecklistOffline modelos} contendo as informações buscadas.
+     * @throws Throwable Se algum erro ocorrer na busca dos modelos.
+     * @see ChecklistOfflineService#getDadosChecklistOffline(Long, Long, boolean)
+     */
     @NotNull
     List<ModeloChecklistOffline> getModelosChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
 
+    /**
+     * Este método busca os {@link ColaboradorChecklistOffline colaboradores} que estão aptos a realizar algum
+     * {@link ModeloChecklistOffline modelo de checklist offline}.
+     *
+     * @param codUnidade Código da Unidade onde os colaboradores serão buscados.
+     * @return Uma lista de {@link ColaboradorChecklistOffline colaboradores} contendo as informações buscadas.
+     * @throws Throwable Se algum erro na busca dos colaboradores acontecer.
+     */
     @NotNull
     List<ColaboradorChecklistOffline> getColaboradoresChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
 

@@ -50,20 +50,22 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT VERSAO_DADOS, TOKEN_SINCRONIZACAO_CHECKLIST " +
                     "   FROM CHECKLIST_OFFLINE_DADOS_UNIDADE " +
-                    "   WHERE COD_UNIDADE = ?");
+                    "   WHERE COD_UNIDADE = ?;");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
+                final long versaoDados = rSet.getLong("VERSAO_DADOS");
                 final String token = rSet.getString("TOKEN_SINCRONIZACAO_CHECKLIST");
-                final long versao_dados = rSet.getLong("VERSAO_DADOS");
                 // Precisamos nos atentar à um cenário incrivelmente improvável de acontecer, porém se acontecer esse
                 // código estará preparado para lidar. Trata-se do caso de a Unidade ter dados cadastrados na tabela
                 // CHECKLIST_OFFLINE_DADOS_UNIDADE porém não ter (ou ter um valor inválido) a informação VERSAO_DADOS.
-                if (versao_dados > 0 && token != null) {
-                    return new DadosChecklistOfflineUnidade(codUnidade, versao_dados, token);
+                if (versaoDados > 0 && token != null) {
+                    return new DadosChecklistOfflineUnidade(codUnidade, versaoDados, token);
                 } else {
                     throw new SQLException("A unidade possui configuração inconsistentes.\n" +
-                            "CodUnidade: " + codUnidade);
+                            "CodUnidade: " + codUnidade + "\n" +
+                            "VersaoDados: " + versaoDados + "\n" +
+                            "Token: " + token);
                 }
             } else {
                 return new DadosChecklistOfflineUnidade(codUnidade);
@@ -106,7 +108,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                             tiposVeiculos,
                             perguntas);
                 } else
-                    // Processamos Pergunta/Alternativas apenas se não tem cargo ou tipo de veículo para processar.
+                    // Processamos Pergunta/Alternativas apenas se não tem 'cargo' ou 'tipo de veículo' para processar.
                     if (rSet.getLong("COD_CARGO") <= 0
                             && rSet.getLong("COD_TIPO_VEICULO") <= 0) {
                         if (modelo != null
@@ -149,7 +151,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                             }
                         }
                     } else {
-                        // Processamos cargo ou tipo de veículo do modelo de checklist.
+                        // Processamos 'cargo' ou 'tipo de veículo' do modelo de checklist.
                         if (modelo != null
                                 && modelo.getCodModelo().equals(rSet.getLong("COD_MODELO_CHECKLIST"))
                                 && rSet.getLong("COD_CARGO") > 0) {

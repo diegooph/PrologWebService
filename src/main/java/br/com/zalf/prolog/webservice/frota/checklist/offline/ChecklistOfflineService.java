@@ -66,7 +66,8 @@ public class ChecklistOfflineService {
                 case SEM_DADOS:
                     return new ChecklistOfflineSupportSemDados(dadosChecklistOffline.getCodUnidade());
                 default:
-                    throw new IllegalStateException("Um estado não mapeado foi informado ");
+                    throw new IllegalStateException("Um estado não mapeado foi informado: "
+                            + dadosChecklistOffline.getEstadoChecklistOfflineSupport());
             }
         } catch (Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar informações para realização de checklist offline: \n" +
@@ -84,31 +85,41 @@ public class ChecklistOfflineService {
                                                                   @NotNull final Long codUnidade,
                                                                   final boolean forcarAtualizacao) throws Throwable {
         final DadosChecklistOfflineUnidade dadosChecklistOfflineUnidade = dao.getVersaoDadosAtual(codUnidade);
-        if (forcarAtualizacao) {
-            dadosChecklistOfflineUnidade
-                    .setEstadoChecklistOfflineSupport(EstadoChecklistOfflineSupport.ATUALIZACAO_FORCADA);
-            return dadosChecklistOfflineUnidade;
-        } else {
-            final Long versaoDadosBanco = dadosChecklistOfflineUnidade.getVersaoDadosBanco();
-            if (versaoDadosBanco != null) {
-                if (versaoDadosApp < versaoDadosBanco) {
-                    dadosChecklistOfflineUnidade
-                            .setEstadoChecklistOfflineSupport(EstadoChecklistOfflineSupport.DESATUALIZADO);
-                    return dadosChecklistOfflineUnidade;
-                } else if (versaoDadosApp.equals(versaoDadosBanco)) {
-                    dadosChecklistOfflineUnidade
-                            .setEstadoChecklistOfflineSupport(EstadoChecklistOfflineSupport.ATUALIZADO);
-                    return dadosChecklistOfflineUnidade;
-                } else {
-                    dadosChecklistOfflineUnidade
-                            .setEstadoChecklistOfflineSupport(EstadoChecklistOfflineSupport.ATUALIZACAO_FORCADA);
-                    return dadosChecklistOfflineUnidade;
-                }
-            } else {
+        final Long versaoDadosBanco = dadosChecklistOfflineUnidade.getVersaoDadosBanco();
+        if (versaoDadosBanco != null) {
+            // Caso a Unidade tenha dados e 'forcarAtualizacao = true' então forçamos a atualização dos dados
+            // retornando a consante ATUALIZACAO_FORCADA.
+            if (forcarAtualizacao) {
                 dadosChecklistOfflineUnidade
-                        .setEstadoChecklistOfflineSupport(EstadoChecklistOfflineSupport.SEM_DADOS);
+                        .setEstadoChecklistOfflineSupport(EstadoChecklistOfflineSupport.ATUALIZACAO_FORCADA);
                 return dadosChecklistOfflineUnidade;
             }
+            // Se a versão dos dados recebida na requisição é menor que a versão no banco, então retornamos a
+            // constante DESATUALIZADO.
+            if (versaoDadosApp < versaoDadosBanco) {
+                dadosChecklistOfflineUnidade
+                        .setEstadoChecklistOfflineSupport(EstadoChecklistOfflineSupport.DESATUALIZADO);
+                return dadosChecklistOfflineUnidade;
+            }
+            // Se a versão dos dados recebida na requisição é igual a versão no banco, então retornamos a
+            // constante ATUALIZADO.
+            if (versaoDadosApp.equals(versaoDadosBanco)) {
+                dadosChecklistOfflineUnidade
+                        .setEstadoChecklistOfflineSupport(EstadoChecklistOfflineSupport.ATUALIZADO);
+                return dadosChecklistOfflineUnidade;
+            } else {
+                // Esse caso só acontece na estranha situação que a versão dos dados da requisição é maior que a
+                // versão dos dados do Servidor. Para este caso peculiar entendemos que algo está errado e forçamos a
+                // atualização dos dados com a constante ATUALIZACAO_FORCADA.
+                dadosChecklistOfflineUnidade
+                        .setEstadoChecklistOfflineSupport(EstadoChecklistOfflineSupport.ATUALIZACAO_FORCADA);
+                return dadosChecklistOfflineUnidade;
+            }
+        } else {
+            // Se não tem versão no BD, então a Unidade não tem dados.
+            dadosChecklistOfflineUnidade
+                    .setEstadoChecklistOfflineSupport(EstadoChecklistOfflineSupport.SEM_DADOS);
+            return dadosChecklistOfflineUnidade;
         }
     }
 }
