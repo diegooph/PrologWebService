@@ -105,15 +105,6 @@ public interface EmpresaDao {
      */
     List<Setor> getSetorByCodUnidade(Long codUnidade) throws SQLException;
 
-    /**
-     * Lista as funções de uma unidade.
-     *
-     * @param codUnidade código de uma unidade
-     * @return lista de funções da unidade
-     * @throws SQLException caso ocorrer erro no banco
-     */
-    List<Cargo> getCargosByCodUnidade(Long codUnidade) throws SQLException;
-
     Cargo getCargo(Long codEmpresa, Long codCargo) throws SQLException;
 
     /**
