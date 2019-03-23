@@ -14,6 +14,13 @@ import java.util.List;
  */
 public interface CargoDao {
 
+    /**
+     * Este método é utilizado para buscar todos os {@link CargoSelecao cargos} da Unidade selecionada.
+     *
+     * @param codUnidade Código da Unidade a qual os cargos serão buscados.
+     * @return Uma lista com todos os {@link CargoSelecao cargos} da unidade.
+     * @throws Throwable Caso ocorra qualquer na busca dos dados.
+     */
     @NotNull
     List<CargoSelecao> getTodosCargosUnidade(@NotNull final Long codUnidade) throws Throwable;
 
@@ -23,7 +30,7 @@ public interface CargoDao {
      * um cargo como <b>em uso</b>.
      *
      * @param codUnidade Código da unidade utilizada para filtrar os cargos.
-     * @return Uma lista contendo os cargos que estão em uso.
+     * @return Uma lista contendo os {@link CargoSelecao cargos} que estão em uso.
      * @throws Throwable Caso qualquer erro aconteça.
      */
     @NotNull

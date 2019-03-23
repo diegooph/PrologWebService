@@ -14,20 +14,20 @@ public final class CargoNaoUtilizado {
     private final String nome;
     private final int qtdPermissoesVinculadas;
 
-    @NotNull
-    public static CargoNaoUtilizado createDummy() {
-        return new CargoNaoUtilizado(
-                1L,
-                "Motorista",
-                42);
-    }
-
     public CargoNaoUtilizado(@NotNull final Long codigo,
                              @NotNull final String nome,
                              final int qtdPermissoesVinculadas) {
         this.codigo = codigo;
         this.nome = nome;
         this.qtdPermissoesVinculadas = qtdPermissoesVinculadas;
+    }
+
+    @NotNull
+    public static CargoNaoUtilizado createDummy() {
+        return new CargoNaoUtilizado(
+                1L,
+                "Motorista",
+                42);
     }
 
     @NotNull

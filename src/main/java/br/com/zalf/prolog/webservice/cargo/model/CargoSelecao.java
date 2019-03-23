@@ -13,17 +13,17 @@ public final class CargoSelecao {
     @NotNull
     private final String nome;
 
+    public CargoSelecao(@NotNull final Long codigo,
+                        @NotNull final String nome) {
+        this.codigo = codigo;
+        this.nome = nome;
+    }
+
     @NotNull
     public static CargoSelecao createDummy() {
         return new CargoSelecao(
                 1L,
                 "Motorista");
-    }
-
-    public CargoSelecao(@NotNull final Long codigo,
-                        @NotNull final String nome) {
-        this.codigo = codigo;
-        this.nome = nome;
     }
 
     @NotNull

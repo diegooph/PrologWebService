@@ -15,15 +15,6 @@ public final class CargoEmUso {
     private final int qtdColaboradoresVinculados;
     private final int qtdPermissoesVinculadas;
 
-    @NotNull
-    public static CargoEmUso createDummy() {
-        return new CargoEmUso(
-                1L,
-                "Motorista",
-                10,
-                42);
-    }
-
     public CargoEmUso(@NotNull final Long codigo,
                       @NotNull final String nome,
                       final int qtdColaboradoresVinculados,
@@ -32,6 +23,15 @@ public final class CargoEmUso {
         this.nome = nome;
         this.qtdColaboradoresVinculados = qtdColaboradoresVinculados;
         this.qtdPermissoesVinculadas = qtdPermissoesVinculadas;
+    }
+
+    @NotNull
+    public static CargoEmUso createDummy() {
+        return new CargoEmUso(
+                1L,
+                "Motorista",
+                10,
+                42);
     }
 
     @NotNull

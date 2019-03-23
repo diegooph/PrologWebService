@@ -28,15 +28,15 @@ public final class CargoResource {
     /**
      * Esse método não verifica nenhuma permissão. Isso porque ele poderá ser utilizado em diversas telas como
      * parâmetro para filtragem e pré-requisito de seleção em algum processo, como a criação de um modelo de checklist.
-     *
+     * <p>
      * Controlar todos esses usos e permissões é muito complexo, e como esse método não revela nada demais, podemos
      * deixar sem a verificação. Apenas com {@link Secured secured} verificando se tem um token válido.
      */
     @GET
     @Secured
     @Path("/todos")
-    public List<CargoSelecao> getTodosCargosUnidade(@QueryParam("codUnidade") @Required Long codUnidade)
-            throws ProLogException {
+    public List<CargoSelecao> getTodosCargosUnidade(
+            @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
         return service.getTodosCargosUnidade(codUnidade);
     }
 
@@ -49,7 +49,7 @@ public final class CargoResource {
             Pilares.Gente.Colaborador.EDITAR})
     @Path("/em-uso")
     public List<CargoEmUso> getCargosEmUsoUnidade(
-            @QueryParam("codUnidade") @Required Long codUnidade) throws ProLogException {
+            @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
         return service.getCargosEmUsoUnidade(codUnidade);
     }
 
@@ -62,7 +62,7 @@ public final class CargoResource {
             Pilares.Gente.Colaborador.EDITAR})
     @Path("/nao-utilizados")
     public List<CargoNaoUtilizado> getCargosNaoUtilizadosUnidade(
-            @QueryParam("codUnidade") @Required Long codUnidade) throws ProLogException {
+            @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
         return service.getCargosNaoUtilizadosUnidade(codUnidade);
     }
 }
