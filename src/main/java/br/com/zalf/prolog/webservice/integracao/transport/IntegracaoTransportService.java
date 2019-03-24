@@ -36,9 +36,9 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
                 throw new GenericException("Uma lista de itens resolvidos deve ser fornecida");
             }
             ensureValidToken(tokenIntegracao, TAG);
-            final LocalDateTime dataHoraAtual = Now.localDateTimeUtc();
-            validateDataHoraItensResolvidos(dataHoraAtual, itensResolvidos);
-            dao.resolverMultiplosItens(tokenIntegracao, dataHoraAtual, itensResolvidos);
+            final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
+            validateDataHoraItensResolvidos(dataHoraAtualUtc, itensResolvidos);
+            dao.resolverMultiplosItens(tokenIntegracao, dataHoraAtualUtc, itensResolvidos);
             return new SuccessResponseIntegracao("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "[INTEGRACAO - TRANSLECCHI] Erro ao salvar os itens resolvidos na Integração", t);
@@ -71,7 +71,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
     }
 
     private void validateDataHoraItensResolvidos(
-            @NotNull final LocalDateTime dataHoraAtual,
+            @NotNull final LocalDateTime dataHoraAtualUtc,
             @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
         for (final ItemResolvidoIntegracaoTransport itemResolvido : itensResolvidos) {
             if (itemResolvido.getDataHoraInicioResolucao().isAfter(itemResolvido.getDataHoraFimResolucao())) {
@@ -80,13 +80,13 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
                         itemResolvido.getCodItemResolvido());
                 throw new GenericException(msg);
             }
-            if (itemResolvido.getDataHoraInicioResolucao().isAfter(dataHoraAtual)) {
+            if (itemResolvido.getDataHoraInicioResolucao().isAfter(dataHoraAtualUtc)) {
                 final String msg = String.format(
                         "A data/hora de ínicio da resolução é posterior à data/hora atual para o item %d",
                         itemResolvido.getCodItemResolvido());
                 throw new GenericException(msg);
             }
-            if (itemResolvido.getDataHoraFimResolucao().isAfter(dataHoraAtual)) {
+            if (itemResolvido.getDataHoraFimResolucao().isAfter(dataHoraAtualUtc)) {
                 final String msg = String.format(
                         "A data/hora de fim da resolução é posterior à data/hora atual para o item %d",
                         itemResolvido.getCodItemResolvido());

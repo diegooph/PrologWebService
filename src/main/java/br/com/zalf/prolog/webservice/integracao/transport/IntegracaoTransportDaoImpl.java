@@ -22,7 +22,7 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
     @Override
     public void resolverMultiplosItens(
             @NotNull final String tokenIntegracao,
-            @NotNull final LocalDateTime dataHoraAtual,
+            @NotNull final LocalDateTime dataHoraAtualUtc,
             @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -43,7 +43,7 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
                 stmt.setObject(9, itensResolvido.getDataHoraInicioResolucao().atOffset(ZoneOffset.UTC));
                 stmt.setObject(10,itensResolvido.getDataHoraFimResolucao().atOffset(ZoneOffset.UTC));
                 stmt.setString(11, tokenIntegracao);
-                stmt.setObject(12, dataHoraAtual.atOffset(ZoneOffset.UTC));
+                stmt.setObject(12, dataHoraAtualUtc.atOffset(ZoneOffset.UTC));
                 stmt.addBatch();
             }
             // Verificamos apenas se a quantidade de vezes que a function executou bate com a quantidade de itens.

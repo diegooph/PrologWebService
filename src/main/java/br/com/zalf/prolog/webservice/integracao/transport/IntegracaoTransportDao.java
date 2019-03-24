@@ -19,12 +19,12 @@ public interface IntegracaoTransportDao {
      *
      * @param tokenIntegracao Token utilizado para a requisição. Este token será utilizado para
      *                        autenticar e descobrir o código da empresa que faz requisição.
-     * @param dataHoraAtual   Data e Hora em atual, em UTC.
+     * @param dataHoraAtualUtc   Data e Hora atual, em UTC.
      * @param itensResolvidos Uma lista de {@link List<ItemResolvidoIntegracaoTransport> itens resolvidos}.
      * @throws Throwable Se algum erro ocorrer durante a resolução dos itens pendentes.
      */
     void resolverMultiplosItens(@NotNull final String tokenIntegracao,
-                                @NotNull final LocalDateTime dataHoraAtual,
+                                @NotNull final LocalDateTime dataHoraAtualUtc,
                                 @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws Throwable;
 
     /**
