@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model.insercao;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -49,5 +50,15 @@ public final class ChecklistAlternativaResposta {
 
     public void setRespostaTipoOutros(@Nullable final String respostaTipoOutros) {
         this.respostaTipoOutros = respostaTipoOutros;
+    }
+
+    @NotNull
+    public String getDescricaoAlternativaOk() {
+        return "OK";
+    }
+
+    @NotNull
+    public String getDescricaoAlternativaNok() {
+        return "NOK";
     }
 }
