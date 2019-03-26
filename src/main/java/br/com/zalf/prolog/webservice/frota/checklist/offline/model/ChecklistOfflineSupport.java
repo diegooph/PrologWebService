@@ -13,9 +13,9 @@ import static br.com.zalf.prolog.webservice.frota.checklist.offline.model.Estado
  */
 public abstract class ChecklistOfflineSupport {
     @NotNull
-    public static final String HEADER_NAME_VERSAO_DADOS_CHECKLIST = "ProLog-Versao-Dados-Checklist";
+    public static final String HEADER_VERSAO_DADOS_CHECKLIST = "ProLog-Versao-Dados-Checklist";
     @NotNull
-    public static final String HEADER_NAME_TOKEN_CHECKLIST = "ProLog-Token-Checklist-Offline";
+    public static final String HEADER_TOKEN_CHECKLIST = "ProLog-Token-Checklist-Offline";
 
     /**
      * Código da Unidade a qual os dados presentes neste objeto pertencem.

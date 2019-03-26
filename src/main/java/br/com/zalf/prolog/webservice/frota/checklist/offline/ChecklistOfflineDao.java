@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +12,11 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public interface ChecklistOfflineDao {
+
+    @NotNull
+    Long insertChecklistOffline(@NotNull final String tokenSincronizacao,
+                                final long versaoAppMomentoSincronizacao,
+                                @NotNull final ChecklistInsercao checklist) throws Throwable;
 
     /**
      * Método utilizado para identificar se a empresa do colaborador, representado pelo {@code cpfColaborador cpf},

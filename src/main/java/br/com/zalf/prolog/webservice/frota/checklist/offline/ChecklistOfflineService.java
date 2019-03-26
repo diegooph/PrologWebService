@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.offline;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +17,39 @@ public class ChecklistOfflineService {
     private static final String TAG = ChecklistOfflineService.class.getSimpleName();
     @NotNull
     private final ChecklistOfflineDao dao = Injection.provideChecklistOfflineDao();
+
+    @NotNull
+    public ResponseChecklist insertChecklistOffline(final String tokenSincronizacao,
+                                                    final long versaoDadosChecklsitApp,
+                                                    final long versaoAppMomentoSincronizacao,
+                                                    final ChecklistInsercao checklist) throws ProLogException {
+        try {
+            if (checklist == null || checklist.getCodUnidade() == null) {
+                throw new IllegalStateException("Informações nulas providas para o checklist");
+            }
+            final DadosChecklistOfflineUnidade dadosChecklistOffline =
+                    getDadosChecklistOffline(versaoDadosChecklsitApp, checklist.getCodUnidade(), false);
+
+            if (dadosChecklistOffline.getTokenSincronizacaoMarcacao() == null
+                    || !dadosChecklistOffline.getTokenSincronizacaoMarcacao().equals(tokenSincronizacao)) {
+                throw new IllegalArgumentException(
+                        "Token inválido para sincronização de checklist: " + tokenSincronizacao);
+            }
+            if (dadosChecklistOffline.getEstadoChecklistOfflineSupport() == null) {
+                throw new IllegalArgumentException("Um estado deve ser fornecido para os dados do checklist offline");
+            }
+            return ResponseChecklist.ok(
+                    dao.insertChecklistOffline(
+                            tokenSincronizacao,
+                            versaoAppMomentoSincronizacao,
+                            checklist),
+                    "Checklist inserido com sucesso",
+                    dadosChecklistOffline.getEstadoChecklistOfflineSupport());
+        } catch (Throwable t) {
+            Log.e(TAG, "");
+            throw Injection.provideProLogExceptionHandler().map(t, "");
+        }
+    }
 
     public boolean getChecklistOfflineAtivoEmpresa(final Long cpfColaborador) throws ProLogException {
         try {

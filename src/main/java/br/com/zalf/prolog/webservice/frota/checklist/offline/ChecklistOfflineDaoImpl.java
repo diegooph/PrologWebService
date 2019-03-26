@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,6 +20,74 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class ChecklistOfflineDaoImpl extends DatabaseConnection implements ChecklistOfflineDao {
+
+    @NotNull
+    @Override
+    public Long insertChecklistOffline(@NotNull final String tokenSincronizacao,
+                                       final long versaoAppMomentoSincronizacao,
+                                       @NotNull final ChecklistInsercao checklist) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            stmt.setLong(1, checklist.getCodUnidade());
+            stmt.setLong(2, checklist.getCodModelo());
+            stmt.setObject(3, checklist.getDataHoraRealizacao());
+            stmt.setLong(4, checklist.getCodColaborador());
+            stmt.setLong(5, checklist.getCodVeiculo());
+            stmt.setString(6, checklist.getPlacaVeiculo());
+            stmt.setString(7, String.valueOf(checklist.getTipo().asChar()));
+            stmt.setLong(8, checklist.getKmColetadoVeiculo());
+            stmt.setLong(9, checklist.getTempoRealizacaoCheckInMillis());
+            stmt.setObject(10, Now.offsetDateTimeUtc());
+            stmt.setString(11, checklist.getFonteDataHoraRealizacao().asString());
+            stmt.setInt(12, checklist.getVersaoAppMomentoRealizacao());
+            stmt.setInt(13, checklist.getVersaoAppMomentoSincronizacao());
+            stmt.setString(14, checklist.getDeviceId());
+            stmt.setLong(15, checklist.getDeviceUptimeRealizacaoMillis());
+            stmt.setLong(16, checklist.getDeviceUptimeSincronizacaoMillis());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Long codChecklistInserido = rSet.getLong("");
+                insertChecklistPerguntasOffline(
+                        conn,
+                        checklist.getCodUnidade(),
+                        checklist.getCodModelo(),
+                        codChecklistInserido,
+                        checklist.getRespostas());
+                conn.commit();
+                return codChecklistInserido;
+            } else {
+                throw new SQLException("Erro ao salvar checklist");
+            }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    private void insertChecklistPerguntasOffline(@NotNull final Connection conn,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final Long codModelo,
+                                                 @NotNull final Long codChecklistInserido,
+                                                 @NotNull final List<ChecklistResposta> respostas) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("");
+
+        } finally {
+            close(stmt, rSet);
+        }
+    }
 
     @Override
     public boolean getChecklistOfflineAtivoEmpresa(@NotNull final Long cpfColaborador) throws Throwable {
