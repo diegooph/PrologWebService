@@ -217,17 +217,25 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         List<String> placas = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CM.CODIGO, CM.NOME, V.PLACA, V.KM FROM "
-                            + "CHECKLIST_MODELO CM "
-                            + "JOIN CHECKLIST_MODELO_FUNCAO CMF ON CMF.COD_CHECKLIST_MODELO = CM.CODIGO AND CM" +
-                            ".COD_UNIDADE = CMF.COD_UNIDADE "
-                            + "JOIN CHECKLIST_MODELO_VEICULO_TIPO CMVT ON CMVT.COD_MODELO = CM.CODIGO AND CMVT" +
-                            ".COD_UNIDADE = CM.COD_UNIDADE "
-                            + "JOIN VEICULO_TIPO VT ON VT.CODIGO = CMVT.COD_TIPO_VEICULO "
-                            + "JOIN VEICULO V ON V.COD_TIPO = VT.CODIGO "
-                            + "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? AND CM.STATUS_ATIVO = TRUE AND V" +
-                            ".STATUS_ATIVO = TRUE "
-                            + "ORDER BY CM.CODIGO, V.PLACA;",
+            stmt = conn.prepareStatement("SELECT " +
+                            "  CM.CODIGO, " +
+                            "  CM.NOME, " +
+                            "  V.PLACA, " +
+                            "  V.KM " +
+                            "FROM CHECKLIST_MODELO CM " +
+                            "  JOIN CHECKLIST_MODELO_FUNCAO CMF " +
+                            "    ON CMF.COD_CHECKLIST_MODELO = CM.CODIGO AND CM.COD_UNIDADE = CMF.COD_UNIDADE " +
+                            "  JOIN CHECKLIST_MODELO_VEICULO_TIPO CMVT " +
+                            "    ON CMVT.COD_MODELO = CM.CODIGO AND CMVT.COD_UNIDADE = CM.COD_UNIDADE " +
+                            "  JOIN VEICULO_TIPO VT " +
+                            "    ON VT.CODIGO = CMVT.COD_TIPO_VEICULO " +
+                            "  JOIN VEICULO V " +
+                            "    ON V.COD_TIPO = VT.CODIGO AND V.COD_UNIDADE = CM.COD_UNIDADE " +
+                            "WHERE CM.COD_UNIDADE = ? " +
+                            "      AND CMF.COD_FUNCAO = ? " +
+                            "      AND CM.STATUS_ATIVO = TRUE " +
+                            "      AND V.STATUS_ATIVO = TRUE " +
+                            "ORDER BY CM.CODIGO, V.PLACA;",
                     ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             stmt.setLong(1, codUnidade);
@@ -259,7 +267,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                 modeloPlaca.put(modelo, placas);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return modeloPlaca;
     }

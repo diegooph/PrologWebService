@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.model;
 
+import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,9 +33,8 @@ public final class ConfiguracaoConverter {
     public static ConfiguracaoTipoVeiculoAferivel createConfiguracaoTipoVeiculoAfericao(
             @NotNull final ResultSet rSet) throws Throwable {
         final ConfiguracaoTipoVeiculoAferivel config = new ConfiguracaoTipoVeiculoAferivel();
-        final long codigo = rSet.getLong("CODIGO");
-        config.setCodigo(codigo == 0 ? null : codigo);
-        config.setCodUnidade(rSet.getLong("COD_UNIDADE"));
+        config.setCodigo(NullIf.equalOrLess(rSet.getLong("COD_CONFIGURACAO"), 0));
+        config.setCodUnidade(NullIf.equalOrLess(rSet.getLong("COD_UNIDADE_CONFIGURACAO"), 0));
         config.setTipoVeiculo(createTipoVeiculo(rSet));
         config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
         config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));

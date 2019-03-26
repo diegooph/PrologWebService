@@ -68,7 +68,7 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
         final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
         final List<TipoVeiculoAvilan> tiposVeiculosAvilan = new ArrayList<>();
 

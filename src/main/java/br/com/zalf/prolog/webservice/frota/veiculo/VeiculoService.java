@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -16,12 +15,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Classe VeiculoService responsavel por comunicar-se com a interface DAO
+ * Classe VeiculoService responsável por comunicar-se com a interface DAO
  */
-public class VeiculoService {
+public final class VeiculoService {
     private static final String TAG = VeiculoService.class.getSimpleName();
+    @NotNull
     private final VeiculoDao dao = Injection.provideVeiculoDao();
-    private final VeiculoExceptionHandler exceptionHandler = Injection.provideVeiculoExceptionHandler();
 
     public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos) {
         try {
@@ -36,19 +35,6 @@ public class VeiculoService {
         }
     }
 
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(String userToken, Long codUnidade) {
-        try {
-            return RouterVeiculo
-                    .create(dao, userToken)
-                    .getTiposVeiculosByUnidade(codUnidade);
-        } catch (Exception e) {
-            Log.e(TAG, String.format("Erro ao buscar os tipos de veículos ativos da unidade. \n" +
-                    "Unidade: %d \n" +
-                    "userToken: %s", codUnidade, userToken), e);
-            throw new RuntimeException("Erro ao buscar os tipos de veículo da unidade: " + codUnidade);
-        }
-    }
-
     public Veiculo getVeiculoByPlaca(String userToken, String placa, boolean withPneus) {
         try {
             return RouterVeiculo
@@ -60,16 +46,6 @@ public class VeiculoService {
                     "withPneus: %b \n" +
                     "userToken: %s", placa, withPneus, userToken), e);
             return null;
-        }
-    }
-
-    public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) {
-        try {
-            return dao.insertTipoVeiculo(tipoVeiculo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao inserir o tipo de veículo. \n" +
-                    "Unidade: %d \n", codUnidade), e);
-            return false;
         }
     }
 
@@ -130,10 +106,11 @@ public class VeiculoService {
             final String errorMessage = "Erro ao inserir o veículo";
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                     "Unidade: %d", codUnidade), e);
-            throw exceptionHandler.map(e, errorMessage);
+            throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
         }
     }
 
+    @Deprecated
     public List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) {
         try {
             return dao.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
@@ -158,7 +135,7 @@ public class VeiculoService {
     }
 
     @NotNull
-    public List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws ProLogException {
+    public List<Marca> getMarcasModelosVeiculosByEmpresa(final Long codEmpresa) throws ProLogException {
         try {
             return dao.getMarcasModelosVeiculosByEmpresa(codEmpresa);
         } catch (final Throwable t) {
@@ -239,38 +216,6 @@ public class VeiculoService {
                     "codUnidade: %d \n" +
                     "codModelo: %d", codUnidade, codModelo), e);
             return false;
-        }
-    }
-
-    public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) {
-        try {
-            return dao.updateTipoVeiculo(tipo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao atualizar o tipo de veículo. \n" +
-                    "codUnidade: %d", codUnidade), e);
-            return false;
-        }
-    }
-
-    public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) {
-        try {
-            return dao.deleteTipoVeiculo(codTipo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao deletar o tipo de veículo. \n" +
-                    "codUnidade: %d \n" +
-                    "codTipo: %d", codUnidade, codTipo), e);
-            return false;
-        }
-    }
-
-    public TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) {
-        try {
-            return dao.getTipoVeiculo(codTipo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o tipo de veículo. \n" +
-                    "codUnidade: %d \n" +
-                    "codTipo: %d", codUnidade, codTipo), e);
-            return null;
         }
     }
 }

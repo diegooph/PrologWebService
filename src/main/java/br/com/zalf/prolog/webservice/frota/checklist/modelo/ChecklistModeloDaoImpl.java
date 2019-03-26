@@ -830,8 +830,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT VT.NOME AS TIPO_VEICULO, VT.CODIGO "
                     + "FROM CHECKLIST_MODELO_VEICULO_TIPO CM "
-                    + "JOIN VEICULO_TIPO VT ON CM.COD_UNIDADE = VT.COD_UNIDADE "
-                    + "AND CM.COD_TIPO_VEICULO = VT.CODIGO "
+                    + "JOIN VEICULO_TIPO VT ON CM.COD_TIPO_VEICULO = VT.CODIGO "
                     + "WHERE CM.COD_UNIDADE = ? "
                     + "AND CM.COD_MODELO = ? "
                     + "ORDER BY VT.NOME");
