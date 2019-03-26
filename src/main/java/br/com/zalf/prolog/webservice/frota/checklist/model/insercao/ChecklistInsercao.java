@@ -13,6 +13,7 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ChecklistInsercao {
+    private Long codUnidade;
     private Long codModelo;
     private Long codColaborador;
     private Long codVeiculo;
@@ -52,6 +53,10 @@ public final class ChecklistInsercao {
 
     public ChecklistInsercao() {
 
+    }
+
+    public Long getCodUnidade() {
+        return codUnidade;
     }
 
     public Long getCodModelo() {
