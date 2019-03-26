@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import org.jetbrains.annotations.NotNull;
@@ -23,8 +22,29 @@ public class RelatorioPneuService {
     private static final String TAG = RelatorioPneuService.class.getSimpleName();
     @NotNull
     private final RelatorioPneuDao dao = Injection.provideRelatorioPneuDao();
+
+    public void getStatusAtualPneusCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final List<Long> codUnidades) {
+        try {
+            dao.getStatusAtualPneusCsv(outputStream, codUnidades);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de status atual dos pneus (CSV)", throwable);
+            throw new RuntimeException(throwable);
+        }
+    }
+
     @NotNull
-    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
+    public Report getStatusAtualPneusReport(@NotNull final List<Long> codUnidades) throws ProLogException {
+        try {
+            return dao.getStatusAtualPneusReport(codUnidades);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de status atual dos pneus (REPORT)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable,
+                    "Erro ao gerar relatório, tente novamente");
+        }
+    }
 
     public void getKmRodadoPorPneuPorVidaCsv(@NotNull final OutputStream outputStream,
                                              @NotNull final List<Long> codUnidades) {
@@ -42,8 +62,9 @@ public class RelatorioPneuService {
             return dao.getKmRodadoPorPneuPorVidaReport(codUnidades);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de km percorrido por pneu por vida (REPORT)", throwable);
-            throw exceptionHandler.map(
-                    throwable,
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable,
                     "Erro ao gerar relatório, tente novamente");
         }
     }
@@ -75,8 +96,9 @@ public class RelatorioPneuService {
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas (REPORT)", throwable);
-            throw exceptionHandler.map(
-                    throwable,
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable,
                     "Erro ao gerar relatório das aferições avulsas, tente novamente");
         }
     }
