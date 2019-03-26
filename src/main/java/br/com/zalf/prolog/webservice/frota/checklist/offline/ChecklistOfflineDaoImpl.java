@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
@@ -75,17 +76,40 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
     }
 
     private void insertChecklistPerguntasOffline(@NotNull final Connection conn,
-                                                 @NotNull final Long codUnidade,
-                                                 @NotNull final Long codModelo,
+                                                 @NotNull final Long codUnidadeChecklist,
+                                                 @NotNull final Long codModeloChecklist,
                                                  @NotNull final Long codChecklistInserido,
                                                  @NotNull final List<ChecklistResposta> respostas) throws Throwable {
         PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("");
-
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_CHECKLIST_INSERT_RESPOSTAS_CHECKLIST(?, ?, ?, ?, ?, ?);");
+            stmt.setLong(1, codUnidadeChecklist);
+            stmt.setLong(2, codModeloChecklist);
+            stmt.setLong(3, codChecklistInserido);
+            int linhasParaExecutar = 0;
+            for (final ChecklistResposta resposta : respostas) {
+                for (final ChecklistAlternativaResposta alternativa : resposta.getAlternativasRespostas()) {
+                    if (alternativa.isAlternativaSelecionada()) {
+                        if (alternativa.isTipoOutros()) {
+                            stmt.setString(4, alternativa.getRespostaTipoOutros());
+                        } else {
+                            stmt.setString(4, alternativa.getDescricaoAlternativaNok());
+                        }
+                    } else {
+                        stmt.setString(4, alternativa.getDescricaoAlternativaOk());
+                    }
+                    stmt.setLong(5, resposta.getCodPergunta());
+                    stmt.setLong(6, alternativa.getCodAlternativa());
+                    stmt.addBatch();
+                    linhasParaExecutar++;
+                }
+            }
+            if (stmt.executeBatch().length != linhasParaExecutar) {
+                throw new SQLException("Não foi possível salvar todas as alternativas do checklist");
+            }
         } finally {
-            close(stmt, rSet);
+            close(stmt);
         }
     }
 
