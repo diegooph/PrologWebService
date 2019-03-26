@@ -28,9 +28,9 @@ public interface RelatorioPneuDao {
     /**
      * Método para gerar um relatório contendo o status atual (onde ele se encontra) de cada pneu das unidades buscadas.
      *
-     * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
-     * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
-     * @throws Throwable - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @param outputStream Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidades  {@link List<Long>} de códigos das {@link Unidade}s.
+     * @throws Throwable Se algum erro ocorrer na busca dos dados na busca dos dados.
      */
     void getStatusAtualPneusCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades) throws Throwable;
@@ -38,9 +38,9 @@ public interface RelatorioPneuDao {
     /**
      * Método para gerar um relatório contendo o status atual (onde ele se encontra) de cada pneu das unidades buscadas.
      *
-     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
-     * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws Throwable - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @param codUnidades {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return Um objeto {@link Report} com os dados filtrados.
+     * @throws Throwable Se algum erro ocorrer na busca dos dados na busca dos dados.
      */
     @NotNull
     Report getStatusAtualPneusReport(@NotNull final List<Long> codUnidades) throws Throwable;
