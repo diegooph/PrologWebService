@@ -903,8 +903,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     @NotNull
     private PreparedStatement getStatusAtualPneusStmt(@NotNull final Connection conn,
                                                       @NotNull final List<Long> codUnidades) throws Throwable {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "FUNC_PNEU_RELATORIO_STATUS_ATUAL_PNEUS(?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_PNEU_RELATORIO_STATUS_ATUAL_PNEUS(?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         return stmt;
     }

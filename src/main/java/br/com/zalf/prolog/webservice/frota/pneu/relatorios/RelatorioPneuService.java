@@ -23,8 +23,8 @@ public class RelatorioPneuService {
     @NotNull
     private final RelatorioPneuDao dao = Injection.provideRelatorioPneuDao();
 
-    public void getStatusAtualPneusCsv(@NotNull final OutputStream outputStream,
-                                       @NotNull final List<Long> codUnidades) {
+    public void getStatusAtualPneusCsv(final OutputStream outputStream,
+                                       final List<Long> codUnidades) {
         try {
             dao.getStatusAtualPneusCsv(outputStream, codUnidades);
         } catch (final Throwable throwable) {
@@ -34,7 +34,7 @@ public class RelatorioPneuService {
     }
 
     @NotNull
-    public Report getStatusAtualPneusReport(@NotNull final List<Long> codUnidades) throws ProLogException {
+    public Report getStatusAtualPneusReport(final List<Long> codUnidades) throws ProLogException {
         try {
             return dao.getStatusAtualPneusReport(codUnidades);
         } catch (final Throwable throwable) {
