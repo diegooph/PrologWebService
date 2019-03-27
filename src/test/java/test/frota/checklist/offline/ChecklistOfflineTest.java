@@ -1,12 +1,22 @@
 package test.frota.checklist.offline;
 
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineService;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 import test.BaseTest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 10/03/19.
@@ -33,6 +43,18 @@ public class ChecklistOfflineTest extends BaseTest {
         final boolean checklistOfflineAtivoEmpresa = service.getChecklistOfflineAtivoEmpresa(CPF_COLABORADOR);
 
         Assert.assertTrue(checklistOfflineAtivoEmpresa);
+    }
+
+    @Test
+    public void insertChecklistOffline() throws ProLogException {
+        final ChecklistInsercao checklist = createChecklist();
+        final ResponseChecklist responseChecklist = service.insertChecklistOffline(
+                "a",
+                9,
+                53,
+                checklist);
+
+        Assert.assertNotNull(responseChecklist);
     }
 
     @Test
@@ -150,5 +172,137 @@ public class ChecklistOfflineTest extends BaseTest {
         Assert.assertNotNull(checklistDesatualizado.getEmpresaChecklistOffline());
 
         System.out.println(checklistDesatualizado);
+    }
+
+    private ChecklistInsercao createChecklist() {
+        final ChecklistInsercao checklist = new ChecklistInsercao();
+        checklist.setCodUnidade(5L);
+        checklist.setCodModelo(1L);
+        checklist.setCodColaborador(2272L);
+        checklist.setCodVeiculo(3195L);
+        checklist.setPlacaVeiculo("PRO0001");
+        checklist.setTipo(TipoChecklist.SAIDA);
+        checklist.setKmColetadoVeiculo(0);
+        checklist.setTempoRealizacaoCheckInMillis(10000);
+        checklist.setRespostas(createRespostas());
+        checklist.setDataHoraRealizacao(Now.localDateTimeUtc());
+        checklist.setFonteDataHoraRealizacao(FonteDataHora.LOCAL_CELULAR);
+        checklist.setVersaoAppMomentoRealizacao(50);
+        checklist.setVersaoAppMomentoSincronizacao(53);
+        checklist.setDeviceId("device didID");
+        checklist.setDeviceUptimeRealizacaoMillis(10000);
+        checklist.setDeviceUptimeSincronizacaoMillis(11000);
+        return checklist;
+    }
+
+    @NotNull
+    private List<ChecklistResposta> createRespostas() {
+        final List<ChecklistResposta> respostas = new ArrayList<>();
+        respostas.add(createRespostaOk());
+        respostas.add(createRespostaNok());
+        respostas.add(createRespostaNokTipOutros());
+        return respostas;
+    }
+
+    @NotNull
+    private ChecklistResposta createRespostaNokTipOutros() {
+        final ChecklistResposta resposta = new ChecklistResposta();
+        // RESPOSTA NOK
+        resposta.setCodPergunta(1122L);
+        final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+
+        ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
+        alternativa.setCodAlternativa(372L);
+        alternativa.setAlternativaSelecionada(false);
+        alternativa.setTipoOutros(false);
+        alternativa.setRespostaTipoOutros(null);
+
+        alternativas.add(alternativa);
+        alternativa = new ChecklistAlternativaResposta();
+
+        alternativa.setCodAlternativa(373L);
+        alternativa.setAlternativaSelecionada(false);
+        alternativa.setTipoOutros(false);
+        alternativa.setRespostaTipoOutros(null);
+
+        alternativas.add(alternativa);
+        alternativa = new ChecklistAlternativaResposta();
+
+        alternativa.setCodAlternativa(397L);
+        alternativa.setAlternativaSelecionada(true);
+        alternativa.setTipoOutros(true);
+        alternativa.setRespostaTipoOutros("TESTE TIPO OUTROS NA RESPOSTA");
+
+        alternativas.add(alternativa);
+        resposta.setAlternativasRespostas(alternativas);
+        return resposta;
+    }
+
+    @NotNull
+    private ChecklistResposta createRespostaNok() {
+        final ChecklistResposta resposta = new ChecklistResposta();
+        // RESPOSTA NOK
+        resposta.setCodPergunta(1121L);
+        final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+
+        ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
+        alternativa.setCodAlternativa(322L);
+        alternativa.setAlternativaSelecionada(false);
+        alternativa.setTipoOutros(false);
+        alternativa.setRespostaTipoOutros(null);
+
+        alternativas.add(alternativa);
+        alternativa = new ChecklistAlternativaResposta();
+
+        alternativa.setCodAlternativa(327L);
+        alternativa.setAlternativaSelecionada(true);
+        alternativa.setTipoOutros(false);
+        alternativa.setRespostaTipoOutros(null);
+
+        alternativas.add(alternativa);
+        alternativa = new ChecklistAlternativaResposta();
+
+        alternativa.setCodAlternativa(361L);
+        alternativa.setAlternativaSelecionada(false);
+        alternativa.setTipoOutros(true);
+        alternativa.setRespostaTipoOutros(null);
+
+        alternativas.add(alternativa);
+        resposta.setAlternativasRespostas(alternativas);
+        return resposta;
+    }
+
+    @NotNull
+    private ChecklistResposta createRespostaOk() {
+        final ChecklistResposta resposta = new ChecklistResposta();
+        // RESPOSTA OK
+        resposta.setCodPergunta(1120L);
+        final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+
+        ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
+        alternativa.setCodAlternativa(319L);
+        alternativa.setAlternativaSelecionada(false);
+        alternativa.setTipoOutros(false);
+        alternativa.setRespostaTipoOutros(null);
+
+        alternativas.add(alternativa);
+        alternativa = new ChecklistAlternativaResposta();
+
+        alternativa.setCodAlternativa(320L);
+        alternativa.setAlternativaSelecionada(false);
+        alternativa.setTipoOutros(false);
+        alternativa.setRespostaTipoOutros(null);
+
+        alternativas.add(alternativa);
+        alternativa = new ChecklistAlternativaResposta();
+
+        alternativa.setCodAlternativa(321L);
+        alternativa.setAlternativaSelecionada(false);
+        alternativa.setTipoOutros(true);
+        alternativa.setRespostaTipoOutros(null);
+
+        alternativas.add(alternativa);
+        resposta.setAlternativasRespostas(alternativas);
+        return resposta;
     }
 }
