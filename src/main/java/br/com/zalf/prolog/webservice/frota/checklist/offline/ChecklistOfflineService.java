@@ -40,14 +40,22 @@ public class ChecklistOfflineService {
             }
             return ResponseChecklist.ok(
                     dao.insertChecklistOffline(
-                            tokenSincronizacao,
                             versaoAppMomentoSincronizacao,
                             checklist),
                     "Checklist inserido com sucesso",
                     dadosChecklistOffline.getEstadoChecklistOfflineSupport());
         } catch (Throwable t) {
-            Log.e(TAG, "");
-            throw Injection.provideProLogExceptionHandler().map(t, "");
+            Log.e(TAG, String.format(
+                    "Não foi possível inserir o checklist:\n" +
+                            "tokenSincronizacao = %s\n" +
+                            "versaoDadosChecklsitApp = %d\n" +
+                            "versaoAppMomentoSincronizacao = %d",
+                    tokenSincronizacao,
+                    versaoDadosChecklsitApp,
+                    versaoAppMomentoSincronizacao));
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível inserir o checklist, tente novamente");
         }
     }
 

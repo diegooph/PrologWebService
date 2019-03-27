@@ -24,8 +24,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
 
     @NotNull
     @Override
-    public Long insertChecklistOffline(@NotNull final String tokenSincronizacao,
-                                       final long versaoAppMomentoSincronizacao,
+    public Long insertChecklistOffline(final long versaoAppMomentoSincronizacao,
                                        @NotNull final ChecklistInsercao checklist) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -34,7 +33,8 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "AS CODIGO;");
             stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
             stmt.setObject(3, checklist.getDataHoraRealizacao());
@@ -53,7 +53,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             stmt.setLong(16, checklist.getDeviceUptimeSincronizacaoMillis());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Long codChecklistInserido = rSet.getLong("");
+                final Long codChecklistInserido = rSet.getLong("CODIGO");
                 insertChecklistPerguntasOffline(
                         conn,
                         checklist.getCodUnidade(),

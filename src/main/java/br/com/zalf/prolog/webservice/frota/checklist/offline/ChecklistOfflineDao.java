@@ -13,9 +13,17 @@ import java.util.List;
  */
 public interface ChecklistOfflineDao {
 
+    /**
+     * Método utilizado para realizar a inserção das informações de um {@link ChecklistInsercao checklist} realizado.
+     *
+     * @param versaoAppMomentoSincronizacao Versão do aplicativo no momento que o checklist foi sincronizado.
+     * @param checklist                     Objeto {@link ChecklistInsercao checklist} contendo as informações que
+     *                                      deverão ser salvas.
+     * @return O código do checklist salvo no banco de dados.
+     * @throws Throwable Caso algum erro ocorra ao salvar o checklist.
+     */
     @NotNull
-    Long insertChecklistOffline(@NotNull final String tokenSincronizacao,
-                                final long versaoAppMomentoSincronizacao,
+    Long insertChecklistOffline(final long versaoAppMomentoSincronizacao,
                                 @NotNull final ChecklistInsercao checklist) throws Throwable;
 
     /**
