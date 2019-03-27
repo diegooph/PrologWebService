@@ -12,6 +12,9 @@ Change Log
 ### Refactors
 * Altera insert/update do tipo de veículo para passar a vincular o diagrama (PL-1830)
 
+### Bug Fixes
+* Corrige conversão do TipoMarcacao para geração do relatório de jornada
+
 <a name="v0.0.86"></a>
 ## Version [v0.0.86](https://github.com/luizfp/PrologWebService/compare/v0.0.85...v0.0.86) (2019-03-24)
 
