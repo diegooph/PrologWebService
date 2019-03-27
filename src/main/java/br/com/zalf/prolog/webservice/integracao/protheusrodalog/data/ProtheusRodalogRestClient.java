@@ -26,7 +26,7 @@ public final class ProtheusRodalogRestClient {
                             .readTimeout(DEFAULT_TIMEOUT_MINUTES, TimeUnit.MINUTES)
                             .build())
                     .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
-                    .baseUrl("http://192.168.221.213:8086/rest/")
+                    .baseUrl("http://131.161.40.131:8086/rest/")
                     .build();
         }
         return retrofit;
