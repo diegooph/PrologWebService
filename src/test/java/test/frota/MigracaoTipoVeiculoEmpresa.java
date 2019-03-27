@@ -66,6 +66,23 @@ public class MigracaoTipoVeiculoEmpresa {
         TIPOS_TROCARAM_DE_NOME.put(358L, 7L);
         TIPOS_TROCARAM_DE_NOME.put(376L, 22L);
         TIPOS_TROCARAM_DE_NOME.put(377L, 22L);
+        TIPOS_TROCARAM_DE_NOME.put(6L, 2L);
+        TIPOS_TROCARAM_DE_NOME.put(18L, 1L);
+        TIPOS_TROCARAM_DE_NOME.put(31L, 5L);
+        TIPOS_TROCARAM_DE_NOME.put(35L, 5L);
+        TIPOS_TROCARAM_DE_NOME.put(83L, 9L);
+        TIPOS_TROCARAM_DE_NOME.put(98L, 9L);
+        TIPOS_TROCARAM_DE_NOME.put(100L, 1L);
+        TIPOS_TROCARAM_DE_NOME.put(182L, 1L);
+        TIPOS_TROCARAM_DE_NOME.put(217L, 1L);
+        TIPOS_TROCARAM_DE_NOME.put(224L, 9L);
+        TIPOS_TROCARAM_DE_NOME.put(236L, 6L);
+        TIPOS_TROCARAM_DE_NOME.put(237L, 6L);
+        TIPOS_TROCARAM_DE_NOME.put(255L, 6L);
+        TIPOS_TROCARAM_DE_NOME.put(268L, 1L);
+        TIPOS_TROCARAM_DE_NOME.put(277L, 6L);
+        TIPOS_TROCARAM_DE_NOME.put(352L, 20L);
+        TIPOS_TROCARAM_DE_NOME.put(455L, 10L);
     }
 
     @Before
@@ -110,7 +127,7 @@ public class MigracaoTipoVeiculoEmpresa {
                             + " trocou de nome e não foi verificado.\n"
                             + "  " + antes.getNome() + " --> " + depois.getNome() + "\n\n");
                 } else {
-                    assertEquals("COD: " + depois.getCodigo(), antes.getNome(), depois.getNome());
+                    assertEquals("COD: " + depois.getCodigo() + " COD EMPRESA: " + depois.getCodEmpresa() , antes.getNome(), depois.getNome());
                 }
                 assertEquals("COD: " + depois.getCodigo(), antes.isStatusAtivo(), depois.isStatusAtivo());
                 assertEquals("COD: " + depois.getCodigo(), antes.getCodDiagrama(), depois.getCodDiagrama());
