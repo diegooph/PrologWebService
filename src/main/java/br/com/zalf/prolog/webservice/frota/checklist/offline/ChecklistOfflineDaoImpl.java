@@ -335,4 +335,26 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             close(conn, stmt, rSet);
         }
     }
+
+    @Override
+    public boolean verifyIfTokenChecklistExists(@NotNull final String tokenSincronizacao) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT * " +
+                    "              FROM CHECKLIST_OFFLINE_DADOS_UNIDADE " +
+                    "              WHERE TOKEN_SINCRONIZACAO_CHECKLIST = ?) AS EXISTS_TOKEN;");
+            stmt.setString(1, tokenSincronizacao);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("EXISTS_TOKEN");
+            } else {
+                throw new SQLException("Erro ao verificar existência do token: " + tokenSincronizacao);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

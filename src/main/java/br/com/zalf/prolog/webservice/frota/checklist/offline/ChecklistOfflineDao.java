@@ -94,4 +94,13 @@ public interface ChecklistOfflineDao {
      */
     @NotNull
     EmpresaChecklistOffline getEmpresaChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Método para validar a existência do token no banco de dados.
+     *
+     * @param tokenSincronizacao Token que será validado
+     * @return <code>TRUE</code> caso o token exista <code>FALSE</code> caso contrário.
+     * @throws Throwable Se algum erro ocorrer na validação do token.
+     */
+    boolean verifyIfTokenChecklistExists(@NotNull final String tokenSincronizacao) throws Throwable;
 }

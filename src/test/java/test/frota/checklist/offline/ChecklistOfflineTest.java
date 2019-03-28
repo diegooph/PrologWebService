@@ -62,7 +62,11 @@ public class ChecklistOfflineTest extends BaseTest {
 
         // TESTE DE CHECKLIST ATUALIZADO
         ChecklistOfflineSupport checklistOfflineSupport =
-                service.getChecklistOfflineSupport(10L, 5L, false);
+                service.getChecklistOfflineSupport(
+                        "a",
+                        10L,
+                        5L,
+                        false);
 
         Assert.assertNotNull(checklistOfflineSupport);
         Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportAtualizado);
@@ -77,7 +81,11 @@ public class ChecklistOfflineTest extends BaseTest {
 
         // TESTE DE CHECKLIST SEM DADOS UNIDADE
         checklistOfflineSupport =
-                service.getChecklistOfflineSupport(10L, 6L, false);
+                service.getChecklistOfflineSupport(
+                        "a",
+                        10L,
+                        6L,
+                        false);
 
         Assert.assertNotNull(checklistOfflineSupport);
         Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportSemDados);
@@ -92,7 +100,11 @@ public class ChecklistOfflineTest extends BaseTest {
 
         // TESTE DE CHECKLIST ATUALIZACAO FORCADA - COM ATRIBUTO
         checklistOfflineSupport =
-                service.getChecklistOfflineSupport(10L, 5L, true);
+                service.getChecklistOfflineSupport(
+                        "a",
+                        10L,
+                        5L,
+                        true);
 
         Assert.assertNotNull(checklistOfflineSupport);
         Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportAtualizacaoForcada);
@@ -120,7 +132,11 @@ public class ChecklistOfflineTest extends BaseTest {
 
         // TESTE DE CHECKLIST ATUALIZACAO FORCADA - SEM ATRIBUTO
         checklistOfflineSupport =
-                service.getChecklistOfflineSupport(100L, 5L, false);
+                service.getChecklistOfflineSupport(
+                        "a",
+                        100L,
+                        5L,
+                        false);
 
         Assert.assertNotNull(checklistOfflineSupport);
         Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportAtualizacaoForcada);
@@ -147,7 +163,11 @@ public class ChecklistOfflineTest extends BaseTest {
 
         // TESTE DE CHECKLIST DESATUALIZADO
         checklistOfflineSupport =
-                service.getChecklistOfflineSupport(9L, 5L, false);
+                service.getChecklistOfflineSupport(
+                        "a",
+                        9L,
+                        5L,
+                        false);
 
         Assert.assertNotNull(checklistOfflineSupport);
         Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportDesatualizado);
