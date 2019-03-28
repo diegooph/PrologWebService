@@ -33,6 +33,20 @@ import java.util.List;
 public class RelatorioPneuResource {
 
     @GET
+    @Path("/status-atual-pneus/csv")
+    public StreamingOutput getStatusAtualPneusCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
+        return outputStream -> new RelatorioPneuService().getStatusAtualPneusCsv(outputStream, codUnidades);
+    }
+
+    @GET
+    @Path("/status-atual-pneus/report")
+    public Report getStatusAtualPneusReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades)
+            throws ProLogException {
+        return new RelatorioPneuService().getStatusAtualPneusReport(codUnidades);
+    }
+
+    @GET
     @Path("/km-rodado-por-pneu-por-vida/csv")
     public StreamingOutput getKmRodadoPorPneuPorVidaCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) {

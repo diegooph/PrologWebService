@@ -24,7 +24,7 @@ import java.util.Set;
 @Path("veiculos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class VeiculoResource {
+public final class VeiculoResource {
 
     private VeiculoService service = new VeiculoService();
 
@@ -96,17 +96,6 @@ public class VeiculoResource {
         return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
     }
 
-    @POST
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/{codUnidade}/tipo")
-    public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
-            return Response.ok("Tipo de veículo inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir o tipo de veículo");
-        }
-    }
-
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.ALTERAR,
@@ -127,27 +116,6 @@ public class VeiculoResource {
                                           @PathParam("codTipo") String codTipo,
                                           @HeaderParam("Authorization") String userToken) {
         return service.getVeiculosByTipo(codUnidade, codTipo, userToken);
-    }
-
-    @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
-            Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
-            Pilares.Frota.Checklist.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
-            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
-            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
-    @Path("/{codUnidade}/tipo")
-    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
-                                                      @PathParam("codUnidade") Long codUnidade) {
-        return service.getTipoVeiculosByUnidade(userToken, codUnidade);
     }
 
     @GET
@@ -238,53 +206,26 @@ public class VeiculoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Veiculo.ALTERAR})
     @Path("/sem-pneus/{placa}")
     public Veiculo getVeiculoByPlacaSemPneus(@HeaderParam("Authorization") String userToken,
                                              @PathParam("placa") String placa) {
         return service.getVeiculoByPlaca(userToken, placa, false);
     }
 
-    @PUT
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/tipos/{codUnidade}/{codTipo}")
-    public Response updateTipoVeiculo(TipoVeiculo tipo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.updateTipoVeiculo(tipo, codUnidade)) {
-            return Response.ok("Tipo alterado com sucesso");
-        } else {
-            return Response.error("Erro ao alterar o tipo");
-        }
-    }
-
-    @DELETE
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/tipos/{codUnidade}/{codTipo}")
-    public Response deleteTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.deleteTipoVeiculo(codTipo, codUnidade)) {
-            return Response.ok("Tipo deletado com sucesso");
-        } else {
-            return Response.error("Erro ao deletar o tipo");
-        }
-    }
-
-    @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/tipos/{codUnidade}/{codTipo}")
-    public TipoVeiculo getTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
-        return service.getTipoVeiculo(codTipo, codUnidade);
-    }
-
     /**
      * @deprecated at 2019-01-23.
-     *
+     * <p>
      * Este método foi depreciado pois era utilizado em locais com diferentes finalidades:
      * 1 - No cadastro/edição de veículos, como seleção de qual a marca/modelo do veículo.
      * 2 - No cadastro/edição/listagem de marcas e modelos de veículos.
-     *
+     * <p>
      * O problema, é que no primeiro caso, o método deveria retornar todas as marcas do BD, no segundo, apenas as marcas
      * para as quais a empresa tem modelos associados. Essa distinção não é lidada por esse método, por isso optamos
      * por depreciar e criar outros.
-     *
+     * <p>
      * Dessa forma, separamos essa lógica em dois métodos, caso queira o caso 1, utilize
      * {@link #getMarcasVeiculosNivelProLog()} se for o caso 2, utilize {@link #getMarcasModelosVeiculosByEmpresa(Long)}.
      */

@@ -53,6 +53,7 @@ public final class FolhaPontoTipoIntervalo extends TipoMarcacao {
         folhaTipo.setUnidade(tipoIntervalo.getUnidade());
         folhaTipo.setTempoTotalTipoIntervalo(Duration.ofSeconds(tempoTotalTipoIntervaloSegundos));
         folhaTipo.setTempoTotalHorasNoturnas(Duration.ofSeconds(tempoTotalHorasNoturnasSegundos));
+        folhaTipo.setTipoJornada(tipoIntervalo.isTipoJornada());
         return folhaTipo;
     }
 
