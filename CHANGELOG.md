@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.87"></a>
-## Version [v0.0.87](https://github.com/luizfp/PrologWebService/compare/v0.0.86...v0.0.87) (release-date) [unreleased]
+## Version [v0.0.87](https://github.com/luizfp/PrologWebService/compare/v0.0.86...v0.0.87) (2019-03-28)
 
 ### Features
 * Cria novo package e estrutra de DAO para os métodos dos tipos de veículos (PL-1718)
