@@ -31,15 +31,6 @@ public final class ResponseChecklistWithCod extends ResponseWithCod {
     }
 
     @NotNull
-    public static ResponseChecklistWithCod ok(@NotNull final String msg,
-                                              @NotNull final EstadoChecklistOfflineSupport estadoChecklistOffline) {
-        final ResponseChecklistWithCod responte = new ResponseChecklistWithCod(estadoChecklistOffline);
-        responte.setStatus(OK);
-        responte.setMsg(msg);
-        return responte;
-    }
-
-    @NotNull
     public static ResponseChecklistWithCod ok(@NotNull final Long codigo,
                                               @NotNull final String msg,
                                               @NotNull final EstadoChecklistOfflineSupport estadoChecklistOffline) {
