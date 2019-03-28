@@ -48,13 +48,13 @@ public class ChecklistOfflineTest extends BaseTest {
     @Test
     public void insertChecklistOffline() throws ProLogException {
         final ChecklistInsercao checklist = createChecklist();
-        final ResponseChecklist responseChecklist = service.insertChecklistOffline(
+        final ResponseChecklistWithCod responseChecklistWithCod = service.insertChecklistOffline(
                 "a",
                 9,
                 53,
                 checklist);
 
-        Assert.assertNotNull(responseChecklist);
+        Assert.assertNotNull(responseChecklistWithCod);
     }
 
     @Test

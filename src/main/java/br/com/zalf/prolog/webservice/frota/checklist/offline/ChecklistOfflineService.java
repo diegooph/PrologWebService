@@ -19,16 +19,16 @@ public class ChecklistOfflineService {
     private final ChecklistOfflineDao dao = Injection.provideChecklistOfflineDao();
 
     @NotNull
-    public ResponseChecklist insertChecklistOffline(final String tokenSincronizacao,
-                                                    final long versaoDadosChecklsitApp,
-                                                    final long versaoAppMomentoSincronizacao,
-                                                    final ChecklistInsercao checklist) throws ProLogException {
+    public ResponseChecklistWithCod insertChecklistOffline(final String tokenSincronizacao,
+                                                           final long versaoDadosChecklsitApp,
+                                                           final long versaoAppMomentoSincronizacao,
+                                                           final ChecklistInsercao checklist) throws ProLogException {
         try {
             if (checklist == null || checklist.getCodUnidade() == null) {
                 throw new IllegalStateException("Informações nulas providas para o checklist");
             }
             final DadosChecklistOfflineUnidade dadosChecklistOffline =
-                    getDadosChecklistOffline(versaoDadosChecklsitApp, checklist.getCodUnidade(), false);
+                    getDadosChecklistOffline(versaoDadosChecklsitApp, checklist.getCodUnidade());
 
             if (dadosChecklistOffline.getTokenSincronizacaoMarcacao() == null
                     || !dadosChecklistOffline.getTokenSincronizacaoMarcacao().equals(tokenSincronizacao)) {
@@ -38,7 +38,7 @@ public class ChecklistOfflineService {
             if (dadosChecklistOffline.getEstadoChecklistOfflineSupport() == null) {
                 throw new IllegalArgumentException("Um estado deve ser fornecido para os dados do checklist offline");
             }
-            return ResponseChecklist.ok(
+            return ResponseChecklistWithCod.ok(
                     dao.insertChecklistOffline(
                             versaoAppMomentoSincronizacao,
                             checklist),
@@ -120,6 +120,35 @@ public class ChecklistOfflineService {
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar informações do checklist offline, tente novamente");
         }
+    }
+
+    @NotNull
+    ResponseChecklist getEstadoDadosChecklistOffline(final Long versaoDadosApp,
+                                                     final Long codUnidade) throws ProLogException {
+        try {
+            final DadosChecklistOfflineUnidade dadosChecklistOffline =
+                    getDadosChecklistOffline(versaoDadosApp, codUnidade);
+            if (dadosChecklistOffline.getEstadoChecklistOfflineSupport() == null) {
+                throw new IllegalStateException("Um estado deve ser fornecido para os dados do checklist offline");
+            }
+            return ResponseChecklist.ok(
+                    "Estado dos dados do checklist buscados com sucesso",
+                    dadosChecklistOffline.getEstadoChecklistOfflineSupport());
+        } catch (final Throwable t) {
+            final String msg = String.format(
+                    "Erro ao buscar estado dos dados do checklist offline para a unidade %d",
+                    codUnidade);
+            Log.e(TAG, msg, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar estado dos dados do checklist offline");
+        }
+    }
+
+    @NotNull
+    private DadosChecklistOfflineUnidade getDadosChecklistOffline(@NotNull final Long versaoDadosApp,
+                                                                  @NotNull final Long codUnidade) throws Throwable {
+        return getDadosChecklistOffline(versaoDadosApp, codUnidade, false);
     }
 
     @NotNull
