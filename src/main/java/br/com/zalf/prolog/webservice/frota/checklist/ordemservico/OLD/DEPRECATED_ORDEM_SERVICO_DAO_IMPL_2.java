@@ -161,7 +161,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
                     "FROM CHECKLIST_ORDEM_SERVICO COS JOIN CHECKLIST C ON COS.COD_CHECKLIST = C.CODIGO " +
                     "AND C.COD_UNIDADE = COS.COD_UNIDADE " +
                     "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO " +
-                    "JOIN VEICULO_TIPO VT ON VT.COD_UNIDADE = C.COD_UNIDADE AND V.COD_TIPO = VT.CODIGO " +
+                    "JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO " +
                     "WHERE C.PLACA_VEICULO LIKE ? AND COS.STATUS LIKE ? AND C.COD_UNIDADE = ? AND " +
                     "VT.CODIGO::TEXT LIKE ? " +
                     "ORDER BY COS.CODIGO DESC " +

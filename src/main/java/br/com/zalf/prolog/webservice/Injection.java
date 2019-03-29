@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.app.AppDao;
 import br.com.zalf.prolog.webservice.app.AppDaoImpl;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
+import br.com.zalf.prolog.webservice.cargo.CargoDao;
+import br.com.zalf.prolog.webservice.cargo.CargoDaoImpl;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
 import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorExceptionHandler;
@@ -76,6 +78,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
@@ -430,6 +434,16 @@ public final class Injection {
     @NotNull
     public static AcompanhamentoViagemDao provideAcompanhamentoViagemDao() {
         return new AcompanhamentoViagemDaoImpl();
+    }
+
+    @NotNull
+    public static CargoDao provideCargoDao() {
+        return new CargoDaoImpl();
+    }
+
+    @NotNull
+    public static TipoVeiculoDao provideTipoVeiculoDao() {
+        return new TipoVeiculoDaoImpl();
     }
 
     @NotNull

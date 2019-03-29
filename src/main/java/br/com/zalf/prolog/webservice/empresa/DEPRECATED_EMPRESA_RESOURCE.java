@@ -1,15 +1,14 @@
 package br.com.zalf.prolog.webservice.empresa;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
 import br.com.zalf.prolog.webservice.colaborador.model.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -70,13 +69,6 @@ public class DEPRECATED_EMPRESA_RESOURCE {
     @Path("/unidades/{codUnidade}/equipes")
     public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getEquipesByCodUnidade(codUnidade);
-    }
-
-    @GET
-    @Secured
-    @Path("/unidades/{codUnidade}/funcoes")
-    public List<Cargo> getFuncoesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
-        return service.getCargosByCodUnidade(codUnidade);
     }
 
     @GET
@@ -153,18 +145,6 @@ public class DEPRECATED_EMPRESA_RESOURCE {
         Setor setor = new Setor();
         setor.setNome("nome");
         return service.insertSetor(codUnidade, setor);
-    }
-
-
-    /**
-     * @deprecated in v0.0.10. Use {@link #getFuncoesByCodUnidade(Long)} instead
-     */
-    @GET
-    @Secured
-    @Path("/funcoes/{codUnidade}")
-    @Deprecated
-    public List<Cargo> DEPRECATE_GET_FUNCOES_UNIDADE(@PathParam("codUnidade") Long codUnidade) {
-        return service.getCargosByCodUnidade(codUnidade);
     }
 
     /**

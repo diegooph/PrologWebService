@@ -12,7 +12,8 @@ import com.sun.istack.internal.NotNull;
 public enum RecursoIntegrado {
     CHECKLIST("CHECKLIST"),
     VEICULOS("VEICULOS"),
-    AFERICAO("AFERICAO");
+    AFERICAO("AFERICAO"),
+    TIPO_VEICULO("TIPO_VEICULO");
 
     @NotNull
     private final String key;

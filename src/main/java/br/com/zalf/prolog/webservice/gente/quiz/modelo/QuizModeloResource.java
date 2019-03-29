@@ -24,7 +24,7 @@ public final class QuizModeloResource {
     private final QuizModeloService service = new QuizModeloService();
 
     @POST
-    @Secured
+    @Secured(permissions = {Pilares.Gente.Quiz.Modelo.CRIAR})
     @Path("/{codUnidade}")
     public AbstractResponse insertModeloQuiz(@PathParam("codUnidade") @Required final Long codUnidade,
                                              @Required final ModeloQuiz modeloQuiz) throws ProLogException {
@@ -32,7 +32,9 @@ public final class QuizModeloResource {
     }
 
     @PUT
-    @Secured
+    @Secured(permissions = {
+            Pilares.Gente.Quiz.Modelo.CRIAR,
+            Pilares.Gente.Quiz.Modelo.ALTERAR})
     @Path("/{codUnidade}")
     public Response updateModeloQuiz(@PathParam("codUnidade") @Required final Long codUnidade,
                                      @Required final ModeloQuiz modeloQuiz) throws ProLogException {
@@ -40,7 +42,9 @@ public final class QuizModeloResource {
     }
 
     @PUT
-    @Secured
+    @Secured(permissions = {
+            Pilares.Gente.Quiz.Modelo.CRIAR,
+            Pilares.Gente.Quiz.Modelo.ALTERAR})
     @Path("/funcoes/{codUnidade}/{codModeloQuiz}")
     public Response updateCargosModeloQuiz(@PathParam("codUnidade") @Required final Long codUnidade,
                                            @PathParam("codModeloQuiz") @Required final Long codModeloQuiz,
@@ -49,7 +53,9 @@ public final class QuizModeloResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Gente.Quiz.Modelo.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR})
+    @Secured(permissions = {
+            Pilares.Gente.Quiz.Modelo.VISUALIZAR,
+            Pilares.Gente.Quiz.REALIZAR})
     @Path("/{codUnidade}/{codFuncaoColaborador}")
     public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(
             @PathParam("codUnidade") @Required final Long codUnidade,
@@ -69,7 +75,10 @@ public final class QuizModeloResource {
     }
 
     @GET
-    @Secured
+    @Secured(permissions = {
+            Pilares.Gente.Quiz.Modelo.CRIAR,
+            Pilares.Gente.Quiz.Modelo.VISUALIZAR,
+            Pilares.Gente.Quiz.Modelo.ALTERAR})
     @Path("/{codUnidade}/{codModeloQuiz}/completos")
     public ModeloQuiz getModeloQuiz(
             @PathParam("codUnidade") @Required final Long codUnidade,

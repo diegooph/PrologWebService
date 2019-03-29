@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.AlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.AlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoAbertaListagem;
@@ -96,7 +96,6 @@ final class OrdemServicoConverter {
         // Verifica se veio dados na query ou apenas a primeira linha para preenchimento do holder.
         if (rSet.getLong("COD_ITEM_OS") > 0) {
             do {
-
                 itens.add(createItemOrdemServicoVisualizacao(rSet));
             } while (rSet.next());
         }
@@ -142,8 +141,10 @@ final class OrdemServicoConverter {
             final ItemOrdemServicoResolvido resolvido = (ItemOrdemServicoResolvido) item;
             resolvido.setCodColaboradorResolucao(rSet.getLong("COD_COLABORADOR_RESOLUCAO"));
             resolvido.setNomeColaboradorResolucao(rSet.getString("NOME_COLABORADOR_RESOLUCAO"));
-            resolvido.setDataHoraResolucao(rSet.getObject("DATA_HORA_RESOLUCAO", LocalDateTime.class));
+            resolvido.setDataHoraResolvidoProLog(rSet.getObject("DATA_HORA_RESOLUCAO", LocalDateTime.class));
             resolvido.setFeedbackResolucao(rSet.getString("FEEDBACK_RESOLUCAO"));
+            resolvido.setDataHoraInicioResolucao(rSet.getObject("DATA_HORA_INICIO_RESOLUCAO", LocalDateTime.class));
+            resolvido.setDataHoraFimResolucao(rSet.getObject("DATA_HORA_FIM_RESOLUCAO", LocalDateTime.class));
             resolvido.setDuracaoResolucao(Duration.ofMinutes(rSet.getLong("DURACAO_RESOLUCAO_MINUTOS")));
             resolvido.setKmVeiculoColetadoResolucao(rSet.getLong("KM_VEICULO_COLETADO_RESOLUCAO"));
         }

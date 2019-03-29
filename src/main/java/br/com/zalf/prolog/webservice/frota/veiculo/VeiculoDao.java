@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -94,25 +97,6 @@ public interface VeiculoDao {
                               final boolean withPneus) throws Throwable;
 
     /**
-     * busca o tipo de veículo pela unidade
-     *
-     * @param codUnidade código da unidade
-     * @return uma lista de tipos de veículos
-     * @throws SQLException caso ocorrer erro no banco
-     */
-    List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException;
-
-    /**
-     * insere um tipo de veículo
-     *
-     * @param tipoVeiculo descrição do tipo do veículo
-     * @param codUnidade  código da unidade
-     * @return valor referente a operação
-     * @throws SQLException se ocorrer erro no banco
-     */
-    boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException;
-
-    /**
      * busca os eixos
      *
      * @return uma lista de eixos
@@ -137,6 +121,7 @@ public interface VeiculoDao {
      * @return lista de marcas
      * @throws SQLException se ocorrer erro no banco
      */
+    @Deprecated
     List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException;
 
     /**
@@ -201,7 +186,7 @@ public interface VeiculoDao {
     /**
      * Método utilizado para buscar o {@link DiagramaVeiculo} com base na {@code placa}.
      *
-     * @param conn {@link Connection} que será utilizada para realizar a operação.
+     * @param conn  {@link Connection} que será utilizada para realizar a operação.
      * @param placa Placa do {@link Veiculo}.
      * @return Caso exista, retornará o {@link DiagramaVeiculo} caso contrário NULL.
      * @throws SQLException Se qualquer erro ocorrer na busca.
@@ -242,36 +227,6 @@ public interface VeiculoDao {
      * @throws SQLException
      */
     boolean deleteModelo(Long codModelo, Long codUnidade) throws SQLException;
-
-    /**
-     * atualiza um tipo de veículo
-     *
-     * @param tipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
-    boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) throws SQLException;
-
-    /**
-     * deleta um tipo de veículo, apenas se não tiver nenhuma placa vinculada
-     *
-     * @param codTipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
-    boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
-
-    /**
-     * busca um tipo de veículo
-     *
-     * @param codTipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
-    TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
 
     /**
      * Aplica um pneu à uma posição específico do veículo.

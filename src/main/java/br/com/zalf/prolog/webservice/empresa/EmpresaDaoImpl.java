@@ -1,17 +1,17 @@
 package br.com.zalf.prolog.webservice.empresa;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.NoContentException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -237,29 +237,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             closeConnection(conn, stmt, rSet);
         }
         return listEquipe;
-    }
-
-    @Override
-    public List<Cargo> getCargosByCodUnidade(Long codUnidade) throws SQLException {
-        final List<Cargo> listCargo = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT F.CODIGO, F.NOME\n" +
-                    "FROM FUNCAO F JOIN UNIDADE U ON U.cod_empresa = F.cod_empresa\n" +
-                    "WHERE U.codigo = ?\n" +
-                    "ORDER BY 2;");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                listCargo.add(createCargo(rSet));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return listCargo;
     }
 
     @Override
@@ -846,5 +823,26 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             closeConnection(conn, stmt, rSet);
         }
         return null;
+    }
+
+    @NotNull
+    @Override
+    public Long getCodEmpresaByCodUnidade(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?;");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("COD_EMPRESA");
+            } else {
+                throw new IllegalStateException("Empresa não encontrada para o código de unidade: " + codUnidade);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 }
