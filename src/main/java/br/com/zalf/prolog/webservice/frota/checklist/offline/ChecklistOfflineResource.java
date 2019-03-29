@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -30,12 +29,10 @@ public class ChecklistOfflineResource {
     public ResponseChecklistWithCod insert(
             @HeaderParam(ChecklistOfflineSupport.HEADER_TOKEN_CHECKLIST) @Required final String tokenSincronizacao,
             @HeaderParam(ChecklistOfflineSupport.HEADER_VERSAO_DADOS_CHECKLIST) @Required final long versaoDadosChecklsitApp,
-            @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) @Required final long versaoAppMomentoSincronizacao,
             @Required final ChecklistInsercao checklist) throws ProLogException {
         return service.insertChecklistOffline(
                 tokenSincronizacao,
                 versaoDadosChecklsitApp,
-                versaoAppMomentoSincronizacao,
                 checklist);
     }
 

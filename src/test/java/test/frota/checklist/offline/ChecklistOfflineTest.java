@@ -1,7 +1,7 @@
 package test.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
@@ -51,7 +51,6 @@ public class ChecklistOfflineTest extends BaseTest {
         final ResponseChecklistWithCod responseChecklistWithCod = service.insertChecklistOffline(
                 "a",
                 9,
-                53,
                 checklist);
 
         Assert.assertNotNull(responseChecklistWithCod);
@@ -205,7 +204,7 @@ public class ChecklistOfflineTest extends BaseTest {
         checklist.setKmColetadoVeiculo(0);
         checklist.setTempoRealizacaoCheckInMillis(10000);
         checklist.setRespostas(createRespostas());
-        checklist.setDataHoraRealizacao(Now.localDateTimeUtc());
+        checklist.setDataHoraRealizacao(ProLogDateParser.toLocalDateTime("2019-03-30T00:26:10"));
         checklist.setFonteDataHoraRealizacao(FonteDataHora.LOCAL_CELULAR);
         checklist.setVersaoAppMomentoRealizacao(50);
         checklist.setVersaoAppMomentoSincronizacao(53);

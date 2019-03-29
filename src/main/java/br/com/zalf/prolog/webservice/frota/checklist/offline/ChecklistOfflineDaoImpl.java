@@ -24,46 +24,21 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
 
     @NotNull
     @Override
-    public Long insertChecklistOffline(final long versaoAppMomentoSincronizacao,
-                                       @NotNull final ChecklistInsercao checklist) throws Throwable {
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
         Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
-                    "AS CODIGO;");
-            stmt.setLong(1, checklist.getCodUnidade());
-            stmt.setLong(2, checklist.getCodModelo());
-            stmt.setObject(3, checklist.getDataHoraRealizacao());
-            stmt.setLong(4, checklist.getCodColaborador());
-            stmt.setLong(5, checklist.getCodVeiculo());
-            stmt.setString(6, checklist.getPlacaVeiculo());
-            stmt.setString(7, String.valueOf(checklist.getTipo().asChar()));
-            stmt.setLong(8, checklist.getKmColetadoVeiculo());
-            stmt.setLong(9, checklist.getTempoRealizacaoCheckInMillis());
-            stmt.setObject(10, Now.offsetDateTimeUtc());
-            stmt.setString(11, checklist.getFonteDataHoraRealizacao().asString());
-            stmt.setInt(12, checklist.getVersaoAppMomentoRealizacao());
-            stmt.setInt(13, checklist.getVersaoAppMomentoSincronizacao());
-            stmt.setString(14, checklist.getDeviceId());
-            stmt.setLong(15, checklist.getDeviceUptimeRealizacaoMillis());
-            stmt.setLong(16, checklist.getDeviceUptimeSincronizacaoMillis());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Long codChecklistInserido = rSet.getLong("CODIGO");
-                insertChecklistPerguntasOffline(
-                        conn,
-                        checklist.getCodUnidade(),
-                        checklist.getCodModelo(),
-                        codChecklistInserido,
-                        checklist.getRespostas());
+            // Caso o checklist contenha informações que caracterizem uma duplicata nós não iremos inserir,
+            // apenas retornamos o código do checklist que já está no banco de dados.
+            final Long codChecklistExistente = getCodChecklistIfExists(conn, checklist);
+            if (codChecklistExistente <= 0) {
+                final Long codChecklistInserido = internalInsertChecklist(conn, checklist);
                 conn.commit();
                 return codChecklistInserido;
             } else {
-                throw new SQLException("Erro ao salvar checklist");
+                conn.commit();
+                return codChecklistExistente;
             }
         } catch (final Throwable t) {
             if (conn != null) {
@@ -71,45 +46,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             }
             throw t;
         } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    private void insertChecklistPerguntasOffline(@NotNull final Connection conn,
-                                                 @NotNull final Long codUnidadeChecklist,
-                                                 @NotNull final Long codModeloChecklist,
-                                                 @NotNull final Long codChecklistInserido,
-                                                 @NotNull final List<ChecklistResposta> respostas) throws Throwable {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_CHECKLIST_INSERT_RESPOSTAS_CHECKLIST(?, ?, ?, ?, ?, ?);");
-            stmt.setLong(1, codUnidadeChecklist);
-            stmt.setLong(2, codModeloChecklist);
-            stmt.setLong(3, codChecklistInserido);
-            int linhasParaExecutar = 0;
-            for (final ChecklistResposta resposta : respostas) {
-                for (final ChecklistAlternativaResposta alternativa : resposta.getAlternativasRespostas()) {
-                    if (alternativa.isAlternativaSelecionada()) {
-                        if (alternativa.isTipoOutros()) {
-                            stmt.setString(4, alternativa.getRespostaTipoOutros());
-                        } else {
-                            stmt.setString(4, alternativa.getDescricaoAlternativaNok());
-                        }
-                    } else {
-                        stmt.setString(4, alternativa.getDescricaoAlternativaOk());
-                    }
-                    stmt.setLong(5, resposta.getCodPergunta());
-                    stmt.setLong(6, alternativa.getCodAlternativa());
-                    stmt.addBatch();
-                    linhasParaExecutar++;
-                }
-            }
-            if (stmt.executeBatch().length != linhasParaExecutar) {
-                throw new SQLException("Não foi possível salvar todas as alternativas do checklist");
-            }
-        } finally {
-            close(stmt);
+            close(conn);
         }
     }
 
@@ -355,6 +292,120 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             }
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private Long getCodChecklistIfExists(@NotNull final Connection conn,
+                                         @NotNull final ChecklistInsercao checklist) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_CHECKLIST_GET_COD_CHECKLIST_DUPLICADO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "AS CODIGO;");
+            stmt.setLong(1, checklist.getCodUnidade());
+            stmt.setLong(2, checklist.getCodModelo());
+            stmt.setObject(3, checklist.getDataHoraRealizacao());
+            stmt.setLong(4, checklist.getCodColaborador());
+            stmt.setString(5, checklist.getPlacaVeiculo());
+            stmt.setString(6, String.valueOf(checklist.getTipo().asChar()));
+            stmt.setLong(7, checklist.getKmColetadoVeiculo());
+            stmt.setLong(8, checklist.getTempoRealizacaoCheckInMillis());
+            stmt.setString(9, checklist.getFonteDataHoraRealizacao().asString());
+            stmt.setInt(10, checklist.getVersaoAppMomentoRealizacao());
+            stmt.setString(11, checklist.getDeviceId());
+            stmt.setLong(12, checklist.getDeviceUptimeRealizacaoMillis());
+            stmt.setLong(13, checklist.getDeviceUptimeSincronizacaoMillis());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Não foi possível buscar checklist já existente");
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private Long internalInsertChecklist(@NotNull final Connection conn,
+                                         @NotNull final ChecklistInsercao checklist) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "AS CODIGO;");
+            stmt.setLong(1, checklist.getCodUnidade());
+            stmt.setLong(2, checklist.getCodModelo());
+            stmt.setObject(3, checklist.getDataHoraRealizacao());
+            stmt.setLong(4, checklist.getCodColaborador());
+            stmt.setLong(5, checklist.getCodVeiculo());
+            stmt.setString(6, checklist.getPlacaVeiculo());
+            stmt.setString(7, String.valueOf(checklist.getTipo().asChar()));
+            stmt.setLong(8, checklist.getKmColetadoVeiculo());
+            stmt.setLong(9, checklist.getTempoRealizacaoCheckInMillis());
+            stmt.setObject(10, Now.offsetDateTimeUtc());
+            stmt.setString(11, checklist.getFonteDataHoraRealizacao().asString());
+            stmt.setInt(12, checklist.getVersaoAppMomentoRealizacao());
+            stmt.setInt(13, checklist.getVersaoAppMomentoSincronizacao());
+            stmt.setString(14, checklist.getDeviceId());
+            stmt.setLong(15, checklist.getDeviceUptimeRealizacaoMillis());
+            stmt.setLong(16, checklist.getDeviceUptimeSincronizacaoMillis());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Long codChecklistInserido = rSet.getLong("CODIGO");
+                insertChecklistPerguntasOffline(
+                        conn,
+                        checklist.getCodUnidade(),
+                        checklist.getCodModelo(),
+                        codChecklistInserido,
+                        checklist.getRespostas());
+                return codChecklistInserido;
+            } else {
+                throw new SQLException("Erro ao salvar checklist");
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    private void insertChecklistPerguntasOffline(@NotNull final Connection conn,
+                                                 @NotNull final Long codUnidadeChecklist,
+                                                 @NotNull final Long codModeloChecklist,
+                                                 @NotNull final Long codChecklistInserido,
+                                                 @NotNull final List<ChecklistResposta> respostas) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_CHECKLIST_INSERT_RESPOSTAS_CHECKLIST(?, ?, ?, ?, ?, ?);");
+            stmt.setLong(1, codUnidadeChecklist);
+            stmt.setLong(2, codModeloChecklist);
+            stmt.setLong(3, codChecklistInserido);
+            int linhasParaExecutar = 0;
+            for (final ChecklistResposta resposta : respostas) {
+                for (final ChecklistAlternativaResposta alternativa : resposta.getAlternativasRespostas()) {
+                    if (alternativa.isAlternativaSelecionada()) {
+                        if (alternativa.isTipoOutros()) {
+                            stmt.setString(4, alternativa.getRespostaTipoOutros());
+                        } else {
+                            stmt.setString(4, alternativa.getDescricaoAlternativaNok());
+                        }
+                    } else {
+                        stmt.setString(4, alternativa.getDescricaoAlternativaOk());
+                    }
+                    stmt.setLong(5, resposta.getCodPergunta());
+                    stmt.setLong(6, alternativa.getCodAlternativa());
+                    stmt.addBatch();
+                    linhasParaExecutar++;
+                }
+            }
+            if (stmt.executeBatch().length != linhasParaExecutar) {
+                throw new SQLException("Não foi possível salvar todas as alternativas do checklist");
+            }
+        } finally {
+            close(stmt);
         }
     }
 }
