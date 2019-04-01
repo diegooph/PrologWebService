@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
 
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +33,7 @@ public abstract class ChecklistOfflineSupport {
      * * {@link EstadoChecklistOfflineSupport#DESATUALIZADO}
      * * {@link EstadoChecklistOfflineSupport#SEM_DADOS}
      */
+    @Exclude
     @NotNull
     private final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport;
 

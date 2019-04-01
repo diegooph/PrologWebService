@@ -25,8 +25,9 @@ public final class PerguntaModeloChecklistOffline {
 
     /**
      * Código único de identificação da imagem ilustrativa associada a essa pergunta.
+     * Este atributo pode ser nulo para o caso de não ter nenhuma imagem associada à pergunta.
      */
-    @NotNull
+    @Nullable
     private final Long codImagem;
 
     /**
@@ -55,7 +56,7 @@ public final class PerguntaModeloChecklistOffline {
 
     PerguntaModeloChecklistOffline(@NotNull final Long codigo,
                                    @NotNull final String descricao,
-                                   @NotNull final Long codImagem,
+                                   @Nullable final Long codImagem,
                                    @Nullable final String urlImagem,
                                    final int ordemExibicao,
                                    final boolean singleChoice,
@@ -79,7 +80,7 @@ public final class PerguntaModeloChecklistOffline {
         return descricao;
     }
 
-    @NotNull
+    @Nullable
     public Long getCodImagem() {
         return codImagem;
     }
