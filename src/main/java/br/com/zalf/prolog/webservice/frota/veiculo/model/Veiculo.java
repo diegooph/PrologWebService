@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class Veiculo {
 
+    private Long codigo;
     private String placa;
     private Marca marca;
     private ModeloVeiculo modelo;
@@ -43,6 +44,14 @@ public class Veiculo {
 
     public Veiculo() {
 
+    }
+
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(final Long codigo) {
+        this.codigo = codigo;
     }
 
     public Marca getMarca() {
@@ -168,7 +177,8 @@ public class Veiculo {
     @Override
     public String toString() {
         return "Veiculo{" +
-                "placa='" + placa + '\'' +
+                "codigo=" + codigo +
+                ", placa='" + placa + '\'' +
                 ", marca=" + marca +
                 ", modelo=" + modelo +
                 ", tipo=" + tipo +
