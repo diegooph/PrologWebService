@@ -61,7 +61,7 @@ public class SistemaProtheusRodalog extends Sistema {
                         TipoMedicaoAfericaoProtheusRodalog.fromString(tipoAfericao));
         if (novaAfericaoPlaca.getCodDiagrama() == null) {
             throw new IllegalStateException("[INTEGRACAO - RODALOG] O código do diagrama é null\n" +
-                    "CodUnidade: " + codUnidade +
+                    "CodUnidade: " + codUnidade + "\n" +
                     "Placa: " + placaVeiculo);
         }
         final Optional<DiagramaVeiculo> diagramaVeiculo =
