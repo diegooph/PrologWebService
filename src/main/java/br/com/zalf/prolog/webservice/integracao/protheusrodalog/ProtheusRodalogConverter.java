@@ -119,12 +119,14 @@ final class ProtheusRodalogConverter {
         pneu.setPosicao(pneuRodalog.getPosicao());
         pneu.setPressaoCorreta(pneuRodalog.getPressaoCorreta());
         pneu.setPressaoAtual(pneuRodalog.getPressaoAtual());
-        final Sulcos sulcos = new Sulcos();
-        sulcos.setInterno(pneuRodalog.getSulcoInternoAtual());
-        sulcos.setCentralInterno(pneuRodalog.getSulcoCentralInternoAtual());
-        sulcos.setCentralExterno(pneuRodalog.getSulcoCentralExternoAtual());
-        sulcos.setExterno(pneuRodalog.getSulcoExternoAtual());
-        pneu.setSulcosAtuais(sulcos);
+        if (pneuRodalog.temSulcosAtuais()) {
+            final Sulcos sulcos = new Sulcos();
+            sulcos.setInterno(pneuRodalog.getSulcoInternoAtual());
+            sulcos.setCentralInterno(pneuRodalog.getSulcoCentralInternoAtual());
+            sulcos.setCentralExterno(pneuRodalog.getSulcoCentralExternoAtual());
+            sulcos.setExterno(pneuRodalog.getSulcoExternoAtual());
+            pneu.setSulcosAtuais(sulcos);
+        }
         pneu.setModelo(convertModeloPneu(pneuRodalog.getModeloPneu()));
         if (pneuRodalog.isRecapado()) {
             pneu.setBanda(convertBanda(pneuRodalog.getModeloBanda()));

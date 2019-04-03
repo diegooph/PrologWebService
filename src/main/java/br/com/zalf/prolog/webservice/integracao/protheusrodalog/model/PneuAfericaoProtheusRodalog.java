@@ -230,4 +230,11 @@ public final class PneuAfericaoProtheusRodalog {
         // Se vidaAtual > 1 significa que o pneu já sofreu recape.
         return vidaAtual > 1;
     }
+
+    public boolean temSulcosAtuais() {
+        return this.sulcoExternoAtual == null
+                && this.sulcoCentralExternoAtual == null
+                && this.sulcoCentralInternoAtual == null
+                && this.sulcoInternoAtual == null;
+    }
 }
