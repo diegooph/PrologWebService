@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
+import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.ProtheusRodalogResponseAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.TipoMedicaoAfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -33,10 +34,15 @@ public class SistemaProtheusRodalog extends Sistema {
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
-        return requester.insertAfericao(
+        final ProtheusRodalogResponseAfericao responseAfericao = requester.insertAfericao(
                 tokenIntegracao,
                 codUnidade,
                 ProtheusRodalogConverter.convertAfericao(afericao));
+        if (responseAfericao.isStatus() && responseAfericao.getCodigoAfericaoInserida() != null) {
+            return responseAfericao.getCodigoAfericaoInserida();
+        } else {
+            throw new Exception("[INTEGRACAO - RODALOG] Não foi possível inserir a Aferição no sistema");
+        }
     }
 
     @NotNull
