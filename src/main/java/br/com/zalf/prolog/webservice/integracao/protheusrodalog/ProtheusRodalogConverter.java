@@ -94,6 +94,7 @@ final class ProtheusRodalogConverter {
         final Veiculo veiculo = new Veiculo();
         veiculo.setCodUnidadeAlocado(novaAfericaoRodalog.getCodUnidadePlacaAlocada());
         veiculo.setPlaca(novaAfericaoRodalog.getPlaca());
+        veiculo.setKmAtual(novaAfericaoRodalog.getUltimoKmVeiculo());
         veiculo.setDiagrama(diagramaVeiculo);
         veiculo.setListPneus(convertPneus(novaAfericaoRodalog.getPneusVeiculo()));
         return veiculo;

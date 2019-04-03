@@ -19,6 +19,12 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     private String placa;
 
     /**
+     * Valor numérico que representa a última quilometragem da {@code placa}. Assumimos como a quilometragem mais atual
+     * da placa.
+     */
+    private Long ultimoKmVeiculo;
+
+    /**
      * Atributo numérico que representa o código da {@link Unidade unidade} em que a placa está alocada.
      */
     private Long codUnidadePlacaAlocada;
@@ -83,6 +89,7 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     public static NovaAfericaoPlacaProtheusRodalog createNovaAfericaoDummy() {
         final NovaAfericaoPlacaProtheusRodalog novaAfericao = new NovaAfericaoPlacaProtheusRodalog();
         novaAfericao.setPlaca("PRO0001");
+        novaAfericao.setUltimoKmVeiculo(10000L);
         novaAfericao.setCodUnidadePlacaAlocada(29L);
         novaAfericao.setCodDiagrama(1);
         novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(2.0);
@@ -108,6 +115,14 @@ public final class NovaAfericaoPlacaProtheusRodalog {
 
     public void setPlaca(final String placa) {
         this.placa = placa;
+    }
+
+    public Long getUltimoKmVeiculo() {
+        return ultimoKmVeiculo;
+    }
+
+    public void setUltimoKmVeiculo(final Long ultimoKmVeiculo) {
+        this.ultimoKmVeiculo = ultimoKmVeiculo;
     }
 
     public Long getCodUnidadePlacaAlocada() {
