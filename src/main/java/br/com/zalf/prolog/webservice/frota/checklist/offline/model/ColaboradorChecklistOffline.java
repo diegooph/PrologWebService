@@ -11,10 +11,6 @@ import java.time.LocalDate;
  */
 public final class ColaboradorChecklistOffline {
     @NotNull
-    private final Long codEmpresaColaborador;
-    @NotNull
-    private final Long codRegionalColaborador;
-    @NotNull
     private final Long codUnidadeColaborador;
     @NotNull
     private final Long codColaborador;
@@ -26,32 +22,18 @@ public final class ColaboradorChecklistOffline {
     private final Long codCargoColaborador;
     private final int codPermissaoColaborador;
 
-    public ColaboradorChecklistOffline(@NotNull final Long codEmpresaColaborador,
-                                       @NotNull final Long codRegionalColaborador,
-                                       @NotNull final Long codUnidadeColaborador,
+    public ColaboradorChecklistOffline(@NotNull final Long codUnidadeColaborador,
                                        @NotNull final Long codColaborador,
                                        @NotNull final String cpfColaborador,
                                        @NotNull final LocalDate dataNascimentoColaborador,
                                        @NotNull final Long codCargoColaborador,
                                        final Integer codPermissaoColaborador) {
-        this.codEmpresaColaborador = codEmpresaColaborador;
-        this.codRegionalColaborador = codRegionalColaborador;
         this.codUnidadeColaborador = codUnidadeColaborador;
         this.codColaborador = codColaborador;
         this.cpfColaborador = cpfColaborador;
         this.dataNascimentoColaborador = dataNascimentoColaborador;
         this.codCargoColaborador = codCargoColaborador;
         this.codPermissaoColaborador = codPermissaoColaborador;
-    }
-
-    @NotNull
-    public Long getCodEmpresaColaborador() {
-        return codEmpresaColaborador;
-    }
-
-    @NotNull
-    public Long getCodRegionalColaborador() {
-        return codRegionalColaborador;
     }
 
     @NotNull

@@ -75,8 +75,6 @@ public final class ChecklistOfflineConverter {
     public static ColaboradorChecklistOffline createColaboradorChecklistOffline(
             @NotNull final ResultSet rSet) throws SQLException {
         return new ColaboradorChecklistOffline(
-                rSet.getLong("COD_EMPRESA_COLABORADOR"),
-                rSet.getLong("COD_REGIONAL_COLABORADOR"),
                 rSet.getLong("COD_UNIDADE_COLABORADOR"),
                 rSet.getLong("COD_COLABORADOR"),
                 rSet.getString("CPF_COLABORADOR"),
