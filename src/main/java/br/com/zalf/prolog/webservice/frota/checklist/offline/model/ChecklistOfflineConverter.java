@@ -79,6 +79,7 @@ public final class ChecklistOfflineConverter {
         return new ColaboradorChecklistOffline(
                 rSet.getLong("COD_UNIDADE_COLABORADOR"),
                 rSet.getLong("COD_COLABORADOR"),
+                rSet.getString("NOME_COLABORADOR"),
                 rSet.getString("CPF_COLABORADOR"),
                 rSet.getObject("DATA_NASCIMENTO", LocalDate.class),
                 rSet.getLong("COD_CARGO_COLABORADOR"),
