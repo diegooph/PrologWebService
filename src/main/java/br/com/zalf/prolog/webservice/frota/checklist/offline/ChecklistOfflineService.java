@@ -52,7 +52,7 @@ public class ChecklistOfflineService {
                             "tokenSincronizacao = %s\n" +
                             "versaoDadosChecklsitApp = %d",
                     tokenSincronizacao,
-                    versaoDadosChecklsitApp));
+                    versaoDadosChecklsitApp), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível inserir o checklist, tente novamente");
@@ -108,7 +108,7 @@ public class ChecklistOfflineService {
             Log.e(TAG, String.format("Erro ao buscar informações para realização de checklist offline: \n" +
                     "CodUnidade: %d\n" +
                     "VersaoDados: %d\n" +
-                    "AtualizacaoForcada: %b", codUnidade, versaoDadosApp, forcarAtualizacao));
+                    "AtualizacaoForcada: %b", codUnidade, versaoDadosApp, forcarAtualizacao), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar informações do checklist offline, tente novamente");
@@ -148,7 +148,7 @@ public class ChecklistOfflineService {
         } catch (Throwable t) {
             final String msg =
                     "Erro ao busca informação se empresa do colaborador está liberada para realizar checklist offline";
-            Log.e(TAG, msg);
+            Log.e(TAG, msg, t);
             throw Injection.provideProLogExceptionHandler().map(t, msg);
         }
     }
