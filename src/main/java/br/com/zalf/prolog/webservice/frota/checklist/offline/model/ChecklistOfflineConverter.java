@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -25,7 +26,8 @@ public final class ChecklistOfflineConverter {
                 rSet.getLong("COD_ALTERNATIVA"),
                 rSet.getString("DESCRICAO_ALTERNATIVA"),
                 rSet.getBoolean("TIPO_OUTROS"),
-                rSet.getInt("ALTERNATIVA_ORDEM_EXIBICAO"));
+                rSet.getInt("ALTERNATIVA_ORDEM_EXIBICAO"),
+                PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
     }
 
     @NotNull

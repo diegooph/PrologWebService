@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,14 +33,24 @@ public final class AlternativaModeloChecklistOffline {
      */
     private final int ordemExibicao;
 
+    /**
+     * Prioridade associada a esta alternativa. A prioridade pode ser {@link PrioridadeAlternativa#CRITICA},
+     * {@link PrioridadeAlternativa#ALTA} ou {@link PrioridadeAlternativa#BAIXA} e ela remete ao tempo que o item tem
+     * para ser resolvido.
+     */
+    @NotNull
+    private final PrioridadeAlternativa prioridadeAlternativa;
+
     AlternativaModeloChecklistOffline(@NotNull final Long codigo,
                                       @NotNull final String descricao,
                                       final boolean tipoOutros,
-                                      final int ordemExibicao) {
+                                      final int ordemExibicao,
+                                      @NotNull final PrioridadeAlternativa prioridadeAlternativa) {
         this.codigo = codigo;
         this.descricao = descricao;
         this.tipoOutros = tipoOutros;
         this.ordemExibicao = ordemExibicao;
+        this.prioridadeAlternativa = prioridadeAlternativa;
     }
 
     @NotNull
@@ -58,5 +69,10 @@ public final class AlternativaModeloChecklistOffline {
 
     public int getOrdemExibicao() {
         return ordemExibicao;
+    }
+
+    @NotNull
+    public PrioridadeAlternativa getPrioridadeAlternativa() {
+        return prioridadeAlternativa;
     }
 }
