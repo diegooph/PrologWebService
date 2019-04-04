@@ -408,7 +408,7 @@ public interface RelatorioPneuDao {
      * @throws Throwable Se qualquer erro acontecer.
      */
     @NotNull
-    List<QtdDiasAfericoesVencidas> getQtdAfericoesVencidas(@NotNull final List<Long> codUnidades) throws Throwable;
+    List<QtdDiasAfericoesVencidas> getQtdDiasAfericoesVencidas(@NotNull final List<Long> codUnidades) throws Throwable;
 
     /**
      * Método que busca a quantidade de aferições realizadas por tipo em um determinado período.

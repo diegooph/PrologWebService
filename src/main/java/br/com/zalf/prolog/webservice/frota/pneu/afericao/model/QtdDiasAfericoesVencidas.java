@@ -12,13 +12,13 @@ public class QtdDiasAfericoesVencidas {
     private final String nomeUnidade;
     @NotNull
     private final String placaVeiculo;
-    private final int qtdDiasAfericaoSulcoVencido;
-    private final int qtdDiasAfericaoPressaoVencida;
+    private final String qtdDiasAfericaoSulcoVencido;
+    private final String qtdDiasAfericaoPressaoVencida;
 
     public QtdDiasAfericoesVencidas(@NotNull final String nomeUnidade,
                                     @NotNull final String placaVeiculo,
-                                    final int qtdDiasAfericaoSulcoVencido,
-                                    final int qtdDiasAfericaoPressaoVencida) {
+                                    final String qtdDiasAfericaoSulcoVencido,
+                                    final String qtdDiasAfericaoPressaoVencida) {
         this.nomeUnidade = nomeUnidade;
         this.placaVeiculo = placaVeiculo;
         this.qtdDiasAfericaoSulcoVencido = qtdDiasAfericaoSulcoVencido;
@@ -35,11 +35,11 @@ public class QtdDiasAfericoesVencidas {
         return placaVeiculo;
     }
 
-    public int getQtdDiasAfericaoSulcoVencido() {
+    public String getQtdDiasAfericaoSulcoVencido() {
         return qtdDiasAfericaoSulcoVencido;
     }
 
-    public int getQtdDiasAfericaoPressaoVencida() {
+    public String getQtdDiasAfericaoPressaoVencida() {
         return qtdDiasAfericaoPressaoVencida;
     }
 }

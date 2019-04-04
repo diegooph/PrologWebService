@@ -800,14 +800,14 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @NotNull
     @Override
-    public List<QtdDiasAfericoesVencidas> getQtdAfericoesVencidas(
+    public List<QtdDiasAfericoesVencidas> getQtdDiasAfericoesVencidas(
             @NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_AFERICAO_VENCIDA(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_VENCIDOS(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setObject(2, Now.localDateTimeUtc());
             rSet = stmt.executeQuery();
@@ -817,8 +817,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                         new QtdDiasAfericoesVencidas(
                                 rSet.getString("UNIDADE"),
                                 rSet.getString("PLACA"),
-                                rSet.getInt("QTD DIAS SEM AFERIR SULCO"),
-                                rSet.getInt("QTD DIAS SEM AFERIR PRESSAO")));
+                                rSet.getString("QTD DIAS SEM AFERIR SULCO"),
+                                rSet.getString("QTD DIAS SEM AFERIR PRESSAO")));
             }
             return qtdDiasAfericoesVencidas;
         } finally {
