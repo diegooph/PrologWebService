@@ -27,7 +27,7 @@ public final class VeiculoChecklistOffline {
     private final Long codTipoVeiculo;
 
     /**
-     * Código de identificação do tipo de veículo a qual a {@code placaVeiculo placa} pertence.
+     * Quilometragem que o veículo possui atualmente. Entendemos este valor como a quilometragem mais recente.
      */
     private final long kmAtualVeiculo;
 
