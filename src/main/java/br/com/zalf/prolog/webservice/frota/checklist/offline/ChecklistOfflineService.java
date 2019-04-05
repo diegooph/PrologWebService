@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -21,9 +23,9 @@ public class ChecklistOfflineService {
     private final ChecklistOfflineDao dao = Injection.provideChecklistOfflineDao();
 
     @NotNull
-    public ResponseChecklistWithCod insertChecklistOffline(final String tokenSincronizacao,
-                                                           final long versaoDadosChecklsitApp,
-                                                           final ChecklistInsercao checklist) throws ProLogException {
+    public ResponseWithCod insertChecklistOffline(final String tokenSincronizacao,
+                                                  final long versaoDadosChecklsitApp,
+                                                  final ChecklistInsercao checklist) throws ProLogException {
         try {
             // Precisamos verificar o token para ter certeza se o usuário é apto a utilizar os métodos.
             ensureValidToken(tokenSincronizacao);
@@ -42,10 +44,9 @@ public class ChecklistOfflineService {
             if (dadosChecklistOffline.getEstadoChecklistOfflineSupport() == null) {
                 throw new IllegalArgumentException("Um estado deve ser fornecido para os dados do checklist offline");
             }
-            return ResponseChecklistWithCod.ok(
-                    dao.insertChecklistOffline(checklist),
+            return ResponseWithCod.ok(
                     "Checklist inserido com sucesso",
-                    dadosChecklistOffline.getEstadoChecklistOfflineSupport());
+                    dao.insertChecklistOffline(checklist));
         } catch (Throwable t) {
             Log.e(TAG, String.format(
                     "Não foi possível inserir o checklist:\n" +
@@ -116,9 +117,9 @@ public class ChecklistOfflineService {
     }
 
     @NotNull
-    ResponseChecklist getEstadoDadosChecklistOffline(final String tokenSincronizacao,
-                                                     final Long versaoDadosApp,
-                                                     final Long codUnidade) throws ProLogException {
+    Response getEstadoDadosChecklistOffline(final String tokenSincronizacao,
+                                            final Long versaoDadosApp,
+                                            final Long codUnidade) throws ProLogException {
         try {
             // Precisamos verificar o token para ter certeza se o usuário é apto a utilizar os métodos.
             ensureValidToken(tokenSincronizacao);
@@ -128,9 +129,7 @@ public class ChecklistOfflineService {
             if (dadosChecklistOffline.getEstadoChecklistOfflineSupport() == null) {
                 throw new IllegalStateException("Um estado deve ser fornecido para os dados do checklist offline");
             }
-            return ResponseChecklist.ok(
-                    "Estado dos dados do checklist buscados com sucesso",
-                    dadosChecklistOffline.getEstadoChecklistOfflineSupport());
+            return Response.ok("Estado dos dados do checklist buscados com sucesso");
         } catch (final Throwable t) {
             final String msg = String.format(
                     "Erro ao buscar estado dos dados do checklist offline para a unidade %d",
