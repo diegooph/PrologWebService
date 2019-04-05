@@ -39,11 +39,10 @@ public class ChecklistOfflineResource {
     @GET
     @Path("offline-support")
     public ChecklistOfflineSupport getChecklistOfflineSupport(
-            @HeaderParam(ChecklistOfflineSupport.HEADER_TOKEN_CHECKLIST) @Required final String tokenSincronizacao,
-            @HeaderParam(ChecklistOfflineSupport.HEADER_VERSAO_DADOS_CHECKLIST) @Required final Long versaoDados,
+            @HeaderParam(ChecklistOfflineSupport.HEADER_VERSAO_DADOS_CHECKLIST) @Required final Long versaoDadosChecklsitApp,
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("forcarAtualizacao") @Required final boolean forcarAtualizacao) throws ProLogException {
-        return service.getChecklistOfflineSupport(tokenSincronizacao, versaoDados, codUnidade, forcarAtualizacao);
+        return service.getChecklistOfflineSupport(versaoDadosChecklsitApp, codUnidade, forcarAtualizacao);
     }
 
     @GET

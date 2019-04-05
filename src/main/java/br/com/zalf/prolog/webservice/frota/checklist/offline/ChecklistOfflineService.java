@@ -59,19 +59,15 @@ public class ChecklistOfflineService {
     }
 
     @NotNull
-    public ChecklistOfflineSupport getChecklistOfflineSupport(final String tokenSincronizacao,
-                                                              final Long versaoDadosApp,
+    public ChecklistOfflineSupport getChecklistOfflineSupport(final long versaoDadosChecklsitApp,
                                                               final Long codUnidade,
                                                               final boolean forcarAtualizacao) throws ProLogException {
         try {
-            // Precisamos verificar o token para ter certeza se o usuário é apto a utilizar os métodos.
-            ensureValidToken(tokenSincronizacao);
-
             final Pair<Long, String> dadosAtuaisUnidade = dao.getDadosAtuaisUnidade(codUnidade);
             final Long versaoDadosBanco = dadosAtuaisUnidade.getKey();
             final String tokenWs = dadosAtuaisUnidade.getValue();
             final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport =
-                    getEstadoChecklistOffline(versaoDadosBanco, versaoDadosApp);
+                    getEstadoChecklistOffline(versaoDadosBanco, versaoDadosChecklsitApp);
 
             if (versaoDadosBanco != null && tokenWs != null) {
                 // Caso a Unidade tenha dados e 'forcarAtualizacao = true' então forçamos a atualização dos dados
@@ -100,23 +96,11 @@ public class ChecklistOfflineService {
             Log.e(TAG, String.format("Erro ao buscar informações para realização de checklist offline: \n" +
                     "CodUnidade: %d\n" +
                     "VersaoDados: %d\n" +
-                    "AtualizacaoForcada: %b", codUnidade, versaoDadosApp, forcarAtualizacao), t);
+                    "AtualizacaoForcada: %b", codUnidade, versaoDadosChecklsitApp, forcarAtualizacao), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar informações do checklist offline, tente novamente");
         }
-    }
-
-    @NotNull
-    private EstadoChecklistOfflineSupport getEstadoChecklistOffline(@Nullable final Long versaoDadosBanco,
-                                                                    @NotNull final Long versaoDadosApp) {
-        if (versaoDadosBanco == null) {
-            return EstadoChecklistOfflineSupport.SEM_DADOS;
-        }
-        if (versaoDadosApp.equals(versaoDadosBanco)) {
-            return EstadoChecklistOfflineSupport.ATUALIZADO;
-        }
-        return EstadoChecklistOfflineSupport.DESATUALIZADO;
     }
 
     @NotNull
@@ -148,6 +132,18 @@ public class ChecklistOfflineService {
             Log.e(TAG, msg, t);
             throw Injection.provideProLogExceptionHandler().map(t, msg);
         }
+    }
+
+    @NotNull
+    private EstadoChecklistOfflineSupport getEstadoChecklistOffline(@Nullable final Long versaoDadosBanco,
+                                                                    @NotNull final Long versaoDadosChecklsitApp) {
+        if (versaoDadosBanco == null) {
+            return EstadoChecklistOfflineSupport.SEM_DADOS;
+        }
+        if (versaoDadosChecklsitApp.equals(versaoDadosBanco)) {
+            return EstadoChecklistOfflineSupport.ATUALIZADO;
+        }
+        return EstadoChecklistOfflineSupport.DESATUALIZADO;
     }
 
     @NotNull
