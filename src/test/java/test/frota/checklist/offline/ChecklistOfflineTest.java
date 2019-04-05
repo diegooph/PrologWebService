@@ -1,6 +1,7 @@
 package test.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -48,7 +49,7 @@ public class ChecklistOfflineTest extends BaseTest {
     @Test
     public void insertChecklistOffline() throws ProLogException {
         final ChecklistInsercao checklist = createChecklist();
-        final ResponseChecklistWithCod responseChecklistWithCod = service.insertChecklistOffline(
+        final ResponseWithCod responseChecklistWithCod = service.insertChecklistOffline(
                 "a",
                 9,
                 checklist);
@@ -58,7 +59,6 @@ public class ChecklistOfflineTest extends BaseTest {
 
     @Test
     public void getModelosChecklistOffline() throws Throwable {
-
         // TESTE DE CHECKLIST ATUALIZADO
         ChecklistOfflineSupport checklistOfflineSupport =
                 service.getChecklistOfflineSupport(
@@ -68,9 +68,9 @@ public class ChecklistOfflineTest extends BaseTest {
                         false);
 
         Assert.assertNotNull(checklistOfflineSupport);
-        Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportAtualizado);
-        Assert.assertNotNull(checklistOfflineSupport.getCodUnidadeDados());
-        Assert.assertEquals(5L, (long) checklistOfflineSupport.getCodUnidadeDados());
+        Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportSemDados);
+        Assert.assertNotNull(checklistOfflineSupport.getCodUnidade());
+        Assert.assertEquals(5L, (long) checklistOfflineSupport.getCodUnidade());
         Assert.assertNotNull(checklistOfflineSupport.getEstadoChecklistOfflineSupport());
         Assert.assertEquals(
                 EstadoChecklistOfflineSupport.ATUALIZADO,
@@ -88,8 +88,8 @@ public class ChecklistOfflineTest extends BaseTest {
 
         Assert.assertNotNull(checklistOfflineSupport);
         Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportSemDados);
-        Assert.assertNotNull(checklistOfflineSupport.getCodUnidadeDados());
-        Assert.assertEquals(6L, (long) checklistOfflineSupport.getCodUnidadeDados());
+        Assert.assertNotNull(checklistOfflineSupport.getCodUnidade());
+        Assert.assertEquals(6L, (long) checklistOfflineSupport.getCodUnidade());
         Assert.assertNotNull(checklistOfflineSupport.getEstadoChecklistOfflineSupport());
         Assert.assertEquals(
                 EstadoChecklistOfflineSupport.SEM_DADOS,
@@ -101,96 +101,69 @@ public class ChecklistOfflineTest extends BaseTest {
         checklistOfflineSupport =
                 service.getChecklistOfflineSupport(
                         "a",
-                        10L,
+                        9L,
                         5L,
                         true);
 
         Assert.assertNotNull(checklistOfflineSupport);
-        Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportAtualizacaoForcada);
-        Assert.assertNotNull(checklistOfflineSupport.getCodUnidadeDados());
-        Assert.assertEquals(5L, (long) checklistOfflineSupport.getCodUnidadeDados());
-        Assert.assertNotNull(checklistOfflineSupport.getEstadoChecklistOfflineSupport());
-        Assert.assertEquals(
-                EstadoChecklistOfflineSupport.ATUALIZACAO_FORCADA,
-                checklistOfflineSupport.getEstadoChecklistOfflineSupport());
-
-        ChecklistOfflineSupportAtualizacaoForcada checklistForcado =
-                ((ChecklistOfflineSupportAtualizacaoForcada) checklistOfflineSupport);
-
-        Assert.assertNotNull(checklistForcado.getTokenSincronizacaoDadosUnidade());
-        Assert.assertEquals("a", checklistForcado.getTokenSincronizacaoDadosUnidade());
-        Assert.assertNotNull(checklistForcado.getVersaoDadosUnidadeChecklist());
-        Assert.assertEquals(10L, (long) checklistForcado.getVersaoDadosUnidadeChecklist());
-
-        Assert.assertNotNull(checklistForcado.getModelosChecklistsDisponiveis());
-        Assert.assertNotNull(checklistForcado.getColaboradoresChecklistOffline());
-        Assert.assertNotNull(checklistForcado.getVeiculosChecklistOffline());
-        Assert.assertNotNull(checklistForcado.getEmpresaChecklistOffline());
-
-        System.out.println(checklistForcado);
-
-        // TESTE DE CHECKLIST ATUALIZACAO FORCADA - SEM ATRIBUTO
-        checklistOfflineSupport =
-                service.getChecklistOfflineSupport(
-                        "a",
-                        100L,
-                        5L,
-                        false);
-
-        Assert.assertNotNull(checklistOfflineSupport);
-        Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportAtualizacaoForcada);
-        Assert.assertNotNull(checklistOfflineSupport.getCodUnidadeDados());
-        Assert.assertEquals(5L, (long) checklistOfflineSupport.getCodUnidadeDados());
-        Assert.assertNotNull(checklistOfflineSupport.getEstadoChecklistOfflineSupport());
-        Assert.assertEquals(
-                EstadoChecklistOfflineSupport.ATUALIZACAO_FORCADA,
-                checklistOfflineSupport.getEstadoChecklistOfflineSupport());
-
-        checklistForcado = ((ChecklistOfflineSupportAtualizacaoForcada) checklistOfflineSupport);
-
-        Assert.assertNotNull(checklistForcado.getTokenSincronizacaoDadosUnidade());
-        Assert.assertEquals("a", checklistForcado.getTokenSincronizacaoDadosUnidade());
-        Assert.assertNotNull(checklistForcado.getVersaoDadosUnidadeChecklist());
-        Assert.assertEquals(10L, (long) checklistForcado.getVersaoDadosUnidadeChecklist());
-
-        Assert.assertNotNull(checklistForcado.getModelosChecklistsDisponiveis());
-        Assert.assertNotNull(checklistForcado.getColaboradoresChecklistOffline());
-        Assert.assertNotNull(checklistForcado.getVeiculosChecklistOffline());
-        Assert.assertNotNull(checklistForcado.getEmpresaChecklistOffline());
-
-        System.out.println(checklistForcado);
-
-        // TESTE DE CHECKLIST DESATUALIZADO
-        checklistOfflineSupport =
-                service.getChecklistOfflineSupport(
-                        "a",
-                        9L,
-                        5L,
-                        false);
-
-        Assert.assertNotNull(checklistOfflineSupport);
-        Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportDesatualizado);
-        Assert.assertNotNull(checklistOfflineSupport.getCodUnidadeDados());
-        Assert.assertEquals(5L, (long) checklistOfflineSupport.getCodUnidadeDados());
+        Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportComDados);
+        Assert.assertNotNull(checklistOfflineSupport.getCodUnidade());
+        Assert.assertEquals(5L, (long) checklistOfflineSupport.getCodUnidade());
         Assert.assertNotNull(checklistOfflineSupport.getEstadoChecklistOfflineSupport());
         Assert.assertEquals(
                 EstadoChecklistOfflineSupport.DESATUALIZADO,
                 checklistOfflineSupport.getEstadoChecklistOfflineSupport());
 
-        final ChecklistOfflineSupportDesatualizado checklistDesatualizado =
-                ((ChecklistOfflineSupportDesatualizado) checklistOfflineSupport);
+        ChecklistOfflineSupportComDados checklistDesatualizado =
+                ((ChecklistOfflineSupportComDados) checklistOfflineSupport);
 
-        Assert.assertNotNull(checklistDesatualizado.getTokenSincronizacaoDadosUnidade());
-        Assert.assertEquals("a", checklistDesatualizado.getTokenSincronizacaoDadosUnidade());
-        Assert.assertNotNull(checklistDesatualizado.getVersaoDadosUnidadeChecklist());
-        Assert.assertEquals(10L, (long) checklistDesatualizado.getVersaoDadosUnidadeChecklist());
+        ChecklistOfflineData checklistOfflineData = checklistDesatualizado.getChecklistOfflineData();
 
-        Assert.assertNotNull(checklistDesatualizado.getModelosChecklistsDisponiveis());
-        Assert.assertNotNull(checklistDesatualizado.getColaboradoresChecklistOffline());
-        Assert.assertNotNull(checklistDesatualizado.getVeiculosChecklistOffline());
-        Assert.assertNotNull(checklistDesatualizado.getEmpresaChecklistOffline());
+        Assert.assertNotNull(checklistOfflineData);
+        Assert.assertEquals("a", checklistOfflineData.getTokenSincronizacaoDadosUnidade());
+        Assert.assertNotNull(checklistOfflineData.getVersaoDadosUnidadeChecklist());
+        Assert.assertEquals(10L, (long) checklistOfflineData.getVersaoDadosUnidadeChecklist());
 
-        System.out.println(checklistDesatualizado);
+        Assert.assertNotNull(checklistOfflineData.getModelosChecklistsDisponiveis());
+        Assert.assertNotNull(checklistOfflineData.getColaboradoresChecklistOffline());
+        Assert.assertNotNull(checklistOfflineData.getVeiculosChecklistOffline());
+        Assert.assertNotNull(checklistOfflineData.getEmpresaChecklistOffline());
+
+        System.out.println(checklistOfflineData);
+
+        // TESTE DE CHECKLIST ATUALIZACAO FORCADA - COM ATRIBUTO
+        checklistOfflineSupport =
+                service.getChecklistOfflineSupport(
+                        "a",
+                        10L,
+                        5L,
+                        true);
+
+        Assert.assertNotNull(checklistOfflineSupport);
+        Assert.assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportComDados);
+        Assert.assertNotNull(checklistOfflineSupport.getCodUnidade());
+        Assert.assertEquals(5L, (long) checklistOfflineSupport.getCodUnidade());
+        Assert.assertNotNull(checklistOfflineSupport.getEstadoChecklistOfflineSupport());
+        Assert.assertEquals(
+                EstadoChecklistOfflineSupport.ATUALIZADO,
+                checklistOfflineSupport.getEstadoChecklistOfflineSupport());
+
+        checklistDesatualizado =
+                ((ChecklistOfflineSupportComDados) checklistOfflineSupport);
+
+        checklistOfflineData = checklistDesatualizado.getChecklistOfflineData();
+
+        Assert.assertNotNull(checklistOfflineData);
+        Assert.assertEquals("a", checklistOfflineData.getTokenSincronizacaoDadosUnidade());
+        Assert.assertNotNull(checklistOfflineData.getVersaoDadosUnidadeChecklist());
+        Assert.assertEquals(10L, (long) checklistOfflineData.getVersaoDadosUnidadeChecklist());
+
+        Assert.assertNotNull(checklistOfflineData.getModelosChecklistsDisponiveis());
+        Assert.assertNotNull(checklistOfflineData.getColaboradoresChecklistOffline());
+        Assert.assertNotNull(checklistOfflineData.getVeiculosChecklistOffline());
+        Assert.assertNotNull(checklistOfflineData.getEmpresaChecklistOffline());
+
+        System.out.println(checklistOfflineData);
     }
 
     private ChecklistInsercao createChecklist() {

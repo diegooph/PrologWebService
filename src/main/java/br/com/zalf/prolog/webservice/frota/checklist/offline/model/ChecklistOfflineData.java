@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ChecklistOfflineSupportDesatualizado extends ChecklistOfflineSupport {
+public final class ChecklistOfflineData {
     /**
      * Valor alfanumérico utilizado para a sincronização de dados do checklist offline para a unidade.
      */
@@ -47,15 +48,12 @@ public final class ChecklistOfflineSupportDesatualizado extends ChecklistOffline
     @NotNull
     private final EmpresaChecklistOffline empresaChecklistOffline;
 
-    public ChecklistOfflineSupportDesatualizado(
-            @NotNull final Long codUnidadeDados,
-            @NotNull final String tokenSincronizacaoDadosUnidade,
-            @NotNull final Long versaoDadosUnidadeChecklist,
-            @NotNull final List<ModeloChecklistOffline> modelosChecklistsDisponiveis,
-            @NotNull final List<ColaboradorChecklistOffline> colaboradoresChecklistOffline,
-            @NotNull final List<VeiculoChecklistOffline> veiculosChecklistOffline,
-            @NotNull final EmpresaChecklistOffline empresaChecklistOffline) {
-        super(codUnidadeDados, EstadoChecklistOfflineSupport.DESATUALIZADO);
+    public ChecklistOfflineData(@NotNull final String tokenSincronizacaoDadosUnidade,
+                                @NotNull final Long versaoDadosUnidadeChecklist,
+                                @NotNull final List<ModeloChecklistOffline> modelosChecklistsDisponiveis,
+                                @NotNull final List<ColaboradorChecklistOffline> colaboradoresChecklistOffline,
+                                @NotNull final List<VeiculoChecklistOffline> veiculosChecklistOffline,
+                                @NotNull final EmpresaChecklistOffline empresaChecklistOffline) {
         this.tokenSincronizacaoDadosUnidade = tokenSincronizacaoDadosUnidade;
         this.versaoDadosUnidadeChecklist = versaoDadosUnidadeChecklist;
         this.modelosChecklistsDisponiveis = modelosChecklistsDisponiveis;

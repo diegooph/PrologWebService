@@ -37,7 +37,6 @@ public final class DadosChecklistOfflineUnidade {
      * * {@link EstadoChecklistOfflineSupport#ATUALIZADO}
      * * {@link EstadoChecklistOfflineSupport#ATUALIZACAO_FORCADA}
      * * {@link EstadoChecklistOfflineSupport#DESATUALIZADO}
-     * * {@link EstadoChecklistOfflineSupport#SEM_DADOS}
      */
     @NotNull
     private EstadoChecklistOfflineSupport estadoChecklistOfflineSupport;

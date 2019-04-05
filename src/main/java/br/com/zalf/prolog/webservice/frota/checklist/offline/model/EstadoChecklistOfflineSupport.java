@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum EstadoChecklistOfflineSupport {
     ATUALIZADO("ATUALIZADO"),
-    ATUALIZACAO_FORCADA("ATUALIZACAO_FORCADA"),
     DESATUALIZADO("DESATUALIZADO"),
     SEM_DADOS("SEM_DADOS");
 
