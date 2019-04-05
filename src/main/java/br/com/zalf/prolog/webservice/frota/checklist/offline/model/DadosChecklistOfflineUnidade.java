@@ -28,7 +28,7 @@ public final class DadosChecklistOfflineUnidade {
      * Este atributo é <code>NULL</code> para o caso em que a unidade não possui nenhum token.
      */
     @Nullable
-    private String tokenSincronizacaoMarcacao;
+    private String tokenSincronizacaoChecklist;
 
     /**
      * Estado em que os dados do checklist offline se encontram.
@@ -39,19 +39,23 @@ public final class DadosChecklistOfflineUnidade {
      * * {@link EstadoChecklistOfflineSupport#DESATUALIZADO}
      * * {@link EstadoChecklistOfflineSupport#SEM_DADOS}
      */
-    @Nullable
+    @NotNull
     private EstadoChecklistOfflineSupport estadoChecklistOfflineSupport;
 
-    public DadosChecklistOfflineUnidade(@NotNull final Long codUnidade) {
+    public DadosChecklistOfflineUnidade(@NotNull final Long codUnidade,
+                                        @NotNull final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport) {
         this.codUnidade = codUnidade;
+        this.estadoChecklistOfflineSupport = estadoChecklistOfflineSupport;
     }
 
     public DadosChecklistOfflineUnidade(@NotNull final Long codUnidade,
                                         @NotNull final Long versaoDadosBanco,
-                                        @NotNull final String tokenSincronizacaoMarcacao) {
+                                        @NotNull final String tokenSincronizacaoChecklist,
+                                        @NotNull final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport) {
         this.codUnidade = codUnidade;
         this.versaoDadosBanco = versaoDadosBanco;
-        this.tokenSincronizacaoMarcacao = tokenSincronizacaoMarcacao;
+        this.tokenSincronizacaoChecklist = tokenSincronizacaoChecklist;
+        this.estadoChecklistOfflineSupport = estadoChecklistOfflineSupport;
     }
 
     @NotNull
@@ -69,21 +73,21 @@ public final class DadosChecklistOfflineUnidade {
     }
 
     @Nullable
-    public String getTokenSincronizacaoMarcacao() {
-        return tokenSincronizacaoMarcacao;
+    public String getTokenSincronizacaoChecklist() {
+        return tokenSincronizacaoChecklist;
     }
 
-    public void setTokenSincronizacaoMarcacao(@Nullable final String tokenSincronizacaoMarcacao) {
-        this.tokenSincronizacaoMarcacao = tokenSincronizacaoMarcacao;
+    public void setTokenSincronizacaoChecklist(@Nullable final String tokenSincronizacaoChecklist) {
+        this.tokenSincronizacaoChecklist = tokenSincronizacaoChecklist;
     }
 
-    @Nullable
+    @NotNull
     public EstadoChecklistOfflineSupport getEstadoChecklistOfflineSupport() {
         return estadoChecklistOfflineSupport;
     }
 
     public void setEstadoChecklistOfflineSupport(
-            @Nullable final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport) {
+            @NotNull final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport) {
         this.estadoChecklistOfflineSupport = estadoChecklistOfflineSupport;
     }
 }

@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlt
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
+import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -74,7 +75,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
 
     @NotNull
     @Override
-    public DadosChecklistOfflineUnidade getVersaoDadosAtual(@NotNull final Long codUnidade) throws Throwable {
+    public Pair<Long, String> getDadosAtuaisUnidade(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -92,7 +93,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                 // código estará preparado para lidar. Trata-se do caso de a Unidade ter dados cadastrados na tabela
                 // CHECKLIST_OFFLINE_DADOS_UNIDADE porém não ter (ou ter um valor inválido) a informação VERSAO_DADOS.
                 if (versaoDados > 0 && token != null) {
-                    return new DadosChecklistOfflineUnidade(codUnidade, versaoDados, token);
+                    return new Pair<>(versaoDados, token);
                 } else {
                     throw new SQLException("A unidade possui configuração inconsistentes.\n" +
                             "CodUnidade: " + codUnidade + "\n" +
@@ -100,7 +101,8 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                             "Token: " + token);
                 }
             } else {
-                return new DadosChecklistOfflineUnidade(codUnidade);
+                // Caso unidade não tenha dados.
+                return new Pair<>(null, null);
             }
         } finally {
             close(conn, stmt, rSet);

@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.ChecklistOfflineSupport;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.model.DadosChecklistOfflineUnidade;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,8 +47,8 @@ public class ChecklistOfflineResource {
     }
 
     @GET
-    @Path("offline-support/estado-dados")
-    public Response getEstadoDadosChecklistOffline(
+    @Path("offline-support/dados-checklist")
+    public DadosChecklistOfflineUnidade getEstadoDadosChecklistOffline(
             @HeaderParam(ChecklistOfflineSupport.HEADER_TOKEN_CHECKLIST) @Required final String tokenSincronizacao,
             @HeaderParam(ChecklistOfflineSupport.HEADER_VERSAO_DADOS_CHECKLIST) @Required final Long versaoDados,
             @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {

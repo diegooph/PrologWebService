@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
+import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -42,12 +43,13 @@ public interface ChecklistOfflineDao {
      * dos dados recebidos na requisição.
      *
      * @param codUnidade Código da Unidade de onde os dados serão buscados.
-     * @return Objeto {@link DadosChecklistOfflineUnidade} contendo as informações relacionadas ao checklist offline.
+     * @return {@link Pair Tupla} contendo na 'chave' a versão dos dados para a unidade e no campo 'valor' o token
+     * utilizado para sincronizar os cheklists.
      * @throws Throwable Caso algum erro aconteça na execução da busca dos dados.
      * @see ChecklistOfflineService#getDadosChecklistOffline(Long, Long, boolean)
      */
     @NotNull
-    DadosChecklistOfflineUnidade getVersaoDadosAtual(@NotNull final Long codUnidade) throws Throwable;
+    Pair<Long, String> getDadosAtuaisUnidade(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Método utilizado para buscar os {@link ModeloChecklistOffline modelos de checklists} aptos a serem
