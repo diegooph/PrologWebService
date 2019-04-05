@@ -26,12 +26,19 @@ public final class VeiculoChecklistOffline {
     @NotNull
     private final Long codTipoVeiculo;
 
+    /**
+     * Código de identificação do tipo de veículo a qual a {@code placaVeiculo placa} pertence.
+     */
+    private final long kmAtualVeiculo;
+
     public VeiculoChecklistOffline(@NotNull final Long codVeiculo,
                                    @NotNull final String placaVeiculo,
-                                   @NotNull final Long codTipoVeiculo) {
+                                   @NotNull final Long codTipoVeiculo,
+                                   final long kmAtualVeiculo) {
         this.codVeiculo = codVeiculo;
         this.placaVeiculo = placaVeiculo;
         this.codTipoVeiculo = codTipoVeiculo;
+        this.kmAtualVeiculo = kmAtualVeiculo;
     }
 
     @NotNull
@@ -47,5 +54,9 @@ public final class VeiculoChecklistOffline {
     @NotNull
     public Long getCodTipoVeiculo() {
         return codTipoVeiculo;
+    }
+
+    public long getKmAtualVeiculo() {
+        return kmAtualVeiculo;
     }
 }

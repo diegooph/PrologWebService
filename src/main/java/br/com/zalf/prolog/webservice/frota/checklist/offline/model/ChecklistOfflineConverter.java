@@ -92,7 +92,8 @@ public final class ChecklistOfflineConverter {
         return new VeiculoChecklistOffline(
                 rSet.getLong("COD_VEICULO"),
                 rSet.getString("PLACA_VEICULO"),
-                rSet.getLong("COD_TIPO_VEICULO"));
+                rSet.getLong("COD_TIPO_VEICULO"),
+                rSet.getLong("KM_ATUAL_VEICULO"));
     }
 
     @NotNull
