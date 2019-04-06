@@ -24,6 +24,18 @@ public class ChecklistOfflineService {
     private final ChecklistOfflineDao dao = Injection.provideChecklistOfflineDao();
 
     @NotNull
+    public ResponseWithCod insertChecklistOffline(final ChecklistInsercao checklist) throws ProLogException {
+        try {
+            return ResponseWithCod.ok("Checklist inserido com sucesso", dao.insertChecklistOffline(checklist));
+        } catch (final Throwable t) {
+            Log.e(TAG,"Não foi possível inserir o checklist online:", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível inserir o checklist, tente novamente");
+        }
+    }
+
+    @NotNull
     public ResponseWithCod insertChecklistOffline(final String tokenSincronizacao,
                                                   final long versaoDadosChecklsitApp,
                                                   final ChecklistInsercao checklist) throws ProLogException {
@@ -47,7 +59,7 @@ public class ChecklistOfflineService {
                     dao.insertChecklistOffline(checklist));
         } catch (Throwable t) {
             Log.e(TAG, String.format(
-                    "Não foi possível inserir o checklist:\n" +
+                    "Não foi possível inserir o checklist offline:\n" +
                             "tokenSincronizacao = %s\n" +
                             "versaoDadosChecklsitApp = %d",
                     tokenSincronizacao,
