@@ -59,7 +59,7 @@ public class ChecklistOfflineService {
     }
 
     @NotNull
-    public ChecklistOfflineSupport getChecklistOfflineSupport(final long versaoDadosChecklsitApp,
+    public ChecklistOfflineSupport getChecklistOfflineSupport(final Long versaoDadosChecklsitApp,
                                                               final Long codUnidade,
                                                               final boolean forcarAtualizacao) throws ProLogException {
         try {
@@ -91,7 +91,6 @@ public class ChecklistOfflineService {
                     codUnidade,
                     estadoChecklistOfflineSupport,
                     forcarAtualizacao);
-
         } catch (Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar informações para realização de checklist offline: \n" +
                     "CodUnidade: %d\n" +
@@ -136,9 +135,12 @@ public class ChecklistOfflineService {
 
     @NotNull
     private EstadoChecklistOfflineSupport getEstadoChecklistOffline(@Nullable final Long versaoDadosBanco,
-                                                                    @NotNull final Long versaoDadosChecklsitApp) {
+                                                                    @Nullable final Long versaoDadosChecklsitApp) {
         if (versaoDadosBanco == null) {
             return EstadoChecklistOfflineSupport.SEM_DADOS;
+        }
+        if (versaoDadosChecklsitApp == null) {
+            return EstadoChecklistOfflineSupport.DESATUALIZADO;
         }
         if (versaoDadosChecklsitApp.equals(versaoDadosBanco)) {
             return EstadoChecklistOfflineSupport.ATUALIZADO;
@@ -147,7 +149,7 @@ public class ChecklistOfflineService {
     }
 
     @NotNull
-    private DadosChecklistOfflineUnidade getDadosChecklistOffline(@NotNull final Long versaoDadosApp,
+    private DadosChecklistOfflineUnidade getDadosChecklistOffline(@NotNull final Long versaoDadosChecklsitApp,
                                                                   @NotNull final Long codUnidade) throws Throwable {
         final Pair<Long, String> dadosAtuaisUnidade = dao.getDadosAtuaisUnidade(codUnidade);
         final Long versaoDadosBanco = dadosAtuaisUnidade.getKey();
@@ -155,7 +157,7 @@ public class ChecklistOfflineService {
         if (versaoDadosBanco != null && tokenBanco != null) {
             // Se a versão dos dados recebida na requisição é igual a versão no banco, então retornamos a
             // constante ATUALIZADO.
-            if (versaoDadosApp.equals(versaoDadosBanco)) {
+            if (versaoDadosChecklsitApp.equals(versaoDadosBanco)) {
                 return new DadosChecklistOfflineUnidade(
                         codUnidade,
                         versaoDadosBanco,

@@ -304,7 +304,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_GET_COD_CHECKLIST_DUPLICADO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "FROM FUNC_CHECKLIST_GET_COD_CHECKLIST_DUPLICADO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                     "AS CODIGO;");
             stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
@@ -318,7 +318,6 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             stmt.setInt(10, checklist.getVersaoAppMomentoRealizacao());
             stmt.setString(11, checklist.getDeviceId());
             stmt.setLong(12, checklist.getDeviceUptimeRealizacaoMillis());
-            stmt.setLong(13, checklist.getDeviceUptimeSincronizacaoMillis());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");

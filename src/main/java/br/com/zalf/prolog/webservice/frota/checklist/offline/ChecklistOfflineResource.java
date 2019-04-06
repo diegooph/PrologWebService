@@ -49,8 +49,8 @@ public class ChecklistOfflineResource {
     @Path("offline-support/dados-checklist")
     public DadosChecklistOfflineUnidade getEstadoDadosChecklistOffline(
             @HeaderParam(ChecklistOfflineSupport.HEADER_TOKEN_CHECKLIST) @Required final String tokenSincronizacao,
-            @HeaderParam(ChecklistOfflineSupport.HEADER_VERSAO_DADOS_CHECKLIST) @Required final Long versaoDados,
+            @HeaderParam(ChecklistOfflineSupport.HEADER_VERSAO_DADOS_CHECKLIST) @Required final Long versaoDadosChecklsitApp,
             @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
-        return service.getEstadoDadosChecklistOffline(tokenSincronizacao, versaoDados, codUnidade);
+        return service.getEstadoDadosChecklistOffline(tokenSincronizacao, versaoDadosChecklsitApp, codUnidade);
     }
 }
