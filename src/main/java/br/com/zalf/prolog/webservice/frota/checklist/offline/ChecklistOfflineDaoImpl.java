@@ -342,9 +342,10 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                     "AS CODIGO;");
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
             stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
-            stmt.setObject(3, checklist.getDataHoraRealizacao());
+            stmt.setObject(3, checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime());
             stmt.setLong(4, checklist.getCodColaborador());
             stmt.setLong(5, checklist.getCodVeiculo());
             stmt.setString(6, checklist.getPlacaVeiculo());
@@ -407,7 +408,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                 }
             }
             if (stmt.executeBatch().length != linhasParaExecutar) {
-                throw new SQLException("Não foi possível salvar todas as alternativas do checklist");
+                throw new SQLException("Não foi possível salvar todas as respostas do checklist");
             }
         } finally {
             close(stmt);
