@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
@@ -12,7 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -304,9 +305,10 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         try {
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_CHECKLIST_GET_COD_CHECKLIST_DUPLICADO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
             stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
-            stmt.setObject(3, checklist.getDataHoraRealizacao().atOffset(ZoneOffset.UTC));
+            stmt.setObject(3, checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime());
             stmt.setLong(4, checklist.getCodColaborador());
             stmt.setString(5, checklist.getPlacaVeiculo());
             stmt.setString(6, String.valueOf(checklist.getTipo().asChar()));
