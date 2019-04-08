@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -305,7 +306,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                     "FROM FUNC_CHECKLIST_GET_COD_CHECKLIST_DUPLICADO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
-            stmt.setObject(3, checklist.getDataHoraRealizacao());
+            stmt.setObject(3, checklist.getDataHoraRealizacao().atOffset(ZoneOffset.UTC));
             stmt.setLong(4, checklist.getCodColaborador());
             stmt.setString(5, checklist.getPlacaVeiculo());
             stmt.setString(6, String.valueOf(checklist.getTipo().asChar()));
