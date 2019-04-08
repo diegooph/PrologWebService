@@ -218,19 +218,19 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<ColaboradorChecklistOffline> colaboradores = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OFFLINE_GET_COLABORADORES_DISPONIVEIS(?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
+            final List<ColaboradorChecklistOffline> colaboradores = new ArrayList<>();
             while (rSet.next()) {
-                colaboradores.add(ChecklistOfflineConverter.createColaboradorChecklistOffline(rSet));
+                colaboradores.add(createColaboradorChecklistOffline(rSet));
             }
+            return colaboradores;
         } finally {
             close(conn, stmt, rSet);
         }
-        return colaboradores;
     }
 
     @NotNull
