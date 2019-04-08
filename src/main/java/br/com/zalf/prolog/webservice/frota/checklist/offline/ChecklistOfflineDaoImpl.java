@@ -56,7 +56,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
     }
 
     @Override
-    public boolean getChecklistOfflineAtivoEmpresa(@NotNull final Long cpfColaborador) throws Throwable {
+    public boolean getChecklistOfflineAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -64,13 +64,12 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             conn = getConnection();
             stmt = conn.prepareStatement(
                     "SELECT * FROM FUNC_CHECKLIST_OFFLINE_EMPRESA_LIBERADA(?) AS CHECKLIST_OFFLINE_LIBERADO");
-            stmt.setLong(1, cpfColaborador);
+            stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getBoolean("CHECKLIST_OFFLINE_LIBERADO");
             } else {
-                throw new SQLException(
-                        "Erro ao buscar informações se a empresa está liberada para executar checklist offline");
+                throw new SQLException("Erro ao verificar se a empresa está liberada para executar checklist offline");
             }
         } finally {
             close(conn, stmt, rSet);

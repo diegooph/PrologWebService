@@ -112,14 +112,15 @@ public class ChecklistOfflineService {
         }
     }
 
-    public boolean getChecklistOfflineAtivoEmpresa(final Long cpfColaborador) throws ProLogException {
+    public boolean getChecklistOfflineAtivoEmpresa(final Long codEmpresa) throws ProLogException {
         try {
-            return dao.getChecklistOfflineAtivoEmpresa(cpfColaborador);
+            return dao.getChecklistOfflineAtivoEmpresa(codEmpresa);
         } catch (Throwable t) {
-            final String msg =
-                    "Erro ao busca informação se empresa do colaborador está liberada para realizar checklist offline";
+            final String msg = "Erro ao verificar se empresa está liberada para realizar checklist offline";
             Log.e(TAG, msg, t);
-            throw Injection.provideProLogExceptionHandler().map(t, msg);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, msg);
         }
     }
 

@@ -172,7 +172,7 @@ public class ColaboradorService {
 
             final ChecklistOfflineService checklistOfflineService = new ChecklistOfflineService();
             final boolean checklistOfflineAtivoEmpresa =
-                    checklistOfflineService.getChecklistOfflineAtivoEmpresa(loginRequest.getCpf());
+                    checklistOfflineService.getChecklistOfflineAtivoEmpresa(colaborador.getCodEmpresa());
             loginHolder.setChecklistOfflineAtivoEmpresa(checklistOfflineAtivoEmpresa);
 
         } catch (Throwable e) {

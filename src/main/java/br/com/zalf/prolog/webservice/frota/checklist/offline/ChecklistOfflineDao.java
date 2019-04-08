@@ -25,17 +25,16 @@ public interface ChecklistOfflineDao {
     Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable;
 
     /**
-     * Método utilizado para identificar se a empresa do colaborador, representado pelo {@code cpfColaborador cpf},
-     * está liberada para realizar o checklist offline.
+     * Método utilizado para identificar se a empresa está liberada para realizar o checklist offline.
      * Para a empresa que não está apta a realizar checklist offline, a aplicação irá solicitar acesso à rede para que
      * o processo de realização de cehcklist seja executado.
      *
-     * @param cpfColaborador CPF do colaborador que será utilizado para identificar a empresa.
+     * @param codEmpresa Código da empresa que será verificado se tem checklist offline liberado.
      * @return <code>TRUE</code> se a empresa está apta a realizar o checklist offline, <code>FALSE</code>
      * caso contrário.
      * @throws Throwable Caso ocorrer algum erro na busca dos dados.
      */
-    boolean getChecklistOfflineAtivoEmpresa(@NotNull final Long cpfColaborador) throws Throwable;
+    boolean getChecklistOfflineAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * Este método é utilizado internamente para a validação da versão dos dados da Unidade em comparação com a versão

@@ -41,7 +41,7 @@ public class ChecklistOfflineTest extends BaseTest {
 
     @Test
     public void getChecklistOfflineAtivoEmpresaTest() throws ProLogException {
-        final boolean checklistOfflineAtivoEmpresa = service.getChecklistOfflineAtivoEmpresa(CPF_COLABORADOR);
+        final boolean checklistOfflineAtivoEmpresa = service.getChecklistOfflineAtivoEmpresa(3L);
 
         Assert.assertTrue(checklistOfflineAtivoEmpresa);
     }
