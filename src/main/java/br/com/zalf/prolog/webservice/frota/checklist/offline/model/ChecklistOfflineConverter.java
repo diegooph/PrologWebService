@@ -97,9 +97,9 @@ public final class ChecklistOfflineConverter {
     }
 
     @NotNull
-    public static EmpresaChecklistOffline createEmpresaChecklistOffline(
+    public static UnidadeChecklistOffline createEmpresaChecklistOffline(
             @NotNull final ResultSet rSet) throws SQLException {
-        return new EmpresaChecklistOffline(
+        return new UnidadeChecklistOffline(
                 rSet.getLong("COD_EMPRESA"),
                 rSet.getString("NOME_EMPRESA"),
                 rSet.getLong("COD_REGIONAL"),

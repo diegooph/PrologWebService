@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlt
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
-import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -15,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 10/03/19.
@@ -75,7 +75,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
 
     @NotNull
     @Override
-    public Pair<Long, String> getDadosAtuaisUnidade(@NotNull final Long codUnidade) throws Throwable {
+    public Optional<TokenVersaoChecklist> getDadosAtuaisUnidade(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -93,7 +93,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                 // código estará preparado para lidar. Trata-se do caso de a Unidade ter dados cadastrados na tabela
                 // CHECKLIST_OFFLINE_DADOS_UNIDADE porém não ter (ou ter um valor inválido) a informação VERSAO_DADOS.
                 if (versaoDados > 0 && token != null) {
-                    return new Pair<>(versaoDados, token);
+                    return Optional.of(new TokenVersaoChecklist(codUnidade, versaoDados, token));
                 } else {
                     throw new SQLException("A unidade possui configuração inconsistentes.\n" +
                             "CodUnidade: " + codUnidade + "\n" +
@@ -102,7 +102,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                 }
             } else {
                 // Caso unidade não tenha dados.
-                return new Pair<>(null, null);
+                return Optional.empty();
             }
         } finally {
             close(conn, stmt, rSet);
@@ -256,7 +256,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
 
     @NotNull
     @Override
-    public EmpresaChecklistOffline getEmpresaChecklistOffline(@NotNull final Long codUnidade) throws Throwable {
+    public UnidadeChecklistOffline getEmpresaChecklistOffline(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

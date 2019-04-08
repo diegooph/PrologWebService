@@ -2,10 +2,10 @@ package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
-import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 10/03/19.
@@ -40,16 +40,17 @@ public interface ChecklistOfflineDao {
 
     /**
      * Este método é utilizado internamente para a validação da versão dos dados da Unidade em comparação com a versão
-     * dos dados recebidos na requisição.
+     * dos dados recebida na requisição.
      *
      * @param codUnidade Código da Unidade de onde os dados serão buscados.
-     * @return {@link Pair Tupla} contendo na 'chave' a versão dos dados para a unidade e no campo 'valor' o token
-     * utilizado para sincronizar os cheklists.
+     * @return Um {@link Optional optional} que irá conter as informações de versão dos dados da unidade e o token
+     * utilizado para sincronizar os checklists caso a unidade já possua alguma configuração de checklist offline ou
+     * irá estar vazio caso a unidade não possua.
      * @throws Throwable Caso algum erro aconteça na execução da busca dos dados.
-     * @see ChecklistOfflineService#getDadosChecklistOffline(Long, Long, boolean)
+     * @see ChecklistOfflineService#getChecklistOfflineSupport(Long, Long, boolean)
      */
     @NotNull
-    Pair<Long, String> getDadosAtuaisUnidade(@NotNull final Long codUnidade) throws Throwable;
+    Optional<TokenVersaoChecklist> getDadosAtuaisUnidade(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Método utilizado para buscar os {@link ModeloChecklistOffline modelos de checklists} aptos a serem
@@ -58,7 +59,7 @@ public interface ChecklistOfflineDao {
      * @param codUnidade Código da Unidade dos modelos de checklist.
      * @return Uma lista de {@link ModeloChecklistOffline modelos} contendo as informações buscadas.
      * @throws Throwable Se algum erro ocorrer na busca dos modelos.
-     * @see ChecklistOfflineService#getDadosChecklistOffline(Long, Long, boolean)
+     * @see ChecklistOfflineService#getChecklistOfflineSupport(Long, Long, boolean)
      */
     @NotNull
     List<ModeloChecklistOffline> getModelosChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
@@ -89,11 +90,11 @@ public interface ChecklistOfflineDao {
      * Método utilizado para buscar as infomações da empresa a qual o {@code codUnidade} está vinculado.
      *
      * @param codUnidade Código da Unidade pelo qual será buscado os dados da Empresa.
-     * @return Informações da {@link EmpresaChecklistOffline empresa}.
+     * @return Informações da {@link UnidadeChecklistOffline empresa}.
      * @throws Throwable Se algum erro ocorrer na busca das informações da empresa.
      */
     @NotNull
-    EmpresaChecklistOffline getEmpresaChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
+    UnidadeChecklistOffline getEmpresaChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Método para validar a existência do token no banco de dados.

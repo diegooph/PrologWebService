@@ -118,7 +118,7 @@ public class ChecklistOfflineTest extends BaseTest {
         Assert.assertNotNull(checklistOfflineData.getModelosChecklistsDisponiveis());
         Assert.assertNotNull(checklistOfflineData.getColaboradoresChecklistOffline());
         Assert.assertNotNull(checklistOfflineData.getVeiculosChecklistOffline());
-        Assert.assertNotNull(checklistOfflineData.getEmpresaChecklistOffline());
+        Assert.assertNotNull(checklistOfflineData.getUnidadeChecklistOffline());
 
         System.out.println(checklistOfflineData);
 
@@ -148,7 +148,7 @@ public class ChecklistOfflineTest extends BaseTest {
         Assert.assertNotNull(checklistOfflineData.getModelosChecklistsDisponiveis());
         Assert.assertNotNull(checklistOfflineData.getColaboradoresChecklistOffline());
         Assert.assertNotNull(checklistOfflineData.getVeiculosChecklistOffline());
-        Assert.assertNotNull(checklistOfflineData.getEmpresaChecklistOffline());
+        Assert.assertNotNull(checklistOfflineData.getUnidadeChecklistOffline());
 
         System.out.println(checklistOfflineData);
     }

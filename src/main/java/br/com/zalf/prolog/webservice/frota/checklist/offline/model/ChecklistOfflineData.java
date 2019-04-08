@@ -18,8 +18,8 @@ public final class ChecklistOfflineData {
     private final String tokenSincronizacaoDadosUnidade;
 
     /**
-     * Versão que os dados da unidade possuem. A versão é incrementada sempre que alguma configuração que impacta a
-     * realização do checklist offline é alterada.
+     * Versão que os dados da unidade para o checklist. A versão é incrementada sempre que alguma configuração que
+     * impacta a realização do checklist offline é alterada.
      */
     @NotNull
     private final Long versaoDadosUnidadeChecklist;
@@ -37,29 +37,29 @@ public final class ChecklistOfflineData {
     private final List<ColaboradorChecklistOffline> colaboradoresChecklistOffline;
 
     /**
-     * {@link VeiculoChecklistOffline Veículos} disponíveis para realizar checklist offline.
+     * {@link VeiculoChecklistOffline Veículos} disponíveis para realizarem o checklist offline.
      */
     @NotNull
     private final List<VeiculoChecklistOffline> veiculosChecklistOffline;
 
     /**
-     * Informações da Empresa a qual os dados do checklist se referem.
+     * Informações da Unidade a qual os dados do checklist se referem.
      */
     @NotNull
-    private final EmpresaChecklistOffline empresaChecklistOffline;
+    private final UnidadeChecklistOffline unidadeChecklistOffline;
 
     public ChecklistOfflineData(@NotNull final String tokenSincronizacaoDadosUnidade,
                                 @NotNull final Long versaoDadosUnidadeChecklist,
                                 @NotNull final List<ModeloChecklistOffline> modelosChecklistsDisponiveis,
                                 @NotNull final List<ColaboradorChecklistOffline> colaboradoresChecklistOffline,
                                 @NotNull final List<VeiculoChecklistOffline> veiculosChecklistOffline,
-                                @NotNull final EmpresaChecklistOffline empresaChecklistOffline) {
+                                @NotNull final UnidadeChecklistOffline unidadeChecklistOffline) {
         this.tokenSincronizacaoDadosUnidade = tokenSincronizacaoDadosUnidade;
         this.versaoDadosUnidadeChecklist = versaoDadosUnidadeChecklist;
         this.modelosChecklistsDisponiveis = modelosChecklistsDisponiveis;
         this.colaboradoresChecklistOffline = colaboradoresChecklistOffline;
         this.veiculosChecklistOffline = veiculosChecklistOffline;
-        this.empresaChecklistOffline = empresaChecklistOffline;
+        this.unidadeChecklistOffline = unidadeChecklistOffline;
     }
 
     @NotNull
@@ -88,7 +88,7 @@ public final class ChecklistOfflineData {
     }
 
     @NotNull
-    public EmpresaChecklistOffline getEmpresaChecklistOffline() {
-        return empresaChecklistOffline;
+    public UnidadeChecklistOffline getUnidadeChecklistOffline() {
+        return unidadeChecklistOffline;
     }
 }

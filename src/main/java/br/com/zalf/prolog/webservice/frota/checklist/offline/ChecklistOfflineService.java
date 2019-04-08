@@ -6,11 +6,11 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
-import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.NotAuthorizedException;
+import java.util.Optional;
 
 /**
  * Created on 10/03/19.
@@ -28,7 +28,7 @@ public class ChecklistOfflineService {
         try {
             return ResponseWithCod.ok("Checklist inserido com sucesso", dao.insertChecklistOffline(checklist));
         } catch (final Throwable t) {
-            Log.e(TAG,"Não foi possível inserir o checklist online:", t);
+            Log.e(TAG,"Não foi possível inserir o checklist online", t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível inserir o checklist, tente novamente");
@@ -75,13 +75,14 @@ public class ChecklistOfflineService {
                                                               final Long codUnidade,
                                                               final boolean forcarAtualizacao) throws ProLogException {
         try {
-            final Pair<Long, String> dadosAtuaisUnidade = dao.getDadosAtuaisUnidade(codUnidade);
-            final Long versaoDadosBanco = dadosAtuaisUnidade.getKey();
-            final String tokenWs = dadosAtuaisUnidade.getValue();
-            final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport =
-                    getEstadoChecklistOffline(versaoDadosBanco, versaoDadosChecklsitApp);
+            final Optional<TokenVersaoChecklist> optionalDados = dao.getDadosAtuaisUnidade(codUnidade);
+            if (optionalDados.isPresent()) {
+                final Long versaoDadosBanco = optionalDados.get().getVersaoDados();
+                final String tokenBanco = optionalDados.get().getTokenSincronizacao();
 
-            if (versaoDadosBanco != null && tokenWs != null) {
+                final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport =
+                        getEstadoChecklistOffline(versaoDadosBanco, versaoDadosChecklsitApp);
+
                 // Caso a Unidade tenha dados e 'forcarAtualizacao = true' então forçamos a atualização dos dados
                 // retornando a consante ATUALIZACAO_FORCADA.
                 if (forcarAtualizacao
@@ -90,7 +91,7 @@ public class ChecklistOfflineService {
                             codUnidade,
                             estadoChecklistOfflineSupport,
                             new ChecklistOfflineData(
-                                    tokenWs,
+                                    tokenBanco,
                                     versaoDadosBanco,
                                     dao.getModelosChecklistOffline(codUnidade),
                                     dao.getColaboradoresChecklistOffline(codUnidade),
@@ -101,7 +102,7 @@ public class ChecklistOfflineService {
             }
             return new ChecklistOfflineSupportSemDados(
                     codUnidade,
-                    estadoChecklistOfflineSupport,
+                    EstadoChecklistOfflineSupport.SEM_DADOS,
                     forcarAtualizacao);
         } catch (Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar informações para realização de checklist offline: \n" +
@@ -163,26 +164,25 @@ public class ChecklistOfflineService {
     @NotNull
     private DadosChecklistOfflineUnidade getDadosChecklistOffline(@NotNull final Long versaoDadosChecklsitApp,
                                                                   @NotNull final Long codUnidade) throws Throwable {
-        final Pair<Long, String> dadosAtuaisUnidade = dao.getDadosAtuaisUnidade(codUnidade);
-        final Long versaoDadosBanco = dadosAtuaisUnidade.getKey();
-        final String tokenBanco = dadosAtuaisUnidade.getValue();
-        if (versaoDadosBanco != null && tokenBanco != null) {
+        final Optional<TokenVersaoChecklist> optionalDados = dao.getDadosAtuaisUnidade(codUnidade);
+        if (optionalDados.isPresent()) {
+            final Long versaoDadosBanco = optionalDados.get().getVersaoDados();
+            final String tokenBanco = optionalDados.get().getTokenSincronizacao();
             // Se a versão dos dados recebida na requisição é igual a versão no banco, então retornamos a
             // constante ATUALIZADO.
             if (versaoDadosChecklsitApp.equals(versaoDadosBanco)) {
                 return new DadosChecklistOfflineUnidade(
                         codUnidade,
                         versaoDadosBanco,
-                        dadosAtuaisUnidade.getValue(),
+                        tokenBanco,
                         EstadoChecklistOfflineSupport.ATUALIZADO);
             }
 
             return new DadosChecklistOfflineUnidade(
                     codUnidade,
                     versaoDadosBanco,
-                    dadosAtuaisUnidade.getValue(),
+                    tokenBanco,
                     EstadoChecklistOfflineSupport.DESATUALIZADO);
-
         } else {
             // Se não tem versão no BD, então a Unidade não tem dados.
             return new DadosChecklistOfflineUnidade(codUnidade, EstadoChecklistOfflineSupport.SEM_DADOS);

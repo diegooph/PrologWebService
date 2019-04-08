@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class EmpresaChecklistOffline {
+public final class UnidadeChecklistOffline {
     /**
      * Código único de identificação da Empresa.
      */
@@ -44,7 +44,7 @@ public final class EmpresaChecklistOffline {
     @NotNull
     private final String nomeUnidade;
 
-    public EmpresaChecklistOffline(@NotNull final Long codEmpresa,
+    public UnidadeChecklistOffline(@NotNull final Long codEmpresa,
                                    @NotNull final String nomeEmpresa,
                                    @NotNull final Long codRegional,
                                    @NotNull final String nomeRegional,
