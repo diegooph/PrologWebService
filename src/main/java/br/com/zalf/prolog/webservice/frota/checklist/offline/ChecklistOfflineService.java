@@ -83,8 +83,8 @@ public class ChecklistOfflineService {
                 final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport =
                         getEstadoChecklistOffline(versaoDadosBanco, versaoDadosChecklsitApp);
 
-                // Caso a Unidade tenha dados e 'forcarAtualizacao = true' então forçamos a atualização dos dados
-                // retornando a consante ATUALIZACAO_FORCADA.
+                // Caso a Unidade tenha dados e 'forcarAtualizacao = true' os dados serão retornados independente do
+                // estado atual deles, mesmo sendo atualizado.
                 if (forcarAtualizacao
                         || estadoChecklistOfflineSupport.equals(EstadoChecklistOfflineSupport.DESATUALIZADO)) {
                     return new ChecklistOfflineSupportComDados(

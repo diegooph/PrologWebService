@@ -21,7 +21,7 @@ public abstract class ChecklistOfflineSupport {
     @NotNull
     private final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport;
 
-    private final boolean foiAtualizacaoForacada;
+    private final boolean foiAtualizacaoForcada;
 
     @NotNull
     @Exclude
@@ -30,11 +30,11 @@ public abstract class ChecklistOfflineSupport {
     public ChecklistOfflineSupport(@NotNull final String tipo,
                                    @NotNull final Long codUnidade,
                                    @NotNull final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport,
-                                   final boolean foiAtualizacaoForacada) {
+                                   final boolean foiAtualizacaoForcada) {
         this.codUnidade = codUnidade;
         this.estadoChecklistOfflineSupport = estadoChecklistOfflineSupport;
         this.tipo = tipo;
-        this.foiAtualizacaoForacada = foiAtualizacaoForacada;
+        this.foiAtualizacaoForcada = foiAtualizacaoForcada;
     }
 
     @NotNull
@@ -55,8 +55,8 @@ public abstract class ChecklistOfflineSupport {
         return estadoChecklistOfflineSupport;
     }
 
-    public boolean isFoiAtualizacaoForacada() {
-        return foiAtualizacaoForacada;
+    public boolean isFoiAtualizacaoForcada() {
+        return foiAtualizacaoForcada;
     }
 
     @NotNull
