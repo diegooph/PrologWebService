@@ -79,22 +79,22 @@ public interface ChecklistOfflineDao {
      * Método utilizado para buscar as {@link VeiculoChecklistOffline placas} que estão associadas a qualquer modelo
      * de checklist ativo e com permissões associadas, da Unidade.
      *
-     * @param codUnidade Código da Unidade de onde as {@link VeiculoChecklistOffline placas} serão buscados.
+     * @param codUnidade Código da Unidade de onde as {@link VeiculoChecklistOffline placas} serão buscadas.
      * @return Uma lista de {@link VeiculoChecklistOffline placas} contendo as informações buscadas.
-     * @throws Throwable Se algum erro acontecer na busca das placas
+     * @throws Throwable Se algum erro acontecer na busca das placas.
      */
     @NotNull
     List<VeiculoChecklistOffline> getVeiculosChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
 
     /**
-     * Método utilizado para buscar as infomações da empresa a qual o {@code codUnidade} está vinculado.
+     * Método utilizado para buscar as infomações da unidade da qual o {@code codUnidade} pertence.
      *
-     * @param codUnidade Código da Unidade pelo qual será buscado os dados da Empresa.
-     * @return Informações da {@link UnidadeChecklistOffline empresa}.
-     * @throws Throwable Se algum erro ocorrer na busca das informações da empresa.
+     * @param codUnidade Código da unidade para a qual serão buscados os dados.
+     * @return Informações da {@link UnidadeChecklistOffline unidade}.
+     * @throws Throwable Se algum erro ocorrer na busca das informações da unidade.
      */
     @NotNull
-    UnidadeChecklistOffline getEmpresaChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
+    UnidadeChecklistOffline getUnidadeChecklistOffline(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Método para validar a existência do token no banco de dados.

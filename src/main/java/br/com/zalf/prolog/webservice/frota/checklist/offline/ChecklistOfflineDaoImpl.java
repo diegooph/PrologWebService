@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static br.com.zalf.prolog.webservice.frota.checklist.offline.model.ChecklistOfflineConverter.*;
+
 /**
  * Created on 10/03/19.
  *
@@ -131,10 +133,10 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                 if (perguntas.isEmpty() && alternativas.isEmpty()) {
                     // Estamos na primeira linha.
                     // Precisamos inicializar o modelo com as primeiras informações do resultSet.
-                    alternativas.add(ChecklistOfflineConverter.createAlternativaModeloChecklistOffline(rSet));
-                    pergunta = ChecklistOfflineConverter.createPerguntaModeloChecklistOffline(rSet, alternativas);
+                    alternativas.add(createAlternativaModeloChecklistOffline(rSet));
+                    pergunta = createPerguntaModeloChecklistOffline(rSet, alternativas);
                     perguntas.add(pergunta);
-                    modelo = ChecklistOfflineConverter.createModeloChecklistOffline(
+                    modelo = createModeloChecklistOffline(
                             rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST"),
                             rSet.getLong("COD_MODELO_CHECKLIST"),
                             rSet.getString("NOME_MODELO_CHECKLIST"),
@@ -152,14 +154,13 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
 
                             // Precisamos criar as informações do novo modelo e o modelo em si.
                             alternativas = new ArrayList<>();
-                            alternativas.add(ChecklistOfflineConverter.createAlternativaModeloChecklistOffline(rSet));
+                            alternativas.add(createAlternativaModeloChecklistOffline(rSet));
                             perguntas = new ArrayList<>();
-                            pergunta = ChecklistOfflineConverter
-                                    .createPerguntaModeloChecklistOffline(rSet, alternativas);
+                            pergunta = createPerguntaModeloChecklistOffline(rSet, alternativas);
                             perguntas.add(pergunta);
                             cargos = new ArrayList<>();
                             tiposVeiculos = new ArrayList<>();
-                            modelo = ChecklistOfflineConverter.createModeloChecklistOffline(
+                            modelo = createModeloChecklistOffline(
                                     rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST"),
                                     rSet.getLong("COD_MODELO_CHECKLIST"),
                                     rSet.getString("NOME_MODELO_CHECKLIST"),
@@ -171,16 +172,13 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                                     && pergunta.getCodigo().equals(rSet.getLong("COD_PERGUNTA"))) {
                                 // Mesma pergunta.
                                 // Precisamos processar apenas a nova alternativa.
-                                alternativas.add(
-                                        ChecklistOfflineConverter.createAlternativaModeloChecklistOffline(rSet));
+                                alternativas.add(createAlternativaModeloChecklistOffline(rSet));
                             } else {
                                 // Trocou de pergunta.
                                 // Precisamos criar a nova pergunta e adicionar a ela a nova alternativa;
                                 alternativas = new ArrayList<>();
-                                alternativas.add(
-                                        ChecklistOfflineConverter.createAlternativaModeloChecklistOffline(rSet));
-                                pergunta = ChecklistOfflineConverter
-                                        .createPerguntaModeloChecklistOffline(rSet, alternativas);
+                                alternativas.add(createAlternativaModeloChecklistOffline(rSet));
+                                pergunta = createPerguntaModeloChecklistOffline(rSet, alternativas);
                                 perguntas.add(pergunta);
                             }
                         }
@@ -190,13 +188,13 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                                 && modelo.getCodModelo().equals(rSet.getLong("COD_MODELO_CHECKLIST"))
                                 && rSet.getLong("COD_CARGO") > 0) {
                             // Adicionamos os cargos do modelo de checklist.
-                            cargos.add(ChecklistOfflineConverter.createCargoChecklistOffline(rSet));
+                            cargos.add(createCargoChecklistOffline(rSet));
                         }
                         if (modelo != null
                                 && modelo.getCodModelo().equals(rSet.getLong("COD_MODELO_CHECKLIST"))
                                 && rSet.getLong("COD_TIPO_VEICULO") > 0) {
                             // Adicionamos os tipos de veículo do modelo de checklist.
-                            tiposVeiculos.add(ChecklistOfflineConverter.createTipoVeiculoChecklistOffline(rSet));
+                            tiposVeiculos.add(createTipoVeiculoChecklistOffline(rSet));
                         }
                     }
             }
@@ -239,36 +237,36 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<VeiculoChecklistOffline> veiculos = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OFFLINE_GET_PLACAS_DISPONIVEIS(?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
+            final List<VeiculoChecklistOffline> veiculos = new ArrayList<>();
             while (rSet.next()) {
-                veiculos.add(ChecklistOfflineConverter.createVeiculoChecklistOffline(rSet));
+                veiculos.add(createVeiculoChecklistOffline(rSet));
             }
+            return veiculos;
         } finally {
             close(conn, stmt, rSet);
         }
-        return veiculos;
     }
 
     @NotNull
     @Override
-    public UnidadeChecklistOffline getEmpresaChecklistOffline(@NotNull final Long codUnidade) throws Throwable {
+    public UnidadeChecklistOffline getUnidadeChecklistOffline(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OFFLINE_GET_INFORMACOES_EMPRESA(?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OFFLINE_GET_INFORMACOES_UNIDADE(?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return ChecklistOfflineConverter.createEmpresaChecklistOffline(rSet);
+                return createEmpresaChecklistOffline(rSet);
             } else {
-                throw new SQLException("Erro ao buscar inforações da empresa para a unidade: " + codUnidade);
+                throw new SQLException("Erro ao buscar informações da unidade: " + codUnidade);
             }
         } finally {
             close(conn, stmt, rSet);

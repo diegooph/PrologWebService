@@ -96,7 +96,7 @@ public class ChecklistOfflineService {
                                     dao.getModelosChecklistOffline(codUnidade),
                                     dao.getColaboradoresChecklistOffline(codUnidade),
                                     dao.getVeiculosChecklistOffline(codUnidade),
-                                    dao.getEmpresaChecklistOffline(codUnidade)),
+                                    dao.getUnidadeChecklistOffline(codUnidade)),
                             forcarAtualizacao);
                 }
             }
