@@ -55,19 +55,21 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     "  PLACA_VEICULO, " +
                     "  TIPO, " +
                     "  KM_VEICULO, " +
-                    "  TEMPO_REALIZACAO) " +
-                    "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "  TEMPO_REALIZACAO," +
+                    "  FOI_OFFLINE) " +
+                    "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                     "RETURNING CODIGO, COD_UNIDADE;");
             stmt.setString(1, checklist.getPlacaVeiculo());
             stmt.setLong(2, checklist.getCodModelo());
             stmt.setObject(3, checklist.getData().atOffset(ZoneOffset.UTC));
-            stmt.setObject(4, FonteDataHora.SERVIDOR.asString());
+            stmt.setString(4, FonteDataHora.SERVIDOR.asString());
             stmt.setObject(5, checklist.getData().atOffset(ZoneOffset.UTC));
             stmt.setLong(6, checklist.getColaborador().getCpf());
             stmt.setString(7, checklist.getPlacaVeiculo());
             stmt.setString(8, String.valueOf(checklist.getTipo()));
             stmt.setLong(9, checklist.getKmAtualVeiculo());
             stmt.setLong(10, checklist.getTempoRealizacaoCheckInMillis());
+            stmt.setBoolean(11, false);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 checklist.setCodigo(rSet.getLong("CODIGO"));
