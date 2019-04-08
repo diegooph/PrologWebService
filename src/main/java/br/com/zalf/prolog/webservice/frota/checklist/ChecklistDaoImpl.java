@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
@@ -48,21 +49,25 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     "  COD_UNIDADE, " +
                     "  COD_CHECKLIST_MODELO, " +
                     "  DATA_HORA, " +
+                    "  FONTE_DATA_HORA_REALIZACAO, " +
+                    "  DATA_HORA_SINCRONIZACAO, " +
                     "  CPF_COLABORADOR, " +
                     "  PLACA_VEICULO, " +
                     "  TIPO, " +
                     "  KM_VEICULO, " +
                     "  TEMPO_REALIZACAO) " +
-                    "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?), ?, ?, ?, ?, ?, ?, ?) " +
+                    "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                     "RETURNING CODIGO, COD_UNIDADE;");
             stmt.setString(1, checklist.getPlacaVeiculo());
             stmt.setLong(2, checklist.getCodModelo());
             stmt.setObject(3, checklist.getData().atOffset(ZoneOffset.UTC));
-            stmt.setLong(4, checklist.getColaborador().getCpf());
-            stmt.setString(5, checklist.getPlacaVeiculo());
-            stmt.setString(6, String.valueOf(checklist.getTipo()));
-            stmt.setLong(7, checklist.getKmAtualVeiculo());
-            stmt.setLong(8, checklist.getTempoRealizacaoCheckInMillis());
+            stmt.setObject(4, FonteDataHora.SERVIDOR.asString());
+            stmt.setObject(5, checklist.getData().atOffset(ZoneOffset.UTC));
+            stmt.setLong(6, checklist.getColaborador().getCpf());
+            stmt.setString(7, checklist.getPlacaVeiculo());
+            stmt.setString(8, String.valueOf(checklist.getTipo()));
+            stmt.setLong(9, checklist.getKmAtualVeiculo());
+            stmt.setLong(10, checklist.getTempoRealizacaoCheckInMillis());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 checklist.setCodigo(rSet.getLong("CODIGO"));
