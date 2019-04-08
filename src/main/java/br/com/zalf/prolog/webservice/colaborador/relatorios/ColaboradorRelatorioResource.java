@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @Path("/colaboradores/relatorios")
-@Secured(permissions = Pilares.Gente.Relatorios.LISTAGEM_COLABORADORES)
+@Secured(permissions = Pilares.Gente.Relatorios.COLABORADOR)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
@@ -35,19 +35,17 @@ public class ColaboradorRelatorioResource {
     @GET
     @Path("/listagem-colaboradores-by-unidade/csv")
     @Produces("application/csv")
-    public StreamingOutput getCronogramaAfericoesPlacasCsv(
-            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
-            @HeaderParam("Authorization") @Required final String userToken) {
+    public StreamingOutput getListagemColaboradoresByUnidadeCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
         return outputStream -> new ColaboradorRelatorioService()
-                .getListagemColaboradoresByUnidadeCsv(outputStream, codUnidades, userToken);
+                .getListagemColaboradoresByUnidadeCsv(outputStream, codUnidades);
     }
 
     @GET
     @Path("/listagem-colaboradores-by-unidade/report")
-    public Report getCronogramaAfericoesPlacasReport(
-            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
-            @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
+    public Report getListagemColaboradoresByUnidadeReport(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) throws ProLogException {
         return new ColaboradorRelatorioService()
-                .getListagemColaboradoresByUnidadeReport(codUnidades, userToken);
+                .getListagemColaboradoresByUnidadeReport(codUnidades);
     }
 }

@@ -20,24 +20,21 @@ public class ColaboradorRelatorioService {
     private ColaboradorRelatorioDao dao = Injection.provideColaboradorRelatorioDao();
 
     public void getListagemColaboradoresByUnidadeCsv(@NotNull final OutputStream out,
-                                                     @NotNull final List<Long> codUnidades,
-                                                     @NotNull final String userToken) {
+                                                     @NotNull final List<Long> codUnidades) {
         try {
             dao.getListagemColaboradoresByUnidadeCsv(
                     out,
-                    codUnidades,
-                    userToken);
+                    codUnidades);
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao gerar relatório do cronograma de aferições (CSV)", throwable);
+            Log.e(TAG, "Erro ao gerar relatório de listagem de colaboradores (CSV)", throwable);
             throw new RuntimeException(throwable);
         }
     }
 
-    public Report getListagemColaboradoresByUnidadeReport(@NotNull final List<Long> codUnidades,
-                                                          @NotNull final String userToken) throws ProLogException {
+    public Report getListagemColaboradoresByUnidadeReport(@NotNull final List<Long> codUnidades) throws ProLogException {
         try {
             return dao.getListagemColaboradoresByUnidadeReport(
-                    codUnidades, userToken);
+                    codUnidades);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de listagem de colaoradores (REPORT)", throwable);
             throw Injection
