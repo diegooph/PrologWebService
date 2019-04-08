@@ -35,7 +35,7 @@ public final class DadosChecklistOfflineUnidade {
      * Esses estados podem ser:
      * <p>
      * * {@link EstadoChecklistOfflineSupport#ATUALIZADO}
-     * * {@link EstadoChecklistOfflineSupport#ATUALIZACAO_FORCADA}
+     * * {@link EstadoChecklistOfflineSupport#SEM_DADOS}
      * * {@link EstadoChecklistOfflineSupport#DESATUALIZADO}
      */
     @NotNull

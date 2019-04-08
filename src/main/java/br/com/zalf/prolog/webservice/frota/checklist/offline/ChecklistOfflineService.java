@@ -43,17 +43,6 @@ public class ChecklistOfflineService {
             // Precisamos verificar o token para ter certeza se o usuário é apto a utilizar os métodos.
             ensureValidToken(tokenSincronizacao);
 
-            if (checklist == null || checklist.getCodUnidade() == null) {
-                throw new IllegalStateException("Informações nulas providas para o checklist");
-            }
-            final DadosChecklistOfflineUnidade dadosChecklistOffline =
-                    getDadosChecklistOffline(versaoDadosChecklsitApp, checklist.getCodUnidade());
-
-            if (dadosChecklistOffline.getTokenSincronizacaoChecklist() == null
-                    || !dadosChecklistOffline.getTokenSincronizacaoChecklist().equals(tokenSincronizacao)) {
-                throw new IllegalArgumentException(
-                        "Token inválido para sincronização de checklist: " + tokenSincronizacao);
-            }
             return ResponseWithCod.ok(
                     "Checklist inserido com sucesso",
                     dao.insertChecklistOffline(checklist));

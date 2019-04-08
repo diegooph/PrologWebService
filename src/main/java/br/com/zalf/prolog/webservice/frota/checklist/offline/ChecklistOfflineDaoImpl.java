@@ -34,14 +34,14 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             conn.setAutoCommit(false);
             // Caso o checklist contenha informações que caracterizem uma duplicata nós não iremos inserir,
             // apenas retornamos o código do checklist que já está no banco de dados.
-            final Long codChecklistExistente = getCodChecklistIfExists(conn, checklist);
-            if (codChecklistExistente <= 0) {
+            final Optional<Long> optionalCodChecklist = getCodChecklistIfExists(conn, checklist);
+            if (optionalCodChecklist.isPresent()) {
+                conn.commit();
+                return optionalCodChecklist.get();
+            } else {
                 final Long codChecklistInserido = internalInsertChecklist(conn, checklist);
                 conn.commit();
                 return codChecklistInserido;
-            } else {
-                conn.commit();
-                return codChecklistExistente;
             }
         } catch (final Throwable t) {
             if (conn != null) {
@@ -296,14 +296,13 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
     }
 
     @NotNull
-    private Long getCodChecklistIfExists(@NotNull final Connection conn,
-                                         @NotNull final ChecklistInsercao checklist) throws Throwable {
+    private Optional<Long> getCodChecklistIfExists(@NotNull final Connection conn,
+                                                   @NotNull final ChecklistInsercao checklist) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_GET_COD_CHECKLIST_DUPLICADO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
-                    "AS CODIGO;");
+                    "FROM FUNC_CHECKLIST_GET_COD_CHECKLIST_DUPLICADO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
             stmt.setObject(3, checklist.getDataHoraRealizacao());
@@ -318,9 +317,13 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             stmt.setLong(12, checklist.getDeviceUptimeRealizacaoMillis());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getLong("CODIGO");
+                if (rSet.getBoolean("CHECKLIST_JA_EXISTE")) {
+                    return Optional.of(rSet.getLong("CODIGO"));
+                } else {
+                    return Optional.empty();
+                }
             } else {
-                throw new SQLException("Não foi possível buscar checklist já existente");
+                throw new SQLException("Não foi possível verificar se checklist já existe");
             }
         } finally {
             close(stmt, rSet);

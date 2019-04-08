@@ -17,8 +17,7 @@ public interface ChecklistOfflineDao {
     /**
      * Método utilizado para realizar a inserção das informações de um {@link ChecklistInsercao checklist} realizado.
      *
-     * @param checklist Objeto {@link ChecklistInsercao checklist} contendo as informações que
-     *                  deverão ser salvas.
+     * @param checklist Objeto {@link ChecklistInsercao checklist} contendo as informações que deverão ser salvas.
      * @return O código do checklist salvo no banco de dados.
      * @throws Throwable Caso algum erro ocorra ao salvar o checklist.
      */
