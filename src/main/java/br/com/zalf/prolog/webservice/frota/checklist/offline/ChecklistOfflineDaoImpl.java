@@ -320,7 +320,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 if (rSet.getBoolean("CHECKLIST_JA_EXISTE")) {
-                    return Optional.of(rSet.getLong("CODIGO"));
+                    return Optional.of(rSet.getLong("COD_CHECKLIST"));
                 } else {
                     return Optional.empty();
                 }
