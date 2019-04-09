@@ -75,12 +75,18 @@ public class ChecklistOfflineService {
                                     dao.getVeiculosChecklistOffline(codUnidade),
                                     dao.getUnidadeChecklistOffline(codUnidade)),
                             forcarAtualizacao);
+                } else {
+                    return new ChecklistOfflineSupportSemDados(
+                            codUnidade,
+                            EstadoChecklistOfflineSupport.ATUALIZADO,
+                            false);
                 }
+            } else {
+                return new ChecklistOfflineSupportSemDados(
+                        codUnidade,
+                        EstadoChecklistOfflineSupport.SEM_DADOS,
+                        forcarAtualizacao);
             }
-            return new ChecklistOfflineSupportSemDados(
-                    codUnidade,
-                    EstadoChecklistOfflineSupport.SEM_DADOS,
-                    forcarAtualizacao);
         } catch (Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar informações para realização de checklist offline: \n" +
                     "CodUnidade: %d\n" +
@@ -125,11 +131,8 @@ public class ChecklistOfflineService {
     }
 
     @NotNull
-    private EstadoChecklistOfflineSupport getEstadoChecklistOffline(@Nullable final Long versaoDadosBanco,
+    private EstadoChecklistOfflineSupport getEstadoChecklistOffline(@NotNull final Long versaoDadosBanco,
                                                                     @Nullable final Long versaoDadosChecklsitApp) {
-        if (versaoDadosBanco == null) {
-            return EstadoChecklistOfflineSupport.SEM_DADOS;
-        }
         if (versaoDadosChecklsitApp == null) {
             return EstadoChecklistOfflineSupport.DESATUALIZADO;
         }
