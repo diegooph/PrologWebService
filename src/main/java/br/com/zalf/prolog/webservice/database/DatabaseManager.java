@@ -35,7 +35,7 @@ public final class DatabaseManager {
 
     // Informações de acesso ao BD de testes
 //    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_ajuste_marcacao_4";
-    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_fevereiro_4_new";
+    private static final String TESTE_URL = "jdbc:postgresql://0.tcp.ngrok.io:15544/prolog_integracao_transport";
 //    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/bd_local";
     private static final String TESTE_USUARIO = "postgres";
     private static final String TESTE_SENHA = "postgres";
