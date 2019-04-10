@@ -40,6 +40,42 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
+    public void getStatusAtualPneusCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getStatusAtualPneusStmt(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(outputStream)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getStatusAtualPneusReport(@NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getStatusAtualPneusStmt(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     public void getKmRodadoPorPneuPorVidaCsv(@NotNull final OutputStream outputStream,
                                              @NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
@@ -55,7 +91,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     .build()
                     .write();
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -71,7 +107,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -93,7 +129,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     .build()
                     .write();
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -111,7 +147,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -132,7 +168,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 valores.add(rSet.getDouble("ALTURA_SULCO_CENTRAL"));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         if (valores.isEmpty()) {
             return new ArrayList<>();
@@ -155,7 +191,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -172,7 +208,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -190,7 +226,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -207,7 +243,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -225,7 +261,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -242,7 +278,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -259,7 +295,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -277,7 +313,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -293,7 +329,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -308,7 +344,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -325,7 +361,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -341,7 +377,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -420,7 +456,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 }
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return aderencias;
     }
@@ -461,7 +497,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 }
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
 
         int totalValores = valores.size() + naoAferidos;
@@ -496,7 +532,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                         rSet.getInt("COUNT"));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return statusPneus;
     }
@@ -560,7 +596,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                         rSet.getInt("COUNT"));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return servicosAbertos;
     }
@@ -584,7 +620,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 throw new SQLException("Erro ao buscar o status das placas");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -611,7 +647,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                         rSet.getInt("MD_TEMPO_CONSERTO_HORAS"));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return resultados;
     }
@@ -635,7 +671,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             }
             return resultados;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -670,7 +706,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                         rSet.getInt("QT_PNEUS_ABAIXO_LIMITE"));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return resultados;
     }
@@ -695,7 +731,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                         rSet.getDouble("PRESSAO_ATUAL")));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return valores;
     }
@@ -723,7 +759,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 return rSet.getInt("TOTAL");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return total;
     }
@@ -757,7 +793,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                         rSet.getInt("QUANTIDADE"));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return motivosDescarte;
     }
@@ -786,7 +822,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             }
             return qtdDiasAfericoesVencidas;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -862,6 +898,15 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    private PreparedStatement getStatusAtualPneusStmt(@NotNull final Connection conn,
+                                                      @NotNull final List<Long> codUnidades) throws Throwable {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_PNEU_RELATORIO_STATUS_ATUAL_PNEUS(?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        return stmt;
     }
 
     @NotNull

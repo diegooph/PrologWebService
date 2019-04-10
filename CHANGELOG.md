@@ -4,9 +4,31 @@ Change Log
 ### Stage
 * Cria integração de ordens de serviço do checklist com o sistema Transport da Translecchi
 
-<a name="v0.0.86"></a>
-## Version [v0.0.86](https://github.com/luizfp/PrologWebService/compare/v0.0.85...v0.0.86) (release-date) [unreleased]
+<a name="v0.0.88"></a>
+## Version [v0.0.88](https://github.com/luizfp/PrologWebService/compare/v0.0.87...v0.0.88) (release-date) [unreleased]
 
+### Features
+* Cria novos métodos para relatório de listagem de colaboradores (PL-1892)
+
+<a name="v0.0.87"></a>
+## Version [v0.0.87](https://github.com/luizfp/PrologWebService/compare/v0.0.86...v0.0.87) (2019-03-28)
+
+### Features
+* Cria novo package e estrutra de DAO para os métodos dos tipos de veículos (PL-1718)
+* Cria testes para validar métodos dos tipos de veículos (PL-1719)
+* Cria relatório para buscar o status atual dos pneus (PL-1855)
+
+### Refactors
+* Altera insert/update do tipo de veículo para passar a vincular o diagrama (PL-1830)
+
+### Bug Fixes
+* Corrige conversão do TipoMarcacao para geração do relatório de jornad
+
+<a name="v0.0.86"></a>
+## Version [v0.0.86](https://github.com/luizfp/PrologWebService/compare/v0.0.85...v0.0.86) (2019-03-24)
+
+### Features
+* Cria novos métodos de busca para a listagem de cargos (PL-1656)
 
 <a name="v0.0.85"></a>
 ## Version [v0.0.85](https://github.com/luizfp/PrologWebService/compare/v0.0.84...v0.0.85) (2019-03-15)

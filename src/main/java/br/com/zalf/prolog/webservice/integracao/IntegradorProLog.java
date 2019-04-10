@@ -23,6 +23,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.google.common.annotations.VisibleForTesting;
@@ -42,6 +43,7 @@ import java.util.Optional;
  */
 public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
     private VeiculoDao veiculoDao;
+    private TipoVeiculoDao tipoVeiculoDao;
     private ChecklistDao checklistDao;
     private ChecklistModeloDao checklistModeloDao;
     private OrdemServicoDao ordemServicoDao;
@@ -53,6 +55,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     private IntegradorProLog(@NotNull final String userToken,
                              VeiculoDao veiculoDao,
+                             TipoVeiculoDao tipoVeiculoDao,
                              ChecklistDao checklistDao,
                              ChecklistModeloDao checklistModeloDao,
                              OrdemServicoDao ordemServicoDao,
@@ -61,6 +64,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                              IntegracaoDao integracaoDao) {
         this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.veiculoDao = veiculoDao;
+        this.tipoVeiculoDao = tipoVeiculoDao;
         this.checklistDao = checklistDao;
         this.checklistModeloDao = checklistModeloDao;
         this.ordemServicoDao = ordemServicoDao;
@@ -74,6 +78,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return new IntegradorProLog(
                 userToken,
                 Injection.provideVeiculoDao(),
+                Injection.provideTipoVeiculoDao(),
                 Injection.provideChecklistDao(),
                 Injection.provideChecklistModeloDao(),
                 Injection.provideOrdemServicoDao(),
@@ -168,8 +173,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
-        return veiculoDao.getTipoVeiculosByUnidade(codUnidade);
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
+        return tipoVeiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
     }
 
     @NotNull
@@ -327,6 +332,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     public static final class Builder {
         private VeiculoDao veiculoDao;
+        private TipoVeiculoDao tipoVeiculoDao;
         private ChecklistDao checklistDao;
         private ChecklistModeloDao checklistModeloDao;
         private OrdemServicoDao ordemServicoDao;
@@ -341,6 +347,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
         public Builder withVeiculoDao(VeiculoDao veiculoDao) {
             this.veiculoDao = veiculoDao;
+            return this;
+        }
+
+        public Builder withTipoVeiculoDao(TipoVeiculoDao tipoVeiculoDao) {
+            this.tipoVeiculoDao = tipoVeiculoDao;
             return this;
         }
 
@@ -378,6 +389,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return new IntegradorProLog(
                     userToken,
                     veiculoDao,
+                    tipoVeiculoDao,
                     checklistDao,
                     checklistModeloDao,
                     ordemServicoDao,

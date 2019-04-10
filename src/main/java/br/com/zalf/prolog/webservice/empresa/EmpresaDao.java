@@ -5,8 +5,8 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.NoContentException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -105,15 +105,6 @@ public interface EmpresaDao {
      */
     List<Setor> getSetorByCodUnidade(Long codUnidade) throws SQLException;
 
-    /**
-     * Lista as funções de uma unidade.
-     *
-     * @param codUnidade código de uma unidade
-     * @return lista de funções da unidade
-     * @throws SQLException caso ocorrer erro no banco
-     */
-    List<Cargo> getCargosByCodUnidade(Long codUnidade) throws SQLException;
-
     Cargo getCargo(Long codEmpresa, Long codCargo) throws SQLException;
 
     /**
@@ -171,4 +162,7 @@ public interface EmpresaDao {
 
     // TODO: Não deveria estar aqui. Deveria estar em um Converter.
     List<Pilar> createPilares(ResultSet rSet) throws SQLException;
+
+    @NotNull
+    Long getCodEmpresaByCodUnidade(@NotNull final Long codUnidade) throws Throwable;
 }

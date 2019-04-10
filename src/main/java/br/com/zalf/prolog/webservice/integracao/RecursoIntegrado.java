@@ -14,7 +14,8 @@ public enum RecursoIntegrado {
     CHECKLIST_MODELO("CHECKLIST_MODELO"),
     CHECKLIST_ORDEM_SERVICO("CHECKLIST_ORDEM_SERVICO"),
     VEICULOS("VEICULOS"),
-    AFERICAO("AFERICAO");
+    AFERICAO("AFERICAO"),
+    TIPO_VEICULO("TIPO_VEICULO");
 
     @NotNull
     private final String key;
