@@ -68,8 +68,8 @@ public class ChecklistOfflineTest extends BaseTest {
 
         assertNotNull(checklistOfflineSupport);
         assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportSemDados);
-        assertNotNull(checklistOfflineSupport.getCodUnidade());
-        assertEquals(5L, (long) checklistOfflineSupport.getCodUnidade());
+        assertNotNull(checklistOfflineSupport.getCodUnidadeDados());
+        assertEquals(5L, (long) checklistOfflineSupport.getCodUnidadeDados());
         assertNotNull(checklistOfflineSupport.getEstadoChecklistOfflineSupport());
         assertEquals(
                 EstadoChecklistOfflineSupport.ATUALIZADO,
@@ -83,8 +83,8 @@ public class ChecklistOfflineTest extends BaseTest {
 
         assertNotNull(checklistOfflineSupport);
         assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportSemDados);
-        assertNotNull(checklistOfflineSupport.getCodUnidade());
-        assertEquals(6L, (long) checklistOfflineSupport.getCodUnidade());
+        assertNotNull(checklistOfflineSupport.getCodUnidadeDados());
+        assertEquals(6L, (long) checklistOfflineSupport.getCodUnidadeDados());
         assertNotNull(checklistOfflineSupport.getEstadoChecklistOfflineSupport());
         assertEquals(
                 EstadoChecklistOfflineSupport.SEM_DADOS,
@@ -98,8 +98,8 @@ public class ChecklistOfflineTest extends BaseTest {
 
         assertNotNull(checklistOfflineSupport);
         assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportComDados);
-        assertNotNull(checklistOfflineSupport.getCodUnidade());
-        assertEquals(5L, (long) checklistOfflineSupport.getCodUnidade());
+        assertNotNull(checklistOfflineSupport.getCodUnidadeDados());
+        assertEquals(5L, (long) checklistOfflineSupport.getCodUnidadeDados());
         assertNotNull(checklistOfflineSupport.getEstadoChecklistOfflineSupport());
         assertEquals(
                 EstadoChecklistOfflineSupport.DESATUALIZADO,
@@ -128,8 +128,8 @@ public class ChecklistOfflineTest extends BaseTest {
 
         assertNotNull(checklistOfflineSupport);
         assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportComDados);
-        assertNotNull(checklistOfflineSupport.getCodUnidade());
-        assertEquals(5L, (long) checklistOfflineSupport.getCodUnidade());
+        assertNotNull(checklistOfflineSupport.getCodUnidadeDados());
+        assertEquals(5L, (long) checklistOfflineSupport.getCodUnidadeDados());
         assertNotNull(checklistOfflineSupport.getEstadoChecklistOfflineSupport());
         assertEquals(
                 EstadoChecklistOfflineSupport.ATUALIZADO,

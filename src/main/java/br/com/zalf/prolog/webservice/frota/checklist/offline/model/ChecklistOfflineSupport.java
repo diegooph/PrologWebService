@@ -15,12 +15,26 @@ public abstract class ChecklistOfflineSupport {
     @NotNull
     public static final String HEADER_TOKEN_CHECKLIST = "ProLog-Token-Checklist-Offline";
 
+''    /**
+     * Código da Unidade a qual os dados presentes neste objeto pertencem.
+     */
     @NotNull
-    private final Long codUnidade;
+    private final Long codUnidadeDados;
 
+    /**
+     * Objeto que contém as informações do checklist offline de acordo com os estados dos dados.
+     * Esses estados podem ser:
+     * <p>
+     * * {@link EstadoChecklistOfflineSupport#ATUALIZADO}
+     * * {@link EstadoChecklistOfflineSupport#DESATUALIZADO}
+     * * {@link EstadoChecklistOfflineSupport#SEM_DADOS}
+     */
     @NotNull
     private final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport;
 
+    /**
+     * Atributo que identifica se os dados presentes no objeto resultaram de uma operação forçada pelo usuário.
+     */
     private final boolean foiAtualizacaoForcada;
 
     @NotNull
@@ -28,10 +42,10 @@ public abstract class ChecklistOfflineSupport {
     private final String tipo;
 
     public ChecklistOfflineSupport(@NotNull final String tipo,
-                                   @NotNull final Long codUnidade,
+                                   @NotNull final Long codUnidadeDados,
                                    @NotNull final EstadoChecklistOfflineSupport estadoChecklistOfflineSupport,
                                    final boolean foiAtualizacaoForcada) {
-        this.codUnidade = codUnidade;
+        this.codUnidadeDados = codUnidadeDados;
         this.estadoChecklistOfflineSupport = estadoChecklistOfflineSupport;
         this.tipo = tipo;
         this.foiAtualizacaoForcada = foiAtualizacaoForcada;
@@ -46,8 +60,8 @@ public abstract class ChecklistOfflineSupport {
     }
 
     @NotNull
-    public Long getCodUnidade() {
-        return codUnidade;
+    public Long getCodUnidadeDados() {
+        return codUnidadeDados;
     }
 
     @NotNull
