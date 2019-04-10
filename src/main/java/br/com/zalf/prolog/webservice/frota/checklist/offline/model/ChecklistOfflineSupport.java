@@ -15,7 +15,7 @@ public abstract class ChecklistOfflineSupport {
     @NotNull
     public static final String HEADER_TOKEN_CHECKLIST = "ProLog-Token-Checklist-Offline";
 
-''    /**
+    /**
      * Código da Unidade a qual os dados presentes neste objeto pertencem.
      */
     @NotNull
