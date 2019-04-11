@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -369,6 +370,13 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                         checklist.getCodModelo(),
                         codChecklistInserido,
                         checklist.getRespostas());
+                // Após inserir o checklist devemos abrir as Ordens de Serivços necessárias, se houver.
+                Injection
+                        .provideOrdemServicoDao()
+                        .processaChecklistRealizado(
+                                conn,
+                                checklist.getCodUnidade(),
+                                ChecklistOfflineConverter.toChecklist(codChecklistInserido, checklist));
                 return codChecklistInserido;
             } else {
                 throw new SQLException("Erro ao salvar checklist");

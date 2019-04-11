@@ -1,11 +1,18 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +24,17 @@ public final class ChecklistOfflineConverter {
 
     private ChecklistOfflineConverter() {
         throw new IllegalStateException(ChecklistOfflineConverter.class.getSimpleName() + " cannot be instanciated!");
+    }
+
+    @NotNull
+    public static Checklist toChecklist(@NotNull final Long codChecklistInserido,
+                                        @NotNull final ChecklistInsercao checklistInsercao) {
+        final Checklist checklist = new Checklist();
+        checklist.setCodModelo(checklistInsercao.getCodModelo());
+        checklist.setCodigo(codChecklistInserido);
+        checklist.setPlacaVeiculo(checklistInsercao.getPlacaVeiculo());
+        checklist.setListRespostas(toPerguntasRespostas(checklistInsercao.getRespostas()));
+        return checklist;
     }
 
     @NotNull
@@ -106,5 +124,42 @@ public final class ChecklistOfflineConverter {
                 rSet.getString("NOME_REGIONAL"),
                 rSet.getLong("COD_UNIDADE"),
                 rSet.getString("NOME_UNIDADE"));
+    }
+
+    @NotNull
+    private static List<PerguntaRespostaChecklist> toPerguntasRespostas(
+            @NotNull final List<ChecklistResposta> respostas) {
+        final List<PerguntaRespostaChecklist> perguntasRespostas = new ArrayList<>();
+        for (int i = 0; i < respostas.size(); i++) {
+            perguntasRespostas.add(toPerguntaResposta(respostas.get(i)));
+        }
+        return perguntasRespostas;
+    }
+
+    @NotNull
+    private static PerguntaRespostaChecklist toPerguntaResposta(@NotNull final ChecklistResposta checklistResposta) {
+        final PerguntaRespostaChecklist perguntaResposta = new PerguntaRespostaChecklist();
+        perguntaResposta.setCodigo(checklistResposta.getCodPergunta());
+        perguntaResposta.setAlternativasResposta(toAlternativasChecklist(checklistResposta.getAlternativasRespostas()));
+        return perguntaResposta;
+    }
+
+    @NotNull
+    private static List<AlternativaChecklist> toAlternativasChecklist(
+            @NotNull final List<ChecklistAlternativaResposta> alternativasResposta) {
+        final List<AlternativaChecklist> alternativas = new ArrayList<>();
+        for (int i = 0; i < alternativasResposta.size(); i++) {
+            alternativas.add(toAlternativaChecklist(alternativasResposta.get(i)));
+        }
+        return alternativas;
+    }
+
+    @NotNull
+    private static AlternativaChecklist toAlternativaChecklist(
+            @NotNull final ChecklistAlternativaResposta checklistAlternativaResposta) {
+        final AlternativaChecklist alternativa = new AlternativaChecklist();
+        alternativa.setCodigo(checklistAlternativaResposta.getCodAlternativa());
+        alternativa.setSelected(checklistAlternativaResposta.isAlternativaSelecionada());
+        return alternativa;
     }
 }
