@@ -7,8 +7,8 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
@@ -141,7 +141,8 @@ public class ColaboradorService {
         }
     }
 
-    public LoginHolder getLoginHolder(LoginRequest loginRequest) {
+    @NotNull
+    LoginHolder getLoginHolder(LoginRequest loginRequest) {
         final LoginHolder loginHolder = new LoginHolder();
         try {
             loginHolder.setColaborador(dao.getByCpf(loginRequest.getCpf(), true));
@@ -169,7 +170,12 @@ public class ColaboradorService {
                     this);
             loginHolder.setIntervaloOfflineSupport(intervaloOfflineSupport);
 
-        } catch (SQLException | AmazonCredentialsException e) {
+            final ChecklistOfflineService checklistOfflineService = new ChecklistOfflineService();
+            final boolean checklistOfflineAtivoEmpresa =
+                    checklistOfflineService.getChecklistOfflineAtivoEmpresa(colaborador.getCodEmpresa());
+            loginHolder.setChecklistOfflineAtivoEmpresa(checklistOfflineAtivoEmpresa);
+
+        } catch (Throwable e) {
             Log.e(TAG, "Erro ao buscar o loginHolder", e);
             throw new RuntimeException("Erro ao criar LoginHolder");
         }
