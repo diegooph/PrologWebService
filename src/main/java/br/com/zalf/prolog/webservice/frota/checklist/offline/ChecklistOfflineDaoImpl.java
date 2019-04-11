@@ -370,7 +370,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                         checklist.getCodModelo(),
                         codChecklistInserido,
                         checklist.getRespostas());
-                // Após inserir o checklist devemos abrir as Ordens de Serivços necessárias, se houver.
+                // Após inserir o checklist devemos abrir as Ordens de Serviços, caso necessário.
                 Injection
                         .provideOrdemServicoDao()
                         .processaChecklistRealizado(

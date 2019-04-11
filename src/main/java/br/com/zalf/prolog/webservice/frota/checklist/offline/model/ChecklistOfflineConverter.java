@@ -23,7 +23,7 @@ import java.util.List;
 public final class ChecklistOfflineConverter {
 
     private ChecklistOfflineConverter() {
-        throw new IllegalStateException(ChecklistOfflineConverter.class.getSimpleName() + " cannot be instanciated!");
+        throw new IllegalStateException(ChecklistOfflineConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull
@@ -126,6 +126,7 @@ public final class ChecklistOfflineConverter {
                 rSet.getString("NOME_UNIDADE"));
     }
 
+    @SuppressWarnings("ForLoopReplaceableByForEach")
     @NotNull
     private static List<PerguntaRespostaChecklist> toPerguntasRespostas(
             @NotNull final List<ChecklistResposta> respostas) {
@@ -144,6 +145,7 @@ public final class ChecklistOfflineConverter {
         return perguntaResposta;
     }
 
+    @SuppressWarnings("ForLoopReplaceableByForEach")
     @NotNull
     private static List<AlternativaChecklist> toAlternativasChecklist(
             @NotNull final List<ChecklistAlternativaResposta> alternativasResposta) {
