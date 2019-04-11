@@ -36,8 +36,12 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHand
 import br.com.zalf.prolog.webservice.errorhandling.sql.ProLogSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.model.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.frota.checklist.model.VersaoDadosChecklistOfflineAtualizador;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDao;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.OrdemServicoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.OrdemServicoRelatorioDaoImpl;
@@ -165,7 +169,7 @@ public final class Injection {
     }
 
     @NotNull
-    public static AfericaoRelatorioDao provideAfericaoRelatorioDao(){
+    public static AfericaoRelatorioDao provideAfericaoRelatorioDao() {
         return new AfericaoRelatorioDaoImpl();
     }
 
@@ -444,12 +448,22 @@ public final class Injection {
         return new TipoVeiculoDaoImpl();
     }
 
+    @NotNull
+    public static ChecklistOfflineDao provideChecklistOfflineDao() {
+        return new ChecklistOfflineDaoImpl();
+    }
+
     // ================================================
     // OUTROS
     // ================================================
     @NotNull
     public static DadosIntervaloChangedListener provideDadosIntervaloChangedListener() {
         return new VersaoDadosIntervaloAtualizador();
+    }
+
+    @NotNull
+    public static DadosChecklistOfflineChangedListener provideDadosChecklistOfflineChangedListener() {
+        return new VersaoDadosChecklistOfflineAtualizador();
     }
 
     @NotNull
@@ -481,12 +495,12 @@ public final class Injection {
     }
 
     @NotNull
-    public static VeiculoExceptionHandler provideVeiculoExceptionHandler(){
+    public static VeiculoExceptionHandler provideVeiculoExceptionHandler() {
         return new VeiculoExceptionHandler(provideVeiculoSqlExceptionTranslator());
     }
 
     @NotNull
-    private static VeiculoSqlExceptionTranslator provideVeiculoSqlExceptionTranslator(){
+    private static VeiculoSqlExceptionTranslator provideVeiculoSqlExceptionTranslator() {
         return new VeiculoSqlExceptionTranslator();
     }
 
