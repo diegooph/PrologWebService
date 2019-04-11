@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model.insercao;
 
-import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
@@ -13,150 +14,172 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ChecklistInsercao {
-    private Long codUnidade;
-    private Long codModelo;
-    private Long codColaborador;
-    private Long codVeiculo;
-    private String placaVeiculo;
-    private TipoChecklist tipo;
-    private long kmColetadoVeiculo;
-    private long tempoRealizacaoCheckInMillis;
-    private List<ChecklistResposta> respostas;
-    private LocalDateTime dataHoraRealizacao;
-    private FonteDataHora fonteDataHoraRealizacao;
+    @NotNull
+    private final Long codUnidade;
+
+    @NotNull
+    private final Long codModelo;
+
+    @NotNull
+    private final Long codColaborador;
+
+    @NotNull
+    private final Long codVeiculo;
+
+    @NotNull
+    private final String placaVeiculo;
+
+    @NotNull
+    private final TipoChecklist tipo;
+
+    private final long kmColetadoVeiculo;
+
+    private final long tempoRealizacaoCheckInMillis;
+
+    @NotNull
+    private final List<ChecklistResposta> respostas;
+
+    @NotNull
+    private final LocalDateTime dataHoraRealizacao;
+
+    @NotNull
+    private final FonteDataHora fonteDataHoraRealizacao;
+
     /**
      * Versão do aplicativo no momento que o checklist foi realizado.
      */
-    private Integer versaoAppMomentoRealizacao;
+    @NotNull
+    private final Integer versaoAppMomentoRealizacao;
+
     /**
      * Versão do aplicativo no momento que o checklist foi sincronizado.
      */
-    private Integer versaoAppMomentoSincronizacao;
+    @NotNull
+    private final Integer versaoAppMomentoSincronizacao;
+
     /**
      * Identificador único do celular: IMEI ou MEID ou ESN e etc.
      */
     @Nullable
-    private String deviceId;
+    private final String deviceId;
+
+    /**
+     * IMEI do aparelho.
+     */
+    @Nullable
+    private final String deviceImei;
+
     /**
      * O tempo, em milissegundos, desde que o aparelho foi ligado até a realização do check.
      *
      * @see <a href="Android Docs">https://developer.android.com/reference/android/os/SystemClock.html#elapsedRealtime()</a>
      */
-    private long deviceUptimeRealizacaoMillis;
+    private final long deviceUptimeRealizacaoMillis;
 
     /**
      * O tempo, em milissegundos, desde que o aparelho foi ligado até a sincronização do check.
      *
      * @see <a href="Android Docs">https://developer.android.com/reference/android/os/SystemClock.html#elapsedRealtime()</a>
      */
-    private long deviceUptimeSincronizacaoMillis;
+    private final long deviceUptimeSincronizacaoMillis;
 
-    public ChecklistInsercao() {
-
+    public ChecklistInsercao(@NotNull final Long codUnidade,
+                             @NotNull final Long codModelo,
+                             @NotNull final Long codColaborador,
+                             @NotNull final Long codVeiculo,
+                             @NotNull final String placaVeiculo,
+                             @NotNull final TipoChecklist tipo,
+                             final long kmColetadoVeiculo,
+                             final long tempoRealizacaoCheckInMillis,
+                             @NotNull final List<ChecklistResposta> respostas,
+                             @NotNull final LocalDateTime dataHoraRealizacao,
+                             @NotNull final FonteDataHora fonteDataHoraRealizacao,
+                             @NotNull final Integer versaoAppMomentoRealizacao,
+                             @NotNull final Integer versaoAppMomentoSincronizacao,
+                             @Nullable final String deviceId,
+                             @Nullable final String deviceImei,
+                             final long deviceUptimeRealizacaoMillis,
+                             final long deviceUptimeSincronizacaoMillis) {
+        this.codUnidade = codUnidade;
+        this.codModelo = codModelo;
+        this.codColaborador = codColaborador;
+        this.codVeiculo = codVeiculo;
+        this.placaVeiculo = placaVeiculo;
+        this.tipo = tipo;
+        this.kmColetadoVeiculo = kmColetadoVeiculo;
+        this.tempoRealizacaoCheckInMillis = tempoRealizacaoCheckInMillis;
+        this.respostas = respostas;
+        this.dataHoraRealizacao = dataHoraRealizacao;
+        this.fonteDataHoraRealizacao = fonteDataHoraRealizacao;
+        this.versaoAppMomentoRealizacao = versaoAppMomentoRealizacao;
+        this.versaoAppMomentoSincronizacao = versaoAppMomentoSincronizacao;
+        this.deviceId = deviceId;
+        this.deviceImei = deviceImei;
+        this.deviceUptimeRealizacaoMillis = deviceUptimeRealizacaoMillis;
+        this.deviceUptimeSincronizacaoMillis = deviceUptimeSincronizacaoMillis;
     }
 
+    @NotNull
     public Long getCodUnidade() {
         return codUnidade;
     }
 
-    public void setCodUnidade(final Long codUnidade) {
-        this.codUnidade = codUnidade;
-    }
-
+    @NotNull
     public Long getCodModelo() {
         return codModelo;
     }
 
-    public void setCodModelo(final Long codModelo) {
-        this.codModelo = codModelo;
-    }
-
+    @NotNull
     public Long getCodColaborador() {
         return codColaborador;
     }
 
-    public void setCodColaborador(final Long codColaborador) {
-        this.codColaborador = codColaborador;
-    }
-
+    @NotNull
     public Long getCodVeiculo() {
         return codVeiculo;
     }
 
-    public void setCodVeiculo(final Long codVeiculo) {
-        this.codVeiculo = codVeiculo;
-    }
-
+    @NotNull
     public String getPlacaVeiculo() {
         return placaVeiculo;
     }
 
-    public void setPlacaVeiculo(final String placaVeiculo) {
-        this.placaVeiculo = placaVeiculo;
-    }
-
+    @NotNull
     public TipoChecklist getTipo() {
         return tipo;
-    }
-
-    public void setTipo(final TipoChecklist tipo) {
-        this.tipo = tipo;
     }
 
     public long getKmColetadoVeiculo() {
         return kmColetadoVeiculo;
     }
 
-    public void setKmColetadoVeiculo(final long kmColetadoVeiculo) {
-        this.kmColetadoVeiculo = kmColetadoVeiculo;
-    }
-
     public long getTempoRealizacaoCheckInMillis() {
         return tempoRealizacaoCheckInMillis;
     }
 
-    public void setTempoRealizacaoCheckInMillis(final long tempoRealizacaoCheckInMillis) {
-        this.tempoRealizacaoCheckInMillis = tempoRealizacaoCheckInMillis;
-    }
-
+    @NotNull
     public List<ChecklistResposta> getRespostas() {
         return respostas;
     }
 
-    public void setRespostas(final List<ChecklistResposta> respostas) {
-        this.respostas = respostas;
-    }
-
+    @NotNull
     public LocalDateTime getDataHoraRealizacao() {
         return dataHoraRealizacao;
     }
 
-    public void setDataHoraRealizacao(final LocalDateTime dataHoraRealizacao) {
-        this.dataHoraRealizacao = dataHoraRealizacao;
-    }
-
+    @NotNull
     public FonteDataHora getFonteDataHoraRealizacao() {
         return fonteDataHoraRealizacao;
     }
 
-    public void setFonteDataHoraRealizacao(final FonteDataHora fonteDataHoraRealizacao) {
-        this.fonteDataHoraRealizacao = fonteDataHoraRealizacao;
-    }
-
+    @NotNull
     public Integer getVersaoAppMomentoRealizacao() {
         return versaoAppMomentoRealizacao;
     }
 
-    public void setVersaoAppMomentoRealizacao(final Integer versaoAppMomentoRealizacao) {
-        this.versaoAppMomentoRealizacao = versaoAppMomentoRealizacao;
-    }
-
+    @NotNull
     public Integer getVersaoAppMomentoSincronizacao() {
         return versaoAppMomentoSincronizacao;
-    }
-
-    public void setVersaoAppMomentoSincronizacao(final Integer versaoAppMomentoSincronizacao) {
-        this.versaoAppMomentoSincronizacao = versaoAppMomentoSincronizacao;
     }
 
     @Nullable
@@ -164,23 +187,16 @@ public final class ChecklistInsercao {
         return deviceId;
     }
 
-    public void setDeviceId(@Nullable final String deviceId) {
-        this.deviceId = deviceId;
+    @Nullable
+    public String getDeviceImei() {
+        return deviceImei;
     }
 
     public long getDeviceUptimeRealizacaoMillis() {
         return deviceUptimeRealizacaoMillis;
     }
 
-    public void setDeviceUptimeRealizacaoMillis(final long deviceUptimeRealizacaoMillis) {
-        this.deviceUptimeRealizacaoMillis = deviceUptimeRealizacaoMillis;
-    }
-
     public long getDeviceUptimeSincronizacaoMillis() {
         return deviceUptimeSincronizacaoMillis;
-    }
-
-    public void setDeviceUptimeSincronizacaoMillis(final long deviceUptimeSincronizacaoMillis) {
-        this.deviceUptimeSincronizacaoMillis = deviceUptimeSincronizacaoMillis;
     }
 }

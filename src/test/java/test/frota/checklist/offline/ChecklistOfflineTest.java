@@ -154,24 +154,24 @@ public class ChecklistOfflineTest extends BaseTest {
     }
 
     private ChecklistInsercao createChecklist() {
-        final ChecklistInsercao checklist = new ChecklistInsercao();
-        checklist.setCodUnidade(5L);
-        checklist.setCodModelo(1L);
-        checklist.setCodColaborador(2272L);
-        checklist.setCodVeiculo(3195L);
-        checklist.setPlacaVeiculo("PRO0001");
-        checklist.setTipo(TipoChecklist.SAIDA);
-        checklist.setKmColetadoVeiculo(0);
-        checklist.setTempoRealizacaoCheckInMillis(10000);
-        checklist.setRespostas(createRespostas());
-        checklist.setDataHoraRealizacao(ProLogDateParser.toLocalDateTime("2019-03-30T00:26:10"));
-        checklist.setFonteDataHoraRealizacao(FonteDataHora.LOCAL_CELULAR);
-        checklist.setVersaoAppMomentoRealizacao(50);
-        checklist.setVersaoAppMomentoSincronizacao(53);
-        checklist.setDeviceId("device didID");
-        checklist.setDeviceUptimeRealizacaoMillis(10000);
-        checklist.setDeviceUptimeSincronizacaoMillis(11000);
-        return checklist;
+        return new ChecklistInsercao(
+                5L,
+        1L,
+        2272L,
+        3195L,
+        "PRO0001",
+        TipoChecklist.SAIDA,
+        0,
+        10000,
+        createRespostas(),
+        ProLogDateParser.toLocalDateTime("2019-03-30T00:26:10"),
+        FonteDataHora.LOCAL_CELULAR,
+        50,
+        53,
+        "device didID",
+        "deviceImei",
+        10000,
+        11000);
     }
 
     @NotNull

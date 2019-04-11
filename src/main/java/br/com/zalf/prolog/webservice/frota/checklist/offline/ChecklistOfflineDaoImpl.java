@@ -303,7 +303,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_GET_COD_CHECKLIST_DUPLICADO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                    "FROM FUNC_CHECKLIST_GET_COD_CHECKLIST_DUPLICADO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
             stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
@@ -316,7 +316,8 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             stmt.setString(9, checklist.getFonteDataHoraRealizacao().asString());
             stmt.setInt(10, checklist.getVersaoAppMomentoRealizacao());
             stmt.setString(11, checklist.getDeviceId());
-            stmt.setLong(12, checklist.getDeviceUptimeRealizacaoMillis());
+            stmt.setString(12, checklist.getDeviceImei());
+            stmt.setLong(13, checklist.getDeviceUptimeRealizacaoMillis());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 if (rSet.getBoolean("CHECKLIST_JA_EXISTE")) {
@@ -339,7 +340,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                     "AS CODIGO;");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
             stmt.setLong(1, checklist.getCodUnidade());
@@ -356,8 +357,9 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             stmt.setInt(12, checklist.getVersaoAppMomentoRealizacao());
             stmt.setInt(13, checklist.getVersaoAppMomentoSincronizacao());
             stmt.setString(14, checklist.getDeviceId());
-            stmt.setLong(15, checklist.getDeviceUptimeRealizacaoMillis());
-            stmt.setLong(16, checklist.getDeviceUptimeSincronizacaoMillis());
+            stmt.setString(15, checklist.getDeviceImei());
+            stmt.setLong(16, checklist.getDeviceUptimeRealizacaoMillis());
+            stmt.setLong(17, checklist.getDeviceUptimeSincronizacaoMillis());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codChecklistInserido = rSet.getLong("CODIGO");
