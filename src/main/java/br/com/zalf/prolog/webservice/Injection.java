@@ -10,6 +10,8 @@ import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
 import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorExceptionHandler;
 import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorSqlExceptionTranslator;
+import br.com.zalf.prolog.webservice.colaborador.relatorios.ColaboradorRelatorioDao;
+import br.com.zalf.prolog.webservice.colaborador.relatorios.ColaboradorRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.contato.EntreEmContatoDao;
 import br.com.zalf.prolog.webservice.contato.EntreEmContatoDaoImpl;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
@@ -451,6 +453,11 @@ public final class Injection {
     @NotNull
     public static ChecklistOfflineDao provideChecklistOfflineDao() {
         return new ChecklistOfflineDaoImpl();
+    }
+
+    @NotNull
+    public static ColaboradorRelatorioDao provideColaboradorRelatorioDao(){
+        return new ColaboradorRelatorioDaoImpl();
     }
 
     // ================================================
