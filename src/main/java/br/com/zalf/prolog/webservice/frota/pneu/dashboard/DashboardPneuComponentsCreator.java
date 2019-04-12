@@ -355,19 +355,31 @@ final class DashboardPneuComponentsCreator {
         // Linhas.
         final List<TableLine> lines = new ArrayList<>();
         qtdDiasAfericoesVencidas.forEach(afericoesVencidas -> {
-            // Colunas.
+            // Aferição sulco.
             final List<TableColumn> columns = new ArrayList<>(4);
             columns.add(new TableColumn(afericoesVencidas.getNomeUnidade()));
             columns.add(new TableColumn(afericoesVencidas.getPlacaVeiculo()));
             if (afericoesVencidas.getQtdDiasAfericaoSulcoVencido().isPresent()) {
-                columns.add(new TableColumn(String.valueOf(afericoesVencidas.getQtdDiasAfericaoSulcoVencido().get())));
+                final int diasVencidos = afericoesVencidas.getQtdDiasAfericaoSulcoVencido().get();
+                if (diasVencidos > 0) {
+                    columns.add(new TableColumn(String.valueOf(diasVencidos)));
+                } else {
+                    columns.add(new TableColumn("No prazo"));
+                }
             } else {
-                columns.add(new TableColumn("No prazo"));
+                columns.add(new TableColumn("Nunca aferido"));
             }
+
+            // Aferição pressão.
             if (afericoesVencidas.getQtdDiasAfericaoPressaoVencida().isPresent()) {
-                columns.add(new TableColumn(String.valueOf(afericoesVencidas.getQtdDiasAfericaoPressaoVencida().get())));
+                final int diasVencidos = afericoesVencidas.getQtdDiasAfericaoPressaoVencida().get();
+                if (diasVencidos > 0) {
+                    columns.add(new TableColumn(String.valueOf(diasVencidos)));
+                } else {
+                    columns.add(new TableColumn("No prazo"));
+                }
             } else {
-                columns.add(new TableColumn("No prazo"));
+                columns.add(new TableColumn("Nunca aferido"));
             }
             lines.add(new TableLine(columns));
         });

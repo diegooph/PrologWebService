@@ -819,9 +819,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                 rSet.getString("UNIDADE"),
                                 rSet.getString("PLACA"),
                                 Optional.ofNullable(
-                                        NullIf.equalOrLess(rSet.getInt("QTD_DIAS_AFERICAO_SULCO_VENCIDA"), 0)),
+                                        NullIf.equal(rSet.getInt("QTD_DIAS_AFERICAO_SULCO_VENCIDA"), 0)),
                                 Optional.ofNullable(
-                                        NullIf.equalOrLess(rSet.getInt("QTD_DIAS_AFERICAO_PRESSAO_VENCIDA"), 0))));
+                                        NullIf.equal(rSet.getInt("QTD_DIAS_AFERICAO_PRESSAO_VENCIDA"), 0))));
             }
             return qtdDiasAfericoesVencidas;
         } finally {
