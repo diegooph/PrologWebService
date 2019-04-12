@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.visualizacao;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +33,18 @@ public final class DetalhesVeiculoTransferido {
         this.placaVeiculo = placaVeiculo;
         this.codDiagramaVeiculo = codDiagramaVeiculo;
         this.pneusAplicadosMomentoTransferencia = pneusAplicadosMomentoTransferencia;
+    }
+
+    @NotNull
+    public static DetalhesVeiculoTransferido createDummy() {
+        final List<PneuVeiculoTransferido> pneusAplicados = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            pneusAplicados.add(PneuVeiculoTransferido.createDummy());
+        }
+        return new DetalhesVeiculoTransferido(
+                "PRO0001",
+                1L,
+                pneusAplicados);
     }
 
     @NotNull

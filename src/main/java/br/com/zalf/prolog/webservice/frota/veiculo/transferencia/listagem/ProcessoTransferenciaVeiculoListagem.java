@@ -85,6 +85,25 @@ public final class ProcessoTransferenciaVeiculoListagem {
     }
 
     @NotNull
+    public static ProcessoTransferenciaVeiculoListagem createDummy() {
+        final List<String> placasTransferidas = new ArrayList<>();
+        placasTransferidas.add("PRO0001");
+        placasTransferidas.add("PRO0015");
+        placasTransferidas.add("PRO0108");
+        return new ProcessoTransferenciaVeiculoListagem(
+                10L,
+                "João Dói",
+                LocalDateTime.now(),
+                "Unidade A Origem",
+                "Unidade B Destino",
+                "Regional Y Origem",
+                "Regional Z Destino",
+                "Observação sobre o processo de movimentação",
+                placasTransferidas,
+                placasTransferidas.size());
+    }
+
+    @NotNull
     public Long getCodProcessoTransferencia() {
         return codProcessoTransferencia;
     }

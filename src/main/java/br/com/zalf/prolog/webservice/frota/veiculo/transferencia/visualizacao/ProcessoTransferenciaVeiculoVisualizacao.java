@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.visualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,6 +82,25 @@ public final class ProcessoTransferenciaVeiculoVisualizacao {
         this.observacaoRealizacao = observacaoRealizacao;
         this.veiculosTransferidos = veiculosTransferidos;
         this.qtdVeiculosTransferidos = qtdVeiculosTransferidos;
+    }
+
+    @NotNull
+    public static ProcessoTransferenciaVeiculoVisualizacao createDummy() {
+        final List<VeiculoTransferidoVisualizacao> veiculosTransferidos = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            veiculosTransferidos.add(VeiculoTransferidoVisualizacao.createDummy());
+        }
+        return new ProcessoTransferenciaVeiculoVisualizacao(
+                10L,
+                "João Dói",
+                LocalDateTime.now(),
+                "Unidade A Origem",
+                "Unidade B Destino",
+                "Regional Y Origem",
+                "Regional Z Destino",
+                "Observação sobre o processo de movimentação",
+                veiculosTransferidos,
+                veiculosTransferidos.size());
     }
 
     @NotNull

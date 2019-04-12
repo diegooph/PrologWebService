@@ -53,6 +53,22 @@ public final class PneuVeiculoTransferido {
     }
 
     @NotNull
+    public static PneuVeiculoTransferido createDummy() {
+        final Sulcos sulcos = new Sulcos();
+        sulcos.setInterno(10.0);
+        sulcos.setCentralInterno(10.0);
+        sulcos.setCentralExterno(10.0);
+        sulcos.setExterno(10.0);
+        return new PneuVeiculoTransferido(
+                1528L,
+                "PN112",
+                sulcos,
+                110.0,
+                2,
+                111);
+    }
+
+    @NotNull
     public Long getCodPneuTransferenciaInformacoes() {
         return codPneuTransferenciaInformacoes;
     }

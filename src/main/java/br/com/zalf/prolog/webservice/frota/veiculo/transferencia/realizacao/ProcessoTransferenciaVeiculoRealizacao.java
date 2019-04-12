@@ -50,6 +50,20 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
     }
 
     @NotNull
+    public static ProcessoTransferenciaVeiculoRealizacao createDummy() {
+        final List<VeiculoTransferencia> veiculosTransferencia = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            veiculosTransferencia.add(VeiculoTransferencia.createDummy());
+        }
+        return new ProcessoTransferenciaVeiculoRealizacao(
+                10L,
+                15L,
+                1272L,
+                veiculosTransferencia,
+                "Estes veiculos estão sendo transferidos");
+    }
+
+    @NotNull
     public Long getCodUnidadeOrigem() {
         return codUnidadeOrigem;
     }
