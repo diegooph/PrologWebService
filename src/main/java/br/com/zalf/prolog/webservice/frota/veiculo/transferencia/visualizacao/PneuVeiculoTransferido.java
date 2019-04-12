@@ -9,17 +9,33 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class PneuVeiculoTransferido {
+    /**
+     * Código único de identificação do pneu.
+     */
     @NotNull
     private final Long codPneuTransferenciaInformacoes;
     /**
-     * Código do cliente, número de fogo do pneu.
+     * Código do cliente, normalmente, número de fogo do pneu.
      */
     @NotNull
     private final String codPneuCliente;
+    /**
+     * Atributo contento a informação de medida de cada sulco do pneu, quando a placa a qual ele estava associado foi
+     * transferida.
+     */
     @NotNull
     private final Sulcos sulcosMomentoTransferencia;
+    /**
+     * Pressão, em PSI, do pneu quando a placa foi transferida.
+     */
     private final double pressaoMomentoTransferencia;
+    /**
+     * Vida do pneu no momento em que a placa foi transferida de unidade.
+     */
     private final int vidaMomentoTransferencia;
+    /**
+     * Posição onde o pneu estava associado na placa, quando esta foi transferida de Unidade.
+     */
     private final int posicaoNoVeiculo;
 
     public PneuVeiculoTransferido(@NotNull final Long codPneuTransferenciaInformacoes,

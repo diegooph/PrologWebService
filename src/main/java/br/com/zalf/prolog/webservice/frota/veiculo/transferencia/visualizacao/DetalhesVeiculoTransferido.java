@@ -10,10 +10,19 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class DetalhesVeiculoTransferido {
+    /**
+     * Atributo que identifica a placa do veículo.
+     */
     @NotNull
     private final String placaVeiculo;
+    /**
+     * Código do diagrama que estava vinculado a placa quando ela foi transferida de Unidade.
+     */
     @NotNull
     private final Long codDiagramaVeiculo;
+    /**
+     * Lista contendo as informações dos pneus que foram transferidos junto com a placa.
+     */
     @NotNull
     private final List<PneuVeiculoTransferido> pneusAplicadosMomentoTransferencia;
 

@@ -10,8 +10,14 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class VeiculoTransferencia {
+    /**
+     * Código único de identificação do veículo dentro de banco de dados.
+     */
     @NotNull
     private final Long codVeiculo;
+    /**
+     * Lista contendo os códigos dos pneus que estão aplicados na placa no momento da transferência.
+     */
     @NotNull
     private final List<Long> codPneusAplicadosVeiculo;
 

@@ -11,24 +11,54 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class VeiculoTransferenciaListagem {
+    /**
+     * Código do processo de movimentação que foi realizado.
+     */
     @NotNull
     private final Long codProcessoTransferencia;
+    /**
+     * Nome do colaborador que foi responsável pelo processo de transferência.
+     */
     @NotNull
     private final String nomeColaboradorRealizacao;
+    /**
+     * Data e Hora que o processo de transferência foi executada.
+     */
     @NotNull
     private final LocalDateTime dataHoraRealizacao;
+    /**
+     * Nome da Unidade à qual a(s) placa(s) pertenciam antes da transferência.
+     */
     @NotNull
     private final String nomeUnidadeOrigem;
+    /**
+     * Nome da Unidade à qual a(s) placa(s) foram transferidas.
+     */
     @NotNull
     private final String nomeUnidadeDestino;
+    /**
+     * Nome da Regional à qual a(s) placa(s) pertenciam antes da transferência.
+     */
     @NotNull
     private final String nomeRegionalOrigem;
+    /**
+     * Nome da Regional à qual a(s) placa(s) foram transferidas.
+     */
     @NotNull
     private final String nomeRegionalDestino;
+    /**
+     * Observações inseridas pelo colaborador sobre o processo de transferência.
+     */
     @NotNull
     private final String observacaoRealizacao;
+    /**
+     * Lista de placas que foram transferidas nesse processo.
+     */
     @NotNull
     private final List<String> placasTransferidas;
+    /**
+     * Atributo numérico que representa a quantidade de plaas transferidas neste processo.
+     */
     private final int qtdPlacasTransferidos;
 
     public VeiculoTransferenciaListagem(@NotNull final Long codProcessoTransferencia,

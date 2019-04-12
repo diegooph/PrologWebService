@@ -10,14 +10,29 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ProcessoTransferenciaVeiculo {
+    /**
+     * Código da Unidade onde o Veículo está alocado.
+     */
     @NotNull
     private final Long codUnidadeOrigem;
+    /**
+     * Código da Unidade para onde o Veículo está sendo transferido.
+     */
     @NotNull
     private final Long codUnidadeDestino;
+    /**
+     * Código do colaborador que está realizando o processo de transferência de veículos.
+     */
     @NotNull
     private final Long codColaboradorRealizacaoTransferencia;
+    /**
+     * Lista de veículos que o colaborador está transferindo.
+     */
     @NotNull
     private final List<VeiculoTransferencia> veiculosTransferencia;
+    /**
+     * Observação que o colaborador inseriu para este processo de transferência.
+     */
     @NotNull
     private final String observacao;
 

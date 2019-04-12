@@ -10,10 +10,13 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class VeiculoTransferidoVisualizacao {
+    /**
+     * Atributo que identifica a placa do veículo.
+     */
     @NotNull
     private final String placaVeiculo;
     /**
-     * Código do cliente, número de fogo do pneu.
+     * Uma Lista contendo a identificação de cada pneu, normalmente, número de fogo do pneu.
      */
     @NotNull
     private final List<String> codPneusCliente;
