@@ -359,8 +359,16 @@ final class DashboardPneuComponentsCreator {
             final List<TableColumn> columns = new ArrayList<>(4);
             columns.add(new TableColumn(afericoesVencidas.getNomeUnidade()));
             columns.add(new TableColumn(afericoesVencidas.getPlacaVeiculo()));
-            columns.add(new TableColumn(afericoesVencidas.getQtdDiasAfericaoSulcoVencido()));
-            columns.add(new TableColumn(afericoesVencidas.getQtdDiasAfericaoPressaoVencida()));
+            if (afericoesVencidas.getQtdDiasAfericaoSulcoVencido().isPresent()) {
+                columns.add(new TableColumn(String.valueOf(afericoesVencidas.getQtdDiasAfericaoSulcoVencido().get())));
+            } else {
+                columns.add(new TableColumn("No prazo"));
+            }
+            if (afericoesVencidas.getQtdDiasAfericaoPressaoVencida().isPresent()) {
+                columns.add(new TableColumn(String.valueOf(afericoesVencidas.getQtdDiasAfericaoPressaoVencida().get())));
+            } else {
+                columns.add(new TableColumn("No prazo"));
+            }
             lines.add(new TableLine(columns));
         });
 
