@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.89"></a>
 ## Version [v0.0.89](https://github.com/luizfp/PrologWebService/compare/v0.0.88...v0.0.89) (release-date) [unreleased]
 
+### Features
+* Cria objetos necessários para funcionalidade de transferência de veículos (PL-1841)
+
 
 <a name="v0.0.88"></a>
 ## Version [v0.0.88](https://github.com/luizfp/PrologWebService/compare/v0.0.87...v0.0.88) (2019-04-11)
