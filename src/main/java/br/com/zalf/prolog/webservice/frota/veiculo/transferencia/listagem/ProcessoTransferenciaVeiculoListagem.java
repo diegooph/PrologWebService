@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.listagem;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class VeiculoTransferenciaListagem {
+public final class ProcessoTransferenciaVeiculoListagem {
     /**
      * Código do processo de movimentação que foi realizado.
      */
@@ -61,16 +62,16 @@ public final class VeiculoTransferenciaListagem {
      */
     private final int qtdPlacasTransferidos;
 
-    public VeiculoTransferenciaListagem(@NotNull final Long codProcessoTransferencia,
-                                        @NotNull final String nomeColaboradorRealizacao,
-                                        @NotNull final LocalDateTime dataHoraRealizacao,
-                                        @NotNull final String nomeUnidadeOrigem,
-                                        @NotNull final String nomeUnidadeDestino,
-                                        @NotNull final String nomeRegionalOrigem,
-                                        @NotNull final String nomeRegionalDestino,
-                                        @NotNull final String observacaoRealizacao,
-                                        @NotNull final List<String> placasTransferidas,
-                                        final int qtdPlacasTransferidos) {
+    public ProcessoTransferenciaVeiculoListagem(@NotNull final Long codProcessoTransferencia,
+                                                @NotNull final String nomeColaboradorRealizacao,
+                                                @NotNull final LocalDateTime dataHoraRealizacao,
+                                                @NotNull final String nomeUnidadeOrigem,
+                                                @NotNull final String nomeUnidadeDestino,
+                                                @NotNull final String nomeRegionalOrigem,
+                                                @NotNull final String nomeRegionalDestino,
+                                                @NotNull final String observacaoRealizacao,
+                                                @NotNull final List<String> placasTransferidas,
+                                                final int qtdPlacasTransferidos) {
         this.codProcessoTransferencia = codProcessoTransferencia;
         this.nomeColaboradorRealizacao = nomeColaboradorRealizacao;
         this.dataHoraRealizacao = dataHoraRealizacao;
