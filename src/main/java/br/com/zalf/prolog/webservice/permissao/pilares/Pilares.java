@@ -198,7 +198,6 @@ public final class Pilares {
             public static final int SOLICITACAO_FOLGA = 332;
             public static final int INTERVALOS = 342;
             public static final int TREINAMENTOS = 343;
-            public static final int COLABORADOR = 345;
         }
 
         public final class Treinamentos {

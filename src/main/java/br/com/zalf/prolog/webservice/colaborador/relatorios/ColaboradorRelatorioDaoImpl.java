@@ -44,6 +44,7 @@ public class ColaboradorRelatorioDaoImpl implements ColaboradorRelatorioDao {
 
     }
 
+    @NotNull
     @Override
     public Report getListagemColaboradoresByUnidadeReport(@NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
@@ -59,10 +60,11 @@ public class ColaboradorRelatorioDaoImpl implements ColaboradorRelatorioDao {
         }
     }
 
+    @NotNull
     private PreparedStatement getListagemColaboradoresByUnidadeStmt(@NotNull final Connection conn,
                                                                     @NotNull final List<Long> codUnidades) throws Throwable {
         final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_GET_LISTAGEM_COLABORADOR_BY_UNIDADE(?);");
+                conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_RELATORIO_LISTAGEM_COLABORADORES_BY_UNIDADE(?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         return stmt;
     }

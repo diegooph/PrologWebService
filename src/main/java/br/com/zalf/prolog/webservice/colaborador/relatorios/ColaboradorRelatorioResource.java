@@ -4,10 +4,6 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
@@ -22,14 +18,12 @@ import java.util.List;
  */
 
 @Path("/colaboradores/relatorios")
-@Secured(permissions = Pilares.Gente.Relatorios.COLABORADOR)
+@Secured(permissions = {
+        Pilares.Gente.Colaborador.VISUALIZAR,
+        Pilares.Gente.Colaborador.CADASTRAR,
+        Pilares.Gente.Colaborador.EDITAR})
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@AppVersionCodeHandler(
-        implementation = DefaultAppVersionCodeHandler.class,
-        targetVersionCode = 55,
-        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class ColaboradorRelatorioResource {
 
     @GET
