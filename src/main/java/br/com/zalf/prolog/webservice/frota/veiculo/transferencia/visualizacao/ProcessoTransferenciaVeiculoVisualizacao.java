@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.visualizacao;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public final class ProcessoTransferenciaVeiculoVisualizacao {
     /**
-     * Código do processo de movimentação que foi realizado.
+     * Código do processo de transferência que foi realizado.
      */
     @NotNull
     private final Long codProcessoTransferencia;
@@ -23,7 +24,7 @@ public final class ProcessoTransferenciaVeiculoVisualizacao {
     @NotNull
     private final String nomeColaboradorRealizacao;
     /**
-     * Data e Hora que o processo de transferência foi executada.
+     * Data e Hora que o processo de transferência foi executado.
      */
     @NotNull
     private final LocalDateTime dataHoraRealizacao;
@@ -33,7 +34,7 @@ public final class ProcessoTransferenciaVeiculoVisualizacao {
     @NotNull
     private final String nomeUnidadeOrigem;
     /**
-     * Nome da Unidade à qual a(s) placa(s) foram transferidas.
+     * Nome da Unidade para a qual a(s) placa(s) foram transferidas.
      */
     @NotNull
     private final String nomeUnidadeDestino;
@@ -43,14 +44,14 @@ public final class ProcessoTransferenciaVeiculoVisualizacao {
     @NotNull
     private final String nomeRegionalOrigem;
     /**
-     * Nome da Regional à qual a(s) placa(s) foram transferidas.
+     * Nome da Regional para a qual a(s) placa(s) foram transferidas.
      */
     @NotNull
     private final String nomeRegionalDestino;
     /**
      * Observações inseridas pelo colaborador sobre o processo de transferência.
      */
-    @NotNull
+    @Nullable
     private final String observacaoRealizacao;
     /**
      * Lista contendo informações de cada placa que foi transferida neste processo de transferência.
@@ -69,7 +70,7 @@ public final class ProcessoTransferenciaVeiculoVisualizacao {
                                                     @NotNull final String nomeUnidadeDestino,
                                                     @NotNull final String nomeRegionalOrigem,
                                                     @NotNull final String nomeRegionalDestino,
-                                                    @NotNull final String observacaoRealizacao,
+                                                    @Nullable final String observacaoRealizacao,
                                                     @NotNull final List<VeiculoTransferidoVisualizacao> veiculosTransferidos,
                                                     final int qtdVeiculosTransferidos) {
         this.codProcessoTransferencia = codProcessoTransferencia;
@@ -98,7 +99,7 @@ public final class ProcessoTransferenciaVeiculoVisualizacao {
                 "Unidade B Destino",
                 "Regional Y Origem",
                 "Regional Z Destino",
-                "Observação sobre o processo de movimentação",
+                "Observação sobre o processo de transferência",
                 veiculosTransferidos,
                 veiculosTransferidos.size());
     }
@@ -138,7 +139,7 @@ public final class ProcessoTransferenciaVeiculoVisualizacao {
         return nomeRegionalDestino;
     }
 
-    @NotNull
+    @Nullable
     public String getObservacaoRealizacao() {
         return observacaoRealizacao;
     }

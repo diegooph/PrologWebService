@@ -15,7 +15,7 @@ public final class PneuVeiculoTransferido {
     @NotNull
     private final Long codPneuTransferenciaInformacoes;
     /**
-     * Código do cliente, normalmente, número de fogo do pneu.
+     * Código do cliente. Normalmente, o número de fogo do pneu.
      */
     @NotNull
     private final String codPneuCliente;

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public final class VeiculoTransferencia {
     /**
-     * Código único de identificação do veículo dentro de banco de dados.
+     * Código único de identificação do veículo no banco de dados.
      */
     @NotNull
     private final Long codVeiculo;

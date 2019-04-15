@@ -17,7 +17,7 @@ public final class VeiculoTransferidoVisualizacao {
     @NotNull
     private final String placaVeiculo;
     /**
-     * Uma Lista contendo a identificação de cada pneu, normalmente, número de fogo do pneu.
+     * Uma Lista contendo a identificação de cada pneu para o cliente. Normalmente, o número de fogo do pneu.
      */
     @NotNull
     private final List<String> codPneusCliente;

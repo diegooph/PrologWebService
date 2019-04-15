@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.listagem;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public final class ProcessoTransferenciaVeiculoListagem {
     /**
-     * Código do processo de movimentação que foi realizado.
+     * Código do processo de transferência que foi realizado.
      */
     @NotNull
     private final Long codProcessoTransferencia;
@@ -23,7 +24,7 @@ public final class ProcessoTransferenciaVeiculoListagem {
     @NotNull
     private final String nomeColaboradorRealizacao;
     /**
-     * Data e Hora que o processo de transferência foi executada.
+     * Data e Hora que o processo de transferência foi executado.
      */
     @NotNull
     private final LocalDateTime dataHoraRealizacao;
@@ -33,7 +34,7 @@ public final class ProcessoTransferenciaVeiculoListagem {
     @NotNull
     private final String nomeUnidadeOrigem;
     /**
-     * Nome da Unidade à qual a(s) placa(s) foram transferidas.
+     * Nome da Unidade para a qual a(s) placa(s) foram transferidas.
      */
     @NotNull
     private final String nomeUnidadeDestino;
@@ -43,14 +44,14 @@ public final class ProcessoTransferenciaVeiculoListagem {
     @NotNull
     private final String nomeRegionalOrigem;
     /**
-     * Nome da Regional à qual a(s) placa(s) foram transferidas.
+     * Nome da Regional para a qual a(s) placa(s) foram transferidas.
      */
     @NotNull
     private final String nomeRegionalDestino;
     /**
      * Observações inseridas pelo colaborador sobre o processo de transferência.
      */
-    @NotNull
+    @Nullable
     private final String observacaoRealizacao;
     /**
      * Lista de placas que foram transferidas nesse processo.
@@ -58,9 +59,9 @@ public final class ProcessoTransferenciaVeiculoListagem {
     @NotNull
     private final List<String> placasTransferidas;
     /**
-     * Atributo numérico que representa a quantidade de plaas transferidas neste processo.
+     * Atributo numérico que representa a quantidade de placas transferidas neste processo.
      */
-    private final int qtdPlacasTransferidos;
+    private final int qtdPlacasTransferidas;
 
     public ProcessoTransferenciaVeiculoListagem(@NotNull final Long codProcessoTransferencia,
                                                 @NotNull final String nomeColaboradorRealizacao,
@@ -69,9 +70,9 @@ public final class ProcessoTransferenciaVeiculoListagem {
                                                 @NotNull final String nomeUnidadeDestino,
                                                 @NotNull final String nomeRegionalOrigem,
                                                 @NotNull final String nomeRegionalDestino,
-                                                @NotNull final String observacaoRealizacao,
+                                                @Nullable final String observacaoRealizacao,
                                                 @NotNull final List<String> placasTransferidas,
-                                                final int qtdPlacasTransferidos) {
+                                                final int qtdPlacasTransferidas) {
         this.codProcessoTransferencia = codProcessoTransferencia;
         this.nomeColaboradorRealizacao = nomeColaboradorRealizacao;
         this.dataHoraRealizacao = dataHoraRealizacao;
@@ -81,7 +82,7 @@ public final class ProcessoTransferenciaVeiculoListagem {
         this.nomeRegionalDestino = nomeRegionalDestino;
         this.observacaoRealizacao = observacaoRealizacao;
         this.placasTransferidas = placasTransferidas;
-        this.qtdPlacasTransferidos = qtdPlacasTransferidos;
+        this.qtdPlacasTransferidas = qtdPlacasTransferidas;
     }
 
     @NotNull
@@ -98,7 +99,7 @@ public final class ProcessoTransferenciaVeiculoListagem {
                 "Unidade B Destino",
                 "Regional Y Origem",
                 "Regional Z Destino",
-                "Observação sobre o processo de movimentação",
+                "Observação sobre o processo de transferência",
                 placasTransferidas,
                 placasTransferidas.size());
     }
@@ -138,7 +139,7 @@ public final class ProcessoTransferenciaVeiculoListagem {
         return nomeRegionalDestino;
     }
 
-    @NotNull
+    @Nullable
     public String getObservacaoRealizacao() {
         return observacaoRealizacao;
     }
@@ -148,7 +149,7 @@ public final class ProcessoTransferenciaVeiculoListagem {
         return placasTransferidas;
     }
 
-    public int getQtdPlacasTransferidos() {
-        return qtdPlacasTransferidos;
+    public int getQtdPlacasTransferidas() {
+        return qtdPlacasTransferidas;
     }
 }

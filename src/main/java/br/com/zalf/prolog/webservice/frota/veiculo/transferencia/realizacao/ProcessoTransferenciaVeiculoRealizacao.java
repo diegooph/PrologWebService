@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.realizacao;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +35,14 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
     /**
      * Observação que o colaborador inseriu para este processo de transferência.
      */
-    @NotNull
+    @Nullable
     private final String observacao;
 
     public ProcessoTransferenciaVeiculoRealizacao(@NotNull final Long codUnidadeOrigem,
                                                   @NotNull final Long codUnidadeDestino,
                                                   @NotNull final Long codColaboradorRealizacaoTransferencia,
                                                   @NotNull final List<VeiculoTransferencia> veiculosTransferencia,
-                                                  @NotNull final String observacao) {
+                                                  @Nullable final String observacao) {
         this.codUnidadeOrigem = codUnidadeOrigem;
         this.codUnidadeDestino = codUnidadeDestino;
         this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
@@ -83,7 +84,7 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
         return veiculosTransferencia;
     }
 
-    @NotNull
+    @Nullable
     public String getObservacao() {
         return observacao;
     }
