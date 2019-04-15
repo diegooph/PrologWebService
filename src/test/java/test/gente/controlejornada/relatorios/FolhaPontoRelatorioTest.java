@@ -2,7 +2,6 @@ package test.gente.controlejornada.relatorios;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
@@ -47,13 +46,11 @@ public class FolhaPontoRelatorioTest extends BaseTest {
 
     @Override
     public void initialize() {
-        DatabaseManager.init();
         service = new ControleJornadaRelatorioService();
     }
 
     @Override
     public void destroy() {
-        DatabaseManager.finish();
     }
 
     @Test
