@@ -16,29 +16,29 @@ public interface TipoMarcacaoDao {
     /**
      * Método utilizado para salvar um novo {@link TipoMarcacao tipo de marcação}.
      *
-     * @param tipoMarcacao {@link TipoMarcacao Objeto} contendo as informações a serem salvas no banco de dados.
-     * @param listener     {@link DadosIntervaloChangedListener Listener} utilizado para executar ações quando certas
-     *                     modificações no controle de jornada acontecem.
+     * @param tipoMarcacao      {@link TipoMarcacao Objeto} contendo as informações a serem salvas no banco de dados.
+     * @param intervaloListener {@link DadosIntervaloChangedListener Listener} utilizado para executar ações quando certas
+     *                          modificações no controle de jornada acontecem.
      * @return O código do {@link TipoMarcacao tipo de marcação} inserido no banco de dados.
      * @throws Throwable Se algum erro ocorrer ao salvar o tipo de marcação.
      */
     @NotNull
     Long insertTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao,
-                            @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
+                            @NotNull final DadosIntervaloChangedListener intervaloListener) throws Throwable;
 
     /**
      * Método utilizado para atualizar informações de um {@link TipoMarcacao tipo de marcação}.
      * Se o objetivo é apenas ativar/inativar um {@link TipoMarcacao tipo de marcação} pode ser
      * utilizado o método {@link #updateStatusAtivoTipoMarcacao(Long, TipoMarcacao, DadosIntervaloChangedListener)}.
      *
-     * @param tipoMarcacao {@link TipoMarcacao Objeto} contendo as informações a serem atualizadas.
-     * @param listener     {@link DadosIntervaloChangedListener Listener} utilizado para executar ações quando certas
-     *                     modificações no controle de jornada acontecem.
+     * @param tipoMarcacao      {@link TipoMarcacao Objeto} contendo as informações a serem atualizadas.
+     * @param intervaloListener {@link DadosIntervaloChangedListener Listener} utilizado para executar ações quando certas
+     *                          modificações no controle de jornada acontecem.
      * @throws Throwable Se algum erro ocorrer ao atualizar o tipo de marcação.
      * @see #updateStatusAtivoTipoMarcacao(Long, TipoMarcacao, DadosIntervaloChangedListener).
      */
     void updateTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao,
-                            @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
+                            @NotNull final DadosIntervaloChangedListener intervaloListener) throws Throwable;
 
     /**
      * Método utilizado para listar os {@link List<TipoMarcacao> tipos de marcações} para o
@@ -77,17 +77,17 @@ public interface TipoMarcacaoDao {
      * Se for necessário atualizar outras informações de um tipo de marcação pode ser
      * utilizado o método {@link #updateTipoMarcacao(TipoMarcacao, DadosIntervaloChangedListener)}.
      *
-     * @param codTipoMarcacao Código do tipo de marcação que será atualizado.
-     * @param tipoMarcacao    Objeto {@link TipoMarcacao tipo de marcação} contendo o
-     *                        status {@link TipoMarcacao#ativo}.
-     * @param listener        {@link DadosIntervaloChangedListener Listener} utilizado para executar ações quando certas
-     *                        modificações no controle de jornada acontecem.
+     * @param codTipoMarcacao   Código do tipo de marcação que será atualizado.
+     * @param tipoMarcacao      Objeto {@link TipoMarcacao tipo de marcação} contendo o
+     *                          status {@link TipoMarcacao#ativo}.
+     * @param intervaloListener {@link DadosIntervaloChangedListener Listener} utilizado para executar ações quando certas
+     *                          modificações no controle de jornada acontecem.
      * @throws Throwable Se algum erro ocorrer ao atualizar o status do tipo de marcação.
      * @see #updateTipoMarcacao(TipoMarcacao, DadosIntervaloChangedListener)
      */
     void updateStatusAtivoTipoMarcacao(@NotNull final Long codTipoMarcacao,
                                        @NotNull final TipoMarcacao tipoMarcacao,
-                                       @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
+                                       @NotNull final DadosIntervaloChangedListener intervaloListener) throws Throwable;
 
     /**
      * A {@link FormulaCalculoJornada fórmula de cálculo de Jornada} é um objeto que contém as informações para a

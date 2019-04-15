@@ -24,7 +24,7 @@ import java.util.List;
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
 
     @Override
-    public void insert(Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable {
+    public void insert(Colaborador colaborador, DadosIntervaloChangedListener intervaloListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -64,8 +64,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 throw new SQLException("Erro ao inserir o colaborador");
             }
 
-            // Avisamos o listener que um colaborador foi inserido.
-            listener.onColaboradorInserido(conn, Injection.provideEmpresaDao(), colaborador);
+            // Avisamos o intervaloListener que um colaborador foi inserido.
+            intervaloListener.onColaboradorInserido(conn, Injection.provideEmpresaDao(), colaborador);
 
             // Tudo certo, commita.
             conn.commit();
@@ -80,7 +80,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
-    public void update(Long cpfAntigo, Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable {
+    public void update(Long cpfAntigo, Colaborador colaborador, DadosIntervaloChangedListener intervaloListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -121,8 +121,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 throw new SQLException("Erro ao atualizar o colaborador com CPF: " + cpfAntigo);
             }
 
-            // Avisa o listener que atualizamos um colaborador.
-            listener.onColaboradorAtualizado(conn, Injection.provideEmpresaDao(), this, colaborador, cpfAntigo);
+            // Avisa o intervaloListener que atualizamos um colaborador.
+            intervaloListener.onColaboradorAtualizado(conn, Injection.provideEmpresaDao(), this, colaborador, cpfAntigo);
 
             // Tudo certo, commita.
             conn.commit();
@@ -156,7 +156,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
-    public void delete(Long cpf, DadosIntervaloChangedListener listener) throws Throwable {
+    public void delete(Long cpf, DadosIntervaloChangedListener intervaloListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -171,8 +171,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 throw new SQLException("Erro ao inativar colaborador com CPF: " + cpf);
             }
 
-            // Já inativamos o colaborador, repassamos o evento ao listener.
-            listener.onColaboradorInativado(conn, this, cpf);
+            // Já inativamos o colaborador, repassamos o evento ao intervaloListener.
+            intervaloListener.onColaboradorInativado(conn, this, cpf);
 
             // Se deu tudo certo, commita.
             conn.commit();

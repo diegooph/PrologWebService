@@ -749,7 +749,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     public void alterarVisaoCargo(Visao visao,
                                   Long codUnidade,
                                   Long codCargo,
-                                  DadosIntervaloChangedListener listener) throws Throwable {
+                                  DadosIntervaloChangedListener intervaloListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -776,8 +776,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
                 }
             }
 
-            // Avisamos o listener que um cargo foi atualizado.
-            listener.onCargoAtualizado(conn, this, visao, codCargo, codUnidade);
+            // Avisamos o intervaloListener que um cargo foi atualizado.
+            intervaloListener.onCargoAtualizado(conn, this, visao, codCargo, codUnidade);
 
             // Tudo certo, commita.
             conn.commit();
