@@ -1,9 +1,16 @@
 Change Log
 ==========
 
-<a name="v0.0.88"></a>
-## Version [v0.0.88](https://github.com/luizfp/PrologWebService/compare/v0.0.87...v0.0.88) (release-date) [unreleased]
+<a name="v0.0.89"></a>
+## Version [v0.0.89](https://github.com/luizfp/PrologWebService/compare/v0.0.88...v0.0.89) (release-date) [unreleased]
 
+
+<a name="v0.0.88"></a>
+## Version [v0.0.88](https://github.com/luizfp/PrologWebService/compare/v0.0.87...v0.0.88) (2019-04-11)
+
+### Features
+* Cria novos métodos para relatório de listagem de colaboradores (PL-1892)
+* Cria métodos para permitir a realização de checklists offline
 
 <a name="v0.0.87"></a>
 ## Version [v0.0.87](https://github.com/luizfp/PrologWebService/compare/v0.0.86...v0.0.87) (2019-03-28)
