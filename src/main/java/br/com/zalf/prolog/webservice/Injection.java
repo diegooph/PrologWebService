@@ -38,8 +38,8 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHand
 import br.com.zalf.prolog.webservice.errorhandling.sql.ProLogSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
-import br.com.zalf.prolog.webservice.frota.checklist.model.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.checklist.model.VersaoDadosChecklistOfflineAtualizador;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.VersaoDadosChecklistOfflineAtualizador;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDao;
