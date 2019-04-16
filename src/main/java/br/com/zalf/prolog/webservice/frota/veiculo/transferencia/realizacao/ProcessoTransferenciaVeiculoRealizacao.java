@@ -31,7 +31,7 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
      * Lista de veículos que o colaborador está transferindo.
      */
     @NotNull
-    private final List<VeiculoTransferencia> veiculosTransferencia;
+    private final List<VeiculoEnvioTransferencia> veiculosTransferencia;
     /**
      * Observação que o colaborador inseriu para este processo de transferência.
      */
@@ -41,7 +41,7 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
     public ProcessoTransferenciaVeiculoRealizacao(@NotNull final Long codUnidadeOrigem,
                                                   @NotNull final Long codUnidadeDestino,
                                                   @NotNull final Long codColaboradorRealizacaoTransferencia,
-                                                  @NotNull final List<VeiculoTransferencia> veiculosTransferencia,
+                                                  @NotNull final List<VeiculoEnvioTransferencia> veiculosTransferencia,
                                                   @Nullable final String observacao) {
         this.codUnidadeOrigem = codUnidadeOrigem;
         this.codUnidadeDestino = codUnidadeDestino;
@@ -52,9 +52,9 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
 
     @NotNull
     public static ProcessoTransferenciaVeiculoRealizacao createDummy() {
-        final List<VeiculoTransferencia> veiculosTransferencia = new ArrayList<>();
+        final List<VeiculoEnvioTransferencia> veiculosTransferencia = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            veiculosTransferencia.add(VeiculoTransferencia.createDummy());
+            veiculosTransferencia.add(VeiculoEnvioTransferencia.createDummy());
         }
         return new ProcessoTransferenciaVeiculoRealizacao(
                 10L,
@@ -80,7 +80,7 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
     }
 
     @NotNull
-    public List<VeiculoTransferencia> getVeiculosTransferencia() {
+    public List<VeiculoEnvioTransferencia> getVeiculosTransferencia() {
         return veiculosTransferencia;
     }
 

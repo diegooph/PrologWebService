@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Esse objeto representa um veículo que está sendo transferido.
+ *
  * Created on 12/04/19
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class VeiculoTransferencia {
+public final class VeiculoEnvioTransferencia {
     /**
      * Código único de identificação do veículo no banco de dados.
      */
@@ -22,19 +24,19 @@ public final class VeiculoTransferencia {
     @NotNull
     private final List<Long> codPneusAplicadosVeiculo;
 
-    public VeiculoTransferencia(@NotNull final Long codVeiculo,
-                                @NotNull final List<Long> codPneusAplicadosVeiculo) {
+    public VeiculoEnvioTransferencia(@NotNull final Long codVeiculo,
+                                     @NotNull final List<Long> codPneusAplicadosVeiculo) {
         this.codVeiculo = codVeiculo;
         this.codPneusAplicadosVeiculo = codPneusAplicadosVeiculo;
     }
 
     @NotNull
-    public static VeiculoTransferencia createDummy() {
+    public static VeiculoEnvioTransferencia createDummy() {
         final List<Long> codPneusAplicadosVeiculo = new ArrayList<>();
         codPneusAplicadosVeiculo.add(1223L);
         codPneusAplicadosVeiculo.add(9288L);
         codPneusAplicadosVeiculo.add(1586L);
-        return new VeiculoTransferencia(223L, codPneusAplicadosVeiculo);
+        return new VeiculoEnvioTransferencia(223L, codPneusAplicadosVeiculo);
     }
 
     @NotNull
