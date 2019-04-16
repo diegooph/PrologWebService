@@ -46,6 +46,46 @@ public class Veiculo {
 
     }
 
+    public Long getCodTipo() {
+        return tipo.getCodigo();
+    }
+
+    public Long getCodModelo() {
+        return modelo.getCodigo();
+    }
+
+    public boolean temEstepe() {
+        if (listPneus == null)
+            return false;
+
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < listPneus.size(); i++) {
+            if (listPneus.get(i).getPosicao() >= 900) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @NotNull
+    public List<Pneu> getEstepes() {
+        final List<Pneu> estepes = new ArrayList<>();
+
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < listPneus.size(); i++) {
+            final Pneu pneu = listPneus.get(i);
+            if (pneu.isEstepe())
+                estepes.add(pneu);
+        }
+
+        return estepes;
+    }
+
+    public void removeEstepes() {
+        listPneus.removeIf(Pneu::isEstepe);
+    }
+
     public Long getCodigo() {
         return codigo;
     }
@@ -140,38 +180,6 @@ public class Veiculo {
 
     public void setCodUnidadeAlocado(final Long codUnidadeAlocado) {
         this.codUnidadeAlocado = codUnidadeAlocado;
-    }
-
-    public boolean temEstepe() {
-        if (listPneus == null)
-            return false;
-
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < listPneus.size(); i++) {
-            if (listPneus.get(i).getPosicao() >= 900) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @NotNull
-    public List<Pneu> getEstepes() {
-        final List<Pneu> estepes = new ArrayList<>();
-
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < listPneus.size(); i++) {
-            final Pneu pneu = listPneus.get(i);
-            if (pneu.isEstepe())
-                estepes.add(pneu);
-        }
-
-        return estepes;
-    }
-
-    public void removeEstepes() {
-        listPneus.removeIf(Pneu::isEstepe);
     }
 
     @Override
