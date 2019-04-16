@@ -51,12 +51,8 @@ public final class DummyTransferenciaVeiculoResource extends DummyData {
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/processo-transferencia-veiculo-visualizacao")
-    public List<ProcessoTransferenciaVeiculoVisualizacao> getProcessoTransferenciaVeiculoVisualizacao() {
-        final List<ProcessoTransferenciaVeiculoVisualizacao> processo = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            processo.add(ProcessoTransferenciaVeiculoVisualizacao.createDummy());
-        }
-        return processo;
+    public ProcessoTransferenciaVeiculoVisualizacao getProcessoTransferenciaVeiculoVisualizacao() {
+        return ProcessoTransferenciaVeiculoVisualizacao.createDummy();
     }
 
     @GET
