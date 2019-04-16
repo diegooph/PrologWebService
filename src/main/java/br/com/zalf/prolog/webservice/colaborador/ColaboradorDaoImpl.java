@@ -68,7 +68,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             if (rSet.next()) {
                 final long codColaboradorInserido = rSet.getLong("CODIGO");
                 if (codColaboradorInserido <= 0) {
-                    throw new SQLException("Erro ao inserir o colaborador RETURNING CODIGO: " + codColaboradorInserido);
+                    throw new SQLException("Erro ao inserir o colaborador:\n" +
+                            "codColaboradorInserido: " + codColaboradorInserido);
                 }
 
                 // Avisamos os Listeners que um colaborador foi inserido.
@@ -137,7 +138,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 if (codColaboradorAtualizado <= 0) {
                     throw new SQLException("Erro ao atualizar o colaborador:\n" +
                             "CPF: " + cpfAntigo + "\n" +
-                            "RETURNING CODIGO:" + codColaboradorAtualizado);
+                            "codColaboradorAtualizado:" + codColaboradorAtualizado);
                 }
 
                 // Avisa os Listeners que atualizamos um colaborador.
@@ -184,7 +185,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 if (codColaboradorAtualizado <= 0) {
                     throw new SQLException("Erro ao atualizar o status do colaborador:\n" +
                             "CPF: " + cpf + "\n" +
-                            "RETURNING CODIGO: " + codColaboradorAtualizado);
+                            "codColaboradorAtualizado: " + codColaboradorAtualizado);
                 }
                 // Avisamos que o colaborador teve seu status atualizado
                 checklistOfflineListener.onUpdateStatusColaborador(conn, codColaboradorAtualizado);
@@ -224,7 +225,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 if (codColaboradorInativado <= 0) {
                     throw new SQLException("Erro ao inativar colaborador:\n" +
                             "CPF: " + cpf + "\n" +
-                            "RETURNING CODIGO: " + codColaboradorInativado);
+                            "codColaboradorInativado: " + codColaboradorInativado);
                 }
 
                 // Já inativamos o colaborador, repassamos o evento aos Listeners.
@@ -242,7 +243,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             }
             throw e;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt, rSet);
         }
     }
 

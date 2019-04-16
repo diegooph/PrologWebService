@@ -64,7 +64,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                 final long codModeloChecklistInserido = rSet.getLong("CODIGO");
                 if (codModeloChecklistInserido <= 0) {
                     throw new SQLException("Erro ao inserir modelo de checklist:\n" +
-                            "RETURNING CODIGO: " + codModeloChecklistInserido);
+                            "codModeloChecklistInserido: " + codModeloChecklistInserido);
                 }
                 modeloChecklist.setCodigo(codModeloChecklistInserido);
                 insertModeloTipoVeiculo(conn, modeloChecklist);
@@ -311,8 +311,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                 conn.commit();
             } else {
                 throw new SQLException("Erro ao atualizar o status do modelo de checklist:\n"
-                        + "unidade: " + codUnidade + "\n"
-                        + "modelo: " + codModelo);
+                        + "codUnidade: " + codUnidade + "\n"
+                        + "codModelo: " + codModelo);
             }
         } catch (final Throwable t) {
             if (conn != null) {

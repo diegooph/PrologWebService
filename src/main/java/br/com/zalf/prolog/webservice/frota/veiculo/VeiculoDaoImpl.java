@@ -52,7 +52,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 if (codVeiculoInserido <= 0) {
                     throw new SQLException("Erro ao inserir veículo:\n" +
                             "codUnidade: " + codUnidade + "\n" +
-                            "RETURNING CODIGO: " + codVeiculoInserido);
+                            "codVeiculoInserido: " + codVeiculoInserido);
                 }
                 // Avisamos ao Listener que um veículo foi inserido.
                 checklistOfflineListener.onInsertVeiculo(conn, codVeiculoInserido);
@@ -73,26 +73,48 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public boolean update(Veiculo veiculo, String placaOriginal) throws SQLException {
+    public boolean update(
+            @NotNull final String placaOriginal,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
+            conn.setAutoCommit(false);
+            final long kmAntigoVeiculo = getKmAntigoVeiculo(conn, placaOriginal);
+            final long kmNovoVeiculo = veiculo.getKmAtual();
             stmt = conn.prepareStatement("UPDATE VEICULO SET "
                     + "KM = ?, COD_MODELO = ?, COD_EIXOS = ? "
-                    + "WHERE PLACA = ?");
-            stmt.setLong(1, veiculo.getKmAtual());
+                    + "WHERE PLACA = ? RETURNING CODIGO");
+            stmt.setLong(1, kmNovoVeiculo);
             stmt.setLong(2, veiculo.getModelo().getCodigo());
             stmt.setLong(3, veiculo.getEixos().codigo);
             stmt.setString(4, placaOriginal);
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao atualizar o veículo");
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codVeiculoAtualizado = rSet.getLong("CODIGO");
+                if (codVeiculoAtualizado <= 0) {
+                    throw new SQLException("Erro ao atualizar o veículo:\n" +
+                            "placaOriginal: " + placaOriginal + "\n" +
+                            "codVeiculoAtualizado: " + codVeiculoAtualizado);
+                }
+                // Notificamos o Listener sobre a atualização do veículo.
+                checklistOfflineListener.onUpdateVeiculo(conn, codVeiculoAtualizado, kmAntigoVeiculo, kmNovoVeiculo);
+                conn.commit();
+                return true;
+            } else {
+                throw new SQLException("Erro ao atualizar o veículo: " + placaOriginal);
             }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
         } finally {
-            close(conn, stmt);
+            close(conn, stmt, rSet);
         }
-        return true;
     }
 
     @Override
@@ -119,7 +141,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     throw new SQLException("Erro ao atualizar o status do veículo:\n" +
                             "codUnidade: " + codUnidade + "\n" +
                             "placa: " + placa + "\n" +
-                            "RETURNING CODIGO: " + codVeiculoAtualizado);
+                            "codVeiculoAtualizado: " + codVeiculoAtualizado);
                 }
                 // Devemos disparar o listener avisando que ocorreu uma atualização de Status.
                 checklistOfflineListener.onUpdateStatusVeiculo(conn, codVeiculoAtualizado);
@@ -157,7 +179,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 if (codVeiculoDeletado <= 0) {
                     throw new SQLException("Erro ao inativar o veículo:\n" +
                             "placa: " + placa + "\n" +
-                            "RETURNING CODIGO: " + codVeiculoDeletado);
+                            "codVeiculoDeletado: " + codVeiculoDeletado);
                 }
                 // Devemos disparar o listener avisando que ocorreu uma inativação.
                 checklistOfflineListener.onDeleteVeiculo(conn, codVeiculoDeletado);
@@ -716,6 +738,24 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             }
         } finally {
             close(stmt);
+        }
+    }
+
+    private long getKmAntigoVeiculo(@NotNull final Connection conn,
+                                    @NotNull final String placaOriginal) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT V.KM FROM VEICULO V WHERE V.PLACA = ?;");
+            stmt.setString(1, placaOriginal);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("KM");
+            } else {
+                throw new SQLException("Erro ao busca KM antigo da placa: " + placaOriginal);
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 

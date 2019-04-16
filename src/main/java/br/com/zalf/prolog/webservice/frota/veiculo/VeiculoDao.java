@@ -36,14 +36,17 @@ public interface VeiculoDao {
                    @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
-     * Atualiza os dados de um veículo
+     * Método utilizado para atualizar as informações de um veículo.
      *
-     * @param veiculo       veículo
-     * @param placaOriginal placa original do veículo
-     * @return resultado da requisição
-     * @throws SQLException caso não seja possível realizar o update
+     * @param placaOriginal            Placa do veículo que será atualizado.
+     * @param veiculo                  Objeto contendo as informações que serão inseridas.
+     * @param checklistOfflineListener Listener utilizado para notificar a alteração em um veículo.
+     * @return <code>TRUE</code> se a operação se bem sucedida, <code>FALSE</code> caso contrário.
+     * @throws Throwable Se algum erro ocorrer durante a operação.
      */
-    boolean update(Veiculo veiculo, String placaOriginal) throws SQLException;
+    boolean update(@NotNull final String placaOriginal,
+                   @NotNull final Veiculo veiculo,
+                   @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
      * Método utilizado para atualizar o status (ATIVO ou INATIVO) de um veículo.

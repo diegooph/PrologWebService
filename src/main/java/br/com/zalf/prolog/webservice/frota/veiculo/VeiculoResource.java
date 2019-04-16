@@ -7,7 +7,10 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -40,8 +43,9 @@ public final class VeiculoResource {
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
     @Path("/{placaOriginal}")
-    public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) {
-        if (service.update(veiculo, placaOriginal)) {
+    public Response update(@PathParam("placaOriginal") @Required final String placaOriginal,
+                           @Required final Veiculo veiculo) {
+        if (service.update(placaOriginal, veiculo)) {
             return Response.ok("Veículo atualizado com sucesso");
         } else {
             return Response.error("Erro ao atualizar o veículo");

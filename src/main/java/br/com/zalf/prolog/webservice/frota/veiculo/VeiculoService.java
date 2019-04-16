@@ -68,10 +68,10 @@ public final class VeiculoService {
         }
     }
 
-    public boolean update(Veiculo veiculo, String placaOriginal) {
+    public boolean update(String placaOriginal, Veiculo veiculo) {
         try {
-            return dao.update(veiculo, placaOriginal);
-        } catch (SQLException e) {
+            return dao.update(placaOriginal, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao atualizar o veículo. \n" +
                     "placaOriginal: %s", placaOriginal), e);
             return false;

@@ -69,9 +69,13 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
 
     @Override
     public void onUpdateVeiculo(@NotNull final Connection connection,
-                                @NotNull final Long codVeiculo) throws Throwable {
-        // Se o veículo não está associado a nenhum modelo de checklist, nada precisamos fazer.
-        if (hasVinculoWithModeloChecklist(connection, codVeiculo)) {
+                                @NotNull final Long codVeiculo,
+                                final long kmAntigoVeiculo,
+                                final long kmNovoVeiculo) throws Throwable {
+        // Só iremos incrementar a versão dos dados se a placa que sofreu edição está vinculada a um
+        // modelo de checklist e se o KM inserido na placa for menor que o anterior.
+        if (hasVinculoWithModeloChecklist(connection, codVeiculo)
+                && kmNovoVeiculo < kmAntigoVeiculo) {
             incrementaVersaoDadosUnidadeFromVeiculo(connection, codVeiculo);
         }
     }
