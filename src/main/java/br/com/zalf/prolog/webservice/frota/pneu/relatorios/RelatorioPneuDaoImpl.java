@@ -818,6 +818,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                         new QtdDiasAfericoesVencidas(
                                 rSet.getString("UNIDADE"),
                                 rSet.getString("PLACA"),
+                                rSet.getBoolean("PODE_AFERIR_SULCO"),
+                                rSet.getBoolean("PODE_AFERIR_PRESSAO"),
                                 Optional.ofNullable(
                                         NullIf.equal(rSet.getInt("QTD_DIAS_AFERICAO_SULCO_VENCIDA"), 0)),
                                 Optional.ofNullable(

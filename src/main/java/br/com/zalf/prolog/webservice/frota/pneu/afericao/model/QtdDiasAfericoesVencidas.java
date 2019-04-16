@@ -9,11 +9,14 @@ import java.util.Optional;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class QtdDiasAfericoesVencidas {
     @NotNull
     private final String nomeUnidade;
     @NotNull
     private final String placaVeiculo;
+    private final boolean podeAferirSulco;
+    private final boolean podeAferirPressao;
     @NotNull
     private final Optional<Integer> qtdDiasAfericaoSulcoVencido;
     @NotNull
@@ -21,10 +24,14 @@ public class QtdDiasAfericoesVencidas {
 
     public QtdDiasAfericoesVencidas(@NotNull final String nomeUnidade,
                                     @NotNull final String placaVeiculo,
+                                    final boolean podeAferirSulco,
+                                    final boolean podeAferirPressao,
                                     @NotNull final Optional<Integer> qtdDiasAfericaoSulcoVencido,
                                     @NotNull final Optional<Integer> qtdDiasAfericaoPressaoVencida) {
         this.nomeUnidade = nomeUnidade;
         this.placaVeiculo = placaVeiculo;
+        this.podeAferirSulco = podeAferirSulco;
+        this.podeAferirPressao = podeAferirPressao;
         this.qtdDiasAfericaoSulcoVencido = qtdDiasAfericaoSulcoVencido;
         this.qtdDiasAfericaoPressaoVencida = qtdDiasAfericaoPressaoVencida;
     }
@@ -37,6 +44,14 @@ public class QtdDiasAfericoesVencidas {
     @NotNull
     public String getPlacaVeiculo() {
         return placaVeiculo;
+    }
+
+    public boolean isPodeAferirSulco() {
+        return podeAferirSulco;
+    }
+
+    public boolean isPodeAferirPressao() {
+        return podeAferirPressao;
     }
 
     @NotNull
