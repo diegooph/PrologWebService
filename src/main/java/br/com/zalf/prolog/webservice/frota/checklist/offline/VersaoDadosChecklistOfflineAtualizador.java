@@ -126,14 +126,12 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
     public void onCargoAtualizado(@NotNull final Connection connection,
                                   @NotNull final Long codUnidade,
                                   @NotNull final Long codCargoAtualizado,
-                                  final boolean tinhaPermissaoRealizarChecklist) throws Throwable {
+                                  final boolean tinhaPermissaoRealizarChecklist,
+                                  final boolean temPermissaoRealizarChecklist) throws Throwable {
         // Se o cargo TINHA permissão para realizar checklist e foi removido ou se o cargo NÃO TINHA permissão
         // para realizar checklist e recebeu ela, então devemos incrementar a 'versão dos dados'.
-        if (permissaoRealizarChecklistRemovidaOuAdicionada(
-                connection,
-                codUnidade,
-                codCargoAtualizado,
-                tinhaPermissaoRealizarChecklist)) {
+        if ((tinhaPermissaoRealizarChecklist && !temPermissaoRealizarChecklist)
+                || (temPermissaoRealizarChecklist && !tinhaPermissaoRealizarChecklist)) {
             incrementaVersaoDadosUnidade(connection, codUnidade);
         }
     }
@@ -157,33 +155,6 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
             } else {
                 throw new SQLException("Erro ao criar ou atualizar 'versao dos dados' para a unidade:\n" +
                         "codUnidade: " + codUnidade);
-            }
-        } finally {
-            DatabaseConnection.close(stmt, rSet);
-        }
-    }
-
-    private boolean permissaoRealizarChecklistRemovidaOuAdicionada(
-            @NotNull final Connection connection,
-            @NotNull final Long codUnidade,
-            @NotNull final Long codCargoAtualizado,
-            final boolean tinhaPermissaoRealizarChecklist) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = connection.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_OFFLINE_ATUALIZOU_PERMISSAO_REALIZAR_CHECK(?, ?, ?) AS DEVE_ATUALIZAR_DADOS;");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codCargoAtualizado);
-            stmt.setBoolean(3, tinhaPermissaoRealizarChecklist);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getBoolean("DEVE_ATUALIZAR_DADOS");
-            } else {
-                throw new SQLException("Erro ao verificar se o cargo sofreu alteração na realização de checklist:\n" +
-                        "codUnidade: " + codUnidade + "\n" +
-                        "codCargoAtualizado: " + codCargoAtualizado + "\n" +
-                        "tinhaPermissaoRealizarChecklist: " + tinhaPermissaoRealizarChecklist);
             }
         } finally {
             DatabaseConnection.close(stmt, rSet);
@@ -268,7 +239,7 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getBoolean("ESTA_VINCULADO_MODELO_CHECKLIST");
+                return rSet.getBoolean("ESTA_VINCULADO_CHECKLIST");
             } else {
                 throw new SQLException("Erro ao verificar se o veículo está vinculado a algum modelo de checklist:\n" +
                         "codVeiculo: " + codVeiculo);

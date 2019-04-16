@@ -759,7 +759,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-
+            final boolean tinhaPermissaoRealizarChecklist = getTinhaPermissaoRealizarChecklist(conn, codUnidade, codCargo);
             // Primeiro deletamos qualquer função do ProLog cadastrada nesse cargo para essa unidade.
             deleteCargoFuncaoProlog(codCargo, codUnidade, conn);
 
@@ -780,13 +780,13 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
                 }
             }
 
-            // Avisamos o intervaloListener que um cargo foi atualizado.
+            // Notificamos a alteração de um cargo para os Listeners.
             intervaloListener.onCargoAtualizado(conn, this, visao, codCargo, codUnidade);
-            // Notificamos a alteração de um cargo para o listener do Checklist Offline.
             checklistOfflineListener.onCargoAtualizado(
                     conn,
                     codUnidade,
                     codCargo,
+                    tinhaPermissaoRealizarChecklist,
                     visao.hasAccessToFunction(Pilares.Frota.Checklist.REALIZAR));
 
             // Tudo certo, commita.
@@ -798,6 +798,30 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             throw e;
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    private boolean getTinhaPermissaoRealizarChecklist(@NotNull final Connection conn,
+                                                       @NotNull final Long codUnidade,
+                                                       @NotNull final Long codCargo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT * FROM CARGO_FUNCAO_PROLOG_V11 CARGO " +
+                    "WHERE CARGO.COD_UNIDADE = ? " +
+                    "      AND CARGO.COD_FUNCAO_COLABORADOR = ? " +
+                    "      AND CARGO.COD_FUNCAO_PROLOG = ?) AS TEM_PERMISSAO;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codCargo);
+            stmt.setLong(3, Pilares.Frota.Checklist.REALIZAR);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("TEM_PERMISSAO");
+            } else {
+                throw new SQLException("Erro ao verificar se o cargo possuia permissão de realizar checklist");
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 

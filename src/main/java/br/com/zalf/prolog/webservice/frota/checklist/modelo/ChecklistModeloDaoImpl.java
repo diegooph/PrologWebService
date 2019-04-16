@@ -295,18 +295,16 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE CHECKLIST_MODELO " +
                     "SET STATUS_ATIVO = ? " +
-                    "WHERE COD_UNIDADE  = ? AND CODIGO = ?");
+                    "WHERE COD_UNIDADE  = ? AND CODIGO = ?;");
             stmt.setBoolean(1, statusAtivo);
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codModelo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
+            if (stmt.executeUpdate() != 0) {
                 checklistOfflineListener.onUpdateStatusModeloChecklist(conn, codModelo);
                 conn.commit();
             } else {
@@ -320,7 +318,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             }
             throw t;
         } finally {
-            close(conn, stmt, rSet);
+            close(conn, stmt);
         }
     }
 
