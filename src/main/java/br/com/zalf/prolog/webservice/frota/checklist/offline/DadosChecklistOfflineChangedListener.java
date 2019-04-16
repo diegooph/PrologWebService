@@ -45,7 +45,7 @@ public interface DadosChecklistOfflineChangedListener {
                                        @NotNull final Long codModeloChecklist) throws Throwable;
 
     void onCargoAtualizado(@NotNull final Connection connection,
-                           @NotNull final Long codCargoAtualizado,
                            @NotNull final Long codUnidade,
+                           @NotNull final Long codCargoAtualizado,
                            final boolean tinhaPermissaoRealizarChecklist) throws Throwable;
 }

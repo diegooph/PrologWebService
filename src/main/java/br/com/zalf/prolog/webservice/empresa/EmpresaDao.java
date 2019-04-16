@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.empresa;
 
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
@@ -90,7 +91,7 @@ public interface EmpresaDao {
      * @param ano        ano da busca
      * @param mes        mês da busca
      * @param codUnidade unidade que deseja-se buscar
-     * @return           uma lista de {@link HolderMapaTracking}
+     * @return uma lista de {@link HolderMapaTracking}
      * @throws SQLException       caso ocorrer erro no banco
      * @throws NoContentException se não tiver conteúdo
      */
@@ -139,21 +140,28 @@ public interface EmpresaDao {
      * Insere ou atualiza as funções do prolog cadastradas para determinado cargo. Apenas cargos que têm algum
      * {@link Colaborador colaborador} vinculado podem ser editados.
      *
-     * @param visao      {@link Visao} de uma {@link Cargo}
-     * @param codUnidade código da unidade
-     * @param codCargo   código do cargo
-     * @param intervaloListener   intervaloListener para aviso das mudanças
-     * @throws Throwable caso não seja possível realizar a operação
+     * @param codUnidade               Código da Unidade.
+     * @param codCargo                 Código do Cargo que será editado.
+     * @param visao                    Objeto contendo as funções que o colaborador tem acesso.
+     * @param intervaloListener        Listener para enviar informações sobre as mudanças de cargos no contexto das
+     *                                 marcações de jornada.
+     * @param checklistOfflineListener Listener para enviar informações sobre as mudanças de cargos no contexto
+     *                                 da realização de checklist.
+     * @throws Throwable Caso ocorra algum erro no processamento do cargo.
      */
-    void alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo, DadosIntervaloChangedListener intervaloListener)
-            throws Throwable;
+    void alterarVisaoCargo(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codCargo,
+            @NotNull final Visao visao,
+            @NotNull final DadosIntervaloChangedListener intervaloListener,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException;
 
     /**
      * Insere um cargo (função).
      *
-     * @param cargo função que será inserida
+     * @param cargo      função que será inserida
      * @param codUnidade unidade que está solicitando o cadastro
      * @return código da função
      * @throws SQLException caso não seja possível realizar a operação

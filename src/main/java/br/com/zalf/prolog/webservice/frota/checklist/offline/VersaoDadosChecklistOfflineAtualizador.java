@@ -120,15 +120,15 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
 
     @Override
     public void onCargoAtualizado(@NotNull final Connection connection,
-                                  @NotNull final Long codCargoAtualizado,
                                   @NotNull final Long codUnidade,
+                                  @NotNull final Long codCargoAtualizado,
                                   final boolean tinhaPermissaoRealizarChecklist) throws Throwable {
         // Se o cargo TINHA permissão para realizar checklist e foi removido ou se o cargo NÃO TINHA permissão
         // para realizar checklist e recebeu ela, então devemos incrementar a 'versão dos dados'.
         if (permissaoRealizarChecklistRemovidaOuAdicionada(
                 connection,
-                codCargoAtualizado,
                 codUnidade,
+                codCargoAtualizado,
                 tinhaPermissaoRealizarChecklist)) {
             incrementaVersaoDadosUnidade(connection, codUnidade);
         }
