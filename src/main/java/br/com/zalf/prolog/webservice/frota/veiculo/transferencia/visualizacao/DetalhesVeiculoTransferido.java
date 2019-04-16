@@ -38,9 +38,7 @@ public final class DetalhesVeiculoTransferido {
     @NotNull
     public static DetalhesVeiculoTransferido createDummy() {
         final List<PneuVeiculoTransferido> pneusAplicados = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            pneusAplicados.add(PneuVeiculoTransferido.createDummy());
-        }
+        pneusAplicados.add(PneuVeiculoTransferido.createDummy());
         return new DetalhesVeiculoTransferido(
                 "PRO0001",
                 1L,
