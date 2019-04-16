@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
@@ -24,17 +25,21 @@ import java.util.List;
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
 
     @Override
-    public void insert(Colaborador colaborador, DadosIntervaloChangedListener intervaloListener) throws Throwable {
+    public void insert(@NotNull final Colaborador colaborador,
+                       @NotNull final DadosIntervaloChangedListener intervaloListener,
+                       @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
                     + "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO, "
                     + "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, "
-                    + "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE, PIS, COD_UNIDADE_CADASTRO) VALUES "
-                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
+                    + "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, "
+                    + "COD_EMPRESA, COD_EQUIPE, PIS, COD_UNIDADE_CADASTRO) VALUES "
+                    + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
             stmt.setLong(1, colaborador.getCpf());
             if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
                 stmt.setNull(2, Types.INTEGER);
@@ -59,30 +64,40 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(14, colaborador.getEquipe().getCodigo());
             stmt.setString(15, colaborador.getPis());
             stmt.setLong(16, colaborador.getCodUnidade());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codColaboradorInserido = rSet.getLong("CODIGO");
+                if (codColaboradorInserido <= 0) {
+                    throw new SQLException("Erro ao inserir o colaborador RETURNING CODIGO: " + codColaboradorInserido);
+                }
+
+                // Avisamos os Listeners que um colaborador foi inserido.
+                intervaloListener.onColaboradorInserido(conn, Injection.provideEmpresaDao(), colaborador);
+                checklistOfflineListener.onInsertColaborador(conn, codColaboradorInserido);
+
+                // Tudo certo, commita.
+                conn.commit();
+            } else {
                 throw new SQLException("Erro ao inserir o colaborador");
             }
-
-            // Avisamos o intervaloListener que um colaborador foi inserido.
-            intervaloListener.onColaboradorInserido(conn, Injection.provideEmpresaDao(), colaborador);
-
-            // Tudo certo, commita.
-            conn.commit();
         } catch (Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
             throw e;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt, rSet);
         }
     }
 
     @Override
-    public void update(Long cpfAntigo, Colaborador colaborador, DadosIntervaloChangedListener intervaloListener) throws Throwable {
+    public void update(@NotNull final Long cpfAntigo,
+                       @NotNull final Colaborador colaborador,
+                       @NotNull final DadosIntervaloChangedListener intervaloListener,
+                       @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
@@ -92,7 +107,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "STATUS_ATIVO = ?, NOME = ?, COD_SETOR = ?, "
                     + "COD_FUNCAO = ?, COD_UNIDADE = ?, COD_PERMISSAO = ?, "
                     + "COD_EMPRESA = ?, COD_EQUIPE = ?, PIS = ? "
-                    + "WHERE CPF = ?;");
+                    + "WHERE CPF = ? RETURNING CODIGO;");
             stmt.setLong(1, colaborador.getCpf());
             if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
                 stmt.setNull(2, Types.INTEGER);
@@ -116,66 +131,111 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(13, colaborador.getEquipe().getCodigo());
             stmt.setString(14, colaborador.getPis());
             stmt.setLong(15, cpfAntigo);
-            int count = stmt.executeUpdate();
-            if (count == 0) {
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codColaboradorAtualizado = rSet.getLong("CODIGO");
+                if (codColaboradorAtualizado <= 0) {
+                    throw new SQLException("Erro ao atualizar o colaborador:\n" +
+                            "CPF: " + cpfAntigo + "\n" +
+                            "RETURNING CODIGO:" + codColaboradorAtualizado);
+                }
+
+                // Avisa os Listeners que atualizamos um colaborador.
+                intervaloListener.onColaboradorAtualizado(
+                        conn,
+                        Injection.provideEmpresaDao(),
+                        this,
+                        colaborador,
+                        cpfAntigo);
+                checklistOfflineListener.onUpdateColaborador(conn, codColaboradorAtualizado);
+
+                // Tudo certo, commita.
+                conn.commit();
+            } else {
                 throw new SQLException("Erro ao atualizar o colaborador com CPF: " + cpfAntigo);
             }
-
-            // Avisa o intervaloListener que atualizamos um colaborador.
-            intervaloListener.onColaboradorAtualizado(conn, Injection.provideEmpresaDao(), this, colaborador, cpfAntigo);
-
-            // Tudo certo, commita.
-            conn.commit();
         } catch (Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
             throw e;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt, rSet);
         }
     }
 
     @Override
-    public void updateStatus(Long cpf, Colaborador colaborador) throws SQLException {
+    public void updateStatus(
+            @NotNull final Long cpf,
+            @NotNull final Colaborador colaborador,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE COLABORADOR SET STATUS_ATIVO = ? WHERE CPF = ?;");
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("UPDATE COLABORADOR SET STATUS_ATIVO = ? WHERE CPF = ? RETURNING CODIGO;");
             stmt.setBoolean(1, colaborador.isAtivo());
             stmt.setLong(2, cpf);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codColaboradorAtualizado = rSet.getLong("CODIGO");
+                if (codColaboradorAtualizado <= 0) {
+                    throw new SQLException("Erro ao atualizar o status do colaborador:\n" +
+                            "CPF: " + cpf + "\n" +
+                            "RETURNING CODIGO: " + codColaboradorAtualizado);
+                }
+                // Avisamos que o colaborador teve seu status atualizado
+                checklistOfflineListener.onUpdateStatusColaborador(conn, codColaboradorAtualizado);
 
-            int count = stmt.executeUpdate();
-            if (count == 0) {
+                conn.commit();
+            } else {
                 throw new SQLException("Erro ao atualizar o status do colaborador com CPF: " + cpf);
             }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt, rSet);
         }
     }
 
     @Override
-    public void delete(Long cpf, DadosIntervaloChangedListener intervaloListener) throws Throwable {
+    public void delete(@NotNull final Long cpf,
+                       @NotNull final DadosIntervaloChangedListener intervaloListener,
+                       @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
                     + "STATUS_ATIVO = FALSE, data_demissao = ? "
-                    + "WHERE CPF = ?;");
+                    + "WHERE CPF = ? RETURNING CODIGO;");
             stmt.setObject(1, LocalDate.now(Clock.systemUTC()));
             stmt.setLong(2, cpf);
-            if (stmt.executeUpdate() == 0) {
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codColaboradorInativado = rSet.getLong("CODIGO");
+                if (codColaboradorInativado <= 0) {
+                    throw new SQLException("Erro ao inativar colaborador:\n" +
+                            "CPF: " + cpf + "\n" +
+                            "RETURNING CODIGO: " + codColaboradorInativado);
+                }
+
+                // Já inativamos o colaborador, repassamos o evento aos Listeners.
+                intervaloListener.onColaboradorInativado(conn, this, cpf);
+                checklistOfflineListener.onDeleteColaborador(conn, codColaboradorInativado);
+
+                // Se deu tudo certo, commita.
+                conn.commit();
+            } else {
                 throw new SQLException("Erro ao inativar colaborador com CPF: " + cpf);
             }
-
-            // Já inativamos o colaborador, repassamos o evento ao intervaloListener.
-            intervaloListener.onColaboradorInativado(conn, this, cpf);
-
-            // Se deu tudo certo, commita.
-            conn.commit();
         } catch (Throwable e) {
             if (conn != null) {
                 conn.rollback();

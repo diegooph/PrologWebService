@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
@@ -17,22 +18,45 @@ public interface ColaboradorDao {
     /**
      * Insere um {@link Colaborador colaborador} no bando de dados.
      *
-     * @param colaborador       dados do colaborador a ser inserido e dados do solicitante
-     * @param intervaloListener para repassarmos o evento de que um colaborador está sendo inativado.
-     * @throws Throwable caso não seja possível inserir no banco de dados
+     * @param colaborador              Dados do colaborador a ser inserido.
+     * @param intervaloListener        Listener para repassar informações do colaborador inserido no contexto
+     *                                 das marcações de jornada.
+     * @param checklistOfflineListener Listener para repassar informações do colaborador inserido no contexto
+     *                                 da realização do checklist offline.
+     * @throws Throwable Caso não seja possível inserir no banco de dados.
      */
-    void insert(Colaborador colaborador, DadosIntervaloChangedListener intervaloListener) throws Throwable;
+    void insert(@NotNull final Colaborador colaborador,
+                @NotNull final DadosIntervaloChangedListener intervaloListener,
+                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
      * Atualiza os dados de um {@link Colaborador colaborador}.
      *
-     * @param cpfAntigo   CPF do colaborador a ser atualizado.
-     * @param colaborador dados do colaborador a ser atualizados.
-     * @throws Throwable caso não seja possível atualizar o colaborador.
+     * @param cpfAntigo                CPF do colaborador a ser atualizado.
+     * @param colaborador              Novos dados do colaborador a ser inserido.
+     * @param intervaloListener        Listener para repassar informações do colaborador atualizado no contexto
+     *                                 das marcações de jornada.
+     * @param checklistOfflineListener Listener para repassar informações do colaborador atualizado no contexto
+     *                                 da realização do checklist offline.
+     * @throws Throwable Caso não seja possível atualizar as informações.
      */
-    void update(Long cpfAntigo, Colaborador colaborador, DadosIntervaloChangedListener intervaloListener) throws Throwable;
+    void update(@NotNull final Long cpfAntigo,
+                @NotNull final Colaborador colaborador,
+                @NotNull final DadosIntervaloChangedListener intervaloListener,
+                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
-    void updateStatus(Long cpf, Colaborador colaborador) throws SQLException;
+    /**
+     * Método para atualizar o status (ativo ou inativo) de um colaborador.
+     *
+     * @param cpf                      CPF do colaborador que será atualizado.
+     * @param colaborador              Objeto contendo a informação se o colaborador será ATIVADO ou INATIVADO.
+     * @param checklistOfflineListener Listener para repassar informações do colaborador atualizado no contexto
+     *                                 da realização do checklist offline.
+     * @throws Throwable Se ocorrer algum erro na atualização do status do colaborador.
+     */
+    void updateStatus(@NotNull final Long cpf,
+                      @NotNull final Colaborador colaborador,
+                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
      * Para manter histórico no banco de dados, não é feita exclusão de colaborador,
@@ -42,7 +66,9 @@ public interface ColaboradorDao {
      * @param intervaloListener para repassarmos o evento de que um colaborador está sendo inativado.
      * @throws Throwable caso não seja possível inativar o colaborador.
      */
-    void delete(Long cpf, DadosIntervaloChangedListener intervaloListener) throws Throwable;
+    void delete(@NotNull final Long cpf,
+                @NotNull final DadosIntervaloChangedListener intervaloListener,
+                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
      * Busca um colaborador por seu CPF.
