@@ -9,17 +9,19 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AcaoEdicaoAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AlternativaModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.AlternativaModeloChecklistVisualizacao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +45,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     }
 
     @Override
-    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
+    public void insertModeloChecklist(
+            @NotNull final ModeloChecklistInsercao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -57,15 +61,23 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setBoolean(3, true);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                modeloChecklist.setCodigo(rSet.getLong("CODIGO"));
+                final long codModeloChecklistInserido = rSet.getLong("CODIGO");
+                if (codModeloChecklistInserido <= 0) {
+                    throw new SQLException("Erro ao inserir modelo de checklist:\n" +
+                            "RETURNING CODIGO: " + codModeloChecklistInserido);
+                }
+                modeloChecklist.setCodigo(codModeloChecklistInserido);
                 insertModeloTipoVeiculo(conn, modeloChecklist);
                 insertModeloCargo(conn, modeloChecklist);
                 insertModeloPerguntas(conn, modeloChecklist);
+
+                // Devemos notificar que uma inserção de modelo de checklist foi realizada.
+                checklistOfflineListener.onInsertModeloChecklist(conn, codModeloChecklistInserido);
+                conn.commit();
             } else {
                 throw new SQLException("Não foi possível inserir o modelo de checklist para a unidade: "
                         + modeloChecklist.getCodUnidade());
             }
-            conn.commit();
         } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
@@ -77,10 +89,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     }
 
     @Override
-    public void updateModeloChecklist(@NotNull final String token,
-                                      @NotNull final Long codUnidade,
-                                      @NotNull final Long codModelo,
-                                      @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
+    public void updateModeloChecklist(
+            @NotNull final String token,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo,
+            @NotNull final ModeloChecklistEdicao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -90,6 +104,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             if (modeloChecklist.getPerguntas() != null && modeloChecklist.getPerguntas().size() > 0) {
                 atualizaPerguntasModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
             }
+            // Notificamos o Listener que ouve atualização no modelo de checklist.
+            checklistOfflineListener.onUpdateModeloChecklist(conn, codModelo);
             conn.commit();
         } catch (final Throwable t) {
             if (conn != null) {
@@ -272,26 +288,39 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     }
 
     @Override
-    public void updateStatusAtivo(@NotNull final Long codUnidade,
-                                  @NotNull final Long codModelo,
-                                  final boolean statusAtivo) throws Throwable {
+    public void updateStatusAtivo(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo,
+            final boolean statusAtivo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
+            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE CHECKLIST_MODELO " +
                     "SET STATUS_ATIVO = ? " +
                     "WHERE COD_UNIDADE  = ? AND CODIGO = ?");
             stmt.setBoolean(1, statusAtivo);
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codModelo);
-            if (stmt.executeUpdate() == 0) {
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                checklistOfflineListener.onUpdateStatusModeloChecklist(conn, codModelo);
+                conn.commit();
+            } else {
                 throw new SQLException("Erro ao atualizar o status do modelo de checklist:\n"
                         + "unidade: " + codUnidade + "\n"
                         + "modelo: " + codModelo);
             }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
         } finally {
-            close(conn, stmt);
+            close(conn, stmt, rSet);
         }
     }
 
