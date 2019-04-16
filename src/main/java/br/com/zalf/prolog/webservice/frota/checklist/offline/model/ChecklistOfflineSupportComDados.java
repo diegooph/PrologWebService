@@ -11,6 +11,9 @@ public class ChecklistOfflineSupportComDados extends ChecklistOfflineSupport {
     @NotNull
     static final String COM_DADOS = "COM_DADOS";
 
+    /**
+     * Objeto que contém os dados para a realização do checklist offline.
+     */
     @NotNull
     private final ChecklistOfflineData checklistOfflineData;
 
