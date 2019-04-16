@@ -16,6 +16,7 @@ public final class VeiculoTransferidoVisualizacao {
      */
     @NotNull
     private final String placaVeiculo;
+    private final long kmVeiculoMomentoTransferencia;
     /**
      * Uma Lista contendo a identificação de cada pneu para o cliente. Normalmente, o número de fogo do pneu.
      */
@@ -23,8 +24,10 @@ public final class VeiculoTransferidoVisualizacao {
     private final List<String> codPneusCliente;
 
     public VeiculoTransferidoVisualizacao(@NotNull final String placaVeiculo,
+                                          final long kmVeiculoMomentoTransferencia,
                                           @NotNull final List<String> codPneusCliente) {
         this.placaVeiculo = placaVeiculo;
+        this.kmVeiculoMomentoTransferencia = kmVeiculoMomentoTransferencia;
         this.codPneusCliente = codPneusCliente;
     }
 
@@ -34,12 +37,16 @@ public final class VeiculoTransferidoVisualizacao {
         codPneusCliente.add("1092");
         codPneusCliente.add("1459");
         codPneusCliente.add("11102");
-        return new VeiculoTransferidoVisualizacao("PRO0001", codPneusCliente);
+        return new VeiculoTransferidoVisualizacao("PRO0001", 21212, codPneusCliente);
     }
 
     @NotNull
     public String getPlacaVeiculo() {
         return placaVeiculo;
+    }
+
+    public long getKmVeiculoMomentoTransferencia() {
+        return kmVeiculoMomentoTransferencia;
     }
 
     @NotNull
