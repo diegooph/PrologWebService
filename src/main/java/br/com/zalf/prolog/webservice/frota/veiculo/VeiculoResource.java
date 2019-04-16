@@ -31,8 +31,9 @@ public final class VeiculoResource {
     @POST
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
     @Path("/{codUnidade}")
-    public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) throws Throwable {
-        service.insert(veiculo, codUnidade);
+    public Response insert(@PathParam("codUnidade") @Required final Long codUnidade,
+                           @Required final Veiculo veiculo) throws Throwable {
+        service.insert(codUnidade, veiculo);
         return Response.ok("Veículo inserido com sucesso");
     }
 
