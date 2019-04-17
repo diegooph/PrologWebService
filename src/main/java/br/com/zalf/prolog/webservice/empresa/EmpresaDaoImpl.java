@@ -759,7 +759,11 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final boolean tinhaPermissaoRealizarChecklist = getTinhaPermissaoRealizarChecklist(conn, codUnidade, codCargo);
+            final boolean tinhaPermissaoRealizarChecklist = temPermissaoFuncaoProLog(
+                    conn,
+                    codUnidade,
+                    codCargo,
+                    Pilares.Frota.Checklist.REALIZAR);
             // Primeiro deletamos qualquer função do ProLog cadastrada nesse cargo para essa unidade.
             deleteCargoFuncaoProlog(codCargo, codUnidade, conn);
 
@@ -801,9 +805,10 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         }
     }
 
-    private boolean getTinhaPermissaoRealizarChecklist(@NotNull final Connection conn,
-                                                       @NotNull final Long codUnidade,
-                                                       @NotNull final Long codCargo) throws Throwable {
+    private boolean temPermissaoFuncaoProLog(@NotNull final Connection conn,
+                                             @NotNull final Long codUnidade,
+                                             @NotNull final Long codCargo,
+                                             final int codFuncaoProLog) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -813,7 +818,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
                     "      AND CARGO.COD_FUNCAO_PROLOG = ?) AS TEM_PERMISSAO;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codCargo);
-            stmt.setLong(3, Pilares.Frota.Checklist.REALIZAR);
+            stmt.setInt(3, codFuncaoProLog);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getBoolean("TEM_PERMISSAO");

@@ -83,7 +83,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final long kmAntigoVeiculo = getKmAntigoVeiculo(conn, placaOriginal);
+            final long kmAntigoVeiculo = getKmVeiculo(conn, placaOriginal);
             final long kmNovoVeiculo = veiculo.getKmAtual();
             stmt = conn.prepareStatement("UPDATE VEICULO SET "
                     + "KM = ?, COD_MODELO = ?, COD_EIXOS = ? "
@@ -741,8 +741,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    private long getKmAntigoVeiculo(@NotNull final Connection conn,
-                                    @NotNull final String placaOriginal) throws Throwable {
+    private long getKmVeiculo(@NotNull final Connection conn,
+                              @NotNull final String placaOriginal) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
