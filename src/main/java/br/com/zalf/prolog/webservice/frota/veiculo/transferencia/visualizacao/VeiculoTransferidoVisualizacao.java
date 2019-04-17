@@ -16,6 +16,11 @@ public final class VeiculoTransferidoVisualizacao {
      */
     @NotNull
     private final String placaVeiculo;
+    /**
+     * Nome do tipo de veículo estava vinculado a placa quando ela foi transferida de Unidade.
+     */
+    @NotNull
+    private final String nomeTipoVeiculoMomentoTransferencia;
     private final long kmVeiculoMomentoTransferencia;
     /**
      * Uma Lista contendo a identificação de cada pneu para o cliente. Normalmente, o número de fogo do pneu.
@@ -24,9 +29,11 @@ public final class VeiculoTransferidoVisualizacao {
     private final List<String> codPneusCliente;
 
     public VeiculoTransferidoVisualizacao(@NotNull final String placaVeiculo,
+                                          @NotNull final String nomeTipoVeiculoMomentoTransferencia,
                                           final long kmVeiculoMomentoTransferencia,
                                           @NotNull final List<String> codPneusCliente) {
         this.placaVeiculo = placaVeiculo;
+        this.nomeTipoVeiculoMomentoTransferencia = nomeTipoVeiculoMomentoTransferencia;
         this.kmVeiculoMomentoTransferencia = kmVeiculoMomentoTransferencia;
         this.codPneusCliente = codPneusCliente;
     }
@@ -37,12 +44,21 @@ public final class VeiculoTransferidoVisualizacao {
         codPneusCliente.add("1092");
         codPneusCliente.add("1459");
         codPneusCliente.add("11102");
-        return new VeiculoTransferidoVisualizacao("PRO0001", 21212, codPneusCliente);
+        return new VeiculoTransferidoVisualizacao(
+                "PRO0001",
+                "TOCO",
+                21212,
+                codPneusCliente);
     }
 
     @NotNull
     public String getPlacaVeiculo() {
         return placaVeiculo;
+    }
+
+    @NotNull
+    public String getNomeTipoVeiculoMomentoTransferencia() {
+        return nomeTipoVeiculoMomentoTransferencia;
     }
 
     public long getKmVeiculoMomentoTransferencia() {

@@ -20,7 +20,12 @@ public final class DetalhesVeiculoTransferido {
      * Código do diagrama que estava vinculado a placa quando ela foi transferida de Unidade.
      */
     @NotNull
-    private final Long codDiagramaVeiculo;
+    private final Long codDiagramaVeiculoMomentoTransferencia;
+    /**
+     * Nome do tipo de veículo estava vinculado a placa quando ela foi transferida de Unidade.
+     */
+    @NotNull
+    private final String nomeTipoVeiculoMomentoTransferencia;
     /**
      * Lista contendo as informações dos pneus que foram transferidos junto com a placa.
      */
@@ -28,10 +33,12 @@ public final class DetalhesVeiculoTransferido {
     private final List<PneuVeiculoTransferido> pneusAplicadosMomentoTransferencia;
 
     public DetalhesVeiculoTransferido(@NotNull final String placaVeiculo,
-                                      @NotNull final Long codDiagramaVeiculo,
+                                      @NotNull final Long codDiagramaVeiculoMomentoTransferencia,
+                                      @NotNull final String nomeTipoVeiculoMomentoTransferencia,
                                       @NotNull final List<PneuVeiculoTransferido> pneusAplicadosMomentoTransferencia) {
         this.placaVeiculo = placaVeiculo;
-        this.codDiagramaVeiculo = codDiagramaVeiculo;
+        this.codDiagramaVeiculoMomentoTransferencia = codDiagramaVeiculoMomentoTransferencia;
+        this.nomeTipoVeiculoMomentoTransferencia = nomeTipoVeiculoMomentoTransferencia;
         this.pneusAplicadosMomentoTransferencia = pneusAplicadosMomentoTransferencia;
     }
 
@@ -42,6 +49,7 @@ public final class DetalhesVeiculoTransferido {
         return new DetalhesVeiculoTransferido(
                 "PRO0001",
                 1L,
+                "TOCO",
                 pneusAplicados);
     }
 
@@ -51,8 +59,13 @@ public final class DetalhesVeiculoTransferido {
     }
 
     @NotNull
-    public Long getCodDiagramaVeiculo() {
-        return codDiagramaVeiculo;
+    public Long getCodDiagramaVeiculoMomentoTransferencia() {
+        return codDiagramaVeiculoMomentoTransferencia;
+    }
+
+    @NotNull
+    public String getNomeTipoVeiculoMomentoTransferencia() {
+        return nomeTipoVeiculoMomentoTransferencia;
     }
 
     @NotNull
