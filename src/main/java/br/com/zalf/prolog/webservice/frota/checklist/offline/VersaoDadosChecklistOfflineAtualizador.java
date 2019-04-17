@@ -192,7 +192,7 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
         ResultSet rSet = null;
         try {
             stmt = connection.prepareStatement("SELECT * FROM " +
-                    "FUNC_VERIFICA_COLABORADOR_POSSUI_FUNCAO_PROLOG(?, ?) AS TEM_PERMISSAO;");
+                    "FUNC_COLABORADOR_VERIFICA_POSSUI_FUNCAO_PROLOG(?, ?) AS TEM_PERMISSAO;");
             stmt.setLong(1, codColaborador);
             stmt.setInt(2, codPermissao);
             rSet = stmt.executeQuery();
@@ -236,7 +236,7 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
         ResultSet rSet = null;
         try {
             stmt = connection.prepareStatement("SELECT * " +
-                    "FROM FUNC_VERIFICA_VEICULO_POSSUI_VINCULO_MODELO_CHECKLIST(?) AS ESTA_VINCULADO_CHECKLIST;");
+                    "FROM FUNC_VEICULO_VERIFICA_POSSUI_VINCULO_MODELO_CHECKLIST(?) AS ESTA_VINCULADO_CHECKLIST;");
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
