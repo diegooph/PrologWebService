@@ -68,13 +68,14 @@ public final class VeiculoService {
         }
     }
 
-    public boolean update(Veiculo veiculo, String placaOriginal) {
+    public void update(Veiculo veiculo, String placaOriginal) throws ProLogException {
         try {
-            return dao.update(veiculo, placaOriginal);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao atualizar o veículo. \n" +
-                    "placaOriginal: %s", placaOriginal), e);
-            return false;
+            dao.update(veiculo, placaOriginal);
+        } catch (Throwable e) {
+            Log.e(TAG, String.format("Erro ao atualizar o veículo.\nplacaOriginal: %s", placaOriginal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao atualizar veículo, tente novamente");
         }
     }
 
@@ -83,7 +84,7 @@ public final class VeiculoService {
             dao.updateStatus(codUnidade, placa, veiculo);
             return true;
         } catch (Throwable e) {
-            Log.e(TAG, String.format("Erro ao atualizar o status do veículo %d", placa), e);
+            Log.e(TAG, String.format("Erro ao atualizar o status do veículo %s", placa), e);
             return false;
         }
     }
@@ -106,7 +107,9 @@ public final class VeiculoService {
             final String errorMessage = "Erro ao inserir o veículo";
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                     "Unidade: %d", codUnidade), e);
-            throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, errorMessage);
         }
     }
 

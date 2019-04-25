@@ -39,12 +39,9 @@ public final class VeiculoResource {
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
     @Path("/{placaOriginal}")
-    public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) {
-        if (service.update(veiculo, placaOriginal)) {
-            return Response.ok("Veículo atualizado com sucesso");
-        } else {
-            return Response.error("Erro ao atualizar o veículo");
-        }
+    public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) throws ProLogException {
+        service.update(veiculo, placaOriginal);
+        return Response.ok("Veículo atualizado com sucesso");
     }
 
     @PUT
