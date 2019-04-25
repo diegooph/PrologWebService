@@ -6,6 +6,7 @@ Change Log
 
 ### Refactors
 * Permite atualizar o tipo de um veículo se não houverem pneus aplicados (PL-1903)
+* Verifica permissão de relatórios de quiz na busca dos modelos da unidade
 
 
 <a name="v0.0.88"></a>

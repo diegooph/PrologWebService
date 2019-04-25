@@ -67,7 +67,8 @@ public final class QuizModeloResource {
     @Secured(permissions = {
             Pilares.Gente.Quiz.Modelo.CRIAR,
             Pilares.Gente.Quiz.Modelo.VISUALIZAR,
-            Pilares.Gente.Quiz.Modelo.ALTERAR})
+            Pilares.Gente.Quiz.Modelo.ALTERAR,
+            Pilares.Gente.Relatorios.QUIZ})
     @Path("/listagem")
     public List<ModeloQuizListagem> getModelosQuizzesByCodUnidade(
             @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
