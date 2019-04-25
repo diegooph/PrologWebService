@@ -189,7 +189,7 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("SELECT PTI.*, P.CODIGO_CLIENTE FROM PNEU_TRANSFERENCIA_INFORMACOES PTI " +
-                    "LEFT JOIN PNEU P ON PTI.COD_PNEU = P.CODIGO WHERE PTI.COD_TRANSFERENCIA = ?;");
+                    "LEFT JOIN PNEU P ON PTI.COD_PNEU = P.CODIGO WHERE PTI.COD_PROCESSO_TRANSFERENCIA = ?;");
             stmt.setLong(1, codTransferenciaProcesso);
             rSet = stmt.executeQuery();
             final List<PneuTransferenciaInformacoes> transferenciaInformacoes = new ArrayList<>();
@@ -236,7 +236,7 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT P.CODIGO_CLIENTE FROM PNEU P WHERE P.CODIGO IN " +
-                    "(SELECT PTI.COD_PNEU FROM PNEU_TRANSFERENCIA_INFORMACOES PTI WHERE PTI.COD_TRANSFERENCIA = ?);");
+                    "(SELECT PTI.COD_PNEU FROM PNEU_TRANSFERENCIA_INFORMACOES PTI WHERE PTI.COD_PROCESSO_TRANSFERENCIA = ?);");
             stmt.setLong(1, codTransferenciaProcesso);
             rSet = stmt.executeQuery();
             final List<String> pneusTransferidos = new ArrayList<>();
