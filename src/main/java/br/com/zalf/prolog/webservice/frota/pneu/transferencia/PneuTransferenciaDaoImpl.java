@@ -27,7 +27,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
+public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
 
     @Override
     public void insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
@@ -44,7 +44,9 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
                     " COD_UNIDADE_COLABORADOR," +
                     " COD_COLABORADOR," +
                     " DATA_HORA_TRANSFERENCIA_PROCESSO," +
-                    " OBSERVACAO) VALUES (?, ?, (SELECT COD_UNIDADE FROM COLABORADOR WHERE CODIGO = ?), ?, ?, ?) RETURNING CODIGO");
+                    " OBSERVACAO)" +
+                    " VALUES (?, ?, (SELECT COD_UNIDADE FROM COLABORADOR WHERE CODIGO = ?), ?, ?, ?)" +
+                    " RETURNING CODIGO");
             stmt.setLong(1, pneuTransferenciaRealizacao.getCodUnidadeOrigem());
             stmt.setLong(2, pneuTransferenciaRealizacao.getCodUnidadeDestino());
             stmt.setLong(3, pneuTransferenciaRealizacao.getCodColaboradorRealizacaoTransferencia());
@@ -54,8 +56,8 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Long codTransferencia = rSet.getLong("CODIGO");
-                insertTransferenciaValores(conn, pneuTransferenciaRealizacao, codTransferencia);
+                final Long codProcessoTransferencia = rSet.getLong("CODIGO");
+                insertTransferenciaValores(conn, pneuTransferenciaRealizacao, codProcessoTransferencia);
                 conn.commit();
             } else {
                 throw new IllegalStateException("Erro ao realizar transferência de pneus");
@@ -92,8 +94,6 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
                 transferencias.add(createPneuTransferenciaListagem(conn, rSet));
             }
             return transferencias;
-        } catch (Throwable t) {
-            throw new SQLException(t);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -101,8 +101,8 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
 
     @NotNull
     @Override
-    public PneuTransferenciaProcessoVisualizacao getVisualizacao(@NotNull final Long codTransferenciaProcesso)
-            throws Throwable {
+    public PneuTransferenciaProcessoVisualizacao getVisualizacao(
+            @NotNull final Long codTransferenciaProcesso) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -113,7 +113,7 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
             rSet = stmt.executeQuery();
             final PneuTransferenciaProcessoVisualizacao processoVisualizacao = new PneuTransferenciaProcessoVisualizacao();
             if (rSet.next()) {
-                processoVisualizacao.setCodProcessoTransferencia(rSet.getLong("COD_TRANSFERENCIA"));
+                processoVisualizacao.setCodProcessoTransferencia(rSet.getLong("COD_PROCESSO_TRANSFERENCIA"));
                 processoVisualizacao.setNomeRegionalOrigem(rSet.getString(("REGIONAL_ORIGEM")));
                 processoVisualizacao.setNomeUnidadeOrigem(rSet.getString("UNIDADE_ORIGEM"));
                 processoVisualizacao.setNomeRegionalDestino(rSet.getString("REGIONAL_DESTINO"));
@@ -127,8 +127,6 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
                         + codTransferenciaProcesso);
             }
             return processoVisualizacao;
-        } catch (Throwable t) {
-            throw new SQLException(t);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -219,7 +217,7 @@ public final class PneuTransferenciaDaoImp implements PneuTransferenciaDao {
     private PneuTransferenciaListagem createPneuTransferenciaListagem(@NotNull final Connection conn,
                                                                       @NotNull final ResultSet rSet) throws Throwable {
         final PneuTransferenciaListagem pneuTransferenciaListagem = new PneuTransferenciaListagem();
-        pneuTransferenciaListagem.setCodTransferenciaProcesso(rSet.getLong("COD_TRANSFERENCIA"));
+        pneuTransferenciaListagem.setCodTransferenciaProcesso(rSet.getLong("COD_PROCESSO_TRANSFERENCIA"));
         pneuTransferenciaListagem.setNomeRegionalOrigem(rSet.getString("REGIONAL_ORIGEM"));
         pneuTransferenciaListagem.setNomeUnidadeOrigem(rSet.getString("UNIDADE_ORIGEM"));
         pneuTransferenciaListagem.setNomeRegionalDestino(rSet.getString("REGIONAL_DESTINO"));
