@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.89"></a>
-## Version [v0.0.89](https://github.com/luizfp/PrologWebService/compare/v0.0.88...v0.0.89) (release-date) [unreleased]
+## Version [v0.0.89](https://github.com/luizfp/PrologWebService/compare/v0.0.88...v0.0.89) (2019-04-27)
 
 ### Refactors
 * Permite atualizar o tipo de um veículo se não houverem pneus aplicados (PL-1903)
