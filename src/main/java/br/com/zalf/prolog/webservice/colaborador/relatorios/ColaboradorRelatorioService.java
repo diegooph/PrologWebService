@@ -19,8 +19,8 @@ public class ColaboradorRelatorioService {
     @NotNull
     private ColaboradorRelatorioDao dao = Injection.provideColaboradorRelatorioDao();
 
-    public void getListagemColaboradoresByUnidadeCsv(@NotNull final OutputStream out,
-                                                     @NotNull final List<Long> codUnidades) {
+    public void getListagemColaboradoresByUnidadeCsv(final OutputStream out,
+                                                     final List<Long> codUnidades) {
         try {
             dao.getListagemColaboradoresByUnidadeCsv(
                     out,
@@ -31,12 +31,12 @@ public class ColaboradorRelatorioService {
         }
     }
 
-    public Report getListagemColaboradoresByUnidadeReport(@NotNull final List<Long> codUnidades) throws ProLogException {
+    @NotNull
+    public Report getListagemColaboradoresByUnidadeReport(final List<Long> codUnidades) throws ProLogException {
         try {
-            return dao.getListagemColaboradoresByUnidadeReport(
-                    codUnidades);
+            return dao.getListagemColaboradoresByUnidadeReport(codUnidades);
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao gerar relatório de listagem de colaoradores (REPORT)", throwable);
+            Log.e(TAG, "Erro ao gerar relatório de listagem de colaboradores (REPORT)", throwable);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao gerar relatório, tente novamente");
