@@ -139,7 +139,7 @@ public class IntegracaoOrdemServicoTransportTest extends BaseTest {
         item.setCodUnidadeOrdemServico(itemPendente.getCodUnidadeOrdemServico());
         item.setCodOrdemServico(itemPendente.getCodOrdemServico());
         item.setCodItemResolvido(itemPendente.getCodItemOrdemServico());
-        item.setCpfColaboradoResolucao("39476386800");
+        item.setCpfColaboradorResolucao("39476386800");
         item.setPlacaVeiculo(itemPendente.getPlacaVeiculo());
         item.setKmColetadoVeiculo(itemPendente.getKmAberturaServico() + 100);
         item.setDuracaoResolucaoItemEmMilissegundos(Duration.ofMinutes(15L).toMillis());
