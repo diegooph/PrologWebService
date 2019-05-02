@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
-import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.VeiculoRelatorioDao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -18,7 +18,7 @@ import java.util.List;
 public class DashboardVeiculoService {
     private static final String TAG = DashboardVeiculoService.class.getSimpleName();
     private final DashboardDao dashDao = Injection.provideDashboardDao();
-    private final RelatorioVeiculoDao relatorioDao = Injection.provideRelatorioVeiculoDao();
+    private final VeiculoRelatorioDao relatorioDao = Injection.provideVeiculoRelatorioDao();
 
     public QuantidadeItemComponent getQtdVeiculosAtivosComPneuAplicado(@NotNull final Integer codComponente,
                                                                        @NotNull final List<Long> codUnidades) {
