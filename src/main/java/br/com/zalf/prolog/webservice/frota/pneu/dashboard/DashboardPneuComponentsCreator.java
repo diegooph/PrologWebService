@@ -366,13 +366,13 @@ final class DashboardPneuComponentsCreator {
                     if (diasVencidos > 0) {
                         columns.add(new TableColumn(String.valueOf(diasVencidos)));
                     } else {
-                        columns.add(new TableColumn("No prazo"));
+                        columns.add(new TableColumn("-"));
                     }
                 } else {
-                    columns.add(new TableColumn("Nunca aferido"));
+                    columns.add(new TableColumn("-"));
                 }
             } else {
-                columns.add(new TableColumn("Aferição bloqueada"));
+                columns.add(new TableColumn("-"));
             }
 
 
@@ -383,13 +383,13 @@ final class DashboardPneuComponentsCreator {
                     if (diasVencidos > 0) {
                         columns.add(new TableColumn(String.valueOf(diasVencidos)));
                     } else {
-                        columns.add(new TableColumn("No prazo"));
+                        columns.add(new TableColumn("-"));
                     }
                 } else {
-                    columns.add(new TableColumn("Nunca aferido"));
+                    columns.add(new TableColumn("-"));
                 }
             } else {
-                columns.add(new TableColumn("Aferição bloqueada"));
+                columns.add(new TableColumn("-"));
             }
 
             lines.add(new TableLine(columns));
