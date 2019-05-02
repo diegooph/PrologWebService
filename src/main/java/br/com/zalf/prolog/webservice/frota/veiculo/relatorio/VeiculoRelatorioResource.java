@@ -20,9 +20,7 @@ import java.util.List;
 
 @Path("/veiculos/relatorios")
 @Secured(permissions = {
-        Pilares.Frota.Veiculo.VISUALIZAR,
-        Pilares.Frota.Veiculo.CADASTRAR,
-        Pilares.Frota.Veiculo.ALTERAR})
+        Pilares.Frota.Veiculo.VISUALIZAR_RELATORIOS})
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class VeiculoRelatorioResource {
