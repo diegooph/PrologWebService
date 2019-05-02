@@ -225,8 +225,9 @@ public final class AvaCorpAvilanConverter {
                 .stream()
                 .filter(v -> v.getVeiculo().getPlaca().equals(placaVeiculo))
                 .collect(MoreCollectors.onlyElement());
-        // Seta o km do veículo.
-        veiculo.setKmAtual((long) veiculoQuestao.getVeiculo().getMarcador());
+        // Em 02/05/19 o KM setado ao iniciar um novo checklist foi alterado mediante solicitação da Avilan
+        // para setarmos sempre 0. Mais informações: https://prologapp.atlassian.net/browse/PL-1966
+        veiculo.setKmAtual(0L);
         novoChecklistHolder.setVeiculo(veiculo);
 
         // Cria as perguntas/respostas do checklist.
