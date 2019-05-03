@@ -922,7 +922,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_VALIDADE_DOT(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataHoraAtual);
-        stmt.setString(3, userToken);
         return stmt;
     }
 
