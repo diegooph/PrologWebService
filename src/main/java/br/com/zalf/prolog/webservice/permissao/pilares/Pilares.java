@@ -46,6 +46,7 @@ public final class Pilares {
             public static final int CADASTRAR = 14;
             public static final int ALTERAR = 16;
             public static final int VISUALIZAR = 115;
+            public static final int VISUALIZAR_RELATORIOS = 122;
         }
 
         public final class Pneu {
