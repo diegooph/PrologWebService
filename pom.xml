@@ -175,6 +175,19 @@
 			<artifactId>threeten-extra</artifactId>
 			<version>1.4</version>
 		</dependency>
+
+		<!-- Utilizamos o retrofit para a comunicação com outros sistemas -->
+		<dependency>
+			<groupId>com.squareup.retrofit2</groupId>
+			<artifactId>retrofit</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.retrofit2</groupId>
+			<artifactId>converter-gson</artifactId>
+			<version>2.4.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>prolog.webservice</finalName>

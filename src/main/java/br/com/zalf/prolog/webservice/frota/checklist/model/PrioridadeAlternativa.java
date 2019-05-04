@@ -12,6 +12,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum PrioridadeAlternativa implements PieSlice {
     CRITICA("CRITICA") {
+
+        @Override
+        public int getPrazoResolucaoHoras() {
+            return 1;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -25,6 +31,12 @@ public enum PrioridadeAlternativa implements PieSlice {
         }
     },
     ALTA("ALTA") {
+
+        @Override
+        public int getPrazoResolucaoHoras() {
+            return 48;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -38,6 +50,12 @@ public enum PrioridadeAlternativa implements PieSlice {
         }
     },
     BAIXA("BAIXA") {
+
+        @Override
+        public int getPrazoResolucaoHoras() {
+            return 720;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -68,6 +86,8 @@ public enum PrioridadeAlternativa implements PieSlice {
     public String toString() {
         return asString();
     }
+
+    public abstract int getPrazoResolucaoHoras();
 
     @NotNull
     public static PrioridadeAlternativa fromString(@Nullable final String text) throws IllegalArgumentException {
