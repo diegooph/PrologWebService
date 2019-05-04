@@ -3,6 +3,7 @@ package test.gente.controlejornada;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.FormulaCalculoJornada;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoDescontadoJornada;
@@ -34,10 +35,12 @@ public class TipoMarcacaoTest extends BaseTest {
 
     @Before
     public void initialize() {
+        DatabaseManager.init();
     }
 
     @After
     public void destroy() {
+        DatabaseManager.finish();
     }
 
     @Test

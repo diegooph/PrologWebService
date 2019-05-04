@@ -12,9 +12,11 @@ public final class DataSourceLifecycleManager implements ServletContextListener 
 
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
+        DatabaseManager.init();
     }
 
     @Override
     public void contextDestroyed(final ServletContextEvent sce) {
+        DatabaseManager.finish();
     }
 }

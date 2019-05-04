@@ -2,6 +2,7 @@ package test.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoService;
 import org.junit.Assert;
@@ -23,11 +24,13 @@ public class TipoVeiculoTest extends BaseTest {
 
     @Override
     public void initialize() {
+        DatabaseManager.init();
         service = new TipoVeiculoService();
     }
 
     @Override
     public void destroy() {
+        DatabaseManager.finish();
     }
 
     @Test

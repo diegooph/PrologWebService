@@ -25,7 +25,7 @@ public class DatabaseConnection {
     @NotNull
     public static Connection getConnection() {
         try {
-            return DatabaseManager.getConnection();
+            return DatabaseManager.getInstance().getConnection();
         } catch (Exception e) {
             throw new RuntimeException("Erro ao abrir conexão com o banco", e);
         }
@@ -40,8 +40,7 @@ public class DatabaseConnection {
                     if (autoCloseable != null) {
                         autoCloseable.close();
                     }
-                } catch (final Exception ignore) {
-                }
+                } catch (final Exception ignore) {}
             }
         }
     }
@@ -58,20 +57,17 @@ public class DatabaseConnection {
         if (rSet != null) {
             try {
                 rSet.close();
-            } catch (Exception ignore) {
-            }
+            } catch (Exception ignore) {}
         }
         if (stmt != null) {
             try {
                 stmt.close();
-            } catch (Exception ignore) {
-            }
+            } catch (Exception ignore) {}
         }
         if (conn != null) {
             try {
                 conn.close();
-            } catch (Exception ignore) {
-            }
+            } catch (Exception ignore) {}
         }
     }
 
