@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
@@ -14,7 +13,6 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        DatabaseManager.init();
         ControleJornadaAjusteService service = new ControleJornadaAjusteService();
         inconsistencias(service);
     }

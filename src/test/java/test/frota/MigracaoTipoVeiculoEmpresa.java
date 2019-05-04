@@ -1,7 +1,6 @@
 package test.frota;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
@@ -87,12 +86,10 @@ public class MigracaoTipoVeiculoEmpresa {
 
     @Before
     public void initialize() {
-        DatabaseManager.init();
     }
 
     @After
     public void destroy() {
-        DatabaseManager.finish();
     }
 
     @Test

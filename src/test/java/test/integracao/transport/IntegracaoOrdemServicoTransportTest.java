@@ -1,7 +1,6 @@
 package test.integracao.transport;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
@@ -32,13 +31,11 @@ public class IntegracaoOrdemServicoTransportTest extends BaseTest {
 
     @Override
     public void initialize() throws Throwable {
-        DatabaseManager.init();
         service = new IntegracaoTransportService();
     }
 
     @Override
     public void destroy() {
-        DatabaseManager.finish();
         service = null;
     }
 
@@ -142,7 +139,7 @@ public class IntegracaoOrdemServicoTransportTest extends BaseTest {
         item.setCodUnidadeOrdemServico(itemPendente.getCodUnidadeOrdemServico());
         item.setCodOrdemServico(itemPendente.getCodOrdemServico());
         item.setCodItemResolvido(itemPendente.getCodItemOrdemServico());
-        item.setCpfColaboradoResolucao("39476386800");
+        item.setCpfColaboradorResolucao("39476386800");
         item.setPlacaVeiculo(itemPendente.getPlacaVeiculo());
         item.setKmColetadoVeiculo(itemPendente.getKmAberturaServico() + 100);
         item.setDuracaoResolucaoItemEmMilissegundos(Duration.ofMinutes(15L).toMillis());

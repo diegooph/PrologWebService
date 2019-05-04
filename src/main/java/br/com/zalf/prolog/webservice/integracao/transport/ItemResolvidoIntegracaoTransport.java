@@ -14,7 +14,7 @@ public final class ItemResolvidoIntegracaoTransport {
     private Long codUnidadeOrdemServico;
     private Long codOrdemServico;
     private Long codItemResolvido;
-    private String cpfColaboradoResolucao;
+    private String cpfColaboradorResolucao;
     /**
      * Placa do {@link Veiculo} a qual o item resolvido pertence.
      */
@@ -35,7 +35,7 @@ public final class ItemResolvidoIntegracaoTransport {
         item.setCodUnidadeOrdemServico(5L);
         item.setCodOrdemServico(94L);
         item.setCodItemResolvido(106851L);
-        item.setCpfColaboradoResolucao("03383283194");
+        item.setCpfColaboradorResolucao("03383283194");
         item.setPlacaVeiculo("PRO0001");
         item.setKmColetadoVeiculo(90051L);
         item.setDuracaoResolucaoItemEmMilissegundos(900000L);
@@ -70,12 +70,12 @@ public final class ItemResolvidoIntegracaoTransport {
         this.codItemResolvido = codItemResolvido;
     }
 
-    public String getCpfColaboradoResolucao() {
-        return cpfColaboradoResolucao;
+    public String getCpfColaboradorResolucao() {
+        return cpfColaboradorResolucao;
     }
 
-    public void setCpfColaboradoResolucao(final String cpfColaboradoResolucao) {
-        this.cpfColaboradoResolucao = cpfColaboradoResolucao;
+    public void setCpfColaboradorResolucao(final String cpfColaboradorResolucao) {
+        this.cpfColaboradorResolucao = cpfColaboradorResolucao;
     }
 
     public String getPlacaVeiculo() {

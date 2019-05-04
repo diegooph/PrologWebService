@@ -35,7 +35,7 @@ public final class IntegracaoTransportDaoImpl extends DatabaseConnection impleme
                 stmt.setLong(1, itensResolvido.getCodUnidadeOrdemServico());
                 stmt.setLong(2, itensResolvido.getCodOrdemServico());
                 stmt.setLong(3, itensResolvido.getCodItemResolvido());
-                stmt.setLong(4, Long.parseLong(itensResolvido.getCpfColaboradoResolucao()));
+                stmt.setLong(4, Long.parseLong(itensResolvido.getCpfColaboradorResolucao()));
                 stmt.setLong(5, itensResolvido.getKmColetadoVeiculo());
                 stmt.setLong(6, itensResolvido.getDuracaoResolucaoItemEmMilissegundos());
                 stmt.setString(7, itensResolvido.getFeedbackResolucao());
