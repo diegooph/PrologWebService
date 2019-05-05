@@ -919,7 +919,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 .withZoneSameInstant(zoneId)
                 .toLocalDateTime();
         final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_VALIDADE_DOT(?, ?, ?);");
+                conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_VALIDADE_DOT(?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataHoraAtual);
         return stmt;
