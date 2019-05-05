@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
+import br.com.zalf.prolog.webservice.integracao.router.RouterChecklistOrdemServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,6 +131,9 @@ final class OrdemServicoService {
     Response resolverItem(final String token,
                           final ResolverItemOrdemServico item) throws ProLogException {
         try {
+            RouterChecklistOrdemServico
+                    .create(dao, token)
+                    .resolverItem(item);
             OrdemServicoValidator.validaResolucaoItem(TimeZoneManager.getZoneIdForToken(token), item);
             dao.resolverItem(item);
             return Response.ok("Item resolvido com sucesso");
@@ -146,6 +150,9 @@ final class OrdemServicoService {
     Response resolverItens(final String token,
                            final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
         try {
+            RouterChecklistOrdemServico
+                    .create(dao, token)
+                    .resolverItens(itensResolucao);
             OrdemServicoValidator.validaResolucaoMultiplosItens(TimeZoneManager.getZoneIdForToken(token), itensResolucao);
             dao.resolverItens(itensResolucao);
             return Response.ok("Itens resolvidos com sucesso");

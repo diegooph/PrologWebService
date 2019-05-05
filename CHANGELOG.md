@@ -1,13 +1,21 @@
 Change Log
 ==========
 
+<a name="v0.0.90"></a>
+## Version [v0.0.90](https://github.com/luizfp/PrologWebService/compare/v0.0.89...v0.0.90) (release-date) [unreleased]
+
+### Features
+* Cria integração de ordens de serviço do checklist com o sistema Transport da Translecchi
+
+### Refactors
+* Altera integração com Avilan para retornar ao App KM 0 como atual do veículo ao iniciar um check (PL-1966)
+
 <a name="v0.0.89"></a>
 ## Version [v0.0.89](https://github.com/luizfp/PrologWebService/compare/v0.0.88...v0.0.89) (2019-04-27)
 
 ### Refactors
 * Permite atualizar o tipo de um veículo se não houverem pneus aplicados (PL-1903)
 * Verifica permissão de relatórios de quiz na busca dos modelos da unidade
-
 
 <a name="v0.0.88"></a>
 ## Version [v0.0.88](https://github.com/luizfp/PrologWebService/compare/v0.0.87...v0.0.88) (2019-04-11)

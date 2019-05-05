@@ -129,7 +129,8 @@ public final class OrdemServicoResource {
             @QueryParam("codOrdemServico") @Optional final Long codOrdemServico,
             @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
             @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens) throws ProLogException {
-        return service.getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
+        return service
+                .getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
     }
 
     @POST

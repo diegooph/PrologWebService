@@ -32,4 +32,7 @@ public interface InformacoesProvidas {
 
     @NotNull
     String getCodUnidadeClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Exception;
+
+    @NotNull
+    String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable;
 }
