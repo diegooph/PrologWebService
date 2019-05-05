@@ -1,14 +1,14 @@
 Change Log
 ==========
-### Stage
-* Cria integração de ordens de serviço do checklist com o sistema Transport da Translecchi
 
 <a name="v0.0.90"></a>
 ## Version [v0.0.90](https://github.com/luizfp/PrologWebService/compare/v0.0.89...v0.0.90) (release-date) [unreleased]
 
+### Features
+* Cria integração de ordens de serviço do checklist com o sistema Transport da Translecchi
+
 ### Refactors
 * Altera integração com Avilan para retornar ao App KM 0 como atual do veículo ao iniciar um check (PL-1966)
-
 
 <a name="v0.0.89"></a>
 ## Version [v0.0.89](https://github.com/luizfp/PrologWebService/compare/v0.0.88...v0.0.89) (2019-04-27)
