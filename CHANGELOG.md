@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+<a name="v0.0.91"></a>
+## Version [v0.0.91](https://github.com/luizfp/PrologWebService/compare/v0.0.90...v0.0.91) (2019-05-06)
+
+### Bug Fixes
+* Remove resolução duplicada de itens de O.S.
+
 <a name="v0.0.90"></a>
 ## Version [v0.0.90](https://github.com/luizfp/PrologWebService/compare/v0.0.89...v0.0.90) (2019-05-05)
 

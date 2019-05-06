@@ -131,11 +131,10 @@ final class OrdemServicoService {
     Response resolverItem(final String token,
                           final ResolverItemOrdemServico item) throws ProLogException {
         try {
+            OrdemServicoValidator.validaResolucaoItem(TimeZoneManager.getZoneIdForToken(token), item);
             RouterChecklistOrdemServico
                     .create(dao, token)
                     .resolverItem(item);
-            OrdemServicoValidator.validaResolucaoItem(TimeZoneManager.getZoneIdForToken(token), item);
-            dao.resolverItem(item);
             return Response.ok("Item resolvido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver item", t);
@@ -150,11 +149,10 @@ final class OrdemServicoService {
     Response resolverItens(final String token,
                            final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
         try {
+            OrdemServicoValidator.validaResolucaoMultiplosItens(TimeZoneManager.getZoneIdForToken(token), itensResolucao);
             RouterChecklistOrdemServico
                     .create(dao, token)
                     .resolverItens(itensResolucao);
-            OrdemServicoValidator.validaResolucaoMultiplosItens(TimeZoneManager.getZoneIdForToken(token), itensResolucao);
-            dao.resolverItens(itensResolucao);
             return Response.ok("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver itens", t);
