@@ -551,7 +551,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Pneu pneu = PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM);
+                final Pneu pneu = PneuConverter.createPneuCompleto(rSet, PneuTipo.fromString(rSet.getString("PNEU_TIPO")));
                 pneu.setFotosCadastro(getFotosCadastroPneu(codPneu, conn));
                 return pneu;
             } else {

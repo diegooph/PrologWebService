@@ -75,4 +75,15 @@ public enum PneuTipo implements PneuFactory {
     public String toString() {
         return tipo;
     }
+
+    public static PneuTipo fromString(String text) throws IllegalArgumentException {
+        if (text != null) {
+            for (final PneuTipo tipoPneu : PneuTipo.values()) {
+                if (text.equalsIgnoreCase(tipoPneu.tipo)) {
+                    return tipoPneu;
+                }
+            }
+        }
+        throw new IllegalArgumentException("Nenhum tipo encontrado para a String: " + text);
+    }
 }
