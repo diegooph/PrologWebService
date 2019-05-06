@@ -49,7 +49,7 @@ public final class DashboardChecklistService {
         try {
             return DashboardChecklistComponentsCreator.createChecksRealizadosAbaixo130(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getQtdChecksRealizadosAbaixoTempoEspecifico(codUnidades, 91000, 30));
+                    relatorioDao.getQtdChecksRealizadosAbaixoTempoEspecifico(codUnidades, 90000, 30));
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar os checklists realizados em menos de 1:30 para as " +
                     "unidades %s", codUnidades.toString()), throwable);

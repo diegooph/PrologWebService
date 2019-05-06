@@ -43,7 +43,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_CHECKLIST_RELATORIO_CHECKS_REALIZADOS_ABAIXO_TEMPO_DEFINIDO(?, ?, ?, ?);");
+                    "FUNC_CHECKLIST_RELATORIO_REALIZADOS_ABAIXO_TEMPO_DEFINIDO(?, ?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setInt(2, tempoRealizacao);
             stmt.setObject(3, Now.localDateUtc());
