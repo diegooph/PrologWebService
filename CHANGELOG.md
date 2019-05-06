@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Stage
+* Corrige componente da dash checklists realizados em um determinado tempo. (PL-1865)
+
 <a name="v0.0.91"></a>
 ## Version [v0.0.91](https://github.com/luizfp/PrologWebService/compare/v0.0.90...v0.0.91) (release-date) [unreleased]
 
