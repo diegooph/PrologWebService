@@ -56,6 +56,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "  MAB.NOME                                    AS NOME_MARCA_BANDA, " +
             "  PVV.VALOR                                   AS VALOR_BANDA, " +
             "  PO.POSICAO_PROLOG                           AS POSICAO_PNEU, " +
+            "  COALESCE(PONU.NOMENCLATURA :: TEXT, '-')    AS POSICAO_APLICADO, " +
             "  VEI.codigo                                  AS COD_VEICULO, " +
             "  VEI.placa                                   AS PLACA " +
             "FROM PNEU P " +
@@ -69,7 +70,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "LEFT JOIN PNEU_ORDEM PO ON VP.POSICAO = PO.POSICAO_PROLOG " +
             "LEFT JOIN MODELO_BANDA MOB ON MOB.CODIGO = P.COD_MODELO_BANDA AND MOB.COD_EMPRESA = U.COD_EMPRESA " +
             "LEFT JOIN MARCA_BANDA MAB ON MAB.CODIGO = MOB.COD_MARCA AND MAB.COD_EMPRESA = MOB.COD_EMPRESA " +
-            "LEFT JOIN PNEU_VALOR_VIDA PVV ON PVV.COD_PNEU = P.CODIGO AND PVV.VIDA = P.VIDA_ATUAL ";
+            "LEFT JOIN PNEU_VALOR_VIDA PVV ON PVV.COD_PNEU = P.CODIGO AND PVV.VIDA = P.VIDA_ATUAL " +
+            "LEFT JOIN PNEU_ORDEM_NOMENCLATURA_UNIDADE PONU ON PONU.COD_UNIDADE = VEI.COD_UNIDADE AND PONU.COD_TIPO_VEICULO = VEI.COD_TIPO AND PONU.POSICAO_PROLOG = VP.POSICAO ";
 
     public PneuDaoImpl() {
 
