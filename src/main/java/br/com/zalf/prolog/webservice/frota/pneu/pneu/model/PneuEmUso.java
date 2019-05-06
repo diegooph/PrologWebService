@@ -8,6 +8,8 @@ import com.google.common.base.Preconditions;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class PneuEmUso extends Pneu {
+    private String placa;
+    private Long codVeiculo;
 
     public PneuEmUso() {
         super(PneuTipo.PNEU_EM_USO);
@@ -18,5 +20,21 @@ public final class PneuEmUso extends Pneu {
     public void setStatus(final StatusPneu status) {
         Preconditions.checkArgument(status == StatusPneu.EM_USO);
         super.setStatus(status);
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public Long getCodVeiculo() {
+        return codVeiculo;
+    }
+
+    public void setCodVeiculo(Long codVeiculo) {
+        this.codVeiculo = codVeiculo;
     }
 }

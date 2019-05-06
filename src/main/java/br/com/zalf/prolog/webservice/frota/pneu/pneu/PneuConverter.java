@@ -78,6 +78,8 @@ public final class PneuConverter {
 
         if (pneu instanceof PneuEmUso) {
             final PneuEmUso pneuEmUso = (PneuEmUso) pneu;
+            pneuEmUso.setPlaca(rSet.getString("PLACA"));
+            pneuEmUso.setCodVeiculo(rSet.getLong("COD_VEICULO"));
         }
 
         return pneu;

@@ -55,7 +55,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "  MAB.CODIGO                                  AS COD_MARCA_BANDA, " +
             "  MAB.NOME                                    AS NOME_MARCA_BANDA, " +
             "  PVV.VALOR                                   AS VALOR_BANDA, " +
-            "  PO.POSICAO_PROLOG                           AS POSICAO_PNEU " +
+            "  PO.POSICAO_PROLOG                           AS POSICAO_PNEU, " +
+            "  VEI.codigo                                  AS COD_VEICULO, " +
+            "  VEI.placa                                   AS PLACA " +
             "FROM PNEU P " +
             "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " +
             "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " +
@@ -63,6 +65,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE " +
             "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
             "LEFT JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO AND VP.COD_UNIDADE = P.COD_UNIDADE " +
+            "LEFT JOIN VEICULO VEI ON VEI.PLACA = VP.PLACA " +
             "LEFT JOIN PNEU_ORDEM PO ON VP.POSICAO = PO.POSICAO_PROLOG " +
             "LEFT JOIN MODELO_BANDA MOB ON MOB.CODIGO = P.COD_MODELO_BANDA AND MOB.COD_EMPRESA = U.COD_EMPRESA " +
             "LEFT JOIN MARCA_BANDA MAB ON MAB.CODIGO = MOB.COD_MARCA AND MAB.COD_EMPRESA = MOB.COD_EMPRESA " +
@@ -224,7 +227,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn.rollback();
             throw e;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -246,7 +249,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 listPneu.add(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return listPneu;
     }
@@ -270,7 +273,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao trocar a vida do pneu: " + codPneu);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -295,7 +298,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar medições do pneu: " + codPneu);
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
         return true;
     }
@@ -334,7 +337,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar os dados do Pneu");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -353,7 +356,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar o status do pneu");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -386,7 +389,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
             return pneusAnalise;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -410,7 +413,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 marcas.add(marca);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return marcas;
     }
@@ -432,7 +435,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao buscar modelo pelo código: " + codModelo);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -456,7 +459,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 dimensoes.add(dimensao);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return dimensoes;
     }
@@ -488,7 +491,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao inserir o modelo do pneu ou modelo já existente");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -520,7 +523,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn.rollback();
             throw e;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return true;
     }
@@ -533,7 +536,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn = getConnection();
             return getPneuByCod(conn, codUnidade, codPneu);
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -551,15 +554,14 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Pneu pneu = PneuConverter.createPneuCompleto(rSet, PneuTipo.fromString(rSet.getString("PNEU_TIPO")));
+                final Pneu pneu = PneuConverter.createPneuCompleto(rSet, StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo());
                 pneu.setFotosCadastro(getFotosCadastroPneu(codPneu, conn));
                 return pneu;
             } else {
                 throw new SQLException("Nenhum pneu encontrado com o código: " + codPneu + " e unidade: " + codUnidade);
             }
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -582,7 +584,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 marcas.add(marca);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return marcas;
     }
@@ -612,7 +614,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao inserir a marca da banda ou banda já existente");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -644,7 +646,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao inserir o modelo da banda");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -662,7 +664,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar a marca da banca: " + marca.getCodigo());
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -680,7 +682,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar a modelo da banca: " + modelo.getCodigo());
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -701,7 +703,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu);
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
     }
 
@@ -719,11 +721,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             rSet = stmt.executeQuery();
             final List<Pneu> pneus = new ArrayList<>();
             while (rSet.next()) {
-                pneus.add(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM));
+                pneus.add(PneuConverter.createPneuCompleto(rSet, StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo()));
             }
             return pneus;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -741,7 +743,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 }
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -766,7 +768,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 return fotosCadastro;
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
         return null;
     }
@@ -783,7 +785,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar flag de pneu novo para o pneu: " + codPneu);
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -807,7 +809,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                         + pneu.getCodigo() + " da unidade " + codUnidade);
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -839,7 +841,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao criar o serviço de recapagem para a troca de vida do pneu inserido");
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -868,7 +870,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 modelos.add(createModeloPneu(rSet));
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
         return modelos;
     }
@@ -903,7 +905,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar as informações de banda do pneu: " + codPneu);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -929,7 +931,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 modelos.add(modelo);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
         return modelos;
     }
