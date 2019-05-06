@@ -80,6 +80,7 @@ public final class PneuConverter {
             final PneuEmUso pneuEmUso = (PneuEmUso) pneu;
             pneuEmUso.setPlaca(rSet.getString("PLACA"));
             pneuEmUso.setCodVeiculo(rSet.getLong("COD_VEICULO"));
+            pneuEmUso.setPosicaoAplicado(rSet.getString("POSICAO_APLICADO"));
         }
 
         return pneu;
