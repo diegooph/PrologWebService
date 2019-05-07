@@ -56,9 +56,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "  MAB.NOME                                    AS NOME_MARCA_BANDA, " +
             "  PVV.VALOR                                   AS VALOR_BANDA, " +
             "  PO.POSICAO_PROLOG                           AS POSICAO_PNEU, " +
-            "  COALESCE(PONU.NOMENCLATURA :: TEXT, '-')    AS POSICAO_APLICADO, " +
-            "  VEI.codigo                                  AS COD_VEICULO, " +
-            "  VEI.placa                                   AS PLACA " +
+            "  COALESCE(PONU.NOMENCLATURA :: TEXT, '-')    AS POSICAO_APLICADO_CLIENTE, " +
+            "  VEI.codigo                                  AS COD_VEICULO_APLICADO, " +
+            "  VEI.placa                                   AS PLACA_APLICADO " +
             "FROM PNEU P " +
             "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " +
             "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " +
