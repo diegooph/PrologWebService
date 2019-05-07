@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.relatorios.ChecklistRelator
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 18/09/2018
@@ -49,7 +50,10 @@ public final class DashboardChecklistService {
         try {
             return DashboardChecklistComponentsCreator.createChecksRealizadosAbaixo130(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getQtdChecksRealizadosAbaixoTempoEspecifico(codUnidades, 90000, 30));
+                    relatorioDao.getQtdChecksRealizadosAbaixoTempoEspecifico(
+                            codUnidades,
+                            TimeUnit.SECONDS.toMillis(90),
+                            30));
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar os checklists realizados em menos de 1:30 para as " +
                     "unidades %s", codUnidades.toString()), throwable);

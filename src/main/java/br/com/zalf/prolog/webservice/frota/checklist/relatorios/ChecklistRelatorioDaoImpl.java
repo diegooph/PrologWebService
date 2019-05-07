@@ -35,8 +35,8 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @Override
     public List<ChecksRealizadosAbaixoTempoEspecifico> getQtdChecksRealizadosAbaixoTempoEspecifico(
             @NotNull List<Long> codUnidades,
-            @NotNull final int tempoRealizacao,
-            @NotNull final int diasRetroativosParaBuscar) throws Throwable {
+            final long tempoRealizacaoFiltragemMilis,
+            final int diasRetroativosParaBuscar) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -45,7 +45,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
             stmt = conn.prepareStatement("SELECT * FROM " +
                     "FUNC_CHECKLIST_RELATORIO_REALIZADOS_ABAIXO_TEMPO_DEFINIDO(?, ?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setInt(2, tempoRealizacao);
+            stmt.setLong(2, tempoRealizacaoFiltragemMilis);
             stmt.setObject(3, Now.localDateUtc());
             stmt.setInt(4, diasRetroativosParaBuscar);
 
