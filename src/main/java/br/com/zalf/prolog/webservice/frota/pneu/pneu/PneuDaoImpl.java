@@ -364,7 +364,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     @NotNull
     @Override
-    public List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, StatusPneu status) throws Throwable {
+    public List<Pneu> getPneusByCodUnidadeByStatus(@NotNull Long codUnidade, @NotNull StatusPneu status) throws Throwable {
         return internalGetPneus(codUnidade, status.asString());
     }
 
@@ -550,13 +550,13 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement(BASE_QUERY_BUSCA_PNEU +
-                    "WHERE P.CODIGO = ? AND P.cod_unidade = ?;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_PNEU_BY_CODIGO(?);");
             stmt.setLong(1, codPneu);
-            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Pneu pneu = PneuConverter.createPneuCompleto(rSet, StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo());
+                final Pneu pneu = PneuConverter.createPneuCompleto(
+                        rSet,
+                        StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo());
                 pneu.setFotosCadastro(getFotosCadastroPneu(codPneu, conn));
                 return pneu;
             } else {
@@ -717,13 +717,15 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_GET_LISTAGEM_PNEUS_BY_STATUS(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_LISTAGEM_PNEUS_BY_STATUS(?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, statusString);
             rSet = stmt.executeQuery();
             final List<Pneu> pneus = new ArrayList<>();
             while (rSet.next()) {
-                pneus.add(PneuConverter.createPneuCompleto(rSet, StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo()));
+                pneus.add(PneuConverter.createPneuCompleto(
+                        rSet,
+                        StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo()));
             }
             return pneus;
         } finally {
