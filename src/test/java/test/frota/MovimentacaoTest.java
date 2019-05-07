@@ -60,7 +60,7 @@ public class MovimentacaoTest extends BaseTest {
 
         // Valida informações do pneu
         final List<Pneu> pneusAnalise =
-                pneuService.getPneuByCodUnidadeByStatus(5L, StatusPneu.ANALISE.asString());
+                pneuService.getPneusByCodUnidadeByStatus(5L, StatusPneu.ANALISE.asString());
 
         PneuAnalise pneuAnalise = null;
         for (final Pneu pneu : pneusAnalise) {

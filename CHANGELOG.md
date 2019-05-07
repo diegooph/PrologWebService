@@ -4,6 +4,8 @@ Change Log
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (release-date) [unreleased]
 
+### Refactors
+* Adiciona informações de placa e posição nos objetos de pneus quando aplicados (PL-1942)
 
 <a name="v0.0.91"></a>
 ## Version [v0.0.91](https://github.com/luizfp/PrologWebService/compare/v0.0.90...v0.0.91) (2019-05-06)

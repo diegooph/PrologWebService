@@ -75,6 +75,14 @@ public final class PneuConverter {
         pneu.setStatus(StatusPneu.fromString(rSet.getString("STATUS")));
         pneu.setVidaAtual(rSet.getInt("VIDA_ATUAL"));
         pneu.setVidasTotal(rSet.getInt("VIDA_TOTAL"));
+
+        if (pneu instanceof PneuEmUso) {
+            final PneuEmUso pneuEmUso = (PneuEmUso) pneu;
+            pneuEmUso.setPlaca(rSet.getString("PLACA_APLICADO"));
+            pneuEmUso.setCodVeiculo(rSet.getLong("COD_VEICULO_APLICADO"));
+            pneuEmUso.setPosicaoAplicado(rSet.getString("POSICAO_APLICADO_CLIENTE"));
+        }
+
         return pneu;
     }
 
