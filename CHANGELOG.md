@@ -2,7 +2,7 @@ Change Log
 ==========
 
 ### Stage
-* Cria integração de ordens de serviço do checklist com o sistema Transport da Translecchi
+* Cria integração de aferição de placas com o Protheus da Rodalog (PL-1721)
 
 <a name="v0.0.86"></a>
 ## Version [v0.0.86](https://github.com/luizfp/PrologWebService/compare/v0.0.85...v0.0.86) (release-date) [unreleased]
