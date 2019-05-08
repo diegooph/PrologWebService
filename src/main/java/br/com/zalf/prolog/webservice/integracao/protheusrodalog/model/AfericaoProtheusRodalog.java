@@ -7,18 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created on 27/02/19.
- *
- * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
- * <p>
  * Este objeto representa a {@link AfericaoProtheusRodalog aferição} realizada em um veículo. Neste objeto estarão todas
  * as informações capturadas através do processo de medição do ProLog.
  * <p>
- * Utilizamos um objeto específico para não criar dependência entre a integração com o Protheus, da empres Rodalog, com
+ * Utilizamos um objeto específico para não criar dependência entre a integração com o Protheus, da empresa Rodalog, com
  * as demais integrações, assim, este objeto fica de uso exclusivo para esta integração.
  * <p>
  * Estas informações serão enviadas para um endpoint integrado e este deve estar preparado para receber estas
  * informações neste padrão.
+ * <p>
+ * Created on 27/02/19.
+ *
+ * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  * <p>
  * {@see protheusrodalog}
  */
@@ -68,7 +68,7 @@ public final class AfericaoProtheusRodalog {
     private TipoMedicaoAfericaoProtheusRodalog tipoMedicaoColetadaAfericao;
 
     /**
-     * Objeto que contém a lista de {@link MedicaoAfericaoProtheusRodalog medidas} captuadas em cada pneu aplicado no
+     * Objeto que contém a lista de {@link MedicaoAfericaoProtheusRodalog medidas} capturadas em cada pneu aplicado no
      * veículo, podendo ou não incluir os estepes do veículo.
      */
     private List<MedicaoAfericaoProtheusRodalog> medicoes;

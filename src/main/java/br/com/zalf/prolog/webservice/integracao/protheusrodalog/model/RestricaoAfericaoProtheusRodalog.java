@@ -3,10 +3,6 @@ package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created on 26/02/19.
- *
- * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
- * <p>
  * Objeto utilizado para encapsular as {@link RestricaoAfericaoProtheusRodalog restrições de aferição}. A restrição
  * consiste em atributos que determinam como a lógica de negócio do ProLog será executada na aferição dos sulcos.
  *
@@ -19,18 +15,22 @@ import org.jetbrains.annotations.NotNull;
  * Este objeto será recebido através de um endpoint integrado com o ERP Protheus, da empresa Rodalog. Assim, todas essas
  * informações deverão ser enviadas pelo endpoint seguindo o padrão e estrutura deste objeto.
  * <p>
+ * Created on 26/02/19.
+ *
+ * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * <p>
  * {@see protheusrodalog}
  */
 public final class RestricaoAfericaoProtheusRodalog {
     /**
-     * {@code toleranciaCalibragem} é a variação tolerada para a medida de pressão do pneus. Caso a pressão esteja fora
-     * da variação tolerada um <b>Serviço de Calibragem</b> será aberto para que seja executado no pneu.
+     * {@code toleranciaCalibragem} é a variação tolerada para a medida de pressão dos pneus. Caso a pressão esteja fora
+     * da variação tolerada, um <b>Serviço de Calibragem</b> será aberto para que seja executado no pneu.
      */
     private Double toleranciaCalibragem;
 
     /**
-     * {@code toleranciaInspecao} é a variação tolerada para a medida de pressão de pneus. Caso a pressão esteja fora da
-     * variação torelarada um <b>Serviço de Inspeção</b> será aberto para que seja executado no pneu.
+     * {@code toleranciaInspecao} é a variação tolerada para a medida de pressão dos pneus. Caso a pressão esteja fora da
+     * variação torelarada, um <b>Serviço de Inspeção</b> será aberto para que seja executado no pneu.
      */
     private Double toleranciaInspecao;
 

@@ -5,7 +5,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ProtheusRodalogResponseAfericao {
+public final class ProtheusRodalogResponseAfericao {
 
     /**
      * Valor numérico que representa o código da aferição que acabou de ser inserida.

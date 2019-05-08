@@ -25,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 @ResourceDebugOnly
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class DummyProtheusRodalogResource {
+public final class DummyProtheusRodalogResource {
 
     @POST
     @Path("/inserir-afericao")

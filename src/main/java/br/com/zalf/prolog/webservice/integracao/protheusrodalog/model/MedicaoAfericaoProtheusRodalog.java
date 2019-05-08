@@ -3,15 +3,15 @@ package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created on 27/02/19.
- *
- * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
- * <p>
  * Objeto responsável por conter as {@link MedicaoAfericaoProtheusRodalog medidas} capturadas em um pneu através do
  * processo de aferição de placa, do ProLog.
  * <p>
  * As medições coletadas serão enviadas à um endpoint integrado, o qual deverá estar preparado para ler os atributos
  * deste objeto seguindo esta estrutura.
+ * <p>
+ * Created on 27/02/19.
+ *
+ * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  * <p>
  * {@see protheusrodalog}
  */

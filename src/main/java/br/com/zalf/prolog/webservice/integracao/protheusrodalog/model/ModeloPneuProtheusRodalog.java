@@ -3,11 +3,11 @@ package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Objeto buscado através de um endpoint integrado, onde contém informações referentes ao modelo do pneu.
+ * <p>
  * Created on 26/02/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
- * <p>
- * Objeto buscado através de um endpoint integrado, onde contém informações referentes ao modelo do pneu.
  * <p>
  * {@see protheusrodalog}
  */

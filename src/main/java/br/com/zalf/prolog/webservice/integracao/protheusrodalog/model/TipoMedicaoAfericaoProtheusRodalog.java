@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,8 +25,6 @@ public enum TipoMedicaoAfericaoProtheusRodalog {
     }
 
     public static TipoMedicaoAfericaoProtheusRodalog fromString(@NotNull final String tipo) {
-        Preconditions.checkNotNull(tipo, "string cannot be null!");
-
         for (final TipoMedicaoAfericaoProtheusRodalog tipoMedicao : TipoMedicaoAfericaoProtheusRodalog.values()) {
             if (tipo.equals(tipoMedicao.stringRepresentation)) {
                 return tipoMedicao;
