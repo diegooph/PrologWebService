@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Stage
+* Permite filtrar por colaboradores ativos nos relatórios de folha ponto (PL-1905)
+
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (release-date) [unreleased]
 
