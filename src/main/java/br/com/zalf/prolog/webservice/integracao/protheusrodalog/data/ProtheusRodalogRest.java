@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.data;
 
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
-import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.AfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.CronogramaAfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.ProtheusRodalogResponseAfericao;
+import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -22,21 +22,21 @@ public interface ProtheusRodalogRest {
     @Headers({"Connection:close", "Content-Type: application/json"})
     @POST("NEWAFERI")
     Call<ProtheusRodalogResponseAfericao> insertAfericao(
-            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @Query("codUnidade") @Required final Long codUnidade,
-            @Body @Required final AfericaoProtheusRodalog afericao);
+            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
+            @Query("codUnidade") @NotNull final Long codUnidade,
+            @Body @NotNull final AfericaoProtheusRodalog afericao);
 
     @Headers("Connection:close")
     @GET("CRONOGRAMA")
     Call<CronogramaAfericaoProtheusRodalog> getCronogramaAfericao(
-            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @Query("codUnidade") @Required final Long codUnidade);
+            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
+            @Query("codUnidade") @NotNull final Long codUnidade);
 
     @Headers("Connection:close")
     @GET("NEWAFERI")
     Call<NovaAfericaoPlacaProtheusRodalog> getNovaAfericaoPlaca(
-            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @Query("codUnidade") @Required final Long codUnidade,
-            @Query("placa") @Required final String placa,
-            @Query("tipoAfericao") @Required final String tipoAfericao);
+            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
+            @Query("codUnidade") @NotNull final Long codUnidade,
+            @Query("placa") @NotNull final String placa,
+            @Query("tipoAfericao") @NotNull final String tipoAfericao);
 }
