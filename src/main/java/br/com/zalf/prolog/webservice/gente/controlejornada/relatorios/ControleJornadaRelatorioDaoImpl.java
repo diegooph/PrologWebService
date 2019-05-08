@@ -188,28 +188,34 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                                                             @NotNull final String codTipoIntervalo,
                                                             @NotNull final String cpf,
                                                             @NotNull final LocalDate dataInicial,
-                                                            @NotNull final LocalDate dataFinal) throws Throwable {
+                                                            @NotNull final LocalDate dataFinal,
+                                                            final boolean apenasColaboradoresAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_PONTO(?, ?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_PONTO(?, ?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
-            if (codTipoIntervalo.equals("%")) {
+            if (Filtros.isFiltroTodos(codTipoIntervalo)) {
                 stmt.setNull(2, Types.BIGINT);
             } else {
                 stmt.setLong(2, Long.parseLong(codTipoIntervalo));
             }
-            if (cpf.equals("%")) {
+            if (Filtros.isFiltroTodos(cpf)) {
                 stmt.setNull(3, Types.BIGINT);
             } else {
                 stmt.setLong(3, Long.parseLong(cpf));
             }
             stmt.setObject(4, dataInicial);
             stmt.setObject(5, dataFinal);
+            if (apenasColaboradoresAtivos) {
+                stmt.setBoolean(6, true);
+            } else {
+                stmt.setNull(6, Types.BOOLEAN);
+            }
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-            stmt.setString(6, zoneId.getId());
+            stmt.setString(7, zoneId.getId());
             rSet = stmt.executeQuery();
 
             final TipoMarcacaoDao dao = Injection.provideTipoMarcacaoDao();
@@ -231,14 +237,15 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             @NotNull final String codTipoIntervalo,
             @NotNull final String cpf,
             @NotNull final LocalDate dataInicial,
-            @NotNull final LocalDate dataFinal) throws Throwable {
+            @NotNull final LocalDate dataFinal,
+            final boolean apenasColaboradoresAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_MARCACAO_RELATORIO_FOLHA_PONTO_JORNADA(?, ?, ?, ?, ?, ?);");
+                    "SELECT * FROM FUNC_MARCACAO_RELATORIO_FOLHA_PONTO_JORNADA(?, ?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
             if (Filtros.isFiltroTodos(codTipoIntervalo)) {
                 stmt.setNull(2, Types.BIGINT);
@@ -252,8 +259,13 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             }
             stmt.setObject(4, dataInicial);
             stmt.setObject(5, dataFinal);
+            if (apenasColaboradoresAtivos) {
+                stmt.setBoolean(6, true);
+            } else {
+                stmt.setNull(6, Types.BOOLEAN);
+            }
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-            stmt.setString(6, zoneId.getId());
+            stmt.setString(7, zoneId.getId());
 
             rSet = stmt.executeQuery();
             final TipoMarcacaoDao tipoMarcacaoDao = Injection.provideTipoMarcacaoDao();
