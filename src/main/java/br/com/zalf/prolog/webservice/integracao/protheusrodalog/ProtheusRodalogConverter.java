@@ -140,20 +140,15 @@ final class ProtheusRodalogConverter {
     }
 
     @NotNull
-    private static Banda convertBanda(@NotNull final ModeloBandaProtheusRodalog modeloBanda) {
+    private static Banda convertBanda(@NotNull final ModeloBandaProtheusRodalog modeloBandaRodalog) {
         final Banda banda = new Banda();
-        banda.setModelo(convertmodeloBanda(modeloBanda));
-        return banda;
-    }
-
-    @NotNull
-    private static ModeloBanda convertmodeloBanda(@NotNull final ModeloBandaProtheusRodalog modeloBandaRodalog) {
         final ModeloBanda modeloBanda = new ModeloBanda();
         modeloBanda.setCodigo(modeloBandaRodalog.getCodigo());
         modeloBanda.setNome(modeloBandaRodalog.getNomeModelo());
         modeloBanda.setQuantidadeSulcos(modeloBandaRodalog.getQuantidadeSulcos());
         modeloBanda.setAlturaSulcos(modeloBandaRodalog.getAlturaSulcos());
-        return modeloBanda;
+        banda.setModelo(modeloBanda);
+        return banda;
     }
 
     @NotNull

@@ -21,8 +21,7 @@ public class ProtheusRodalogRequesterImpl implements ProtheusRodalogRequester {
             @NotNull final Long codUnidade,
             @NotNull final AfericaoProtheusRodalog afericao) throws Throwable {
         final ProtheusRodalogRest service = ProtheusRodalogRestClient.getService(ProtheusRodalogRest.class);
-        final Call<ProtheusRodalogResponseAfericao> call =
-                service.insertAfericao(tokenIntegracao, codUnidade, afericao);
+        final Call<ProtheusRodalogResponseAfericao> call = service.insertAfericao(tokenIntegracao, codUnidade, afericao);
         return handleResponse(call.execute());
     }
 
@@ -31,8 +30,7 @@ public class ProtheusRodalogRequesterImpl implements ProtheusRodalogRequester {
     public CronogramaAfericaoProtheusRodalog getCronogramaAfericao(@NotNull final String tokenIntegracao,
                                                                    @NotNull final Long codUnidade) throws Throwable {
         final ProtheusRodalogRest service = ProtheusRodalogRestClient.getService(ProtheusRodalogRest.class);
-        final Call<CronogramaAfericaoProtheusRodalog> call =
-                service.getCronogramaAfericao(tokenIntegracao, codUnidade);
+        final Call<CronogramaAfericaoProtheusRodalog> call = service.getCronogramaAfericao(tokenIntegracao, codUnidade);
         return handleResponse(call.execute());
     }
 

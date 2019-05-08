@@ -232,9 +232,9 @@ public final class PneuAfericaoProtheusRodalog {
     }
 
     public boolean temSulcosAtuais() {
-        return this.sulcoExternoAtual == null
-                && this.sulcoCentralExternoAtual == null
-                && this.sulcoCentralInternoAtual == null
-                && this.sulcoInternoAtual == null;
+        return this.sulcoExternoAtual != null
+                && this.sulcoCentralExternoAtual != null
+                && this.sulcoCentralInternoAtual != null
+                && this.sulcoInternoAtual != null;
     }
 }
