@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.data;
 
+import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -42,11 +43,13 @@ public final class ProtheusRodalogRestClient {
     @NotNull
     private static OkHttpClient provideOkHttpClient() {
         final OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        final HttpLoggingInterceptor logger = new HttpLoggingInterceptor();
-        logger.setLevel(HttpLoggingInterceptor.Level.BODY);
         builder.connectTimeout(DEFAULT_TIMEOUT_MINUTES, TimeUnit.MINUTES)
-                .readTimeout(DEFAULT_TIMEOUT_MINUTES, TimeUnit.MINUTES)
-                .interceptors().add(logger);
+                .readTimeout(DEFAULT_TIMEOUT_MINUTES, TimeUnit.MINUTES);
+        if (BuildConfig.DEBUG) {
+            final HttpLoggingInterceptor logger = new HttpLoggingInterceptor();
+            logger.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.interceptors().add(logger);
+        }
         return builder.build();
     }
 }
