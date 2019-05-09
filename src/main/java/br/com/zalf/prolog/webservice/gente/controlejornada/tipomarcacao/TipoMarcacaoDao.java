@@ -110,4 +110,6 @@ public interface TipoMarcacaoDao {
      */
     @NotNull
     FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable;
+
+    boolean unidadeTemTipoDefinidoComoJornada(@NotNull final Long codUnidade) throws Throwable;
 }

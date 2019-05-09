@@ -120,4 +120,17 @@ public final class TipoMarcacaoService {
                     .map(t, "Erro ao buscar fórmula de cálculo da jornada, tente novamente");
         }
     }
+
+    public boolean unidadeTemTipoDefinidoComoJornada(final Long codUnidade) throws ProLogException {
+        try {
+            return dao.unidadeTemTipoDefinidoComoJornada(codUnidade);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao verificar se unidade tem tipo definido como jornada\n" +
+                    "codUnidade: %d", codUnidade), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao verificar se unidade tem tipo definido como jornada, " +
+                            "tente novamente");
+        }
+    }
 }

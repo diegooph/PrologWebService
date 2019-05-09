@@ -197,6 +197,38 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
         }
     }
 
+    @NotNull
+    @Override
+    public FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return internalGetForumaCalculoJornada(conn, codUnidade);
+        } finally {
+            close(conn);
+        }
+    }
+
+    @Override
+    public boolean unidadeTemTipoDefinidoComoJornada(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_MARCACAO_VERIFICA_UNIDADE_TEM_TIPO_JORNADA(?) AS TEM_TIPO;");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("TEM_TIPO");
+            } else {
+                throw new IllegalStateException("Erro ao verificar se tem tipo jornada para unidade: " + codUnidade);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     private void associaCargosTipoMarcacao(@NotNull final TipoMarcacao tipoIntervalo,
                                            @NotNull final Connection conn) throws Throwable {
         deleteCargosTipoMarcacao(
@@ -293,18 +325,6 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             return cargos;
         } finally {
             close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            return internalGetForumaCalculoJornada(conn, codUnidade);
-        } finally {
-            close(conn);
         }
     }
 
