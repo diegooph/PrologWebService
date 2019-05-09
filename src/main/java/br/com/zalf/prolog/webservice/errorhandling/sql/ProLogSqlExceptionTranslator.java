@@ -36,7 +36,7 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
                     return new GenericException(getPSQLErrorMessage(sqlException));
                 } else if (sqlException instanceof BatchUpdateException) {
                     if (sqlException.getNextException() instanceof PSQLException) {
-                        return new GenericException(getPSQLErrorMessage(sqlException));
+                        return new GenericException(getPSQLErrorMessage(sqlException.getNextException()));
                     }
                 }
             }
@@ -50,8 +50,8 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
     }
 
     @NotNull
-    private String getPSQLErrorMessage(@NotNull final SQLException sqlException) throws Throwable {
-        return ((PSQLException) sqlException.getNextException()).getServerErrorMessage().getMessage();
+    private String getPSQLErrorMessage(@NotNull final SQLException sqlException) {
+        return ((PSQLException) sqlException).getServerErrorMessage().getMessage();
     }
 
     @Nullable
