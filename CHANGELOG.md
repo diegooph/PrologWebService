@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Stage
+* Corrige busca de tipos de marcação da unidade ao gerar relatórios (PL-1667)
+
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (release-date) [unreleased]
 

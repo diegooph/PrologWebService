@@ -215,9 +215,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             final TipoMarcacaoDao dao = Injection.provideTipoMarcacaoDao();
             return ControleJornadaRelatorioConverter.createFolhaPontoRelatorio(
                     rSet,
-                    dao.getTiposMarcacoes(codUnidade, true, false),
-                    dataInicial,
-                    dataFinal,
+                    dao.getTiposMarcacoes(codUnidade, false, false),
                     zoneId);
         } finally {
             close(conn, stmt, rSet);
@@ -323,8 +321,15 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                     .Builder(out)
                     .withCsvReport(new RelatorioTotaisPorTipoIntervalo(
                             rSet,
-                            dao.getTiposMarcacoes(codUnidade, true, false),
-                            codTipoIntervalo.equals("%") ? null : Long.parseLong(codTipoIntervalo)))
+                            dao.getTiposMarcacoes(
+                                    codUnidade,
+                                    /* Se o filtro de tipo do relatório for por todos, então trazemos apenas os tipos
+                                    ativos. Ou seja, se for por todos, o colaborador não terá a visão poluída com,
+                                    talvez, diversos tipos já inativados. Porém, se ele filtrar especificamente por um
+                                    inativado, esse tipo irá retornar no relatório. */
+                                    Filtros.isFiltroTodos(codTipoIntervalo),
+                                    false),
+                            Filtros.isFiltroTodos(codTipoIntervalo) ? null : Long.parseLong(codTipoIntervalo)))
                     .build()
                     .write();
         } finally {
@@ -359,7 +364,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM FUNC_MARCACAO_GET_TEMPO_TOTAL_POR_TIPO_MARCACAO(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
-        if (codTipoIntervalo.equals("%")) {
+        if (Filtros.isFiltroTodos(codTipoIntervalo)) {
             stmt.setNull(2, Types.BIGINT);
         } else {
             stmt.setLong(2, Long.parseLong(codTipoIntervalo));

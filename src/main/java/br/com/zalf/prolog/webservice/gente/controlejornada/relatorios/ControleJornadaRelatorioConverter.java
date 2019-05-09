@@ -39,8 +39,6 @@ final class ControleJornadaRelatorioConverter {
     static List<FolhaPontoRelatorio> createFolhaPontoRelatorio(
             @NotNull final ResultSet rSet,
             @NotNull final List<TipoMarcacao> tiposIntervalos,
-            @NotNull final LocalDate dataInicial,
-            @NotNull final LocalDate dataFinal,
             @NotNull final ZoneId zoneIdUnidade) throws Throwable {
         final LocalDateTime dataHoraGeracaoRelatorioUtc = Now.localDateTimeUtc();
         final LocalDateTime dataHoraGeracaoRelatorioZoned = dataHoraGeracaoRelatorioUtc
