@@ -5,6 +5,7 @@ Change Log
 * Corrige busca de tipos de marcação da unidade ao gerar relatórios (PL-1667)
 * Adiciona duração da última viagem no objeto de colaborador em descanso do acompanhamento de viagens (PL-1710)
 * Cria método para verificar se unidade tem tipo definido como jornada (PL-1734)
+* Atualiza versão da lib Apache PDFBox (PL-1707)
 
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (release-date) [unreleased]
