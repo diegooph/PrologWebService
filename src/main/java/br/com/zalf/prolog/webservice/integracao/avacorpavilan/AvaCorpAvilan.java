@@ -151,6 +151,13 @@ public final class AvaCorpAvilan extends Sistema {
     @NotNull
     @Override
     public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
+
+        if (checklist.getKmAtualVeiculo() == 0) {
+            throw new AvaCorpAvilanException(
+                    "O KM enviado não pode ser 0!",
+                    "A integração com a Avilan não aceita mais KMs 0");
+        }
+
         return requester.insertChecklist(
                 AvaCorpAvilanConverter.convert(checklist, getCpf(), getDataNascimento()),
                 getCpf(),
@@ -349,6 +356,12 @@ public final class AvaCorpAvilan extends Sistema {
     public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         if (afericao instanceof AfericaoPlaca) {
             final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
+            if (afericaoPlaca.getKmMomentoAfericao() == 0) {
+                throw new AvaCorpAvilanException(
+                        "O KM enviado não pode ser 0!",
+                        "A integração com a Avilan não aceita mais KMs 0");
+            }
+
             final Long codAfericao = requester.insertAfericao(
                     AvaCorpAvilanConverter.convert(afericaoPlaca),
                     getCpf(),
