@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.P
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao.PneuTransferenciaProcessoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,20 +19,32 @@ public interface PneuTransferenciaDao {
     /**
      * Insere a realização de uma transferência.
      *
-     * @param pneuTransferenciaRealizacao   A {@link PneuTransferenciaRealizacao} contendo os dados da transferência.
-     * @param pneuTransferenciaDao Código da {@link PneuTransferenciaDao}.
+     * @param pneuTransferenciaRealizacao A {@link PneuTransferenciaRealizacao} contendo os dados da transferência.
+     * @return O código do processo inserido.
      * @throws Throwable Se ocorrer erro no banco.
      */
-    void insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
-                             @NotNull final PneuTransferenciaDao pneuTransferenciaDao) throws Throwable;
+    Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
+                             final boolean isTransferenciaFromVeiculo) throws Throwable;
+
+    /**
+     * Insere a realização de uma transferência.
+     *
+     * @param conn                        Conexão que será utilizada para inserir no Banco de Dados.
+     * @param pneuTransferenciaRealizacao A {@link PneuTransferenciaRealizacao} contendo os dados da transferência.
+     * @return O código do processo inserido.
+     * @throws Throwable Se ocorrer erro no banco.
+     */
+    Long insertTransferencia(@NotNull final Connection conn,
+                             @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
+                             final boolean isTransferenciaFromVeiculo) throws Throwable;
 
     /**
      * Método para buscar uma lista de transferências realizadas
      *
-     * @param codUnidadesOrigem Lista de códigos das unidades de origem aplicado na busca.
+     * @param codUnidadesOrigem  Lista de códigos das unidades de origem aplicado na busca.
      * @param codUnidadesDestino Lista de códigos das unidades de origem destino na busca.
-     * @param dataInicial Data inicial da busca.
-     * @param dataFinal Data final da busca.
+     * @param dataInicial        Data inicial da busca.
+     * @param dataFinal          Data final da busca.
      * @return Uma lista de transferências que foram realizadas com base no filtro aplicado.
      * @throws Throwable Se algum erro ocorrer.
      */

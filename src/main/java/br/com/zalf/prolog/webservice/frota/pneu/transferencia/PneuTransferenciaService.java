@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -21,9 +22,13 @@ final class PneuTransferenciaService {
     @NotNull
     private final PneuTransferenciaDao dao = Injection.providePneuTransferenciaDao();
 
-    void insertTransferencia(PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
+    @NotNull
+    ResponseWithCod insertTransferencia(
+            final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
         try {
-            dao.insertTransferencia(pneuTransferenciaRealizacao, Injection.providePneuTransferenciaDao());
+            return ResponseWithCod.ok(
+                    "Transferência realizada com sucesso",
+                    dao.insertTransferencia(pneuTransferenciaRealizacao, false));
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao realizar a transferência", e);
             throw Injection
@@ -33,10 +38,10 @@ final class PneuTransferenciaService {
     }
 
     @NotNull
-    List<PneuTransferenciaListagem> getListagem(@NotNull final List<Long> codUnidadesOrigem,
-                                                @NotNull final List<Long> codUnidadesDestino,
-                                                @NotNull final String dataInicial,
-                                                @NotNull final String dataFinal) throws ProLogException {
+    List<PneuTransferenciaListagem> getListagem(final List<Long> codUnidadesOrigem,
+                                                final List<Long> codUnidadesDestino,
+                                                final String dataInicial,
+                                                final String dataFinal) throws ProLogException {
         try {
             return dao.getListagem(
                     codUnidadesOrigem,
@@ -52,7 +57,7 @@ final class PneuTransferenciaService {
     }
 
     @NotNull
-    PneuTransferenciaProcessoVisualizacao getTransferenciaVisualizacao(@NotNull final Long codTransferencia)
+    PneuTransferenciaProcessoVisualizacao getTransferenciaVisualizacao(final Long codTransferencia)
             throws ProLogException {
         try {
             return dao.getVisualizacao(codTransferencia);

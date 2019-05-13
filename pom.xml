@@ -175,6 +175,14 @@
 			<artifactId>threeten-extra</artifactId>
 			<version>1.4</version>
 		</dependency>
+
+		<!-- https://google.github.io/truth/ -->
+		<dependency>
+			<groupId>com.google.truth</groupId>
+			<artifactId>truth</artifactId>
+			<version>0.44</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>prolog.webservice</finalName>

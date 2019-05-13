@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -33,7 +33,7 @@ public final class VeiculoTransferenciaResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    public AbstractResponse insertProcessoTranseferenciaVeiculo(
+    public ResponseWithCod insertProcessoTranseferenciaVeiculo(
             @Required final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
         return service.insertProcessoTranseferenciaVeiculo(processoTransferenciaVeiculo);
     }

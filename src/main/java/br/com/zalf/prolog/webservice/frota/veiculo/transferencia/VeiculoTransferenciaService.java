@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -20,7 +19,7 @@ public final class VeiculoTransferenciaService {
     private final VeiculoTransferenciaDao dao = Injection.provideVeiculoTransferenciaDaoImpl();
 
     @NotNull
-    public AbstractResponse insertProcessoTranseferenciaVeiculo(
+    public ResponseWithCod insertProcessoTranseferenciaVeiculo(
             final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
         try {
             return ResponseWithCod.ok(

@@ -48,4 +48,8 @@ public final class VeiculoEnvioTransferencia {
     public List<Long> getCodPneusAplicadosVeiculo() {
         return codPneusAplicadosVeiculo;
     }
+
+    public boolean temPneuParaTransferir() {
+        return this.codPneusAplicadosVeiculo.size() > 0;
+    }
 }
