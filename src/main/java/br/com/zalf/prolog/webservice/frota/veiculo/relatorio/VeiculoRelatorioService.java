@@ -15,16 +15,14 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class VeiculoRelatorioService {
+    @NotNull
     private static final String TAG = VeiculoRelatorioService.class.getSimpleName();
     @NotNull
     private VeiculoRelatorioDao dao = Injection.provideVeiculoRelatorioDao();
 
-    public void getListagemVeiculosByUnidadeCsv(final OutputStream out,
-                                                final List<Long> codUnidades) {
+    void getListagemVeiculosByUnidadeCsv(final OutputStream out, final List<Long> codUnidades) {
         try {
-            dao.getListagemVeiculosByUnidadeCsv(
-                    out,
-                    codUnidades);
+            dao.getListagemVeiculosByUnidadeCsv(out, codUnidades);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de listagem de veiculos (CSV)", throwable);
             throw new RuntimeException(throwable);
@@ -32,7 +30,7 @@ public class VeiculoRelatorioService {
     }
 
     @NotNull
-    public Report getListagemVeiculosByUnidadeReport(final List<Long> codUnidades) throws ProLogException {
+    Report getListagemVeiculosByUnidadeReport(final List<Long> codUnidades) throws ProLogException {
         try {
             return dao.getListagemVeiculosByUnidadeReport(codUnidades);
         } catch (final Throwable throwable) {
