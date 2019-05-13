@@ -145,7 +145,17 @@ public final class AvaCorpAvilan extends Sistema {
                 getDataNascimento());
         final Map<Long, String> mapCodPerguntUrlImagem =
                 getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModelo);
-        return AvaCorpAvilanConverter.convert(questoesVeiculo, mapCodPerguntUrlImagem, placaVeiculo);
+
+        final NovoChecklistHolder holder = AvaCorpAvilanConverter.convert(
+                questoesVeiculo,
+                mapCodPerguntUrlImagem,
+                placaVeiculo);
+
+        // Em 02/05/19 o KM setado ao iniciar um novo checklist/aferição foi alterado mediante solicitação da Avilan
+        // para setarmos sempre 0. Mais informações: https://prologapp.atlassian.net/browse/PL-1966
+        holder.getVeiculo().setKmAtual(0L);
+
+        return holder;
     }
 
     @NotNull
@@ -323,6 +333,10 @@ public final class AvaCorpAvilan extends Sistema {
         final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan, codUnidade);
         veiculo.setDiagrama(optional.get());
         veiculo.setListPneus(pneus);
+
+        // Em 02/05/19 o KM setado ao iniciar um novo checklist/aferição foi alterado mediante solicitação da Avilan
+        // para setarmos sempre 0. Mais informações: https://prologapp.atlassian.net/browse/PL-1966
+        veiculo.setKmAtual(0L);
 
         // Cria NovaAfericao.
         final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
