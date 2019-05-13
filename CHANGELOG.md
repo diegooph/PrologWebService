@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+### Stage
+* Altera integração com a Avilan para enviar ao App o KM atual do veículo
+como 0 ao iniciar um check ou aferição. Além disso, ao finalizar esse check
+ou aferição, a integração impede que seja enviado 0, o usuário será obrigado
+a alterar o valor (PL-1966)
+
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (release-date) [unreleased]
 
