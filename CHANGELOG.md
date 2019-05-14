@@ -6,6 +6,9 @@ Change Log
 ### Feat
 * Disponibilizar Exportação da Listagem de Veículos ([PL-1964](https://prologapp.atlassian.net/browse/PL-1964))
 
+### Refactors
+* Altera o filtro da listagem para buscar imagens apenas de modelos ativos ([PL-1908](https://prologapp.atlassian.net/browse/PL-1908))
+
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (release-date) [unreleased]
 
