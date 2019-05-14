@@ -1,13 +1,11 @@
 Change Log
 ==========
 
-## Stage
-
-### Feat
-* Disponibilizar Exportação da Listagem de Veículos ([PL-1964](https://prologapp.atlassian.net/browse/PL-1964))
-
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (release-date) [unreleased]
+
+### Features
+* Disponibilizar Exportação da Listagem de Veículos (PL-1964)
 
 ### Refactors
 * Adiciona informações de placa e posição nos objetos de pneus quando aplicados (PL-1942)
