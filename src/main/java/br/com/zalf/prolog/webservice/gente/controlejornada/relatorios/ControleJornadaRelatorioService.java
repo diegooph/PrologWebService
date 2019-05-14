@@ -149,14 +149,16 @@ public class ControleJornadaRelatorioService {
                                                             @NotNull final String codTipoIntervalo,
                                                             @NotNull final String cpf,
                                                             @NotNull final String dataInicial,
-                                                            @NotNull final String dataFinal) throws ProLogException {
+                                                            @NotNull final String dataFinal,
+                                                            final boolean apenasColaboradoresAtivos) throws ProLogException {
         try {
             return dao.getFolhaPontoRelatorio(
                     codUnidade,
                     codTipoIntervalo,
                     cpf,
                     ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    ProLogDateParser.toLocalDate(dataFinal),
+                    apenasColaboradoresAtivos);
         } catch (final Throwable e) {
             final String errorMessage = String.format("Erro ao buscar o relatório de folha de ponto. \n" +
                     "codUnidade: %d \n" +
@@ -177,14 +179,16 @@ public class ControleJornadaRelatorioService {
             @NotNull final String codTipoIntervalo,
             @NotNull final String cpf,
             @NotNull final String dataInicial,
-            @NotNull final String dataFinal) throws ProLogException {
+            @NotNull final String dataFinal,
+            final boolean apenasColaboradoresAtivos) throws ProLogException {
         try {
             return dao.getFolhaPontoJornadaRelatorio(
                     codUnidade,
                     codTipoIntervalo,
                     cpf,
                     ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    ProLogDateParser.toLocalDate(dataFinal),
+                    apenasColaboradoresAtivos);
         } catch (final Throwable e) {
             final String errorMessage = String.format("Erro ao buscar o relatório de folha de ponto jornada.\n" +
                     "codUnidade: %d\n" +
