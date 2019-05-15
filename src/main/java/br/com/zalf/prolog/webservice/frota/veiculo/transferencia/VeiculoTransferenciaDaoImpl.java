@@ -34,6 +34,9 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
             conn = getConnection();
             conn.setAutoCommit(false);
 
+            // Seta propriedade na connection para verificar constraints entre as tabelas do banco somente na chamada
+            // conn.commit(). Assim temos mais flexibilidade de trabalhar sem ser interrompido por vínculos.
+            // https://begriffs.com/posts/2017-08-27-deferrable-sql-constraints.html
             stmt = conn.prepareStatement("SET CONSTRAINTS ALL DEFERRED;");
             stmt.execute();
 
@@ -73,19 +76,20 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
                     // Insere informações da transferência da Placa.
                     insertTransferenciaVeiculoInformacoes(conn, codProcessoTransferenciaVeiculo, veiculoTransferencia);
 
-                    // Transfere o veículo de Unidade.
+                    // Transfere o veículo da Unidade Origem para a Unidade Destino.
                     tranfereVeiculo(conn, codUnidadeOrigem, codUnidadeDestino, codveiculo);
 
                     // Transfere Pneus, se o veículo tem algum aplicado.
                     if (veiculoTransferencia.temPneuParaTransferir()) {
-                        // Remove pneus do veículo.
+                        // Verifica se não houve movimentação de pneus no veículo enquanto o processo de
+                        // transferência era realziado.
                         verificaPneusVeiculo(
                                 conn,
                                 codUnidadeOrigem,
                                 codveiculo,
                                 veiculoTransferencia.getCodPneusAplicadosVeiculo());
 
-                        // Transfere os pneus aplicados na placa de Unidade.
+                        // Transfere os pneus aplicados na placa da Unidade Origem para a Unidade Destino.
                         final Long codProcessoTransferenciaPneu = pneuTransferenciaDao.insertTransferencia(
                                 conn,
                                 VeiculoTransferenciaConverter.toPneuTransferenciaRealizacao(
@@ -94,6 +98,14 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
                                         codColaboradorRealizacaoTransferencia,
                                         veiculoTransferencia),
                                 true);
+
+                        // Atualiza o vinculo entre os pneus transferidos e o veículo transferido
+                        atualizaVinculoPneuVeiculo(
+                                conn,
+                                codUnidadeOrigem,
+                                codUnidadeDestino,
+                                codveiculo,
+                                veiculoTransferencia.getCodPneusAplicadosVeiculo());
 
                         // Insere vinculo entre a Transferência do veículo com a Transferência dos Pneus.
                         insereVinculoTransferenciaVeiculoPneu(
@@ -159,23 +171,23 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
         }
     }
 
-    private void insereVinculoTransferenciaVeiculoPneu(
-            @NotNull final Connection conn,
-            final long codProcessoTransferenciaVeiculo,
-            @NotNull final Long codProcessoTransferenciaPneu) throws Throwable {
+    private void tranfereVeiculo(@NotNull final Connection conn,
+                                 @NotNull final Long codUnidadeOrigem,
+                                 @NotNull final Long codUnidadeDestino,
+                                 @NotNull final Long codVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO " +
-                    "  VEICULO_TRANSFERENCIA_VINCULO_PROCESSO_PNEU(" +
-                    "    COD_PROCESSO_TRANSFERENCIA_VEICULO, " +
-                    "    COD_PROCESSO_TRANSFERENCIA_PNEU) " +
-                    "VALUES (?, ?);");
-            stmt.setLong(1, codProcessoTransferenciaVeiculo);
-            stmt.setLong(2, codProcessoTransferenciaPneu);
+            stmt = conn.prepareStatement("UPDATE VEICULO " +
+                    "SET COD_UNIDADE = ? " +
+                    "WHERE CODIGO = ? AND COD_UNIDADE = ?;");
+            stmt.setLong(1, codUnidadeDestino);
+            stmt.setLong(2, codVeiculo);
+            stmt.setLong(3, codUnidadeOrigem);
             if (stmt.executeUpdate() <= 0) {
-                throw new SQLException("Não foi possível inserir vínculo de transferência do veículo com os pneus: \n" +
-                        "codProcessoTransferenciaVeiculo: " + codProcessoTransferenciaVeiculo + "\n" +
-                        "codProcessoTransferenciaPneu: " + codProcessoTransferenciaPneu);
+                throw new SQLException("Erro ao realizar update do código da unidade do veículo:\n" +
+                        "codUnidadeOrigem: " + codUnidadeOrigem + "\n" +
+                        "codUnidadeDestino: " + codUnidadeDestino + "\n" +
+                        "codVeiculo: " + codVeiculo);
             }
         } finally {
             close(stmt);
@@ -201,6 +213,7 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 if (rSet.getLong("QTD_PNEUS_APLICADOS") != codPneusAplicadosVeiculo.size()) {
+                    // Utilizamos uma GenericException para que a mensagem seja mapeada e mostrada para o usuário.
                     throw new GenericException(
                             "Os pneus do veículo sofreram alterações enquanto a transferência estava sendo realizada");
                 }
@@ -214,23 +227,51 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
         }
     }
 
-    private void tranfereVeiculo(@NotNull final Connection conn,
-                                 @NotNull final Long codUnidadeOrigem,
-                                 @NotNull final Long codUnidadeDestino,
-                                 @NotNull final Long codVeiculo) throws Throwable {
+    private void atualizaVinculoPneuVeiculo(@NotNull final Connection conn,
+                                            @NotNull final Long codUnidadeOrigem,
+                                            @NotNull final Long codUnidadeDestino,
+                                            @NotNull final Long codveiculo,
+                                            @NotNull final List<Long> codPneusAplicadosVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE VEICULO " +
+            stmt = conn.prepareStatement("UPDATE VEICULO_PNEU " +
                     "SET COD_UNIDADE = ? " +
-                    "WHERE CODIGO = ? AND COD_UNIDADE = ?;");
+                    "WHERE PLACA = (SELECT PLACA FROM VEICULO WHERE CODIGO = ?) " +
+                    "      AND COD_UNIDADE = ? " +
+                    "      AND COD_PNEU = ANY(?);");
             stmt.setLong(1, codUnidadeDestino);
-            stmt.setLong(2, codVeiculo);
+            stmt.setLong(2, codveiculo);
             stmt.setLong(3, codUnidadeOrigem);
-            if (stmt.executeUpdate() <= 0) {
-                throw new SQLException("Erro ao realizar update do código da unidade do veículo:\n" +
+            stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.BIGINT, codPneusAplicadosVeiculo));
+            if (stmt.executeUpdate() != codPneusAplicadosVeiculo.size()) {
+                throw new SQLException("Não foi possível atualizar os vínculos entre pneus e a placa transferida:\n" +
                         "codUnidadeOrigem: " + codUnidadeOrigem + "\n" +
-                        "codUnidadeDestino: " + codUnidadeDestino + "\n" +
-                        "codVeiculo: " + codVeiculo);
+                        "codUnidadeDestino:" + codUnidadeDestino + "\n" +
+                        "codveiculo:" + codveiculo + "\n" +
+                        "codPneusAplicadosVeiculo:" + codPneusAplicadosVeiculo.toString());
+            }
+        } finally {
+            close(stmt);
+        }
+    }
+
+    private void insereVinculoTransferenciaVeiculoPneu(
+            @NotNull final Connection conn,
+            final long codProcessoTransferenciaVeiculo,
+            @NotNull final Long codProcessoTransferenciaPneu) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO " +
+                    "  VEICULO_TRANSFERENCIA_VINCULO_PROCESSO_PNEU(" +
+                    "    COD_PROCESSO_TRANSFERENCIA_VEICULO, " +
+                    "    COD_PROCESSO_TRANSFERENCIA_PNEU) " +
+                    "VALUES (?, ?);");
+            stmt.setLong(1, codProcessoTransferenciaVeiculo);
+            stmt.setLong(2, codProcessoTransferenciaPneu);
+            if (stmt.executeUpdate() <= 0) {
+                throw new SQLException("Não foi possível inserir vínculo de transferência do veículo com os pneus: \n" +
+                        "codProcessoTransferenciaVeiculo: " + codProcessoTransferenciaVeiculo + "\n" +
+                        "codProcessoTransferenciaPneu: " + codProcessoTransferenciaPneu);
             }
         } finally {
             close(stmt);
