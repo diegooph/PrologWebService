@@ -29,12 +29,12 @@ import javax.ws.rs.core.MediaType;
 @Secured(permissions = Pilares.Frota.TRANSFERENCIA_PNEUS_VEICULOS)
 public final class VeiculoTransferenciaResource {
     @NotNull
-    private VeiculoTransferenciaService service = new VeiculoTransferenciaService();
+    private final VeiculoTransferenciaService service = new VeiculoTransferenciaService();
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    public ResponseWithCod insertProcessoTranseferenciaVeiculo(
+    public ResponseWithCod insertProcessoTransferenciaVeiculo(
             @Required final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
-        return service.insertProcessoTranseferenciaVeiculo(processoTransferenciaVeiculo);
+        return service.insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo);
     }
 }

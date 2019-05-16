@@ -21,8 +21,9 @@ public interface PneuTransferenciaDao {
      *
      * @param pneuTransferenciaRealizacao A {@link PneuTransferenciaRealizacao} contendo os dados da transferência.
      * @return O código do processo inserido.
-     * @throws Throwable Se ocorrer erro no banco.
+     * @throws Throwable Se algum erro ocorrer.
      */
+    @NotNull
     Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
                              final boolean isTransferenciaFromVeiculo) throws Throwable;
 
@@ -32,8 +33,9 @@ public interface PneuTransferenciaDao {
      * @param conn                        Conexão que será utilizada para inserir no Banco de Dados.
      * @param pneuTransferenciaRealizacao A {@link PneuTransferenciaRealizacao} contendo os dados da transferência.
      * @return O código do processo inserido.
-     * @throws Throwable Se ocorrer erro no banco.
+     * @throws Throwable Se algum erro ocorrer.
      */
+    @NotNull
     Long insertTransferencia(@NotNull final Connection conn,
                              @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
                              final boolean isTransferenciaFromVeiculo) throws Throwable;

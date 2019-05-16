@@ -11,9 +11,87 @@ import java.text.Normalizer;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class StringUtils {
+    /**
+     * The empty String {@code ""}.
+     * @since 2.0
+     */
+    public static final String EMPTY = "";
 
     private StringUtils() {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
+    }
+
+    /**
+     * <p>Removes control characters (char &lt;= 32) from both
+     * ends of this String returning {@code null} if the String is
+     * empty ("") after the trim or if it is {@code null}.
+     *
+     * <p>The String is trimmed using {@link String#trim()}.
+     * Trim removes start and end characters &lt;= 32.
+     *
+     * <pre>
+     * StringUtils.trimToNull(null)          = null
+     * StringUtils.trimToNull("")            = null
+     * StringUtils.trimToNull("     ")       = null
+     * StringUtils.trimToNull("abc")         = "abc"
+     * StringUtils.trimToNull("    abc    ") = "abc"
+     * </pre>
+     *
+     * @param str  the String to be trimmed, may be null
+     * @return the trimmed String,
+     *  {@code null} if only chars &lt;= 32, empty or null String input
+     */
+    public static String trimToNull(final String str) {
+        final String ts = trim(str);
+        return isNullOrEmpty(ts) ? null : ts;
+    }
+
+    /**
+     * <p>Removes control characters (char &lt;= 32) from both
+     * ends of this String returning an empty String ("") if the String
+     * is empty ("") after the trim or if it is {@code null}.
+     *
+     * <p>The String is trimmed using {@link String#trim()}.
+     * Trim removes start and end characters &lt;= 32.
+     *
+     * <pre>
+     * StringUtils.trimToEmpty(null)          = ""
+     * StringUtils.trimToEmpty("")            = ""
+     * StringUtils.trimToEmpty("     ")       = ""
+     * StringUtils.trimToEmpty("abc")         = "abc"
+     * StringUtils.trimToEmpty("    abc    ") = "abc"
+     * </pre>
+     *
+     * @param str  the String to be trimmed, may be null
+     * @return the trimmed String, or an empty String if {@code null} input
+     */
+    public static String trimToEmpty(final String str) {
+        return str == null ? EMPTY : str.trim();
+    }
+
+    /**
+     * <p>Removes control characters (char &lt;= 32) from both
+     * ends of this String, handling {@code null} by returning
+     * {@code null}.</p>
+     *
+     * <p>The String is trimmed using {@link String#trim()}.
+     * Trim removes start and end characters &lt;= 32.
+     *
+     * <p>To trim your choice of characters, use the
+     *
+     * <pre>
+     * StringUtils.trim(null)          = null
+     * StringUtils.trim("")            = ""
+     * StringUtils.trim("     ")       = ""
+     * StringUtils.trim("abc")         = "abc"
+     * StringUtils.trim("    abc    ") = "abc"
+     * </pre>
+     *
+     * @param str  the String to be trimmed, may be null
+     * @return the trimmed string, {@code null} if null String input
+     */
+    public static String trim(final String str) {
+        return str == null ? null : str.trim();
     }
 
     /**
