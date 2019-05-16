@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem;
 
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.LinkTransferenciaVeiculo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,111 +14,146 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class PneuTransferenciaListagem {
-    private Long codTransferenciaProcesso;
-    private LocalDateTime dataHoraTransferenciaProcesso;
     /**
-     * Código do cliente, número de fogo do pneu.
+     * Código do processo de transferência de Pneu.
      */
-    private List<String> codPneusCliente;
-    private String nomeUnidadeOrigem;
-    private String nomeUnidadeDestino;
-    private String nomeRegionalOrigem;
-    private String nomeRegionalDestino;
-    private String nomeColaboradorRealizacaoTransferencia;
-    private String observacaoTransferenciaProcesso;
+    @NotNull
+    private final Long codTransferenciaProcesso;
+    /**
+     * Nome do colaborador que realizou a transferência dos pneus.
+     */
+    @NotNull
+    private final String nomeColaboradorRealizacaoTransferencia;
+    /**
+     * Nome da Regional onde os pneus estavam alocados.
+     */
+    @NotNull
+    private final String nomeRegionalOrigem;
+    /**
+     * Nome da Unidade onde os pneus estavam alocados.
+     */
+    @NotNull
+    private final String nomeUnidadeOrigem;
+    /**
+     * Nome da Regional para onde os pneus foram transferidos.
+     */
+    @NotNull
+    private final String nomeRegionalDestino;
+    /**
+     * Nome da Unidade para onde os pneus foram transferidos.
+     */
+    @NotNull
+    private final String nomeUnidadeDestino;
+    /**
+     * Lista de pneus que foram transferidos. Mostra apenas o código do cliente.
+     */
+    @NotNull
+    private final List<String> codPneusCliente;
+    /**
+     * Observação inserida pelo colaborador no momento da transferência. O colaborador pode não ter informado nenhum
+     * texto, neste caso esse atributo estará vazio.
+     */
+    @NotNull
+    private final String observacaoTransferenciaProcesso;
+    /**
+     * Data e hora que a transferência foi realizada pelo colaborador.
+     */
+    @NotNull
+    private final LocalDateTime dataHoraTransferenciaProcesso;
+    /**
+     * Objeto que contém informações de qual placa o pneu estava aplicado, caso ele estava.
+     */
+    @Nullable
+    private final LinkTransferenciaVeiculo linkTransferenciaVeiculo;
 
-    public PneuTransferenciaListagem() {
-
-    }
-
-    public Long getCodTransferenciaProcesso() {
-        return codTransferenciaProcesso;
-    }
-
-    public void setCodTransferenciaProcesso(Long codTransferenciaProcesso) {
+    public PneuTransferenciaListagem(@NotNull final Long codTransferenciaProcesso,
+                                     @NotNull final String nomeColaboradorRealizacaoTransferencia,
+                                     @NotNull final String nomeRegionalOrigem,
+                                     @NotNull final String nomeUnidadeOrigem,
+                                     @NotNull final String nomeRegionalDestino,
+                                     @NotNull final String nomeUnidadeDestino,
+                                     @NotNull final List<String> codPneusCliente,
+                                     @NotNull final String observacaoTransferenciaProcesso,
+                                     @NotNull final LocalDateTime dataHoraTransferenciaProcesso,
+                                     @Nullable final LinkTransferenciaVeiculo linkTransferenciaVeiculo) {
         this.codTransferenciaProcesso = codTransferenciaProcesso;
-    }
-
-    public LocalDateTime getDataHoraTransferenciaProcesso() {
-        return dataHoraTransferenciaProcesso;
-    }
-
-    public void setDataHoraTransferenciaProcesso(LocalDateTime dataHoraTransferenciaProcesso) {
         this.dataHoraTransferenciaProcesso = dataHoraTransferenciaProcesso;
-    }
-
-    public List<String> getCodPneusCliente() {
-        return codPneusCliente;
-    }
-
-    public void setCodPneusCliente(List<String> codPneusCliente) {
         this.codPneusCliente = codPneusCliente;
-    }
-
-    public String getNomeUnidadeOrigem() {
-        return nomeUnidadeOrigem;
-    }
-
-    public void setNomeUnidadeOrigem(String nomeUnidadeOrigem) {
         this.nomeUnidadeOrigem = nomeUnidadeOrigem;
-    }
-
-    public String getNomeUnidadeDestino() {
-        return nomeUnidadeDestino;
-    }
-
-    public void setNomeUnidadeDestino(String nomeUnidadeDestino) {
         this.nomeUnidadeDestino = nomeUnidadeDestino;
-    }
-
-    public String getNomeRegionalOrigem() {
-        return nomeRegionalOrigem;
-    }
-
-    public void setNomeRegionalOrigem(String nomeRegionalOrigem) {
         this.nomeRegionalOrigem = nomeRegionalOrigem;
-    }
-
-    public String getNomeRegionalDestino() {
-        return nomeRegionalDestino;
-    }
-
-    public void setNomeRegionalDestino(String nomeRegionalDestino) {
         this.nomeRegionalDestino = nomeRegionalDestino;
-    }
-
-    public String getNomeColaboradorRealizacaoTransferencia() {
-        return nomeColaboradorRealizacaoTransferencia;
-    }
-
-    public void setNomeColaboradorRealizacaoTransferencia(String nomeColaboradorRealizacaoTransferencia) {
         this.nomeColaboradorRealizacaoTransferencia = nomeColaboradorRealizacaoTransferencia;
-    }
-
-    public String getObservacaoTransferenciaProcesso() {
-        return observacaoTransferenciaProcesso;
-    }
-
-    public void setObservacaoTransferenciaProcesso(String observacaoTransferenciaProcesso) {
         this.observacaoTransferenciaProcesso = observacaoTransferenciaProcesso;
+        this.linkTransferenciaVeiculo = linkTransferenciaVeiculo;
     }
 
     @NotNull
     public static PneuTransferenciaListagem createDummy() {
-        final PneuTransferenciaListagem transferencia = new PneuTransferenciaListagem();
-        transferencia.setCodTransferenciaProcesso(101L);
-        transferencia.setDataHoraTransferenciaProcesso(LocalDateTime.now());
         final List<String> codPneusCliente = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             codPneusCliente.add(String.valueOf(i));
         }
-        transferencia.setCodPneusCliente(codPneusCliente);
-        transferencia.setNomeUnidadeOrigem("Floripa");
-        transferencia.setNomeUnidadeDestino("Sapucaia");
-        transferencia.setNomeRegionalOrigem("Sul");
-        transferencia.setNomeRegionalDestino("Sudeste");
-        transferencia.setNomeColaboradorRealizacaoTransferencia("Clementino");
-        transferencia.setObservacaoTransferenciaProcesso("Operação Verão");
-        return transferencia;
+        return new PneuTransferenciaListagem(
+                101L,
+                "Zalf Sistemas",
+                "Sul",
+                "Floripa",
+                "Sul",
+                "Sapucaia",
+                codPneusCliente,
+                "Operação de Verão",
+                LocalDateTime.now(),
+                new LinkTransferenciaVeiculo(1010L, "PRO0001"));
+    }
+
+    @NotNull
+    public Long getCodTransferenciaProcesso() {
+        return codTransferenciaProcesso;
+    }
+
+    @NotNull
+    public String getNomeColaboradorRealizacaoTransferencia() {
+        return nomeColaboradorRealizacaoTransferencia;
+    }
+
+    @NotNull
+    public String getNomeRegionalOrigem() {
+        return nomeRegionalOrigem;
+    }
+
+    @NotNull
+    public String getNomeUnidadeOrigem() {
+        return nomeUnidadeOrigem;
+    }
+
+    @NotNull
+    public String getNomeRegionalDestino() {
+        return nomeRegionalDestino;
+    }
+
+    @NotNull
+    public String getNomeUnidadeDestino() {
+        return nomeUnidadeDestino;
+    }
+
+    @NotNull
+    public List<String> getCodPneusCliente() {
+        return codPneusCliente;
+    }
+
+    @NotNull
+    public String getObservacaoTransferenciaProcesso() {
+        return observacaoTransferenciaProcesso;
+    }
+
+    @NotNull
+    public LocalDateTime getDataHoraTransferenciaProcesso() {
+        return dataHoraTransferenciaProcesso;
+    }
+
+    @Nullable
+    public LinkTransferenciaVeiculo getLinkTransferenciaVeiculo() {
+        return linkTransferenciaVeiculo;
     }
 }

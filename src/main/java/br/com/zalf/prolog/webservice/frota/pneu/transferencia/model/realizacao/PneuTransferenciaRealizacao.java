@@ -11,74 +11,80 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class PneuTransferenciaRealizacao {
-    private Long codUnidadeOrigem;
-    private Long codUnidadeDestino;
-    private Long codColaboradorRealizacaoTransferencia;
-
     /**
-     * Código do cliente, número de fogo do pneu.
+     * Código da Unidade onde o pneu está alocado.
      */
-    private List<Long> codPneus;
-    private String observacao;
+    @NotNull
+    private final Long codUnidadeOrigem;
+    /**
+     * Código da Unidade para onde o pneu será transferido.
+     */
+    @NotNull
+    private final Long codUnidadeDestino;
+    /**
+     * Código do colaborador que está realizando a transferência dos pneus.
+     */
+    @NotNull
+    private final Long codColaboradorRealizacaoTransferencia;
+    /**
+     * Código de identificação do pneu, normalmente, número de fogo do pneu.
+     */
+    @NotNull
+    private final List<Long> codPneus;
+    /**
+     * Observação inserida pelo colaborador no momento da transferência. Este atributo pode estar vazio.
+     */
+    @NotNull
+    private final String observacao;
 
-    public PneuTransferenciaRealizacao() {
-
+    public PneuTransferenciaRealizacao(@NotNull final Long codUnidadeOrigem,
+                                       @NotNull final Long codUnidadeDestino,
+                                       @NotNull final Long codColaboradorRealizacaoTransferencia,
+                                       @NotNull final List<Long> codPneus,
+                                       @NotNull final String observacao) {
+        this.codUnidadeOrigem = codUnidadeOrigem;
+        this.codUnidadeDestino = codUnidadeDestino;
+        this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
+        this.codPneus = codPneus;
+        this.observacao = observacao;
     }
 
+    @NotNull
+    public static PneuTransferenciaRealizacao createDummy() {
+        final List<Long> codPneus = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            codPneus.add((long) i);
+        }
+        return new PneuTransferenciaRealizacao(
+                5L,
+                3L,
+                190L,
+                codPneus,
+                "Operação de verão");
+    }
+
+    @NotNull
     public Long getCodUnidadeOrigem() {
         return codUnidadeOrigem;
     }
 
-    public void setCodUnidadeOrigem(Long codUnidadeOrigem) {
-        this.codUnidadeOrigem = codUnidadeOrigem;
-    }
-
+    @NotNull
     public Long getCodUnidadeDestino() {
         return codUnidadeDestino;
     }
 
-    public void setCodUnidadeDestino(Long codUnidadeDestino) {
-        this.codUnidadeDestino = codUnidadeDestino;
-    }
-
+    @NotNull
     public Long getCodColaboradorRealizacaoTransferencia() {
         return codColaboradorRealizacaoTransferencia;
     }
 
-    public void setCodColaboradorRealizacaoTransferencia(Long codColaboradorRealizacaoTransferencia) {
-        this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
-    }
-
+    @NotNull
     public List<Long> getCodPneus() {
         return codPneus;
     }
 
-    public void setCodPneus(List<Long> codPneus) {
-        this.codPneus = codPneus;
-    }
-
+    @NotNull
     public String getObservacao() {
         return observacao;
-    }
-
-    public void setObservacao(String observacao) {
-        this.observacao = observacao;
-    }
-
-
-    @NotNull
-    public static PneuTransferenciaRealizacao createDummy() {
-        final PneuTransferenciaRealizacao transferencia = new PneuTransferenciaRealizacao();
-        transferencia.setCodUnidadeOrigem(5L);
-        transferencia.setCodUnidadeDestino(3L);
-        transferencia.setCodColaboradorRealizacaoTransferencia(190L);
-        List<Long> codPneus = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            codPneus.add(Long.valueOf(i));
-        }
-        transferencia.setCodPneus(codPneus);
-        transferencia.setObservacao("Operação Verão");
-
-        return transferencia;
     }
 }
