@@ -76,7 +76,11 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                 for (final VeiculoEnvioTransferencia veiculoTransferencia : veiculosTransferencia) {
                     final Long codveiculo = veiculoTransferencia.getCodVeiculo();
                     // Insere informações da transferência da Placa.
-                    insertTransferenciaVeiculoInformacoes(conn, codProcessoTransferenciaVeiculo, veiculoTransferencia);
+                    final Long codTransferenciaInformacoes =
+                            insertTransferenciaVeiculoInformacoes(
+                                    conn,
+                                    codProcessoTransferenciaVeiculo,
+                                    veiculoTransferencia);
 
                     // Transfere o veículo da Unidade Origem para a Unidade Destino.
                     tranfereVeiculo(conn, codUnidadeOrigem, codUnidadeDestino, codveiculo);
@@ -112,7 +116,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                         // Insere vínculo entre a Transferência do veículo com a Transferência dos Pneus.
                         insereVinculoTransferenciaVeiculoPneu(
                                 conn,
-                                codProcessoTransferenciaVeiculo,
+                                codTransferenciaInformacoes,
                                 codProcessoTransferenciaPneu);
                     }
                 }
@@ -131,7 +135,8 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
         }
     }
 
-    private void insertTransferenciaVeiculoInformacoes(
+    @NotNull
+    private Long insertTransferenciaVeiculoInformacoes(
             @NotNull final Connection conn,
             final long codProcessoTransferenciaVeiculo,
             @NotNull final VeiculoEnvioTransferencia veiculoEnvioTransferencia) throws Throwable {
@@ -159,11 +164,12 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             stmt.setLong(4, veiculoEnvioTransferencia.getCodVeiculo());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final long codTransferenciaVeiculo = rSet.getLong("CODIGO");
-                if (codTransferenciaVeiculo <= 0) {
+                final long codTransferenciaInformacoes = rSet.getLong("CODIGO");
+                if (codTransferenciaInformacoes <= 0) {
                     throw new SQLException("Não foi possível inserir as informações do processo de transferência:\n" +
-                            "codTransferenciaVeiculo: " + codTransferenciaVeiculo);
+                            "codTransferenciaInformacoes: " + codTransferenciaInformacoes);
                 }
+                return codTransferenciaInformacoes;
             } else {
                 throw new SQLException("Não foi possível inserir informações de transferência de veículo:\n" +
                         "codProcessoTransferenciaVeiculo: " + codProcessoTransferenciaVeiculo);
@@ -259,20 +265,20 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
 
     private void insereVinculoTransferenciaVeiculoPneu(
             @NotNull final Connection conn,
-            final long codProcessoTransferenciaVeiculo,
+            final long codTransferenciaInformacoes,
             @NotNull final Long codProcessoTransferenciaPneu) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
                     "  VEICULO_TRANSFERENCIA_VINCULO_PROCESSO_PNEU(" +
-                    "    COD_PROCESSO_TRANSFERENCIA_VEICULO, " +
+                    "    COD_VEICULO_TRANSFERENCIA_INFORMACOES, " +
                     "    COD_PROCESSO_TRANSFERENCIA_PNEU) " +
                     "VALUES (?, ?);");
-            stmt.setLong(1, codProcessoTransferenciaVeiculo);
+            stmt.setLong(1, codTransferenciaInformacoes);
             stmt.setLong(2, codProcessoTransferenciaPneu);
             if (stmt.executeUpdate() <= 0) {
                 throw new SQLException("Não foi possível inserir vínculo de transferência do veículo com os pneus: \n" +
-                        "codProcessoTransferenciaVeiculo: " + codProcessoTransferenciaVeiculo + "\n" +
+                        "codTransferenciaInformacoes: " + codTransferenciaInformacoes + "\n" +
                         "codProcessoTransferenciaPneu: " + codProcessoTransferenciaPneu);
             }
         } finally {
