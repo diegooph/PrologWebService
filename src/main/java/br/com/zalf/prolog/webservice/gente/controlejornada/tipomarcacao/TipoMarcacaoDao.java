@@ -20,7 +20,7 @@ public interface TipoMarcacaoDao {
      * @param listener     {@link DadosIntervaloChangedListener Listener} utilizado para executar ações quando certas
      *                     modificações no controle de jornada acontecem.
      * @return O código do {@link TipoMarcacao tipo de marcação} inserido no banco de dados.
-     * @throws Throwable Se algum erro ocorrer ao salvar o tipo de marcação.
+     * @throws Throwable Se qualquer erro ocorrer.
      */
     @NotNull
     Long insertTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao,
@@ -34,7 +34,7 @@ public interface TipoMarcacaoDao {
      * @param tipoMarcacao {@link TipoMarcacao Objeto} contendo as informações a serem atualizadas.
      * @param listener     {@link DadosIntervaloChangedListener Listener} utilizado para executar ações quando certas
      *                     modificações no controle de jornada acontecem.
-     * @throws Throwable Se algum erro ocorrer ao atualizar o tipo de marcação.
+     * @throws Throwable Se qualquer erro ocorrer.
      * @see #updateStatusAtivoTipoMarcacao(Long, TipoMarcacao, DadosIntervaloChangedListener).
      */
     void updateTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao,
@@ -53,7 +53,7 @@ public interface TipoMarcacaoDao {
      * @param withCargos   Booleando indicando se os tipos de marcações buscados terão as informações dos
      *                     cargos que são aptos a realizar a marcação de cada intervalo.
      * @return Uma lista de {@link List<TipoMarcacao> tipos de marcações} seguindo
-     * @throws Throwable Se ocorrer algum erro na listagem dos tipos de marcações.
+     * @throws Throwable Se qualquer erro ocorrer.
      */
     @NotNull
     List<TipoMarcacao> getTiposMarcacoes(@NotNull final Long codUnidade,
@@ -66,7 +66,7 @@ public interface TipoMarcacaoDao {
      *
      * @param codTipoMarcacao Codigo do {@link TipoMarcacao tipo marcação} que será buscado.
      * @return Um objeto {@link TipoMarcacao tipo marcação} contendo todas as informações.
-     * @throws Throwable Se algum erro acontecer na busca do tipo de marcação.
+     * @throws Throwable Se qualquer erro ocorrer.
      */
     @NotNull
     TipoMarcacao getTipoMarcacao(@NotNull final Long codTipoMarcacao) throws Throwable;
@@ -82,7 +82,7 @@ public interface TipoMarcacaoDao {
      *                        status {@link TipoMarcacao#ativo}.
      * @param listener        {@link DadosIntervaloChangedListener Listener} utilizado para executar ações quando certas
      *                        modificações no controle de jornada acontecem.
-     * @throws Throwable Se algum erro ocorrer ao atualizar o status do tipo de marcação.
+     * @throws Throwable Se qualquer erro ocorrer.
      * @see #updateTipoMarcacao(TipoMarcacao, DadosIntervaloChangedListener)
      */
     void updateStatusAtivoTipoMarcacao(@NotNull final Long codTipoMarcacao,
@@ -106,8 +106,19 @@ public interface TipoMarcacaoDao {
      *
      * @param codUnidade Código da {@link Unidade unidade} que será buscado a fórmula de cálculo de jornada.
      * @return A {@link FormulaCalculoJornada fórmula de cálculo de Jornada} para a unidade selecionada.
-     * @throws Throwable Para o caso de algum erro acontecer.
+     * @throws Throwable Se qualquer erro ocorrer.
      */
     @NotNull
     FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Método para verificar se uma unidade possui algum tipo definido como jornada. Alguns locais do sistema assumem
+     * a existência desse tipo definido para gerar algumas informações, se a unidade não tiver, pode ser que essa parte
+     * do sistema quebre. Com esse método, é possível validar isso antes de exibir algo que dependa dessa definição.
+     *
+     * @param codUnidade Código da {@link Unidade unidade} que será verificado se tem tipo definido.
+     * @return <code>TRUE</code> se a unidade tiver tipo definido como jornada; <code>FALSE</code> caso contrário.
+     * @throws Throwable Se qualquer erro ocorrer
+     */
+    boolean unidadeTemTipoDefinidoComoJornada(@NotNull final Long codUnidade) throws Throwable;
 }

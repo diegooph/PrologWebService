@@ -85,8 +85,8 @@ public class PneuResource {
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,
-                                                  @PathParam("status") String status) {
-        return service.getPneuByCodUnidadeByStatus(codUnidade, status);
+                                                  @PathParam("status") String status) throws ProLogException {
+        return service.getPneusByCodUnidadeByStatus(codUnidade, status);
     }
 
     @GET

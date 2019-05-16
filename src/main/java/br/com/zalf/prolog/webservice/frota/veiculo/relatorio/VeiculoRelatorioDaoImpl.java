@@ -40,7 +40,7 @@ public class VeiculoRelatorioDaoImpl extends DatabaseConnection implements Veicu
                 return 0;
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

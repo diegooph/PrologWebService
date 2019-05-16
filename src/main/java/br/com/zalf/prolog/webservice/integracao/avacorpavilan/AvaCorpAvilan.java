@@ -145,12 +145,29 @@ public final class AvaCorpAvilan extends Sistema {
                 getDataNascimento());
         final Map<Long, String> mapCodPerguntUrlImagem =
                 getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModelo);
-        return AvaCorpAvilanConverter.convert(questoesVeiculo, mapCodPerguntUrlImagem, placaVeiculo);
+
+        final NovoChecklistHolder holder = AvaCorpAvilanConverter.convert(
+                questoesVeiculo,
+                mapCodPerguntUrlImagem,
+                placaVeiculo);
+
+        // Em 02/05/19 o KM setado ao iniciar um novo checklist/aferição foi alterado mediante solicitação da Avilan
+        // para setarmos sempre 0. Mais informações: https://prologapp.atlassian.net/browse/PL-1966
+        holder.getVeiculo().setKmAtual(0L);
+
+        return holder;
     }
 
     @NotNull
     @Override
     public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
+
+        if (checklist.getKmAtualVeiculo() == 0) {
+            throw new AvaCorpAvilanException(
+                    "O KM enviado não pode ser 0!",
+                    "A integração com a Avilan não aceita mais KMs 0");
+        }
+
         return requester.insertChecklist(
                 AvaCorpAvilanConverter.convert(checklist, getCpf(), getDataNascimento()),
                 getCpf(),
@@ -317,6 +334,10 @@ public final class AvaCorpAvilan extends Sistema {
         veiculo.setDiagrama(optional.get());
         veiculo.setListPneus(pneus);
 
+        // Em 02/05/19 o KM setado ao iniciar um novo checklist/aferição foi alterado mediante solicitação da Avilan
+        // para setarmos sempre 0. Mais informações: https://prologapp.atlassian.net/browse/PL-1966
+        veiculo.setKmAtual(0L);
+
         // Cria NovaAfericao.
         final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
         final ConfiguracaoNovaAfericao config = getIntegradorProLog().getConfiguracaoNovaAfericao(veiculo.getPlaca());
@@ -349,6 +370,12 @@ public final class AvaCorpAvilan extends Sistema {
     public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         if (afericao instanceof AfericaoPlaca) {
             final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
+            if (afericaoPlaca.getKmMomentoAfericao() == 0) {
+                throw new AvaCorpAvilanException(
+                        "O KM enviado não pode ser 0!",
+                        "A integração com a Avilan não aceita mais KMs 0");
+            }
+
             final Long codAfericao = requester.insertAfericao(
                     AvaCorpAvilanConverter.convert(afericaoPlaca),
                     getCpf(),

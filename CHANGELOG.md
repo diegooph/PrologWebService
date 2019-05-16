@@ -1,6 +1,28 @@
 Change Log
 ==========
 
+<a name="v0.0.92"></a>
+## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (2019-05-16)
+
+### Features
+* Disponibilizar Exportação da Listagem de Veículos (PL-1964)
+* Cria método para verificar se unidade tem tipo definido como jornada (PL-1734)
+
+### Refactors
+* Adiciona informações de placa e posição nos objetos de pneus quando aplicados (PL-1942)
+* Permite filtrar por colaboradores ativos nos relatórios de folha ponto (PL-1905)
+* Altera o filtro da listagem para buscar imagens apenas de modelos ativos (PL-1908)
+* Altera integração com a Avilan para enviar ao App o KM atual do veículo
+como 0 ao iniciar um check ou aferição. Além disso, ao finalizar esse check
+ou aferição, a integração impede que seja enviado 0, o usuário será obrigado
+a alterar o valor (PL-1966)
+* Adiciona duração da última viagem no objeto de colaborador em descanso do acompanhamento de viagens (PL-1710)
+* Atualiza versão da lib Apache PDFBox (PL-1707)
+* Seta vida atual e total dos pneus ao buscar uma aferição por código (PL-1677)
+
+### Bug Fixes
+* Corrige busca de tipos de marcação da unidade ao gerar relatórios (PL-1667)
+
 <a name="v0.0.91"></a>
 ## Version [v0.0.91](https://github.com/luizfp/PrologWebService/compare/v0.0.90...v0.0.91) (2019-05-06)
 
