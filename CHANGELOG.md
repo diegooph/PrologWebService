@@ -6,6 +6,9 @@ Change Log
 ### Features
 * Cria objetos necessários para funcionalidade de transferência de veículos (PL-1841)
 
+### Refactors
+* Adiciona placa ao exibir processo de transferência de pneu que ocorreu por conta da transferência de uma placa (PL-1941)
+
 <a name="v0.0.89"></a>
 ## Version [v0.0.89](https://github.com/luizfp/PrologWebService/compare/v0.0.88...v0.0.89) (release-date) [unreleased]
 
