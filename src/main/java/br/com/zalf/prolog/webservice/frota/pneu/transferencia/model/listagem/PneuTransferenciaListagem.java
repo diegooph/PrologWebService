@@ -53,7 +53,7 @@ public final class PneuTransferenciaListagem {
      * Observação inserida pelo colaborador no momento da transferência. O colaborador pode não ter informado nenhum
      * texto, neste caso esse atributo estará vazio.
      */
-    @NotNull
+    @Nullable
     private final String observacaoTransferenciaProcesso;
     /**
      * Data e hora que a transferência foi realizada pelo colaborador.
@@ -73,7 +73,7 @@ public final class PneuTransferenciaListagem {
                                      @NotNull final String nomeRegionalDestino,
                                      @NotNull final String nomeUnidadeDestino,
                                      @NotNull final List<String> codPneusCliente,
-                                     @NotNull final String observacaoTransferenciaProcesso,
+                                     @Nullable final String observacaoTransferenciaProcesso,
                                      @NotNull final LocalDateTime dataHoraTransferenciaProcesso,
                                      @Nullable final LinkTransferenciaVeiculo linkTransferenciaVeiculo) {
         this.codTransferenciaProcesso = codTransferenciaProcesso;
@@ -142,7 +142,7 @@ public final class PneuTransferenciaListagem {
         return codPneusCliente;
     }
 
-    @NotNull
+    @Nullable
     public String getObservacaoTransferenciaProcesso() {
         return observacaoTransferenciaProcesso;
     }

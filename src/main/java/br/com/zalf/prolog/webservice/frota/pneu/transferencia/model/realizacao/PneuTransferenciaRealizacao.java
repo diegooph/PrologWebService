@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +35,14 @@ public final class PneuTransferenciaRealizacao {
     /**
      * Observação inserida pelo colaborador no momento da transferência. Este atributo pode estar vazio.
      */
-    @NotNull
+    @Nullable
     private final String observacao;
 
     public PneuTransferenciaRealizacao(@NotNull final Long codUnidadeOrigem,
                                        @NotNull final Long codUnidadeDestino,
                                        @NotNull final Long codColaboradorRealizacaoTransferencia,
                                        @NotNull final List<Long> codPneus,
-                                       @NotNull final String observacao) {
+                                       @Nullable final String observacao) {
         this.codUnidadeOrigem = codUnidadeOrigem;
         this.codUnidadeDestino = codUnidadeDestino;
         this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
@@ -83,7 +84,7 @@ public final class PneuTransferenciaRealizacao {
         return codPneus;
     }
 
-    @NotNull
+    @Nullable
     public String getObservacao() {
         return observacao;
     }

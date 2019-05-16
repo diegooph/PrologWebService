@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.LinkTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.TipoProcessoTransferenciaPneu;
@@ -284,7 +283,7 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
                 rSet.getString("REGIONAL_DESTINO"),
                 rSet.getString("UNIDADE_DESTINO"),
                 createPneusTransferidos(conn, codProcessoTransferenciaPneu),
-                StringUtils.nullToEmpty(rSet.getString("OBSERVACAO")),
+                rSet.getString("OBSERVACAO"),
                 rSet.getObject("DATA_HORA_TRANSFERENCIA", LocalDateTime.class),
                 linkPlacaTransferida);
     }
