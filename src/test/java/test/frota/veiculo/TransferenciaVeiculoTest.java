@@ -62,7 +62,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
         assertThat(processo).isNotNull();
         assertThat(processo.getVeiculosTransferencia()).hasSize(2);
 
-        final ResponseWithCod response = service.insertProcessoTranseferenciaVeiculo(processo);
+        final ResponseWithCod response = service.insertProcessoTransferenciaVeiculo(processo);
 
         assertThat(response).isNotNull();
         assertThat(response.getCodigo()).isNotNull();

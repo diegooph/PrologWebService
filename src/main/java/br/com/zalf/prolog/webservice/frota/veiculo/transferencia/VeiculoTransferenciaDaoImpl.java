@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
@@ -22,7 +23,8 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements VeiculoTransferenciaDao {
+public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements VeiculoTransferenciaDao {
+
     @NotNull
     @Override
     public Long insertProcessoTranseferenciaVeiculo(
@@ -35,7 +37,7 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
             conn.setAutoCommit(false);
 
             // Seta propriedade na connection para verificar constraints entre as tabelas do banco somente na chamada
-            // conn.commit(). Assim temos mais flexibilidade de trabalhar sem ser interrompido por vínculos.
+            // conn.commit(). Assim temos mais flexibilidade de trabalhar sem sermos interrompidos por vínculos.
             // https://begriffs.com/posts/2017-08-27-deferrable-sql-constraints.html
             stmt = conn.prepareStatement("SET CONSTRAINTS ALL DEFERRED;");
             stmt.execute();
@@ -54,7 +56,7 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
             stmt.setLong(3, processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia());
             stmt.setLong(4, processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia());
             stmt.setObject(5, Now.offsetDateTimeUtc());
-            stmt.setString(6, processoTransferenciaVeiculo.getObservacao());
+            stmt.setString(6, StringUtils.trimToNull(processoTransferenciaVeiculo.getObservacao()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codProcessoTransferenciaVeiculo = rSet.getLong("CODIGO");
@@ -80,7 +82,7 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
                     tranfereVeiculo(conn, codUnidadeOrigem, codUnidadeDestino, codveiculo);
 
                     // Transfere Pneus, se o veículo tem algum aplicado.
-                    if (veiculoTransferencia.temPneuParaTransferir()) {
+                    if (veiculoTransferencia.temPneusParaTransferir()) {
                         // Verifica se não houve movimentação de pneus no veículo enquanto o processo de
                         // transferência era realziado.
                         verificaPneusVeiculo(
@@ -99,7 +101,7 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
                                         veiculoTransferencia),
                                 true);
 
-                        // Atualiza o vinculo entre os pneus transferidos e o veículo transferido
+                        // Atualiza o vínculo entre os pneus transferidos e o veículo transferido.
                         atualizaVinculoPneuVeiculo(
                                 conn,
                                 codUnidadeOrigem,
@@ -107,7 +109,7 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
                                 codveiculo,
                                 veiculoTransferencia.getCodPneusAplicadosVeiculo());
 
-                        // Insere vinculo entre a Transferência do veículo com a Transferência dos Pneus.
+                        // Insere vínculo entre a Transferência do veículo com a Transferência dos Pneus.
                         insereVinculoTransferenciaVeiculoPneu(
                                 conn,
                                 codProcessoTransferenciaVeiculo,
@@ -159,7 +161,7 @@ public class VeiculoTransferenciaDaoImpl extends DatabaseConnection implements V
             if (rSet.next()) {
                 final long codTransferenciaVeiculo = rSet.getLong("CODIGO");
                 if (codTransferenciaVeiculo <= 0) {
-                    throw new SQLException("Não foi possível inserir as informações do processo da transferência:\n" +
+                    throw new SQLException("Não foi possível inserir as informações do processo de transferência:\n" +
                             "codTransferenciaVeiculo: " + codTransferenciaVeiculo);
                 }
             } else {

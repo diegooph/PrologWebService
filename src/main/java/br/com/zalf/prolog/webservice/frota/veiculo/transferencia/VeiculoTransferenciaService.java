@@ -19,14 +19,14 @@ public final class VeiculoTransferenciaService {
     private final VeiculoTransferenciaDao dao = Injection.provideVeiculoTransferenciaDaoImpl();
 
     @NotNull
-    public ResponseWithCod insertProcessoTranseferenciaVeiculo(
+    public final ResponseWithCod insertProcessoTransferenciaVeiculo(
             final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
         try {
             return ResponseWithCod.ok(
                     "Processo de transferência realizado com sucesso",
                     dao.insertProcessoTranseferenciaVeiculo(processoTransferenciaVeiculo));
         } catch (final Throwable t) {
-            Log.d(TAG, "Erro ao realizar processo de transferência");
+            Log.e(TAG, "Erro ao realizar processo de transferência", t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao realizar processo de transferência, tente novamente");

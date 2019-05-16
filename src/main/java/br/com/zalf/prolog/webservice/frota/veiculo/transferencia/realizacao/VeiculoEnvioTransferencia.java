@@ -49,7 +49,7 @@ public final class VeiculoEnvioTransferencia {
         return codPneusAplicadosVeiculo;
     }
 
-    public boolean temPneuParaTransferir() {
+    public boolean temPneusParaTransferir() {
         return this.codPneusAplicadosVeiculo.size() > 0;
     }
 }

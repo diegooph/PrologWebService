@@ -32,6 +32,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  */
 public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
 
+    @NotNull
     @Override
     public Long insertTransferencia(
             @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
@@ -54,6 +55,7 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
         }
     }
 
+    @NotNull
     @Override
     public Long insertTransferencia(@NotNull final Connection conn,
                                     @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
@@ -89,7 +91,7 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codProcessoTransferencia = rSet.getLong("CODIGO");
-                insertTransferenciaValores(conn, pneuTransferenciaRealizacao, codProcessoTransferencia);
+                insertTransferenciaValores(conn, codProcessoTransferencia, pneuTransferenciaRealizacao);
                 return codProcessoTransferencia;
             } else {
                 throw new IllegalStateException("Erro ao realizar transferência de pneus");
@@ -168,8 +170,8 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
     }
 
     private void insertTransferenciaValores(@NotNull final Connection conn,
-                                            @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
-                                            @NotNull final Long codTransferencia) throws Throwable {
+                                            @NotNull final Long codTransferencia,
+                                            @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
