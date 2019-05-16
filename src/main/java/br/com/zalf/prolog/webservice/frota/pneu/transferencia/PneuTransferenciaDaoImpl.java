@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.LinkTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.TipoProcessoTransferenciaPneu;
@@ -19,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,13 +36,18 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
     @Override
     public Long insertTransferencia(
             @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
+            @NotNull final OffsetDateTime dataHoraSincronizacao,
             final boolean isTransferenciaFromVeiculo) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
             final Long codProcessoTransferencia =
-                    insertTransferencia(conn, pneuTransferenciaRealizacao, isTransferenciaFromVeiculo);
+                    insertTransferencia(
+                            conn,
+                            pneuTransferenciaRealizacao,
+                            dataHoraSincronizacao,
+                            isTransferenciaFromVeiculo);
             conn.commit();
             return codProcessoTransferencia;
         } catch (final Throwable t) {
@@ -59,6 +64,7 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
     @Override
     public Long insertTransferencia(@NotNull final Connection conn,
                                     @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
+                                    @NotNull final OffsetDateTime dataHoraSincronizacao,
                                     final boolean isTransferenciaFromVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -83,7 +89,7 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
             stmt.setLong(2, pneuTransferenciaRealizacao.getCodUnidadeDestino());
             stmt.setLong(3, pneuTransferenciaRealizacao.getCodColaboradorRealizacaoTransferencia());
             stmt.setLong(4, pneuTransferenciaRealizacao.getCodColaboradorRealizacaoTransferencia());
-            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setObject(5, dataHoraSincronizacao);
             stmt.setString(6, pneuTransferenciaRealizacao.getObservacao());
             stmt.setString(7, isTransferenciaFromVeiculo
                     ? TipoProcessoTransferenciaPneu.TRANSFERENCIA_JUNTO_A_VEICULO.asString()

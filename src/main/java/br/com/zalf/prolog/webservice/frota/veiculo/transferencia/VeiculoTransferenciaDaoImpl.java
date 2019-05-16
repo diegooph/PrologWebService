@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -42,6 +43,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             stmt = conn.prepareStatement("SET CONSTRAINTS ALL DEFERRED;");
             stmt.execute();
 
+            final OffsetDateTime dataHoraSincronizacao = Now.offsetDateTimeUtc();
             stmt = conn.prepareStatement("INSERT INTO VEICULO_TRANSFERENCIA_PROCESSO(" +
                     "  COD_UNIDADE_ORIGEM," +
                     "  COD_UNIDADE_DESTINO," +
@@ -55,7 +57,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             stmt.setLong(2, processoTransferenciaVeiculo.getCodUnidadeDestino());
             stmt.setLong(3, processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia());
             stmt.setLong(4, processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia());
-            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setObject(5, dataHoraSincronizacao);
             stmt.setString(6, StringUtils.trimToNull(processoTransferenciaVeiculo.getObservacao()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -103,6 +105,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                                         codUnidadeDestino,
                                         codColaboradorRealizacaoTransferencia,
                                         veiculoTransferencia),
+                                dataHoraSincronizacao,
                                 true);
 
                         // Atualiza o vínculo entre os pneus transferidos e o veículo transferido.

@@ -4,12 +4,14 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem.PneuTransferenciaListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao.PneuTransferenciaProcessoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -26,9 +28,13 @@ public final class PneuTransferenciaService {
     ResponseWithCod insertTransferencia(
             final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
         try {
+            final OffsetDateTime dataHoraSincronizacao = Now.offsetDateTimeUtc();
             return ResponseWithCod.ok(
                     "Transferência realizada com sucesso",
-                    dao.insertTransferencia(pneuTransferenciaRealizacao, false));
+                    dao.insertTransferencia(
+                            pneuTransferenciaRealizacao,
+                            dataHoraSincronizacao,
+                            false));
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao realizar a transferência", e);
             throw Injection

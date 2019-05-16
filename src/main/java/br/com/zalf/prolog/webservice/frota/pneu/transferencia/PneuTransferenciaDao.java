@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -20,12 +21,14 @@ public interface PneuTransferenciaDao {
      * Insere a realização de uma transferência.
      *
      * @param pneuTransferenciaRealizacao A {@link PneuTransferenciaRealizacao} contendo os dados da transferência.
+     * @param dataHoraSincronizacao       Data e hora que a transferêcia ocorreu.
      * @param isTransferenciaFromVeiculo  Atributo para identificar se a transferência é oriundo de um veículo.
      * @return O código do processo inserido.
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
     Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
+                             @NotNull final OffsetDateTime dataHoraSincronizacao,
                              final boolean isTransferenciaFromVeiculo) throws Throwable;
 
     /**
@@ -33,6 +36,7 @@ public interface PneuTransferenciaDao {
      *
      * @param conn                        Conexão que será utilizada para inserir no Banco de Dados.
      * @param pneuTransferenciaRealizacao A {@link PneuTransferenciaRealizacao} contendo os dados da transferência.
+     * @param dataHoraSincronizacao       Data e hora que a transferêcia ocorreu.
      * @param isTransferenciaFromVeiculo  Atributo para identificar se a transferência é oriundo de um veículo.
      * @return O código do processo inserido.
      * @throws Throwable Se algum erro ocorrer.
@@ -40,6 +44,7 @@ public interface PneuTransferenciaDao {
     @NotNull
     Long insertTransferencia(@NotNull final Connection conn,
                              @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
+                             @NotNull final OffsetDateTime dataHoraSincronizacao,
                              final boolean isTransferenciaFromVeiculo) throws Throwable;
 
     /**
