@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.92"></a>
-## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (release-date) [unreleased]
+## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (2019-05-16)
 
 ### Features
 * Disponibilizar Exportação da Listagem de Veículos (PL-1964)
