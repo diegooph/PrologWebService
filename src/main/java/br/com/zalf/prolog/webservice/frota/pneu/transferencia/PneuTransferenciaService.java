@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-final class PneuTransferenciaService {
+public final class PneuTransferenciaService {
     private static final String TAG = PneuTransferenciaService.class.getSimpleName();
     @NotNull
     private final PneuTransferenciaDao dao = Injection.providePneuTransferenciaDao();
@@ -38,10 +38,10 @@ final class PneuTransferenciaService {
     }
 
     @NotNull
-    List<PneuTransferenciaListagem> getListagem(final List<Long> codUnidadesOrigem,
-                                                final List<Long> codUnidadesDestino,
-                                                final String dataInicial,
-                                                final String dataFinal) throws ProLogException {
+    public List<PneuTransferenciaListagem> getListagem(final List<Long> codUnidadesOrigem,
+                                                       final List<Long> codUnidadesDestino,
+                                                       final String dataInicial,
+                                                       final String dataFinal) throws ProLogException {
         try {
             return dao.getListagem(
                     codUnidadesOrigem,
@@ -57,7 +57,7 @@ final class PneuTransferenciaService {
     }
 
     @NotNull
-    PneuTransferenciaProcessoVisualizacao getTransferenciaVisualizacao(final Long codTransferencia)
+    public PneuTransferenciaProcessoVisualizacao getTransferenciaVisualizacao(final Long codTransferencia)
             throws ProLogException {
         try {
             return dao.getVisualizacao(codTransferencia);

@@ -22,11 +22,12 @@ final class VeiculoTransferenciaConverter {
             final long codUnidadeDestino,
             final long codColaboradorRealizacaoTransferencia,
             @NotNull final VeiculoEnvioTransferencia veiculoEnvioTransferencia) {
-        final PneuTransferenciaRealizacao pneuTransferenciaRealizacao = new PneuTransferenciaRealizacao();
-        pneuTransferenciaRealizacao.setCodUnidadeOrigem(codUnidadeOrigem);
-        pneuTransferenciaRealizacao.setCodUnidadeDestino(codUnidadeDestino);
-        pneuTransferenciaRealizacao.setCodColaboradorRealizacaoTransferencia(codColaboradorRealizacaoTransferencia);
-        pneuTransferenciaRealizacao.setCodPneus(veiculoEnvioTransferencia.getCodPneusAplicadosVeiculo());
-        return pneuTransferenciaRealizacao;
+        return new PneuTransferenciaRealizacao(
+                codUnidadeOrigem,
+                codUnidadeDestino,
+                codColaboradorRealizacaoTransferencia,
+                veiculoEnvioTransferencia.getCodPneusAplicadosVeiculo(),
+                // TODO - Vamos setar algum texto aqui?
+                "Transferido junto a Placa");
     }
 }

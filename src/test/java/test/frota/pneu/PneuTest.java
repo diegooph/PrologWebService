@@ -1,4 +1,4 @@
-package test.frota;
+package test.frota.pneu;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;

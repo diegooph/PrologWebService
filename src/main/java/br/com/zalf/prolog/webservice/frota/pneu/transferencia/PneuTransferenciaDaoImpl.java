@@ -2,8 +2,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.LinkTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.TipoProcessoTransferenciaPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem.PneuTransferenciaListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
@@ -136,22 +138,30 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_TRANSFERENCIA_VISUALIZACAO(?);");
             stmt.setLong(1, codTransferenciaProcesso);
             rSet = stmt.executeQuery();
-            final PneuTransferenciaProcessoVisualizacao processoVisualizacao = new PneuTransferenciaProcessoVisualizacao();
             if (rSet.next()) {
-                processoVisualizacao.setCodProcessoTransferencia(rSet.getLong("COD_PROCESSO_TRANSFERENCIA"));
-                processoVisualizacao.setNomeRegionalOrigem(rSet.getString(("REGIONAL_ORIGEM")));
-                processoVisualizacao.setNomeUnidadeOrigem(rSet.getString("UNIDADE_ORIGEM"));
-                processoVisualizacao.setNomeRegionalDestino(rSet.getString("REGIONAL_DESTINO"));
-                processoVisualizacao.setNomeUnidadeDestino(rSet.getString("UNIDADE_DESTINO"));
-                processoVisualizacao.setNomeColaboradorRealizacaoTransferencia(rSet.getString("NOME_COLABORADOR"));
-                processoVisualizacao.setDataHoraTransferencia(rSet.getObject("DATA_HORA_TRANSFERENCIA", LocalDateTime.class));
-                processoVisualizacao.setObservacao(rSet.getString("OBSERVACAO"));
-                processoVisualizacao.setPneusTransferidos(createPneuTransferenciaInformacoes(conn, codTransferenciaProcesso));
+                final long codProcessoTransferenciaVeiculo =
+                        rSet.getLong("COD_PROCESSO_TRANSFERENCIA_VEICULO");
+                LinkTransferenciaVeiculo linkPlacaTransferida = null;
+                if (codProcessoTransferenciaVeiculo > 0) {
+                    linkPlacaTransferida = new LinkTransferenciaVeiculo(
+                            codProcessoTransferenciaVeiculo,
+                            rSet.getString("PLACA_TRANSFERIDA"));
+                }
+                return new PneuTransferenciaProcessoVisualizacao(
+                        rSet.getLong("COD_PROCESSO_TRANSFERENCIA_PNEU"),
+                        rSet.getString("NOME_COLABORADOR"),
+                        rSet.getString("REGIONAL_ORIGEM"),
+                        rSet.getString("UNIDADE_ORIGEM"),
+                        rSet.getString("REGIONAL_DESTINO"),
+                        rSet.getString("UNIDADE_DESTINO"),
+                        createPneuTransferenciaInformacoes(conn, codTransferenciaProcesso),
+                        rSet.getString("OBSERVACAO"),
+                        rSet.getObject("DATA_HORA_TRANSFERENCIA", LocalDateTime.class),
+                        linkPlacaTransferida);
             } else {
                 throw new IllegalStateException("Erro ao buscar processo de transferência de pneus de código: "
                         + codTransferenciaProcesso);
             }
-            return processoVisualizacao;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -213,24 +223,33 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
         ResultSet rSet = null;
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("SELECT PTI.*, P.CODIGO_CLIENTE FROM PNEU_TRANSFERENCIA_INFORMACOES PTI " +
-                    "LEFT JOIN PNEU P ON PTI.COD_PNEU = P.CODIGO WHERE PTI.COD_PROCESSO_TRANSFERENCIA = ?;");
+            stmt = conn.prepareStatement("SELECT " +
+                    "  PTI.CODIGO, " +
+                    "  PTI.ALTURA_SULCO_INTERNO, " +
+                    "  PTI.ALTURA_SULCO_CENTRAL_INTERNO, " +
+                    "  PTI.ALTURA_SULCO_CENTRAL_EXTERNO, " +
+                    "  PTI.ALTURA_SULCO_EXTERNO, " +
+                    "  PTI.PSI AS PRESSAO_PNEU, " +
+                    "  PTI.VIDA_MOMENTO_TRANSFERENCIA, " +
+                    "  P.CODIGO_CLIENTE " +
+                    "FROM PNEU_TRANSFERENCIA_INFORMACOES PTI " +
+                    "  LEFT JOIN PNEU P ON PTI.COD_PNEU = P.CODIGO " +
+                    "WHERE PTI.COD_PROCESSO_TRANSFERENCIA = ?;");
             stmt.setLong(1, codTransferenciaProcesso);
             rSet = stmt.executeQuery();
             final List<PneuTransferenciaInformacoes> transferenciaInformacoes = new ArrayList<>();
             while (rSet.next()) {
-                final PneuTransferenciaInformacoes pneuTransferenciaInformacoes = new PneuTransferenciaInformacoes();
-                pneuTransferenciaInformacoes.setCodPneuCliente(rSet.getString("CODIGO_CLIENTE"));
-                pneuTransferenciaInformacoes.setCodPneuTransferenciaInformacoes(rSet.getLong("CODIGO"));
-                pneuTransferenciaInformacoes.setVidaMomentoTransferencia(rSet.getInt("VIDA_MOMENTO_TRANSFERENCIA"));
-                pneuTransferenciaInformacoes.setPressaoMomentoTransferencia(rSet.getDouble("PSI"));
                 final Sulcos sulcos = new Sulcos();
                 sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
                 sulcos.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
                 sulcos.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
                 sulcos.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-                pneuTransferenciaInformacoes.setSulcosMomentoTransferencia(sulcos);
-                transferenciaInformacoes.add(pneuTransferenciaInformacoes);
+                transferenciaInformacoes.add(new PneuTransferenciaInformacoes(
+                        rSet.getLong("CODIGO"),
+                        rSet.getString("CODIGO_CLIENTE"),
+                        sulcos,
+                        rSet.getDouble("PRESSAO_PNEU"),
+                        rSet.getInt("VIDA_MOMENTO_TRANSFERENCIA")));
             }
             return transferenciaInformacoes;
         } finally {
@@ -241,17 +260,25 @@ public final class PneuTransferenciaDaoImpl implements PneuTransferenciaDao {
     @NotNull
     private PneuTransferenciaListagem createPneuTransferenciaListagem(@NotNull final Connection conn,
                                                                       @NotNull final ResultSet rSet) throws Throwable {
-        final PneuTransferenciaListagem pneuTransferenciaListagem = new PneuTransferenciaListagem();
-        pneuTransferenciaListagem.setCodTransferenciaProcesso(rSet.getLong("COD_PROCESSO_TRANSFERENCIA"));
-        pneuTransferenciaListagem.setNomeRegionalOrigem(rSet.getString("REGIONAL_ORIGEM"));
-        pneuTransferenciaListagem.setNomeUnidadeOrigem(rSet.getString("UNIDADE_ORIGEM"));
-        pneuTransferenciaListagem.setNomeRegionalDestino(rSet.getString("REGIONAL_DESTINO"));
-        pneuTransferenciaListagem.setNomeUnidadeDestino(rSet.getString("UNIDADE_DESTINO"));
-        pneuTransferenciaListagem.setNomeColaboradorRealizacaoTransferencia(rSet.getString("NOME_COLABORADOR"));
-        pneuTransferenciaListagem.setDataHoraTransferenciaProcesso(rSet.getObject("DATA_HORA_TRANSFERENCIA", LocalDateTime.class));
-        pneuTransferenciaListagem.setObservacaoTransferenciaProcesso(rSet.getString("OBSERVACAO"));
-        pneuTransferenciaListagem.setCodPneusCliente(createPneusTransferidos(conn, pneuTransferenciaListagem.getCodTransferenciaProcesso()));
-        return pneuTransferenciaListagem;
+        final long codProcessoTransferenciaPneu = rSet.getLong("COD_PROCESSO_TRANSFERENCIA_PNEU");
+        final long codProcessoTransferenciaVeiculo = rSet.getLong("COD_PROCESSO_TRANSFERENCIA_VEICULO");
+        LinkTransferenciaVeiculo linkPlacaTransferida = null;
+        if (codProcessoTransferenciaVeiculo > 0) {
+            linkPlacaTransferida = new LinkTransferenciaVeiculo(
+                    codProcessoTransferenciaVeiculo,
+                    rSet.getString("PLACA_TRANSFERIDA"));
+        }
+        return new PneuTransferenciaListagem(
+                codProcessoTransferenciaPneu,
+                rSet.getString("NOME_COLABORADOR"),
+                rSet.getString("REGIONAL_ORIGEM"),
+                rSet.getString("UNIDADE_ORIGEM"),
+                rSet.getString("REGIONAL_DESTINO"),
+                rSet.getString("UNIDADE_DESTINO"),
+                createPneusTransferidos(conn, codProcessoTransferenciaPneu),
+                StringUtils.nullToEmpty(rSet.getString("OBSERVACAO")),
+                rSet.getObject("DATA_HORA_TRANSFERENCIA", LocalDateTime.class),
+                linkPlacaTransferida);
     }
 
     @NotNull

@@ -20,6 +20,7 @@ public interface PneuTransferenciaDao {
      * Insere a realização de uma transferência.
      *
      * @param pneuTransferenciaRealizacao A {@link PneuTransferenciaRealizacao} contendo os dados da transferência.
+     * @param isTransferenciaFromVeiculo  Atributo para identificar se a transferência é oriundo de um veículo.
      * @return O código do processo inserido.
      * @throws Throwable Se ocorrer erro no banco.
      */
@@ -31,6 +32,7 @@ public interface PneuTransferenciaDao {
      *
      * @param conn                        Conexão que será utilizada para inserir no Banco de Dados.
      * @param pneuTransferenciaRealizacao A {@link PneuTransferenciaRealizacao} contendo os dados da transferência.
+     * @param isTransferenciaFromVeiculo  Atributo para identificar se a transferência é oriundo de um veículo.
      * @return O código do processo inserido.
      * @throws Throwable Se ocorrer erro no banco.
      */
