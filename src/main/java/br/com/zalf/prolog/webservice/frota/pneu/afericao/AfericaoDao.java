@@ -157,12 +157,12 @@ public interface AfericaoDao {
                                @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
-     * retorna uma aferição através do código dela
+     * Busca uma aferição específico pelo código.
      *
-     * @param codUnidade  código da unidade
-     * @param codAfericao código da aferição
-     * @return a aferição
-     * @throws Throwable se ocorrer erro no banco
+     * @param codUnidade  Código da unidade.
+     * @param codAfericao Código da aferição.
+     * @return Uma {@link Afericao aferição.}
+     * @throws Throwable Se qualquer erro ocorrer.
      */
     @NotNull
     Afericao getByCod(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable;

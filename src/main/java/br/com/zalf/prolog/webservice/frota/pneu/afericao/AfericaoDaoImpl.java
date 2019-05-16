@@ -400,7 +400,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             return afericao;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -544,6 +544,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
         pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
         pneu.setPressaoAtual(rSet.getDouble("PRESSAO_PNEU"));
+        pneu.setVidaAtual(rSet.getInt("VIDA_PNEU_MOMENTO_AFERICAO"));
+        pneu.setVidasTotal(rSet.getInt("VIDAS_TOTAL_PNEU"));
 
         final Sulcos sulcos = new Sulcos();
         sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));

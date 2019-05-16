@@ -96,4 +96,16 @@ public final class TipoMarcacaoResource {
             @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
         return service.getForumaCalculoJornada(codUnidade);
     }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
+            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
+            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
+            Pilares.Gente.Relatorios.INTERVALOS})
+    @Path("/tem-tipo-jornada")
+    public boolean unidadeTemTipoDefinidoComoJornada(
+            @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
+        return service.unidadeTemTipoDefinidoComoJornada(codUnidade);
+    }
 }
