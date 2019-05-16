@@ -335,8 +335,10 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     "  JOIN CHECKLIST_PERGUNTAS CP ON CP.COD_UNIDADE = CMF.COD_UNIDADE " +
                     "                                 AND CP.COD_CHECKLIST_MODELO = CMF.COD_CHECKLIST_MODELO " +
                     "  JOIN CHECKLIST_GALERIA_IMAGENS CGI ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
+                    "  JOIN CHECKLIST_MODELO CM ON CP.COD_CHECKLIST_MODELO = CM.CODIGO " +
                     "WHERE CMF.COD_UNIDADE = ? " +
                     "      AND CMF.COD_FUNCAO = ? " +
+                    "      AND CM.STATUS_ATIVO = TRUE" +
                     "      AND CP.STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codFuncao);

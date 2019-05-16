@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## Stage
+
+
+
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (release-date) [unreleased]
 
@@ -10,6 +14,7 @@ Change Log
 ### Refactors
 * Adiciona informações de placa e posição nos objetos de pneus quando aplicados (PL-1942)
 * Permite filtrar por colaboradores ativos nos relatórios de folha ponto (PL-1905)
+* Altera o filtro da listagem para buscar imagens apenas de modelos ativos (PL-1908)
 
 <a name="v0.0.91"></a>
 ## Version [v0.0.91](https://github.com/luizfp/PrologWebService/compare/v0.0.90...v0.0.91) (2019-05-06)
