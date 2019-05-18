@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Nullable;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,8 +22,10 @@ public final class ProtheusRodalogRestClient {
     private static final long DEFAULT_TIMEOUT_MINUTES = 1;
     @Nullable
     private static Retrofit retrofit;
+    @NotNull
+    private static final Map<String, Object> SERVICE_CACHE = new HashMap<>();
 
-    public static Retrofit getRetrofit() {
+    private static Retrofit getRetrofit() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .client(provideOkHttpClient())
@@ -36,8 +40,15 @@ public final class ProtheusRodalogRestClient {
     }
 
     @NotNull
-    public static <T> T getService(final Class<T> serviceClass) {
-        return ProtheusRodalogRestClient.getRetrofit().create(serviceClass);
+    public static <T> T getService(@NotNull final Class<T> serviceClass) {
+        final String canonicalName = serviceClass.getCanonicalName();
+        if (SERVICE_CACHE.containsKey(canonicalName)) {
+            //noinspection SingleStatementInBlock, unchecked
+            return (T) SERVICE_CACHE.get(canonicalName);
+        }
+        final T service = ProtheusRodalogRestClient.getRetrofit().create(serviceClass);
+        SERVICE_CACHE.put(serviceClass.getCanonicalName(), service);
+        return service;
     }
 
     @NotNull

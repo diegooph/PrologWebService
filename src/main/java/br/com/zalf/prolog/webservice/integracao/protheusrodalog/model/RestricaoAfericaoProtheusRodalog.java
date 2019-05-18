@@ -5,12 +5,6 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Objeto utilizado para encapsular as {@link RestricaoAfericaoProtheusRodalog restrições de aferição}. A restrição
  * consiste em atributos que determinam como a lógica de negócio do ProLog será executada na aferição dos sulcos.
- *
- * <b>Observação 1:</b> Apenas um serviço sobre a pressão poderá ser aberto, assim, se a pressão aferida estiver fora da
- * tolerância para calibragem e para inspeção, apenas o serviço de inspeção será aberto.
- *
- * <b>Observação 2:</b> O ProLog só indicará um serviço de movimentação para o descarte caso a
- * {@link PneuAfericaoProtheusRodalog#vidaAtual} for igual ao total de vidas que esse pneu pode ter.
  * <p>
  * Este objeto será recebido através de um endpoint integrado com o ERP Protheus, da empresa Rodalog. Assim, todas essas
  * informações deverão ser enviadas pelo endpoint seguindo o padrão e estrutura deste objeto.
