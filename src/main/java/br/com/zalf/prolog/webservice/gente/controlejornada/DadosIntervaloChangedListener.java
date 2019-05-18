@@ -5,13 +5,13 @@ import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.permissao.Visao;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 
 public interface DadosIntervaloChangedListener {
-    void onTiposIntervaloChanged(@NotNull final Connection connection,
-                                 @NotNull final Long codUnidade) throws Throwable;
+    void onTiposMarcacaoChanged(@NotNull final Connection connection,
+                                @NotNull final Long codUnidade) throws Throwable;
 
     void onCargoAtualizado(@NotNull final Connection connection,
                            @NotNull final EmpresaDao empresaDao,

@@ -6,11 +6,35 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by Zart on 02/03/17.
  */
-public enum OrigemDestinoEnum {
-    VEICULO(StatusPneu.EM_USO),
-    ESTOQUE(StatusPneu.ESTOQUE),
-    DESCARTE(StatusPneu.DESCARTE),
-    ANALISE(StatusPneu.ANALISE);
+public enum OrigemDestinoEnum implements PermissoesValidatorString {
+    VEICULO(StatusPneu.EM_USO) {
+        @NotNull
+        @Override
+        public String getStringPermissoesValidator() {
+            return "VEÍCULO";
+        }
+    },
+    ESTOQUE(StatusPneu.ESTOQUE) {
+        @NotNull
+        @Override
+        public String getStringPermissoesValidator() {
+            return "ESTOQUE";
+        }
+    },
+    DESCARTE(StatusPneu.DESCARTE) {
+        @NotNull
+        @Override
+        public String getStringPermissoesValidator() {
+            return "DESCARTE";
+        }
+    },
+    ANALISE(StatusPneu.ANALISE) {
+        @NotNull
+        @Override
+        public String getStringPermissoesValidator() {
+            return "ANÁLISE";
+        }
+    };
 
     @NotNull
     final StatusPneu statusPneu;

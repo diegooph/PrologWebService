@@ -19,19 +19,23 @@ public interface AfericaoRelatorioDao {
      *
      * @param out         Streaming onde os dados serão escritos.
      * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
+     * @param userToken   Código token do usuário que requisitou o relatório.
      * @throws Throwable Se algum erro ocorrer.
      */
     void getCronogramaAfericoesPlacasCsv(@NotNull final OutputStream out,
-                                         @NotNull final List<Long> codUnidades) throws Throwable;
+                                         @NotNull final List<Long> codUnidades,
+                                         @NotNull final String userToken) throws Throwable;
 
     /**
      * Método para buscar o relatório de cronograma das aferições de placas em formato {@link Report report}.
      *
      * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
+     * @param userToken   Código token do usuário que requisitou o relatório.
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    Report getCronogramaAfericoesPlacasReport(@NotNull final List<Long> codUnidades) throws Throwable;
+    Report getCronogramaAfericoesPlacasReport(@NotNull final List<Long> codUnidades,
+                                              @NotNull final String userToken) throws Throwable;
 
     /**
      * Método para gerar um relatório contendo todos os dados de aferições realizadas em arquivo CSV.

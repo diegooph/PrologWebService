@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.model.ChecklistOfflineSupport;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.OrdemServicoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
@@ -131,6 +132,7 @@ public final class GsonUtils {
         builder.registerTypeAdapterFactory(ItemOrdemServicoVisualizacao.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(PerguntaModeloChecklist.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(AlternativaModeloChecklist.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(ChecklistOfflineSupport.provideTypeAdapterFactory());
 
         sGson = builder.create();
     }

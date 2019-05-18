@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.colaborador.model;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
@@ -37,7 +37,7 @@ public class LoginHolder {
      * Caso o colaborador tenha a permissão {@link Pilares.Gente.Intervalo#MARCAR_INTERVALO} ou alguém
      * da sua unidade possuir, esse objeto conterá um {@link List<Colaborador>} que possuirá
      * todos os colaboradores que têm essa permissão.
-     * O objeto também conterá um {@link List< TipoMarcacao >} referente aos tipos de intervalo da unidade,
+     * O objeto também conterá um {@link List<TipoMarcacao>} referente aos tipos de intervalo da unidade,
      * além disso um {@link Date} sinalizando a última vez que este objeto sofreu atualização.
      */
     @NotNull
@@ -51,6 +51,17 @@ public class LoginHolder {
     @Nullable
     @Deprecated
     private List<TipoMarcacao> tiposIntervalos;
+
+    /**
+     * Valor booleano que indica se a empresa a qual o colaborador está cadastrado está liberada para realizar o
+     * checklist de forma offline. Se <code>TRUE</code> então a aplicação permitirá que o checklist seja finalizado
+     * mesmo sem conexão com a internet, caso <code>FALSE</code> então o processo de realização de checklist exigirá
+     * que exista conexão para a realização.
+     */
+    private boolean checklistOfflineAtivoEmpresa;
+
+    public LoginHolder() {
+    }
 
     public Colaborador getColaborador() {
         return colaborador;
@@ -92,5 +103,13 @@ public class LoginHolder {
     @Deprecated
     public void setTiposIntervalos(List<TipoMarcacao> tiposIntervalos) {
         this.tiposIntervalos = tiposIntervalos;
+    }
+
+    public boolean isChecklistOfflineAtivoEmpresa() {
+        return checklistOfflineAtivoEmpresa;
+    }
+
+    public void setChecklistOfflineAtivoEmpresa(final boolean checklistOfflineAtivoEmpresa) {
+        this.checklistOfflineAtivoEmpresa = checklistOfflineAtivoEmpresa;
     }
 }

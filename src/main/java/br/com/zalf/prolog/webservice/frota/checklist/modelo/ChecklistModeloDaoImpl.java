@@ -335,8 +335,10 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     "  JOIN CHECKLIST_PERGUNTAS CP ON CP.COD_UNIDADE = CMF.COD_UNIDADE " +
                     "                                 AND CP.COD_CHECKLIST_MODELO = CMF.COD_CHECKLIST_MODELO " +
                     "  JOIN CHECKLIST_GALERIA_IMAGENS CGI ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
+                    "  JOIN CHECKLIST_MODELO CM ON CP.COD_CHECKLIST_MODELO = CM.CODIGO " +
                     "WHERE CMF.COD_UNIDADE = ? " +
                     "      AND CMF.COD_FUNCAO = ? " +
+                    "      AND CM.STATUS_ATIVO = TRUE" +
                     "      AND CP.STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codFuncao);
@@ -830,8 +832,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT VT.NOME AS TIPO_VEICULO, VT.CODIGO "
                     + "FROM CHECKLIST_MODELO_VEICULO_TIPO CM "
-                    + "JOIN VEICULO_TIPO VT ON CM.COD_UNIDADE = VT.COD_UNIDADE "
-                    + "AND CM.COD_TIPO_VEICULO = VT.CODIGO "
+                    + "JOIN VEICULO_TIPO VT ON CM.COD_TIPO_VEICULO = VT.CODIGO "
                     + "WHERE CM.COD_UNIDADE = ? "
                     + "AND CM.COD_MODELO = ? "
                     + "ORDER BY VT.NOME");

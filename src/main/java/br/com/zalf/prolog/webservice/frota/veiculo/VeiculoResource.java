@@ -1,10 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -22,7 +24,7 @@ import java.util.Set;
 @Path("veiculos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class VeiculoResource {
+public final class VeiculoResource {
 
     private VeiculoService service = new VeiculoService();
 
@@ -37,12 +39,9 @@ public class VeiculoResource {
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
     @Path("/{placaOriginal}")
-    public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) {
-        if (service.update(veiculo, placaOriginal)) {
-            return Response.ok("Veículo atualizado com sucesso");
-        } else {
-            return Response.error("Erro ao atualizar o veículo");
-        }
+    public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) throws ProLogException {
+        service.update(veiculo, placaOriginal);
+        return Response.ok("Veículo atualizado com sucesso");
     }
 
     @PUT
@@ -94,17 +93,6 @@ public class VeiculoResource {
         return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
     }
 
-    @POST
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/{codUnidade}/tipo")
-    public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
-            return Response.ok("Tipo de veículo inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir o tipo de veículo");
-        }
-    }
-
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.ALTERAR,
@@ -116,7 +104,9 @@ public class VeiculoResource {
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Path("/byTipo/{codUnidade}/{codTipo}")
     @UsedBy(platforms = Platform.ANDROID)
     public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
@@ -126,40 +116,28 @@ public class VeiculoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
-            Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
-            Pilares.Frota.Checklist.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
-            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
-            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
-    @Path("/{codUnidade}/tipo")
-    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
-                                                      @PathParam("codUnidade") Long codUnidade) {
-        return service.getTipoVeiculosByUnidade(userToken, codUnidade);
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/marcas")
+    public List<Marca> getMarcasVeiculosNivelProLog() throws ProLogException {
+        return service.getMarcasVeiculosNivelProLog();
     }
 
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/marcaModelos/{codEmpresa}")
-    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+    @Path("/marcas-modelos/{codEmpresa}")
+    public List<Marca> getMarcasModelosVeiculosByEmpresa(@PathParam("codEmpresa") Long codEmpresa) throws ProLogException {
+        return service.getMarcasModelosVeiculosByEmpresa(codEmpresa);
     }
 
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/modelo/{codEmpresa}/{codMarca}")
-    public Response insertModeloVeiculo(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca) {
-        if (service.insertModeloVeiculo(modelo, codEmpresa, codMarca)) {
-            return Response.ok("Modelo inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir o modelo");
-        }
+    public ResponseWithCod insertModeloVeiculo(Modelo modelo,
+                                               @PathParam("codEmpresa") Long codEmpresa,
+                                               @PathParam("codMarca") Long codMarca) throws ProLogException {
+        return ResponseWithCod.ok(
+                "Modelo cadastrado com sucesso",
+                service.insertModeloVeiculo(modelo, codEmpresa, codMarca));
     }
 
     @GET
@@ -209,11 +187,14 @@ public class VeiculoResource {
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Path("/com-pneus/{placa}")
     @AppVersionCodeHandler(
             implementation = DefaultAppVersionCodeHandler.class,
-            targetVersionCode = 55,
+            targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public Veiculo getVeiculoByPlacaComPneus(@HeaderParam("Authorization") String userToken,
@@ -222,39 +203,34 @@ public class VeiculoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Veiculo.ALTERAR})
     @Path("/sem-pneus/{placa}")
     public Veiculo getVeiculoByPlacaSemPneus(@HeaderParam("Authorization") String userToken,
                                              @PathParam("placa") String placa) {
         return service.getVeiculoByPlaca(userToken, placa, false);
     }
 
-    @PUT
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/tipos/{codUnidade}/{codTipo}")
-    public Response updateTipoVeiculo(TipoVeiculo tipo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.updateTipoVeiculo(tipo, codUnidade)) {
-            return Response.ok("Tipo alterado com sucesso");
-        } else {
-            return Response.error("Erro ao alterar o tipo");
-        }
-    }
-
-    @DELETE
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/tipos/{codUnidade}/{codTipo}")
-    public Response deleteTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
-        if (service.deleteTipoVeiculo(codTipo, codUnidade)) {
-            return Response.ok("Tipo deletado com sucesso");
-        } else {
-            return Response.error("Erro ao deletar o tipo");
-        }
-    }
-
+    /**
+     * @deprecated at 2019-01-23.
+     * <p>
+     * Este método foi depreciado pois era utilizado em locais com diferentes finalidades:
+     * 1 - No cadastro/edição de veículos, como seleção de qual a marca/modelo do veículo.
+     * 2 - No cadastro/edição/listagem de marcas e modelos de veículos.
+     * <p>
+     * O problema, é que no primeiro caso, o método deveria retornar todas as marcas do BD, no segundo, apenas as marcas
+     * para as quais a empresa tem modelos associados. Essa distinção não é lidada por esse método, por isso optamos
+     * por depreciar e criar outros.
+     * <p>
+     * Dessa forma, separamos essa lógica em dois métodos, caso queira o caso 1, utilize
+     * {@link #getMarcasVeiculosNivelProLog()} se for o caso 2, utilize {@link #getMarcasModelosVeiculosByEmpresa(Long)}.
+     */
+    @Deprecated
     @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/tipos/{codUnidade}/{codTipo}")
-    public TipoVeiculo getTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
-        return service.getTipoVeiculo(codTipo, codUnidade);
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/marcaModelos/{codEmpresa}")
+    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
+        return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
     }
 }

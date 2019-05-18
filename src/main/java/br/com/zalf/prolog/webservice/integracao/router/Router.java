@@ -3,10 +3,14 @@ package br.com.zalf.prolog.webservice.integracao.router;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -71,11 +75,11 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getTiposVeiculosByUnidade(codUnidade);
+            return getSistema().getTiposVeiculosByEmpresa(codEmpresa);
         } else {
-            return integradorProLog.getTiposVeiculosByUnidade(codUnidade);
+            return integradorProLog.getTiposVeiculosByEmpresa(codEmpresa);
         }
     }
 
@@ -101,7 +105,7 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Throwable {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
         if (getSistema() != null) {
             return getSistema().getCronogramaAfericao(codUnidade);
         } else {
@@ -111,9 +115,9 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
-                                                  @NotNull String placaVeiculo,
-                                                  @NotNull String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
+                                                  @NotNull final String placaVeiculo,
+                                                  @NotNull final String tipoAfericao) throws Throwable {
         if (getSistema() != null) {
             return getSistema().getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
         } else {
@@ -144,12 +148,13 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @Nullable
     @Override
-    public Long insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Throwable {
+    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insertAfericao(afericao, codUnidade);
+            return getSistema().insertAfericao(codUnidade, afericao);
         } else {
-            return integradorProLog.insertAfericao(afericao, codUnidade);
+            return integradorProLog.insertAfericao(codUnidade, afericao);
         }
     }
 
@@ -190,6 +195,27 @@ public abstract class Router implements OperacoesIntegradas {
                     dataFinal,
                     limit,
                     offset);
+        }
+    }
+
+    @Override
+    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().insertModeloChecklist(modeloChecklist);
+        } else {
+            integradorProLog.insertModeloChecklist(modeloChecklist);
+        }
+    }
+
+    @Override
+    public void updateModeloChecklist(@NotNull final String token,
+                                      @NotNull final Long codUnidade,
+                                      @NotNull final Long codModelo,
+                                      @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
+        } else {
+            integradorProLog.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
         }
     }
 
@@ -285,6 +311,24 @@ public abstract class Router implements OperacoesIntegradas {
             return getSistema().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
         } else {
             return integradorProLog.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
+        }
+    }
+
+    @Override
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().resolverItem(item);
+        } else {
+            integradorProLog.resolverItem(item);
+        }
+    }
+
+    @Override
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().resolverItens(itensResolucao);
+        } else {
+            integradorProLog.resolverItens(itensResolucao);
         }
     }
 

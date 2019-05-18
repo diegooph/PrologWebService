@@ -34,8 +34,10 @@ public final class DatabaseManager {
             + EnvironmentHelper.PROLOG_RDS_DB_NAME;
 
     // Informações de acesso ao BD de testes
-    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_ajuste_marcacao_4";
-//    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/bd_local";
+//    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_ajuste_marcacao_4";
+//    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_delecao_checklist_1";
+//    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.45:5432/prolog_tipo_veiculo_release_6";
+    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/prolog_abril_17";
     private static final String TESTE_USUARIO = "postgres";
     private static final String TESTE_SENHA = "postgres";
 
@@ -58,7 +60,8 @@ public final class DatabaseManager {
         Log.d(TAG, "DatabaseManager initialized");
     }
 
-    static void finish() {
+    @VisibleForTesting
+    public static void finish() {
         if (singleton == null) {
             throw new IllegalStateException("You cannot finish a not initialized manager");
         }

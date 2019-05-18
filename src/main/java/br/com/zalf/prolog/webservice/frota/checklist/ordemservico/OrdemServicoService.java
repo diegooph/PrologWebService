@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -13,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
+import br.com.zalf.prolog.webservice.integracao.router.RouterChecklistOrdemServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -126,9 +128,13 @@ final class OrdemServicoService {
     }
 
     @NotNull
-    Response resolverItem(@NotNull final ResolverItemOrdemServico item) throws ProLogException {
+    Response resolverItem(final String token,
+                          final ResolverItemOrdemServico item) throws ProLogException {
         try {
-            dao.resolverItem(item);
+            OrdemServicoValidator.validaResolucaoItem(TimeZoneManager.getZoneIdForToken(token), item);
+            RouterChecklistOrdemServico
+                    .create(dao, token)
+                    .resolverItem(item);
             return Response.ok("Item resolvido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver item", t);
@@ -140,9 +146,13 @@ final class OrdemServicoService {
 
 
     @NotNull
-    Response resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
+    Response resolverItens(final String token,
+                           final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
         try {
-            dao.resolverItens(itensResolucao);
+            OrdemServicoValidator.validaResolucaoMultiplosItens(TimeZoneManager.getZoneIdForToken(token), itensResolucao);
+            RouterChecklistOrdemServico
+                    .create(dao, token)
+                    .resolverItens(itensResolucao);
             return Response.ok("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao resolver itens", t);

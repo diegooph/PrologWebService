@@ -1,7 +1,6 @@
 package test;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
@@ -21,10 +20,6 @@ public abstract class BaseTest {
     protected static Long COD_UNIDADE = 5L;
     protected static LocalDate DATA_INICIAL = LocalDate.parse("2018-03-18");
     protected static LocalDate DATA_FINAL = LocalDate.parse("2018-04-19");
-
-    public BaseTest() {
-        DatabaseManager.init();
-    }
 
     @Before
     public void initialize() throws Throwable {

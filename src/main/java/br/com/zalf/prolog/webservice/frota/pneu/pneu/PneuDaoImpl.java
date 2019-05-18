@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
@@ -54,7 +55,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "  MAB.CODIGO                                  AS COD_MARCA_BANDA, " +
             "  MAB.NOME                                    AS NOME_MARCA_BANDA, " +
             "  PVV.VALOR                                   AS VALOR_BANDA, " +
-            "  PO.POSICAO_PROLOG                           AS POSICAO_PNEU " +
+            "  PO.POSICAO_PROLOG                           AS POSICAO_PNEU, " +
+            "  COALESCE(PONU.NOMENCLATURA :: TEXT, '-')    AS POSICAO_APLICADO_CLIENTE, " +
+            "  VEI.codigo                                  AS COD_VEICULO_APLICADO, " +
+            "  VEI.placa                                   AS PLACA_APLICADO " +
             "FROM PNEU P " +
             "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " +
             "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " +
@@ -62,10 +66,12 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE " +
             "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
             "LEFT JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO AND VP.COD_UNIDADE = P.COD_UNIDADE " +
+            "LEFT JOIN VEICULO VEI ON VEI.PLACA = VP.PLACA " +
             "LEFT JOIN PNEU_ORDEM PO ON VP.POSICAO = PO.POSICAO_PROLOG " +
             "LEFT JOIN MODELO_BANDA MOB ON MOB.CODIGO = P.COD_MODELO_BANDA AND MOB.COD_EMPRESA = U.COD_EMPRESA " +
             "LEFT JOIN MARCA_BANDA MAB ON MAB.CODIGO = MOB.COD_MARCA AND MAB.COD_EMPRESA = MOB.COD_EMPRESA " +
-            "LEFT JOIN PNEU_VALOR_VIDA PVV ON PVV.COD_PNEU = P.CODIGO AND PVV.VIDA = P.VIDA_ATUAL ";
+            "LEFT JOIN PNEU_VALOR_VIDA PVV ON PVV.COD_PNEU = P.CODIGO AND PVV.VIDA = P.VIDA_ATUAL " +
+            "LEFT JOIN PNEU_ORDEM_NOMENCLATURA_UNIDADE PONU ON PONU.COD_UNIDADE = VEI.COD_UNIDADE AND PONU.COD_TIPO_VEICULO = VEI.COD_TIPO AND PONU.POSICAO_PROLOG = VP.POSICAO ";
 
     public PneuDaoImpl() {
 
@@ -92,7 +98,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
             throw new GenericException("Erro ao inserir pneu da linha: " + linha + " -- " + e.getMessage());
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -112,7 +118,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
             throw e;
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -122,16 +128,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                                 @NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Long codPneu;
         try {
-            // Se um pneu tem número ímpar de sulcos, o valor do sulco central deve ser duplicado nos dois campos de
-            // de sulco central.
-            if (pneu.temQtdImparSulcos()) {
-                if (!pneu.getSulcosAtuais().getCentralInterno().equals(pneu.getSulcosAtuais().getCentralExterno())) {
-                    throw new IllegalStateException("Um pneu com número ímpar de sulcos deve ter seus sulcos centrais iguais");
-                }
-            }
-
             stmt = conn.prepareStatement("INSERT INTO pneu (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, "
                     + "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, altura_sulco_central_externo, "
                     + "altura_sulco_externo, cod_unidade, status, vida_atual, vida_total, cod_modelo_banda, dot, valor, "
@@ -143,10 +140,14 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setDouble(4, pneu.getPressaoCorreta());
             // Pressão atual.
             stmt.setDouble(5, 0L);
-            stmt.setDouble(6, pneu.getSulcosAtuais().getInterno());
-            stmt.setDouble(7, pneu.getSulcosAtuais().getCentralInterno());
-            stmt.setDouble(8, pneu.getSulcosAtuais().getCentralExterno());
-            stmt.setDouble(9, pneu.getSulcosAtuais().getExterno());
+
+            // Deixamos aqui apenas para tornar explícito que ao inserir um pneu seus valores de sulco são setados
+            // para null.
+            stmt.setNull(6, SqlType.REAL.asIntTypeJava());
+            stmt.setNull(7, SqlType.REAL.asIntTypeJava());
+            stmt.setNull(8, SqlType.REAL.asIntTypeJava());
+            stmt.setNull(9, SqlType.REAL.asIntTypeJava());
+
             stmt.setLong(10, codUnidade);
             stmt.setString(11, pneu.getStatus().asString());
             stmt.setInt(12, pneu.getVidaAtual());
@@ -167,6 +168,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(19, codUnidade);
 
             rSet = stmt.executeQuery();
+            Long codPneu;
             if (rSet.next()) {
                 codPneu = rSet.getLong("CODIGO");
                 pneu.setCodigo(codPneu);
@@ -183,11 +185,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             if (fotosCadastro != null && !fotosCadastro.isEmpty()) {
                 insertFotosCadastroPneu(pneu.getCodigo(), fotosCadastro, conn);
             }
+
+            return codPneu;
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
-        return codPneu;
     }
 
     @Override
@@ -227,7 +229,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn.rollback();
             throw e;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -249,7 +251,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 listPneu.add(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return listPneu;
     }
@@ -273,7 +275,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao trocar a vida do pneu: " + codPneu);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -298,7 +300,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar medições do pneu: " + codPneu);
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
         return true;
     }
@@ -337,7 +339,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar os dados do Pneu");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -356,13 +358,13 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar o status do pneu");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
     @NotNull
     @Override
-    public List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, StatusPneu status) throws Throwable {
+    public List<Pneu> getPneusByCodUnidadeByStatus(@NotNull Long codUnidade, @NotNull StatusPneu status) throws Throwable {
         return internalGetPneus(codUnidade, status.asString());
     }
 
@@ -389,7 +391,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
             return pneusAnalise;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -413,7 +415,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 marcas.add(marca);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return marcas;
     }
@@ -435,7 +437,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao buscar modelo pelo código: " + codModelo);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -459,7 +461,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 dimensoes.add(dimensao);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return dimensoes;
     }
@@ -491,7 +493,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao inserir o modelo do pneu ou modelo já existente");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -523,7 +525,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn.rollback();
             throw e;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return true;
     }
@@ -536,7 +538,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn = getConnection();
             return getPneuByCod(conn, codUnidade, codPneu);
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -548,21 +550,20 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement(BASE_QUERY_BUSCA_PNEU +
-                    "WHERE P.CODIGO = ? AND P.cod_unidade = ?;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_PNEU_BY_CODIGO(?);");
             stmt.setLong(1, codPneu);
-            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Pneu pneu = PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM);
+                final Pneu pneu = PneuConverter.createPneuCompleto(
+                        rSet,
+                        StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo());
                 pneu.setFotosCadastro(getFotosCadastroPneu(codPneu, conn));
                 return pneu;
             } else {
                 throw new SQLException("Nenhum pneu encontrado com o código: " + codPneu + " e unidade: " + codUnidade);
             }
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -585,7 +586,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 marcas.add(marca);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return marcas;
     }
@@ -615,7 +616,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao inserir a marca da banda ou banda já existente");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -647,7 +648,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao inserir o modelo da banda");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -665,7 +666,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar a marca da banca: " + marca.getCodigo());
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -683,7 +684,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar a modelo da banca: " + modelo.getCodigo());
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
         return true;
     }
@@ -704,7 +705,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu);
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
         }
     }
 
@@ -716,17 +717,19 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_GET_LISTAGEM_PNEUS_BY_STATUS(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_LISTAGEM_PNEUS_BY_STATUS(?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, statusString);
             rSet = stmt.executeQuery();
             final List<Pneu> pneus = new ArrayList<>();
             while (rSet.next()) {
-                pneus.add(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM));
+                pneus.add(PneuConverter.createPneuCompleto(
+                        rSet,
+                        StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo()));
             }
             return pneus;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -744,7 +747,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 }
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -769,7 +772,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 return fotosCadastro;
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
         return null;
     }
@@ -786,7 +789,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar flag de pneu novo para o pneu: " + codPneu);
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -810,7 +813,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                         + pneu.getCodigo() + " da unidade " + codUnidade);
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -842,7 +845,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao criar o serviço de recapagem para a troca de vida do pneu inserido");
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -871,7 +874,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 modelos.add(createModeloPneu(rSet));
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
         return modelos;
     }
@@ -906,7 +909,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar as informações de banda do pneu: " + codPneu);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -932,7 +935,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 modelos.add(modelo);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
         return modelos;
     }

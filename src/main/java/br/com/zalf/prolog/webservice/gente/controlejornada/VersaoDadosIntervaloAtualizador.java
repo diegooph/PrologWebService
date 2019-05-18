@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,8 +23,8 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
     }
 
     @Override
-    public void onTiposIntervaloChanged(@NotNull final Connection connection,
-                                        @NotNull final Long codUnidade) throws Throwable {
+    public void onTiposMarcacaoChanged(@NotNull final Connection connection,
+                                       @NotNull final Long codUnidade) throws Throwable {
         incrementaVersaoDadosUnidade(connection, codUnidade);
     }
 
@@ -36,7 +36,7 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                                   @NotNull final Long codUnidade) throws Throwable {
         final Visao visaoAtual = empresaDao.getVisaoCargo(codUnidade, codCargo);
 
-        if (visaoAtual == null || visaoNova == null)
+        if (visaoAtual == null)
             throw new IllegalStateException();
 
         if (permissaoMarcacaoIntervaloRemovidaOuAdicionada(visaoAtual, visaoNova)) {
@@ -136,7 +136,7 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                     "INSERT INTO INTERVALO_UNIDADE(COD_UNIDADE, VERSAO_DADOS, TOKEN_SINCRONIZACAO_MARCACAO) "
                             + "VALUES (?, 1, ?)");
             stmt.setLong(1, codUnidade);
-            stmt.setString(2, getValidTokenMarcacaoJornada(connection));
+            stmt.setString(2, getValidTokenMarcacaoJornada(connection).toUpperCase());
             // retorna false caso nenhuma linha tenha sido afetada, ou seja, unidade não possui dados na tabela
             return stmt.executeUpdate() > 0;
         } finally {
@@ -147,14 +147,14 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
     @NotNull
     private String getValidTokenMarcacaoJornada(@NotNull final Connection connection) throws SQLException {
         final String tokenMarcacao = new SessionIdentifierGenerator().nextSessionId();
-        if (!isValidTokenMarcacao(connection, tokenMarcacao)) {
+        if (tokenExiste(connection, tokenMarcacao)) {
             getValidTokenMarcacaoJornada(connection);
         }
         return tokenMarcacao;
     }
 
-    private boolean isValidTokenMarcacao(@NotNull final Connection connection,
-                                         @NotNull final String tokenMarcacao) throws SQLException {
+    private boolean tokenExiste(@NotNull final Connection connection,
+                                @NotNull final String tokenMarcacao) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {

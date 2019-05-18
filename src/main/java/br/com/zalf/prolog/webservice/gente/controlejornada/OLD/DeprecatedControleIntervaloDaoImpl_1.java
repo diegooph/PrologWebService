@@ -5,11 +5,10 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.DadosMarcacaoUnidade;
-import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
@@ -26,11 +25,6 @@ import java.util.Optional;
 public class DeprecatedControleIntervaloDaoImpl_1 extends DatabaseConnection implements DeprecatedControleIntervaloDao_1 {
 
     private static final String TAG = DeprecatedControleIntervaloDaoImpl_1.class.getSimpleName();
-
-    @Override
-    public List<TipoMarcacao> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
-        return new DeprecatedControleIntervaloDaoImpl_2().getTiposIntervalosByUnidade(codUnidade, true, withCargos);
-    }
 
     @Override
     public Intervalo getIntervaloAberto(Long cpf, TipoMarcacao tipoInvervalo) throws SQLException {
@@ -108,24 +102,6 @@ public class DeprecatedControleIntervaloDaoImpl_1 extends DatabaseConnection imp
         } finally {
             closeConnection(conn, null, null);
         }
-    }
-
-    @Override
-    public Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                    @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        return new DeprecatedControleIntervaloDaoImpl_2().insertTipoIntervalo(tipoIntervalo, listener);
-    }
-
-    @Override
-    public void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                    @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        new DeprecatedControleIntervaloDaoImpl_2().updateTipoIntervalo(tipoIntervalo, listener);
-    }
-
-    @Override
-    public void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
-                                      @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        new DeprecatedControleIntervaloDaoImpl_2().updateStatusAtivoTipoIntervalo(codUnidade, codTipoIntervalo, null, listener);
     }
 
     @Override

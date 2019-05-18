@@ -34,6 +34,15 @@ public class Durations {
     }
 
     @NotNull
+    public static String formatDurationHandleNegative(final long millis, @NotNull final Format format) {
+        if (millis < 0) {
+            return "-" + formatDuration(Math.abs(millis), format);
+        } else {
+            return formatDuration(millis, format);
+        }
+    }
+
+    @NotNull
     public static String formatDuration(@NotNull final Duration duration, @NotNull final Format format) {
         return formatDuration(duration.toMillis(), format);
     }

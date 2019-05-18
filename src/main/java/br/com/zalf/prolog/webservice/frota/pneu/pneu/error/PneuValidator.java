@@ -12,11 +12,13 @@ import java.math.BigDecimal;
 
 import static br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.isDotValid;
 
-public class PneuValidator {
-
+public final class PneuValidator {
     private static final int VIDA_PNEU_NOVO = 1;
     private static final int VIDA_MAXIMA = 6;
-    private static final int PARIDADE = 0;
+
+    private PneuValidator() {
+        throw new IllegalStateException(PneuValidator.class.getSimpleName() + " cannot be instantiated!");
+    }
 
     public static void validacaoAtributosPneu(@NotNull final Pneu pneu, Long codUnidade) throws GenericException {
         try {
@@ -28,7 +30,6 @@ public class PneuValidator {
             validacaoVida(pneu);
             validacaoPressao(pneu.getPressaoCorreta());
             validacaoDimensao(pneu.getDimensao());
-            tipoValidacaoSulcos(pneu);
             validacaoDot(pneu.getDot());
         } catch (GenericException e) {
             throw e;
@@ -127,43 +128,6 @@ public class PneuValidator {
 
     private static void validacaoDimensao(Pneu.Dimensao dimensao) {
         Preconditions.checkNotNull(dimensao, "Você precisa fornecer a dimensão");
-    }
-
-    private static void tipoValidacaoSulcos(Pneu pneu) throws Exception {
-        try {
-            if (pneu.getVidaAtual() == VIDA_PNEU_NOVO) {
-                validacaoSulcos(pneu.getSulcosAtuais(), pneu.getModelo().getQuantidadeSulcos());
-            } else {
-                validacaoSulcos(pneu.getSulcosAtuais(), pneu.getBanda().getModelo().getQuantidadeSulcos());
-            }
-        } catch (Exception e) {
-            throw new GenericException(e.getMessage(), "Vida do pneu: " + pneu.getVidaAtual());
-        }
-    }
-
-    private static void validacaoSulcos(Sulcos sulcos, int quantidadeDeSulcos) {
-        Preconditions.checkNotNull(sulcos, "Você precisa fornecer o sulco");
-        Preconditions.checkNotNull(sulcos.getCentralExterno(), "Você precisa fornecer o sulco central externo");
-        Preconditions.checkNotNull(sulcos.getCentralInterno(), "Você precisa fornecer o sulco central interno");
-        Preconditions.checkNotNull(sulcos.getExterno(), "Você precisa fornecer o sulco externo");
-        Preconditions.checkNotNull(sulcos.getInterno(), "Você precisa fornecer o sulco interno");
-
-        final int quantidadeDeSulcosSite = quantidadeDeSulcos % 2;
-        if (quantidadeDeSulcosSite == PARIDADE) {
-            Preconditions.checkArgument(sulcos.getCentralInterno() >= 0, "Sulco atual central " +
-                    "interno inválido\nO sulco não deve ser negativo");
-
-            Preconditions.checkArgument(sulcos.getCentralExterno() >= 0, "Sulco atual central " +
-                    "externo inválido\nO sulco não deve ser negativo");
-        } else {
-            Preconditions.checkArgument(sulcos.getCentralInterno() >= 0, "Sulco atual central inválido" +
-                    "\nO sulco não deve ser negativo");
-        }
-
-        Preconditions.checkArgument(sulcos.getInterno() >= 0, "Sulco atual interno inválido" +
-                "\nO sulco não deve ser negativo");
-        Preconditions.checkArgument(sulcos.getExterno() >= 0, "Sulco atual externo inválido" +
-                "\nO sulco não deve ser negativo");
     }
 
     private static void validacaoDot(@Nullable final String dot) throws Exception {

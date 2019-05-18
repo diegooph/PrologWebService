@@ -14,7 +14,8 @@ public enum SqlType {
     TEXT("text", Types.VARCHAR),
     VARCHAR("varchar", Types.VARCHAR),
     BOOLEAN("boolean", Types.BOOLEAN),
-    INTEGER("bigint", Types.INTEGER);
+    INTEGER("bigint", Types.INTEGER),
+    REAL("real", Types.REAL);
 
     @NotNull
     private final String typeString;

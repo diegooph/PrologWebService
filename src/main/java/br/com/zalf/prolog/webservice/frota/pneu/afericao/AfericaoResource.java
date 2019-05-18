@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.StreamingOutput;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
         implementation = DefaultAppVersionCodeHandler.class,
-        targetVersionCode = 57,
+        targetVersionCode = 64,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class AfericaoResource {
@@ -51,10 +50,10 @@ public class AfericaoResource {
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO})
     @Path("/{codUnidade}")
     @UsedBy(platforms = Platform.ANDROID)
-    public AbstractResponse insert(Afericao afericao,
-                                   @PathParam("codUnidade") Long codUnidade,
-                                   @HeaderParam("Authorization") String userToken) throws ProLogException {
-        final Long codAfericao = service.insert(afericao, codUnidade, userToken);
+    public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
+                                   @PathParam("codUnidade") @Required final Long codUnidade,
+                                   @Required final Afericao afericao) throws ProLogException {
+        final Long codAfericao = service.insert(userToken, codUnidade, afericao);
         if (codAfericao != null) {
             return ResponseWithCod.ok("Aferição inserida com sucesso", codAfericao);
         } else {
@@ -66,10 +65,10 @@ public class AfericaoResource {
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @Path("/cronogramas/{codUnidade}")
     @UsedBy(platforms = Platform.ANDROID)
-    public CronogramaAfericao getCronogramaAfericao(@PathParam("codUnidade") Long codUnidade,
-                                                    @HeaderParam("Authorization") String userToken)
-            throws ProLogException {
-        return service.getCronogramaAfericao(codUnidade, userToken);
+    public CronogramaAfericao getCronogramaAfericao(
+            @HeaderParam("Authorization") @Required final String userToken,
+            @PathParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
+        return service.getCronogramaAfericao(userToken, codUnidade);
     }
 
     @GET
@@ -86,12 +85,12 @@ public class AfericaoResource {
     @Path("/unidades/{codUnidade}/nova-afericao-placa/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @UsedBy(platforms = Platform.ANDROID)
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@PathParam("codUnidade") @Required Long codUnidade,
-                                                  @PathParam("placaVeiculo") @Required String placa,
-                                                  @QueryParam("tipoAfericao") @Required String tipoAfericao,
-                                                  @HeaderParam("Authorization") @Required String userToken)
-            throws ProLogException {
-        return service.getNovaAfericaoPlaca(codUnidade, placa, tipoAfericao, userToken);
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(
+            @HeaderParam("Authorization") @Required final String userToken,
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("placaVeiculo") @Required final String placa,
+            @QueryParam("tipoAfericao") @Required final String tipoAfericao) throws ProLogException {
+        return service.getNovaAfericaoPlaca(userToken, codUnidade, placa, tipoAfericao);
     }
 
     @GET

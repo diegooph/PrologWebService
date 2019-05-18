@@ -10,18 +10,18 @@ public abstract class Modelo {
     @NotNull
     @Exclude
     private String tipo;
-    private long codigo;
+    private Long codigo;
     private String nome;
 
     public Modelo() {
 
     }
 
-    public long getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(long codigo) {
+    public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 

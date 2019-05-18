@@ -37,8 +37,9 @@ public final class ChecklistModeloResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     public Response insertModeloChecklist(
+            @HeaderParam("Authorization") @Required final String token,
             @Required final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
-        return service.insertModeloChecklist(modeloChecklist);
+        return service.insertModeloChecklist(token, modeloChecklist);
     }
 
     @GET

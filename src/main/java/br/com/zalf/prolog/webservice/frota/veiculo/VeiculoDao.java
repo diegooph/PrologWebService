@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,14 +31,13 @@ public interface VeiculoDao {
     boolean insert(Veiculo veiculo, Long codUnidade) throws Throwable;
 
     /**
-     * Atualiza os dados de um veículo
+     * Atualiza os dados de um veículo.
      *
-     * @param veiculo       veículo
-     * @param placaOriginal placa original do veículo
-     * @return resultado da requisição
-     * @throws SQLException caso não seja possível realizar o update
+     * @param veiculo       Veículo.
+     * @param placaOriginal Placa original do veículo.
+     * @throws Throwable Caso aconteça algum erro no update.
      */
-    boolean update(Veiculo veiculo, String placaOriginal) throws SQLException;
+    void update(@NotNull final Veiculo veiculo, @NotNull final String placaOriginal) throws Throwable;
 
     void updateStatus(@NotNull final Long codUnidade, @NotNull final String placa, @NotNull final Veiculo veiculo)
             throws SQLException;
@@ -94,25 +96,6 @@ public interface VeiculoDao {
                               final boolean withPneus) throws Throwable;
 
     /**
-     * busca o tipo de veículo pela unidade
-     *
-     * @param codUnidade código da unidade
-     * @return uma lista de tipos de veículos
-     * @throws SQLException caso ocorrer erro no banco
-     */
-    List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException;
-
-    /**
-     * insere um tipo de veículo
-     *
-     * @param tipoVeiculo descrição do tipo do veículo
-     * @param codUnidade  código da unidade
-     * @return valor referente a operação
-     * @throws SQLException se ocorrer erro no banco
-     */
-    boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException;
-
-    /**
      * busca os eixos
      *
      * @return uma lista de eixos
@@ -137,18 +120,45 @@ public interface VeiculoDao {
      * @return lista de marcas
      * @throws SQLException se ocorrer erro no banco
      */
+    @Deprecated
     List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException;
 
     /**
-     * insere um modelo de veiculo
+     * As marcas de veículos são a nível ProLog. Esse método retorna uma lista com todas as marcas disponíveis.
+     * Importante lembrar que os modelos para cada marca não serão setados, já que modelos de veículos são por empresa.
      *
-     * @param modelo     descrição do modelo
-     * @param codEmpresa código da empresa
-     * @param codMarca   códiga da marca
-     * @return resultado da operação
-     * @throws SQLException caso ocorrer erro
+     * @return uma lista de {@link Marca marcas}.
+     * @throws Throwable caso qualquer erro aconteça.
      */
-    boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException;
+    @NotNull
+    List<Marca> getMarcasVeiculosNivelProLog() throws Throwable;
+
+    /**
+     * As marcas de veículos são a nível ProLog, porém, os modelos são a nível de empresa. Esse método retorna uma
+     * lista com todas as marcas disponíveis, cada marca contém uma lista de modelos com os modelos criados pela
+     * empresa para qual as informações foram solicitadas.
+     * Caso a empresa não tenha modelos para uma marca qualquer, essa marca irá possuir uma lista vazia de modelos,
+     * não nula.
+     *
+     * @return uma lista de {@link Marca marcas}.
+     * @throws Throwable caso qualquer erro aconteça.
+     */
+    @NotNull
+    List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
+
+    /**
+     * Insere um modelo de veiculo
+     *
+     * @param modelo     descrição do modelo.
+     * @param codEmpresa código da empresa.
+     * @param codMarca   códiga da marca.
+     * @return código do novo modelo inserido.
+     * @throws Throwable caso ocorrer erro.
+     */
+    @NotNull
+    Long insertModeloVeiculo(@NotNull final Modelo modelo,
+                             @NotNull final Long codEmpresa,
+                             @NotNull final Long codMarca) throws Throwable;
 
     /**
      * busca o total de vaículos de uma unidade
@@ -175,7 +185,7 @@ public interface VeiculoDao {
     /**
      * Método utilizado para buscar o {@link DiagramaVeiculo} com base na {@code placa}.
      *
-     * @param conn {@link Connection} que será utilizada para realizar a operação.
+     * @param conn  {@link Connection} que será utilizada para realizar a operação.
      * @param placa Placa do {@link Veiculo}.
      * @return Caso exista, retornará o {@link DiagramaVeiculo} caso contrário NULL.
      * @throws SQLException Se qualquer erro ocorrer na busca.
@@ -216,36 +226,6 @@ public interface VeiculoDao {
      * @throws SQLException
      */
     boolean deleteModelo(Long codModelo, Long codUnidade) throws SQLException;
-
-    /**
-     * atualiza um tipo de veículo
-     *
-     * @param tipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
-    boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) throws SQLException;
-
-    /**
-     * deleta um tipo de veículo, apenas se não tiver nenhuma placa vinculada
-     *
-     * @param codTipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
-    boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
-
-    /**
-     * busca um tipo de veículo
-     *
-     * @param codTipo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
-    TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
 
     /**
      * Aplica um pneu à uma posição específico do veículo.

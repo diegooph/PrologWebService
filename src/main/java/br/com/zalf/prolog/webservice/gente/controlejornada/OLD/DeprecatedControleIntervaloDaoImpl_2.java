@@ -1,21 +1,18 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created on 08/03/2018
@@ -105,184 +102,6 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
         return null;
     }
 
-    @NotNull
-    @Override
-    public Long insertTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                    @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO INTERVALO_TIPO(NOME, ICONE, TEMPO_RECOMENDADO_MINUTOS, " +
-                    "TEMPO_ESTOURO_MINUTOS, HORARIO_SUGERIDO, COD_UNIDADE, ATIVO) VALUES (?,?,?,?,?,?,TRUE) RETURNING" +
-                    " CODIGO;");
-            stmt.setString(1, tipoIntervalo.getNome());
-            stmt.setString(2, tipoIntervalo.getIcone().getNomeIcone());
-            stmt.setLong(3, tipoIntervalo.getTempoRecomendado().toMinutes());
-            stmt.setLong(4, tipoIntervalo.getTempoLimiteEstouro().toMinutes());
-            stmt.setTime(5, tipoIntervalo.getHorarioSugerido());
-            stmt.setLong(6, tipoIntervalo.getUnidade().getCodigo());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                tipoIntervalo.setCodigo(rSet.getLong("CODIGO"));
-                associaCargosTipoIntervalo(tipoIntervalo, conn);
-                // Avisamos o listener que um tipo de intervalo FOI INCLUÍDO.
-                listener.onTiposIntervaloChanged(conn, tipoIntervalo.getUnidade().getCodigo());
-                // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
-                conn.commit();
-                return tipoIntervalo.getCodigo();
-            } else {
-                throw new SQLException("Erro ao inserir o Tipo de Intervalo de nome: " + tipoIntervalo.getNome());
-            }
-        } catch (Throwable e) {
-            // Pegamos apenas para fazer o rollback, depois subimos o erro.
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw e;
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public void updateTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                    @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
-                    "SET NOME = ?, ICONE = ?, TEMPO_RECOMENDADO_MINUTOS = ?, TEMPO_ESTOURO_MINUTOS = ?, " +
-                    "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ? AND ATIVO = TRUE;");
-            stmt.setString(1, tipoIntervalo.getNome());
-            stmt.setString(2, tipoIntervalo.getIcone().getNomeIcone());
-            stmt.setLong(3, tipoIntervalo.getTempoRecomendado().toMinutes());
-            stmt.setLong(4, tipoIntervalo.getTempoLimiteEstouro().toMinutes());
-            stmt.setTime(5, tipoIntervalo.getHorarioSugerido());
-            stmt.setLong(6, tipoIntervalo.getUnidade().getCodigo());
-            stmt.setLong(7, tipoIntervalo.getCodigo());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao atualizar o Tipo de Intervalo de código: " + tipoIntervalo.getCodigo());
-            }
-            associaCargosTipoIntervalo(tipoIntervalo, conn);
-            // Avisamos o listener que um tipo de intervalo mudou.
-            listener.onTiposIntervaloChanged(conn, tipoIntervalo.getUnidade().getCodigo());
-
-            // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
-            conn.commit();
-        } catch (Throwable e) {
-            // Pegamos apenas para fazer o rollback, depois subimos o erro.
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw e;
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-    }
-
-    @NotNull
-    @Override
-    public List<TipoMarcacao> getTiposIntervalosByUnidade(@NotNull final Long codUnidade,
-                                                          final boolean apenasAtivos,
-                                                          final boolean withCargos)
-            throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<TipoMarcacao> tipos = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_CONTROLE_JORNADA_GET_TIPOS_INTERVALOS_UNIDADE(?, ?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setBoolean(2, apenasAtivos);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                tipos.add(createTipoInvervalo(rSet, withCargos, conn));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return tipos;
-    }
-
-    @NotNull
-    @Override
-    public TipoMarcacao getTipoIntervalo(@NotNull final Long codUnidade,
-                                         @NotNull final Long codTipoIntervalo) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "IT.CODIGO AS CODIGO_TIPO_INTERVALO, " +
-                    "IT.CODIGO_TIPO_INTERVALO_POR_UNIDADE AS CODIGO_TIPO_INTERVALO_POR_UNIDADE, " +
-                    "IT.NOME AS " +
-                    "NOME_TIPO_INTERVALO, " +
-                    "IT.COD_UNIDADE, " +
-                    "IT.ATIVO, " +
-                    "IT.HORARIO_SUGERIDO, " +
-                    "IT.ICONE, " +
-                    "IT.TEMPO_ESTOURO_MINUTOS, " +
-                    "IT.TEMPO_RECOMENDADO_MINUTOS " +
-                    "FROM INTERVALO_TIPO_CARGO ITC JOIN VIEW_INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC" +
-                    ".COD_TIPO_INTERVALO = IT.CODIGO " +
-                    " WHERE IT.COD_UNIDADE = ? AND IT.CODIGO = ?;");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codTipoIntervalo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return createTipoInvervalo(rSet, true, conn);
-            } else {
-                throw new SQLException("Nenhum tipo de intervalo encontrado com o código: " + codTipoIntervalo);
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public void updateStatusAtivoTipoIntervalo(@NotNull final Long codUnidade,
-                                               @NotNull final Long codTipoIntervalo,
-                                               @NotNull final TipoMarcacao tipoIntervalo,
-                                               @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
-                    "SET ATIVO = ? WHERE COD_UNIDADE = ? AND CODIGO = ?;");
-            stmt.setBoolean(1, tipoIntervalo.isAtivo());
-            stmt.setLong(2, codUnidade);
-            stmt.setLong(3, codTipoIntervalo);
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao inativar o Tipo de Intervalo de código: " + codTipoIntervalo);
-            }
-
-            // Avisamos o listener que um tipo de intervalo mudou.
-            listener.onTiposIntervaloChanged(conn, codUnidade);
-
-            // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
-            conn.commit();
-        } catch (final Throwable e) {
-            // Pegamos apenas para fazer o rollback, depois subimos o erro.
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw e;
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-    }
-
     private boolean marcacaoIntervaloJaExiste(@NotNull final IntervaloMarcacao intervaloMarcacao,
                                               @NotNull final Connection conn) throws SQLException {
 
@@ -341,101 +160,6 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
         } finally {
             closeStatement(stmt);
         }
-    }
-
-    private void associaCargosTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                            @NotNull final Connection conn) throws SQLException {
-        deleteCargosTipoIntervalo(
-                tipoIntervalo.getUnidade().getCodigo(),
-                tipoIntervalo.getCodigo(),
-                conn);
-        insertCargosTipoIntervalo(
-                tipoIntervalo.getUnidade().getCodigo(),
-                tipoIntervalo.getCodigo(),
-                tipoIntervalo.getCargos(),
-                conn);
-    }
-
-    private void deleteCargosTipoIntervalo(@NotNull final Long codUnidade,
-                                           @NotNull final Long codTipoIntervalo,
-                                           @NotNull final Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("DELETE FROM INTERVALO_TIPO_CARGO WHERE COD_UNIDADE = ? AND " +
-                    "COD_TIPO_INTERVALO = ?;");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codTipoIntervalo);
-            stmt.executeUpdate();
-            // Não precisamos verificar se o delete afetou alguma linha pois o intervalo pode não ter nenhum cargo
-            // vinculado.
-        } finally {
-            closeStatement(stmt);
-        }
-    }
-
-    private void insertCargosTipoIntervalo(@NotNull final Long codUnidade,
-                                           @NotNull final Long codTipoIntervalo,
-                                           @NotNull final List<Cargo> cargos,
-                                           @NotNull final Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("INSERT INTO INTERVALO_TIPO_CARGO VALUES (?,?,?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codTipoIntervalo);
-            for (final Cargo cargo : cargos) {
-                stmt.setLong(3, cargo.getCodigo());
-                if (stmt.executeUpdate() == 0) {
-                    throw new SQLException("Erro ao vincular cargo ao tipo de intervalo");
-                }
-            }
-        } finally {
-            closeStatement(stmt);
-        }
-    }
-
-    @NotNull
-    private TipoMarcacao createTipoInvervalo(@NotNull final ResultSet rSet,
-                                             final boolean withCargos,
-                                             @NotNull final Connection conn) throws SQLException {
-        final TipoMarcacao tipoIntervalo = new TipoMarcacao();
-        tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
-        tipoIntervalo.setCodigoPorUnidade(rSet.getLong("CODIGO_TIPO_INTERVALO_POR_UNIDADE"));
-        tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
-        final Unidade unidade = new Unidade();
-        unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
-        tipoIntervalo.setUnidade(unidade);
-        tipoIntervalo.setAtivo(rSet.getBoolean("ATIVO"));
-        tipoIntervalo.setHorarioSugerido(rSet.getTime("HORARIO_SUGERIDO"));
-        tipoIntervalo.setIcone(Icone.fromString(rSet.getString("ICONE")));
-        tipoIntervalo.setTempoLimiteEstouro(Duration.ofMinutes(rSet.getLong("TEMPO_ESTOURO_MINUTOS")));
-        tipoIntervalo.setTempoRecomendado(Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")));
-        if (withCargos) {
-            tipoIntervalo.setCargos(getCargosByTipoIntervalo(tipoIntervalo, conn));
-        }
-        return tipoIntervalo;
-    }
-
-    @NotNull
-    private List<Cargo> getCargosByTipoIntervalo(@NotNull final TipoMarcacao tipoIntervalo,
-                                                 @NotNull final Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<Cargo> cargos = new ArrayList<>();
-        try {
-            stmt = conn.prepareStatement("SELECT DISTINCT F.* FROM " +
-                    "  INTERVALO_TIPO_CARGO ITC JOIN UNIDADE U ON U.CODIGO = ITC.COD_UNIDADE " +
-                    "JOIN FUNCAO F ON F.cod_emprESA = U.cod_empresa AND F.codigo = ITC.COD_CARGO " +
-                    "WHERE ITC.COD_TIPO_INTERVALO = ? and ITC.COD_UNIDADE = ?;");
-            stmt.setLong(1, tipoIntervalo.getCodigo());
-            stmt.setLong(2, tipoIntervalo.getUnidade().getCodigo());
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                cargos.add(new Cargo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
-            }
-        } finally {
-            closeConnection(null, stmt, rSet);
-        }
-        return cargos;
     }
 
     private IntervaloMarcacao createIntervaloMarcacao(@NotNull final ResultSet rSet) throws SQLException {

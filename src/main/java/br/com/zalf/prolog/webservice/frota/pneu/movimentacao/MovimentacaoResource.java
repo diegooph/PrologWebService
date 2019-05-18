@@ -29,7 +29,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
         implementation = DefaultAppVersionCodeHandler.class,
-        targetVersionCode = 57,
+        targetVersionCode = 64,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class MovimentacaoResource {
@@ -37,11 +37,13 @@ public class MovimentacaoResource {
 
     @POST
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    public AbstractResponse insert(@Required final ProcessoMovimentacao movimentacao) throws ProLogException {
-        return service.insert(movimentacao);
+    public AbstractResponse insert(@HeaderParam("Authorization") String userToken,
+                                   @Required final ProcessoMovimentacao movimentacao) throws ProLogException {
+        return service.insert(userToken, movimentacao);
     }
 
     @POST
@@ -59,20 +61,23 @@ public class MovimentacaoResource {
     @Path("/motivos-descarte/{codEmpresa}/{codMotivo}/status")
     public Response updateMotivoStatus(@PathParam("codEmpresa") @Required final Long codEmpresa,
                                        @PathParam("codMotivo") @Required final Long codMotivo,
-                                       final Motivo motivo) throws ProLogException {
+                                       @Required final Motivo motivo) throws ProLogException {
         service.updateMotivoStatus(codEmpresa, codMotivo, motivo);
         return Response.ok("Motivo atualizado com sucesso");
     }
 
     @GET
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
+            Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/motivos-descarte/{codEmpresa}")
-    public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") @Required final Long codEmpresa,
-                                         @QueryParam("apenasAtivos") @Required final Boolean apenasAtivos)
-            throws ProLogException {
+    public List<Motivo> getMotivosAtivos(
+            @PathParam("codEmpresa") @Required final Long codEmpresa,
+            @QueryParam("apenasAtivos") @Required final Boolean apenasAtivos) throws ProLogException {
         return service.getMotivos(codEmpresa, apenasAtivos);
     }
 }

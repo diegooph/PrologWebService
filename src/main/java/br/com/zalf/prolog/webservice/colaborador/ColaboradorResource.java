@@ -58,7 +58,7 @@ public class ColaboradorResource {
 	@GET
 	@Secured
 	@Path("/getByCod/{cpf}")
-	public Colaborador getByCpf(@PathParam("cpf") Long cpf) {
+	public Colaborador getByCpf(@PathParam("cpf") Long cpf) throws ProLogException {
 		Log.d(TAG, cpf.toString());
 		return service.getByCpf(cpf);
 	}
