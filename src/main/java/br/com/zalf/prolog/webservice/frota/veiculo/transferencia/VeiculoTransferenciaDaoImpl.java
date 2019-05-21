@@ -184,7 +184,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_TRANSFERENCIA_LISTAGEM(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_VEICULOS_DIAGRAMAS(?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codVeiculosTransferidos));
             rSet = stmt.executeQuery();
