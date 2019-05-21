@@ -3,11 +3,11 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.listagem.ProcessoTransferenciaVeiculoListagem;
-import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.realizacao.ProcessoTransferenciaVeiculoRealizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.realizacao.VeiculoSelecaoTransferencia;
-import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.visualizacao.DetalhesVeiculoTransferido;
-import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
 

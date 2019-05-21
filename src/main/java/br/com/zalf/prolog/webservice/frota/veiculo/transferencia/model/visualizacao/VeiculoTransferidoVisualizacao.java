@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.visualizacao;
+package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
+package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model;
 
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogErrorCodes;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;

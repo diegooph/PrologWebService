@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem;
 
-import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.LinkTransferenciaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.LinkTransferenciaVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.listagem;
+package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ProcessoTransferenciaVeiculoListagem {
+public final class ProcessoTransferenciaVeiculoVisualizacao {
     /**
      * Código do processo de transferência que foi realizado.
      */
@@ -54,25 +54,25 @@ public final class ProcessoTransferenciaVeiculoListagem {
     @Nullable
     private final String observacaoRealizacao;
     /**
-     * Lista de placas que foram transferidas nesse processo.
+     * Lista contendo informações de cada placa que foi transferida neste processo de transferência.
      */
     @NotNull
-    private final List<String> placasTransferidas;
+    private final List<VeiculoTransferidoVisualizacao> veiculosTransferidos;
     /**
-     * Atributo numérico que representa a quantidade de placas transferidas neste processo.
+     * Valor numérico indicando a quantidade de placas que foram transferidas neste processo.
      */
-    private final int qtdPlacasTransferidas;
+    private final int qtdVeiculosTransferidos;
 
-    public ProcessoTransferenciaVeiculoListagem(@NotNull final Long codProcessoTransferencia,
-                                                @NotNull final String nomeColaboradorRealizacao,
-                                                @NotNull final LocalDateTime dataHoraRealizacao,
-                                                @NotNull final String nomeUnidadeOrigem,
-                                                @NotNull final String nomeUnidadeDestino,
-                                                @NotNull final String nomeRegionalOrigem,
-                                                @NotNull final String nomeRegionalDestino,
-                                                @Nullable final String observacaoRealizacao,
-                                                @NotNull final List<String> placasTransferidas,
-                                                final int qtdPlacasTransferidas) {
+    public ProcessoTransferenciaVeiculoVisualizacao(@NotNull final Long codProcessoTransferencia,
+                                                    @NotNull final String nomeColaboradorRealizacao,
+                                                    @NotNull final LocalDateTime dataHoraRealizacao,
+                                                    @NotNull final String nomeUnidadeOrigem,
+                                                    @NotNull final String nomeUnidadeDestino,
+                                                    @NotNull final String nomeRegionalOrigem,
+                                                    @NotNull final String nomeRegionalDestino,
+                                                    @Nullable final String observacaoRealizacao,
+                                                    @NotNull final List<VeiculoTransferidoVisualizacao> veiculosTransferidos,
+                                                    final int qtdVeiculosTransferidos) {
         this.codProcessoTransferencia = codProcessoTransferencia;
         this.nomeColaboradorRealizacao = nomeColaboradorRealizacao;
         this.dataHoraRealizacao = dataHoraRealizacao;
@@ -81,17 +81,17 @@ public final class ProcessoTransferenciaVeiculoListagem {
         this.nomeRegionalOrigem = nomeRegionalOrigem;
         this.nomeRegionalDestino = nomeRegionalDestino;
         this.observacaoRealizacao = observacaoRealizacao;
-        this.placasTransferidas = placasTransferidas;
-        this.qtdPlacasTransferidas = qtdPlacasTransferidas;
+        this.veiculosTransferidos = veiculosTransferidos;
+        this.qtdVeiculosTransferidos = qtdVeiculosTransferidos;
     }
 
     @NotNull
-    public static ProcessoTransferenciaVeiculoListagem createDummy() {
-        final List<String> placasTransferidas = new ArrayList<>();
-        placasTransferidas.add("PRO0001");
-        placasTransferidas.add("PRO0015");
-        placasTransferidas.add("PRO0108");
-        return new ProcessoTransferenciaVeiculoListagem(
+    public static ProcessoTransferenciaVeiculoVisualizacao createDummy() {
+        final List<VeiculoTransferidoVisualizacao> veiculosTransferidos = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            veiculosTransferidos.add(VeiculoTransferidoVisualizacao.createDummy());
+        }
+        return new ProcessoTransferenciaVeiculoVisualizacao(
                 10L,
                 "João Dói",
                 LocalDateTime.now(),
@@ -100,8 +100,8 @@ public final class ProcessoTransferenciaVeiculoListagem {
                 "Regional Y Origem",
                 "Regional Z Destino",
                 "Observação sobre o processo de transferência",
-                placasTransferidas,
-                placasTransferidas.size());
+                veiculosTransferidos,
+                veiculosTransferidos.size());
     }
 
     @NotNull
@@ -145,11 +145,11 @@ public final class ProcessoTransferenciaVeiculoListagem {
     }
 
     @NotNull
-    public List<String> getPlacasTransferidas() {
-        return placasTransferidas;
+    public List<VeiculoTransferidoVisualizacao> getVeiculosTransferidos() {
+        return veiculosTransferidos;
     }
 
-    public int getQtdPlacasTransferidas() {
-        return qtdPlacasTransferidas;
+    public int getQtdVeiculosTransferidos() {
+        return qtdVeiculosTransferidos;
     }
 }

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import org.jetbrains.annotations.NotNull;
 
 /**
