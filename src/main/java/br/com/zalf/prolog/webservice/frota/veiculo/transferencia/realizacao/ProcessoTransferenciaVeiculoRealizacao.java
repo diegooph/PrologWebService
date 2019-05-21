@@ -88,4 +88,13 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
     public String getObservacao() {
         return observacao;
     }
+
+    @NotNull
+    public List<Long> getCodVeiculosTransferidos() {
+        final List<Long> codVeiculosTransferidos = new ArrayList<>();
+        for (final VeiculoEnvioTransferencia veiculoTransferencia : this.getVeiculosTransferencia()) {
+            codVeiculosTransferidos.add(veiculoTransferencia.getCodVeiculo());
+        }
+        return codVeiculosTransferidos;
+    }
 }

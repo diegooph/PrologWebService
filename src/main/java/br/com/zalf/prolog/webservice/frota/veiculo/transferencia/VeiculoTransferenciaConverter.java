@@ -4,6 +4,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.P
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.realizacao.VeiculoEnvioTransferencia;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  * Created on 09/05/19.
  *
@@ -29,5 +32,15 @@ final class VeiculoTransferenciaConverter {
                 veiculoEnvioTransferencia.getCodPneusAplicadosVeiculo(),
                 // TODO - Vamos setar algum texto aqui?
                 "Transferido junto a Placa");
+    }
+
+    @NotNull
+    static TipoVeiculoDiagrama createVeiculoSemDiagrama(@NotNull final ResultSet rSet) throws SQLException {
+        return new TipoVeiculoDiagrama(
+                rSet.getLong("COD_VEICULO"),
+                rSet.getString("PLACA_VEICULO"),
+                rSet.getLong("COD_TIPO_VEICULO"),
+                rSet.getString("NOME_TIPO_VEICULO"),
+                rSet.getBoolean("POSSUI_DIAGAMA"));
     }
 }

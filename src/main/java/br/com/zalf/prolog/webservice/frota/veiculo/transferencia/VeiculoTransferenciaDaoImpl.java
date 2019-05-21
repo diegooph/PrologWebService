@@ -17,7 +17,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 29/04/19.
@@ -36,6 +38,20 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
+
+            // É importante que esta verificação seja executa antes de qualquer outro processamento para inserir uma
+            // Transferência de veículo.
+            // Essa verificação nos garantirá que nenhum dos veículos transferidos está SEM DIAGRAMA aplicado.
+            // Retornamos uma Exception específica para tratar estes casos.
+            final Optional<List<TipoVeiculoDiagrama>> tipoVeiculoSemDiagramas = getPlacasSemDiagramaAplicado(
+                    conn,
+                    processoTransferenciaVeiculo.getCodUnidadeOrigem(),
+                    processoTransferenciaVeiculo.getCodVeiculosTransferidos());
+            if (tipoVeiculoSemDiagramas.isPresent()) {
+                throw new VeiculoSemDiagramaException(
+                        "Veículos identificados que não possuem diagrama associado",
+                        tipoVeiculoSemDiagramas.get());
+            }
 
             // Seta propriedade na connection para verificar constraints entre as tabelas do banco somente na chamada
             // conn.commit(). Assim temos mais flexibilidade de trabalhar sem sermos interrompidos por vínculos.
@@ -135,6 +151,50 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             throw t;
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private Optional<List<TipoVeiculoDiagrama>> getPlacasSemDiagramaAplicado(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidadeOrigem,
+            @NotNull final List<Long> codVeiculosTransferidos) throws Throwable {
+        final List<TipoVeiculoDiagrama> tiposVeiculoDiagrama =
+                getTiposVeiculosDiagramas(conn, codUnidadeOrigem, codVeiculosTransferidos);
+        if (tiposVeiculoDiagrama.isEmpty()) {
+            return Optional.empty();
+        } else {
+            final List<TipoVeiculoDiagrama> veiculosSemDiagrama = new ArrayList<>();
+            tiposVeiculoDiagrama.forEach(tipoVeiculoDiagrama -> {
+                if (!tipoVeiculoDiagrama.isTemDiagramaAssociado()) {
+                    veiculosSemDiagrama.add(tipoVeiculoDiagrama);
+                }
+            });
+            return veiculosSemDiagrama.isEmpty()
+                    ? Optional.empty()
+                    : Optional.of(veiculosSemDiagrama);
+        }
+    }
+
+    @NotNull
+    private List<TipoVeiculoDiagrama> getTiposVeiculosDiagramas(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final List<Long> codVeiculosTransferidos) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_TRANSFERENCIA_LISTAGEM(?, ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codVeiculosTransferidos));
+            rSet = stmt.executeQuery();
+            final List<TipoVeiculoDiagrama> tiposVeiculosDiagrama = new ArrayList<>();
+            while (rSet.next()) {
+                tiposVeiculosDiagrama.add(VeiculoTransferenciaConverter.createVeiculoSemDiagrama(rSet));
+            }
+            return tiposVeiculosDiagrama;
+        } finally {
+            close(stmt, rSet);
         }
     }
 
