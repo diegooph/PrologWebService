@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaD
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.TipoVeiculoDiagrama;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoSemDiagramaException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoTransferenciaConverter;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoEnvioTransferencia;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +155,77 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                 conn.rollback();
             }
             throw t;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<ProcessoTransferenciaVeiculoListagem> getProcessosTransferenciaVeiculoListagem(
+            @NotNull final List<Long> codUnidadesOrigem,
+            @NotNull final List<Long> codUnidadesDestino,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_VEICULO_TRANSFERENCIA_LISTAGEM_PROCESSOS(?, ?, ?, ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidadesOrigem));
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidadesDestino));
+            stmt.setObject(3, dataInicial);
+            stmt.setObject(4, dataFinal);
+            rSet = stmt.executeQuery();
+            final List<ProcessoTransferenciaVeiculoListagem> processosTransferencia = new ArrayList<>();
+            List<String> placasTransferidas = new ArrayList<>();
+            Long codProcessoAntigo = null, codProcessoAtual;
+            boolean isFirstLine = true;
+            while (rSet.next()) {
+                codProcessoAtual = rSet.getLong("COD_PROCESSO_TRANFERENCIA");
+                if (codProcessoAntigo == null) {
+                    codProcessoAntigo = codProcessoAtual;
+                }
+
+                if (isFirstLine) {
+                    // Mudou o processo da transferência.
+                    processosTransferencia.add(
+                            new ProcessoTransferenciaVeiculoListagem(
+                                    codProcessoAtual,
+                                    rSet.getString("NOME_COLABORADOR"),
+                                    rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class),
+                                    rSet.getString("NOME_UNIDADE_ORIGEM"),
+                                    rSet.getString("NOME_UNIDADE_DESTINO"),
+                                    rSet.getString("NOME_REGIONAL_ORIGEM"),
+                                    rSet.getString("NOME_REGIONAL_DESTINO"),
+                                    rSet.getString("OBSERVACAO"),
+                                    placasTransferidas,
+                                    rSet.getInt("QTD_PLACAS_TRANSFERIDAS")));
+                    isFirstLine = false;
+                }
+
+                // Trocou o processo de transferencia.
+                if (!codProcessoAntigo.equals(codProcessoAtual)) {
+                    placasTransferidas = new ArrayList<>();
+                    processosTransferencia.add(
+                            new ProcessoTransferenciaVeiculoListagem(
+                                    codProcessoAtual,
+                                    rSet.getString("NOME_COLABORADOR"),
+                                    rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class),
+                                    rSet.getString("NOME_UNIDADE_ORIGEM"),
+                                    rSet.getString("NOME_UNIDADE_DESTINO"),
+                                    rSet.getString("NOME_REGIONAL_ORIGEM"),
+                                    rSet.getString("NOME_REGIONAL_DESTINO"),
+                                    rSet.getString("OBSERVACAO"),
+                                    placasTransferidas,
+                                    rSet.getInt("QTD_PLACAS_TRANSFERIDAS")));
+                }
+                placasTransferidas.add(rSet.getString("PLACA_TRANSFERIDA"));
+                codProcessoAntigo = codProcessoAtual;
+            }
+            return processosTransferencia;
         } finally {
             close(conn, stmt, rSet);
         }

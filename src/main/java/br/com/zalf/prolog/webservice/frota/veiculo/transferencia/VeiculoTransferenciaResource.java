@@ -5,17 +5,16 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created on 29/04/19.
@@ -36,5 +35,19 @@ public final class VeiculoTransferenciaResource {
     public ResponseWithCod insertProcessoTransferenciaVeiculo(
             @Required final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
         return service.insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    public List<ProcessoTransferenciaVeiculoListagem> getProcessosTransferenciaVeiculoListagem(
+            @QueryParam("codUnidadesOrigem") @Required final List<Long> codUnidadesOrigem,
+            @QueryParam("codUnidadesDestino") @Required final List<Long> codUnidadesDestino,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
+        return service.getProcessosTransferenciaVeiculoListagem(
+                codUnidadesOrigem,
+                codUnidadesDestino,
+                dataInicial,
+                dataFinal);
     }
 }

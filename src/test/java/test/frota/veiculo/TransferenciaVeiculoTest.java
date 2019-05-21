@@ -3,10 +3,12 @@ package test.frota.veiculo;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaService;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoEnvioTransferencia;
 import org.jetbrains.annotations.NotNull;
@@ -50,17 +52,18 @@ public class TransferenciaVeiculoTest extends BaseTest {
         Collections.shuffle(placas);
 
         final String placa1 = placas.get(0);
-        final String placa2 = placas.get(1);
+//        final String placa2 = placas.get(1);
 
-        final Veiculo veiculo1 = veiculoDao.getVeiculoByPlaca(placa1, true);
-        final Veiculo veiculo2 = veiculoDao.getVeiculoByPlaca(placa2, true);
+        final List<Veiculo> veiculos = new ArrayList<>();
+        veiculos.add(veiculoDao.getVeiculoByPlaca(placa1, true));
+//        veiculos.add(veiculoDao.getVeiculoByPlaca(placa2, true));
 
-        final ProcessoTransferenciaVeiculoRealizacao processo = convertTo(veiculo1, veiculo2);
+        final ProcessoTransferenciaVeiculoRealizacao processo = convertTo(veiculos);
 
-        System.out.println("Transferindo placas: " + veiculo1.getPlaca() + " e " + veiculo2.getPlaca());
-
-        assertThat(processo).isNotNull();
-        assertThat(processo.getVeiculosTransferencia()).hasSize(2);
+//        System.out.println("Transferindo placas: " + veiculos.toString());
+//
+//        assertThat(processo).isNotNull();
+//        assertThat(processo.getVeiculosTransferencia()).hasSize(2);
 
         final ResponseWithCod response = service.insertProcessoTransferenciaVeiculo(processo);
 
@@ -70,12 +73,22 @@ public class TransferenciaVeiculoTest extends BaseTest {
         System.out.println("Codigo processo inserido: " + response.getCodigo());
     }
 
+    @Test
+    public void getProcessosTransferenciaVeiculoListagem() throws ProLogException {
+        final List<ProcessoTransferenciaVeiculoListagem> processos =
+                service.getProcessosTransferenciaVeiculoListagem(
+                        Collections.singletonList(5L),
+                        Collections.singletonList(103L),
+                        "2019-01-01",
+                        "2019-05-30");
+    }
+
     @NotNull
-    private ProcessoTransferenciaVeiculoRealizacao convertTo(@NotNull final Veiculo veiculo1,
-                                                             @NotNull final Veiculo veiculo2) {
+    private ProcessoTransferenciaVeiculoRealizacao convertTo(@NotNull final List<Veiculo> veiculos) {
         final List<VeiculoEnvioTransferencia> veiculosTransferencia = new ArrayList<>();
-        veiculosTransferencia.add(new VeiculoEnvioTransferencia(veiculo1.getCodigo(), getCodPneus(veiculo1)));
-        veiculosTransferencia.add(new VeiculoEnvioTransferencia(veiculo2.getCodigo(), getCodPneus(veiculo2)));
+        for (final Veiculo veiculo : veiculos) {
+            veiculosTransferencia.add(new VeiculoEnvioTransferencia(veiculo.getCodigo(), getCodPneus(veiculo)));
+        }
 
         return new ProcessoTransferenciaVeiculoRealizacao(
                 COD_UNIDADE,
