@@ -49,6 +49,69 @@ public class TransferenciaVeiculoTest extends BaseTest {
     }
 
     @Test
+    public void fluxoCompletoDeTransferenciaTest() throws Throwable {
+        // Busca placas da Unidade.
+        final List<String> placas = veiculoDao.getPlacasVeiculosByTipo(COD_UNIDADE, COD_TIPO_TOCO);
+        Collections.shuffle(placas);
+
+        // Busca Veículos a serem transferidos.
+        final List<Veiculo> veiculos = new ArrayList<>();
+        veiculos.add(veiculoDao.getVeiculoByPlaca(placas.get(0), true));
+
+        // Cria processo de Transferência com as placas selecionadas.
+        final ProcessoTransferenciaVeiculoRealizacao processoRealizacao = convertTo(veiculos);
+
+        assertThat(processoRealizacao).isNotNull();
+        assertThat(processoRealizacao.getVeiculosTransferencia()).hasSize(veiculos.size());
+
+        // Insere processo de Transferência.
+        final ResponseWithCod response = service.insertProcessoTransferenciaVeiculo(processoRealizacao);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getCodigo()).isNotNull();
+        assertThat(response.getCodigo()).isGreaterThan(0L);
+
+        // Buscamos a listagem de processos.
+        final List<ProcessoTransferenciaVeiculoListagem> listagemProcessos =
+                service.getProcessosTransferenciaVeiculoListagem(
+                        Collections.singletonList(5L),
+                        Collections.singletonList(103L),
+                        "2019-01-01",
+                        "2019-05-30");
+
+        assertThat(listagemProcessos).isNotNull();
+        assertThat(listagemProcessos.size()).isAtLeast(1);
+
+        ProcessoTransferenciaVeiculoListagem processoListagem = null;
+        for (final ProcessoTransferenciaVeiculoListagem processo : listagemProcessos) {
+            if (processo.getCodProcessoTransferencia().equals(response.getCodigo())) {
+                processoListagem = processo;
+            }
+        }
+
+        assertThat(processoListagem).isNotNull();
+        assertThat(processoListagem.getCodProcessoTransferencia()).isEqualTo(response.getCodigo());
+        assertThat(processoListagem.getQtdPlacasTransferidas()).isEqualTo(veiculos.size());
+
+        // Buscamos o processo de transferência específico.
+        final ProcessoTransferenciaVeiculoVisualizacao processoVisualizacao =
+                service.getProcessoTransferenciaVeiculoVisualizacao(processoListagem.getCodProcessoTransferencia());
+
+        assertThat(processoVisualizacao).isNotNull();
+        assertThat(processoVisualizacao.getCodProcessoTransferencia()).isEqualTo(processoListagem.getCodProcessoTransferencia());
+        assertThat(processoVisualizacao.getDataHoraRealizacao()).isEquivalentAccordingToCompareTo(processoListagem.getDataHoraRealizacao());
+        assertThat(processoVisualizacao.getQtdVeiculosTransferidos()).isEqualTo(processoListagem.getQtdPlacasTransferidas());
+
+        // Agora buscamos os detalhes da trasferencia
+        final DetalhesVeiculoTransferido detalhesVeiculoTransferido =
+                service.getDetalhesVeiculoTransferido(processoVisualizacao.getCodProcessoTransferencia(), veiculos.get(0).getPlaca());
+
+        assertThat(detalhesVeiculoTransferido).isNotNull();
+        assertThat(detalhesVeiculoTransferido.getPlacaVeiculo()).isEqualTo(veiculos.get(0).getPlaca());
+        assertThat(detalhesVeiculoTransferido.getPneusAplicadosMomentoTransferencia().size()).isEqualTo(veiculos.get(0).getListPneus().size());
+    }
+
+    @Test
     public void insertTransferenciaVeiculoTest() throws Throwable {
         List<String> placas = veiculoDao.getPlacasVeiculosByTipo(COD_UNIDADE, COD_TIPO_TOCO);
         Collections.shuffle(placas);
