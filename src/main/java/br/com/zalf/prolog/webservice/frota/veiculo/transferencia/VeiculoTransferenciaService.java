@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,6 +74,21 @@ public final class VeiculoTransferenciaService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar processos de transferência, tente novamente");
+        }
+    }
+
+    @NotNull
+    public DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(final Long codProcessoTransferencia,
+                                                                    final String placaVeiculo) throws ProLogException {
+        try {
+            return dao.getDetalhesVeiculoTransferido(codProcessoTransferencia, placaVeiculo);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar detalhes de uma placa transferida:\n" +
+                    "codProcessoTransferencia: %d\n" +
+                    "placaVeiculo: %s", codProcessoTransferencia, placaVeiculo), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar detalhes da placa transferida, tente novamente");
         }
     }
 }

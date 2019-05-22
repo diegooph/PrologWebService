@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoEnvioTransferencia;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.PneuVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.VeiculoTransferidoVisualizacao;
 import org.jetbrains.annotations.NotNull;
@@ -75,5 +78,35 @@ public final class VeiculoTransferenciaConverter {
                 rSet.getString("NOME_TIPO_VEICULO_MOMENTO_TRANSFERENCIA"),
                 rSet.getLong("KM_VEICULO_MOMENTO_TRANSFERENCIA"),
                 codPneusTransferidos);
+    }
+
+    @NotNull
+    public static DetalhesVeiculoTransferido createDetalhesVeiculoTransferido(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<PneuVeiculoTransferido> pneusAplicadosMomentoTransferencia) throws SQLException {
+        return new DetalhesVeiculoTransferido(
+                rSet.getString("PLACA_VEICULO"),
+                rSet.getLong("COD_DIAGRAMA_VEICULO"),
+                rSet.getString("NOME_TIPO_VEICULO_MOMENTO_TRANSFERENCIA"),
+                pneusAplicadosMomentoTransferencia);
+    }
+
+    @NotNull
+    public static PneuVeiculoTransferido createPneuVeiculoTransferido(
+            @NotNull final ResultSet rSet) throws SQLException {
+        final Sulcos sulcos = new Sulcos();
+        sulcos.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        sulcos.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        sulcos.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        final boolean temSulcos = !rSet.wasNull();
+        return new PneuVeiculoTransferido(
+                rSet.getLong("COD_PNEU"),
+                rSet.getString("CODIGO_CLIENTE"),
+                // Seta sulcos apenas se não for null, se não, setamos null.
+                temSulcos ? sulcos : null,
+                rSet.getDouble("PRESSAO_PNEU"),
+                rSet.getInt("VIDA_MOMENTO_TRANSFERENCIA"),
+                rSet.getInt("POSICAO_PNEU_TRANSFERENCIA"));
     }
 }

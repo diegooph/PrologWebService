@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,8 +59,26 @@ public interface VeiculoTransferenciaDao {
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal) throws Throwable;
 
+    /**
+     * Método utilizado buscar um {@link ProcessoTransferenciaVeiculoVisualizacao processo de transferência} de veículo.
+     *
+     * @param codProcessoTransferencia Código do processo de transferência.
+     * @return Um {@link ProcessoTransferenciaVeiculoVisualizacao processo de transferência}.
+     * @throws Throwable Se algum erro acontecer.
+     */
     @NotNull
     ProcessoTransferenciaVeiculoVisualizacao getProcessoTransferenciaVeiculoVisualizacao(
             @NotNull final Long codProcessoTransferencia) throws Throwable;
 
+    /**
+     * Método utilizado para buscar os {@link DetalhesVeiculoTransferido detalhes} de uma placa transferida.
+     *
+     * @param codProcessoTransferencia Código do processo de transferência.
+     * @param placaVeiculo             Placa do veículo que será buscado.
+     * @return {@link DetalhesVeiculoTransferido Detalhes} de uma placa transferida.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(@NotNull final Long codProcessoTransferencia,
+                                                             @NotNull final String placaVeiculo) throws Throwable;
 }

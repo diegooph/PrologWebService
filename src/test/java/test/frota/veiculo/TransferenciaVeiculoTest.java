@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransfer
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoEnvioTransferencia;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -90,6 +91,14 @@ public class TransferenciaVeiculoTest extends BaseTest {
                 service.getProcessoTransferenciaVeiculoVisualizacao(2L);
 
         System.out.println(processoTransferenciaVeiculoVisualizacao);
+    }
+
+    @Test
+    public void getDetalhesVeiculoTransferido() throws ProLogException {
+        final DetalhesVeiculoTransferido detalhesVeiculoTransferido =
+                service.getDetalhesVeiculoTransferido(1L, "PRO0021");
+
+        System.out.println(detalhesVeiculoTransferido);
     }
 
     @NotNull

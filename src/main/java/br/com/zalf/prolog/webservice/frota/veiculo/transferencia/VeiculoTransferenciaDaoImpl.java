@@ -14,6 +14,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoTr
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoEnvioTransferencia;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.PneuVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.VeiculoTransferidoVisualizacao;
 import org.jetbrains.annotations.NotNull;
@@ -281,9 +283,49 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                 placaAntiga = placaAtual;
             }
             if (processoTransferenciaVeiculo == null) {
-                throw new IllegalStateException("Nenhum dado retornado no ResultSet para processamento.");
+                throw new IllegalStateException("Nenhum dado retornado no ResultSet para processamento");
             }
             return processoTransferenciaVeiculo;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(
+            @NotNull final Long codProcessoTransferencia,
+            @NotNull final String placaVeiculo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_VEICULO_TRANSFERENCIA_DETALHES_PLACA_TRANSFERIDA(?, ?);");
+            stmt.setLong(1, codProcessoTransferencia);
+            stmt.setString(2, placaVeiculo);
+            rSet = stmt.executeQuery();
+            DetalhesVeiculoTransferido detalhesVeiculoTransferido = null;
+            final List<PneuVeiculoTransferido> pneusAplicadosMomentoTransferencia = new ArrayList<>();
+            boolean isFirstLine = true;
+            while (rSet.next()) {
+                if (isFirstLine) {
+                    detalhesVeiculoTransferido = VeiculoTransferenciaConverter
+                            .createDetalhesVeiculoTransferido(rSet, pneusAplicadosMomentoTransferencia);
+                    isFirstLine = false;
+                }
+                // Garantimos que só vamos adicionar informação do pneu, se ele não for null.
+                final long codPneu = rSet.getLong("COD_PNEU");
+                if (codPneu > 0) {
+                    pneusAplicadosMomentoTransferencia.add(
+                            VeiculoTransferenciaConverter.createPneuVeiculoTransferido(rSet));
+                }
+            }
+            if (detalhesVeiculoTransferido == null) {
+                throw new IllegalStateException("Nenhum dado retornado no ResultSet para processamento.");
+            }
+            return detalhesVeiculoTransferido;
         } finally {
             close(conn, stmt, rSet);
         }

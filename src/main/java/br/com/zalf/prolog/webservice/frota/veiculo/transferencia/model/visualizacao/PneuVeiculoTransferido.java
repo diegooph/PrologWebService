@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualiz
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 12/04/19
@@ -22,8 +23,9 @@ public final class PneuVeiculoTransferido {
     /**
      * Atributo contento a informação de medida de cada sulco do pneu, quando a placa a qual ele estava associado foi
      * transferida.
+     * Este atributo será <code>NULL</code> caso o pneu nunca tenha sido aferido e foi transferido.
      */
-    @NotNull
+    @Nullable
     private final Sulcos sulcosMomentoTransferencia;
     /**
      * Pressão, em PSI, do pneu quando a placa foi transferida.
@@ -40,7 +42,7 @@ public final class PneuVeiculoTransferido {
 
     public PneuVeiculoTransferido(@NotNull final Long codPneuTransferenciaInformacoes,
                                   @NotNull final String codPneuCliente,
-                                  @NotNull final Sulcos sulcosMomentoTransferencia,
+                                  @Nullable final Sulcos sulcosMomentoTransferencia,
                                   final double pressaoMomentoTransferencia,
                                   final int vidaMomentoTransferencia,
                                   final int posicaoNoVeiculo) {
@@ -78,7 +80,7 @@ public final class PneuVeiculoTransferido {
         return codPneuCliente;
     }
 
-    @NotNull
+    @Nullable
     public Sulcos getSulcosMomentoTransferencia() {
         return sulcosMomentoTransferencia;
     }
