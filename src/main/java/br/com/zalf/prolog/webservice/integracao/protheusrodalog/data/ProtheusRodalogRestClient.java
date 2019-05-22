@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -20,35 +19,37 @@ import java.util.concurrent.TimeUnit;
  */
 public final class ProtheusRodalogRestClient {
     private static final long DEFAULT_TIMEOUT_MINUTES = 1;
-    @Nullable
-    private static Retrofit retrofit;
+    @NotNull
+    private static final Retrofit retrofit;
     @NotNull
     private static final Map<String, Object> SERVICE_CACHE = new HashMap<>();
 
-    private static Retrofit getRetrofit() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .client(provideOkHttpClient())
-                    .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
-                    .baseUrl("http://131.161.40.131:8087/rest/")
-                    .build();
-        }
-        return retrofit;
+    static {
+        retrofit = new Retrofit.Builder()
+                .client(provideOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
+                .baseUrl("http://131.161.40.131:8087/rest/")
+                .build();
     }
 
     private ProtheusRodalogRestClient() {
+
     }
 
     @NotNull
     public static <T> T getService(@NotNull final Class<T> serviceClass) {
         final String canonicalName = serviceClass.getCanonicalName();
-        if (SERVICE_CACHE.containsKey(canonicalName)) {
-            //noinspection SingleStatementInBlock, unchecked
-            return (T) SERVICE_CACHE.get(canonicalName);
+        if (!SERVICE_CACHE.containsKey(canonicalName)) {
+            synchronized (ProtheusRodalogRestClient.class) {
+                if (!SERVICE_CACHE.containsKey(canonicalName)) {
+                    final T service = retrofit.create(serviceClass);
+                    SERVICE_CACHE.put(serviceClass.getCanonicalName(), service);
+                }
+            }
         }
-        final T service = ProtheusRodalogRestClient.getRetrofit().create(serviceClass);
-        SERVICE_CACHE.put(serviceClass.getCanonicalName(), service);
-        return service;
+
+        //noinspection unchecked
+        return (T) SERVICE_CACHE.get(canonicalName);
     }
 
     @NotNull
