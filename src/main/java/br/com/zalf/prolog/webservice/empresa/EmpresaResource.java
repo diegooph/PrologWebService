@@ -118,6 +118,13 @@ public class EmpresaResource {
 
     @GET
     @Secured
+    @Path("/unidades/{codUnidade}/permissoes")
+    public Visao getPermissoesDetalhadasByUnidade(@PathParam("codUnidade") Long codUnidade) {
+        return service.getPermissoesDetalhadasUnidade(codUnidade);
+    }
+
+    @GET
+    @Secured
     @Path("/unidades/{codUnidade}/cargos/{codCargo}/visao")
     public Visao getVisaoByCargo(@PathParam("codUnidade") Long codUnidade,
                                  @PathParam("codCargo") Long codCargo) {

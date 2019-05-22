@@ -118,6 +118,15 @@ public class EmpresaService {
         }
     }
 
+    public Visao getPermissoesDetalhadasUnidade(Long codUnidade) {
+        try {
+            return dao.getPermissoesDetalhadasUnidade(codUnidade);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a visão da unidade %d", codUnidade), e);
+            return null;
+        }
+    }
+
     public List<Setor> getSetorByCodUnidade(Long codUnidade) {
         try {
             return dao.getSetorByCodUnidade(codUnidade);

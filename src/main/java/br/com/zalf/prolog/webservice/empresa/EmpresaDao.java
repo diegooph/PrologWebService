@@ -136,6 +136,15 @@ public interface EmpresaDao {
     Visao getVisaoUnidade(Long codUnidade) throws SQLException;
 
     /**
+     * Busca as permissões detalhadas do prolog a partir do código da unidade.
+     *
+     * @param codUnidade código da unidade
+     * @return {@link Visao} da {@link Unidade}
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    Visao getPermissoesDetalhadasUnidade(Long codUnidade) throws SQLException;
+
+    /**
      * Insere ou atualiza as funções do prolog cadastradas para determinado cargo. Apenas cargos que têm algum
      * {@link Colaborador colaborador} vinculado podem ser editados.
      *
