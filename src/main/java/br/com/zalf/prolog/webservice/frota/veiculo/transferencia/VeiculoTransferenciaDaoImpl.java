@@ -14,6 +14,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoTr
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoEnvioTransferencia;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.VeiculoTransferidoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -214,6 +216,63 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
+    @Override
+    public ProcessoTransferenciaVeiculoVisualizacao getProcessoTransferenciaVeiculoVisualizacao(
+            @NotNull final Long codProcessoTransferencia) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_TRANSFERENCIA_VISUALIZACAO_PROCESSO(?);");
+            stmt.setLong(1, codProcessoTransferencia);
+            rSet = stmt.executeQuery();
+            ProcessoTransferenciaVeiculoVisualizacao processoTransferenciaVeiculo = null;
+            final List<VeiculoTransferidoVisualizacao> veiculosTransferidos = new ArrayList<>();
+            List<String> codPneusTransferidos = new ArrayList<>();
+            boolean isFirstLine = true;
+            String placaAntiga = null, placaAtual;
+            while (rSet.next()) {
+                placaAtual = rSet.getString("PLACA_TRANSFERIDA");
+                if (placaAntiga == null) {
+                    placaAntiga = placaAtual;
+                }
+
+                if (isFirstLine) {
+                    // Processa a primeira linha do ResultSet.
+                    processoTransferenciaVeiculo =
+                            VeiculoTransferenciaConverter
+                                    .createProcessoTransferenciaVeiculo(rSet, veiculosTransferidos);
+                    veiculosTransferidos.add(
+                            VeiculoTransferenciaConverter
+                                    .createVeiculoTransferidoVisualizacao(rSet, placaAtual, codPneusTransferidos));
+                    isFirstLine = false;
+                }
+
+                if (!placaAntiga.equals(placaAtual)) {
+                    // Trocou de Veículo.
+                    codPneusTransferidos = new ArrayList<>();
+                    veiculosTransferidos.add(
+                            VeiculoTransferenciaConverter
+                                    .createVeiculoTransferidoVisualizacao(rSet, placaAtual, codPneusTransferidos));
+                }
+                final String codClientePneuTransferido = rSet.getString("COD_CLIENTE_PNEU_TRANSFERIDO");
+                if (codClientePneuTransferido != null) {
+                    codPneusTransferidos.add(codClientePneuTransferido);
+                }
+                // Atualiza placa que foi processada.
+                placaAntiga = placaAtual;
+            }
+            if (processoTransferenciaVeiculo == null) {
+                throw new IllegalStateException("Nenhum dado retornado no ResultSet para processamento.");
+            }
+            return processoTransferenciaVeiculo;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
     private Optional<List<TipoVeiculoDiagrama>> getVeiculosSemDiagramaAplicado(
             @NotNull final Connection conn,
             @NotNull final List<Long> codVeiculosTransferidos) throws Throwable {
@@ -254,7 +313,8 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                     "    COD_PROCESSO_TRANSFERENCIA, " +
                     "    COD_VEICULO, " +
                     "    COD_DIAGRAMA_VEICULO, " +
-                    "    COD_TIPO_VEICULO) " +
+                    "    COD_TIPO_VEICULO," +
+                    "    KM_VEICULO_MOMENTO_TRANSFERENCIA) " +
                     "VALUES (?, " +
                     "        ?, " +
                     "        (SELECT VT.COD_DIAGRAMA " +
@@ -262,12 +322,14 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                     "           JOIN VEICULO_TIPO VT " +
                     "             ON V.COD_TIPO = VT.CODIGO " +
                     "         WHERE V.CODIGO = ?), " +
-                    "        (SELECT V.COD_TIPO FROM VEICULO V WHERE V.CODIGO = ?)) " +
+                    "        (SELECT V.COD_TIPO FROM VEICULO V WHERE V.CODIGO = ?)," +
+                    "        (SELECT V.KM FROM VEICULO V WHERE V.CODIGO = ?)) " +
                     "RETURNING CODIGO;");
             stmt.setLong(1, codProcessoTransferenciaVeiculo);
             stmt.setLong(2, veiculoEnvioTransferencia.getCodVeiculo());
             stmt.setLong(3, veiculoEnvioTransferencia.getCodVeiculo());
             stmt.setLong(4, veiculoEnvioTransferencia.getCodVeiculo());
+            stmt.setLong(5, veiculoEnvioTransferencia.getCodVeiculo());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codTransferenciaInformacoes = rSet.getLong("CODIGO");

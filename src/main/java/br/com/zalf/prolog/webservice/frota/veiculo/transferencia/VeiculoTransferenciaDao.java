@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -56,4 +57,9 @@ public interface VeiculoTransferenciaDao {
             @NotNull final List<Long> codUnidadesDestino,
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal) throws Throwable;
+
+    @NotNull
+    ProcessoTransferenciaVeiculoVisualizacao getProcessoTransferenciaVeiculoVisualizacao(
+            @NotNull final Long codProcessoTransferencia) throws Throwable;
+
 }

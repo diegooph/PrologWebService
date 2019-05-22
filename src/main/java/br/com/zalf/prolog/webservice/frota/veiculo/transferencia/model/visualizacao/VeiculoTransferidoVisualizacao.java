@@ -17,10 +17,13 @@ public final class VeiculoTransferidoVisualizacao {
     @NotNull
     private final String placaVeiculo;
     /**
-     * Nome do tipo de veículo estava vinculado a placa quando ela foi transferida de Unidade.
+     * Nome do tipo de veículo que estava vinculado a placa quando ela foi transferida de Unidade.
      */
     @NotNull
     private final String nomeTipoVeiculoMomentoTransferencia;
+    /**
+     * Quilometragem do veículo no momento em que foi transferido.
+     */
     private final long kmVeiculoMomentoTransferencia;
     /**
      * Uma Lista contendo a identificação de cada pneu para o cliente. Normalmente, o número de fogo do pneu.
