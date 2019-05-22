@@ -25,7 +25,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -193,37 +192,21 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                 }
 
                 if (isFirstLine) {
-                    // Mudou o processo da transferência.
-                    processosTransferencia.add(
-                            new ProcessoTransferenciaVeiculoListagem(
+                    // Processa a primeira linha do ResultSet.
+                    processosTransferencia.add(VeiculoTransferenciaConverter.createProcessoTransferenciaVeiculoListagem(
+                                    rSet,
                                     codProcessoAtual,
-                                    rSet.getString("NOME_COLABORADOR"),
-                                    rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class),
-                                    rSet.getString("NOME_UNIDADE_ORIGEM"),
-                                    rSet.getString("NOME_UNIDADE_DESTINO"),
-                                    rSet.getString("NOME_REGIONAL_ORIGEM"),
-                                    rSet.getString("NOME_REGIONAL_DESTINO"),
-                                    rSet.getString("OBSERVACAO"),
-                                    placasTransferidas,
-                                    rSet.getInt("QTD_PLACAS_TRANSFERIDAS")));
+                                    placasTransferidas));
                     isFirstLine = false;
                 }
 
                 // Trocou o processo de transferencia.
                 if (!codProcessoAntigo.equals(codProcessoAtual)) {
                     placasTransferidas = new ArrayList<>();
-                    processosTransferencia.add(
-                            new ProcessoTransferenciaVeiculoListagem(
-                                    codProcessoAtual,
-                                    rSet.getString("NOME_COLABORADOR"),
-                                    rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class),
-                                    rSet.getString("NOME_UNIDADE_ORIGEM"),
-                                    rSet.getString("NOME_UNIDADE_DESTINO"),
-                                    rSet.getString("NOME_REGIONAL_ORIGEM"),
-                                    rSet.getString("NOME_REGIONAL_DESTINO"),
-                                    rSet.getString("OBSERVACAO"),
-                                    placasTransferidas,
-                                    rSet.getInt("QTD_PLACAS_TRANSFERIDAS")));
+                    processosTransferencia.add(VeiculoTransferenciaConverter.createProcessoTransferenciaVeiculoListagem(
+                            rSet,
+                            codProcessoAtual,
+                            placasTransferidas));
                 }
                 placasTransferidas.add(rSet.getString("PLACA_TRANSFERIDA"));
                 codProcessoAntigo = codProcessoAtual;

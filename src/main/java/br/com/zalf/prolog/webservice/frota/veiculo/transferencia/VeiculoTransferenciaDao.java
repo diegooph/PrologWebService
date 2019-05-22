@@ -37,12 +37,12 @@ public interface VeiculoTransferenciaDao {
     /**
      * Método utilizado para listar os processos de transferência realizados.
      * <p>
-     * Este método possibilita a filtragem por várias Origens e Destinos. Com os parâmetros é possível filtrar processos
+     * Esse método possibilita a filtragem por várias Origens e Destinos. Com os parâmetros é possível filtrar processos
      * realizados da unidade A para B e A para C, por exemplo. Como também é possível filtrar da unidade C para a A e da
      * B para a A.
      * <p>
      * Somente serão buscados processos que tiverem a Unidade de Origem e a Unidade de Destino selecionadas na filtragem
-     * e é claro, foram realizados dentro do período filtrado.
+     * e, é claro, que foram realizados dentro do período filtrado.
      *
      * @param codUnidadesOrigem  Lista de códigos das unidades de Origem dos processos de transferência.
      * @param codUnidadesDestino Lista de códigos das unidades de Destino dos processos de transferência.
