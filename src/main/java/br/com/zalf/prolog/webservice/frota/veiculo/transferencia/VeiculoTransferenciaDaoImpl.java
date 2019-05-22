@@ -51,9 +51,8 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             // Transferência de veículo.
             // Essa verificação nos garantirá que nenhum dos veículos transferidos está SEM DIAGRAMA aplicado.
             // Retornamos uma Exception específica para tratar estes casos.
-            final Optional<List<TipoVeiculoDiagrama>> tipoVeiculoSemDiagramas = getPlacasSemDiagramaAplicado(
+            final Optional<List<TipoVeiculoDiagrama>> tipoVeiculoSemDiagramas = getVeiculosSemDiagramaAplicado(
                     conn,
-                    processoTransferenciaVeiculo.getCodUnidadeOrigem(),
                     processoTransferenciaVeiculo.getCodVeiculosTransferidos());
             if (tipoVeiculoSemDiagramas.isPresent()) {
                 throw new VeiculoSemDiagramaException(
@@ -291,44 +290,28 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
-    private Optional<List<TipoVeiculoDiagrama>> getPlacasSemDiagramaAplicado(
+    private Optional<List<TipoVeiculoDiagrama>> getVeiculosSemDiagramaAplicado(
             @NotNull final Connection conn,
-            @NotNull final Long codUnidadeOrigem,
-            @NotNull final List<Long> codVeiculosTransferidos) throws Throwable {
-        final List<TipoVeiculoDiagrama> tiposVeiculoDiagrama =
-                getTiposVeiculosDiagramas(conn, codUnidadeOrigem, codVeiculosTransferidos);
-        if (tiposVeiculoDiagrama.isEmpty()) {
-            return Optional.empty();
-        } else {
-            final List<TipoVeiculoDiagrama> veiculosSemDiagrama = new ArrayList<>();
-            tiposVeiculoDiagrama.forEach(tipoVeiculoDiagrama -> {
-                if (!tipoVeiculoDiagrama.isTemDiagramaAssociado()) {
-                    veiculosSemDiagrama.add(tipoVeiculoDiagrama);
-                }
-            });
-            return veiculosSemDiagrama.isEmpty()
-                    ? Optional.empty()
-                    : Optional.of(veiculosSemDiagrama);
-        }
-    }
-
-    @NotNull
-    private List<TipoVeiculoDiagrama> getTiposVeiculosDiagramas(
-            @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
             @NotNull final List<Long> codVeiculosTransferidos) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_VEICULOS_DIAGRAMAS(?, ?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codVeiculosTransferidos));
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_VEICULOS_DIAGRAMAS(" +
+                    "F_COD_VEICULOS := ?, " +
+                    "F_FILTRO_VEICULO_POSSUI_DIAGRAMA := ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codVeiculosTransferidos));
+            stmt.setBoolean(2, false);
             rSet = stmt.executeQuery();
-            final List<TipoVeiculoDiagrama> tiposVeiculosDiagrama = new ArrayList<>();
-            while (rSet.next()) {
-                tiposVeiculosDiagrama.add(VeiculoTransferenciaConverter.createVeiculoSemDiagrama(rSet));
+            // Usando if com do/while nós só criamos o ArrayList se existir algo no ResultSet.
+            if (rSet.next()) {
+                final List<TipoVeiculoDiagrama> tiposVeiculosDiagrama = new ArrayList<>();
+                do {
+                    tiposVeiculosDiagrama.add(VeiculoTransferenciaConverter.createVeiculoSemDiagrama(rSet));
+                } while (rSet.next());
+                return Optional.of(tiposVeiculosDiagrama);
+            } else {
+                return Optional.empty();
             }
-            return tiposVeiculosDiagrama;
         } finally {
             close(stmt, rSet);
         }
