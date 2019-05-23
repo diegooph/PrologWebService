@@ -104,7 +104,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
 
         // Agora buscamos os detalhes da trasferencia
         final DetalhesVeiculoTransferido detalhesVeiculoTransferido =
-                service.getDetalhesVeiculoTransferido(processoVisualizacao.getCodProcessoTransferencia(), veiculos.get(0).getPlaca());
+                service.getDetalhesVeiculoTransferido(processoVisualizacao.getCodProcessoTransferencia(), veiculos.get(0).getCodigo());
 
         assertThat(detalhesVeiculoTransferido).isNotNull();
         assertThat(detalhesVeiculoTransferido.getPlacaVeiculo()).isEqualTo(veiculos.get(0).getPlaca());
@@ -159,7 +159,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
     @Test
     public void getDetalhesVeiculoTransferido() throws ProLogException {
         final DetalhesVeiculoTransferido detalhesVeiculoTransferido =
-                service.getDetalhesVeiculoTransferido(1L, "PRO0021");
+                service.getDetalhesVeiculoTransferido(1L, 3032L);
 
         System.out.println(detalhesVeiculoTransferido);
     }
