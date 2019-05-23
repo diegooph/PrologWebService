@@ -61,7 +61,8 @@ public final class PneuTransferenciaListagem {
     @NotNull
     private final LocalDateTime dataHoraTransferenciaProcesso;
     /**
-     * Objeto que contém informações de qual placa o pneu estava aplicado, caso ele estava.
+     * Objeto que contém informações de qual placa o pneu estava aplicado no momento da transferência. Será
+     * <code>null</code> se o pneu não estava aplicado.
      */
     @Nullable
     private final LinkTransferenciaVeiculo linkTransferenciaVeiculo;
