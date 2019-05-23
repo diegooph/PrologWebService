@@ -3,78 +3,66 @@ package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Classe que contém as informações de um Item de Ordem de Serviço Aberta.
+ * <p>
  * Created on 02/05/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ItemOSAbertaGlobus {
-    private Long codOsGlobus;
-    private Long codItemGlobus;
-    private Long codChecklistProLog;
-    private Long codUnidadeItemOs;
-    private Long codPerguntaItemOs;
-    private Long codAlternativaItemOs;
+public final class ItemOSAbertaGlobus {
+    /**
+     * Código de identificação do item.
+     * <p>
+     * Esse código é gerado no Sistema Globus e repassado ao ProLog. O ProLog irá salvar este código e utilizar como
+     * identificador para o fechamento de Itens de Ordem de Serviço, posteriormente.
+     * <p>
+     * Deve ser o mesmo código presente no {@link ItemResolvidoGlobus#codItemResolvidoGlobus}.
+     */
+    @NotNull
+    private final Long codItemGlobus;
+    /**
+     * Código de identificação da Pergunta NOK que originou o item.
+     * <p>
+     * Este código deve ser o mesmo presente no {@link PerguntaNokGlobus#codPerguntaNok}.
+     */
+    @NotNull
+    private final Long codPerguntaItemOs;
+    /**
+     * Código de identificação da Alternativa marcada que descreve este item.
+     * <p>
+     * Este código deve ser o mesmo presente no {@link AlternativaNokGlobus#codAlternativaNok}.
+     */
+    @NotNull
+    private final Long codAlternativaItemOs;
 
-    public ItemOSAbertaGlobus() {
+    public ItemOSAbertaGlobus(@NotNull final Long codItemGlobus,
+                              @NotNull final Long codPerguntaItemOs,
+                              @NotNull final Long codAlternativaItemOs) {
+        this.codItemGlobus = codItemGlobus;
+        this.codPerguntaItemOs = codPerguntaItemOs;
+        this.codAlternativaItemOs = codAlternativaItemOs;
     }
 
     @NotNull
     public static ItemOSAbertaGlobus getDummy() {
-        final ItemOSAbertaGlobus itemGlobus = new ItemOSAbertaGlobus();
-        itemGlobus.setCodOsGlobus(1L);
-        itemGlobus.setCodItemGlobus(100L);
-        itemGlobus.setCodChecklistProLog(13873L);
-        itemGlobus.setCodUnidadeItemOs(5L);
-        itemGlobus.setCodPerguntaItemOs(501L);
-        itemGlobus.setCodAlternativaItemOs(1010L);
-        return itemGlobus;
+        return new ItemOSAbertaGlobus(
+                100L,
+                13873L,
+                1010L);
     }
 
-    public Long getCodOsGlobus() {
-        return codOsGlobus;
-    }
-
-    public void setCodOsGlobus(final Long codOsGlobus) {
-        this.codOsGlobus = codOsGlobus;
-    }
-
+    @NotNull
     public Long getCodItemGlobus() {
         return codItemGlobus;
     }
 
-    public void setCodItemGlobus(final Long codItemGlobus) {
-        this.codItemGlobus = codItemGlobus;
-    }
-
-    public Long getCodChecklistProLog() {
-        return codChecklistProLog;
-    }
-
-    public void setCodChecklistProLog(final Long codChecklistProLog) {
-        this.codChecklistProLog = codChecklistProLog;
-    }
-
-    public Long getCodUnidadeItemOs() {
-        return codUnidadeItemOs;
-    }
-
-    public void setCodUnidadeItemOs(final Long codUnidadeItemOs) {
-        this.codUnidadeItemOs = codUnidadeItemOs;
-    }
-
+    @NotNull
     public Long getCodPerguntaItemOs() {
         return codPerguntaItemOs;
     }
 
-    public void setCodPerguntaItemOs(final Long codPerguntaItemOs) {
-        this.codPerguntaItemOs = codPerguntaItemOs;
-    }
-
+    @NotNull
     public Long getCodAlternativaItemOs() {
         return codAlternativaItemOs;
-    }
-
-    public void setCodAlternativaItemOs(final Long codAlternativaItemOs) {
-        this.codAlternativaItemOs = codAlternativaItemOs;
     }
 }

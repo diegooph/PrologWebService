@@ -3,11 +3,14 @@ package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Classe responsável por encapsular as informações das alternativas marcadas como NOK de uma
+ * {@link PerguntaNokGlobus pergunta}.
+ *
  * Created on 02/05/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class AlternativaNokGlobus {
+public final class AlternativaNokGlobus {
     /**
      * Código único de identificação da alternativa selecionada pelo colaborador.
      */

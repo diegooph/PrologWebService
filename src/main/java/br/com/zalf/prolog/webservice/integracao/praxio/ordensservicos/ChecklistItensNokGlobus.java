@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ChecklistItensNokGlobus {
+public final class ChecklistItensNokGlobus {
     /**
      * Código da Unidade onde o checklist foi realizado.
      */

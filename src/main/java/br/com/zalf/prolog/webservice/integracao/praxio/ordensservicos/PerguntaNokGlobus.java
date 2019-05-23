@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class PerguntaNokGlobus {
+public final class PerguntaNokGlobus {
     /**
      * Código único de identificação da pergunta marcada como NOK.
      */
