@@ -3,8 +3,11 @@ package br.com.zalf.prolog.webservice.cargo;
 import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
 import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.permissao.pilares.PilarProlog;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -46,4 +49,13 @@ public interface CargoDao {
      */
     @NotNull
     List<CargoNaoUtilizado> getCargosNaoUtilizadosUnidade(@NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Busca as permissões detalhadas do prolog a partir do código da unidade.
+     *
+     * @param codUnidade código da unidade
+     * @return Lista detalhada das permissões da {@link Unidade}
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    List<PilarProlog> getPermissoesDetalhadasUnidade(Long codUnidade) throws SQLException;
 }

@@ -1,29 +1,27 @@
 package br.com.zalf.prolog.webservice.permissao.pilares;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 /**
- * Created by Wellington on 22/05/19.
+ * Created by luiz on 4/18/16.
  */
-public class FuncionalidadeProLog {
-
+public class PilarProlog {
     private final int codigo;
 
     @NotNull
     private final String nome;
 
     @NotNull
-    private final List<PermissaoProLog> permissoes;
+    private final List<FuncionalidadeProLog> funcionalidades;
 
-    public FuncionalidadeProLog(int codigo,
-                                @NotNull String nome,
-                                @NotNull List<PermissaoProLog> permissoes) {
+    public PilarProlog(final int codigo,
+                       @NotNull final String nome,
+                       @NotNull final List<FuncionalidadeProLog> funcionalidades) {
         this.codigo = codigo;
         this.nome = nome;
-        this.permissoes = permissoes;
+        this.funcionalidades = funcionalidades;
     }
 
     public int getCodigo() {
@@ -36,16 +34,16 @@ public class FuncionalidadeProLog {
     }
 
     @NotNull
-    public List<PermissaoProLog> getPermissoes() {
-        return permissoes;
+    public List<FuncionalidadeProLog> getFuncionalidades() {
+        return funcionalidades;
     }
 
     @Override
     public String toString() {
-        return "FuncionalidadeProLog{" +
+        return "Pilar{" +
                 "codigo=" + codigo +
                 ", nome='" + nome + '\'' +
-                ", permissoes=" + permissoes +
+                ", funcionalidades=" + funcionalidades +
                 '}';
     }
 }

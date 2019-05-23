@@ -4,11 +4,15 @@ import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
 import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.permissao.pilares.FuncionalidadeProLog;
+import br.com.zalf.prolog.webservice.permissao.pilares.PermissaoProLog;
+import br.com.zalf.prolog.webservice.permissao.pilares.PilarProlog;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,4 +85,93 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
             close(conn, stmt, rSet);
         }
     }
+
+    @Override
+    public List<PilarProlog> getPermissoesDetalhadasUnidade(Long codUnidade) throws SQLException {
+        final List<PilarProlog> pilares;
+        ResultSet rSet = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_PERMISSOES_DETALHADAS(F_COD_UNIDADE := ? )");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            pilares = createPilaresDetalhados(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+
+        return pilares;
+    }
+
+    //    @Override
+    public List<PilarProlog> createPilaresDetalhados(ResultSet rSet) throws SQLException {
+        final List<PilarProlog> pilares = new ArrayList<>();
+        List<FuncionalidadeProLog> funcionalidades = new ArrayList<>();
+        List<PermissaoProLog> permissoes = new ArrayList<>();
+
+        PilarProlog pilar = null;
+        FuncionalidadeProLog funcionalidade = null;
+
+        while (rSet.next()) {
+            if (pilar == null) {
+                pilar = createPilarDetalhado(rSet, funcionalidades);
+                funcionalidade = createFuncionalidadeProLog(rSet, permissoes);
+
+                permissoes.add(createPermissaoDetalhadaProLog(rSet));
+            } else {
+                if (rSet.getInt("COD_PILAR") == pilar.getCodigo()) {
+                    if (rSet.getInt("COD_FUNCIONALIDADE") == funcionalidade.getCodigo()) {
+                        permissoes.add(createPermissaoDetalhadaProLog(rSet));
+                    }else{
+                        funcionalidades.add(funcionalidade);
+
+                        funcionalidade = createFuncionalidadeProLog(rSet, permissoes);
+                        permissoes = new ArrayList<>();
+                        permissoes.add(createPermissaoDetalhadaProLog(rSet));
+                    }
+                }else{
+                    funcionalidades.add(funcionalidade);
+
+                    pilares.add(pilar);
+
+                    funcionalidades = new ArrayList<>();
+                    funcionalidade = createFuncionalidadeProLog(rSet, permissoes);
+                    permissoes = new ArrayList<>();
+                    permissoes.add(createPermissaoDetalhadaProLog(rSet));
+
+                    pilar = createPilarDetalhado(rSet, funcionalidades);
+                }
+            }
+        }
+
+        if (pilar != null) {
+            funcionalidades.add(funcionalidade);
+            pilares.add(pilar);
+        }
+
+        return pilares;
+    }
+
+    private FuncionalidadeProLog createFuncionalidadeProLog(ResultSet rSet,
+                                                            List<PermissaoProLog> permissoes) throws SQLException {
+        return new FuncionalidadeProLog(
+                rSet.getInt("COD_FUNCIONALIDADE"),
+                rSet.getString("FUNCIONALIDADE"),
+                permissoes);
+    }
+
+    private PermissaoProLog createPermissaoDetalhadaProLog(ResultSet rSet) throws SQLException {
+        return new PermissaoProLog(rSet.getInt("COD_PERMISSAO"), rSet.getString("PERMISSAO"));
+    }
+
+    private PilarProlog createPilarDetalhado(ResultSet rSet,
+                                             List<FuncionalidadeProLog> funcionalidades) throws SQLException {
+        return new PilarProlog(
+                rSet.getInt("COD_PILAR"),
+                rSet.getString("PILAR"),
+                funcionalidades);
+    }
+
 }

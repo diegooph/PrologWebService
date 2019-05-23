@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.PilarProlog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,5 +65,12 @@ public final class CargoResource {
     public List<CargoNaoUtilizado> getCargosNaoUtilizadosUnidade(
             @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
         return service.getCargosNaoUtilizadosUnidade(codUnidade);
+    }
+
+    @GET
+    @Secured
+    @Path("/unidades/{codUnidade}/permissoes")
+    public List<PilarProlog> getPermissoesDetalhadasByUnidade(@PathParam("codUnidade") Long codUnidade) {
+        return service.getPermissoesDetalhadasUnidade(codUnidade);
     }
 }

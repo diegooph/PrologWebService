@@ -6,8 +6,10 @@ import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
 import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.permissao.pilares.PilarProlog;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -57,6 +59,16 @@ public final class CargoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar os cargos não utilizados, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<PilarProlog> getPermissoesDetalhadasUnidade(Long codUnidade) {
+        try {
+            return dao.getPermissoesDetalhadasUnidade(codUnidade);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a visão da unidade %d", codUnidade), e);
+            return null;
         }
     }
 }
