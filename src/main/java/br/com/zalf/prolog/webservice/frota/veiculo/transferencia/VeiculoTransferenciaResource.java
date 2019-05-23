@@ -63,10 +63,10 @@ public final class VeiculoTransferenciaResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/{codProcessoTransferencia}/detalhes/{placaVeiculo}")
+    @Path("/{codProcessoTransferencia}/detalhes/{codVeiculo}")
     public DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(
             @PathParam("codProcessoTransferencia") @Required final Long codProcessoTransferencia,
-            @PathParam("placaVeiculo") @Required final String placaVeiculo) throws ProLogException {
-        return service.getDetalhesVeiculoTransferido(codProcessoTransferencia, placaVeiculo);
+            @PathParam("codVeiculo") @Required final Long codVeiculo) throws ProLogException {
+        return service.getDetalhesVeiculoTransferido(codProcessoTransferencia, codVeiculo);
     }
 }

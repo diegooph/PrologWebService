@@ -69,23 +69,23 @@ public final class VeiculoTransferenciaService {
         try {
             return dao.getProcessoTransferenciaVeiculoVisualizacao(codProcessoTransferencia);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar processos de transferência:\n" +
+            Log.e(TAG, String.format("Erro ao buscar processo de transferência:\n" +
                     "codProcessoTransferencia: %d", codProcessoTransferencia), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar processos de transferência, tente novamente");
+                    .map(t, "Erro ao buscar processo de transferência, tente novamente");
         }
     }
 
     @NotNull
     public DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(final Long codProcessoTransferencia,
-                                                                    final String placaVeiculo) throws ProLogException {
+                                                                    final Long codVeiculo) throws ProLogException {
         try {
-            return dao.getDetalhesVeiculoTransferido(codProcessoTransferencia, placaVeiculo);
+            return dao.getDetalhesVeiculoTransferido(codProcessoTransferencia, codVeiculo);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar detalhes de uma placa transferida:\n" +
                     "codProcessoTransferencia: %d\n" +
-                    "placaVeiculo: %s", codProcessoTransferencia, placaVeiculo), t);
+                    "codVeiculo: %d", codProcessoTransferencia, codVeiculo), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar detalhes da placa transferida, tente novamente");

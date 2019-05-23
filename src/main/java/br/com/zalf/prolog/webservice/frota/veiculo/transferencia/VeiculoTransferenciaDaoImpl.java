@@ -278,7 +278,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
     @Override
     public DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(
             @NotNull final Long codProcessoTransferencia,
-            @NotNull final String placaVeiculo) throws Throwable {
+            @NotNull final Long codVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -287,7 +287,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             stmt = conn.prepareStatement(
                     "SELECT * FROM FUNC_VEICULO_TRANSFERENCIA_DETALHES_PLACA_TRANSFERIDA(?, ?);");
             stmt.setLong(1, codProcessoTransferencia);
-            stmt.setString(2, placaVeiculo);
+            stmt.setLong(2, codVeiculo);
             rSet = stmt.executeQuery();
             DetalhesVeiculoTransferido detalhesVeiculoTransferido = null;
             final List<PneuVeiculoTransferido> pneusAplicadosMomentoTransferencia = new ArrayList<>();

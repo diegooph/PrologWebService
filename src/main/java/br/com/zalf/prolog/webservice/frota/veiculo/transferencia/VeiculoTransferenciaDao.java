@@ -74,11 +74,11 @@ public interface VeiculoTransferenciaDao {
      * Método utilizado para buscar os {@link DetalhesVeiculoTransferido detalhes} de uma placa transferida.
      *
      * @param codProcessoTransferencia Código do processo de transferência.
-     * @param placaVeiculo             Placa do veículo que será buscado.
+     * @param codVeiculo               Código do veículo que será buscado.
      * @return {@link DetalhesVeiculoTransferido Detalhes} de uma placa transferida.
      * @throws Throwable Se algum erro acontecer.
      */
     @NotNull
     DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(@NotNull final Long codProcessoTransferencia,
-                                                             @NotNull final String placaVeiculo) throws Throwable;
+                                                             @NotNull final Long codVeiculo) throws Throwable;
 }
