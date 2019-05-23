@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -50,26 +51,33 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public boolean update(Veiculo veiculo, String placaOriginal) throws SQLException {
+    public void update(@NotNull final Veiculo veiculo, @NotNull final String placaOriginal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
+
+            // Verifica se está tentando atualizar o tipo de veículo tendo pneus aplicados.
+            final Veiculo veiculoBd = getVeiculoByPlaca(conn, placaOriginal, true);
+            final boolean tipoVeiculoAlterado = !veiculoBd.getCodTipo().equals(veiculo.getCodTipo());
+            if (tipoVeiculoAlterado && veiculoBd.getListPneus().size() > 0) {
+                throw new GenericException("Você só pode alterar o tipo de um veículo que não tem pneus aplicados");
+            }
+
             stmt = conn.prepareStatement("UPDATE VEICULO SET "
-                    + "KM = ?, COD_MODELO = ?, COD_EIXOS = ? "
-                    + "WHERE PLACA = ?");
+                    + "KM = ?, COD_MODELO = ?, COD_EIXOS = ?, COD_TIPO = ? "
+                    + "WHERE PLACA = ?;");
             stmt.setLong(1, veiculo.getKmAtual());
-            stmt.setLong(2, veiculo.getModelo().getCodigo());
+            stmt.setLong(2, veiculo.getCodModelo());
             stmt.setLong(3, veiculo.getEixos().codigo);
-            stmt.setString(4, placaOriginal);
-            int count = stmt.executeUpdate();
-            if (count == 0) {
+            stmt.setLong(4, veiculo.getCodTipo());
+            stmt.setString(5, placaOriginal);
+            if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao atualizar o veículo");
             }
         } finally {
             close(conn, stmt);
         }
-        return true;
     }
 
     @Override
@@ -712,6 +720,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @NotNull
     private Veiculo createVeiculo(ResultSet rSet) throws SQLException {
         final Veiculo veiculo = new Veiculo();
+        veiculo.setCodigo(rSet.getLong("CODIGO"));
         veiculo.setPlaca(rSet.getString("PLACA"));
         veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
         veiculo.setKmAtual(rSet.getLong("KM"));

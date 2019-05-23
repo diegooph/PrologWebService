@@ -6,9 +6,9 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Clt;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -155,11 +155,12 @@ public interface ControleJornadaRelatoriosDao {
      * Para que esse relatório seja gerado com informações de todos os {@link Intervalo}s
      * o atributo {@code codTipoIntervalo} deve ser "%".
      *
-     * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
-     * @param codTipoIntervalo - Código do {@link TipoMarcacao} que os dados serão filtrados
-     * @param cpf              - Identificador do {@link Colaborador} para buscar os dados.
-     * @param dataInicial      - Data inicial do período de filtro.
-     * @param dataFinal        - Data final do período de filtro.
+     * @param codUnidade                Código da {@link Unidade} de onde os dados serão filtrados.
+     * @param codTipoIntervalo          Código do {@link TipoMarcacao} que os dados serão filtrados
+     * @param cpf                       Identificador do {@link Colaborador} para buscar os dados.
+     * @param dataInicial               Data inicial do período de filtro.
+     * @param dataFinal                 Data final do período de filtro.
+     * @param apenasColaboradoresAtivos Indica se a busca deve ser feita considerando apenas os colaboradores ativos.
      * @return - Uma lista {@link FolhaPontoRelatorio} contendo todas as informações filtradas.
      * @throws Throwable - Se algum erro na geração do relatório ocorrer.
      */
@@ -168,7 +169,8 @@ public interface ControleJornadaRelatoriosDao {
                                                      @NotNull final String codTipoIntervalo,
                                                      @NotNull final String cpf,
                                                      @NotNull final LocalDate dataInicial,
-                                                     @NotNull final LocalDate dataFinal) throws Throwable;
+                                                     @NotNull final LocalDate dataFinal,
+                                                     final boolean apenasColaboradoresAtivos) throws Throwable;
 
     /**
      * Relatório que agrupa todas as marcações dos colaboradores dentro de marcações do tipo Jornada definidas na
@@ -180,14 +182,14 @@ public interface ControleJornadaRelatoriosDao {
      * Para filtrar por todos os colaboradores o atributo {@code cpf} deve ser enviado
      * como {@link Filtros#FILTRO_TODOS}.
      *
-     * @param codUnidade       Código da {@link Unidade Unidade} de busca do relatório.
-     * @param codTipoIntervalo Código do {@link TipoMarcacao Tipo de Marcação}.
-     * @param cpf              {@link Colaborador#cpf CPF} do colaborador que serão buscados os dados.
-     * @param dataInicial      Data Inicial do período do relatório.
-     * @param dataFinal        Data Final do período do relatório.
+     * @param codUnidade                Código da {@link Unidade Unidade} de busca do relatório.
+     * @param codTipoIntervalo          Código do {@link TipoMarcacao Tipo de Marcação}.
+     * @param cpf                       {@link Colaborador#cpf CPF} do colaborador que serão buscados os dados.
+     * @param dataInicial               Data Inicial do período do relatório.
+     * @param dataFinal                 Data Final do período do relatório.
+     * @param apenasColaboradoresAtivos Indica se a busca deve ser feita considerando apenas os colaboradores ativos.
      * @return {@link List<FolhaPontoJornadaRelatorio> Relatórios} de folha de ponto de Jornada. Cada índice desta
      * lista representa um colaborador.
-     *
      * @throws Throwable Se qualquer erro ocorrer na geração do relatório.
      */
     @NotNull
@@ -195,7 +197,8 @@ public interface ControleJornadaRelatoriosDao {
                                                                    @NotNull final String codTipoIntervalo,
                                                                    @NotNull final String cpf,
                                                                    @NotNull final LocalDate dataInicial,
-                                                                   @NotNull final LocalDate dataFinal) throws Throwable;
+                                                                   @NotNull final LocalDate dataFinal,
+                                                                   final boolean apenasColaboradoresAtivos) throws Throwable;
 
     @NotNull
     Report getMarcacoesComparandoEscalaDiariaReport(@NotNull final Long codUnidade,

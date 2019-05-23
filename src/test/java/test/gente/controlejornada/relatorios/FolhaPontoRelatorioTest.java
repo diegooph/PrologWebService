@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioService;
@@ -63,7 +63,8 @@ public class FolhaPontoRelatorioTest extends BaseTest {
                 TODOS_TIPOS_INTERVALOS,
                 String.valueOf(CPF_COLABORADOR),
                 "2019-01-01",
-                "2019-01-31");
+                "2019-01-31",
+                true);
         assertNotNull(folhaPontoJornadaRelatorio);
         assertFalse(folhaPontoJornadaRelatorio.isEmpty());
         System.out.println(GsonUtils.getGson().toJson(folhaPontoJornadaRelatorio));
@@ -76,7 +77,8 @@ public class FolhaPontoRelatorioTest extends BaseTest {
                 TODOS_TIPOS_INTERVALOS,
                 TODOS_COLABORADORES,
                 DATA_HORA_INICIO,
-                DATA_HORA_FIM);
+                DATA_HORA_FIM,
+                true);
         assertNotNull(folhaPontoRelatorio);
         assertFalse(folhaPontoRelatorio.isEmpty());
     }
@@ -132,7 +134,8 @@ public class FolhaPontoRelatorioTest extends BaseTest {
                 TODOS_TIPOS_INTERVALOS,
                 String.valueOf(CPF_COLABORADOR),
                 inicioFiltro,
-                fimFiltro);
+                fimFiltro,
+                true);
         assertNotNull(relatorios);
         assertEquals(1, relatorios.size());
         final FolhaPontoRelatorio folhaPontoRelatorio = relatorios.get(0);
@@ -176,7 +179,8 @@ public class FolhaPontoRelatorioTest extends BaseTest {
                 TODOS_TIPOS_INTERVALOS,
                 String.valueOf(CPF_COLABORADOR),
                 inicioFiltro,
-                fimFiltro);
+                fimFiltro,
+                true);
         assertNotNull(relatorios);
         assertEquals(1, relatorios.size());
         final FolhaPontoRelatorio folhaPontoRelatorio = relatorios.get(0);
@@ -198,7 +202,8 @@ public class FolhaPontoRelatorioTest extends BaseTest {
                 TODOS_TIPOS_INTERVALOS,
                 TODOS_COLABORADORES,
                 DATA_HORA_INICIO,
-                DATA_HORA_FIM);
+                DATA_HORA_FIM,
+                true);
         assertNotNull(folhaPontoRelatorio);
         assertFalse(folhaPontoRelatorio.isEmpty());
     }

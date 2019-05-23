@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class Veiculo {
 
+    private Long codigo;
     private String placa;
     private Marca marca;
     private ModeloVeiculo modelo;
@@ -43,6 +44,54 @@ public class Veiculo {
 
     public Veiculo() {
 
+    }
+
+    public Long getCodTipo() {
+        return tipo.getCodigo();
+    }
+
+    public Long getCodModelo() {
+        return modelo.getCodigo();
+    }
+
+    public boolean temEstepe() {
+        if (listPneus == null)
+            return false;
+
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < listPneus.size(); i++) {
+            if (listPneus.get(i).getPosicao() >= 900) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @NotNull
+    public List<Pneu> getEstepes() {
+        final List<Pneu> estepes = new ArrayList<>();
+
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < listPneus.size(); i++) {
+            final Pneu pneu = listPneus.get(i);
+            if (pneu.isEstepe())
+                estepes.add(pneu);
+        }
+
+        return estepes;
+    }
+
+    public void removeEstepes() {
+        listPneus.removeIf(Pneu::isEstepe);
+    }
+
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(final Long codigo) {
+        this.codigo = codigo;
     }
 
     public Marca getMarca() {
@@ -133,42 +182,11 @@ public class Veiculo {
         this.codUnidadeAlocado = codUnidadeAlocado;
     }
 
-    public boolean temEstepe() {
-        if (listPneus == null)
-            return false;
-
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < listPneus.size(); i++) {
-            if (listPneus.get(i).getPosicao() >= 900) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @NotNull
-    public List<Pneu> getEstepes() {
-        final List<Pneu> estepes = new ArrayList<>();
-
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < listPneus.size(); i++) {
-            final Pneu pneu = listPneus.get(i);
-            if (pneu.isEstepe())
-                estepes.add(pneu);
-        }
-
-        return estepes;
-    }
-
-    public void removeEstepes() {
-        listPneus.removeIf(Pneu::isEstepe);
-    }
-
     @Override
     public String toString() {
         return "Veiculo{" +
-                "placa='" + placa + '\'' +
+                "codigo=" + codigo +
+                ", placa='" + placa + '\'' +
                 ", marca=" + marca +
                 ", modelo=" + modelo +
                 ", tipo=" + tipo +

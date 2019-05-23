@@ -1,14 +1,57 @@
 Change Log
 ==========
 
-### Stage
+<a name="v0.0.93"></a>
+## Version [v0.0.93](https://github.com/luizfp/PrologWebService/compare/v0.0.92...v0.0.93) (release-date) [unreleased]
+
+
+<a name="v0.0.92"></a>
+## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (2019-05-16)
+
+### Features
+* Disponibilizar Exportação da Listagem de Veículos (PL-1964)
+* Cria método para verificar se unidade tem tipo definido como jornada (PL-1734)
+
+### Refactors
+* Adiciona informações de placa e posição nos objetos de pneus quando aplicados (PL-1942)
+* Permite filtrar por colaboradores ativos nos relatórios de folha ponto (PL-1905)
+* Altera o filtro da listagem para buscar imagens apenas de modelos ativos (PL-1908)
+* Altera integração com a Avilan para enviar ao App o KM atual do veículo
+como 0 ao iniciar um check ou aferição. Além disso, ao finalizar esse check
+ou aferição, a integração impede que seja enviado 0, o usuário será obrigado
+a alterar o valor (PL-1966)
+* Adiciona duração da última viagem no objeto de colaborador em descanso do acompanhamento de viagens (PL-1710)
+* Atualiza versão da lib Apache PDFBox (PL-1707)
+* Seta vida atual e total dos pneus ao buscar uma aferição por código (PL-1677)
+
+### Bug Fixes
+* Corrige busca de tipos de marcação da unidade ao gerar relatórios (PL-1667)
+
+<a name="v0.0.91"></a>
+## Version [v0.0.91](https://github.com/luizfp/PrologWebService/compare/v0.0.90...v0.0.91) (2019-05-06)
+
+### Bug Fixes
+* Remove resolução duplicada de itens de O.S.
+
+<a name="v0.0.90"></a>
+## Version [v0.0.90](https://github.com/luizfp/PrologWebService/compare/v0.0.89...v0.0.90) (2019-05-05)
+
+### Features
 * Cria integração de ordens de serviço do checklist com o sistema Transport da Translecchi
 
+<a name="v0.0.89"></a>
+## Version [v0.0.89](https://github.com/luizfp/PrologWebService/compare/v0.0.88...v0.0.89) (2019-04-27)
+
+### Refactors
+* Permite atualizar o tipo de um veículo se não houverem pneus aplicados (PL-1903)
+* Verifica permissão de relatórios de quiz na busca dos modelos da unidade
+
 <a name="v0.0.88"></a>
-## Version [v0.0.88](https://github.com/luizfp/PrologWebService/compare/v0.0.87...v0.0.88) (release-date) [unreleased]
+## Version [v0.0.88](https://github.com/luizfp/PrologWebService/compare/v0.0.87...v0.0.88) (2019-04-11)
 
 ### Features
 * Cria novos métodos para relatório de listagem de colaboradores (PL-1892)
+* Cria métodos para permitir a realização de checklists offline
 
 <a name="v0.0.87"></a>
 ## Version [v0.0.87](https://github.com/luizfp/PrologWebService/compare/v0.0.86...v0.0.87) (2019-03-28)
@@ -22,7 +65,7 @@ Change Log
 * Altera insert/update do tipo de veículo para passar a vincular o diagrama (PL-1830)
 
 ### Bug Fixes
-* Corrige conversão do TipoMarcacao para geração do relatório de jornad
+* Corrige conversão do TipoMarcacao para geração do relatório de jornada
 
 <a name="v0.0.86"></a>
 ## Version [v0.0.86](https://github.com/luizfp/PrologWebService/compare/v0.0.85...v0.0.86) (2019-03-24)

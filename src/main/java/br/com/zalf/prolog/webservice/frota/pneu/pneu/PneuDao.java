@@ -123,18 +123,18 @@ public interface PneuDao {
                             @NotNull final Long codModeloBanda) throws Throwable;
 
     /**
-     * busca uma lista de pneus com base no código e status
+     * Busca uma lista de pneus com base no código e status.
      *
      * @param codUnidade código unidade
      * @param status     status do pneu
      * @return uma lista de pneus
-     * @throws SQLException caso ocorra erro no banco
+     * @throws Throwable caso aconteça um erro
      */
     @NotNull
-    List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, StatusPneu status) throws Throwable;
+    List<Pneu> getPneusByCodUnidadeByStatus(@NotNull final Long codUnidade, @NotNull final StatusPneu status) throws Throwable;
 
     @NotNull
-    List<Pneu> getTodosPneus(@NotNull Long codUnidade) throws Throwable;
+    List<Pneu> getTodosPneus(@NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
     List<Pneu> getPneusAnalise(@NotNull Long codUnidade) throws Throwable;

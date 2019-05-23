@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,7 +36,7 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                                   @NotNull final Long codUnidade) throws Throwable {
         final Visao visaoAtual = empresaDao.getVisaoCargo(codUnidade, codCargo);
 
-        if (visaoAtual == null || visaoNova == null)
+        if (visaoAtual == null)
             throw new IllegalStateException();
 
         if (permissaoMarcacaoIntervaloRemovidaOuAdicionada(visaoAtual, visaoNova)) {

@@ -152,8 +152,8 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
                     || itemResolvido.getCodItemResolvido() <= 0) {
                 throw new GenericException("O 'codItemResolvido' deve ser um número positivo e não nulo.");
             }
-            if (itemResolvido.getCpfColaboradoResolucao() == null
-                    || itemResolvido.getCpfColaboradoResolucao().isEmpty()) {
+            if (itemResolvido.getCpfColaboradorResolucao() == null
+                    || itemResolvido.getCpfColaboradorResolucao().isEmpty()) {
                 throw new GenericException("O 'cpfColaboradoResolucao' não pode ser vazio ou nulo.");
             }
             if (itemResolvido.getPlacaVeiculo() == null

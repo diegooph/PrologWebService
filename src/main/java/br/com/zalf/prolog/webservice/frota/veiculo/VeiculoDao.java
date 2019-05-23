@@ -31,14 +31,13 @@ public interface VeiculoDao {
     boolean insert(Veiculo veiculo, Long codUnidade) throws Throwable;
 
     /**
-     * Atualiza os dados de um veículo
+     * Atualiza os dados de um veículo.
      *
-     * @param veiculo       veículo
-     * @param placaOriginal placa original do veículo
-     * @return resultado da requisição
-     * @throws SQLException caso não seja possível realizar o update
+     * @param veiculo       Veículo.
+     * @param placaOriginal Placa original do veículo.
+     * @throws Throwable Caso aconteça algum erro no update.
      */
-    boolean update(Veiculo veiculo, String placaOriginal) throws SQLException;
+    void update(@NotNull final Veiculo veiculo, @NotNull final String placaOriginal) throws Throwable;
 
     void updateStatus(@NotNull final Long codUnidade, @NotNull final String placa, @NotNull final Veiculo veiculo)
             throws SQLException;
