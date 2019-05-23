@@ -127,9 +127,10 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
                     }else{
                         funcionalidades.add(funcionalidade);
 
-                        funcionalidade = createFuncionalidadeProLog(rSet, permissoes);
                         permissoes = new ArrayList<>();
                         permissoes.add(createPermissaoDetalhadaProLog(rSet));
+
+                        funcionalidade = createFuncionalidadeProLog(rSet, permissoes);
                     }
                 }else{
                     funcionalidades.add(funcionalidade);
@@ -163,7 +164,11 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
     }
 
     private PermissaoProLog createPermissaoDetalhadaProLog(ResultSet rSet) throws SQLException {
-        return new PermissaoProLog(rSet.getInt("COD_PERMISSAO"), rSet.getString("PERMISSAO"));
+        return new PermissaoProLog(
+                rSet.getInt("COD_PERMISSAO"),
+                rSet.getString("PERMISSAO"),
+                rSet.getInt("CRITICIDADE"),
+                rSet.getString("DESCRICAO"));
     }
 
     private PilarProlog createPilarDetalhado(ResultSet rSet,
