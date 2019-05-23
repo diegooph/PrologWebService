@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
+import br.com.zalf.prolog.webservice.permissao.pilares.PilarProlog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.NoContentException;
@@ -134,15 +135,6 @@ public interface EmpresaDao {
      * @throws SQLException caso não seja possível realizar a busca
      */
     Visao getVisaoUnidade(Long codUnidade) throws SQLException;
-
-    /**
-     * Busca as permissões detalhadas do prolog a partir do código da unidade.
-     *
-     * @param codUnidade código da unidade
-     * @return {@link Visao} da {@link Unidade}
-     * @throws SQLException caso não seja possível realizar a busca
-     */
-    Visao getPermissoesDetalhadasUnidade(Long codUnidade) throws SQLException;
 
     /**
      * Insere ou atualiza as funções do prolog cadastradas para determinado cargo. Apenas cargos que têm algum

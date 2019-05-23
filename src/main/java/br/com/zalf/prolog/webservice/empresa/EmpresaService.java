@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.permissao.Visao;
+import br.com.zalf.prolog.webservice.permissao.pilares.PilarProlog;
 
 import javax.ws.rs.core.NoContentException;
 import java.sql.SQLException;
@@ -112,15 +113,6 @@ public class EmpresaService {
     public Visao getVisaoUnidade(Long codUnidade) {
         try {
             return dao.getVisaoUnidade(codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar a visão da unidade %d", codUnidade), e);
-            return null;
-        }
-    }
-
-    public Visao getPermissoesDetalhadasUnidade(Long codUnidade) {
-        try {
-            return dao.getPermissoesDetalhadasUnidade(codUnidade);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a visão da unidade %d", codUnidade), e);
             return null;

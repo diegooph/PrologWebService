@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.Visao;
+import br.com.zalf.prolog.webservice.permissao.pilares.PilarProlog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
@@ -114,13 +115,6 @@ public class EmpresaResource {
     @Path("/unidades/{codUnidade}/visao")
     public Visao getVisaoByUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getVisaoUnidade(codUnidade);
-    }
-
-    @GET
-    @Secured
-    @Path("/unidades/{codUnidade}/permissoes")
-    public Visao getPermissoesDetalhadasByUnidade(@PathParam("codUnidade") Long codUnidade) {
-        return service.getPermissoesDetalhadasUnidade(codUnidade);
     }
 
     @GET

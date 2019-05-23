@@ -4,14 +4,11 @@ import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.DBTablePrinter;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
-import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
-import br.com.zalf.prolog.webservice.permissao.pilares.FuncionalidadeProLog;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
+import br.com.zalf.prolog.webservice.permissao.pilares.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.NoContentException;
@@ -296,29 +293,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return visao;
     }
 
-    @Override
-    public Visao getPermissoesDetalhadasUnidade(Long codUnidade) throws SQLException {
-        final List<Pilar> pilares;
-        ResultSet rSet = null;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_PERMISSOES_DETALHADAS(F_COD_UNIDADE := ? )");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-//            DBTablePrinter.printResultSet(rSet);
-            pilares = createPilaresDetalhados(rSet);
-        } finally {
-//            closeConnection(conn, stmt, rSet);
-            close(conn, stmt, rSet);
-        }
-
-        final Visao visao = new Visao();
-        visao.setPilares(pilares);
-        return visao;
-    }
-
     private List<Pilar> getPilaresCargo(Long codUnidade, Long codCargo) throws SQLException {
         final List<Pilar> pilares;
         ResultSet rSet = null;
@@ -383,57 +357,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         pilar.nome = rSet.getString("PILAR");
         return pilar;
     }
-
-//    @Override
-    public List<Pilar> createPilaresDetalhados(ResultSet rSet) throws SQLException {
-        final List<Pilar> pilares = new ArrayList<>();
-        List<FuncionalidadeProLog> funcionalidades = new ArrayList<>();
-        List<FuncaoProLog> funcoes = new ArrayList<>();
-        Pilar pilar = null;
-        while (rSet.next()) {
-            if (pilar == null) {//primeira linha do rSet
-                pilar = createPilarDetalhado(rSet);
-                funcoes.add(createPermissaoDetalhadaProLog(rSet));
-            } else {
-                if (rSet.getString("PILAR").equals(pilar.nome)) {
-                    funcoes.add(createPermissaoDetalhadaProLog(rSet));
-                } else {
-                    pilar.funcoes = funcoes;
-                    pilares.add(pilar);
-                    pilar = createPilarDetalhado(rSet);
-                    funcoes = new ArrayList<>();
-                    funcoes.add(createPermissaoDetalhadaProLog(rSet));
-                }
-            }
-        }
-        if (pilar != null) {
-            pilar.funcoes = funcoes;
-            pilares.add(pilar);
-        }
-        return pilares;
-    }
-
-    private FuncionalidadeProLog createFuncionalidadeProLog(ResultSet rSet) throws SQLException {
-        final FuncionalidadeProLog funcionalidade = new FuncionalidadeProLog();
-        funcionalidade.setCodigo(rSet.getInt("COD_FUNCIONALIDADE"));
-        funcionalidade.setNome(rSet.getString("FUNCIONALIDADE"));
-        return funcionalidade;
-    }
-
-    private FuncaoProLog createPermissaoDetalhadaProLog(ResultSet rSet) throws SQLException {
-        final FuncaoProLog funcao = new FuncaoProLog();
-        funcao.setCodigo(rSet.getInt("COD_PERMISSAO"));
-        funcao.setDescricao(rSet.getString("PERMISSAO"));
-        return funcao;
-    }
-
-    private Pilar createPilarDetalhado(ResultSet rSet) throws SQLException {
-        final Pilar pilar = new Pilar();
-        pilar.codigo = rSet.getInt("COD_PILAR");
-        pilar.nome = rSet.getString("PILAR");
-        return pilar;
-    }
-
 
     @Override
     public List<Setor> getSetorByCodUnidade(Long codUnidade) throws SQLException {
