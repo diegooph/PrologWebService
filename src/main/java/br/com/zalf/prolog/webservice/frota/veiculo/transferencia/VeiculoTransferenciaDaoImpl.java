@@ -233,11 +233,11 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             final List<VeiculoTransferidoVisualizacao> veiculosTransferidos = new ArrayList<>();
             List<String> codPneusTransferidos = new ArrayList<>();
             boolean isFirstLine = true;
-            String placaAntiga = null, placaAtual;
+            Long codVeiculoAntigo = null, codVeiculoAtual;
             while (rSet.next()) {
-                placaAtual = rSet.getString("PLACA_TRANSFERIDA");
-                if (placaAntiga == null) {
-                    placaAntiga = placaAtual;
+                codVeiculoAtual = rSet.getLong("COD_VEICULO_TRANSFERIDO");
+                if (codVeiculoAntigo == null) {
+                    codVeiculoAntigo = codVeiculoAtual;
                 }
 
                 if (isFirstLine) {
@@ -247,23 +247,23 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                                     .createProcessoTransferenciaVeiculo(rSet, veiculosTransferidos);
                     veiculosTransferidos.add(
                             VeiculoTransferenciaConverter
-                                    .createVeiculoTransferidoVisualizacao(rSet, placaAtual, codPneusTransferidos));
+                                    .createVeiculoTransferidoVisualizacao(rSet, codVeiculoAtual, codPneusTransferidos));
                     isFirstLine = false;
                 }
 
-                if (!placaAntiga.equals(placaAtual)) {
+                if (!codVeiculoAntigo.equals(codVeiculoAtual)) {
                     // Trocou de Veículo.
                     codPneusTransferidos = new ArrayList<>();
                     veiculosTransferidos.add(
                             VeiculoTransferenciaConverter
-                                    .createVeiculoTransferidoVisualizacao(rSet, placaAtual, codPneusTransferidos));
+                                    .createVeiculoTransferidoVisualizacao(rSet, codVeiculoAtual, codPneusTransferidos));
                 }
                 final String codClientePneuTransferido = rSet.getString("COD_CLIENTE_PNEU_TRANSFERIDO");
                 if (codClientePneuTransferido != null) {
                     codPneusTransferidos.add(codClientePneuTransferido);
                 }
                 // Atualiza placa que foi processada.
-                placaAntiga = placaAtual;
+                codVeiculoAntigo = codVeiculoAtual;
             }
             if (processoTransferenciaVeiculo == null) {
                 throw new IllegalStateException("Nenhum dado retornado no ResultSet para processamento");

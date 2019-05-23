@@ -12,6 +12,11 @@ import java.util.List;
  */
 public final class VeiculoTransferidoVisualizacao {
     /**
+     * Atributo que identifica o código do veículo.
+     */
+    @NotNull
+    private final Long codVeiculo;
+    /**
      * Atributo que identifica a placa do veículo.
      */
     @NotNull
@@ -31,10 +36,12 @@ public final class VeiculoTransferidoVisualizacao {
     @NotNull
     private final List<String> codPneusCliente;
 
-    public VeiculoTransferidoVisualizacao(@NotNull final String placaVeiculo,
+    public VeiculoTransferidoVisualizacao(@NotNull final Long codVeiculo,
+                                          @NotNull final String placaVeiculo,
                                           @NotNull final String nomeTipoVeiculoMomentoTransferencia,
                                           final long kmVeiculoMomentoTransferencia,
                                           @NotNull final List<String> codPneusCliente) {
+        this.codVeiculo = codVeiculo;
         this.placaVeiculo = placaVeiculo;
         this.nomeTipoVeiculoMomentoTransferencia = nomeTipoVeiculoMomentoTransferencia;
         this.kmVeiculoMomentoTransferencia = kmVeiculoMomentoTransferencia;
@@ -48,6 +55,7 @@ public final class VeiculoTransferidoVisualizacao {
         codPneusCliente.add("1459");
         codPneusCliente.add("11102");
         return new VeiculoTransferidoVisualizacao(
+                1L,
                 "PRO0001",
                 "TOCO",
                 21212,

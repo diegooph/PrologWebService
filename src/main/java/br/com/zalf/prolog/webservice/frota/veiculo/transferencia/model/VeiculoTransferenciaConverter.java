@@ -90,10 +90,11 @@ public final class VeiculoTransferenciaConverter {
     @NotNull
     public static VeiculoTransferidoVisualizacao createVeiculoTransferidoVisualizacao(
             @NotNull final ResultSet rSet,
-            @NotNull final String placaAtual,
+            @NotNull final Long codVeiculoAtual,
             @NotNull final List<String> codPneusTransferidos) throws SQLException {
         return new VeiculoTransferidoVisualizacao(
-                placaAtual,
+                codVeiculoAtual,
+                rSet.getString("PLACA_TRANSFERIDA"),
                 rSet.getString("NOME_TIPO_VEICULO_MOMENTO_TRANSFERENCIA"),
                 rSet.getLong("KM_VEICULO_MOMENTO_TRANSFERENCIA"),
                 codPneusTransferidos);
