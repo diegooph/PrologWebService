@@ -113,17 +113,21 @@ public final class VeiculoTransferenciaConverter {
     @NotNull
     public static PneuVeiculoTransferido createPneuVeiculoTransferido(
             @NotNull final ResultSet rSet) throws SQLException {
-        final Sulcos sulcos = new Sulcos();
-        sulcos.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        sulcos.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        sulcos.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        final boolean temSulcos = !rSet.wasNull();
+        final double alturaSulcoExterno = rSet.getDouble("ALTURA_SULCO_EXTERNO");
+        final Sulcos sulcos;
+        if (!rSet.wasNull()) {
+            sulcos = new Sulcos();
+            sulcos.setExterno(alturaSulcoExterno);
+            sulcos.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+            sulcos.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+            sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        } else {
+            sulcos = null;
+        }
         return new PneuVeiculoTransferido(
                 rSet.getLong("COD_PNEU"),
                 rSet.getString("CODIGO_CLIENTE"),
-                // Seta sulcos apenas se não for null, se não, setamos null.
-                temSulcos ? sulcos : null,
+                sulcos,
                 rSet.getDouble("PRESSAO_PNEU"),
                 rSet.getInt("VIDA_MOMENTO_TRANSFERENCIA"),
                 rSet.getInt("POSICAO_PNEU_TRANSFERENCIA"));
