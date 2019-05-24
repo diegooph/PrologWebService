@@ -52,11 +52,10 @@ public interface IntegracaoDao {
     /**
      * Método necessário para buscar o token utilizado para autenticações de requisições em métodos integrados. No banco
      * de dados o token é geral para a empresa.
-     * O método executa a busca do token verificando se o {@code codUnidadeProLog} pertence à empresa que possue o token
-     * cadastrado no banco de dados.
+     * O método executa a busca do token com base no {@code codUnidadeProLog} fornecido.
      *
      * @param codUnidadeProLog Código da {@link Unidade unidade} do ProLog.
-     * @return Valor alfanumérico, podendo conter letras e números em um posições aleatórias, mas de tamanho fixo.
+     * @return Valor alfanumérico, podendo conter letras e números em posições aleatórias, mas de tamanho fixo.
      * @throws Throwable Caso ocorra algum problema na busca do token.
      */
     @NotNull

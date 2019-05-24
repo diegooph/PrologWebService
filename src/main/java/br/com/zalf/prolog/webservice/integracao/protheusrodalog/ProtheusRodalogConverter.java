@@ -94,6 +94,7 @@ final class ProtheusRodalogConverter {
         final Veiculo veiculo = new Veiculo();
         veiculo.setCodUnidadeAlocado(novaAfericaoRodalog.getCodUnidadePlacaAlocada());
         veiculo.setPlaca(novaAfericaoRodalog.getPlaca());
+        veiculo.setKmAtual(novaAfericaoRodalog.getUltimoKmVeiculo());
         veiculo.setDiagrama(diagramaVeiculo);
         veiculo.setListPneus(convertPneus(novaAfericaoRodalog.getPneusVeiculo()));
         return veiculo;
@@ -105,6 +106,10 @@ final class ProtheusRodalogConverter {
         for (final PneuAfericaoProtheusRodalog pneuRodalog : pneusVeiculo) {
             pneus.add(convertPneu(pneuRodalog));
         }
+
+        // Ordena lista pelas posições do ProLog.
+        pneus.sort(Pneu.POSICAO_PNEU_COMPARATOR);
+
         return pneus;
     }
 
@@ -119,12 +124,14 @@ final class ProtheusRodalogConverter {
         pneu.setPosicao(pneuRodalog.getPosicao());
         pneu.setPressaoCorreta(pneuRodalog.getPressaoCorreta());
         pneu.setPressaoAtual(pneuRodalog.getPressaoAtual());
-        final Sulcos sulcos = new Sulcos();
-        sulcos.setInterno(pneuRodalog.getSulcoInternoAtual());
-        sulcos.setCentralInterno(pneuRodalog.getSulcoCentralInternoAtual());
-        sulcos.setCentralExterno(pneuRodalog.getSulcoCentralExternoAtual());
-        sulcos.setExterno(pneuRodalog.getSulcoExternoAtual());
-        pneu.setSulcosAtuais(sulcos);
+        if (pneuRodalog.temSulcosAtuais()) {
+            final Sulcos sulcos = new Sulcos();
+            sulcos.setInterno(pneuRodalog.getSulcoInternoAtual());
+            sulcos.setCentralInterno(pneuRodalog.getSulcoCentralInternoAtual());
+            sulcos.setCentralExterno(pneuRodalog.getSulcoCentralExternoAtual());
+            sulcos.setExterno(pneuRodalog.getSulcoExternoAtual());
+            pneu.setSulcosAtuais(sulcos);
+        }
         pneu.setModelo(convertModeloPneu(pneuRodalog.getModeloPneu()));
         if (pneuRodalog.isRecapado()) {
             pneu.setBanda(convertBanda(pneuRodalog.getModeloBanda()));
@@ -133,20 +140,15 @@ final class ProtheusRodalogConverter {
     }
 
     @NotNull
-    private static Banda convertBanda(@NotNull final ModeloBandaProtheusRodalog modeloBanda) {
+    private static Banda convertBanda(@NotNull final ModeloBandaProtheusRodalog modeloBandaRodalog) {
         final Banda banda = new Banda();
-        banda.setModelo(convertmodeloBanda(modeloBanda));
-        return banda;
-    }
-
-    @NotNull
-    private static ModeloBanda convertmodeloBanda(@NotNull final ModeloBandaProtheusRodalog modeloBandaRodalog) {
         final ModeloBanda modeloBanda = new ModeloBanda();
         modeloBanda.setCodigo(modeloBandaRodalog.getCodigo());
         modeloBanda.setNome(modeloBandaRodalog.getNomeModelo());
         modeloBanda.setQuantidadeSulcos(modeloBandaRodalog.getQuantidadeSulcos());
         modeloBanda.setAlturaSulcos(modeloBandaRodalog.getAlturaSulcos());
-        return modeloBanda;
+        banda.setModelo(modeloBanda);
+        return banda;
     }
 
     @NotNull
