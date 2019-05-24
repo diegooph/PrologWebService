@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Cria integração de aferição de placas com o Protheus da Rodalog (PL-1721)
+* Cria relatório de desgaste irregular dos pneus (PL-1996)
 
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (2019-05-16)

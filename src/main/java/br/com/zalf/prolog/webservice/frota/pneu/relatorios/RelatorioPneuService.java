@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,42 @@ public class RelatorioPneuService {
     private static final String TAG = RelatorioPneuService.class.getSimpleName();
     @NotNull
     private final RelatorioPneuDao dao = Injection.provideRelatorioPneuDao();
+
+    public void getPneusComDesgasteIrregularCsv(final OutputStream outputStream,
+                                                final List<Long> codUnidades,
+                                                final String statusPneu) {
+        try {
+            dao.getPneusComDesgasteIrregularCsv(
+                    outputStream,
+                    codUnidades,
+                    statusPneu != null ? StatusPneu.fromString(statusPneu) : null);
+        } catch (final Throwable throwable) {
+            Log.e(TAG,
+                    String.format("Erro ao buscar o relatório de desgaste irregular dos pneus (CSV).\n" +
+                            "Unidades: %s", codUnidades.toString()),
+                    throwable);
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    @NotNull
+    public Report getPneusComDesgasteIrregularReport(final List<Long> codUnidades,
+                                                     final String statusPneu) throws ProLogException {
+        try {
+            return dao.getPneusComDesgasteIrregularReport(
+                    codUnidades,
+                    statusPneu != null ? StatusPneu.fromString(statusPneu) : null);
+        } catch (final Throwable throwable) {
+            Log.e(TAG,
+                    String.format("Erro ao buscar o relatório de desgaste irregular dos pneus (REPORT).\n" +
+                            "Unidades: %s", codUnidades.toString()),
+                    throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable,
+                            "Erro ao gerar relatório, tente novamente");
+        }
+    }
 
     public void getStatusAtualPneusCsv(final OutputStream outputStream,
                                        final List<Long> codUnidades) {
@@ -42,7 +79,7 @@ public class RelatorioPneuService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable,
-                    "Erro ao gerar relatório, tente novamente");
+                            "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -65,7 +102,7 @@ public class RelatorioPneuService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable,
-                    "Erro ao gerar relatório, tente novamente");
+                            "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -99,7 +136,7 @@ public class RelatorioPneuService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable,
-                    "Erro ao gerar relatório das aferições avulsas, tente novamente");
+                            "Erro ao gerar relatório das aferições avulsas, tente novamente");
         }
     }
 
