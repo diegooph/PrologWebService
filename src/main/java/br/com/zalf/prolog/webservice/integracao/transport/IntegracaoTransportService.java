@@ -38,6 +38,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             ensureValidToken(tokenIntegracao, TAG);
             final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
             validateDataHoraItensResolvidos(dataHoraAtualUtc, itensResolvidos);
+            validateDadosItensResolvidos(itensResolvidos);
             dao.resolverMultiplosItens(tokenIntegracao, dataHoraAtualUtc, itensResolvidos);
             return new SuccessResponseIntegracao("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
@@ -67,6 +68,70 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar itens pendentes para sincronizar");
+        }
+    }
+
+    private void validateDadosItensResolvidos(
+            @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
+        for (int i = 0; i < itensResolvidos.size(); i++) {
+            final ItemResolvidoIntegracaoTransport itemResolvido = itensResolvidos.get(i);
+
+            if (itemResolvido.getCodUnidadeOrdemServico() == null
+                    || itemResolvido.getCodUnidadeOrdemServico() <= 0) {
+                throw new GenericException(String.format(
+                        "O 'codUnidadeOrdemServico = %d' deve ser um número positivo e não nulo.",
+                        itemResolvido.getCodUnidadeOrdemServico()));
+            }
+            if (itemResolvido.getCodOrdemServico() == null
+                    || itemResolvido.getCodOrdemServico() <= 0) {
+                throw new GenericException(String.format(
+                        "O 'codOrdemServico = %d' deve ser um número positivo e não nulo.",
+                        itemResolvido.getCodOrdemServico()));
+            }
+            if (itemResolvido.getCodItemResolvido() == null
+                    || itemResolvido.getCodItemResolvido() <= 0) {
+                throw new GenericException(String.format(
+                        "O 'codItemResolvido = %d' deve ser um número positivo e não nulo.",
+                        itemResolvido.getCodItemResolvido()));
+            }
+            if (itemResolvido.getCpfColaboradorResolucao() == null
+                    || itemResolvido.getCpfColaboradorResolucao().isEmpty()) {
+                throw new GenericException(String.format(
+                        "O 'cpfColaboradoResolucao = %s' não pode ser vazio ou nulo.",
+                        itemResolvido.getCpfColaboradorResolucao()));
+            }
+            if (itemResolvido.getPlacaVeiculo() == null
+                    || itemResolvido.getPlacaVeiculo().isEmpty()) {
+                throw new GenericException(String.format(
+                        "A 'placaVeiculo = %s' não pode ser vazio ou nulo.",
+                        itemResolvido.getPlacaVeiculo()));
+            }
+            if (itemResolvido.getKmColetadoVeiculo() == null
+                    || itemResolvido.getKmColetadoVeiculo() < 0) {
+                throw new GenericException(String.format(
+                        "O 'kmColetadoVeiculo = %d' deve ser um número positivo e não nulo.",
+                        itemResolvido.getKmColetadoVeiculo()));
+            }
+            if (itemResolvido.getDuracaoResolucaoItemEmMilissegundos() == null
+                    || itemResolvido.getDuracaoResolucaoItemEmMilissegundos() < 0) {
+                throw new GenericException(
+                        "O atributo 'duracaoResolucaoItemEmMilissegundos' deve ser um número positivo e não nulo.");
+            }
+            if (itemResolvido.getFeedbackResolucao() == null ||
+                    itemResolvido.getFeedbackResolucao().isEmpty()) {
+                throw new GenericException(String.format(
+                        "O 'feedbackResolucao = %s' não pode ser vazio ou nulo.",
+                        itemResolvido.getFeedbackResolucao()));
+            }
+            if (itemResolvido.getDataHoraResolvidoProLog() == null) {
+                throw new GenericException("A 'dataHoraResolvidoProLog' não pode ser nula.");
+            }
+            if (itemResolvido.getDataHoraInicioResolucao() == null) {
+                throw new GenericException("A 'dataHoraInicioResolucao' não pode ser nula.");
+            }
+            if (itemResolvido.getDataHoraFimResolucao() == null) {
+                throw new GenericException("A 'dataHoraFimResolucao' não pode ser nula.");
+            }
         }
     }
 
@@ -139,50 +204,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
     @NotNull
     private SuccessResponseIntegracao verifyItensDummy(
             @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
-        for (final ItemResolvidoIntegracaoTransport itemResolvido : itensResolvidos) {
-            if (itemResolvido.getCodUnidadeOrdemServico() == null
-                    || itemResolvido.getCodUnidadeOrdemServico() <= 0) {
-                throw new GenericException("O 'codUnidadeOrdemServico' deve ser um número positivo e não nulo.");
-            }
-            if (itemResolvido.getCodOrdemServico() == null
-                    || itemResolvido.getCodOrdemServico() <= 0) {
-                throw new GenericException("O 'codOrdemServico' deve ser um número positivo e não nulo.");
-            }
-            if (itemResolvido.getCodItemResolvido() == null
-                    || itemResolvido.getCodItemResolvido() <= 0) {
-                throw new GenericException("O 'codItemResolvido' deve ser um número positivo e não nulo.");
-            }
-            if (itemResolvido.getCpfColaboradorResolucao() == null
-                    || itemResolvido.getCpfColaboradorResolucao().isEmpty()) {
-                throw new GenericException("O 'cpfColaboradoResolucao' não pode ser vazio ou nulo.");
-            }
-            if (itemResolvido.getPlacaVeiculo() == null
-                    || itemResolvido.getPlacaVeiculo().isEmpty()) {
-                throw new GenericException("A 'placaVeiculo' não pode ser vazio ou nulo.");
-            }
-            if (itemResolvido.getKmColetadoVeiculo() == null
-                    || itemResolvido.getKmColetadoVeiculo() < 0) {
-                throw new GenericException("O 'kmColetadoVeiculo' deve ser um número positivo e não nulo.");
-            }
-            if (itemResolvido.getDuracaoResolucaoItemEmMilissegundos() == null
-                    || itemResolvido.getDuracaoResolucaoItemEmMilissegundos() < 0) {
-                throw new GenericException(
-                        "O atributo'duracaoResolucaoItemEmMilissegundos' deve ser um número positivo e não nulo.");
-            }
-            if (itemResolvido.getFeedbackResolucao() == null ||
-                    itemResolvido.getFeedbackResolucao().isEmpty()) {
-                throw new GenericException("O 'feedbackResolucao' não pode ser vazio ou nulo.");
-            }
-            if (itemResolvido.getDataHoraResolvidoProLog() == null) {
-                throw new GenericException("A 'dataHoraResolvidoProLog' não pode ser nula.");
-            }
-            if (itemResolvido.getDataHoraInicioResolucao() == null) {
-                throw new GenericException("A 'dataHoraInicioResolucao' não pode ser nula.");
-            }
-            if (itemResolvido.getDataHoraFimResolucao() == null) {
-                throw new GenericException("A 'dataHoraFimResolucao' não pode ser nula.");
-            }
-        }
+        validateDadosItensResolvidos(itensResolvidos);
         return new SuccessResponseIntegracao("Itens resolvidos");
     }
 

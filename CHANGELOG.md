@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Cria integração de aferição de placas com o Protheus da Rodalog (PL-1721)
 
+### Refactors
+* Inserir verificações no fechamento de Itens de O.S da integração Transport (PL-2023)
+
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (2019-05-16)
 
