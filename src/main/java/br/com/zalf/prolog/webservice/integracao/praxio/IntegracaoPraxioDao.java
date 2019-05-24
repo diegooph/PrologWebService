@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.OrdemServicoAbertaGlobus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -27,4 +28,7 @@ interface IntegracaoPraxioDao {
     @NotNull
     List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(@NotNull final String tokenIntegracao,
                                                          @NotNull final Long codUltimaAfericao) throws Throwable;
+
+    void inserirOrdensServicoGlobus(@NotNull final String tokenIntegracao,
+                                    @NotNull final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws Throwable;
 }
