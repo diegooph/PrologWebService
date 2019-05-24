@@ -1,14 +1,13 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.OrdemServicoAbertaGlobus;
+import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     }
 
     @NotNull
-    public AbstractResponse inserirOrdensServicoGlobus(
+    public SuccessResponseIntegracao inserirOrdensServicoGlobus(
             final String tokenIntegracao,
             final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws ProLogException {
         try {
@@ -59,7 +58,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             }
             ensureValidToken(tokenIntegracao, TAG);
             dao.inserirOrdensServicoGlobus(tokenIntegracao, ordensServicoAbertas);
-            return Response.ok("Ordens de Serviços Abertas foram inseridas no ProLog");
+            return new SuccessResponseIntegracao("Ordens de Serviços Abertas foram inseridas no ProLog");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir as Ordens de Serviços Abertas no banco de dados do ProLog", t);
             throw Injection
