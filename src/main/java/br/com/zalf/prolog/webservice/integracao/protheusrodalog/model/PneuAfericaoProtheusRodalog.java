@@ -4,13 +4,13 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created on 26/02/19.
- *
- * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
- * <p>
  * Objeto que contem as informações do {@link PneuAfericaoProtheusRodalog pneu} utilizado para a realização da aferição.
  * <p>
  * Todos os atributos do pneu são buscados no endpoint integrado.
+ * <p>
+ * Created on 26/02/19.
+ *
+ * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  * <p>
  * {@see protheusrodalog}
  */
@@ -229,5 +229,12 @@ public final class PneuAfericaoProtheusRodalog {
     public boolean isRecapado() {
         // Se vidaAtual > 1 significa que o pneu já sofreu recape.
         return vidaAtual > 1;
+    }
+
+    public boolean temSulcosAtuais() {
+        return this.sulcoExternoAtual != null
+                && this.sulcoCentralExternoAtual != null
+                && this.sulcoCentralInternoAtual != null
+                && this.sulcoInternoAtual != null;
     }
 }
