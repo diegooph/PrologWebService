@@ -83,6 +83,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         ResultSet rSet = null;
         try {
             conn = getConnection();
+            conn.setAutoCommit(false);
 
             // Verifica se está tentando atualizar o tipo de veículo tendo pneus aplicados.
             final Veiculo veiculoBd = getVeiculoByPlaca(conn, placaOriginal, true);
@@ -91,8 +92,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 throw new GenericException("Você só pode alterar o tipo de um veículo que não tem pneus aplicados");
             }
 
-            conn.setAutoCommit(false);
-            final long kmAntigoVeiculo = getKmVeiculo(conn, placaOriginal);
+            // O 'veiculoBd' é o veículo antes de ser atualizado as informações.
+            final long kmAntigoVeiculo = veiculoBd.getKmAtual();
             final long kmNovoVeiculo = veiculo.getKmAtual();
             stmt = conn.prepareStatement("UPDATE VEICULO SET "
                     + "KM = ?, COD_MODELO = ?, COD_EIXOS = ?, COD_TIPO = ? "
@@ -748,24 +749,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             }
         } finally {
             close(stmt);
-        }
-    }
-
-    private long getKmVeiculo(@NotNull final Connection conn,
-                              @NotNull final String placaOriginal) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT V.KM FROM VEICULO V WHERE V.PLACA = ?;");
-            stmt.setString(1, placaOriginal);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("KM");
-            } else {
-                throw new SQLException("Erro ao busca KM antigo da placa: " + placaOriginal);
-            }
-        } finally {
-            close(stmt, rSet);
         }
     }
 
