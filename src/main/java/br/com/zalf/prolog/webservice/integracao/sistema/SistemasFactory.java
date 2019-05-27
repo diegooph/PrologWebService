@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.ProtheusRodalogRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.SistemaProtheusRodalog;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.RodoparHorizonteRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.SistemaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.transport.SistemaTransportTranslecchi;
 import org.jetbrains.annotations.NotNull;

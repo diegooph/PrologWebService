@@ -1,9 +1,6 @@
-package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte;
+package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data;
 
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoRodoparHorizonte;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.CronogramaAfericaoRodoparHorizonte;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.NovaAfericaoPlacaRodoparHorizonte;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.ResponseAfericaoRodoparHorizonte;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
