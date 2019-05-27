@@ -165,7 +165,7 @@ public interface VeiculoDao {
      *
      * @param codUnidade código da unidade
      * @param conn       conexão com o banco
-     * @return o numero de véiculos
+     * @return o numero de veículos
      * @throws SQLException caso ocorrer erro no banco
      */
     int getTotalVeiculosByUnidade(Long codUnidade, Connection conn) throws SQLException;
