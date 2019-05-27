@@ -294,7 +294,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM PRE_CONTRACHEQUE_ITENS WHERE CODIGO::TEXT LIKE ANY (ARRAY[?]);");
+            stmt = conn.prepareStatement("SELECT FUNC_PRECONTRACHEQUE_DELETA_ITENS(ARRAY[?]);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codItemImportContracheque));
             if (stmt.executeUpdate() == 0) {
                 throw new Throwable("Erro ao deletar itens de produtividade");
