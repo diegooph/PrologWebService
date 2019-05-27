@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -13,6 +15,7 @@ import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemContracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.RestricoesContracheque;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -247,7 +250,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             stmt.setInt(5, mes);
             stmt.setLong(6, item.getCpf());
             stmt.setLong(7, codUnidade);
-            stmt.setString(8, item.getCodigo());
+            stmt.setString(8, item.getCodigoItem());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 return false;
@@ -281,6 +284,26 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         return true;
     }
 
+    @Override
+    public void deleteItensImportContracheque(@NotNull final List<Long> codItemImportContracheque) throws Throwable {
+        if (codItemImportContracheque.isEmpty()) {
+            return;
+        }
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM PRE_CONTRACHEQUE_ITENS WHERE CODIGO::TEXT LIKE ANY (ARRAY[?]);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codItemImportContracheque));
+            if (stmt.executeUpdate() == 0) {
+                throw new Throwable("Erro ao deletar itens de produtividade");
+            }
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
     private boolean insertItemImportContracheque(ItemImportContracheque item, int ano, int mes, Connection conn, Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         try {
@@ -289,7 +312,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             stmt.setLong(2, item.getCpf());
             stmt.setInt(3, mes);
             stmt.setInt(4, ano);
-            stmt.setString(5, item.getCodigo());
+            stmt.setString(5, item.getCodigoItem());
             stmt.setString(6, item.getDescricao());
             stmt.setString(7, item.getSubDescricao());
             stmt.setDouble(8, item.getValor());
@@ -352,7 +375,8 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
 
     private ItemImportContracheque createItemImportContracheque(ResultSet rSet) throws SQLException {
         final ItemImportContracheque item = new ItemImportContracheque();
-        item.setCodigo(rSet.getString("CODIGO_ITEM"));
+        item.setCodigo(rSet.getString("CODIGO"));
+        item.setCodigoItem(rSet.getString("CODIGO_ITEM"));
         item.setDescricao(rSet.getString("DESCRICAO"));
         item.setSubDescricao(rSet.getString("SUB_DESCRICAO"));
         item.setValor(rSet.getDouble("VALOR"));

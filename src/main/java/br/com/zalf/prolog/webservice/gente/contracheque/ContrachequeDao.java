@@ -32,4 +32,6 @@ public interface ContrachequeDao {
                                          int ano,
                                          int mes,
                                          Long codUnidade, Long cpf, String codItem) throws SQLException;
+
+    void deleteItensImportContracheque(final List<Long> codItemImportContracheque) throws Throwable;
 }

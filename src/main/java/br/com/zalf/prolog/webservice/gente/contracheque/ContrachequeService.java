@@ -3,10 +3,13 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,6 +24,8 @@ import java.util.List;
 public class ContrachequeService {
     private static final String TAG = ContrachequeService.class.getSimpleName();
     private final ContrachequeDao dao = Injection.provideContrachequeDao();
+    @NotNull
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) {
         try {
@@ -71,12 +76,14 @@ public class ContrachequeService {
         if (linha.get(0).isEmpty()) {
             return null;
         }
+        linha.get(1);
+
         ItemImportContracheque item = new ItemImportContracheque();
         if (!linha.get(0).trim().replaceAll("[^\\d]", "").isEmpty()) {
             item.setCpf(Long.parseLong(linha.get(0).trim().replaceAll("[^\\d]", "")));
         }
         if (!linha.get(1).trim().isEmpty()) {
-            item.setCodigo(linha.get(1));
+            item.setCodigoItem(linha.get(1));
         }
         if (!linha.get(2).trim().isEmpty()) {
             item.setDescricao(linha.get(2).trim());
@@ -126,6 +133,19 @@ public class ContrachequeService {
                     "ano: %d \n" +
                     "mes: %d", codUnidade, codItem, cpf, ano, mes), e);
             return false;
+        }
+    }
+
+
+    @NotNull
+    public Response deleteItensImportContracheque(@NotNull final List<Long> codItemImportContracheque) throws ProLogException {
+        try {
+            dao.deleteItensImportContracheque(codItemImportContracheque);
+            return Response.ok("Itens de pré-contracheque deletados com sucesso!");
+        } catch (Throwable e) {
+            final String errorMessage = "Não foi possível deletar estes itens, tente novamente";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 }
