@@ -39,7 +39,7 @@ public final class ChecklistModeloService {
         try {
             RouterModeloChecklist
                     .create(dao, token)
-                    .insertModeloChecklist(modeloChecklist);
+                    .insertModeloChecklist(modeloChecklist, Injection.provideDadosChecklistOfflineChangedListener());
             return Response.ok("Modelo de checklist inserido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir modelo de checklist", t);
@@ -77,14 +77,19 @@ public final class ChecklistModeloService {
     }
 
     @NotNull
-    Response updateModeloChecklist(@NotNull final String token,
-                                   @NotNull final Long codUnidade,
-                                   @NotNull final Long codModelo,
-                                   @NotNull final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
+    Response updateModeloChecklist(final String token,
+                                   final Long codUnidade,
+                                   final Long codModelo,
+                                   final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
         try {
             RouterModeloChecklist
                     .create(dao, token)
-                    .updateModeloChecklist(TokenCleaner.getOnlyToken(token), codUnidade, codModelo, modeloChecklist);
+                    .updateModeloChecklist(
+                    TokenCleaner.getOnlyToken(token),
+                    codUnidade,
+                    codModelo,
+                    modeloChecklist,
+                    Injection.provideDadosChecklistOfflineChangedListener());
             return Response.ok("Modelo de checklist atualizado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atualizar modelo de checklist", t);
@@ -95,11 +100,15 @@ public final class ChecklistModeloService {
     }
 
     @NotNull
-    Response updateStatusAtivo(@NotNull final Long codUnidade,
-                               @NotNull final Long codModelo,
-                               @NotNull final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
+    Response updateStatusAtivo(final Long codUnidade,
+                               final Long codModelo,
+                               final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
         try {
-            dao.updateStatusAtivo(codUnidade, codModelo, modeloChecklist.isAtivo());
+            dao.updateStatusAtivo(
+                    codUnidade,
+                    codModelo,
+                    modeloChecklist.isAtivo(),
+                    Injection.provideDadosChecklistOfflineChangedListener());
             return Response.ok("Modelo de checklist " + (modeloChecklist.isAtivo() ? "ativado" : "inativado"));
         } catch (Throwable t) {
             Log.e(TAG, "Erro ao ativar/inativar o modelo de checklist: " + codModelo, t);

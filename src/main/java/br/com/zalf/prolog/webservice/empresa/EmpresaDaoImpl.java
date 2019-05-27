@@ -6,10 +6,12 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.NoContentException;
@@ -746,16 +748,22 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public void alterarVisaoCargo(Visao visao,
-                                  Long codUnidade,
-                                  Long codCargo,
-                                  DadosIntervaloChangedListener listener) throws Throwable {
+    public void alterarVisaoCargo(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codCargo,
+            @NotNull final Visao visao,
+            @NotNull final DadosIntervaloChangedListener intervaloListener,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-
+            final boolean tinhaPermissaoRealizarChecklist = temPermissaoFuncaoProLog(
+                    conn,
+                    codUnidade,
+                    codCargo,
+                    Pilares.Frota.Checklist.REALIZAR);
             // Primeiro deletamos qualquer função do ProLog cadastrada nesse cargo para essa unidade.
             deleteCargoFuncaoProlog(codCargo, codUnidade, conn);
 
@@ -776,8 +784,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
                 }
             }
 
-            // Avisamos o listener que um cargo foi atualizado.
-            listener.onCargoAtualizado(conn, this, visao, codCargo, codUnidade);
+            // Notificamos a alteração de um cargo para os Listeners.
+            intervaloListener.onCargoAtualizado(conn, this, visao, codCargo, codUnidade);
+            checklistOfflineListener.onCargoAtualizado(
+                    conn,
+                    codUnidade,
+                    codCargo,
+                    tinhaPermissaoRealizarChecklist,
+                    visao.hasAccessToFunction(Pilares.Frota.Checklist.REALIZAR));
 
             // Tudo certo, commita.
             conn.commit();
@@ -787,7 +801,32 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             }
             throw e;
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt);
+        }
+    }
+
+    private boolean temPermissaoFuncaoProLog(@NotNull final Connection conn,
+                                             @NotNull final Long codUnidade,
+                                             @NotNull final Long codCargo,
+                                             final int codFuncaoProLog) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT * FROM CARGO_FUNCAO_PROLOG_V11 CARGO " +
+                    "WHERE CARGO.COD_UNIDADE = ? " +
+                    "      AND CARGO.COD_FUNCAO_COLABORADOR = ? " +
+                    "      AND CARGO.COD_FUNCAO_PROLOG = ?) AS TEM_PERMISSAO;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codCargo);
+            stmt.setInt(3, codFuncaoProLog);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("TEM_PERMISSAO");
+            } else {
+                throw new SQLException("Erro ao verificar se o cargo possuia permissão de realizar checklist");
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 
