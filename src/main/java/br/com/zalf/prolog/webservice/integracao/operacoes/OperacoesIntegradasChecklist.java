@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,12 +19,16 @@ import java.util.Map;
  */
 interface OperacoesIntegradasChecklist {
 
-    void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable;
+    void insertModeloChecklist(
+            @NotNull final ModeloChecklistInsercao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
-    void updateModeloChecklist(@NotNull final String token,
-                               @NotNull final Long codUnidade,
-                               @NotNull final Long codModelo,
-                               @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable;
+    void updateModeloChecklist(
+            @NotNull final String token,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo,
+            @NotNull final ModeloChecklistEdicao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
             @NotNull final Long codUnidade,

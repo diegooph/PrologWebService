@@ -85,11 +85,11 @@ public final class ChecklistModeloService {
             RouterModeloChecklist
                     .create(dao, token)
                     .updateModeloChecklist(
-                    TokenCleaner.getOnlyToken(token),
-                    codUnidade,
-                    codModelo,
-                    modeloChecklist,
-                    Injection.provideDadosChecklistOfflineChangedListener());
+                            TokenCleaner.getOnlyToken(token),
+                            codUnidade,
+                            codModelo,
+                            modeloChecklist,
+                            Injection.provideDadosChecklistOfflineChangedListener());
             return Response.ok("Modelo de checklist atualizado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atualizar modelo de checklist", t);
