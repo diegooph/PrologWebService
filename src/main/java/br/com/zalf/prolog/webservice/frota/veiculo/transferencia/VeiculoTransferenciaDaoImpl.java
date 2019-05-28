@@ -6,14 +6,13 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.TipoVeiculoDiagrama;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoSemDiagramaException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoTransferenciaConverter;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoEnvioTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.PneuVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
@@ -54,7 +53,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             // Retornamos uma Exception específica para tratar estes casos.
             final Optional<List<TipoVeiculoDiagrama>> tipoVeiculoSemDiagramas = getVeiculosSemDiagramaAplicado(
                     conn,
-                    processoTransferenciaVeiculo.getCodVeiculosTransferidos());
+                    processoTransferenciaVeiculo.getCodVeiculosTransferencia());
             if (tipoVeiculoSemDiagramas.isPresent()) {
                 throw new VeiculoSemDiagramaException(
                         "Veículos identificados que não possuem diagrama associado",
@@ -95,32 +94,24 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                 final Long codUnidadeDestino = processoTransferenciaVeiculo.getCodUnidadeDestino();
                 final Long codColaboradorRealizacaoTransferencia =
                         processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia();
-                final List<VeiculoEnvioTransferencia> veiculosTransferencia =
-                        processoTransferenciaVeiculo.getVeiculosTransferencia();
                 final PneuTransferenciaDao pneuTransferenciaDao = Injection.providePneuTransferenciaDao();
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                 // Transfere cada placa do Processo.
-                for (final VeiculoEnvioTransferencia veiculoTransferencia : veiculosTransferencia) {
-                    final Long codveiculo = veiculoTransferencia.getCodVeiculo();
+                for (final Long codVeiculoTransferido : processoTransferenciaVeiculo.getCodVeiculosTransferencia()) {
                     // Insere informações da transferência da Placa.
                     final Long codTransferenciaInformacoes =
                             insertTransferenciaVeiculoInformacoes(
                                     conn,
                                     codProcessoTransferenciaVeiculo,
-                                    veiculoTransferencia);
+                                    codVeiculoTransferido);
 
                     // Transfere o veículo da Unidade Origem para a Unidade Destino.
-                    tranfereVeiculo(conn, codUnidadeOrigem, codUnidadeDestino, codveiculo);
+                    tranfereVeiculo(conn, codUnidadeOrigem, codUnidadeDestino, codVeiculoTransferido);
 
-                    // Transfere Pneus, se o veículo tem algum aplicado.
-                    if (veiculoTransferencia.temPneusParaTransferir()) {
-                        // Verifica se não houve movimentação de pneus no veículo enquanto o processo de
-                        // transferência era realziado.
-                        verificaPneusVeiculo(
-                                conn,
-                                codUnidadeOrigem,
-                                codveiculo,
-                                veiculoTransferencia.getCodPneusAplicadosVeiculo());
-
+                    // Se o veículo tiver pneus, eles também serão transferidos.
+                    final Optional<List<Long>> codPneusAplicadosVeiculo = veiculoDao
+                            .getCodPneusAplicadosVeiculo(conn, codVeiculoTransferido);
+                    if (codPneusAplicadosVeiculo.isPresent()) {
                         // Transfere os pneus aplicados na placa da Unidade Origem para a Unidade Destino.
                         final Long codProcessoTransferenciaPneu = pneuTransferenciaDao.insertTransferencia(
                                 conn,
@@ -128,7 +119,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                                         codUnidadeOrigem,
                                         codUnidadeDestino,
                                         codColaboradorRealizacaoTransferencia,
-                                        veiculoTransferencia),
+                                        codPneusAplicadosVeiculo.get()),
                                 dataHoraSincronizacao,
                                 true);
 
@@ -137,8 +128,8 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                                 conn,
                                 codUnidadeOrigem,
                                 codUnidadeDestino,
-                                codveiculo,
-                                veiculoTransferencia.getCodPneusAplicadosVeiculo());
+                                codVeiculoTransferido,
+                                codPneusAplicadosVeiculo.get());
 
                         // Insere vínculo entre a Transferência do veículo com a Transferência dos Pneus.
                         insereVinculoTransferenciaVeiculoPneu(
@@ -346,7 +337,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
     private Long insertTransferenciaVeiculoInformacoes(
             @NotNull final Connection conn,
             final long codProcessoTransferenciaVeiculo,
-            @NotNull final VeiculoEnvioTransferencia veiculoEnvioTransferencia) throws Throwable {
+            @NotNull final Long codVeiculoTransferido) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -368,10 +359,10 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                     "        (SELECT V.KM FROM VEICULO V WHERE V.CODIGO = ?)) " +
                     "RETURNING CODIGO;");
             stmt.setLong(1, codProcessoTransferenciaVeiculo);
-            stmt.setLong(2, veiculoEnvioTransferencia.getCodVeiculo());
-            stmt.setLong(3, veiculoEnvioTransferencia.getCodVeiculo());
-            stmt.setLong(4, veiculoEnvioTransferencia.getCodVeiculo());
-            stmt.setLong(5, veiculoEnvioTransferencia.getCodVeiculo());
+            stmt.setLong(2, codVeiculoTransferido);
+            stmt.setLong(3, codVeiculoTransferido);
+            stmt.setLong(4, codVeiculoTransferido);
+            stmt.setLong(5, codVeiculoTransferido);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codTransferenciaInformacoes = rSet.getLong("CODIGO");
@@ -409,39 +400,6 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             }
         } finally {
             close(stmt);
-        }
-    }
-
-    private void verificaPneusVeiculo(@NotNull final Connection conn,
-                                      @NotNull final Long codUnidadeOrigem,
-                                      @NotNull final Long codVeiculo,
-                                      @NotNull final List<Long> codPneusAplicadosVeiculo) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT " +
-                    "  COUNT(*) AS QTD_PNEUS_APLICADOS " +
-                    "FROM VEICULO_PNEU VP " +
-                    "WHERE VP.COD_UNIDADE = ?" +
-                    "      AND VP.COD_PNEU = ANY (?)" +
-                    "      AND VP.PLACA = (SELECT V.PLACA FROM VEICULO V WHERE V.CODIGO = ?);");
-            stmt.setLong(1, codUnidadeOrigem);
-            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codPneusAplicadosVeiculo));
-            stmt.setLong(3, codVeiculo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                if (rSet.getLong("QTD_PNEUS_APLICADOS") != codPneusAplicadosVeiculo.size()) {
-                    // Utilizamos uma GenericException para que a mensagem seja mapeada e mostrada para o usuário.
-                    throw new GenericException(
-                            "Os pneus do veículo sofreram alterações enquanto a transferência estava sendo realizada");
-                }
-            } else {
-                throw new SQLException("Erro ao verificar se os pneus estão aplicados no veículo correto:\n" +
-                        "codUnidadeOrigem: " + codUnidadeOrigem + "\n" +
-                        "codVeiculo: " + codVeiculo);
-            }
-        } finally {
-            close(stmt, rSet);
         }
     }
 

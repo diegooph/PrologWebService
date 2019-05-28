@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoEnvioTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +61,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
         final ProcessoTransferenciaVeiculoRealizacao processoRealizacao = convertTo(veiculos);
 
         assertThat(processoRealizacao).isNotNull();
-        assertThat(processoRealizacao.getVeiculosTransferencia()).hasSize(veiculos.size());
+        assertThat(processoRealizacao.getCodVeiculosTransferencia()).hasSize(veiculos.size());
 
         // Insere processo de Transferência.
         final ResponseWithCod response = service.insertProcessoTransferenciaVeiculo(processoRealizacao);
@@ -166,9 +165,9 @@ public class TransferenciaVeiculoTest extends BaseTest {
 
     @NotNull
     private ProcessoTransferenciaVeiculoRealizacao convertTo(@NotNull final List<Veiculo> veiculos) {
-        final List<VeiculoEnvioTransferencia> veiculosTransferencia = new ArrayList<>();
+        final List<Long> veiculosTransferencia = new ArrayList<>();
         for (final Veiculo veiculo : veiculos) {
-            veiculosTransferencia.add(new VeiculoEnvioTransferencia(veiculo.getCodigo(), getCodPneus(veiculo)));
+            veiculosTransferencia.add(veiculo.getCodigo());
         }
 
         return new ProcessoTransferenciaVeiculoRealizacao(

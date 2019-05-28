@@ -256,4 +256,17 @@ public interface VeiculoDao {
                            @NotNull final Long codUnidade,
                            @NotNull final String placa,
                            @NotNull final Long codPneu) throws Throwable;
+
+    /**
+     * Busca todos os códigos dos pneus que estão aplicados ao veículo informado.
+     *
+     * @param conn       {@link Connection} que será utilizada para conectar ao banco de dados.
+     * @param codVeiculo Código do {@link Veiculo veículo} do qual serão buscados os pneus aplicados.
+     * @return Um {@link Optional optional} contendo a lista de códigos de pneus aplicados ao veículo,
+     * caso exista algum aplicado; Um {@link Optional optional} vazio caso não exista nenhum.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    Optional<List<Long>> getCodPneusAplicadosVeiculo(@NotNull final Connection conn,
+                                                     @NotNull final Long codVeiculo) throws Throwable;
 }

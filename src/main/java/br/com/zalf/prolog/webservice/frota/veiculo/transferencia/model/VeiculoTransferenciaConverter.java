@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
-import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoEnvioTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.PneuVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
@@ -32,13 +31,12 @@ public final class VeiculoTransferenciaConverter {
             final long codUnidadeOrigem,
             final long codUnidadeDestino,
             final long codColaboradorRealizacaoTransferencia,
-            @NotNull final VeiculoEnvioTransferencia veiculoEnvioTransferencia) {
+            @NotNull final List<Long> codPneusAplicadosVeiculo) {
         return new PneuTransferenciaRealizacao(
                 codUnidadeOrigem,
                 codUnidadeDestino,
                 codColaboradorRealizacaoTransferencia,
-                veiculoEnvioTransferencia.getCodPneusAplicadosVeiculo(),
-                // TODO - Vamos setar algum texto aqui?
+                codPneusAplicadosVeiculo,
                 null);
     }
 

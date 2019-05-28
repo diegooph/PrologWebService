@@ -28,10 +28,10 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
     @NotNull
     private final Long codColaboradorRealizacaoTransferencia;
     /**
-     * Lista de veículos que o colaborador está transferindo.
+     * Lista de códigos dos veículos que o colaborador está transferindo.
      */
     @NotNull
-    private final List<VeiculoEnvioTransferencia> veiculosTransferencia;
+    private final List<Long> codVeiculosTransferencia;
     /**
      * Observação que o colaborador inseriu para este processo de transferência.
      */
@@ -41,20 +41,20 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
     public ProcessoTransferenciaVeiculoRealizacao(@NotNull final Long codUnidadeOrigem,
                                                   @NotNull final Long codUnidadeDestino,
                                                   @NotNull final Long codColaboradorRealizacaoTransferencia,
-                                                  @NotNull final List<VeiculoEnvioTransferencia> veiculosTransferencia,
+                                                  @NotNull final List<Long> codVeiculosTransferencia,
                                                   @Nullable final String observacao) {
         this.codUnidadeOrigem = codUnidadeOrigem;
         this.codUnidadeDestino = codUnidadeDestino;
         this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
-        this.veiculosTransferencia = veiculosTransferencia;
+        this.codVeiculosTransferencia = codVeiculosTransferencia;
         this.observacao = observacao;
     }
 
     @NotNull
     public static ProcessoTransferenciaVeiculoRealizacao createDummy() {
-        final List<VeiculoEnvioTransferencia> veiculosTransferencia = new ArrayList<>();
+        final List<Long> veiculosTransferencia = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            veiculosTransferencia.add(VeiculoEnvioTransferencia.createDummy());
+            veiculosTransferencia.add((long) i);
         }
         return new ProcessoTransferenciaVeiculoRealizacao(
                 10L,
@@ -80,21 +80,12 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
     }
 
     @NotNull
-    public List<VeiculoEnvioTransferencia> getVeiculosTransferencia() {
-        return veiculosTransferencia;
+    public List<Long> getCodVeiculosTransferencia() {
+        return codVeiculosTransferencia;
     }
 
     @Nullable
     public String getObservacao() {
         return observacao;
-    }
-
-    @NotNull
-    public List<Long> getCodVeiculosTransferidos() {
-        final List<Long> codVeiculosTransferidos = new ArrayList<>();
-        for (final VeiculoEnvioTransferencia veiculoTransferencia : this.getVeiculosTransferencia()) {
-            codVeiculosTransferidos.add(veiculoTransferencia.getCodVeiculo());
-        }
-        return codVeiculosTransferidos;
     }
 }
