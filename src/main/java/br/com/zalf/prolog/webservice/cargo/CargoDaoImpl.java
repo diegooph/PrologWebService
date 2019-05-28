@@ -136,15 +136,17 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
                     funcionalidades.add(funcionalidade);
 
                     pilares.add(pilar);
+                    permissoes = new ArrayList<>();
+                    permissoes.add(createPermissaoDetalhadaProLog(rSet));
 
                     funcionalidades = new ArrayList<>();
                     funcionalidade = createFuncionalidadeProLog(rSet, permissoes);
-                    permissoes = new ArrayList<>();
-                    permissoes.add(createPermissaoDetalhadaProLog(rSet));
+
 
                     pilar = createPilarDetalhado(rSet, funcionalidades);
                 }
             }
+            System.out.println("teste");
         }
 
         if (pilar != null) {
