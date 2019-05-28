@@ -12,17 +12,22 @@ import org.jetbrains.annotations.NotNull;
 public interface RodoparHorizonteRequester extends Requester {
 
     @NotNull
-    ResponseAfericaoRodoparHorizonte insertAfericao(@NotNull final String tokenIntegracao,
+    ResponseAfericaoRodoparHorizonte insertAfericao(@NotNull final String cpf,
+                                                    @NotNull final String dataNascimento,
+                                                    @NotNull final String tokenIntegracao,
                                                     @NotNull final Long codUnidade,
                                                     @NotNull final AfericaoRodoparHorizonte afericao) throws Throwable;
 
     @NotNull
-    CronogramaAfericaoRodoparHorizonte getCronogramaAfericao(@NotNull final String tokenIntegracao,
+    CronogramaAfericaoRodoparHorizonte getCronogramaAfericao(@NotNull final String cpf,
+                                                             @NotNull final String dataNascimento,
+                                                             @NotNull final String tokenIntegracao,
                                                              @NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
     NovaAfericaoPlacaRodoparHorizonte getNovaAfericaoPlaca(
-            @NotNull final String tokenIntegracao,
+            @NotNull final String cpf,
+            @NotNull final String dataNascimento,
             @NotNull final Long codUnidade,
             @NotNull final String placa,
             @NotNull final TipoMedicaoAfericaoRodoparHorizonte tipoAfericao) throws Throwable;

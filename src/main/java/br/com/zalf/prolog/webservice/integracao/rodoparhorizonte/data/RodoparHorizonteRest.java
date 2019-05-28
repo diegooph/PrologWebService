@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
-import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.AfericaoProtheusRodalog;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.CronogramaAfericaoRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.NovaAfericaoPlacaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.ResponseAfericaoRodoparHorizonte;
@@ -15,21 +14,26 @@ import retrofit2.http.*;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public interface RodoparHorizonteRest {
-    
-    @POST("NEWAFERI")
-    Call<ResponseAfericaoRodoparHorizonte> insertAfericao(
-            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
-            @Query("codUnidade") @NotNull final Long codUnidade,
-            @Body @NotNull final AfericaoProtheusRodalog afericao);
 
-    @GET("CRONOGRAMA")
+    // TODO - Estruturar todos os endpoints - Preciso das informações do WS parceiro.
+    // TODO - Descobrir nome das propriedades que irão no Header da requisição.
+    @POST("")
+    Call<ResponseAfericaoRodoparHorizonte> insertAfericao(
+            @Header("user") @NotNull final String cpf,
+            @Header("pass") @NotNull final String dataNascimento,
+            @Query("codUnidade") @NotNull final Long codUnidade,
+            @Body @NotNull final AfericaoRodoparHorizonte afericao);
+
+    @GET("")
     Call<CronogramaAfericaoRodoparHorizonte> getCronogramaAfericao(
-            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
+            @Header("user") @NotNull final String cpf,
+            @Header("pass") @NotNull final String dataNascimento,
             @Query("codUnidade") @NotNull final Long codUnidade);
 
-    @GET("NEWAFERI")
+    @GET("")
     Call<NovaAfericaoPlacaRodoparHorizonte> getNovaAfericaoPlaca(
-            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
+            @Header("user") @NotNull final String cpf,
+            @Header("pass") @NotNull final String dataNascimento,
             @Query("codUnidade") @NotNull final Long codUnidade,
             @Query("placa") @NotNull final String placa,
             @Query("tipoAfericao") @NotNull final String tipoAfericao);
