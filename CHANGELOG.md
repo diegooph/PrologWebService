@@ -10,6 +10,7 @@ Change Log
 
 ### Refactors
 * Inserir verificações no fechamento de Itens de O.S da integração Transport (PL-2023)
+* Altera integração com a Avilan para voltar a enviar ao App o KM atual do veículo ao invés de 0 (PL-2035)
 
 <a name="v0.0.92"></a>
 ## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (2019-05-16)
