@@ -137,6 +137,9 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
                     }
                 }
             } while (rSet.next());
+
+            funcionalidades.add(funcionalidade);
+            pilares.add(pilar);
         } else {
             throw new IllegalStateException("Nenhum dado de permissão encontrado para o cargo buscado");
         }
