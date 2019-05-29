@@ -3,11 +3,9 @@ package br.com.zalf.prolog.webservice.cargo;
 import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
 import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.permissao.pilares.PilarProlog;
+import br.com.zalf.prolog.webservice.cargo.model.CargoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -51,11 +49,15 @@ public interface CargoDao {
     List<CargoNaoUtilizado> getCargosNaoUtilizadosUnidade(@NotNull final Long codUnidade) throws Throwable;
 
     /**
-     * Busca as permissões detalhadas do prolog a partir do código da unidade.
+     * Busca as permissões do ProLog separadas por pilar. Esse método irá respeitar os pilares que a unidade tem acesso.
+     * Os objetos retornados também destacam quais permissões estão liberadas para o cargo filtrado.
      *
-     * @param codUnidade código da unidade
-     * @return Lista detalhada das permissões da {@link Unidade}
-     * @throws SQLException caso não seja possível realizar a busca
+     * @param codUnidade código da unidade.
+     * @param codCargo   código do unidade.
+     * @return Lista detalhada das permissões da unidade.
+     * @throws Throwable Caso qualquer erro aconteça.
      */
-    List<PilarProlog> getPermissoesDetalhadasUnidade(Long codUnidade) throws SQLException;
+    @NotNull
+    CargoVisualizacao getPermissoesDetalhadasUnidade(@NotNull final Long codUnidade,
+                                                     @NotNull final Long codCargo) throws Throwable;
 }

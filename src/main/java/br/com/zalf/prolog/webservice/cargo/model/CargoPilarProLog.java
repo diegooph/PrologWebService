@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.permissao.pilares;
+package br.com.zalf.prolog.webservice.cargo.model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,18 +7,16 @@ import java.util.List;
 /**
  * Created by luiz on 4/18/16.
  */
-public class PilarProlog {
+public final class CargoPilarProLog {
     private final int codigo;
-
     @NotNull
     private final String nome;
-
     @NotNull
-    private final List<FuncionalidadeProLog> funcionalidades;
+    private final List<CargoFuncionalidadeProLog> funcionalidades;
 
-    public PilarProlog(final int codigo,
-                       @NotNull final String nome,
-                       @NotNull final List<FuncionalidadeProLog> funcionalidades) {
+    public CargoPilarProLog(final int codigo,
+                            @NotNull final String nome,
+                            @NotNull final List<CargoFuncionalidadeProLog> funcionalidades) {
         this.codigo = codigo;
         this.nome = nome;
         this.funcionalidades = funcionalidades;
@@ -34,7 +32,7 @@ public class PilarProlog {
     }
 
     @NotNull
-    public List<FuncionalidadeProLog> getFuncionalidades() {
+    public List<CargoFuncionalidadeProLog> getFuncionalidades() {
         return funcionalidades;
     }
 

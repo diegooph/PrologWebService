@@ -4,12 +4,11 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
 import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
+import br.com.zalf.prolog.webservice.cargo.model.CargoVisualizacao;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.permissao.pilares.PilarProlog;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -63,12 +62,15 @@ public final class CargoService {
     }
 
     @NotNull
-    public List<PilarProlog> getPermissoesDetalhadasUnidade(Long codUnidade) {
+    public CargoVisualizacao getPermissoesDetalhadasUnidade(final Long codUnidade,
+                                                            final Long codCargo) throws ProLogException {
         try {
-            return dao.getPermissoesDetalhadasUnidade(codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar a visão da unidade %d", codUnidade), e);
-            return null;
+            return dao.getPermissoesDetalhadasUnidade(codUnidade, codCargo);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar as permissões detalhadas da unidade %d", codUnidade), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar as permissões, tente novamente");
         }
     }
 }

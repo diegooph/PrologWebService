@@ -1,12 +1,9 @@
 package br.com.zalf.prolog.webservice.cargo;
 
-import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
-import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
-import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
+import br.com.zalf.prolog.webservice.cargo.model.*;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.permissao.pilares.PilarProlog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,8 +66,10 @@ public final class CargoResource {
 
     @GET
     @Secured
-    @Path("/unidades/{codUnidade}/permissoes")
-    public List<PilarProlog> getPermissoesDetalhadasByUnidade(@PathParam("codUnidade") Long codUnidade) {
-        return service.getPermissoesDetalhadasUnidade(codUnidade);
+    @Path("/permissoes")
+    public CargoVisualizacao getPermissoesDetalhadasByUnidade(@QueryParam("codUnidade") @Required Long codUnidade,
+                                                              @QueryParam("codCargo") @Required Long codCargo)
+            throws ProLogException {
+        return service.getPermissoesDetalhadasUnidade(codUnidade, codCargo);
     }
 }

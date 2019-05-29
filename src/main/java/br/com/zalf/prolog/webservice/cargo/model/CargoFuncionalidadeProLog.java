@@ -1,26 +1,22 @@
-package br.com.zalf.prolog.webservice.permissao.pilares;
+package br.com.zalf.prolog.webservice.cargo.model;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 /**
  * Created by Wellington on 22/05/19.
  */
-public class FuncionalidadeProLog {
-
+public final class CargoFuncionalidadeProLog {
     private final int codigo;
-
     @NotNull
     private final String nome;
-
     @NotNull
-    private final List<PermissaoProLog> permissoes;
+    private final List<CargoPermissaoProLog> permissoes;
 
-    public FuncionalidadeProLog(int codigo,
-                                @NotNull String nome,
-                                @NotNull List<PermissaoProLog> permissoes) {
+    public CargoFuncionalidadeProLog(final int codigo,
+                                     @NotNull final String nome,
+                                     @NotNull final List<CargoPermissaoProLog> permissoes) {
         this.codigo = codigo;
         this.nome = nome;
         this.permissoes = permissoes;
@@ -36,7 +32,7 @@ public class FuncionalidadeProLog {
     }
 
     @NotNull
-    public List<PermissaoProLog> getPermissoes() {
+    public List<CargoPermissaoProLog> getPermissoes() {
         return permissoes;
     }
 
