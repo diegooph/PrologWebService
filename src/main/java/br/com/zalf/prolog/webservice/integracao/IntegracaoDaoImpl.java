@@ -93,7 +93,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT TI.TOKEN_INTEGRACAO " +
                     "FROM INTEGRACAO.TOKEN_INTEGRACAO TI " +
-                    "WHERE TI.COD_EMPRESA = (SELECT COD_EMPRESA FROM UNIDADE WHERE CODIGO = ?)");
+                    "WHERE TI.COD_EMPRESA = (SELECT COD_EMPRESA FROM UNIDADE WHERE CODIGO = ?);");
             stmt.setLong(1, codUnidadeProLog);
             rSet = stmt.executeQuery();
             if (rSet.next()) {

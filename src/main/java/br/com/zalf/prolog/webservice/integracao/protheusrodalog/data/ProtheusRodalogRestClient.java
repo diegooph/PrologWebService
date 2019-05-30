@@ -1,9 +1,16 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.data;
 
+import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import org.jetbrains.annotations.Nullable;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import org.jetbrains.annotations.NotNull;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 28/02/19.
@@ -11,24 +18,50 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ProtheusRodalogRestClient {
-    @Nullable
-    private static Retrofit retrofit;
+    private static final long DEFAULT_TIMEOUT_MINUTES = 1;
+    @NotNull
+    private static final Retrofit retrofit;
+    @NotNull
+    private static final Map<String, Object> SERVICE_CACHE = new HashMap<>();
 
-    public static Retrofit getRetrofit() {
-        if (retrofit == null) {
-            // TODO - Setar URL de comunicação (ou buscar no BD)
-            retrofit = new Retrofit.Builder()
-                    .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
-                    .baseUrl("http://192.168.0.99:8080/prolog/v2/")
-                    .build();
-        }
-        return retrofit;
+    static {
+        retrofit = new Retrofit.Builder()
+                .client(provideOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
+                .baseUrl("http://131.161.40.131:8087/rest/")
+                .build();
     }
 
     private ProtheusRodalogRestClient() {
+
     }
 
-    public static <T> T getService(final Class<T> serviceClass) {
-        return ProtheusRodalogRestClient.getRetrofit().create(serviceClass);
+    @NotNull
+    public static <T> T getService(@NotNull final Class<T> serviceClass) {
+        final String canonicalName = serviceClass.getCanonicalName();
+        if (!SERVICE_CACHE.containsKey(canonicalName)) {
+            synchronized (ProtheusRodalogRestClient.class) {
+                if (!SERVICE_CACHE.containsKey(canonicalName)) {
+                    final T service = retrofit.create(serviceClass);
+                    SERVICE_CACHE.put(serviceClass.getCanonicalName(), service);
+                }
+            }
+        }
+
+        //noinspection unchecked
+        return (T) SERVICE_CACHE.get(canonicalName);
+    }
+
+    @NotNull
+    private static OkHttpClient provideOkHttpClient() {
+        final OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.connectTimeout(DEFAULT_TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                .readTimeout(DEFAULT_TIMEOUT_MINUTES, TimeUnit.MINUTES);
+        if (BuildConfig.DEBUG) {
+            final HttpLoggingInterceptor logger = new HttpLoggingInterceptor();
+            logger.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.interceptors().add(logger);
+        }
+        return builder.build();
     }
 }
