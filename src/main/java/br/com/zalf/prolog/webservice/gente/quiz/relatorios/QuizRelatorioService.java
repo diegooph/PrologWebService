@@ -108,4 +108,69 @@ public class QuizRelatorioService {
             return null;
         }
     }
+
+    public void getRespostasRealizadosCsv(OutputStream out,
+                                          Long codUnidade,
+                                          String codModelo,
+                                          String cpfColaborador,
+                                          long dataHoraInicial,
+                                          long dataHoraFinal,
+                                          boolean apenasSelecionadas) {
+        try {
+            dao.getRespostasRealizadosCsv(out,
+                                          codUnidade,
+                                          codModelo,
+                                          cpfColaborador,
+                                          dataHoraInicial,
+                                          dataHoraFinal,
+                                          apenasSelecionadas);
+        } catch (SQLException | IOException e) {
+            Log.e(TAG, String.format("Erro a buscar o relatório com o extrato geral de respostas do quiz (CSV). \n" +
+                            "codUnidade: %d \n" +
+                            "codModelo: %s \n" +
+                            "cpfColaborador: %s \n" +
+                            "dataHoraInicial: %s \n" +
+                            "dataHoraFinal: %s \n" +
+                            "apenasSelecionadas: %b",
+                    codUnidade,
+                    codModelo,
+                    cpfColaborador,
+                    new Date(dataHoraInicial).toString(),
+                    new Date(dataHoraFinal).toString(),
+                    apenasSelecionadas),
+                    e);
+        }
+    }
+
+    public Report getRespostasRealizadosReport(Long codUnidade,
+                                               String codModelo,
+                                               String cpfColaborador,
+                                               long dataHoraInicial,
+                                               long dataHoraFinal,
+                                               boolean apenasSelecionadas) {
+        try {
+            return dao.getRespostasRealizadosReport(codUnidade,
+                                                    codModelo,
+                                                    cpfColaborador,
+                                                    dataHoraInicial,
+                                                    dataHoraFinal,
+                                                    apenasSelecionadas);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro a buscar o relatório com o extrato geral de respostas do quiz (REPORT). \n" +
+                    "codUnidade: %d \n" +
+                    "codModelo: %s \n" +
+                    "cpfColaborador: %s \n" +
+                    "dataHoraInicial: %s \n" +
+                    "dataHoraFinal: %s \n" +
+                    "apenasSelecionadas: %b",
+                    codUnidade,
+                    codModelo,
+                    cpfColaborador,
+                    new Date(dataHoraInicial).toString(),
+                    new Date(dataHoraFinal).toString(),
+                    apenasSelecionadas),
+                    e);
+            return null;
+        }
+    }
 }

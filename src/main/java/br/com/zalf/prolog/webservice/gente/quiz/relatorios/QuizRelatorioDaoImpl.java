@@ -242,4 +242,75 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection implements QuizRela
             closeConnection(conn, stmt, rSet);
         }
     }
+
+    @Override
+    public void getRespostasRealizadosCsv(OutputStream out,
+                                          Long codUnidade,
+                                          String codModelo,
+                                          String cpfColaborador,
+                                          long dataHoraInicial,
+                                          long dataHoraFinal,
+                                          boolean apenasSelecionadas) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getRespostasRealizadosStmt(conn,
+                    codUnidade,
+                    codModelo,
+                    cpfColaborador,
+                    dataHoraInicial,
+                    dataHoraFinal,
+                    apenasSelecionadas);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, out);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getRespostasRealizadosReport (Long codUnidade,
+                                                String codModelo,
+                                                String cpfColaborador,
+                                                long dataHoraInicial,
+                                                long dataHoraFinal,
+                                                boolean apenasSelecionadas) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try{
+            conn = getConnection();
+            stmt = getRespostasRealizadosStmt(conn,
+                    codUnidade,
+                    codModelo,
+                    cpfColaborador,
+                    dataHoraInicial,
+                    dataHoraFinal,
+                    apenasSelecionadas);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        }finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    private PreparedStatement getRespostasRealizadosStmt(Connection conn,
+                                                         Long codUnidade,
+                                                         String codModelo,
+                                                         String cpfColaborador,
+                                                         long dataHoraInicial,
+                                                         long dataHoraFinal,
+                                                         boolean apenasSelecionadas)
+            throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_quiz_relatorio_respostas(?,?,?,?,?,?)");
+        stmt.setLong(1, codUnidade);
+        stmt.setString(2, codModelo);
+        stmt.setString(3, cpfColaborador);
+        stmt.setDate(4, DateUtils.toSqlDate(new Date(dataHoraInicial)));
+        stmt.setDate(5, DateUtils.toSqlDate(new Date(dataHoraFinal)));
+        stmt.setBoolean(6, apenasSelecionadas);
+        return stmt;
+    }
 }

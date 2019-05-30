@@ -124,4 +124,44 @@ public interface QuizRelatorioDao {
      * @throws SQLException - Caso algum erro de busca no SQL aconteça
      */
     Report getExtratoGeralReport (Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
+
+    /**
+     * Método que cria um arquivo CSV contendo todas as respostas dos quizzes realizados.
+     *
+     * @param out                   - Local onde o csv será escrito
+     * @param codUnidade            - Código da unidade a qual será filtrado os dados
+     * @param codModelo             - Código do modelo do quiz que será filtrado os dados
+     * @param cpfColaborador        - CPF do colaborador a qual será filtrado os dados
+     * @param dataHoraInicial           - Data inicial do período de busca
+     * @param dataHoraFinal             - Data final do período de busca
+     * @param apenasSelecionadas    - Define se a consulta retornará apenas respostas selecionadas
+     * @throws IOException          - Caso algum erro de escrita aconteça
+     * @throws SQLException         - Caso algum erro de busca no SQL aconteça
+     */
+    void getRespostasRealizadosCsv(OutputStream out,
+                            Long codUnidade,
+                            String codModelo,
+                            String cpfColaborador,
+                            long dataHoraInicial,
+                            long dataHoraFinal,
+                            boolean apenasSelecionadas) throws SQLException, IOException;
+
+    /**
+     * Método que cria um {@link Report} contendo todas as respostas dos quizzes realizados.
+     *
+     * @param codUnidade            - Código da unidade a qual será filtrado os dados
+     * @param codModelo             - Código do modelo do quiz que será filtrado os dados
+     * @param cpfColaborador        - CPF do colaborador a qual será filtrado os dados
+     * @param dataHoraInicial           - Data inicial do período de busca
+     * @param dataHoraFinal             - Data final do período de busca
+     * @param apenasSelecionadas    - Define se a consulta retornará apenas respostas selecionadas
+     * @return                      - Um objeto {@link Report} contendo as informações filtradas
+     * @throws SQLException         - Caso algum erro de busca no SQL aconteça
+     */
+    Report getRespostasRealizadosReport (Long codUnidade,
+                                         String codModelo,
+                                         String cpfColaborador,
+                                         long dataHoraInicial,
+                                         long dataHoraFinal,
+                                         boolean apenasSelecionadas) throws SQLException;
 }

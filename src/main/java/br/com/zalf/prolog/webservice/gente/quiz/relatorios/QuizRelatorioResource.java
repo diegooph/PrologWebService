@@ -77,6 +77,42 @@ public class QuizRelatorioResource {
     }
 
     @GET
+    @Path("/respostas/{codUnidade}/csv")
+    @Secured(permissions = Pilares.Gente.Relatorios.QUIZ)
+    @Produces("application/csv")
+    public StreamingOutput getRespostasRealizadosCsv(@PathParam("codUnidade") Long codUnidade,
+                                              @QueryParam("codModelo") String codModelo,
+                                              @QueryParam("cpfColaborador") String cpfColaborador,
+                                              @QueryParam("dataHoraInicial") long dataHoraInicial,
+                                              @QueryParam("dataHoraFinal") long dataHoraFinal,
+                                              @QueryParam("apenasSelecionadas") boolean apenasSelecionadas) {
+        return outputStream -> service.getRespostasRealizadosCsv(outputStream,
+                                                                 codUnidade,
+                                                                 codModelo,
+                                                                 cpfColaborador,
+                                                                 dataHoraInicial,
+                                                                 dataHoraFinal,
+                                                                 apenasSelecionadas);
+    }
+
+    @GET
+    @Path("/respostas/{codUnidade}/report")
+    @Secured(permissions = Pilares.Gente.Relatorios.QUIZ)
+    public Report getRespostasRealizadosReport(@PathParam("codUnidade") Long codUnidade,
+                                               @QueryParam("codModelo") String codModelo,
+                                               @QueryParam("cpfColaborador") String cpfColaborador,
+                                               @QueryParam("dataHoraInicial") long dataHoraInicial,
+                                               @QueryParam("dataHoraFinal") long dataHoraFinal,
+                                               @QueryParam("apenasSelecionadas") boolean apenasSelecionadas) {
+        return service.getRespostasRealizadosReport(codUnidade,
+                                                    codModelo,
+                                                    cpfColaborador,
+                                                    dataHoraInicial,
+                                                    dataHoraFinal,
+                                                    apenasSelecionadas);
+    }
+
+    @GET
     @Path("/consolidados/{codUnidade}/csv")
     @Secured(permissions = Pilares.Gente.Relatorios.QUIZ)
     @Produces("application/csv")
