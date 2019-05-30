@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.cargo;
 import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
 import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
+import br.com.zalf.prolog.webservice.cargo.model.CargoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -46,4 +47,17 @@ public interface CargoDao {
      */
     @NotNull
     List<CargoNaoUtilizado> getCargosNaoUtilizadosUnidade(@NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Busca as permissões do ProLog separadas por pilar. Esse método irá respeitar os pilares que a unidade tem acesso.
+     * Os objetos retornados também destacam quais permissões estão liberadas para o cargo filtrado.
+     *
+     * @param codUnidade código da unidade.
+     * @param codCargo   código do unidade.
+     * @return Lista detalhada das permissões da unidade.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
+    @NotNull
+    CargoVisualizacao getPermissoesDetalhadasUnidade(@NotNull final Long codUnidade,
+                                                     @NotNull final Long codCargo) throws Throwable;
 }

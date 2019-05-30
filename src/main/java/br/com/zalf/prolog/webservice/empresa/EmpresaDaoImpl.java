@@ -9,9 +9,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
-import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.permissao.pilares.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.NoContentException;
