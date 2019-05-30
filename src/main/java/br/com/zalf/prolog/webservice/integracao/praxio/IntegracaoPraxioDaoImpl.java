@@ -6,12 +6,14 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.AfericaoIntegracaoPraxioConverter;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ItemOSAbertaGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.OrdemServicoAbertaGlobus;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -91,6 +93,36 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                                 "totalItensNoBatch: %d\n" +
                                 "batchLength: %d", totalItensNoBatch, batch.length));
             }
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    @Override
+    public void resolverMultiplosItens(@NotNull final String tokenIntegracao,
+                                       @NotNull final List<ItemResolvidoGlobus> itensResolvidos) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("");
+            for (final ItemResolvidoGlobus itemResolvido : itensResolvidos) {
+
+                stmt.addBatch();
+            }
+            // Verificamos apenas se a quantidade de vezes que a function executou bate com a quantidade de itens.
+            // A function irá lançar uma exceção para qualquer caso de inconsistência, não é preciso verificar aqui
+            // no java se cada vez que a function executou os updates.
+            if (stmt.executeBatch().length != itensResolvidos.size()) {
+                throw new SQLException("Não foi possível resolver os itens");
+            }
+            conn.commit();
         } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ItemOSAbertaGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.OrdemServicoAbertaGlobus;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,4 +47,7 @@ interface IntegracaoPraxioDao {
      */
     void inserirOrdensServicoGlobus(@NotNull final String tokenIntegracao,
                                     @NotNull final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws Throwable;
+
+    void resolverMultiplosItens(@NotNull final String tokenIntegracao,
+                                @NotNull final List<ItemResolvidoGlobus> itensResolvidos) throws Throwable;
 }

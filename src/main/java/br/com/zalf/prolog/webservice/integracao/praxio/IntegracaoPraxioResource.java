@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -65,6 +66,16 @@ public final class IntegracaoPraxioResource {
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws ProLogException {
         return service.inserirOrdensServicoGlobus(tokenIntegracao, ordensServicoAbertas);
+    }
+
+    @POST
+    @LogIntegracaoRequest
+    @Path("/ordens-servicos/resolver-multiplos-itens")
+    @UsedBy(platforms = Platform.INTEGRACOES)
+    public SuccessResponseIntegracao resolverMultiplosItens(
+            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @Required final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
+        return service.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
     }
 }
 

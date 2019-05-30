@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
@@ -61,6 +62,28 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             return new SuccessResponseIntegracao("Ordens de Serviços Abertas foram inseridas no ProLog");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir as Ordens de Serviços Abertas no banco de dados do ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir as Ordens de Serviços Abertas no ProLog");
+        }
+    }
+
+    @NotNull
+    public SuccessResponseIntegracao resolverMultiplosItens(
+            final String tokenIntegracao,
+            final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (itensResolvidos == null) {
+                throw new GenericException("Nenhum item fechado foi recebido");
+            }
+            ensureValidToken(tokenIntegracao, TAG);
+            dao.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
+            return new SuccessResponseIntegracao("Todos os itens foram resolvidos com sucesso no ProLog");
+        } catch (final Throwable t) {
+            Log.e(TAG, "", t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir as Ordens de Serviços Abertas no ProLog");
