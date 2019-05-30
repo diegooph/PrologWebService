@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.93"></a>
-## Version [v0.0.93](https://github.com/luizfp/PrologWebService/compare/v0.0.92...v0.0.93) (release-date) [unreleased]
+## Version [v0.0.93](https://github.com/luizfp/PrologWebService/compare/v0.0.92...v0.0.93) (2019-05-30)
 
 ### Features
 * Cria integração de aferição de placas com o Protheus da Rodalog (PL-1721)
