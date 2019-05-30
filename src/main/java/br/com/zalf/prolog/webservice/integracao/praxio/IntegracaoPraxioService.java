@@ -77,16 +77,16 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                 throw new GenericException("Um Token deve ser fornecido");
             }
             if (itensResolvidos == null) {
-                throw new GenericException("Nenhum item fechado foi recebido");
+                throw new GenericException("Nenhum item resolvido foi recebido");
             }
             ensureValidToken(tokenIntegracao, TAG);
             dao.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
             return new SuccessResponseIntegracao("Todos os itens foram resolvidos com sucesso no ProLog");
         } catch (final Throwable t) {
-            Log.e(TAG, "", t);
+            Log.e(TAG, "Erro ao resolver os itens no ProLog", t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir as Ordens de Serviços Abertas no ProLog");
+                    .map(t, "Erro ao resolver os itens no ProLog");
         }
     }
 
