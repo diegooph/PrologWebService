@@ -13,7 +13,7 @@ import java.util.List;
  * <p>
  * Esses atributos são referentes à apenas um checklist realizado.
  * <p>
- * Com essas informações, o Globus irá processar e gerar um Ordem de Serviço seguindo a parametrização do sistema deles.
+ * Com essas informações, o Globus irá processar e gerar uma Ordem de Serviço seguindo a parametrização do sistema deles.
  * <p>
  * Created on 02/05/19.
  *
