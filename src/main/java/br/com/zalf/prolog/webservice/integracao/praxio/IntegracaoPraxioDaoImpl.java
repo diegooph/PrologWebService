@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -111,16 +110,33 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM TP_TRANSPORTES.FUNC_CHECK_OS_RESOLVE_ITEM_PENDENTE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
+            int totalItensNoBatch = 0;
             for (final ItemResolvidoGlobus itemResolvido : itensResolvidos) {
-
+                stmt.setLong(1, itemResolvido.getCodUnidadeItemOs());
+                stmt.setLong(2, itemResolvido.getCodOsGlobus());
+                stmt.setLong(3, itemResolvido.getCodItemResolvidoGlobus());
+                stmt.setLong(4, Long.valueOf(itemResolvido.getCpfColaboradoResolucao()));
+                stmt.setString(5, itemResolvido.getPlacaVeiculoItemOs());
+                stmt.setLong(6, itemResolvido.getKmColetadoResolucao());
+                stmt.setLong(7, itemResolvido.getDuracaoResolucaoItemOsMillis());
+                stmt.setString(8, itemResolvido.getFeedbackResolucaoItemOs());
+                stmt.setObject(9, itemResolvido.getDataHoraResolucaoItemOsUtc());
+                stmt.setObject(10, itemResolvido.getDataHoraInicioResolucaoItemOsUtc());
+                stmt.setObject(11, itemResolvido.getDataHoraFimResolucaoItemOsUtc());
+                stmt.setString(12, tokenIntegracao);
+                stmt.setObject(13, dataHoraAtualUtc);
                 stmt.addBatch();
+                totalItensNoBatch++;
             }
-            // Verificamos apenas se a quantidade de vezes que a function executou bate com a quantidade de itens.
-            // A function irá lançar uma exceção para qualquer caso de inconsistência, não é preciso verificar aqui
-            // no java se cada vez que a function executou os updates.
-            if (stmt.executeBatch().length != itensResolvidos.size()) {
-                throw new SQLException("Não foi possível resolver os itens");
+            final int[] batch = stmt.executeBatch();
+            if (batch.length != totalItensNoBatch) {
+                throw new IllegalStateException(
+                        String.format("[INTEGRACAO - TP TRANSPORTES] Não foi possível inserir todos os itens:\n" +
+                                "totalItensNoBatch: %d\n" +
+                                "batchLength: %d", totalItensNoBatch, batch.length));
             }
             conn.commit();
         } catch (final Throwable t) {
