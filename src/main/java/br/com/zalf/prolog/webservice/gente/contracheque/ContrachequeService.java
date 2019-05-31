@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 import org.apache.commons.csv.CSVFormat;
@@ -24,8 +23,6 @@ import java.util.List;
 public class ContrachequeService {
     private static final String TAG = ContrachequeService.class.getSimpleName();
     private final ContrachequeDao dao = Injection.provideContrachequeDao();
-    @NotNull
-    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) {
         try {
@@ -138,14 +135,19 @@ public class ContrachequeService {
 
 
     @NotNull
-    public Response deleteItensImportContracheque(@NotNull final List<Long> codItemImportContracheque) throws ProLogException {
+    public void deleteItensImportPreContracheque(final List<Long> codItensDelecao) throws ProLogException {
+        if (codItensDelecao.isEmpty()) {
+            return;
+        }
+
         try {
-            dao.deleteItensImportContracheque(codItemImportContracheque);
-            return Response.ok("Itens de pré-contracheque deletados com sucesso!");
-        } catch (Throwable e) {
-            final String errorMessage = "Não foi possível deletar estes itens, tente novamente";
+            dao.deleteItensImportPreContracheque(codItensDelecao);
+        } catch (final Throwable e) {
+            final String errorMessage = "Não foi possível deletar esses itens, tente novamente";
             Log.e(TAG, errorMessage, e);
-            throw exceptionHandler.map(e, errorMessage);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, errorMessage);
         }
     }
 }

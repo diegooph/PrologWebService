@@ -122,7 +122,8 @@ public class ContrachequeResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Gente.PreContracheque.UPLOAD_E_EDICAO)
     @Path("/itens")
-    public Response deleteItensImportContracheque(final List<Long> codItemImportContracheque) throws ProLogException {
-        return service.deleteItensImportContracheque(codItemImportContracheque);
+    public Response deleteItensImportPreContracheque(final List<Long> codItensDelecao) throws ProLogException {
+        service.deleteItensImportPreContracheque(codItensDelecao);
+        return Response.ok("Itens de pré contracheque deletados com sucesso!");
     }
 }
