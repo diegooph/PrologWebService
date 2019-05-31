@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+### Stage
+feat: Cria método para permitir a deleção de múltiplos itens do pré contracheque (PL-2002)
+
+
 <a name="v0.0.93"></a>
 ## Version [v0.0.93](https://github.com/luizfp/PrologWebService/compare/v0.0.92...v0.0.93) (release-date) [unreleased]
 
