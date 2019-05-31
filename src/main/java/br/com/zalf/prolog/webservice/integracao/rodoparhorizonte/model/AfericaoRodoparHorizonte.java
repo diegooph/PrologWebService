@@ -17,7 +17,7 @@ public final class AfericaoRodoparHorizonte {
     @NotNull
     private final String placaAfericao;
     /**
-     * Código da unidade dm que a aferição foi realizada. Este atributo tem dependência com o veículo, assim, o código
+     * Código da unidade em que a aferição foi realizada. Este atributo tem dependência com o veículo, assim, o código
      * da unidade do veículo deve ser o mesmo que o {@code codUnidadeAfericao}.
      */
     @NotNull
