@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -13,6 +15,7 @@ import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemContracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.RestricoesContracheque;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,6 +35,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
 
     }
 
+    @NotNull
     @Override
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) throws SQLException {
         Connection conn = null;
@@ -98,9 +102,124 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                 contracheque.setItens(itens);
             }
         } finally {
-            closeConnection(conn, null, null);
+            close(conn, null, null);
         }
         return contracheque;
+    }
+
+    @Override
+    public boolean insertOrUpdateItemImportContracheque(List<ItemImportContracheque> itens, int ano, int mes, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            for (ItemImportContracheque item : itens) {
+                if (updateItemImportContracheque(item, ano, mes, codUnidade)) {
+                    Log.d(TAG, "Atualizado o item:" + item.toString());
+                } else {
+                    insertItemImportContracheque(item, ano, mes, conn, codUnidade);
+                }
+            }
+        } finally {
+            close(conn, null, null);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean updateItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade) throws SQLException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE PRE_CONTRACHEQUE_ITENS SET DESCRICAO = ?, SUB_DESCRICAO = ?, VALOR = ?" +
+                    " WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
+            stmt.setString(1, item.getDescricao());
+            stmt.setString(2, item.getSubDescricao());
+            stmt.setDouble(3, item.getValor());
+            stmt.setInt(4, ano);
+            stmt.setInt(5, mes);
+            stmt.setLong(6, item.getCpf());
+            stmt.setLong(7, codUnidade);
+            stmt.setString(8, item.getCodigoItem());
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                return false;
+            }
+        } finally {
+            close(conn, stmt, null);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade, Long cpf, String codItem) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM PRE_CONTRACHEQUE_ITENS WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND " +
+                    " CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
+            stmt.setInt(1, ano);
+            stmt.setInt(2, mes);
+            stmt.setLong(3, cpf);
+            stmt.setLong(4, codUnidade);
+            stmt.setString(5, codItem);
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                return false;
+            }
+        } finally {
+            close(conn, stmt, null);
+        }
+        return true;
+    }
+
+    @NotNull
+    @Override
+    public List<ItemImportContracheque> getItemImportContracheque(Long codUnidade, int ano, int mes, String cpf) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<ItemImportContracheque> itens = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT pc.*, c.nome FROM pre_contracheque_itens pc left join colaborador c ON\n" +
+                    "\t pc.cpf_colaborador = c.cpf and pc.cod_unidade = c.cod_unidade\n" +
+                    "WHERE pc.cod_unidade = ? \n" +
+                    "AND pc.ano_referencia = ?\n" +
+                    "AND pc.mes_referencia = ?\n" +
+                    "AND pc.cpf_colaborador::text LIKE ?\n" +
+                    "ORDER BY c.nome asc, pc.valor desc");
+            stmt.setLong(1, codUnidade);
+            stmt.setInt(2, ano);
+            stmt.setInt(3, mes);
+            stmt.setString(4, cpf);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                itens.add(createItemImportContracheque(rSet));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return itens;
+    }
+
+    @Override
+    public void deleteItensImportPreContracheque(@NotNull final List<Long> codItensDelecao) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_PRE_CONTRACHEQUE_DELETA_ITENS(?) AS TOTAL_ITENS_DELETADOS;");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensDelecao));
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || rSet.getLong("TOTAL_ITENS_DELETADOS") <= 0) {
+                throw new IllegalStateException("Erro ao deletar itens de pré contracheque");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     private List<ItemContracheque> getItensContracheque(Connection conn, Long cpf, int ano, int mes, Long codUnidade) throws SQLException {
@@ -214,73 +333,6 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         }
     }
 
-    @Override
-    public boolean insertOrUpdateItemImportContracheque(List<ItemImportContracheque> itens, int ano, int mes, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            for (ItemImportContracheque item : itens) {
-                if (updateItemImportContracheque(item, ano, mes, codUnidade)) {
-                    Log.d(TAG, "Atualizado o item:" + item.toString());
-                } else {
-                    insertItemImportContracheque(item, ano, mes, conn, codUnidade);
-                }
-            }
-        } finally {
-            closeConnection(conn, null, null);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean updateItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade) throws SQLException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE PRE_CONTRACHEQUE_ITENS SET DESCRICAO = ?, SUB_DESCRICAO = ?, VALOR = ?" +
-                    " WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
-            stmt.setString(1, item.getDescricao());
-            stmt.setString(2, item.getSubDescricao());
-            stmt.setDouble(3, item.getValor());
-            stmt.setInt(4, ano);
-            stmt.setInt(5, mes);
-            stmt.setLong(6, item.getCpf());
-            stmt.setLong(7, codUnidade);
-            stmt.setString(8, item.getCodigo());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                return false;
-            }
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade, Long cpf, String codItem) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM PRE_CONTRACHEQUE_ITENS WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND " +
-                    " CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
-            stmt.setInt(1, ano);
-            stmt.setInt(2, mes);
-            stmt.setLong(3, cpf);
-            stmt.setLong(4, codUnidade);
-            stmt.setString(5, codItem);
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                return false;
-            }
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-        return true;
-    }
-
     private boolean insertItemImportContracheque(ItemImportContracheque item, int ano, int mes, Connection conn, Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         try {
@@ -289,7 +341,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             stmt.setLong(2, item.getCpf());
             stmt.setInt(3, mes);
             stmt.setInt(4, ano);
-            stmt.setString(5, item.getCodigo());
+            stmt.setString(5, item.getCodigoItem());
             stmt.setString(6, item.getDescricao());
             stmt.setString(7, item.getSubDescricao());
             stmt.setDouble(8, item.getValor());
@@ -311,48 +363,12 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         }
     }
 
-    /**
-     * Método que busca os itens importados previamente
-     *
-     * @param codUnidade código da unidade
-     * @param ano        da competancia
-     * @param mes        da competencia
-     * @param cpf        especifico a ser buscado, parâmetro opcional
-     * @return
-     * @throws SQLException
-     */
-    @Override
-    public List<ItemImportContracheque> getItemImportContracheque(Long codUnidade, int ano, int mes, String cpf) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<ItemImportContracheque> itens = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT pc.*, c.nome FROM pre_contracheque_itens pc left join colaborador c ON\n" +
-                    "\t pc.cpf_colaborador = c.cpf and pc.cod_unidade = c.cod_unidade\n" +
-                    "WHERE pc.cod_unidade = ? \n" +
-                    "AND pc.ano_referencia = ?\n" +
-                    "AND pc.mes_referencia = ?\n" +
-                    "AND pc.cpf_colaborador::text LIKE ?\n" +
-                    "ORDER BY c.nome asc, pc.valor desc");
-            stmt.setLong(1, codUnidade);
-            stmt.setInt(2, ano);
-            stmt.setInt(3, mes);
-            stmt.setString(4, cpf);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                itens.add(createItemImportContracheque(rSet));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return itens;
-    }
+
 
     private ItemImportContracheque createItemImportContracheque(ResultSet rSet) throws SQLException {
         final ItemImportContracheque item = new ItemImportContracheque();
-        item.setCodigo(rSet.getString("CODIGO_ITEM"));
+        item.setCodigo(rSet.getString("CODIGO"));
+        item.setCodigoItem(rSet.getString("CODIGO_ITEM"));
         item.setDescricao(rSet.getString("DESCRICAO"));
         item.setSubDescricao(rSet.getString("SUB_DESCRICAO"));
         item.setValor(rSet.getDouble("VALOR"));
