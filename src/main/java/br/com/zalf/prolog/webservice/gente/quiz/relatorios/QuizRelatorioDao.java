@@ -132,8 +132,8 @@ public interface QuizRelatorioDao {
      * @param codUnidade            - Código da unidade a qual será filtrado os dados
      * @param codModelo             - Código do modelo do quiz que será filtrado os dados
      * @param cpfColaborador        - CPF do colaborador a qual será filtrado os dados
-     * @param dataHoraInicial           - Data inicial do período de busca
-     * @param dataHoraFinal             - Data final do período de busca
+     * @param dataInicial           - Data inicial do período de busca
+     * @param dataFinal             - Data final do período de busca
      * @param apenasSelecionadas    - Define se a consulta retornará apenas respostas selecionadas
      * @throws IOException          - Caso algum erro de escrita aconteça
      * @throws SQLException         - Caso algum erro de busca no SQL aconteça
@@ -142,8 +142,8 @@ public interface QuizRelatorioDao {
                             Long codUnidade,
                             String codModelo,
                             String cpfColaborador,
-                            long dataHoraInicial,
-                            long dataHoraFinal,
+                            long dataInicial,
+                            long dataFinal,
                             boolean apenasSelecionadas) throws SQLException, IOException;
 
     /**
@@ -152,8 +152,8 @@ public interface QuizRelatorioDao {
      * @param codUnidade            - Código da unidade a qual será filtrado os dados
      * @param codModelo             - Código do modelo do quiz que será filtrado os dados
      * @param cpfColaborador        - CPF do colaborador a qual será filtrado os dados
-     * @param dataHoraInicial           - Data inicial do período de busca
-     * @param dataHoraFinal             - Data final do período de busca
+     * @param dataInicial           - Data inicial do período de busca
+     * @param dataFinal             - Data final do período de busca
      * @param apenasSelecionadas    - Define se a consulta retornará apenas respostas selecionadas
      * @return                      - Um objeto {@link Report} contendo as informações filtradas
      * @throws SQLException         - Caso algum erro de busca no SQL aconteça
@@ -161,7 +161,7 @@ public interface QuizRelatorioDao {
     Report getRespostasRealizadosReport (Long codUnidade,
                                          String codModelo,
                                          String cpfColaborador,
-                                         long dataHoraInicial,
-                                         long dataHoraFinal,
+                                         long dataInicial,
+                                         long dataFinal,
                                          boolean apenasSelecionadas) throws SQLException;
 }

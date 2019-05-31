@@ -113,30 +113,30 @@ public class QuizRelatorioService {
                                           Long codUnidade,
                                           String codModelo,
                                           String cpfColaborador,
-                                          long dataHoraInicial,
-                                          long dataHoraFinal,
+                                          long dataInicial,
+                                          long dataFinal,
                                           boolean apenasSelecionadas) {
         try {
             dao.getRespostasRealizadosCsv(out,
                                           codUnidade,
                                           codModelo,
                                           cpfColaborador,
-                                          dataHoraInicial,
-                                          dataHoraFinal,
+                                          dataInicial,
+                                          dataFinal,
                                           apenasSelecionadas);
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro a buscar o relatório com o extrato geral de respostas do quiz (CSV). \n" +
                             "codUnidade: %d \n" +
                             "codModelo: %s \n" +
                             "cpfColaborador: %s \n" +
-                            "dataHoraInicial: %s \n" +
-                            "dataHoraFinal: %s \n" +
+                            "dataInicial: %s \n" +
+                            "dataFinal: %s \n" +
                             "apenasSelecionadas: %b",
                     codUnidade,
                     codModelo,
                     cpfColaborador,
-                    new Date(dataHoraInicial).toString(),
-                    new Date(dataHoraFinal).toString(),
+                    new Date(dataInicial).toString(),
+                    new Date(dataFinal).toString(),
                     apenasSelecionadas),
                     e);
         }
@@ -145,29 +145,29 @@ public class QuizRelatorioService {
     public Report getRespostasRealizadosReport(Long codUnidade,
                                                String codModelo,
                                                String cpfColaborador,
-                                               long dataHoraInicial,
-                                               long dataHoraFinal,
+                                               long dataInicial,
+                                               long dataFinal,
                                                boolean apenasSelecionadas) {
         try {
             return dao.getRespostasRealizadosReport(codUnidade,
                                                     codModelo,
                                                     cpfColaborador,
-                                                    dataHoraInicial,
-                                                    dataHoraFinal,
+                                                    dataInicial,
+                                                    dataFinal,
                                                     apenasSelecionadas);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro a buscar o relatório com o extrato geral de respostas do quiz (REPORT). \n" +
                     "codUnidade: %d \n" +
                     "codModelo: %s \n" +
                     "cpfColaborador: %s \n" +
-                    "dataHoraInicial: %s \n" +
-                    "dataHoraFinal: %s \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s \n" +
                     "apenasSelecionadas: %b",
                     codUnidade,
                     codModelo,
                     cpfColaborador,
-                    new Date(dataHoraInicial).toString(),
-                    new Date(dataHoraFinal).toString(),
+                    new Date(dataInicial).toString(),
+                    new Date(dataFinal).toString(),
                     apenasSelecionadas),
                     e);
             return null;

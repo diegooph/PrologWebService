@@ -83,15 +83,15 @@ public class QuizRelatorioResource {
     public StreamingOutput getRespostasRealizadosCsv(@PathParam("codUnidade") Long codUnidade,
                                               @QueryParam("codModelo") String codModelo,
                                               @QueryParam("cpfColaborador") String cpfColaborador,
-                                              @QueryParam("dataHoraInicial") long dataHoraInicial,
-                                              @QueryParam("dataHoraFinal") long dataHoraFinal,
+                                              @QueryParam("dataInicial") long dataInicial,
+                                              @QueryParam("dataFinal") long dataFinal,
                                               @QueryParam("apenasSelecionadas") boolean apenasSelecionadas) {
         return outputStream -> service.getRespostasRealizadosCsv(outputStream,
                                                                  codUnidade,
                                                                  codModelo,
                                                                  cpfColaborador,
-                                                                 dataHoraInicial,
-                                                                 dataHoraFinal,
+                                                                 dataInicial,
+                                                                 dataFinal,
                                                                  apenasSelecionadas);
     }
 
@@ -101,14 +101,14 @@ public class QuizRelatorioResource {
     public Report getRespostasRealizadosReport(@PathParam("codUnidade") Long codUnidade,
                                                @QueryParam("codModelo") String codModelo,
                                                @QueryParam("cpfColaborador") String cpfColaborador,
-                                               @QueryParam("dataHoraInicial") long dataHoraInicial,
-                                               @QueryParam("dataHoraFinal") long dataHoraFinal,
+                                               @QueryParam("dataInicial") long dataInicial,
+                                               @QueryParam("dataFinal") long dataFinal,
                                                @QueryParam("apenasSelecionadas") boolean apenasSelecionadas) {
         return service.getRespostasRealizadosReport(codUnidade,
                                                     codModelo,
                                                     cpfColaborador,
-                                                    dataHoraInicial,
-                                                    dataHoraFinal,
+                                                    dataInicial,
+                                                    dataFinal,
                                                     apenasSelecionadas);
     }
 
