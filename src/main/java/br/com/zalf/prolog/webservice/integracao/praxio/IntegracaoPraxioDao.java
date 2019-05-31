@@ -35,11 +35,11 @@ interface IntegracaoPraxioDao {
      * Método utilizado para inserir uma série de {@link OrdemServicoAbertaGlobus Ordens de Serviço Abertas} do Sistema
      * Globus no ProLog.
      * <p>
-     * Esse método deverá receber apenas Ordens de Serviços Abertas e apenas
-     * {@link ItemOSAbertaGlobus Itens de O.S Pendentes}. Itens já resolvidos não devem ser enviados nesta lista.
+     * Esse método deverá receber apenas Ordens de Serviço Abertas e apenas
+     * {@link ItemOSAbertaGlobus Itens de O.S. Pendentes}. Itens já resolvidos não devem ser enviados nesta lista.
      * <p>
-     * Caso a Ordem de Serviço já exista, não será criada uma nova. Os itens presentes na Segunda O.S (O.S recebida)
-     * serão adicionados na O.S que já existe, desde que esta O.S não esteja finalizada.
+     * Caso a Ordem de Serviço já exista, não será criada uma nova. Os itens presentes na Segunda O.S. (O.S. recebida)
+     * serão adicionados na O.S. que já existe, desde que esta O.S. não esteja finalizada.
      *
      * @param tokenIntegracao      Token utilizado para autenticar o Sistema que deseja realizar a operação.
      * @param ordensServicoAbertas Lista de informações que serão inseridas no Banco de Dados.

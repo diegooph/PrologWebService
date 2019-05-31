@@ -14,7 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,11 +59,19 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement(
-                    "SELECT * FROM TP_TRANSPORTES.FUNC_CHECK_OS_INSERE_ITEM_OS_ABERTA(?, ?, ?, ?, ?, ?, ?, ?);");
-            final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
+                    "SELECT * FROM TP_TRANSPORTES.FUNC_CHECK_OS_INSERE_ITEM_OS_ABERTA( " +
+                            "F_COD_OS_GLOBUS                     := ?, " +
+                            "F_COD_UNIDADE_OS                    := ?, " +
+                            "F_COD_CHECKLIST                     := ?, " +
+                            "F_COD_ITEM_OS_GLOBUS                := ?, " +
+                            "F_COD_PERGUNTA_CHECKLIST            := ?, " +
+                            "F_COD_ALTERNATIVA_CHECKLIST         := ?, " +
+                            "F_DATA_HORA_SINCRONIZACAO_PENDENCIA := ?, " +
+                            "F_TOKEN_INTEGRACAO                  := ?);");
+            final OffsetDateTime dataHoraAtualUtc = Now.offsetDateTimeUtc();
             int totalItensNoBatch = 0;
             for (final OrdemServicoAbertaGlobus ordemServicoAberta : ordensServicoAbertas) {
-                // Primeiro setamos as informações de cada O.S.
+                // Primeiro setamos as informações de cada O.S..
                 stmt.setLong(1, ordemServicoAberta.getCodOsGlobus());
                 stmt.setLong(2, ordemServicoAberta.getCodUnidadeItemOs());
                 stmt.setLong(3, ordemServicoAberta.getCodChecklistProLog());
@@ -74,12 +82,12 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                                     "[ERRO DE ESTRUTURA] A O.S %d não possui nenhum item",
                                     ordemServicoAberta.getCodOsGlobus()));
                 }
-                // Depois inserimos as informações de cada item da O.S.
+                // Depois inserimos as informações de cada item da O.S..
                 for (final ItemOSAbertaGlobus itemOSAbertaGlobus : itensOSAbertaGlobus) {
                     stmt.setLong(4, itemOSAbertaGlobus.getCodItemGlobus());
                     stmt.setLong(5, itemOSAbertaGlobus.getCodPerguntaItemOs());
                     stmt.setLong(6, itemOSAbertaGlobus.getCodAlternativaItemOs());
-                    stmt.setObject(7, dataHoraAtualUtc.atOffset(ZoneOffset.UTC));
+                    stmt.setObject(7, dataHoraAtualUtc);
                     stmt.setString(8, tokenIntegracao);
                     stmt.addBatch();
                     totalItensNoBatch++;

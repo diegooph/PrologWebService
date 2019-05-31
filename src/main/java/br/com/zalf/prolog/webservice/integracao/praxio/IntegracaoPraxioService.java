@@ -54,8 +54,8 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             if (tokenIntegracao == null) {
                 throw new GenericException("Um Token deve ser fornecido");
             }
-            if (ordensServicoAbertas == null) {
-                throw new GenericException("Nenhuma informação de O.S aberta foi recebida");
+            if (ordensServicoAbertas == null || ordensServicoAbertas.isEmpty()) {
+                throw new GenericException("Nenhuma informação de O.S. aberta foi recebida");
             }
             ensureValidToken(tokenIntegracao, TAG);
             dao.inserirOrdensServicoGlobus(tokenIntegracao, ordensServicoAbertas);

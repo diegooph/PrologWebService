@@ -55,12 +55,12 @@ public final class IntegracaoPraxioResource {
     }
 
 ////----------------------------------------------------------------------------------------------------------------////
-////----------------------------------- INTEGRAÇÃO DE ORDEM DE SERVIÇOS --------------------------------------------////
+////----------------------------------- INTEGRAÇÃO DE ORDENS DE SERVIÇO --------------------------------------------////
 ////----------------------------------------------------------------------------------------------------------------////
 
     @POST
     @LogIntegracaoRequest
-    @Path("/ordem-servico/itens-pendentes")
+    @Path("/ordens-servico/itens-pendentes")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao inserirOrdensServicoGlobus(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
