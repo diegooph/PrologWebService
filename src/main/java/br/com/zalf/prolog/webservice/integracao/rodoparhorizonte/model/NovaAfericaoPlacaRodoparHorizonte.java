@@ -28,9 +28,9 @@ public final class NovaAfericaoPlacaRodoparHorizonte {
     @NotNull
     private final Long codUnidadePlacaAlocada;
     /**
-     * Atributo numérico que indica qual o diagrama do veiculo que será aferido. Diagrama consiste na organização dos
-     * pneus nos eixos do veículo, exemplos:
-     * * Diagrama TOCO - possui 2 eixos e 2 pneus cada eixo;
+     * Atributo numérico que indica qual o diagrama do veiculo que será aferido. Esse código é o código usado no ProLog.
+     * Diagrama consiste na organização dos pneus nos eixos do veículo, exemplos:
+     * * Diagrama TOCO - possui 2 eixos e 2 pneus em cada eixo;
      * * Diagrama TRUCK - possui 3 eixos, 2 pneus no eixo direcional e 4 pneus em cada eixo restante.
      */
     @NotNull

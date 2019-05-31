@@ -17,7 +17,7 @@ public final class AfericaoRodoparHorizonte {
     @NotNull
     private final String placaAfericao;
     /**
-     * Código da unidade que a aferição foi realizada. Este atributo tem dependência com o veículo, assim, o código
+     * Código da unidade dm que a aferição foi realizada. Este atributo tem dependência com o veículo, assim, o código
      * da unidade do veículo deve ser o mesmo que o {@code codUnidadeAfericao}.
      */
     @NotNull
@@ -28,21 +28,21 @@ public final class AfericaoRodoparHorizonte {
     @NotNull
     private final String cpfColaboradorAfericao;
     /**
-     * Valor numérico que representa a quilomentragem (KM) do veículo no momento que foi feita a aferição.
+     * Valor numérico que representa a quilometragem (KM) do veículo no momento que foi feita a aferição.
      */
     @NotNull
     private final Long kmMomentoAfericao;
     /**
      * Valor numérico que representa o montante de tempo que o colaborador demorou para aferir todos os pneus do
-     * veículo. Este montante de tempo é representado por este valor em milisegundos.
+     * veículo. Este montante de tempo é representado por este valor em milissegundos.
      */
     @NotNull
     private final Long tempoRealizacaoAfericaoInMillis;
     /**
-     * Data e hora que a aferição foi realizada pelo colaborador. Consiste na data e hora em que a requisição chegou ao
-     * servidor do ProLog.
+     * Data e hora em que a aferição foi realizada pelo colaborador. Consiste na data e hora em que a requisição chegou
+     * ao servidor do ProLog.
      * <p>
-     * A data e hora estão no padrão UTC, exemplo: "2019-02-21T15:30:00-03:00"
+     * A data e hora estão em UTC, exemplo: "2019-02-21T15:30:00-03:00"
      */
     @NotNull
     private final OffsetDateTime dataHoraAfericaoUtc;

@@ -30,7 +30,7 @@ public final class PlacaAfericaoRodoparHorizonte {
     /**
      * Data e hora que a última aferição ocorreu nessa placa.
      * <p>
-     * Esse valor se apresenta e UTC, exemplo: "2019-02-21T15:30:00-03:00"
+     * A data e hora estão em UTC, exemplo: "2019-02-21T15:30:00-03:00"
      */
     @NotNull
     private final OffsetDateTime dataHoraUltimaAfericaoUtc;

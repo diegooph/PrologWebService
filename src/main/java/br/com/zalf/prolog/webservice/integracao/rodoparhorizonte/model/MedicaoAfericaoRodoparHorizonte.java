@@ -20,8 +20,7 @@ public class MedicaoAfericaoRodoparHorizonte {
     @NotNull
     private final Long codigo;
     /**
-     * Número inteiro que representa a vida atual do pneu. Vida do pneu pode ser interpretada como a quantidade de
-     * recapes que o pneu já sofreu.
+     * Número inteiro que representa a vida atual do pneu.
      * <p>
      * Para o ProLog o pneu quando novo tem {@code vidaAtual vida atual} igual a UM ({@code vidaAtual == 1}).
      */

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 27/05/19.
@@ -26,8 +27,7 @@ public final class PneuAfericaoRodoparHorizonte {
     @NotNull
     private final Long codUnidadeAlocado;
     /**
-     * Número inteiro que representa a vida atual do pneu. Vida do pneu pode ser interpretada como a quantidade de
-     * recapes que o pneu já sofreu.
+     * Número inteiro que representa a vida atual do pneu.
      * <p>
      * Para o ProLog o pneu quando novo tem {@code vidaAtual vida atual} igual a UM ({@code vidaAtual == 1}).
      */
@@ -85,7 +85,7 @@ public final class PneuAfericaoRodoparHorizonte {
      * Este atributo só será utilizado para o caso de o pneu já ter sofrido algum recape. Para o caso o pneu nunca tenha
      * sido recapado então este valor será <code>NULL</code>.
      */
-    @NotNull
+    @Nullable
     private final ModeloBandaRodoparHorizonte modeloBanda;
 
     public PneuAfericaoRodoparHorizonte(@NotNull final String codigoCliente,
@@ -100,8 +100,8 @@ public final class PneuAfericaoRodoparHorizonte {
                                         @NotNull final Double sulcoCentralInternoAtual,
                                         @NotNull final Double sulcoCentralExternoAtual,
                                         @NotNull final Double sulcoExternoAtual,
-                                        @NotNull final ModeloBandaRodoparHorizonte modeloBanda,
-                                        @NotNull final ModeloPneuRodoparHorizonte modeloPneu) {
+                                        @NotNull final ModeloPneuRodoparHorizonte modeloPneu,
+                                        @Nullable final ModeloBandaRodoparHorizonte modeloBanda) {
         this.codigoCliente = codigoCliente;
         this.codigo = codigo;
         this.codUnidadeAlocado = codUnidadeAlocado;
@@ -179,12 +179,12 @@ public final class PneuAfericaoRodoparHorizonte {
     }
 
     @NotNull
-    public ModeloBandaRodoparHorizonte getModeloBanda() {
-        return modeloBanda;
-    }
-
-    @NotNull
     public ModeloPneuRodoparHorizonte getModeloPneu() {
         return modeloPneu;
+    }
+
+    @Nullable
+    public ModeloBandaRodoparHorizonte getModeloBanda() {
+        return modeloBanda;
     }
 }

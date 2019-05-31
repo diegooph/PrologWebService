@@ -31,7 +31,7 @@ public final class ModeloAfericaoRodoparHorizonte {
      * Número inteiro que representa a quantidade de placas que estão associadas à este modelo.
      */
     @NotNull
-    private final Long totalPlacasModelo;
+    private final Integer totalPlacasModelo;
     /**
      * Lista de {@link PlacaAfericaoRodoparHorizonte placas} que pertencem a este modelo de veículo.
      */
@@ -40,7 +40,7 @@ public final class ModeloAfericaoRodoparHorizonte {
 
     public ModeloAfericaoRodoparHorizonte(@NotNull final String nomeModelo,
                                           @NotNull final Long codModelo,
-                                          @NotNull final Long totalPlacasModelo,
+                                          @NotNull final Integer totalPlacasModelo,
                                           @NotNull final List<PlacaAfericaoRodoparHorizonte> placasAfericao) {
         this.nomeModelo = nomeModelo;
         this.codModelo = codModelo;
@@ -59,7 +59,7 @@ public final class ModeloAfericaoRodoparHorizonte {
     }
 
     @NotNull
-    public Long getTotalPlacasModelo() {
+    public Integer getTotalPlacasModelo() {
         return totalPlacasModelo;
     }
 

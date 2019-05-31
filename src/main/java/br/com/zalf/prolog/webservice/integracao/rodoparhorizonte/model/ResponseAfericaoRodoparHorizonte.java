@@ -12,7 +12,7 @@ public final class ResponseAfericaoRodoparHorizonte {
     /**
      * Valor numérico que representa o código da aferição que acabou de ser inserida.
      * <p>
-     * Se a operação falhar então esse valor será <code>NULL</code>.
+     * Se a operação falhar esse valor será <code>NULL</code>.
      */
     @Nullable
     private Long codigoAfericaoInserida;

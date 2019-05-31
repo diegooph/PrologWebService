@@ -24,7 +24,7 @@ public final class CronogramaAfericaoRodoparHorizonte {
      * Número inteiro que representa a quantidade de placas listadas no cronograma.
      */
     @NotNull
-    private final Long totalPlacas;
+    private final Integer totalPlacas;
     /**
      * Lista de {@link ModeloAfericaoRodoparHorizonte modelos} que possuem placas que podem ser aferidas.
      */
@@ -32,14 +32,14 @@ public final class CronogramaAfericaoRodoparHorizonte {
     private final List<ModeloAfericaoRodoparHorizonte> modelosPlacasAfericao;
 
     public CronogramaAfericaoRodoparHorizonte(
-            @NotNull final Long totalPlacas,
+            @NotNull final Integer totalPlacas,
             @NotNull final List<ModeloAfericaoRodoparHorizonte> modelosPlacasAfericao) {
         this.totalPlacas = totalPlacas;
         this.modelosPlacasAfericao = modelosPlacasAfericao;
     }
 
     @NotNull
-    public Long getTotalPlacas() {
+    public Integer getTotalPlacas() {
         return totalPlacas;
     }
 
