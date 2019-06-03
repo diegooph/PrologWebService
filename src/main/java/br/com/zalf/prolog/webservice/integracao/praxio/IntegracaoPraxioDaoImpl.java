@@ -73,7 +73,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             for (final OrdemServicoAbertaGlobus ordemServicoAberta : ordensServicoAbertas) {
                 // Primeiro setamos as informações de cada O.S..
                 stmt.setLong(1, ordemServicoAberta.getCodOsGlobus());
-                stmt.setLong(2, ordemServicoAberta.getCodUnidadeItemOs());
+                stmt.setLong(2, ordemServicoAberta.getCodUnidadeOs());
                 stmt.setLong(3, ordemServicoAberta.getCodChecklistProLog());
                 final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = ordemServicoAberta.getItensOSAbertaGlobus();
                 if (itensOSAbertaGlobus.size() <= 0) {

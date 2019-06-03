@@ -47,7 +47,7 @@ public final class ItemOSAbertaGlobus {
     public static ItemOSAbertaGlobus getDummy() {
         return new ItemOSAbertaGlobus(
                 100L,
-                13873L,
+                501L,
                 1010L);
     }
 
