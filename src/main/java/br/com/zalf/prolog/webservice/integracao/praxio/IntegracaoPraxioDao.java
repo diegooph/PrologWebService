@@ -56,11 +56,11 @@ interface IntegracaoPraxioDao {
      * Esse método deverá receber apenas {@link ItemResolvidoGlobus Itens de O.S Resolvidos}. Para tratar de itens
      * pendetes deve-se utilizar outro método, {@link IntegracaoPraxioDao#inserirOrdensServicoGlobus(String, List);}
      * <p>
-     * Este método, além de inserir as informações dos itens resolvidos, irá marcar a Ordem de Serviço como
+     * Esse método, além de inserir as informações dos itens resolvidos, irá marcar a Ordem de Serviço como
      * <i>FECHADA</i> caso todos os itens dela estiverem <i>RESOLVIDOS</i>.
      *
      * @param tokenIntegracao Token utilizado para autenticar o Sistema que deseja realizar a operação.
-     * @param itensResolvidos Lista de itens que forma resolvidos no sistema Globus.
+     * @param itensResolvidos Lista de itens que foram resolvidos no sistema Globus.
      * @throws Throwable Se algum erro ocorrer no processamento das informações.
      */
     void resolverMultiplosItens(@NotNull final String tokenIntegracao,

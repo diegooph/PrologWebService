@@ -70,7 +70,7 @@ public final class IntegracaoPraxioResource {
 
     @POST
     @LogIntegracaoRequest
-    @Path("/ordens-servicos/resolver-multiplos-itens")
+    @Path("/ordens-servico/resolver-multiplos-itens")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao resolverMultiplosItens(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
@@ -98,8 +98,3 @@ public final class IntegracaoPraxioResource {
         return service.resolverMultiplosItensDummy(tokenIntegracao, itensResolvidos);
     }
 }
-
-
-
-
-
