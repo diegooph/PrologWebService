@@ -59,7 +59,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement(
-                    "SELECT * FROM TP_TRANSPORTES.FUNC_CHECK_OS_INSERE_ITEM_OS_ABERTA( " +
+                    "SELECT * FROM PICCOLOTUR.FUNC_CHECK_OS_INSERE_ITEM_OS_ABERTA( " +
                             "F_COD_OS_GLOBUS                     := ?, " +
                             "F_COD_UNIDADE_OS                    := ?, " +
                             "F_COD_CHECKLIST                     := ?, " +
@@ -119,7 +119,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM TP_TRANSPORTES.FUNC_CHECK_OS_RESOLVE_ITEM_PENDENTE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                    "FROM PICCOLOTUR.FUNC_CHECK_OS_RESOLVE_ITEM_PENDENTE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
             int totalItensNoBatch = 0;
             for (final ItemResolvidoGlobus itemResolvido : itensResolvidos) {

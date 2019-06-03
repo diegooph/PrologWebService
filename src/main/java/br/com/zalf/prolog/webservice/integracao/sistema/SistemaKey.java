@@ -9,7 +9,8 @@ import com.sun.istack.internal.NotNull;
 public enum SistemaKey {
     AVACORP_AVILAN("AVACORP_AVILAN"),
     TRANSPORT_TRANSLECCHI("TRANSPORT_TRANSLECCHI"),
-    PROTHEUS_RODALOG("PROTHEUS_RODALOG");
+    PROTHEUS_RODALOG("PROTHEUS_RODALOG"),
+    GLOBUS_PICCOLOTUR("GLOBUS_PICCOLOTUR");
 
     @NotNull
     private final String key;
