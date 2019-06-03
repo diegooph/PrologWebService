@@ -96,7 +96,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             final int[] batch = stmt.executeBatch();
             if (batch.length != totalItensNoBatch) {
                 throw new IllegalStateException(
-                        String.format("[INTEGRACAO - TP TRANSPORTES] Não foi possível inserir todos os itens:\n" +
+                        String.format("[INTEGRACAO - PICCOLOTUR] Não foi possível inserir todos os itens:\n" +
                                 "totalItensNoBatch: %d\n" +
                                 "batchLength: %d", totalItensNoBatch, batch.length));
             }
@@ -144,9 +144,12 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                 stmt.setLong(6, itemResolvido.getKmColetadoResolucao());
                 stmt.setLong(7, itemResolvido.getDuracaoResolucaoItemOsMillis());
                 stmt.setString(8, itemResolvido.getFeedbackResolucaoItemOs());
-                stmt.setObject(9, itemResolvido.getDataHoraResolucaoItemOsUtc().atOffset(ZoneOffset.UTC));
-                stmt.setObject(10, itemResolvido.getDataHoraInicioResolucaoItemOsUtc().atOffset(ZoneOffset.UTC));
-                stmt.setObject(11, itemResolvido.getDataHoraFimResolucaoItemOsUtc().atOffset(ZoneOffset.UTC));
+                stmt.setObject(
+                        9, itemResolvido.getDataHoraResolucaoItemOsUtc().atOffset(ZoneOffset.UTC));
+                stmt.setObject(
+                        10, itemResolvido.getDataHoraInicioResolucaoItemOsUtc().atOffset(ZoneOffset.UTC));
+                stmt.setObject(
+                        11, itemResolvido.getDataHoraFimResolucaoItemOsUtc().atOffset(ZoneOffset.UTC));
                 stmt.setString(12, tokenIntegracao);
                 stmt.setObject(13, dataHoraAtualUtc);
                 stmt.addBatch();
@@ -155,7 +158,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             final int[] batch = stmt.executeBatch();
             if (batch.length != totalItensNoBatch) {
                 throw new IllegalStateException(
-                        String.format("[INTEGRACAO - TP TRANSPORTES] Não foi possível resolver todos os itens:\n" +
+                        String.format("[INTEGRACAO - PICCOLOTUR] Não foi possível resolver todos os itens:\n" +
                                 "totalItensNoBatch: %d\n" +
                                 "batchLength: %d", totalItensNoBatch, batch.length));
             }
