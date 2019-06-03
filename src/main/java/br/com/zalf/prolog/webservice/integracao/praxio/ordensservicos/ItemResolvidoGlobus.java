@@ -39,7 +39,7 @@ public final class ItemResolvidoGlobus {
      * CPF do colaborador resolveu o Item no Sistema Globus.
      */
     @NotNull
-    private final String cpfColaboradoResolucao;
+    private final String cpfColaboradorResolucao;
     /**
      * Placa do veículo que teve o Item resolvido.
      */
@@ -82,7 +82,7 @@ public final class ItemResolvidoGlobus {
     public ItemResolvidoGlobus(@NotNull final Long codUnidadeItemOs,
                                @NotNull final Long codOsGlobus,
                                @NotNull final Long codItemResolvidoGlobus,
-                               @NotNull final String cpfColaboradoResolucao,
+                               @NotNull final String cpfColaboradorResolucao,
                                @NotNull final String placaVeiculoItemOs,
                                @NotNull final Long kmColetadoResolucao,
                                @NotNull final Long duracaoResolucaoItemOsMillis,
@@ -93,7 +93,7 @@ public final class ItemResolvidoGlobus {
         this.codUnidadeItemOs = codUnidadeItemOs;
         this.codOsGlobus = codOsGlobus;
         this.codItemResolvidoGlobus = codItemResolvidoGlobus;
-        this.cpfColaboradoResolucao = cpfColaboradoResolucao;
+        this.cpfColaboradorResolucao = cpfColaboradorResolucao;
         this.placaVeiculoItemOs = placaVeiculoItemOs;
         this.kmColetadoResolucao = kmColetadoResolucao;
         this.duracaoResolucaoItemOsMillis = duracaoResolucaoItemOsMillis;
@@ -135,8 +135,8 @@ public final class ItemResolvidoGlobus {
     }
 
     @NotNull
-    public String getCpfColaboradoResolucao() {
-        return cpfColaboradoResolucao;
+    public String getCpfColaboradorResolucao() {
+        return cpfColaboradorResolucao;
     }
 
     @NotNull

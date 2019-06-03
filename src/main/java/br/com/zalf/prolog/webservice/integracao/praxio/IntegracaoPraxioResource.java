@@ -77,6 +77,26 @@ public final class IntegracaoPraxioResource {
             @Required final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
         return service.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
     }
+
+    @POST
+    @LogIntegracaoRequest
+    @Path("/ordens-servico/itens-pendentes/dummy")
+    @UsedBy(platforms = Platform.INTEGRACOES)
+    public SuccessResponseIntegracao inserirOrdensServicoGlobusDummy(
+            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @Required final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws ProLogException {
+        return service.inserirOrdensServicoGlobusDummy(tokenIntegracao, ordensServicoAbertas);
+    }
+
+    @POST
+    @LogIntegracaoRequest
+    @Path("/ordens-servicos/resolver-multiplos-itens/dummy")
+    @UsedBy(platforms = Platform.INTEGRACOES)
+    public SuccessResponseIntegracao resolverMultiplosItensDummy(
+            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @Required final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
+        return service.resolverMultiplosItensDummy(tokenIntegracao, itensResolvidos);
+    }
 }
 
 
