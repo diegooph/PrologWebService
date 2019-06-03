@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,8 +119,21 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM TP_TRANSPORTES.FUNC_CHECK_OS_RESOLVE_ITEM_PENDENTE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-            final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
+                    "FROM TP_TRANSPORTES.FUNC_CHECK_OS_RESOLVE_ITEM_PENDENTE( " +
+                    "F_COD_UNIDADE_ITEM_OS           := ?, " +
+                    "F_COD_OS_GLOBUS                 := ?, " +
+                    "F_COD_ITEM_RESOLVIDO_GLOBUS     := ?, " +
+                    "F_CPF_COLABORADOR_RESOLUCAO     := ?, " +
+                    "F_PLACA_VEICULO_ITEM_OS         := ?, " +
+                    "F_KM_COLETADO_RESOLUCAO         := ?, " +
+                    "F_DURACAO_RESOLUCAO_MS          := ?, " +
+                    "F_FEEDBACK_RESOLUCAO            := ?, " +
+                    "F_DATA_HORA_RESOLVIDO_PROLOG    := ?, " +
+                    "F_DATA_HORA_INICIO_RESOLUCAO    := ?, " +
+                    "F_DATA_HORA_FIM_RESOLUCAO       := ?, " +
+                    "F_TOKEN_INTEGRACAO              := ?, " +
+                    "F_DATA_HORA_SINCRONIA_RESOLUCAO := ?);");
+            final OffsetDateTime dataHoraAtualUtc = Now.offsetDateTimeUtc();
             int totalItensNoBatch = 0;
             for (final ItemResolvidoGlobus itemResolvido : itensResolvidos) {
                 stmt.setLong(1, itemResolvido.getCodUnidadeItemOs());
@@ -131,9 +144,9 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                 stmt.setLong(6, itemResolvido.getKmColetadoResolucao());
                 stmt.setLong(7, itemResolvido.getDuracaoResolucaoItemOsMillis());
                 stmt.setString(8, itemResolvido.getFeedbackResolucaoItemOs());
-                stmt.setObject(9, itemResolvido.getDataHoraResolucaoItemOsUtc());
-                stmt.setObject(10, itemResolvido.getDataHoraInicioResolucaoItemOsUtc());
-                stmt.setObject(11, itemResolvido.getDataHoraFimResolucaoItemOsUtc());
+                stmt.setObject(9, itemResolvido.getDataHoraResolucaoItemOsUtc().atOffset(ZoneOffset.UTC));
+                stmt.setObject(10, itemResolvido.getDataHoraInicioResolucaoItemOsUtc().atOffset(ZoneOffset.UTC));
+                stmt.setObject(11, itemResolvido.getDataHoraFimResolucaoItemOsUtc().atOffset(ZoneOffset.UTC));
                 stmt.setString(12, tokenIntegracao);
                 stmt.setObject(13, dataHoraAtualUtc);
                 stmt.addBatch();
@@ -142,7 +155,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             final int[] batch = stmt.executeBatch();
             if (batch.length != totalItensNoBatch) {
                 throw new IllegalStateException(
-                        String.format("[INTEGRACAO - TP TRANSPORTES] Não foi possível inserir todos os itens:\n" +
+                        String.format("[INTEGRACAO - TP TRANSPORTES] Não foi possível resolver todos os itens:\n" +
                                 "totalItensNoBatch: %d\n" +
                                 "batchLength: %d", totalItensNoBatch, batch.length));
             }

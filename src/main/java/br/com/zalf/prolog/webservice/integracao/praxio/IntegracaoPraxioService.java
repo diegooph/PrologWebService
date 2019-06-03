@@ -76,7 +76,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             if (tokenIntegracao == null) {
                 throw new GenericException("Um Token deve ser fornecido");
             }
-            if (itensResolvidos == null) {
+            if (itensResolvidos == null || itensResolvidos.isEmpty()) {
                 throw new GenericException("Nenhum item resolvido foi recebido");
             }
             ensureValidToken(tokenIntegracao, TAG);
