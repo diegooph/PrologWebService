@@ -26,10 +26,10 @@ public class QuizRelatorioResource {
     @GET
     @Path("/estratificacao-realizados/csv")
     @Produces("application/csv")
-    public StreamingOutput getEstratificacaoRealizacaoQuizCsv(@QueryParam("codUnidade") Long codUnidade,
-                                                              @QueryParam("codModeloQuiz") Long codModeloQuiz,
-                                                              @QueryParam("dataInicial") String dataInicial,
-                                                              @QueryParam("dataFinal") String dataFinal) {
+    public StreamingOutput getEstratificacaoRealizacaoQuizCsv(@QueryParam("codUnidade") @Required Long codUnidade,
+                                                              @QueryParam("codModeloQuiz") @Optional Long codModeloQuiz,
+                                                              @QueryParam("dataInicial") @Required String dataInicial,
+                                                              @QueryParam("dataFinal") @Required String dataFinal) {
         return outputStream -> service.getEstratificacaoRealizacaoQuizCsv(
                 outputStream,
                 codUnidade,
@@ -41,10 +41,10 @@ public class QuizRelatorioResource {
     @GET
     @Path("/estratificacao-realizados/report")
     public Report getEstratificacaoRealizacaoQuizReport(
-            @QueryParam("codUnidade") Long codUnidade,
-            @QueryParam("codModeloQuiz") Long codModeloQuiz,
-            @QueryParam("dataInicial") String dataInicial,
-            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+            @QueryParam("codUnidade") @Required Long codUnidade,
+            @QueryParam("codModeloQuiz") @Optional Long codModeloQuiz,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) throws ProLogException {
         return service.getEstratificacaoRealizacaoQuizReport(
                 codUnidade,
                 codModeloQuiz,
@@ -55,8 +55,8 @@ public class QuizRelatorioResource {
     @GET
     @Path("/realizacoes-por-cargos/csv")
     @Produces("application/csv")
-    public StreamingOutput getRealizacaoQuizByCargoCsv(@QueryParam("codUnidade") Long codUnidade,
-                                                       @QueryParam("codModeloQuiz") Long codModeloQuiz) {
+    public StreamingOutput getRealizacaoQuizByCargoCsv(@QueryParam("codUnidade") @Required Long codUnidade,
+                                                       @QueryParam("codModeloQuiz") @Optional Long codModeloQuiz) {
         return outputStream -> service.getRealizacaoQuizByCargoCsv(
                 outputStream,
                 codUnidade,
@@ -66,7 +66,7 @@ public class QuizRelatorioResource {
     @GET
     @Path("/realizacoes-por-cargos/report")
     public Report getRealizacaoQuizByCargoReport(
-            @QueryParam("codUnidade") Long codUnidade,
+            @QueryParam("codUnidade") @Required Long codUnidade,
             @QueryParam("codModeloQuiz") Long codModeloQuiz) throws ProLogException {
         return service.getRealizacaoQuizByCargoReport(
                 codUnidade,
@@ -76,8 +76,8 @@ public class QuizRelatorioResource {
     @GET
     @Path("/estratificacao-respostas/csv")
     @Produces("application/csv")
-    public StreamingOutput getEstratificacaoQuizRespostasCsv(@QueryParam("codUnidade") Long codUnidade,
-                                                             @QueryParam("codModeloQuiz") Long codModeloQuiz) {
+    public StreamingOutput getEstratificacaoQuizRespostasCsv(@QueryParam("codUnidade") @Required Long codUnidade,
+                                                             @QueryParam("codModeloQuiz") @Optional Long codModeloQuiz) {
         return outputStream -> service.getEstratificacaoQuizRespostasCsv(
                 outputStream,
                 codUnidade,
@@ -86,8 +86,8 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/estratificacao-respostas/report")
-    public Report getEstratificacaoQuizRespostasReport(@QueryParam("codUnidade") Long codUnidade,
-                                                       @QueryParam("codModeloQuiz") Long codModeloQuiz)
+    public Report getEstratificacaoQuizRespostasReport(@QueryParam("codUnidade") @Required Long codUnidade,
+                                                       @QueryParam("codModeloQuiz") @Optional Long codModeloQuiz)
             throws ProLogException {
         return service.getEstratificacaoQuizRespostasReport(
                 codUnidade,
@@ -97,9 +97,9 @@ public class QuizRelatorioResource {
     @GET
     @Path("/extrato-geral/csv")
     @Produces("application/csv")
-    public StreamingOutput getExtratoGeralCsv(@QueryParam("codUnidade") Long codUnidade,
-                                              @QueryParam("dataInicial") String dataInicial,
-                                              @QueryParam("dataFinal") String dataFinal) {
+    public StreamingOutput getExtratoGeralCsv(@QueryParam("codUnidade") @Required Long codUnidade,
+                                              @QueryParam("dataInicial") @Required String dataInicial,
+                                              @QueryParam("dataFinal") @Required String dataFinal) {
         return outputStream -> service.getExtratoGeralCsv(
                 outputStream,
                 codUnidade,
@@ -109,9 +109,9 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/extrato-geral/report")
-    public Report getExtratoGeralReport(@QueryParam("codUnidade") Long codUnidade,
-                                        @QueryParam("dataInicial") String dataInicial,
-                                        @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+    public Report getExtratoGeralReport(@QueryParam("codUnidade") @Required Long codUnidade,
+                                        @QueryParam("dataInicial") @Required String dataInicial,
+                                        @QueryParam("dataFinal") @Required String dataFinal) throws ProLogException {
         return service.getExtratoGeralReport(
                 codUnidade,
                 dataInicial,
