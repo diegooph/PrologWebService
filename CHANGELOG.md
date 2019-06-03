@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+### Stage
+
+feat: cria relatório com as resposta de um quiz (PL-1998)
+refactor: refatora relatórios do quiz para o padrão atual do ProLog (PL-2053)
+
 <a name="v0.0.93"></a>
 ## Version [v0.0.93](https://github.com/luizfp/PrologWebService/compare/v0.0.92...v0.0.93) (release-date) [unreleased]
 
