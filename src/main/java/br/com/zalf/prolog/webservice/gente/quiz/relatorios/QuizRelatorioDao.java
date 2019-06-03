@@ -1,10 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.quiz.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.SQLException;
+import java.time.LocalDate;
 
 /**
  * Created on 17/01/18.
@@ -17,151 +18,155 @@ public interface QuizRelatorioDao {
      * Método que busca gera um arquivo CSV contendo informações de realização de
      * quizzes, estratificados por modelo e unidade.
      *
-     * @param out           - Local onde o csv será escrito
-     * @param codModeloQuiz - Código do modelo de quiz
-     * @param codUnidade    - Código da unidade a qual será filtrado os dados
-     * @param dataInicial   - Data incial do período de busca
-     * @param dataFinal     - Data final do período de busca
-     * @throws IOException  - Caso algum erro de escrita aconteça
-     * @throws SQLException - Caso algum erro de busca no SQL aconteça
+     * @param out           Local onde o csv será escrito
+     * @param codUnidade    Código da unidade a qual será filtrado os dados
+     * @param codModeloQuiz Código do modelo de quiz
+     * @param dataInicial   Data incial do período de busca
+     * @param dataFinal     Data final do período de busca
+     * @throws Throwable Caso algum erro ocorra
      */
-    void getEstratificacaoRealizacaoQuizCsv(OutputStream out,
-                                            String codModeloQuiz,
-                                            Long codUnidade,
-                                            long dataInicial,
-                                            long dataFinal) throws IOException, SQLException;
+    void getEstratificacaoRealizacaoQuizCsv(@NotNull final OutputStream out,
+                                            @NotNull final Long codUnidade,
+                                            @Nullable final Long codModeloQuiz,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método que cria um {@link Report} contendo informações de realização de
      * quizzes, estratificados por modelo e unidade.
      *
-     * @param codModeloQuiz - Código do modelo de quiz
-     * @param codUnidade    - Código da unidade a qual será filtrado os dados
-     * @param dataInicial   - Data incial do período de busca
-     * @param dataFinal     - Data final do período de busca
-     * @return              - Um objeto {@link Report} contendo as informações filtradas
-     * @throws SQLException - Caso algum erro de busca no SQL aconteça
+     * @param codUnidade    Código da unidade a qual será filtrado os dados
+     * @param codModeloQuiz Código do modelo de quiz
+     * @param dataInicial   Data incial do período de busca
+     * @param dataFinal     Data final do período de busca
+     * @return Um objeto {@link Report} contendo as informações filtradas
+     * @throws Throwable Caso algum erro ocorra
      */
-    Report getEstratificacaoRealizacaoQuizReport(String codModeloQuiz,
-                                                 Long codUnidade,
-                                                 long dataInicial,
-                                                 long dataFinal) throws SQLException;
+    @NotNull
+    Report getEstratificacaoRealizacaoQuizReport(@NotNull final Long codUnidade,
+                                                 @Nullable final Long codModeloQuiz,
+                                                 @NotNull final LocalDate dataInicial,
+                                                 @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método que cria um arquivo CSV contendo informações de realizações de quiz estratificados
      * por cargos da unidade.
      *
-     * @param out           - Local onde o csv será escrito
-     * @param codUnidade    - Código da unidade a qual será filtrado os dados
-     * @param codModeloQuiz - Código do modelo de quiz
-     * @throws SQLException - Caso algum erro de busca no SQL aconteça
-     * @throws IOException  - Caso algum erro de escrita aconteça
+     * @param out           Local onde o csv será escrito
+     * @param codUnidade    Código da unidade a qual será filtrado os dados
+     * @param codModeloQuiz Código do modelo de quiz
+     * @throws Throwable Caso algum erro ocorra
      */
-    void getRealizacaoQuizByCargoCsv(OutputStream out,
-                                     Long codUnidade,
-                                     String codModeloQuiz) throws SQLException, IOException;
+    void getRealizacaoQuizByCargoCsv(@NotNull final OutputStream out,
+                                     @NotNull final Long codUnidade,
+                                     @Nullable final Long codModeloQuiz) throws Throwable;
 
     /**
      * Método que cria um {@link Report} contendo informações de realizações de quiz estratificados
      * por cargos da unidade.
      *
-     * @param codUnidade    - Código da unidade a qual será filtrado os dados
-     * @param codModeloQuiz - Código do modelo de quiz
-     * @return              - Um objeto {@link Report} contendo as informações filtradas
-     * @throws SQLException - Caso algum erro de busca no SQL aconteça
+     * @param codUnidade    Código da unidade a qual será filtrado os dados
+     * @param codModeloQuiz Código do modelo de quiz
+     * @return Um objeto {@link Report} contendo as informações filtradas
+     * @throws Throwable Caso algum erro ocorra
      */
-    Report getRealizacaoQuizByCargoReport(Long codUnidade, String codModeloQuiz) throws SQLException;
+    @NotNull
+    Report getRealizacaoQuizByCargoReport(@NotNull final Long codUnidade,
+                                          @Nullable final Long codModeloQuiz) throws Throwable;
 
     /**
      * Método que cria um arquivo CSV contendo informações de respostas certas de quizzes de um certo
      * modelo, filtrados por unidade.
      *
-     * @param out           - Local onde o csv será escrito
-     * @param codUnidade    - Código da unidade a qual será filtrado os dados
-     * @param codModeloQuiz - Código do modelo de quiz
-     * @throws SQLException - Caso algum erro de busca no SQL aconteça
-     * @throws IOException  - Caso algum erro de escrita aconteça
+     * @param out           Local onde o csv será escrito
+     * @param codUnidade    Código da unidade a qual será filtrado os dados
+     * @param codModeloQuiz Código do modelo de quiz
+     * @throws Throwable Caso algum erro ocorra
      */
-    void getEstratificacaoQuizRespostasCsv(OutputStream out,
-                                           Long codUnidade,
-                                           String codModeloQuiz) throws SQLException, IOException;
+    void getEstratificacaoQuizRespostasCsv(@NotNull final OutputStream out,
+                                           @NotNull final Long codUnidade,
+                                           @Nullable final Long codModeloQuiz) throws Throwable;
 
     /**
      * Método que cria um {@link Report} contendo informações de respostas certas de quizzes de um certo
      * modelo, filtrados por unidade.
      *
-     * @param codUnidade    - Código da unidade a qual será filtrado os dados
-     * @param codModeloQuiz - Código do modelo de quiz
-     * @return              - Um objeto {@link Report} contendo as informações filtradas
-     * @throws SQLException - Caso algum erro de busca no SQL aconteça
+     * @param codUnidade    Código da unidade a qual será filtrado os dados
+     * @param codModeloQuiz Código do modelo de quiz
+     * @return Um objeto {@link Report} contendo as informações filtradas
+     * @throws Throwable Caso algum erro ocorra
      */
-    Report getEstratificacaoQuizRespostasReport(Long codUnidade, String codModeloQuiz) throws SQLException;
+    @NotNull
+    Report getEstratificacaoQuizRespostasReport(@NotNull final Long codUnidade,
+                                                @Nullable final Long codModeloQuiz) throws Throwable;
 
     /**
      * Método que cria um arquivo CSV contendo informações gerais dos quizzes, filtrados por unidade de acordo
      * com um período aplicado.
      *
-     * @param out           - Local onde o csv será escrito
-     * @param codUnidade    - Código da unidade a qual será filtrado os dados
-     * @param dataInicial   - Data incial do período de busca
-     * @param dataFinal     - Data final do período de busca
-     * @throws IOException  - Caso algum erro de escrita aconteça
-     * @throws SQLException - Caso algum erro de busca no SQL aconteça
+     * @param out         Local onde o csv será escrito
+     * @param codUnidade  Código da unidade a qual será filtrado os dados
+     * @param dataInicial Data incial do período de busca
+     * @param dataFinal   Data final do período de busca
+     * @throws Throwable Caso algum erro ocorra
      */
-    void getExtratoGeralCsv(OutputStream out,
-                            Long codUnidade,
-                            long dataInicial,
-                            long dataFinal) throws SQLException, IOException;
+    void getExtratoGeralCsv(@NotNull final OutputStream out,
+                            @NotNull final Long codUnidade,
+                            @NotNull final LocalDate dataInicial,
+                            @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método que cria um {@link Report} contendo informações gerais dos quizzes, filtrados por unidade de acordo
      * com um período aplicado.
      *
-     * @param codUnidade    - Código da unidade a qual será filtrado os dados
-     * @param dataInicial   - Data incial do período de busca
-     * @param dataFinal     - Data final do período de busca
-     * @return              - Um objeto {@link Report} contendo as informações filtradas
-     * @throws SQLException - Caso algum erro de busca no SQL aconteça
+     * @param codUnidade  Código da unidade a qual será filtrado os dados
+     * @param dataInicial Data incial do período de busca
+     * @param dataFinal   Data final do período de busca
+     * @return Um objeto {@link Report} contendo as informações filtradas
+     * @throws Throwable Caso algum erro ocorra
      */
-    Report getExtratoGeralReport (Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
+    @NotNull
+    Report getExtratoGeralReport(@NotNull final Long codUnidade,
+                                 @NotNull final LocalDate dataInicial,
+                                 @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método que cria um arquivo CSV contendo todas as respostas dos quizzes realizados.
      *
-     * @param out                   - Local onde o csv será escrito
-     * @param codUnidade            - Código da unidade a qual será filtrado os dados
-     * @param codModelo             - Código do modelo do quiz que será filtrado os dados
-     * @param cpfColaborador        - CPF do colaborador a qual será filtrado os dados
-     * @param dataInicial           - Data inicial do período de busca
-     * @param dataFinal             - Data final do período de busca
-     * @param apenasSelecionadas    - Define se a consulta retornará apenas respostas selecionadas
-     * @throws IOException          - Caso algum erro de escrita aconteça
-     * @throws SQLException         - Caso algum erro de busca no SQL aconteça
+     * @param out                Local onde o csv será escrito
+     * @param codUnidade         Código da unidade a qual será filtrado os dados
+     * @param codModeloQuiz      Código do modelo do quiz que será filtrado os dados
+     * @param cpfColaborador     CPF do colaborador a qual será filtrado os dados
+     * @param dataInicial        Data inicial do período de busca
+     * @param dataFinal          Data final do período de busca
+     * @param apenasSelecionadas Define se a consulta retornará apenas respostas selecionadas
+     * @throws Throwable Caso algum erro ocorra
      */
-    void getRespostasRealizadosCsv(OutputStream out,
-                            Long codUnidade,
-                            String codModelo,
-                            String cpfColaborador,
-                            long dataInicial,
-                            long dataFinal,
-                            boolean apenasSelecionadas) throws SQLException, IOException;
+    void getRespostasRealizadosCsv(@NotNull final OutputStream out,
+                                   @NotNull final Long codUnidade,
+                                   @Nullable final Long codModeloQuiz,
+                                   @Nullable final Long cpfColaborador,
+                                   @NotNull final LocalDate dataInicial,
+                                   @NotNull final LocalDate dataFinal,
+                                   final boolean apenasSelecionadas) throws Throwable;
 
     /**
-     * Método que cria um {@link Report} contendo todas as respostas dos quizzes realizados.
+     * Método que cria um {@link Report report} contendo todas as respostas dos quizzes realizados.
      *
-     * @param codUnidade            - Código da unidade a qual será filtrado os dados
-     * @param codModelo             - Código do modelo do quiz que será filtrado os dados
-     * @param cpfColaborador        - CPF do colaborador a qual será filtrado os dados
-     * @param dataInicial           - Data inicial do período de busca
-     * @param dataFinal             - Data final do período de busca
-     * @param apenasSelecionadas    - Define se a consulta retornará apenas respostas selecionadas
-     * @return                      - Um objeto {@link Report} contendo as informações filtradas
-     * @throws SQLException         - Caso algum erro de busca no SQL aconteça
+     * @param codUnidade         Código da unidade a qual será filtrado os dados
+     * @param codModeloQuiz      Código do modelo do quiz que será filtrado os dados
+     * @param cpfColaborador     CPF do colaborador a qual será filtrado os dados
+     * @param dataInicial        Data inicial do período de busca
+     * @param dataFinal          Data final do período de busca
+     * @param apenasSelecionadas Define se a consulta retornará apenas respostas selecionadas
+     * @return Um objeto {@link Report report} contendo as informações filtradas
+     * @throws Throwable Caso algum erro ocorra
      */
-    Report getRespostasRealizadosReport (Long codUnidade,
-                                         String codModelo,
-                                         String cpfColaborador,
-                                         long dataInicial,
-                                         long dataFinal,
-                                         boolean apenasSelecionadas) throws SQLException;
+    @NotNull
+    Report getRespostasRealizadosReport(@NotNull final Long codUnidade,
+                                        @Nullable final Long codModeloQuiz,
+                                        @Nullable final Long cpfColaborador,
+                                        @NotNull final LocalDate dataInicial,
+                                        @NotNull final LocalDate dataFinal,
+                                        final boolean apenasSelecionadas) throws Throwable;
 }
