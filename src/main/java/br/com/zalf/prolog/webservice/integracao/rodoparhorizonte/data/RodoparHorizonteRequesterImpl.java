@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data;
 
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.*;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoAvulsaRodoparHorizonte;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoPlacaRodoparHorizonte;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.ResponseAfericaoRodoparHorizonte;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
@@ -12,17 +14,33 @@ import retrofit2.Response;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester {
+
+
     @NotNull
     @Override
-    public ResponseAfericaoRodoparHorizonte insertAfericao(
+    public ResponseAfericaoRodoparHorizonte insertAfericaoPlaca(
             @NotNull final String cpf,
             @NotNull final String dataNascimento,
             @NotNull final String tokenIntegracao,
             @NotNull final Long codUnidade,
-            @NotNull final AfericaoRodoparHorizonte afericao) throws Throwable {
+            @NotNull final AfericaoPlacaRodoparHorizonte afericao) throws Throwable {
         final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
         final Call<ResponseAfericaoRodoparHorizonte> call =
-                service.insertAfericao(cpf, dataNascimento, codUnidade, afericao);
+                service.insertAfericaoPlaca(cpf, dataNascimento, codUnidade, afericao);
+        return handleResponse(call.execute());
+    }
+
+    @NotNull
+    @Override
+    public ResponseAfericaoRodoparHorizonte insertAfericaoAvulsa(
+            @NotNull final String cpf,
+            @NotNull final String dataNascimento,
+            @NotNull final String tokenIntegracao,
+            @NotNull final Long codUnidade,
+            @NotNull final AfericaoAvulsaRodoparHorizonte afericao) throws Throwable {
+        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
+        final Call<ResponseAfericaoRodoparHorizonte> call =
+                service.insertAfericaoAvulsa(cpf, dataNascimento, codUnidade, afericao);
         return handleResponse(call.execute());
     }
 

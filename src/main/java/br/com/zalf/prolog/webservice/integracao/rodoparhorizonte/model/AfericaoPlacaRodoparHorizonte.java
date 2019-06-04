@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +13,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class AfericaoRodoparHorizonte {
+public final class AfericaoPlacaRodoparHorizonte {
     /**
      * Atributo alfanumérico que representa a placa do veículo que foi aferido.
      */
@@ -62,14 +65,14 @@ public final class AfericaoRodoparHorizonte {
     @NotNull
     private final List<MedicaoAfericaoRodoparHorizonte> medicoes;
 
-    public AfericaoRodoparHorizonte(@NotNull final String placaAfericao,
-                                    @NotNull final Long codUnidadeAfericao,
-                                    @NotNull final String cpfColaboradorAfericao,
-                                    @NotNull final Long kmMomentoAfericao,
-                                    @NotNull final Long tempoRealizacaoAfericaoInMillis,
-                                    @NotNull final LocalDateTime dataHoraAfericaoUtc,
-                                    @NotNull final TipoMedicaoAfericaoRodoparHorizonte tipoMedicaoColetadaAfericao,
-                                    @NotNull final List<MedicaoAfericaoRodoparHorizonte> medicoes) {
+    public AfericaoPlacaRodoparHorizonte(@NotNull final String placaAfericao,
+                                         @NotNull final Long codUnidadeAfericao,
+                                         @NotNull final String cpfColaboradorAfericao,
+                                         @NotNull final Long kmMomentoAfericao,
+                                         @NotNull final Long tempoRealizacaoAfericaoInMillis,
+                                         @NotNull final LocalDateTime dataHoraAfericaoUtc,
+                                         @NotNull final TipoMedicaoAfericaoRodoparHorizonte tipoMedicaoColetadaAfericao,
+                                         @NotNull final List<MedicaoAfericaoRodoparHorizonte> medicoes) {
         this.placaAfericao = placaAfericao;
         this.codUnidadeAfericao = codUnidadeAfericao;
         this.cpfColaboradorAfericao = cpfColaboradorAfericao;
@@ -78,6 +81,21 @@ public final class AfericaoRodoparHorizonte {
         this.dataHoraAfericaoUtc = dataHoraAfericaoUtc;
         this.tipoMedicaoColetadaAfericao = tipoMedicaoColetadaAfericao;
         this.medicoes = medicoes;
+    }
+
+    @NotNull
+    public static AfericaoPlacaRodoparHorizonte getDummy() {
+        final List<MedicaoAfericaoRodoparHorizonte> medicoes = new ArrayList<>();
+        medicoes.add(MedicaoAfericaoRodoparHorizonte.getDummy(TipoMedicaoAfericaoRodoparHorizonte.SULCO_PRESSAO));
+        return new AfericaoPlacaRodoparHorizonte(
+                "PRO0001",
+                5L,
+                "03383283194",
+                987654L,
+                Duration.ofMinutes(10L).toMillis(),
+                Now.localDateTimeUtc(),
+                TipoMedicaoAfericaoRodoparHorizonte.SULCO_PRESSAO,
+                medicoes);
     }
 
     @NotNull

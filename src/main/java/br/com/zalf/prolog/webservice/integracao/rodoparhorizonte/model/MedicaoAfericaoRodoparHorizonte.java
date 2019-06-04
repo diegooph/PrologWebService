@@ -88,6 +88,42 @@ public final class MedicaoAfericaoRodoparHorizonte {
     }
 
     @NotNull
+    public static MedicaoAfericaoRodoparHorizonte getDummy(
+            @NotNull final TipoMedicaoAfericaoRodoparHorizonte tipoMedicaoAfericao) {
+        if (tipoMedicaoAfericao.equals(TipoMedicaoAfericaoRodoparHorizonte.PRESSAO)) {
+            return new MedicaoAfericaoRodoparHorizonte(
+                    "PN001",
+                    12345L,
+                    2,
+                    110.0,
+                    null,
+                    null,
+                    null,
+                    null);
+        } else if (tipoMedicaoAfericao.equals(TipoMedicaoAfericaoRodoparHorizonte.SULCO)) {
+            return new MedicaoAfericaoRodoparHorizonte(
+                    "PN001",
+                    12345L,
+                    2,
+                    null,
+                    12.0,
+                    11.8,
+                    11.9,
+                    11.9);
+        } else {
+            return new MedicaoAfericaoRodoparHorizonte(
+                    "PN001",
+                    12345L,
+                    2,
+                    110.0,
+                    12.0,
+                    11.8,
+                    11.9,
+                    11.9);
+        }
+    }
+
+    @NotNull
     public String getCodigoCliente() {
         return codigoCliente;
     }
