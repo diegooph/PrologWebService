@@ -54,7 +54,7 @@ public final class ChecklistItensNokGlobus {
     /**
      * Data e hora que o checklist foi realizado pelo colaborador.
      * <p>
-     * A data e hora estão no padrão UTC, exemplo: "2019-05-23T15:30:00-03:00"
+     * A data e hora estão no padrão UTC, exemplo: "2019-05-23T15:30:00"
      */
     @NotNull
     private final LocalDateTime dataHoraRealizacaoUtc;
