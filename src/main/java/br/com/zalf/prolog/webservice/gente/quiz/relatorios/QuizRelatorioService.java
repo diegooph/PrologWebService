@@ -51,8 +51,8 @@ class QuizRelatorioService {
                                                  final String dataFinal) throws ProLogException {
         try {
             return dao.getEstratificacaoRealizacaoQuizReport(
-                    codModeloQuiz,
                     codUnidade,
+                    codModeloQuiz,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
@@ -198,7 +198,7 @@ class QuizRelatorioService {
 
     void getRespostasRealizadosCsv(final OutputStream out,
                                    final Long codUnidade,
-                                   final Long codModelo,
+                                   final Long codModeloQuiz,
                                    final Long cpfColaborador,
                                    final String dataInicial,
                                    final String dataFinal,
@@ -206,7 +206,7 @@ class QuizRelatorioService {
         try {
             dao.getRespostasRealizadosCsv(out,
                     codUnidade,
-                    codModelo,
+                    codModeloQuiz,
                     cpfColaborador,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal),
@@ -214,13 +214,13 @@ class QuizRelatorioService {
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro a buscar o relatório de respostas de quizzes realizados (CSV).\n" +
                             "codUnidade: %d\n" +
-                            "codModelo: %d\n" +
+                            "codModeloQuiz: %d\n" +
                             "cpfColaborador: %d\n" +
                             "dataInicial: %s\n" +
                             "dataFinal: %s\n" +
                             "apenasSelecionadas: %b",
                     codUnidade,
-                    codModelo,
+                    codModeloQuiz,
                     cpfColaborador,
                     dataInicial,
                     dataFinal,
@@ -232,7 +232,7 @@ class QuizRelatorioService {
 
     @NotNull
     Report getRespostasRealizadosReport(final Long codUnidade,
-                                        final Long codModelo,
+                                        final Long codModeloQuiz,
                                         final Long cpfColaborador,
                                         final String dataInicial,
                                         final String dataFinal,
@@ -240,7 +240,7 @@ class QuizRelatorioService {
         try {
             return dao.getRespostasRealizadosReport(
                     codUnidade,
-                    codModelo,
+                    codModeloQuiz,
                     cpfColaborador,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal),
@@ -248,13 +248,13 @@ class QuizRelatorioService {
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro a buscar o relatório de respostas de quizzes realizados (REPORT).\n" +
                             "codUnidade: %d\n" +
-                            "codModelo: %d\n" +
+                            "codModeloQuiz: %d\n" +
                             "cpfColaborador: %d\n" +
                             "dataInicial: %s\n" +
                             "dataFinal: %s\n" +
                             "apenasSelecionadas: %b",
                     codUnidade,
-                    codModelo,
+                    codModeloQuiz,
                     cpfColaborador,
                     dataInicial,
                     dataFinal,
