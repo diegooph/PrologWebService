@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Cria método para permitir a deleção de múltiplos itens do pré contracheque (PL-2002)
 
+### Bug Fixes
+* Adiciona permissão de realizar quiz na busca de um modelo específico (PL-2056)
+
 
 <a name="v0.0.93"></a>
 ## Version [v0.0.93](https://github.com/luizfp/PrologWebService/compare/v0.0.92...v0.0.93) (2019-05-30)
