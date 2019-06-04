@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 27/05/19.
@@ -28,44 +29,54 @@ public class MedicaoAfericaoRodoparHorizonte {
     private final Integer vidaAtual;
     /**
      * Medida de pressão coletada pelo processo de medição. Este valor representa a pressão do pneu em PSI.
+     * <p>
+     * Essa medida será <code>NULL</code> somente se o {@link TipoMedicaoAfericaoRodoparHorizonte#SULCO}.
      */
-    @NotNull
+    @Nullable
     private final Double pressaoAtual;
     /**
      * Medida do sulco interno do pneu, coletado pelo processo de medição. Este valor representa a medida do sulco do
      * pneu em milimetros.
+     * <p>
+     * Essa medida será <code>NULL</code> somente se o {@link TipoMedicaoAfericaoRodoparHorizonte#PRESSAO}.
      */
-    @NotNull
+    @Nullable
     private final Double sulcoInterno;
     /**
      * Medida do sulco central interno do pneu, coletado pelo processo de medição. Este valor representa a medida do
      * sulco do pneu em milimetros.
+     * <p>
+     * Essa medida será <code>NULL</code> somente se o {@link TipoMedicaoAfericaoRodoparHorizonte#PRESSAO}.
      */
-    @NotNull
+    @Nullable
     private final Double sulcoCentralInterno;
     /**
      * Medida do sulco central externo do pneu, coletado pelo processo de medição. Este valor representa a medida do
      * sulco do pneu em milimetros.
      * <p>
      * Caso o pneu possua apenas 3 sulcos, este valor será igual ao {@code sulcoCentralInterno}.
+     * <p>
+     * Essa medida será <code>NULL</code> somente se o {@link TipoMedicaoAfericaoRodoparHorizonte#PRESSAO}.
      */
-    @NotNull
+    @Nullable
     private final Double sulcoCentralExterno;
     /**
      * Medida do sulco externo do pneu, coletado pelo processo de medição. Este valor representa a medida do sulco do
      * pneu em milimetros.
+     * <p>
+     * Essa medida será <code>NULL</code> somente se o {@link TipoMedicaoAfericaoRodoparHorizonte#PRESSAO}.
      */
-    @NotNull
+    @Nullable
     private final Double sulcoExterno;
 
     public MedicaoAfericaoRodoparHorizonte(@NotNull final String codigoCliente,
                                            @NotNull final Long codigo,
                                            @NotNull final Integer vidaAtual,
-                                           @NotNull final Double pressaoAtual,
-                                           @NotNull final Double sulcoInterno,
-                                           @NotNull final Double sulcoCentralInterno,
-                                           @NotNull final Double sulcoCentralExterno,
-                                           @NotNull final Double sulcoExterno) {
+                                           @Nullable final Double pressaoAtual,
+                                           @Nullable final Double sulcoInterno,
+                                           @Nullable final Double sulcoCentralInterno,
+                                           @Nullable final Double sulcoCentralExterno,
+                                           @Nullable final Double sulcoExterno) {
         this.codigoCliente = codigoCliente;
         this.codigo = codigo;
         this.vidaAtual = vidaAtual;
@@ -91,27 +102,27 @@ public class MedicaoAfericaoRodoparHorizonte {
         return vidaAtual;
     }
 
-    @NotNull
+    @Nullable
     public Double getPressaoAtual() {
         return pressaoAtual;
     }
 
-    @NotNull
+    @Nullable
     public Double getSulcoInterno() {
         return sulcoInterno;
     }
 
-    @NotNull
+    @Nullable
     public Double getSulcoCentralInterno() {
         return sulcoCentralInterno;
     }
 
-    @NotNull
+    @Nullable
     public Double getSulcoCentralExterno() {
         return sulcoCentralExterno;
     }
 
-    @NotNull
+    @Nullable
     public Double getSulcoExterno() {
         return sulcoExterno;
     }
