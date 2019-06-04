@@ -123,7 +123,7 @@ public class QuizRelatorioResource {
     @Produces("application/csv")
     public StreamingOutput getRespostasRealizadosCsv(
             @QueryParam("codUnidade") @Required Long codUnidade,
-            @QueryParam("codModelo") @Optional Long codModelo,
+            @QueryParam("codModeloQuiz") @Optional Long codModelo,
             @QueryParam("cpfColaborador") @Optional Long cpfColaborador,
             @QueryParam("dataInicial") @Required String dataInicial,
             @QueryParam("dataFinal") @Required String dataFinal,
@@ -142,7 +142,7 @@ public class QuizRelatorioResource {
     @Path("/respostas-realizados/report")
     public Report getRespostasRealizadosReport(
             @QueryParam("codUnidade") @Required Long codUnidade,
-            @QueryParam("codModelo") @Optional Long codModelo,
+            @QueryParam("codModeloQuiz") @Optional Long codModelo,
             @QueryParam("cpfColaborador") @Optional Long cpfColaborador,
             @QueryParam("dataInicial") @Required String dataInicial,
             @QueryParam("dataFinal") @Required String dataFinal,
