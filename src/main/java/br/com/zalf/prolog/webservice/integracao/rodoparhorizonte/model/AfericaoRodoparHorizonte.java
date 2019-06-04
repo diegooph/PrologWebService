@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -42,10 +42,10 @@ public final class AfericaoRodoparHorizonte {
      * Data e hora em que a aferição foi realizada pelo colaborador. Consiste na data e hora em que a requisição chegou
      * ao servidor do ProLog.
      * <p>
-     * A data e hora estão em UTC, exemplo: "2019-02-21T15:30:00-03:00"
+     * A data e hora estão em UTC, ou seja, já com o deslocamento aplicado, exemplo: "2019-02-21T15:30:00"
      */
     @NotNull
-    private final OffsetDateTime dataHoraAfericaoUtc;
+    private final LocalDateTime dataHoraAfericaoUtc;
     /**
      * Constante alfanumérica que representa o {@link TipoMedicaoAfericaoRodoparHorizonte tipo de medição} que foi
      * utilizado para a captura de informações, podem ter sido utilizados 3 tipos:
@@ -67,7 +67,7 @@ public final class AfericaoRodoparHorizonte {
                                     @NotNull final String cpfColaboradorAfericao,
                                     @NotNull final Long kmMomentoAfericao,
                                     @NotNull final Long tempoRealizacaoAfericaoInMillis,
-                                    @NotNull final OffsetDateTime dataHoraAfericaoUtc,
+                                    @NotNull final LocalDateTime dataHoraAfericaoUtc,
                                     @NotNull final TipoMedicaoAfericaoRodoparHorizonte tipoMedicaoColetadaAfericao,
                                     @NotNull final List<MedicaoAfericaoRodoparHorizonte> medicoes) {
         this.placaAfericao = placaAfericao;
@@ -106,7 +106,7 @@ public final class AfericaoRodoparHorizonte {
     }
 
     @NotNull
-    public OffsetDateTime getDataHoraAfericaoUtc() {
+    public LocalDateTime getDataHoraAfericaoUtc() {
         return dataHoraAfericaoUtc;
     }
 
