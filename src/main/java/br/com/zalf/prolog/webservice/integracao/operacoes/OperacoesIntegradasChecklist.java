@@ -35,7 +35,7 @@ interface OperacoesIntegradasChecklist {
             @NotNull final String placaVeiculo,
             final char tipoChecklist) throws Exception;
 
-    Long insertChecklist(@NotNull final Checklist checklist) throws Exception;
+    Long insertChecklist(@NotNull final Checklist checklist) throws Throwable;
 
     @NotNull
     Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception;

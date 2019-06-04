@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
@@ -29,11 +30,18 @@ public class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull final Checklist checklist) throws Exception {
+    public Long insertChecklist(@NotNull final Checklist checklist) throws Throwable {
         Connection conn = null;
         try {
             conn = new DatabaseConnectionProvider().provideDatabaseConnection();
-            return 10L;
+            final Long codChecklistProLog = Injection.provideChecklistDao().insert(conn, checklist, false);
+//            Injection.provideOrdemServicoDao().incrementaQtdApontamentos();
+            return codChecklistProLog;
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
         } finally {
             new DatabaseConnectionProvider().closeResources(conn);
         }

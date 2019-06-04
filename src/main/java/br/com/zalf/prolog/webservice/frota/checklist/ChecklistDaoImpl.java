@@ -37,14 +37,40 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
     @NotNull
     @Override
+    public Long insert(@NotNull final Connection conn,
+                       @NotNull final Checklist checklist,
+                       final boolean deveAbrirOs) throws Throwable {
+        return internalInsertChecklist(conn, checklist, deveAbrirOs);
+    }
+
+    @NotNull
+    @Override
     public Long insert(Checklist checklist) throws SQLException {
         Connection conn = null;
+        try {
+            conn = getConnection();
+            return internalInsertChecklist(conn, checklist, true);
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+
+            // Como esse método ainda não está refatorado para retornar um Throwable, encapsulamos o retorno em uma
+            // SQLException.
+            throw new SQLException(t);
+        } finally {
+            close(conn);
+        }
+    }
+
+    @NotNull
+    private Long internalInsertChecklist(@NotNull final Connection conn,
+                                         @NotNull final Checklist checklist,
+                                         final boolean deveAbrirOs) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO CHECKLIST(" +
                     "  COD_UNIDADE, " +
                     "  COD_CHECKLIST_MODELO, " +
@@ -75,25 +101,19 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                 checklist.setCodigo(rSet.getLong("CODIGO"));
                 final Long codUnidade = rSet.getLong("COD_UNIDADE");
                 insertRespostas(checklist, conn);
-                Injection
-                        .provideOrdemServicoDao()
-                        .processaChecklistRealizado(conn, codUnidade, checklist);
+                if (deveAbrirOs) {
+                    Injection
+                            .provideOrdemServicoDao()
+                            .processaChecklistRealizado(conn, codUnidade, checklist);
+                }
                 veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo(), conn);
                 conn.commit();
                 return checklist.getCodigo();
             } else {
                 throw new SQLException("Erro ao inserir o checklist");
             }
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-
-            // Como esse método ainda não está refatorado para retornar um Throwable, encapsulamos o retorno em uma
-            // SQLException.
-            throw new SQLException(t);
         } finally {
-            close(conn, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
