@@ -127,7 +127,7 @@ public class QuizRelatorioResource {
             @QueryParam("cpfColaborador") @Optional Long cpfColaborador,
             @QueryParam("dataInicial") @Required String dataInicial,
             @QueryParam("dataFinal") @Required String dataFinal,
-            @QueryParam("apenasSelecionadas") @Required boolean apenasSelecionadas) {
+            @QueryParam("apenasRespostasSelecionadas") @Required boolean apenasRespostasSelecionadas) {
         return outputStream -> service.getRespostasRealizadosCsv(
                 outputStream,
                 codUnidade,
@@ -135,17 +135,18 @@ public class QuizRelatorioResource {
                 cpfColaborador,
                 dataInicial,
                 dataFinal,
-                apenasSelecionadas);
+                apenasRespostasSelecionadas);
     }
 
     @GET
     @Path("/respostas-realizados/report")
-    public Report getRespostasRealizadosReport(@QueryParam("codUnidade") @Required Long codUnidade,
-                                               @QueryParam("codModelo") @Optional Long codModelo,
-                                               @QueryParam("cpfColaborador") @Optional Long cpfColaborador,
-                                               @QueryParam("dataInicial") @Required String dataInicial,
-                                               @QueryParam("dataFinal") @Required String dataFinal,
-                                               @QueryParam("apenasSelecionadas") @Required boolean apenasSelecionadas)
+    public Report getRespostasRealizadosReport(
+            @QueryParam("codUnidade") @Required Long codUnidade,
+            @QueryParam("codModelo") @Optional Long codModelo,
+            @QueryParam("cpfColaborador") @Optional Long cpfColaborador,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal,
+            @QueryParam("apenasRespostasSelecionadas") @Required boolean apenasRespostasSelecionadas)
             throws ProLogException {
         return service.getRespostasRealizadosReport(
                 codUnidade,
@@ -153,6 +154,6 @@ public class QuizRelatorioResource {
                 cpfColaborador,
                 dataInicial,
                 dataFinal,
-                apenasSelecionadas);
+                apenasRespostasSelecionadas);
     }
 }
