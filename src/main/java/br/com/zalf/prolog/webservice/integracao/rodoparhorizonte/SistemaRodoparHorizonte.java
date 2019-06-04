@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
@@ -31,19 +29,5 @@ public class SistemaRodoparHorizonte extends Sistema {
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         return super.insertAfericao(codUnidade, afericao);
-    }
-
-    @NotNull
-    @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
-        return super.getCronogramaAfericao(codUnidade);
-    }
-
-    @NotNull
-    @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placaVeiculo,
-                                                  @NotNull final String tipoAfericao) throws Throwable {
-        return super.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
     }
 }

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class MedicaoAfericaoRodoparHorizonte {
+public final class MedicaoAfericaoRodoparHorizonte {
     /**
      * Atributo alfanumérico que representa o código pelo qual o usuário identifica o pneu. Normalmente costuma-se
      * utilizar o código de fogo do pneu para identificá-lo.

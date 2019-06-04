@@ -27,32 +27,6 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
     }
 
     @NotNull
-    @Override
-    public CronogramaAfericaoRodoparHorizonte getCronogramaAfericao(@NotNull final String cpf,
-                                                                    @NotNull final String dataNascimento,
-                                                                    @NotNull final String tokenIntegracao,
-                                                                    @NotNull final Long codUnidade) throws Throwable {
-        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
-        final Call<CronogramaAfericaoRodoparHorizonte> call =
-                service.getCronogramaAfericao(cpf, dataNascimento, codUnidade);
-        return handleResponse(call.execute());
-    }
-
-    @NotNull
-    @Override
-    public NovaAfericaoPlacaRodoparHorizonte getNovaAfericaoPlaca(
-            @NotNull final String cpf,
-            @NotNull final String dataNascimento,
-            @NotNull final Long codUnidade,
-            @NotNull final String placa,
-            @NotNull final TipoMedicaoAfericaoRodoparHorizonte tipoAfericao) throws Throwable {
-        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
-        final Call<NovaAfericaoPlacaRodoparHorizonte> call =
-                service.getNovaAfericaoPlaca(cpf, dataNascimento, codUnidade, placa, tipoAfericao.asString());
-        return handleResponse(call.execute());
-    }
-
-    @NotNull
     private <T> T handleResponse(@Nullable final Response<T> response) {
         //noinspection Duplicates
         if (response != null) {

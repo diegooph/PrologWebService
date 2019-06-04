@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data;
 
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoRodoparHorizonte;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.CronogramaAfericaoRodoparHorizonte;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.NovaAfericaoPlacaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.ResponseAfericaoRodoparHorizonte;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
-import retrofit2.http.*;
+import retrofit2.http.Body;
+import retrofit2.http.Header;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Created on 25/05/19.
@@ -23,18 +24,4 @@ public interface RodoparHorizonteRest {
             @Header("pass") @NotNull final String dataNascimento,
             @Query("codUnidade") @NotNull final Long codUnidade,
             @Body @NotNull final AfericaoRodoparHorizonte afericao);
-
-    @GET("")
-    Call<CronogramaAfericaoRodoparHorizonte> getCronogramaAfericao(
-            @Header("user") @NotNull final String cpf,
-            @Header("pass") @NotNull final String dataNascimento,
-            @Query("codUnidade") @NotNull final Long codUnidade);
-
-    @GET("")
-    Call<NovaAfericaoPlacaRodoparHorizonte> getNovaAfericaoPlaca(
-            @Header("user") @NotNull final String cpf,
-            @Header("pass") @NotNull final String dataNascimento,
-            @Query("codUnidade") @NotNull final Long codUnidade,
-            @Query("placa") @NotNull final String placa,
-            @Query("tipoAfericao") @NotNull final String tipoAfericao);
 }
