@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -37,6 +38,17 @@ public final class DummyTransferenciaVeiculoResource extends DummyData {
         final List<Long> veiculos = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             veiculos.add((long) i);
+        }
+        return veiculos;
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/processo-transferencia-veiculos-selecao")
+    public List<VeiculoSelecaoTransferencia> getVeiculosSelecaoTransferencia() {
+        final List<VeiculoSelecaoTransferencia> veiculos = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            veiculos.add(VeiculoSelecaoTransferencia.createDummy());
         }
         return veiculos;
     }

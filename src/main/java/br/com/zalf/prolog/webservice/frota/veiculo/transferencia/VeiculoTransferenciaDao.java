@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,18 @@ public interface VeiculoTransferenciaDao {
     @NotNull
     Long insertProcessoTranseferenciaVeiculo(
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws Throwable;
+
+    /**
+     * Busca os veículos da unidade de origem da transferência que estão aptos a seleção para serem transferidos.
+     *
+     * @param codUnidadeOrigem Código da unidade de origem da transferência, para a qual serão buscados os veículos.
+     * @return Uma lista de {@link VeiculoSelecaoTransferencia veículos} disponíveis na unidade de origem para serem
+     * transferidos.
+     * @throws Throwable Se algo der errado na busca.
+     */
+    @NotNull
+    List<VeiculoSelecaoTransferencia> getVeiculosParaSelecaoTransferencia(
+            @NotNull final Long codUnidadeOrigem) throws Throwable;
 
     /**
      * Método utilizado para listar os processos de transferência realizados.

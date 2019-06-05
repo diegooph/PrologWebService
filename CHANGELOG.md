@@ -4,7 +4,7 @@ Change Log
 ## Stage
 
 ### Features
-* Cria objetos necessários para funcionalidade de transferência de veículos (PL-1841)
+* Implementa funcionalidade de transferência de veículos (PL-1532)
 
 ### Refactors
 * Adiciona placa ao exibir processo de transferência de pneu que ocorreu por conta da transferência de uma placa (PL-1941)

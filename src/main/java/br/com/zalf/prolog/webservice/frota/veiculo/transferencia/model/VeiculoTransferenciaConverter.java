@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.PneuVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
@@ -38,6 +39,16 @@ public final class VeiculoTransferenciaConverter {
                 codColaboradorRealizacaoTransferencia,
                 codPneusAplicadosVeiculo,
                 null);
+    }
+
+    @NotNull
+    public static VeiculoSelecaoTransferencia createVeiculoSelecaoTransferencia(@NotNull final ResultSet rSet)
+            throws Throwable {
+        return new VeiculoSelecaoTransferencia(
+                rSet.getLong("COD_VEICULO"),
+                rSet.getString("PLACA_VEICULO"),
+                rSet.getLong("KM_ATUAL_VEICULO"),
+                rSet.getInt("QTD_PNEUS_APLICADOS_VEICULO"));
     }
 
     @NotNull

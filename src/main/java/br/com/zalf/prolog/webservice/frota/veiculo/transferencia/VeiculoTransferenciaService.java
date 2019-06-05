@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +37,20 @@ public final class VeiculoTransferenciaService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao realizar processo de transferência, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<VeiculoSelecaoTransferencia> getVeiculosParaSelecaoTransferencia(final Long codUnidadeOrigem)
+            throws ProLogException {
+        try {
+            return dao.getVeiculosParaSelecaoTransferencia(codUnidadeOrigem);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar veículos para transferência:\n" +
+                    "codUnidadeOrigem: %d\n", codUnidadeOrigem), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar veículos, tente novamente");
         }
     }
 

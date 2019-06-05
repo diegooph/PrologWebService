@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -37,6 +38,13 @@ public final class VeiculoTransferenciaResource {
     public ResponseWithCod insertProcessoTransferenciaVeiculo(
             @Required final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
         return service.insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    public List<VeiculoSelecaoTransferencia> getVeiculosParaSelecaoTransferencia(
+            @QueryParam("codUnidadeOrigem") @Required final Long codUnidadeOrigem) throws ProLogException {
+        return service.getVeiculosParaSelecaoTransferencia(codUnidadeOrigem);
     }
 
     @GET

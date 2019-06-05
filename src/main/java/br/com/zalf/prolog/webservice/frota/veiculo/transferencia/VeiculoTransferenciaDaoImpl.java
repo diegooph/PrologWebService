@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoSe
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoTransferenciaConverter;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.PneuVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
@@ -148,6 +149,29 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                 conn.rollback();
             }
             throw t;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<VeiculoSelecaoTransferencia> getVeiculosParaSelecaoTransferencia(
+            @NotNull final Long codUnidadeOrigem) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_TRANSFERENCIA_VEICULOS_SELECAO(" +
+                    "F_COD_UNIDADE_ORIGEM := ?);");
+            stmt.setLong(1, codUnidadeOrigem);
+            rSet = stmt.executeQuery();
+            final List<VeiculoSelecaoTransferencia> veiculosSelecao = new ArrayList<>();
+            while (rSet.next()) {
+                veiculosSelecao.add(VeiculoTransferenciaConverter.createVeiculoSelecaoTransferencia(rSet));
+            }
+            return veiculosSelecao;
         } finally {
             close(conn, stmt, rSet);
         }
