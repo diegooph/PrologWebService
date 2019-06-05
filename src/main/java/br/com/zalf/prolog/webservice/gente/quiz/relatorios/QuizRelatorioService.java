@@ -3,109 +3,266 @@ package br.com.zalf.prolog.webservice.gente.quiz.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.SQLException;
-import java.util.Date;
 
 /**
  * Created by Zart on 20/03/17.
  */
-public class QuizRelatorioService {
-
-    private QuizRelatorioDao dao = Injection.provideQuizRelatorioDao();
+class QuizRelatorioService {
     private static final String TAG = QuizRelatorioService.class.getSimpleName();
+    @NotNull
+    private final QuizRelatorioDao dao = Injection.provideQuizRelatorioDao();
 
-    public void getEstratificacaoRealizacaoQuizCsv(OutputStream out, String codModeloQuiz, Long codUnidade,
-                                                   long dataInicial, long dataFinal) {
+    void getEstratificacaoRealizacaoQuizCsv(final OutputStream out,
+                                            final Long codUnidade,
+                                            final Long codModeloQuiz,
+                                            final String dataInicial,
+                                            final String dataFinal) {
         try {
-            dao.getEstratificacaoRealizacaoQuizCsv(out, codModeloQuiz, codUnidade, dataInicial, dataFinal);
-        } catch (SQLException | IOException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório com a estratificação de realização do quiz (CSV). \n" +
-                    "codUnidade: %d \n" +
-                    "codModeloQuiz: %s \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, codModeloQuiz, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+            dao.getEstratificacaoRealizacaoQuizCsv(
+                    out,
+                    codModeloQuiz,
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório com a estratificação de realização do quiz (CSV).\n" +
+                            "codUnidade: %d\n" +
+                            "codModeloQuiz: %d\n" +
+                            "dataInicial: %s\n" +
+                            "dataFinal: %s",
+                    codUnidade,
+                    codModeloQuiz,
+                    dataInicial,
+                    dataInicial),
+                    throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
-    public Report getEstratificacaoRealizacaoQuizReport(String codModeloQuiz, Long codUnidade,
-                                                        long dataInicial, long dataFinal) {
+    @NotNull
+    Report getEstratificacaoRealizacaoQuizReport(final Long codUnidade,
+                                                 final Long codModeloQuiz,
+                                                 final String dataInicial,
+                                                 final String dataFinal) throws ProLogException {
         try {
-            return dao.getEstratificacaoRealizacaoQuizReport(codModeloQuiz, codUnidade, dataInicial, dataFinal);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório com a estratificação de realização do quiz (REPORT). \n" +
-                    "codUnidade: %d \n" +
-                    "codModeloQuiz: %s \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, codModeloQuiz, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            return null;
+            return dao.getEstratificacaoRealizacaoQuizReport(
+                    codUnidade,
+                    codModeloQuiz,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório com a estratificação de realização do quiz (REPORT).\n" +
+                            "codUnidade: %d\n" +
+                            "codModeloQuiz: %d\n" +
+                            "dataInicial: %s\n" +
+                            "dataFinal: %s",
+                    codUnidade,
+                    codModeloQuiz,
+                    dataInicial,
+                    dataFinal), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
         }
     }
 
-    public void getRealizacaoQuizByCargoCsv(OutputStream out, Long codUnidade, String codModeloQuiz) {
+    void getRealizacaoQuizByCargoCsv(final OutputStream out,
+                                     final Long codUnidade,
+                                     final Long codModeloQuiz) {
         try {
-            dao.getRealizacaoQuizByCargoCsv(out, codUnidade, codModeloQuiz);
-        } catch (SQLException | IOException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório com a realização de quizzes por cargo (CSV). \n" +
-                    "codUnidade: %d \n" +
-                    "codModeloQuiz: %s", codUnidade, codModeloQuiz), e);
+            dao.getRealizacaoQuizByCargoCsv(
+                    out,
+                    codUnidade,
+                    codModeloQuiz);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório com a realização de quizzes por cargo (CSV).\n" +
+                    "codUnidade: %d\n" +
+                    "codModeloQuiz: %d",
+                    codUnidade,
+                    codModeloQuiz),
+                    throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
-    public Report getRealizacaoQuizByCargoReport(Long codUnidade, String codModeloQuiz) {
+    @NotNull
+    Report getRealizacaoQuizByCargoReport(final Long codUnidade,
+                                          final Long codModeloQuiz) throws ProLogException {
         try {
-            return dao.getRealizacaoQuizByCargoReport(codUnidade, codModeloQuiz);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório com a realização de quizzes por cargo (REPORT). \n" +
-                    "codUnidade: %d \n" +
-                    "codModeloQuiz: %s", codUnidade, codModeloQuiz), e);
-            return null;
+            return dao.getRealizacaoQuizByCargoReport(
+                    codUnidade,
+                    codModeloQuiz);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório com a realização de quizzes por cargo (REPORT).\n" +
+                    "codUnidade: %d\n" +
+                    "codModeloQuiz: %d",
+                    codUnidade,
+                    codModeloQuiz),
+                    throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
         }
     }
 
-    public void getEstratificacaoQuizRespostasCsv(OutputStream out, Long codUnidade, String codModeloQuiz) {
+    void getEstratificacaoQuizRespostasCsv(final OutputStream out,
+                                           final Long codUnidade,
+                                           final Long codModeloQuiz) {
         try {
-            dao.getEstratificacaoQuizRespostasCsv(out, codUnidade, codModeloQuiz);
-        } catch (SQLException | IOException e) {
-            Log.e(TAG, String.format("Erro ao bucar o relatório com a estratificação de respostas (CSV). \n" +
-                    "codUnidade: %d \n" +
-                    "codModeloQuiz: %s", codUnidade, codModeloQuiz), e);
+            dao.getEstratificacaoQuizRespostasCsv(
+                    out,
+                    codUnidade,
+                    codModeloQuiz);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao bucar o relatório com a estratificação de respostas (CSV).\n" +
+                    "codUnidade: %d\n" +
+                    "codModeloQuiz: %d",
+                    codUnidade,
+                    codModeloQuiz),
+                    throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
-    public Report getEstratificacaoQuizRespostasReport(Long codUnidade, String codModeloQuiz) {
+    @NotNull
+    Report getEstratificacaoQuizRespostasReport(final Long codUnidade,
+                                                final Long codModeloQuiz) throws ProLogException {
         try {
-            return dao.getEstratificacaoQuizRespostasReport(codUnidade, codModeloQuiz);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao bucar o relatório com a estratificação de respostas (REPORT). \n" +
-                    "codUnidade: %d \n" +
-                    "codModeloQuiz: %s", codUnidade, codModeloQuiz), e);
-            return null;
+            return dao.getEstratificacaoQuizRespostasReport(
+                    codUnidade,
+                    codModeloQuiz);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao bucar o relatório com a estratificação de respostas (REPORT).\n" +
+                    "codUnidade: %d\n" +
+                    "codModeloQuiz: %d",
+                    codUnidade,
+                    codModeloQuiz),
+                    throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
         }
     }
 
-    public void getExtratoGeralCsv(OutputStream out, Long codUnidade, long dataInicial, long dataFinal) {
+    void getExtratoGeralCsv(final OutputStream out,
+                            final Long codUnidade,
+                            final String dataInicial,
+                            final String dataFinal) {
         try {
-            dao.getExtratoGeralCsv(out, codUnidade, dataInicial, dataFinal);
-        } catch (SQLException | IOException e) {
-            Log.e(TAG, String.format("Erro a buscar o relatório com o extrato geral de respostas do quiz (CSV). \n" +
-                    "codUnidade: %d \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+            dao.getExtratoGeralCsv(
+                    out,
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro a buscar o relatório com o extrato geral de respostas do quiz (CSV).\n" +
+                            "codUnidade: %d\n" +
+                            "dataInicial: %s\n" +
+                            "dataFinal: %s",
+                    codUnidade,
+                    dataInicial,
+                    dataFinal),
+                    throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
-    public Report getExtratoGeralReport(Long codUnidade, long dataInicial, long dataFinal) {
+    @NotNull
+    Report getExtratoGeralReport(final Long codUnidade,
+                                 final String dataInicial,
+                                 final String dataFinal) throws ProLogException {
         try {
-            return dao.getExtratoGeralReport(codUnidade, dataInicial, dataFinal);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro a buscar o relatório com o extrato geral de respostas do quiz (REPORT). \n" +
-                    "codUnidade: %d \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            return null;
+            return dao.getExtratoGeralReport(
+                    codUnidade,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro a buscar o relatório com o extrato geral de respostas do quiz (REPORT).\n" +
+                            "codUnidade: %d\n" +
+                            "dataInicial: %s\n" +
+                            "dataFinal: %s",
+                    codUnidade,
+                    dataInicial,
+                    dataFinal),
+                    throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    void getRespostasRealizadosCsv(final OutputStream out,
+                                   final Long codUnidade,
+                                   final Long codModeloQuiz,
+                                   final Long cpfColaborador,
+                                   final String dataInicial,
+                                   final String dataFinal,
+                                   final boolean apenasSelecionadas) {
+        try {
+            dao.getRespostasRealizadosCsv(out,
+                    codUnidade,
+                    codModeloQuiz,
+                    cpfColaborador,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal),
+                    apenasSelecionadas);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro a buscar o relatório de respostas de quizzes realizados (CSV).\n" +
+                            "codUnidade: %d\n" +
+                            "codModeloQuiz: %d\n" +
+                            "cpfColaborador: %d\n" +
+                            "dataInicial: %s\n" +
+                            "dataFinal: %s\n" +
+                            "apenasSelecionadas: %b",
+                    codUnidade,
+                    codModeloQuiz,
+                    cpfColaborador,
+                    dataInicial,
+                    dataFinal,
+                    apenasSelecionadas),
+                    throwable);
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    @NotNull
+    Report getRespostasRealizadosReport(final Long codUnidade,
+                                        final Long codModeloQuiz,
+                                        final Long cpfColaborador,
+                                        final String dataInicial,
+                                        final String dataFinal,
+                                        final boolean apenasSelecionadas) throws ProLogException {
+        try {
+            return dao.getRespostasRealizadosReport(
+                    codUnidade,
+                    codModeloQuiz,
+                    cpfColaborador,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal),
+                    apenasSelecionadas);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro a buscar o relatório de respostas de quizzes realizados (REPORT).\n" +
+                            "codUnidade: %d\n" +
+                            "codModeloQuiz: %d\n" +
+                            "cpfColaborador: %d\n" +
+                            "dataInicial: %s\n" +
+                            "dataFinal: %s\n" +
+                            "apenasSelecionadas: %b",
+                    codUnidade,
+                    codModeloQuiz,
+                    cpfColaborador,
+                    dataInicial,
+                    dataFinal,
+                    apenasSelecionadas),
+                    throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
         }
     }
 }

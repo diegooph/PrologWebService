@@ -6,6 +6,10 @@ Change Log
 
 ### Features
 * Cria método para permitir a deleção de múltiplos itens do pré contracheque (PL-2002)
+* Cria relatório com as resposta de um quiz (PL-1998)
+
+### Refactors
+* Refatora relatórios do quiz para o padrão atual do ProLog (PL-2053)
 
 ### Bug Fixes
 * Adiciona permissão de realizar quiz na busca de um modelo específico (PL-2056)
