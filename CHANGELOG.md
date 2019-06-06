@@ -13,6 +13,7 @@ Change Log
 
 ### Bug Fixes
 * Adiciona permissão de realizar quiz na busca de um modelo específico (PL-2056)
+* Corrige componente da dash checklists realizados em um determinado tempo. (PL-1865)
 
 
 <a name="v0.0.93"></a>
