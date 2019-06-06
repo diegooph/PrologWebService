@@ -20,10 +20,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualiza
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.VeiculoTransferidoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -67,7 +64,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             stmt = conn.prepareStatement("SET CONSTRAINTS ALL DEFERRED;");
             stmt.execute();
 
-            final OffsetDateTime dataHoraSincronizacao = Now.offsetDateTimeUtc();
+            final OffsetDateTime dataHoraRealizacaoProcesso = Now.offsetDateTimeUtc();
             stmt = conn.prepareStatement("INSERT INTO VEICULO_TRANSFERENCIA_PROCESSO(" +
                     "  COD_UNIDADE_ORIGEM," +
                     "  COD_UNIDADE_DESTINO," +
@@ -81,7 +78,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             stmt.setLong(2, processoTransferenciaVeiculo.getCodUnidadeDestino());
             stmt.setLong(3, processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia());
             stmt.setLong(4, processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia());
-            stmt.setObject(5, dataHoraSincronizacao);
+            stmt.setObject(5, dataHoraRealizacaoProcesso);
             stmt.setString(6, StringUtils.trimToNull(processoTransferenciaVeiculo.getObservacao()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -106,6 +103,13 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                                     codProcessoTransferenciaVeiculo,
                                     codVeiculoTransferido);
 
+                    // Deleta os itens de O.S. em aberto do veículo transferido.
+                    deletaItensOrdemServicoChecklistVeiculoTransferido(
+                            conn,
+                            codVeiculoTransferido,
+                            codTransferenciaInformacoes,
+                            dataHoraRealizacaoProcesso);
+
                     // Transfere o veículo da Unidade Origem para a Unidade Destino.
                     tranfereVeiculo(conn, codUnidadeOrigem, codUnidadeDestino, codVeiculoTransferido);
 
@@ -113,6 +117,17 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                     final Optional<List<Long>> codPneusAplicadosVeiculo = veiculoDao
                             .getCodPneusAplicadosVeiculo(conn, codVeiculoTransferido);
                     if (codPneusAplicadosVeiculo.isPresent()) {
+                        // Deleta os serviços de pneus em aberto do pneu transferido.
+                        // TODO: Esse FOR aqui, dentro da func ou utilizar um batch?
+                        for (final Long codPneu : codPneusAplicadosVeiculo.get()) {
+                            deletaServicosPneusTransferido(
+                                    conn,
+                                    codVeiculoTransferido,
+                                    codPneu,
+                                    codTransferenciaInformacoes,
+                                    dataHoraRealizacaoProcesso);
+                        }
+
                         // Transfere os pneus aplicados na placa da Unidade Origem para a Unidade Destino.
                         final Long codProcessoTransferenciaPneu = pneuTransferenciaDao.insertTransferencia(
                                 conn,
@@ -121,7 +136,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                                         codUnidadeDestino,
                                         codColaboradorRealizacaoTransferencia,
                                         codPneusAplicadosVeiculo.get()),
-                                dataHoraSincronizacao,
+                                dataHoraRealizacaoProcesso,
                                 true);
 
                         // Atualiza o vínculo entre os pneus transferidos e o veículo transferido.
@@ -209,9 +224,9 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                 if (isFirstLine) {
                     // Processa a primeira linha do ResultSet.
                     processosTransferencia.add(VeiculoTransferenciaConverter.createProcessoTransferenciaVeiculoListagem(
-                                    rSet,
-                                    codProcessoAtual,
-                                    placasTransferidas));
+                            rSet,
+                            codProcessoAtual,
+                            placasTransferidas));
                     isFirstLine = false;
                 }
 
@@ -401,6 +416,49 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             }
         } finally {
             close(stmt, rSet);
+        }
+    }
+
+    private void deletaItensOrdemServicoChecklistVeiculoTransferido(
+            @NotNull final Connection conn,
+            @NotNull final Long codVeiculoTransferido,
+            @NotNull final Long codTransferenciaInformacoes,
+            @NotNull final OffsetDateTime dataHoraRealizacaoProcesso) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareCall("{CALL FUNC_VEICULO_TRANSFERENCIA_DELETA_ITENS_OS_VEICULO(" +
+                    "F_COD_VEICULO                           := ?," +
+                    "F_COD_TRANSFERENCIA_VEICULO_INFORMACOES := ?," +
+                    "F_DATA_HORA_REALIZACAO_TRANSFERENCIA    := ?)}");
+            stmt.setLong(1, codVeiculoTransferido);
+            stmt.setLong(2, codTransferenciaInformacoes);
+            stmt.setObject(3, dataHoraRealizacaoProcesso);
+            stmt.execute();
+        } finally {
+            close(stmt);
+        }
+    }
+
+    private void deletaServicosPneusTransferido(
+            @NotNull final Connection conn,
+            @NotNull final Long codVeiculoTransferido,
+            @NotNull final Long codPneu,
+            @NotNull final Long codTransferenciaInformacoes,
+            @NotNull final OffsetDateTime dataHoraRealizacaoProcesso) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareCall("{CALL FUNC_VEICULO_TRANSFERENCIA_DELETA_SERVICOS_PNEU(" +
+                    "F_COD_VEICULO                           := ?," +
+                    "F_COD_PNEU                              := ?," +
+                    "F_COD_TRANSFERENCIA_VEICULO_INFORMACOES := ?," +
+                    "F_DATA_HORA_REALIZACAO_TRANSFERENCIA    := ?)}");
+            stmt.setLong(1, codVeiculoTransferido);
+            stmt.setLong(2, codPneu);
+            stmt.setLong(3, codTransferenciaInformacoes);
+            stmt.setObject(4, dataHoraRealizacaoProcesso);
+            stmt.execute();
+        } finally {
+            close(stmt);
         }
     }
 
