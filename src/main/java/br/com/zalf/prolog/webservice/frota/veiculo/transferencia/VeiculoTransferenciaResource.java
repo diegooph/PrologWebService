@@ -42,6 +42,7 @@ public final class VeiculoTransferenciaResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/veiculos-selecao")
     public List<VeiculoSelecaoTransferencia> getVeiculosParaSelecaoTransferencia(
             @QueryParam("codUnidadeOrigem") @Required final Long codUnidadeOrigem) throws ProLogException {
         return service.getVeiculosParaSelecaoTransferencia(codUnidadeOrigem);
