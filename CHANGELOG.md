@@ -8,6 +8,7 @@ Change Log
 
 ### Refactors
 * Adiciona placa ao exibir processo de transferência de pneu que ocorreu por conta da transferência de uma placa (PL-1941)
+* Altera criação de O.S. para não setar mais o código - agora é gerado por trigger (PL-2068)
 
 <a name="v0.0.94"></a>
 ## Version [v0.0.94](https://github.com/luizfp/PrologWebService/compare/v0.0.93...v0.0.94) (release-date) [unreleased]
