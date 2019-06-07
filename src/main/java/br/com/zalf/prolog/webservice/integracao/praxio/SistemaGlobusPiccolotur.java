@@ -60,8 +60,12 @@ public class SistemaGlobusPiccolotur extends Sistema {
                             codUnidadeProLog,
                             codChecklistProLog,
                             checklist);
-
-//            Injection.provideOrdemServicoDao().incrementaQtdApontamentos();
+            // TODO - Ainda não está pronto. Falta implementar
+//            Injection
+//                    .provideOrdemServicoDao()
+//                    .incrementaQtdApontamentos(conn, checklist.getPlacaVeiculo(), checklist.getListRespostas());
+            requester.insertItensNok(GlobusPiccoloturConverter.convert(checklistItensNokGlobus));
+            conn.commit();
             return codChecklistProLog;
         } catch (final Throwable t) {
             if (conn != null) {

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Classe responsável por encapsular as informações das alternativas marcadas como NOK de uma
  * {@link PerguntaNokGlobus pergunta}.
- *
+ * <p>
  * Created on 02/05/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)

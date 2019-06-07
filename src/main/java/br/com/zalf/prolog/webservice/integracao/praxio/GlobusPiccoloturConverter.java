@@ -5,8 +5,12 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaCheckli
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.*;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,8 +62,55 @@ public final class GlobusPiccoloturConverter {
     }
 
     @NotNull
+    public static OrdemDeServicoCorretivaPrologVO convert(
+            @NotNull final ChecklistItensNokGlobus checklistItensNokGlobus) throws DatatypeConfigurationException {
+        final OrdemDeServicoCorretivaPrologVO osGlobus = new OrdemDeServicoCorretivaPrologVO();
+        osGlobus.setCodUnidadeChecklist(checklistItensNokGlobus.getCodUnidadeChecklist().intValue());
+        osGlobus.setCodChecklistRealizado(checklistItensNokGlobus.getCodChecklistRealizado().intValue());
+        osGlobus.setCpfColaboradorRealizacao(checklistItensNokGlobus.getCpfColaboradorRealizacao());
+        osGlobus.setPlacaVeiculoChecklist(checklistItensNokGlobus.getPlacaVeiculoChecklist());
+        osGlobus.setKmColetadoChecklist(checklistItensNokGlobus.getKmColetadoChecklist().intValue());
+        osGlobus.setTipoChecklist(checklistItensNokGlobus.getTipoChecklist().asString());
+        osGlobus.setDataHoraRealizacaoUtc(DatatypeFactory.newInstance().newXMLGregorianCalendar(checklistItensNokGlobus.getDataHoraRealizacaoUtc().toString()));
+        osGlobus.setUsuario("MANAGER");
+        osGlobus.setListaPerguntasNokVO(convertPerguntas(checklistItensNokGlobus.getPerguntasNok()));
+        return osGlobus;
+    }
+
+    @NotNull
+    private static ArrayOfPerguntasNokVO convertPerguntas(@NotNull final List<PerguntaNokGlobus> perguntasNok) {
+        final ArrayOfPerguntasNokVO arrayOfPerguntasNokVO = new ArrayOfPerguntasNokVO();
+        for (final PerguntaNokGlobus perguntaNokGlobus : perguntasNok) {
+            final PerguntasNokVO perguntaNokVO = new PerguntasNokVO();
+            perguntaNokVO.setCodPerguntaNok(perguntaNokGlobus.getCodPerguntaNok().intValue());
+            perguntaNokVO.setDescricaoPerguntaNok(perguntaNokGlobus.getDescricaoPerguntaNok());
+            perguntaNokVO.setListaAlternativasNok(convertAlternativas(perguntaNokGlobus.getAlternativasNok()));
+            arrayOfPerguntasNokVO.getPerguntasNokVO().add(perguntaNokVO);
+        }
+        return arrayOfPerguntasNokVO;
+    }
+
+    @NotNull
+    private static ArrayOfAlternativasNokVO convertAlternativas(
+            @NotNull final List<AlternativaNokGlobus> alternativasNok) {
+        final ArrayOfAlternativasNokVO arrayOfAlternativasNokVO = new ArrayOfAlternativasNokVO();
+        for (final AlternativaNokGlobus alternativaNokGlobus : alternativasNok) {
+            final AlternativasNokVO alternativaNokVO = new AlternativasNokVO();
+            alternativaNokVO.setCodAlternativaNok(alternativaNokGlobus.getCodAlternativaNok().intValue());
+            alternativaNokVO.setDescricaoAlternativaNok(alternativaNokGlobus.getDescricaoAlternativaNok());
+            alternativaNokVO.setPrioridadeAlternativaNok(alternativaNokGlobus.getPrioridadeAlternativaNok().asString());
+            arrayOfAlternativasNokVO.getAlternativasNokVO().add(alternativaNokVO);
+        }
+        return arrayOfAlternativasNokVO;
+    }
+
+    @NotNull
     private static PrioridadeAlternativaGlobus getPrioridadeAlternativaGlobus(
-            @NotNull final PrioridadeAlternativa prioridade) {
+            @Nullable final PrioridadeAlternativa prioridade) {
+        // TODO - Corrigir aqui. O checklist não envia a Prioridade. Temos que pegar no BD.
+        if (prioridade == null) {
+            return PrioridadeAlternativaGlobus.CRITICA;
+        }
         if (prioridade.equals(PrioridadeAlternativa.CRITICA)) {
             return PrioridadeAlternativaGlobus.CRITICA;
         } else if (prioridade.equals(PrioridadeAlternativa.ALTA)) {
