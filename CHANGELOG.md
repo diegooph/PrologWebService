@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+## Stage
+
+### Features
+* Implementa funcionalidade de transferência de veículos (PL-1532)
+
+### Refactors
+* Adiciona placa ao exibir processo de transferência de pneu que ocorreu por conta da transferência de uma placa (PL-1941)
+* Altera criação de O.S. para não setar mais o código - agora é gerado por trigger (PL-2068)
+
 <a name="v0.0.94"></a>
 ## Version [v0.0.94](https://github.com/luizfp/PrologWebService/compare/v0.0.93...v0.0.94) (release-date) [unreleased]
 
@@ -68,6 +77,7 @@ a alterar o valor (PL-1966)
 
 ### Refactors
 * Permite atualizar o tipo de um veículo se não houverem pneus aplicados (PL-1903)
+
 * Verifica permissão de relatórios de quiz na busca dos modelos da unidade
 
 <a name="v0.0.88"></a>

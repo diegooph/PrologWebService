@@ -753,6 +753,30 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @NotNull
+    @Override
+    public Optional<List<Long>> getCodPneusAplicadosVeiculo(@NotNull final Connection conn,
+                                                            @NotNull final Long codVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_COD_PNEUS_APLICADOS(?);");
+            stmt.setLong(1, codVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<Long> codPneusAplicados = new ArrayList<>();
+                do {
+                    codPneusAplicados.add(rSet.getLong("COD_PNEU"));
+                } while (rSet.next());
+                return Optional.of(codPneusAplicados);
+            } else {
+                return Optional.empty();
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
     private Optional<DiagramaVeiculo> internalGetDiagramaVeiculoByPlaca(@NotNull final Connection conn,
                                                                         @NotNull final String placa) throws SQLException {
         PreparedStatement stmt = null;

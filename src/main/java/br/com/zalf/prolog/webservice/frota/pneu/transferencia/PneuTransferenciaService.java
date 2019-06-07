@@ -1,14 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem.PneuTransferenciaListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao.PneuTransferenciaProcessoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -16,14 +19,22 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-final class PneuTransferenciaService {
+public final class PneuTransferenciaService {
     private static final String TAG = PneuTransferenciaService.class.getSimpleName();
     @NotNull
     private final PneuTransferenciaDao dao = Injection.providePneuTransferenciaDao();
 
-    void insertTransferencia(PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
+    @NotNull
+    ResponseWithCod insertTransferencia(
+            final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
         try {
-            dao.insertTransferencia(pneuTransferenciaRealizacao, Injection.providePneuTransferenciaDao());
+            final OffsetDateTime dataHoraSincronizacao = Now.offsetDateTimeUtc();
+            return ResponseWithCod.ok(
+                    "Transferência realizada com sucesso",
+                    dao.insertTransferencia(
+                            pneuTransferenciaRealizacao,
+                            dataHoraSincronizacao,
+                            false));
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao realizar a transferência", e);
             throw Injection
@@ -33,10 +44,10 @@ final class PneuTransferenciaService {
     }
 
     @NotNull
-    List<PneuTransferenciaListagem> getListagem(@NotNull final List<Long> codUnidadesOrigem,
-                                                @NotNull final List<Long> codUnidadesDestino,
-                                                @NotNull final String dataInicial,
-                                                @NotNull final String dataFinal) throws ProLogException {
+    public List<PneuTransferenciaListagem> getListagem(final List<Long> codUnidadesOrigem,
+                                                       final List<Long> codUnidadesDestino,
+                                                       final String dataInicial,
+                                                       final String dataFinal) throws ProLogException {
         try {
             return dao.getListagem(
                     codUnidadesOrigem,
@@ -52,7 +63,7 @@ final class PneuTransferenciaService {
     }
 
     @NotNull
-    PneuTransferenciaProcessoVisualizacao getTransferenciaVisualizacao(@NotNull final Long codTransferencia)
+    public PneuTransferenciaProcessoVisualizacao getTransferenciaVisualizacao(final Long codTransferencia)
             throws ProLogException {
         try {
             return dao.getVisualizacao(codTransferencia);
