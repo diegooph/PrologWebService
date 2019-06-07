@@ -68,45 +68,48 @@ public final class VeiculoService {
         }
     }
 
-    public boolean update(Veiculo veiculo, String placaOriginal) {
+    public void update(String placaOriginal, Veiculo veiculo) throws ProLogException {
         try {
-            return dao.update(veiculo, placaOriginal);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao atualizar o veículo. \n" +
-                    "placaOriginal: %s", placaOriginal), e);
-            return false;
+            dao.update(placaOriginal, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
+        } catch (Throwable e) {
+            Log.e(TAG, String.format("Erro ao atualizar o veículo.\nplacaOriginal: %s", placaOriginal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao atualizar veículo, tente novamente");
         }
     }
 
     public boolean updateStatus(Long codUnidade, String placa, Veiculo veiculo) {
         try {
-            dao.updateStatus(codUnidade, placa, veiculo);
+            dao.updateStatus(codUnidade, placa, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
             return true;
         } catch (Throwable e) {
-            Log.e(TAG, String.format("Erro ao atualizar o status do veículo %d", placa), e);
+            Log.e(TAG, String.format("Erro ao atualizar o status do veículo %s", placa), e);
             return false;
         }
     }
 
     public boolean delete(String placa) {
         try {
-            return dao.delete(placa);
-        } catch (SQLException e) {
+            return dao.delete(placa, Injection.provideDadosChecklistOfflineChangedListener());
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao deletar o veículo. \n" +
                     "placa: %s", placa), e);
             return false;
         }
     }
 
-    public void insert(Veiculo veiculo, Long codUnidade) throws ProLogException {
+    public void insert(Long codUnidade, Veiculo veiculo) throws ProLogException {
         try {
             VeiculoValidator.validacaoAtributosVeiculo(veiculo);
-            dao.insert(veiculo, codUnidade);
+            dao.insert(codUnidade, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
         } catch (Throwable e) {
             final String errorMessage = "Erro ao inserir o veículo";
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                     "Unidade: %d", codUnidade), e);
-            throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, errorMessage);
         }
     }
 

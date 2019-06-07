@@ -12,7 +12,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andame
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ViagemEmAndamento;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ColaboradorEmDescanso;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.FonteDataHora;
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
@@ -49,10 +49,14 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
             rSet = stmt.executeQuery();
             final List<ColaboradorEmDescanso> colaboradores = new ArrayList<>();
             while (rSet.next()) {
+                final long duracaoUltimaViagem = rSet.getLong("DURACAO_ULTIMA_VIAGEM");
+                final boolean temDuracaoUltimaViagem = !rSet.wasNull();
+
                 colaboradores.add(new ColaboradorEmDescanso(
                         rSet.getString("NOME_COLABORADOR"),
                         rSet.getObject("DATA_HORA_INICIO_ULTIMA_VIAGEM", LocalDateTime.class),
                         rSet.getObject("DATA_HORA_FIM_ULTIMA_VIAGEM", LocalDateTime.class),
+                        temDuracaoUltimaViagem ? Duration.ofSeconds(duracaoUltimaViagem) : null,
                         Duration.ofSeconds(rSet.getLong("TEMPO_DESCANSO_SEGUNDOS")),
                         rSet.getBoolean("FOI_AJUSTADO_INICIO"),
                         rSet.getBoolean("FOI_AJUSTADO_FIM")));

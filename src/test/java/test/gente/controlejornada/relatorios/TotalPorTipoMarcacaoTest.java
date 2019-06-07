@@ -58,7 +58,8 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
                 TODOS_TIPOS_INTERVALOS,
                 "%",
                 DATA_INICIAL,
-                DATA_FIM);
+                DATA_FIM,
+                true);
 
         for (final FolhaPontoRelatorio pontoRelatorio : relatorios) {
             for (final FolhaPontoTipoIntervalo tipoMarcacao : pontoRelatorio.getTiposIntervalosMarcados()) {

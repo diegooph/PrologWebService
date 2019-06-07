@@ -20,6 +20,9 @@ public final class ColaboradorEmDescanso {
     private final LocalDateTime dataHoraInicioUltimaViagem;
     @NotNull
     private final LocalDateTime dataHoraFimUltimaViagem;
+    @Nullable
+    @SerializedName("duracaoUltimaViagemEmSegundos")
+    private final Duration duracaoUltimaViagem;
     @NotNull
     @SerializedName("tempoTotalDescansoEmSegundos")
     private final Duration tempoTotalDescanso;
@@ -29,12 +32,14 @@ public final class ColaboradorEmDescanso {
     public ColaboradorEmDescanso(@NotNull final String nomeColaborador,
                                  @Nullable final LocalDateTime dataHoraInicioUltimaViagem,
                                  @NotNull final LocalDateTime dataHoraFimUltimaViagem,
+                                 @Nullable final Duration duracaoUltimaViagem,
                                  @NotNull final Duration tempoTotalDescanso,
                                  final boolean inicioFoiAjustado,
                                  final boolean fimFoiAjustado) {
         this.nomeColaborador = nomeColaborador;
         this.dataHoraInicioUltimaViagem = dataHoraInicioUltimaViagem;
         this.dataHoraFimUltimaViagem = dataHoraFimUltimaViagem;
+        this.duracaoUltimaViagem = duracaoUltimaViagem;
         this.tempoTotalDescanso = tempoTotalDescanso;
         this.inicioFoiAjustado = inicioFoiAjustado;
         this.fimFoiAjustado = fimFoiAjustado;
@@ -50,6 +55,7 @@ public final class ColaboradorEmDescanso {
                     LocalDateTime
                             .now()
                             .minus((11 * 60) + 30, ChronoUnit.MINUTES),
+                    Duration.ofMinutes(11 + 30),
                     Duration.ofMinutes((11 * 60) + 30),
                     true,
                     true);
@@ -63,6 +69,7 @@ public final class ColaboradorEmDescanso {
                     LocalDateTime
                             .now()
                             .minus((11 * 60) + 30, ChronoUnit.MINUTES),
+                    Duration.ofMinutes(11 + 30),
                     Duration.ofMinutes((11 * 60) + 30),
                     false,
                     false);
@@ -82,6 +89,11 @@ public final class ColaboradorEmDescanso {
     @NotNull
     public LocalDateTime getDataHoraFimUltimaViagem() {
         return dataHoraFimUltimaViagem;
+    }
+
+    @Nullable
+    public Duration getDuracaoUltimaViagem() {
+        return duracaoUltimaViagem;
     }
 
     @NotNull

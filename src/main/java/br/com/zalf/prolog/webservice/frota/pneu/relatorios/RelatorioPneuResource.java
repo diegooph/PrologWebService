@@ -33,7 +33,28 @@ import java.util.List;
 public class RelatorioPneuResource {
 
     @GET
+    @Path("/desgaste-irregular/csv")
+    @Produces("application/csv")
+    public StreamingOutput getPneusComDesgasteIrregularCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("statusPneu") @Required final String statusPneu) {
+        return outputStream -> new RelatorioPneuService().getPneusComDesgasteIrregularCsv(
+                outputStream,
+                codUnidades,
+                statusPneu);
+    }
+
+    @GET
+    @Path("/desgaste-irregular/report")
+    public Report getPneusComDesgasteIrregularReport(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("statusPneu") @Required final String statusPneu) throws ProLogException {
+        return new RelatorioPneuService().getPneusComDesgasteIrregularReport(codUnidades, statusPneu);
+    }
+
+    @GET
     @Path("/status-atual-pneus/csv")
+    @Produces("application/csv")
     public StreamingOutput getStatusAtualPneusCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
         return outputStream -> new RelatorioPneuService().getStatusAtualPneusCsv(outputStream, codUnidades);
@@ -48,6 +69,7 @@ public class RelatorioPneuResource {
 
     @GET
     @Path("/km-rodado-por-pneu-por-vida/csv")
+    @Produces("application/csv")
     public StreamingOutput getKmRodadoPorPneuPorVidaCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
         return outputStream -> new RelatorioPneuService().getKmRodadoPorPneuPorVidaCsv(outputStream, codUnidades);
@@ -62,6 +84,7 @@ public class RelatorioPneuResource {
 
     @GET
     @Path("/afericoes-avulsas/csv")
+    @Produces("application/csv")
     public StreamingOutput getAfericoesAvulsasCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
@@ -79,7 +102,6 @@ public class RelatorioPneuResource {
 
     @GET
     @Path("/pneus-faixa-sulco")
-    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public List<Faixa> getQtdPneusByFaixaSulco(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                @QueryParam("status") @Required final List<String> status) {
         return new RelatorioPneuService().getQtdPneusByFaixaSulco(codUnidades, status);

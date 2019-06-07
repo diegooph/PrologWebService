@@ -26,7 +26,7 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
     @NotNull
     @Override
     public Long insertTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao,
-                                   @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
+                                   @NotNull final DadosIntervaloChangedListener intervaloListener) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet rSet = null;
@@ -50,9 +50,9 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
                     atualizarTipoJornadaUnidade(conn, tipoMarcacao.getUnidade().getCodigo(), tipoMarcacao.getCodigo());
                     salvarTiposDescontadosJornadaBrutaLiquida(conn, tipoMarcacao);
                 }
-                // Avisamos o listener que um tipo de marcação FOI INCLUÍDO.
-                listener.onTiposMarcacaoChanged(conn, tipoMarcacao.getUnidade().getCodigo());
-                // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
+                // Avisamos o intervaloListener que um tipo de marcação FOI INCLUÍDO.
+                intervaloListener.onTiposMarcacaoChanged(conn, tipoMarcacao.getUnidade().getCodigo());
+                // Se nem um erro aconteceu ao informar o intervaloListener, podemos commitar a alteração.
                 conn.commit();
                 return tipoMarcacao.getCodigo();
             } else {
@@ -71,7 +71,7 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
 
     @Override
     public void updateTipoMarcacao(@NotNull final TipoMarcacao tipoMarcacao,
-                                   @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
+                                   @NotNull final DadosIntervaloChangedListener intervaloListener) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
@@ -99,10 +99,10 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
                 removerTipoJornadaUnidade(conn, tipoMarcacao.getUnidade().getCodigo(), tipoMarcacao.getCodigo());
             }
 
-            // Avisamos o listener que um tipo de marcação mudou.
-            listener.onTiposMarcacaoChanged(conn, tipoMarcacao.getUnidade().getCodigo());
+            // Avisamos o intervaloListener que um tipo de marcação mudou.
+            intervaloListener.onTiposMarcacaoChanged(conn, tipoMarcacao.getUnidade().getCodigo());
 
-            // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
+            // Se nem um erro aconteceu ao informar o intervaloListener, podemos commitar a alteração.
             conn.commit();
         } catch (Throwable e) {
             // Pegamos apenas para fazer o rollback, depois subimos o erro.
@@ -163,7 +163,7 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
     @Override
     public void updateStatusAtivoTipoMarcacao(@NotNull final Long codTipoMarcacao,
                                               @NotNull final TipoMarcacao tipoMarcacao,
-                                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
+                                              @NotNull final DadosIntervaloChangedListener intervaloListener) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet rSet = null;
@@ -178,10 +178,10 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
 
             if (rSet.next()) {
                 final Long codUnidade = rSet.getLong("COD_UNIDADE");
-                // Avisamos o listener que um tipo de marcação mudou.
-                listener.onTiposMarcacaoChanged(conn, codUnidade);
+                // Avisamos o intervaloListener que um tipo de marcação mudou.
+                intervaloListener.onTiposMarcacaoChanged(conn, codUnidade);
 
-                // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
+                // Se nem um erro aconteceu ao informar o intervaloListener, podemos commitar a alteração.
                 conn.commit();
             } else {
                 throw new SQLException("Erro ao inativar o Tipo de Marcação de código: " + codTipoMarcacao);
@@ -192,6 +192,38 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
                 conn.rollback();
             }
             throw e;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return internalGetForumaCalculoJornada(conn, codUnidade);
+        } finally {
+            close(conn);
+        }
+    }
+
+    @Override
+    public boolean unidadeTemTipoDefinidoComoJornada(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_MARCACAO_VERIFICA_UNIDADE_TEM_TIPO_JORNADA(?) AS TEM_TIPO;");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("TEM_TIPO");
+            } else {
+                throw new IllegalStateException("Erro ao verificar se tem tipo jornada para unidade: " + codUnidade);
+            }
         } finally {
             close(conn, stmt, rSet);
         }
@@ -293,18 +325,6 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             return cargos;
         } finally {
             close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            return internalGetForumaCalculoJornada(conn, codUnidade);
-        } finally {
-            close(conn);
         }
     }
 

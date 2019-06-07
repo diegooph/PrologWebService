@@ -41,6 +41,44 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
+    public void getPneusComDesgasteIrregularCsv(@NotNull final OutputStream outputStream,
+                                                @NotNull final List<Long> codUnidades,
+                                                @Nullable final StatusPneu statusPneu) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getPneusComDesgasteIrregularStmt(conn, codUnidades, statusPneu);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(outputStream)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getPneusComDesgasteIrregularReport(@NotNull final List<Long> codUnidades,
+                                                     @Nullable final StatusPneu statusPneu) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getPneusComDesgasteIrregularStmt(conn, codUnidades, statusPneu);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     public void getStatusAtualPneusCsv(@NotNull final OutputStream outputStream,
                                        @NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
@@ -903,6 +941,21 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    private PreparedStatement getPneusComDesgasteIrregularStmt(@NotNull final Connection conn,
+                                                               @NotNull final List<Long> codUnidades,
+                                                               @Nullable final StatusPneu statusPneu) throws Throwable {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_PNEU_RELATORIO_DESGASTE_IRREGULAR(?, ? :: PNEU_STATUS_TYPE);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        if (statusPneu != null) {
+            stmt.setString(2, statusPneu.asString());
+        } else {
+            stmt.setNull(2, SqlType.TEXT.asIntTypeJava());
+        }
+        return stmt;
     }
 
     @NotNull

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
@@ -130,13 +131,15 @@ public class ControleJornadaRelatorioResource {
             @PathParam("cpf") @Required String cpf,
             @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
             @QueryParam("dataInicial") @Required String dataInicial,
-            @QueryParam("dataFinal") @Required String dataFinal) throws Throwable {
+            @QueryParam("dataFinal") @Required String dataFinal,
+            @QueryParam("apenasColaboradoresAtivos") @Optional boolean apenasColaboradoresAtivos) throws Throwable {
         return service.getFolhaPontoRelatorio(
                 codUnidade,
                 codTipoIntervalo,
                 cpf,
                 dataInicial,
-                dataFinal);
+                dataFinal,
+                apenasColaboradoresAtivos);
     }
 
     @GET
@@ -147,13 +150,15 @@ public class ControleJornadaRelatorioResource {
             @PathParam("cpf") @Required final String cpf,
             @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
             @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal) throws Throwable {
+            @QueryParam("dataFinal") @Required final String dataFinal,
+            @QueryParam("apenasColaboradoresAtivos") @Optional boolean apenasColaboradoresAtivos) throws Throwable {
         return service.getFolhaPontoJornadaRelatorio(
                 codUnidade,
                 codTipoIntervalo,
                 cpf,
                 dataInicial,
-                dataFinal);
+                dataFinal,
+                apenasColaboradoresAtivos);
     }
 
     @GET

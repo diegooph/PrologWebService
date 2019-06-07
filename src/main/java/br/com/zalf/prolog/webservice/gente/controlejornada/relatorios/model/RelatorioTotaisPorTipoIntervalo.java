@@ -36,8 +36,8 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
     private final Map<Long, Integer> tipoIntervaloHorasNoturnasIndexColuna;
 
     public RelatorioTotaisPorTipoIntervalo(@NotNull final ResultSet rSet,
-                                    @NotNull final List<TipoMarcacao> tiposIntervalos,
-                                    @Nullable final Long codTipoIntervaloFiltrado) {
+                                           @NotNull final List<TipoMarcacao> tiposIntervalos,
+                                           @Nullable final Long codTipoIntervaloFiltrado) {
         this.rSet = rSet;
         if (codTipoIntervaloFiltrado != null) {
             // Se tiver filtrado por algum tipo de intervalo, devemos remover os outros tipos.
@@ -81,6 +81,7 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     private void addInfosIntervaloToTable() throws SQLException {
         final String cpfColaborador = rSet.getString("CPF_COLABORADOR");
         final List<String> linhaAtual = table.get(cpfColaborador);

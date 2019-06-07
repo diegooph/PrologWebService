@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -21,36 +23,58 @@ import java.util.Set;
 public interface VeiculoDao {
 
     /**
-     * Insere um novo veículo
+     * Insere um novo veículo no banco de dados.
      *
-     * @param veiculo    veículo a ser inserido
-     * @param codUnidade código da unidade
-     * @return resultado da requisição
-     * @throws SQLException caso não seja possível realizar o insert
+     * @param codUnidade               Código da Unidade a qual esse veículo será inserido.
+     * @param veiculo                  Objeto contencod as informações do veículo a serem inseridas.
+     * @param checklistOfflineListener Listener utilizado para notificar sobre atualizações de veículos
+     *                                 no contexto de realização de checklist offline.
+     * @return <code>TRUE</code> se operação for bem sucedida, <code>FALSE</code> caso contrário.
+     * @throws Throwable Se algum erro ocorrer ao salvar as informações.
      */
-    boolean insert(Veiculo veiculo, Long codUnidade) throws Throwable;
+    boolean insert(@NotNull final Long codUnidade,
+                   @NotNull final Veiculo veiculo,
+                   @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
-     * Atualiza os dados de um veículo
+     * Método utilizado para atualizar as informações de um veículo.
      *
-     * @param veiculo       veículo
-     * @param placaOriginal placa original do veículo
-     * @return resultado da requisição
-     * @throws SQLException caso não seja possível realizar o update
+     * @param placaOriginal            Placa do veículo que será atualizado.
+     * @param veiculo                  Objeto contendo as informações que serão inseridas.
+     * @param checklistOfflineListener Listener utilizado para notificar a alteração em um veículo.
+     * @return <code>TRUE</code> se a operação se bem sucedida, <code>FALSE</code> caso contrário.
+     * @throws Throwable Se algum erro ocorrer durante a operação.
      */
-    boolean update(Veiculo veiculo, String placaOriginal) throws SQLException;
-
-    void updateStatus(@NotNull final Long codUnidade, @NotNull final String placa, @NotNull final Veiculo veiculo)
-            throws SQLException;
+    boolean update(@NotNull final String placaOriginal,
+                   @NotNull final Veiculo veiculo,
+                   @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
-     * Seta o veiculo como inativo no banco de dados
+     * Método utilizado para atualizar o status (ATIVO ou INATIVO) de um veículo.
      *
-     * @param placa placa do veículo a ser deletado
-     * @return valor da operação
-     * @throws SQLException caso não for possivel deletar
+     * @param codUnidade               Código da Unidade a qual o veículo está alocado.
+     * @param placa                    Placa do veículo, utilizada como identificador para este método.
+     * @param veiculo                  Objeto contendo a informação de se o veículo deve ser ativado ou inativado.
+     * @param checklistOfflineListener Listener utilizado para notificar sobre atualizações de veículos
+     *                                 no contexto de realização de checklist offline.
+     * @throws Throwable Caso algum erro ocorra na atualização do veículo.
      */
-    boolean delete(String placa) throws SQLException;
+    void updateStatus(@NotNull final Long codUnidade,
+                      @NotNull final String placa,
+                      @NotNull final Veiculo veiculo,
+                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+
+    /**
+     * Altera o status do veículo como <code>INATIVO</code> no banco de dados.
+     *
+     * @param placa                    Placa do veículo que será inativado, utilizado como identificador.
+     * @param checklistOfflineListener Listener utilizado para notificar sobre atualizações de veículos
+     *                                 no contexto de realização de checklist offline.
+     * @return <code>TRUE</code> se operação realizada com sucesso, <code>FALSE</code> caso contrário.
+     * @throws Throwable Se algum erro ocorrer no processo de inativação do veículo.
+     */
+    boolean delete(@NotNull final String placa,
+                   @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
      * Busca os veículos ativos de uma determinada unidade

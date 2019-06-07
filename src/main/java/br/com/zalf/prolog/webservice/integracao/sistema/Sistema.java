@@ -1,10 +1,15 @@
 package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -71,7 +76,7 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Throwable {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
         return getIntegradorProLog().getCronogramaAfericao(codUnidade);
     }
 
@@ -98,9 +103,10 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
     }
 
+    @Nullable
     @Override
-    public Long insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Throwable {
-        return getIntegradorProLog().insertAfericao(afericao, codUnidade);
+    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+        return getIntegradorProLog().insertAfericao(codUnidade, afericao);
     }
 
     @NotNull
@@ -120,6 +126,28 @@ public abstract class Sistema implements OperacoesIntegradas {
                                                   long offset) throws Throwable {
         return getIntegradorProLog()
                 .getAfericoesPlacas(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
+    }
+
+    @Override
+    public void insertModeloChecklist(
+            @NotNull final ModeloChecklistInsercao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener);
+    }
+
+    @Override
+    public void updateModeloChecklist(
+            @NotNull final String token,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo,
+            @NotNull final ModeloChecklistEdicao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        getIntegradorProLog().updateModeloChecklist(
+                token,
+                codUnidade,
+                codModelo,
+                modeloChecklist,
+                checklistOfflineListener);
     }
 
     @NotNull
@@ -164,8 +192,17 @@ public abstract class Sistema implements OperacoesIntegradas {
                                               final int limit,
                                               final long offset,
                                               final boolean resumido) throws Exception {
-        return getIntegradorProLog().getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo,
-                dataInicial, dataFinal, limit, offset, resumido);
+        return getIntegradorProLog()
+                .getTodosChecklists(
+                        codUnidade,
+                        codEquipe,
+                        codTipoVeiculo,
+                        placaVeiculo,
+                        dataInicial,
+                        dataFinal,
+                        limit,
+                        offset,
+                        resumido);
     }
 
     @NotNull
@@ -177,14 +214,27 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 
+    @Override
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        getIntegradorProLog().resolverItem(item);
+    }
+
+    @Override
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        getIntegradorProLog().resolverItens(itensResolucao);
+    }
+
+    @NotNull
     protected IntegradorProLog getIntegradorProLog() {
         return integradorProLog;
     }
 
+    @NotNull
     protected SistemaKey getSistemaKey() {
         return sistemaKey;
     }
 
+    @NotNull
     protected String getUserToken() {
         return userToken;
     }

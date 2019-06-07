@@ -188,57 +188,14 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                                                             @NotNull final String codTipoIntervalo,
                                                             @NotNull final String cpf,
                                                             @NotNull final LocalDate dataInicial,
-                                                            @NotNull final LocalDate dataFinal) throws Throwable {
+                                                            @NotNull final LocalDate dataFinal,
+                                                            final boolean apenasColaboradoresAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_PONTO(?, ?, ?, ?, ?, ?);");
-            stmt.setLong(1, codUnidade);
-            if (codTipoIntervalo.equals("%")) {
-                stmt.setNull(2, Types.BIGINT);
-            } else {
-                stmt.setLong(2, Long.parseLong(codTipoIntervalo));
-            }
-            if (cpf.equals("%")) {
-                stmt.setNull(3, Types.BIGINT);
-            } else {
-                stmt.setLong(3, Long.parseLong(cpf));
-            }
-            stmt.setObject(4, dataInicial);
-            stmt.setObject(5, dataFinal);
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-            stmt.setString(6, zoneId.getId());
-            rSet = stmt.executeQuery();
-
-            final TipoMarcacaoDao dao = Injection.provideTipoMarcacaoDao();
-            return ControleJornadaRelatorioConverter.createFolhaPontoRelatorio(
-                    rSet,
-                    dao.getTiposMarcacoes(codUnidade, true, false),
-                    dataInicial,
-                    dataFinal,
-                    zoneId);
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public List<FolhaPontoJornadaRelatorio> getFolhaPontoJornadaRelatorio(
-            @NotNull final Long codUnidade,
-            @NotNull final String codTipoIntervalo,
-            @NotNull final String cpf,
-            @NotNull final LocalDate dataInicial,
-            @NotNull final LocalDate dataFinal) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_MARCACAO_RELATORIO_FOLHA_PONTO_JORNADA(?, ?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_PONTO(?, ?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
             if (Filtros.isFiltroTodos(codTipoIntervalo)) {
                 stmt.setNull(2, Types.BIGINT);
@@ -252,8 +209,61 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             }
             stmt.setObject(4, dataInicial);
             stmt.setObject(5, dataFinal);
+            if (apenasColaboradoresAtivos) {
+                stmt.setBoolean(6, true);
+            } else {
+                stmt.setNull(6, Types.BOOLEAN);
+            }
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-            stmt.setString(6, zoneId.getId());
+            stmt.setString(7, zoneId.getId());
+            rSet = stmt.executeQuery();
+
+            final TipoMarcacaoDao dao = Injection.provideTipoMarcacaoDao();
+            return ControleJornadaRelatorioConverter.createFolhaPontoRelatorio(
+                    rSet,
+                    dao.getTiposMarcacoes(codUnidade, false, false),
+                    zoneId);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<FolhaPontoJornadaRelatorio> getFolhaPontoJornadaRelatorio(
+            @NotNull final Long codUnidade,
+            @NotNull final String codTipoIntervalo,
+            @NotNull final String cpf,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal,
+            final boolean apenasColaboradoresAtivos) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_MARCACAO_RELATORIO_FOLHA_PONTO_JORNADA(?, ?, ?, ?, ?, ?, ?);");
+            stmt.setLong(1, codUnidade);
+            if (Filtros.isFiltroTodos(codTipoIntervalo)) {
+                stmt.setNull(2, Types.BIGINT);
+            } else {
+                stmt.setLong(2, Long.parseLong(codTipoIntervalo));
+            }
+            if (Filtros.isFiltroTodos(cpf)) {
+                stmt.setNull(3, Types.BIGINT);
+            } else {
+                stmt.setLong(3, Long.parseLong(cpf));
+            }
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
+            if (apenasColaboradoresAtivos) {
+                stmt.setBoolean(6, true);
+            } else {
+                stmt.setNull(6, Types.BOOLEAN);
+            }
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            stmt.setString(7, zoneId.getId());
 
             rSet = stmt.executeQuery();
             final TipoMarcacaoDao tipoMarcacaoDao = Injection.provideTipoMarcacaoDao();
@@ -323,8 +333,15 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                     .Builder(out)
                     .withCsvReport(new RelatorioTotaisPorTipoIntervalo(
                             rSet,
-                            dao.getTiposMarcacoes(codUnidade, true, false),
-                            codTipoIntervalo.equals("%") ? null : Long.parseLong(codTipoIntervalo)))
+                            dao.getTiposMarcacoes(
+                                    codUnidade,
+                                    /* Se o filtro de tipo do relatório for por todos, então trazemos apenas os tipos
+                                    ativos. Ou seja, se for por todos, o colaborador não terá a visão poluída com,
+                                    talvez, diversos tipos já inativados. Porém, se ele filtrar especificamente por um
+                                    inativado, esse tipo irá retornar no relatório. */
+                                    Filtros.isFiltroTodos(codTipoIntervalo),
+                                    false),
+                            Filtros.isFiltroTodos(codTipoIntervalo) ? null : Long.parseLong(codTipoIntervalo)))
                     .build()
                     .write();
         } finally {
@@ -359,7 +376,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM FUNC_MARCACAO_GET_TEMPO_TOTAL_POR_TIPO_MARCACAO(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
-        if (codTipoIntervalo.equals("%")) {
+        if (Filtros.isFiltroTodos(codTipoIntervalo)) {
             stmt.setNull(2, Types.BIGINT);
         } else {
             stmt.setLong(2, Long.parseLong(codTipoIntervalo));

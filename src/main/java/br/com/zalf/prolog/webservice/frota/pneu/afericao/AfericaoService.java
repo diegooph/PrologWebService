@@ -27,14 +27,14 @@ public class AfericaoService {
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @Nullable
-    Long insert(@NotNull final Afericao afericao,
-                       @NotNull final Long codUnidade,
-                       @NotNull final String userToken) throws ProLogException {
+    Long insert(@NotNull final String userToken,
+                @NotNull final Long codUnidade,
+                @NotNull final Afericao afericao) throws ProLogException {
         try {
             afericao.setDataHora(LocalDateTime.now(Clock.systemUTC()));
             return RouterAfericao
                     .create(dao, userToken)
-                    .insertAfericao(afericao, codUnidade);
+                    .insertAfericao(codUnidade, afericao);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao inserir aferição", e);
             throw exceptionHandler.map(e, "Erro ao inserir aferição, tente novamente");
@@ -42,8 +42,8 @@ public class AfericaoService {
     }
 
     @NotNull
-    CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade,
-                                             @NotNull final String userToken) throws ProLogException {
+    CronogramaAfericao getCronogramaAfericao(@NotNull final String userToken,
+                                             @NotNull final Long codUnidade) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
@@ -70,10 +70,10 @@ public class AfericaoService {
     }
 
     @NotNull
-    NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placa,
-                                                  @NotNull final String tipoAfericao,
-                                                  @NotNull final String userToken) throws ProLogException {
+    NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final String userToken,
+                                           @NotNull final Long codUnidade,
+                                           @NotNull final String placa,
+                                           @NotNull final String tipoAfericao) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
@@ -86,8 +86,8 @@ public class AfericaoService {
 
     @NotNull
     NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
-                                                    @NotNull final Long codPneu,
-                                                    @NotNull final String tipoAfericao) throws ProLogException {
+                                             @NotNull final Long codPneu,
+                                             @NotNull final String tipoAfericao) throws ProLogException {
         try {
             return dao.getNovaAfericaoAvulsa(codUnidade, codPneu, TipoMedicaoColetadaAfericao.fromString(tipoAfericao));
         } catch (final Throwable e) {
@@ -168,8 +168,8 @@ public class AfericaoService {
 
     @NotNull
     Afericao getByCod(@NotNull final Long codUnidade,
-                             @NotNull final Long codAfericao,
-                             @NotNull final String userToken) throws ProLogException {
+                      @NotNull final Long codAfericao,
+                      @NotNull final String userToken) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)

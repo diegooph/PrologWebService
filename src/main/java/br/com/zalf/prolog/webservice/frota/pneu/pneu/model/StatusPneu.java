@@ -13,6 +13,12 @@ public enum StatusPneu implements PieSlice {
     EM_USO("EM_USO") {
         @NotNull
         @Override
+        public PneuTipo toPneuTipo() {
+            return PneuTipo.PNEU_EM_USO;
+        }
+
+        @NotNull
+        @Override
         public String getSliceDescription() {
             return "Aplicados";
         }
@@ -25,6 +31,12 @@ public enum StatusPneu implements PieSlice {
 
     },
     ESTOQUE("ESTOQUE") {
+        @NotNull
+        @Override
+        public PneuTipo toPneuTipo() {
+            return PneuTipo.PNEU_ESTOQUE;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -40,6 +52,12 @@ public enum StatusPneu implements PieSlice {
     DESCARTE("DESCARTE") {
         @NotNull
         @Override
+        public PneuTipo toPneuTipo() {
+            return PneuTipo.PNEU_DESCARTE;
+        }
+
+        @NotNull
+        @Override
         public String getSliceDescription() {
             return "Descartados";
         }
@@ -51,6 +69,12 @@ public enum StatusPneu implements PieSlice {
         }
     },
     ANALISE("ANALISE") {
+        @NotNull
+        @Override
+        public PneuTipo toPneuTipo() {
+            return PneuTipo.PNEU_ANALISE;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -80,6 +104,9 @@ public enum StatusPneu implements PieSlice {
     public String toString() {
         return asString();
     }
+
+    @NotNull
+    public abstract PneuTipo toPneuTipo();
 
     public static StatusPneu fromString(String text) throws IllegalArgumentException {
         if (text != null) {

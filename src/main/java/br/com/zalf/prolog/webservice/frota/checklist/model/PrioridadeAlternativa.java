@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.model;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieSlice;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 21/09/2018
@@ -11,6 +12,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum PrioridadeAlternativa implements PieSlice {
     CRITICA("CRITICA") {
+
+        @Override
+        public int getPrazoResolucaoHoras() {
+            return 1;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -24,6 +31,12 @@ public enum PrioridadeAlternativa implements PieSlice {
         }
     },
     ALTA("ALTA") {
+
+        @Override
+        public int getPrazoResolucaoHoras() {
+            return 48;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -37,6 +50,12 @@ public enum PrioridadeAlternativa implements PieSlice {
         }
     },
     BAIXA("BAIXA") {
+
+        @Override
+        public int getPrazoResolucaoHoras() {
+            return 720;
+        }
+
         @NotNull
         @Override
         public String getSliceDescription() {
@@ -62,12 +81,16 @@ public enum PrioridadeAlternativa implements PieSlice {
         return stringRepresentation;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return asString();
     }
 
-    public static PrioridadeAlternativa fromString(String text) throws IllegalArgumentException {
+    public abstract int getPrazoResolucaoHoras();
+
+    @NotNull
+    public static PrioridadeAlternativa fromString(@Nullable final String text) throws IllegalArgumentException {
         if (text != null) {
             for (final PrioridadeAlternativa prioridadeAlternativa : PrioridadeAlternativa.values()) {
                 if (text.equalsIgnoreCase(prioridadeAlternativa.stringRepresentation)) {

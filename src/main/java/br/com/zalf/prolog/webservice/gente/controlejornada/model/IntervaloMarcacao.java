@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.model;
 
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
