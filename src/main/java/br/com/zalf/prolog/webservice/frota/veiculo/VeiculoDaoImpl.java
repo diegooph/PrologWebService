@@ -661,6 +661,33 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @Override
+    public Long getCodUnidadeByPlaca(@NotNull final Connection conn,
+                                     @NotNull final String placaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT V.COD_UNIDADE FROM VEICULO V WHERE V.PLACA = ?;");
+            stmt.setString(1, placaVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codUnidade = rSet.getLong("COD_UNIDADE");
+                if (codUnidade <= 0) {
+                    throw new IllegalStateException(
+                            "Código da unidade inválido para a placa:" +
+                            "\nplacaVeiculo: " + placaVeiculo);
+                }
+                return codUnidade;
+            } else {
+                throw new IllegalStateException(
+                        "Nenhum dado encontrado para a placa:" +
+                                "\nplacaVeiculo: " + placaVeiculo);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
     @NotNull
     private Optional<DiagramaVeiculo> internalGetDiagramaVeiculoByPlaca(@NotNull final Connection conn,
                                                                         @NotNull final String placa) throws SQLException {

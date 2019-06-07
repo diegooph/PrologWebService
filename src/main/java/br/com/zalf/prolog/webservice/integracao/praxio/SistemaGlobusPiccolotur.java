@@ -35,6 +35,7 @@ public class SistemaGlobusPiccolotur extends Sistema {
         Connection conn = null;
         try {
             conn = new DatabaseConnectionProvider().provideDatabaseConnection();
+            conn.setAutoCommit(false);
             /*
             * Inserir o checklist no ProLog SEM ABRIR O.S.
             * Incrementar a quantidade de apontamentos dos itens apontados como NOK já abertos.
@@ -42,14 +43,17 @@ public class SistemaGlobusPiccolotur extends Sistema {
             * Filtrar apenas os Itens que devem abrir uma O.S.
             * Converter para o objeto específico da Integração e enviar via Requester.
              */
+            // TODO - Mover para o integradorProLog
             final Long codChecklistProLog = Injection.provideChecklistDao().insert(conn, checklist, false);
             // Se o checklist só possui itens OK, não precisamos processar mais nada.
             if (checklist.getQtdItensNok() <= 0) {
                 return codChecklistProLog;
             }
 
-            // TODO - Buscar código da unidade
-            final Long codUnidadeProLog = null;
+            // TODO - Mover para o integradorProLog
+            final Long codUnidadeProLog = Injection
+                    .provideVeiculoDao()
+                    .getCodUnidadeByPlaca(conn, checklist.getPlacaVeiculo());
 
             final ChecklistItensNokGlobus checklistItensNokGlobus =
                     GlobusPiccoloturConverter.createChecklistItensNokGlobus(

@@ -390,6 +390,41 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         }
     }
 
+    @Override
+    public void incrementaQtdApontamentos(
+            @NotNull final Connection conn,
+            @NotNull final String placaVeiculo,
+            @NotNull final List<PerguntaRespostaChecklist> listRespostas) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            final List<Long> codItensNok = getCodItensNok(listRespostas);
+            if (codItensNok.size() == 0) {
+                return;
+            }
+            stmt = conn.prepareStatement("");
+            stmt.setString(1, placaVeiculo);
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensNok));
+            // Não podemos verificar se stmt.executeUpdate() == 0 pois pode ser que não houve nenhum incremento de
+            // quantidade de apontamentos, e isso não é um erro.
+            stmt.executeUpdate();
+        } finally {
+            close(stmt);
+        }
+    }
+
+    @NotNull
+    private List<Long> getCodItensNok(@NotNull final List<PerguntaRespostaChecklist> listRespostas) {
+        final List<Long> codItensNok = new ArrayList<>();
+        for (final PerguntaRespostaChecklist resposta : listRespostas) {
+            for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
+                if (alternativa.isSelected()) {
+                    codItensNok.add(alternativa.getCodigo());
+                }
+            }
+        }
+        return codItensNok;
+    }
+
     @NotNull
     private Long criarOrdemServico(@NotNull final Connection conn,
                                    @NotNull final Long codUnidade,
