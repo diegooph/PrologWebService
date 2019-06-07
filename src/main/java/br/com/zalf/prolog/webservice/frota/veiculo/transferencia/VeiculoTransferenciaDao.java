@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
@@ -28,12 +29,17 @@ public interface VeiculoTransferenciaDao {
      * O processo de transferência de placas também transfere os pneus que estão aplicados na placa.
      *
      * @param processoTransferenciaVeiculo Objeto que contém as placas que serão transferidas.
+     * @param dadosChecklistOfflineChangedListener Listener para informarmos quando os veículos forem transferidos
+     *                                             assim a versão dos dados será incrementada na unidade de origem e
+     *                                             destino. Desde que as unidades já possuam uma versão criada,
+     *                                             do contrário, nada será feito.
      * @return Código do processo de transferência que foi inserido.
      * @throws Throwable Se algum erro ocorrer ao realizar o processo de transferência.
      */
     @NotNull
     Long insertProcessoTranseferenciaVeiculo(
-            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws Throwable;
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable;
 
     /**
      * Busca os veículos da unidade de origem da transferência que estão aptos a seleção para serem transferidos.

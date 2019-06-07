@@ -31,7 +31,9 @@ public final class VeiculoTransferenciaService {
         try {
             return ResponseWithCod.ok(
                     "Processo de transferência realizado com sucesso",
-                    dao.insertProcessoTranseferenciaVeiculo(processoTransferenciaVeiculo));
+                    dao.insertProcessoTranseferenciaVeiculo(
+                            processoTransferenciaVeiculo,
+                            Injection.provideDadosChecklistOfflineChangedListener()));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao realizar processo de transferência:", t);
             throw Injection

@@ -14,7 +14,7 @@ import java.sql.SQLException;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOfflineChangedListener {
+public final class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOfflineChangedListener {
 
     // ================================================
     // MÉTODOS DE ATUALIZAÇÃO DE COLABORADORES
@@ -91,6 +91,15 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
     }
 
     @Override
+    public void onVeiculosTransferidos(@NotNull final Connection connection,
+                                       @NotNull final Long codUnidadeOrigem,
+                                       @NotNull final Long codUnidadeDestino) throws Throwable {
+        // Atualizamos a versão dos dados para a unidade de origem e de destino.
+        incrementaVersaoDadosUnidade(connection, codUnidadeOrigem);
+        incrementaVersaoDadosUnidade(connection, codUnidadeDestino);
+    }
+
+    @Override
     public void onDeleteVeiculo(@NotNull final Connection connection,
                                 @NotNull final Long codVeiculo) throws Throwable {
         // Se o veículo não está associado a nenhum modelo de checklist, nada precisamos fazer.
@@ -140,51 +149,6 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
     // ================================================
     // PRIVATE METHODS
     // ================================================
-    private void incrementaVersaoDadosUnidade(@NotNull final Connection connection,
-                                              @NotNull final Long codUnidade) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = connection.prepareStatement("SELECT * FROM " +
-                    "FUNC_CHECKLIST_OFFLINE_UPDATE_VERSAO_DADOS_UNIDADE(?) AS VERSAO_DADOS;");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                if (rSet.getLong("VERSAO_DADOS") <= 0) {
-                    throw new SQLException("A atualização da 'versão dos dados' não ocorreu como deveria.");
-                }
-            } else {
-                throw new SQLException("Erro ao criar ou atualizar 'versao dos dados' para a unidade:\n" +
-                        "codUnidade: " + codUnidade);
-            }
-        } finally {
-            DatabaseConnection.close(stmt, rSet);
-        }
-    }
-
-    private void incrementaVersaoDadosUnidadeFromModeloChecklist(
-            @NotNull final Connection connection,
-            @NotNull final Long codModeloChecklist) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = connection.prepareStatement("SELECT * FROM " +
-                    "FUNC_CHECKLIST_OFFLINE_UPDATE_VERSAO_DADOS_UNIDADE_MODELO_CHECK(?) AS VERSAO_DADOS;");
-            stmt.setLong(1, codModeloChecklist);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                if (rSet.getLong("VERSAO_DADOS") <= 0) {
-                    throw new SQLException("A atualização da 'versão dos dados' não ocorreu como deveria.");
-                }
-            } else {
-                throw new SQLException("Erro ao criar ou atualizar 'versao dos dados' para o modelo de checklist:\n" +
-                        "codModeloChecklist: " + codModeloChecklist);
-            }
-        } finally {
-            DatabaseConnection.close(stmt, rSet);
-        }
-    }
-
     private boolean hasPermissionTo(@NotNull final Connection connection,
                                     @NotNull final Long codColaborador,
                                     final int codPermissao) throws Throwable {
@@ -202,28 +166,6 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
                 throw new SQLException("Erro ao verificar a existência de permissão:\n" +
                         "codColaborador: " + codColaborador + "\n" +
                         "codPermissao: " + codPermissao);
-            }
-        } finally {
-            DatabaseConnection.close(stmt, rSet);
-        }
-    }
-
-    private void incrementaVersaoDadosUnidadeFromColaborador(@NotNull final Connection connection,
-                                                             @NotNull final Long codColaborador) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = connection.prepareStatement("SELECT * FROM " +
-                    "FUNC_CHECKLIST_OFFLINE_UPDATE_VERSAO_DADOS_UNIDADE_COLABORADOR(?) AS VERSAO_DADOS;");
-            stmt.setLong(1, codColaborador);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                if (rSet.getLong("VERSAO_DADOS") <= 0) {
-                    throw new SQLException("A atualização da 'versão dos dados' não ocorreu como deveria.");
-                }
-            } else {
-                throw new SQLException("Erro ao criar ou atualizar 'versao dos dados' para o colaborador:\n" +
-                        "codColaborador: " + codColaborador);
             }
         } finally {
             DatabaseConnection.close(stmt, rSet);
@@ -250,17 +192,88 @@ public class VersaoDadosChecklistOfflineAtualizador implements DadosChecklistOff
         }
     }
 
+    private void incrementaVersaoDadosUnidade(@NotNull final Connection connection,
+                                              @NotNull final Long codUnidade) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM " +
+                    "FUNC_CHECKLIST_OFFLINE_UPDATE_VERSAO_DADOS_UNIDADE(?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                if (!rSet.getBoolean("EMPRESA_CHECKLIST_OFFLINE_BLOQUEADO")
+                        && rSet.getLong("VERSAO_DADOS_CHECKLIST_UNIDADE") <= 0) {
+                    throw new SQLException("A atualização da 'versão dos dados' não ocorreu como deveria.");
+                }
+            } else {
+                throw new SQLException("Erro ao criar ou atualizar 'versao dos dados' para a unidade:\n" +
+                        "codUnidade: " + codUnidade);
+            }
+        } finally {
+            DatabaseConnection.close(stmt, rSet);
+        }
+    }
+
+    private void incrementaVersaoDadosUnidadeFromModeloChecklist(
+            @NotNull final Connection connection,
+            @NotNull final Long codModeloChecklist) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM " +
+                    "FUNC_CHECKLIST_OFFLINE_UPDATE_VERSAO_DADOS_UNIDADE_MODELO_CHECK(?);");
+            stmt.setLong(1, codModeloChecklist);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                if (!rSet.getBoolean("EMPRESA_CHECKLIST_OFFLINE_BLOQUEADO")
+                        && rSet.getLong("VERSAO_DADOS_CHECKLIST_UNIDADE") <= 0) {
+                    throw new SQLException("A atualização da 'versão dos dados' não ocorreu como deveria.");
+                }
+            } else {
+                throw new SQLException("Erro ao criar ou atualizar 'versao dos dados' para o modelo de checklist:\n" +
+                        "codModeloChecklist: " + codModeloChecklist);
+            }
+        } finally {
+            DatabaseConnection.close(stmt, rSet);
+        }
+    }
+
+    private void incrementaVersaoDadosUnidadeFromColaborador(@NotNull final Connection connection,
+                                                             @NotNull final Long codColaborador) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM " +
+                    "FUNC_CHECKLIST_OFFLINE_UPDATE_VERSAO_DADOS_UNIDADE_COLABORADOR(?);");
+            stmt.setLong(1, codColaborador);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                if (!rSet.getBoolean("EMPRESA_CHECKLIST_OFFLINE_BLOQUEADO")
+                        && rSet.getLong("VERSAO_DADOS_CHECKLIST_UNIDADE") <= 0) {
+                    throw new SQLException("A atualização da 'versão dos dados' não ocorreu como deveria.");
+                }
+            } else {
+                throw new SQLException("Erro ao criar ou atualizar 'versao dos dados' para o colaborador:\n" +
+                        "codColaborador: " + codColaborador);
+            }
+        } finally {
+            DatabaseConnection.close(stmt, rSet);
+        }
+    }
+
     private void incrementaVersaoDadosUnidadeFromVeiculo(@NotNull final Connection connection,
                                                          @NotNull final Long codVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = connection.prepareStatement("SELECT * FROM " +
-                    "FUNC_CHECKLIST_OFFLINE_UPDATE_VERSAO_DADOS_UNIDADE_VEICULO(?) AS VERSAO_DADOS;");
+                    "FUNC_CHECKLIST_OFFLINE_UPDATE_VERSAO_DADOS_UNIDADE_VEICULO(?);");
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                if (rSet.getLong("VERSAO_DADOS") <= 0) {
+                if (!rSet.getBoolean("EMPRESA_CHECKLIST_OFFLINE_BLOQUEADO")
+                        && rSet.getLong("VERSAO_DADOS_CHECKLIST_UNIDADE") <= 0) {
                     throw new SQLException("A atualização da 'versão dos dados' não ocorreu como deveria.");
                 }
             } else {

@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.TipoVeiculoDiagrama;
@@ -37,7 +38,8 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
     @NotNull
     @Override
     public Long insertProcessoTranseferenciaVeiculo(
-            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws Throwable {
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -154,6 +156,13 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                                 codProcessoTransferenciaPneu);
                     }
                 }
+
+                // Listener irá atualizar a versão dos dados do checklist offline para as unidades envolvidas no
+                // processo.
+                checklistOfflineListener.onVeiculosTransferidos(
+                        conn,
+                        processoTransferenciaVeiculo.getCodUnidadeOrigem(),
+                        processoTransferenciaVeiculo.getCodUnidadeDestino());
                 conn.commit();
                 return codProcessoTransferenciaVeiculo;
             } else {
