@@ -38,8 +38,8 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHand
 import br.com.zalf.prolog.webservice.errorhandling.sql.ProLogSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
-import br.com.zalf.prolog.webservice.frota.checklist.model.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.checklist.model.VersaoDadosChecklistOfflineAtualizador;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.VersaoDadosChecklistOfflineAtualizador;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDao;
@@ -80,8 +80,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoSqlExceptionTranslator;
-import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.VeiculoRelatorioDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.VeiculoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
@@ -383,8 +383,8 @@ public final class Injection {
     }
 
     @NotNull
-    public static RelatorioVeiculoDao provideRelatorioVeiculoDao() {
-        return new RelatorioVeiculoDaoImpl();
+    public static VeiculoRelatorioDao provideVeiculoRelatorioDao() {
+        return new VeiculoRelatorioDaoImpl();
     }
 
     @NotNull

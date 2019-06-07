@@ -6,10 +6,11 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,17 +25,20 @@ public interface ChecklistModeloDao {
     /**
      * Insere um novo {@link ModeloChecklistInsercao modelo de checklist} na base de dados.
      *
-     * @param modeloChecklist O {@link ModeloChecklistInsercao modelo} contendo as informações para inserir.
+     * @param modeloChecklist          O {@link ModeloChecklistInsercao modelo} contendo as informações para inserir.
+     * @param checklistOfflineListener Listener utilizado para notificar sobre a atualização de modelos de checklist.
      * @throws Throwable Caso ocorrer algum erro ao salvar os dados.
      */
-    void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable;
+    void insertModeloChecklist(
+            @NotNull final ModeloChecklistInsercao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
      * Busca a listagem de {@link ModeloChecklistListagem modelos de checklist}
      * da {@link Unidade} filtrando pela {@link FuncaoProLog}.
      *
      * @param codUnidade Código da {@link Unidade}.
-     * @param codCargo  Código da {@link FuncaoProLog} ou "%" para buscar de todas as funções.
+     * @param codCargo   Código da {@link FuncaoProLog} ou "%" para buscar de todas as funções.
      * @return Lista de {@link ModeloChecklistListagem} da Unidade.
      * @throws Throwable Se ocorrer algum erro na busca dos dados.
      */
@@ -63,16 +67,20 @@ public interface ChecklistModeloDao {
      * * {@link ModeloChecklistEdicao#tiposVeiculoLiberados}.
      * * {@link ModeloChecklistEdicao#perguntas}.
      *
-     * @param token           Token do usuário que está solicitando a alteração do {@link ModeloChecklistEdicao}.
-     * @param unidade         Código da Unidade.
-     * @param codUnidade      Código do modelo.
-     * @param modeloChecklist O novo {@link ModeloChecklistEdicao} que será inserido.
+     * @param token                    Token do usuário que está solicitando a alteração do
+     *                                 {@link ModeloChecklistEdicao modelo}.
+     * @param codUnidade               Código da Unidade.
+     * @param codModelo                Código do modelo.
+     * @param modeloChecklist          O novo {@link ModeloChecklistEdicao} que será inserido.
+     * @param checklistOfflineListener Listener utilizado para notificar sobre a atualização de modelos de checklist.
      * @throws Throwable Se algum erro acontecer na atualização dos dados.
      */
-    void updateModeloChecklist(@NotNull final String token,
-                               @NotNull final Long unidade,
-                               @NotNull final Long codUnidade,
-                               @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable;
+    void updateModeloChecklist(
+            @NotNull final String token,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo,
+            @NotNull final ModeloChecklistEdicao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
      * Busca as {@link PerguntaRespostaChecklist perguntas} que compoẽm o checklist.
@@ -89,14 +97,17 @@ public interface ChecklistModeloDao {
     /**
      * Marca um {@link ModeloChecklistVisualizacao} como ativo ou inativo.
      *
-     * @param codUnidade  Código da {@link Unidade}.
-     * @param codModelo   Código do modelo.
-     * @param statusAtivo O novo status indicando se o modelo será ativado ou inativado.
+     * @param codUnidade               Código da {@link Unidade}.
+     * @param codModelo                Código do modelo.
+     * @param statusAtivo              O novo status indicando se o modelo será ativado ou inativado.
+     * @param checklistOfflineListener Listener utilizado para notificar atualizações nos modelos de checklist.
      * @throws Throwable Caso ocorrer erro no banco.
      */
-    void updateStatusAtivo(@NotNull final Long codUnidade,
-                           @NotNull final Long codModelo,
-                           final boolean statusAtivo) throws Throwable;
+    void updateStatusAtivo(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo,
+            final boolean statusAtivo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
      * Busca os modelos de checklists padrões disponibilizados pelo ProLog.

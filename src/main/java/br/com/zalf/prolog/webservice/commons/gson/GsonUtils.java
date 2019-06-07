@@ -66,6 +66,7 @@ public final class GsonUtils {
                 .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
                 .registerTypeAdapter(Color.class, new ColorSerializer())
                 .setExclusionStrategies(new AnnotationExclusionStrategy())
+                .setLenient()
                 .enableComplexMapKeySerialization();
 
         if (BuildConfig.DEBUG) {

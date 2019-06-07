@@ -145,12 +145,23 @@ public final class AvaCorpAvilan extends Sistema {
                 getDataNascimento());
         final Map<Long, String> mapCodPerguntUrlImagem =
                 getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModelo);
-        return AvaCorpAvilanConverter.convert(questoesVeiculo, mapCodPerguntUrlImagem, placaVeiculo);
+
+        return AvaCorpAvilanConverter.convert(
+                questoesVeiculo,
+                mapCodPerguntUrlImagem,
+                placaVeiculo);
     }
 
     @NotNull
     @Override
     public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
+
+        if (checklist.getKmAtualVeiculo() == 0) {
+            throw new AvaCorpAvilanException(
+                    "O KM enviado não pode ser 0!",
+                    "A integração com a Avilan não aceita mais KMs 0");
+        }
+
         return requester.insertChecklist(
                 AvaCorpAvilanConverter.convert(checklist, getCpf(), getDataNascimento()),
                 getCpf(),
@@ -249,7 +260,7 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidadeCronograma) throws Throwable {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidadeCronograma) throws Throwable {
         /*
          * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
          * que não esteja presente na mesma unidade dele.
@@ -274,9 +285,9 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
-                                                  @NotNull String placaVeiculo,
-                                                  @NotNull String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
+                                                  @NotNull final String placaVeiculo,
+                                                  @NotNull final String tipoAfericao) throws Throwable {
         /*
          * A Avilan não suporta afericões de Sulco e Pressão separadamente, então lançamos uma
          * exceção caso o tipo selecionado for diferentes de {@link TipoAfericao#SULCO_PRESSAO}
@@ -344,11 +355,17 @@ public final class AvaCorpAvilan extends Sistema {
         throw new BloqueadoIntegracaoException("A Avilan só suporta aferição de uma placa e não de pneu avulso");
     }
 
+    @NotNull
     @Override
-    public Long insertAfericao(@NotNull Afericao afericao,
-                               @NotNull Long codUnidade) throws Throwable {
+    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         if (afericao instanceof AfericaoPlaca) {
             final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
+            if (afericaoPlaca.getKmMomentoAfericao() == 0) {
+                throw new AvaCorpAvilanException(
+                        "O KM enviado não pode ser 0!",
+                        "A integração com a Avilan não aceita mais KMs 0");
+            }
+
             final Long codAfericao = requester.insertAfericao(
                     AvaCorpAvilanConverter.convert(afericaoPlaca),
                     getCpf(),

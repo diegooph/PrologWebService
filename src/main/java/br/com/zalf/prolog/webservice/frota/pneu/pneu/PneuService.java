@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.importar.PneuImportReader;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
@@ -25,7 +24,6 @@ import java.util.List;
 public class PneuService {
     private static final String TAG = PneuService.class.getSimpleName();
     private final PneuDao dao = Injection.providePneuDao();
-    private final PneuExceptionHandler exceptionHandler = Injection.providePneuExceptionHandler();
 
     public AbstractResponse insert(Pneu pneu, Long codUnidade) throws ProLogException {
         try {
@@ -34,7 +32,9 @@ public class PneuService {
         } catch (Throwable e) {
             final String errorMessage = "Erro ao inserir o pneu";
             Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
-            throw exceptionHandler.map(e, errorMessage);
+            throw Injection
+                    .providePneuExceptionHandler()
+                    .map(e, errorMessage);
         }
     }
 
@@ -45,7 +45,9 @@ public class PneuService {
         } catch (final Throwable throwable) {
             final String errorMessage = "Erro ao inserir pneus -- " + throwable.getMessage();
             Log.e(TAG, errorMessage, throwable);
-            throw exceptionHandler.map(throwable, errorMessage);
+            throw Injection
+                    .providePneuExceptionHandler()
+                    .map(throwable, errorMessage);
         }
     }
 
@@ -68,7 +70,8 @@ public class PneuService {
         }
     }
 
-    public List<Pneu> getPneuByCodUnidadeByStatus(@NotNull final Long codUnidade, @NotNull final String status) {
+    public List<Pneu> getPneusByCodUnidadeByStatus(@NotNull final Long codUnidade, @NotNull final String status)
+            throws ProLogException {
         try {
             if (status.equals("%")) {
                 return dao.getTodosPneus(codUnidade);
@@ -87,7 +90,21 @@ public class PneuService {
             }
         } catch (Throwable t) {
             Log.e(TAG, "Erro ao buscar os pneus da unidade: " + codUnidade + " com status: " + status, t);
-            throw new RuntimeException(t);
+            throw Injection
+                    .providePneuExceptionHandler()
+                    .map(t, "Erro ao buscar pneus, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Pneu getPneuByCod(final Long codPneu, final Long codUnidade) throws ProLogException {
+        try {
+            return dao.getPneuByCod(codPneu, codUnidade);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar pneu com código: " + codPneu + " da unidade: " + codUnidade, e);
+            throw Injection
+                    .providePneuExceptionHandler()
+                    .map(e, "Erro ao buscar o pneu, tente novamente");
         }
     }
 
@@ -161,16 +178,6 @@ public class PneuService {
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao atualizar modelo de banda", e);
             return false;
-        }
-    }
-
-    @NotNull
-    public Pneu getPneuByCod(@NotNull final Long codPneu, @NotNull final Long codUnidade) throws ProLogException {
-        try {
-            return dao.getPneuByCod(codPneu, codUnidade);
-        } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao buscar pneu com código: " + codPneu + " da unidade: " + codUnidade, e);
-            throw exceptionHandler.map(e, "Erro ao buscar o pneu, tente novamente");
         }
     }
 

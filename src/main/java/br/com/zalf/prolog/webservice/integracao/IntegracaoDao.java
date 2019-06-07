@@ -25,28 +25,39 @@ public interface IntegracaoDao {
      * por exemplo, isso não quer dizer que a empresa integra todos os métodos do checklist com o ProLog, mas que pelo
      * menos um deles é integrado.
      *
-     * @param userToken - Token do usuário.
-     * @param recursoIntegrado - {@link RecursoIntegrado} para verificar se está integrado.
-     *
-     * @return - Identificador único de um {@link Sistema}.
-     * @throws Exception - Caso aconteça algum erro na consulta ou na execução.
+     * @param userToken        Token do usuário.
+     * @param recursoIntegrado {@link RecursoIntegrado} para verificar se está integrado.
+     * @return Identificador único de um {@link Sistema}.
+     * @throws Exception Caso aconteça algum erro na consulta ou na execução.
      */
     @Nullable
-    SistemaKey getSistemaKey(@NotNull final String userToken, @NotNull final RecursoIntegrado recursoIntegrado)
-            throws Exception;
+    SistemaKey getSistemaKey(@NotNull final String userToken,
+                             @NotNull final RecursoIntegrado recursoIntegrado) throws Exception;
 
     /**
      * Esse método retorna o código da unidade utilizado no ERP do cliente equivalente a mesma unidade utilizada
      * no ProLog.
-     *
+     * <p>
      * Por exemplo, se quisermos saber o código de Santa Maria no ERP da Avilan, basta chamarmos essa função passando
      * o número 3 (código da unidade de Santa Maria no ProLog) e ela irá retornar o código único utilizado pela Avilan
      * para representar Santa Maria em seu ERP.
      *
-     * @param codUnidadeProLog - Código da {@link Unidade} utilizado no ProLog.
-     * @return - Código da unidade no ERP do cliente.
-     * @throws SQLException - Caso aconteça algum erro na consulta.
+     * @param codUnidadeProLog Código da {@link Unidade} utilizado no ProLog.
+     * @return Código da unidade no ERP do cliente.
+     * @throws SQLException Caso aconteça algum erro na consulta.
      */
     @NotNull
     String getCodUnidadeErpClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws SQLException;
+
+    /**
+     * Método necessário para buscar o token utilizado para autenticações de requisições em métodos integrados. No banco
+     * de dados o token é geral para a empresa.
+     * O método executa a busca do token com base no {@code codUnidadeProLog} fornecido.
+     *
+     * @param codUnidadeProLog Código da {@link Unidade unidade} do ProLog.
+     * @return Valor alfanumérico, podendo conter letras e números em posições aleatórias, mas de tamanho fixo.
+     * @throws Throwable Caso ocorra algum problema na busca do token.
+     */
+    @NotNull
+    String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable;
 }

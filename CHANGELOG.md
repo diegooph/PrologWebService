@@ -9,11 +9,74 @@ Change Log
 ### Refactors
 * Adiciona placa ao exibir processo de transferência de pneu que ocorreu por conta da transferência de uma placa (PL-1941)
 
+<a name="v0.0.94"></a>
+## Version [v0.0.94](https://github.com/luizfp/PrologWebService/compare/v0.0.93...v0.0.94) (release-date) [unreleased]
+
+### Features
+* Cria método para permitir a deleção de múltiplos itens do pré contracheque (PL-2002)
+* Cria relatório com as resposta de um quiz (PL-1998)
+
+### Refactors
+* Refatora relatórios do quiz para o padrão atual do ProLog (PL-2053)
+
+### Bug Fixes
+* Adiciona permissão de realizar quiz na busca de um modelo específico (PL-2056)
+* Corrige componente da dash checklists realizados em um determinado tempo. (PL-1865)
+
+
+<a name="v0.0.93"></a>
+## Version [v0.0.93](https://github.com/luizfp/PrologWebService/compare/v0.0.92...v0.0.93) (2019-05-30)
+
+### Features
+* Cria integração de aferição de placas com o Protheus da Rodalog (PL-1721)
+* Cria relatório de desgaste irregular dos pneus (PL-1996)
+
+### Refactors
+* Inserir verificações no fechamento de Itens de O.S da integração Transport (PL-2023)
+* Altera integração com a Avilan para voltar a enviar ao App o KM atual do veículo ao invés de 0 (PL-2035)
+* Cria nova estrutura para busca de permissões por usuário, com detalhes e concentrando em uma única consulta (PL-2004)
+
+<a name="v0.0.92"></a>
+## Version [v0.0.92](https://github.com/luizfp/PrologWebService/compare/v0.0.91...v0.0.92) (2019-05-16)
+
+### Features
+* Disponibilizar Exportação da Listagem de Veículos (PL-1964)
+* Cria método para verificar se unidade tem tipo definido como jornada (PL-1734)
+
+### Refactors
+* Adiciona informações de placa e posição nos objetos de pneus quando aplicados (PL-1942)
+* Permite filtrar por colaboradores ativos nos relatórios de folha ponto (PL-1905)
+* Altera o filtro da listagem para buscar imagens apenas de modelos ativos (PL-1908)
+* Altera integração com a Avilan para enviar ao App o KM atual do veículo
+como 0 ao iniciar um check ou aferição. Além disso, ao finalizar esse check
+ou aferição, a integração impede que seja enviado 0, o usuário será obrigado
+a alterar o valor (PL-1966)
+* Adiciona duração da última viagem no objeto de colaborador em descanso do acompanhamento de viagens (PL-1710)
+* Atualiza versão da lib Apache PDFBox (PL-1707)
+* Seta vida atual e total dos pneus ao buscar uma aferição por código (PL-1677)
+
+### Bug Fixes
+* Corrige busca de tipos de marcação da unidade ao gerar relatórios (PL-1667)
+
+<a name="v0.0.91"></a>
+## Version [v0.0.91](https://github.com/luizfp/PrologWebService/compare/v0.0.90...v0.0.91) (2019-05-06)
+
+### Bug Fixes
+* Remove resolução duplicada de itens de O.S.
+
+<a name="v0.0.90"></a>
+## Version [v0.0.90](https://github.com/luizfp/PrologWebService/compare/v0.0.89...v0.0.90) (2019-05-05)
+
+### Features
+* Cria integração de ordens de serviço do checklist com o sistema Transport da Translecchi
+
 <a name="v0.0.89"></a>
-## Version [v0.0.89](https://github.com/luizfp/PrologWebService/compare/v0.0.88...v0.0.89) (release-date) [unreleased]
+## Version [v0.0.89](https://github.com/luizfp/PrologWebService/compare/v0.0.88...v0.0.89) (2019-04-27)
 
 ### Refactors
 * Permite atualizar o tipo de um veículo se não houverem pneus aplicados (PL-1903)
+
+* Verifica permissão de relatórios de quiz na busca dos modelos da unidade
 
 <a name="v0.0.88"></a>
 ## Version [v0.0.88](https://github.com/luizfp/PrologWebService/compare/v0.0.87...v0.0.88) (2019-04-11)
