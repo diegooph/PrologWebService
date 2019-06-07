@@ -13,7 +13,8 @@ Change Log
 
 ### Bug Fixes
 * Adiciona permissão de realizar quiz na busca de um modelo específico (PL-2056)
-* Corrige componente da dash checklists realizados em um determinado tempo. (PL-1865)
+* Corrige componente da dash checklists realizados em um determinado tempo (PL-1865)
+* Corrige componente da dash de quantidade de dias com aferições vencidas (PL-1736)
 
 
 <a name="v0.0.93"></a>
