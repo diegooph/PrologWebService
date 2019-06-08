@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap;
 
+import br.com.zalf.prolog.webservice.integracao.praxio.GlobusPiccoloturConstants;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
@@ -21,7 +23,7 @@ public class ObjectFactory {
 
     private final static QName _AutenticacaoWebService_QNAME =
             new QName(
-                    "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros",
+                    GlobusPiccoloturConstants.NAMESPACE,
                     "AutenticacaoWebService");
 
     /**
@@ -70,7 +72,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link AutenticacaoWebService }{@code >}}
      */
     @XmlElementDecl(
-            namespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros",
+            namespace = GlobusPiccoloturConstants.NAMESPACE,
             name = "AutenticacaoWebService")
     public JAXBElement<AutenticacaoWebService> createAutenticacaoWebService(AutenticacaoWebService value) {
         return new JAXBElement<>(_AutenticacaoWebService_QNAME, AutenticacaoWebService.class, null, value);

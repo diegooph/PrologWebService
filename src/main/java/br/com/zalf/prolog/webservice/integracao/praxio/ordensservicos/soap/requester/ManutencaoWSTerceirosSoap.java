@@ -1,6 +1,7 @@
 
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.requester;
 
+import br.com.zalf.prolog.webservice.integracao.praxio.GlobusPiccoloturConstants;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.ObjectFactory;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.RetornoOsCorretivaVO;
@@ -21,7 +22,7 @@ import javax.xml.ws.ResponseWrapper;
  */
 @WebService(
         name = "ManutencaoWSTerceirosSoap",
-        targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+        targetNamespace = GlobusPiccoloturConstants.NAMESPACE)
 @XmlSeeAlso({ObjectFactory.class})
 public interface ManutencaoWSTerceirosSoap {
 
@@ -36,18 +37,18 @@ public interface ManutencaoWSTerceirosSoap {
             action = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros/GerarOrdemDeServicoCorretivaProlog")
     @WebResult(
             name = "GerarOrdemDeServicoCorretivaPrologResult",
-            targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+            targetNamespace = GlobusPiccoloturConstants.NAMESPACE)
     @RequestWrapper(
             localName = "GerarOrdemDeServicoCorretivaProlog",
-            targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros",
+            targetNamespace = GlobusPiccoloturConstants.NAMESPACE,
             className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.GerarOrdemDeServicoCorretivaProlog")
     @ResponseWrapper(
             localName = "GerarOrdemDeServicoCorretivaPrologResponse",
-            targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros",
+            targetNamespace = GlobusPiccoloturConstants.NAMESPACE,
             className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.GerarOrdemDeServicoCorretivaPrologResponse")
     RetornoOsCorretivaVO gerarOrdemDeServicoCorretivaProlog(
             @WebParam(
                     name = "ordemDeServico",
-                    targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+                    targetNamespace = GlobusPiccoloturConstants.NAMESPACE)
                     OrdemDeServicoCorretivaPrologVO ordemDeServico);
 }

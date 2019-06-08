@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.requester;
 
+import br.com.zalf.prolog.webservice.integracao.praxio.GlobusPiccoloturConstants;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -17,22 +19,22 @@ import java.net.URL;
  */
 @WebServiceClient(
         name = "ManutencaoWSTerceiros",
-        targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros",
-        wsdlLocation = "http://sp.bgmrodotec.com.br:8184/vanderlei.junior/ManutencaoWSTerceiros.asmx?wsdl")
+        targetNamespace = GlobusPiccoloturConstants.NAMESPACE,
+        wsdlLocation = GlobusPiccoloturConstants.WSDL_LOCATION)
 public class ManutencaoWSTerceiros extends Service {
 
     private final static URL MANUTENCAOWSTERCEIROS_WSDL_LOCATION;
     private final static WebServiceException MANUTENCAOWSTERCEIROS_EXCEPTION;
     private final static QName MANUTENCAOWSTERCEIROS_QNAME =
             new QName(
-                    "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros",
+                    GlobusPiccoloturConstants.NAMESPACE,
                     "ManutencaoWSTerceiros");
 
     static {
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://sp.bgmrodotec.com.br:8184/vanderlei.junior/ManutencaoWSTerceiros.asmx?wsdl");
+            url = new URL(GlobusPiccoloturConstants.WSDL_LOCATION);
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
@@ -51,7 +53,7 @@ public class ManutencaoWSTerceiros extends Service {
     public ManutencaoWSTerceirosSoap getManutencaoWSTerceirosSoap() {
         return super.getPort(
                 new QName(
-                        "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros",
+                        GlobusPiccoloturConstants.NAMESPACE,
                         "ManutencaoWSTerceirosSoap"),
                 ManutencaoWSTerceirosSoap.class);
     }
