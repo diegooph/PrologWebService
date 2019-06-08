@@ -28,8 +28,8 @@ public class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequester 
             System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
             System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
         }
-
-        final AutenticacaoWebService autenticacaoWebService = new AutenticacaoWebService();
+        final ObjectFactory factory = new ObjectFactory();
+        final AutenticacaoWebService autenticacaoWebService = factory.createAutenticacaoWebService();
         autenticacaoWebService.setToken("NDA2Nzs0OTk7ODEzNA==");
         autenticacaoWebService.setShortCode(1032);
         autenticacaoWebService.setNomeMetodo("GerarOrdemDeServicoCorretivaProlog");

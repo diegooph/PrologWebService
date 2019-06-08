@@ -64,6 +64,7 @@ public final class GlobusPiccoloturConverter {
     @NotNull
     public static OrdemDeServicoCorretivaPrologVO convert(
             @NotNull final ChecklistItensNokGlobus checklistItensNokGlobus) throws DatatypeConfigurationException {
+        final ObjectFactory factory = new ObjectFactory();
         final OrdemDeServicoCorretivaPrologVO osGlobus = new OrdemDeServicoCorretivaPrologVO();
         osGlobus.setCodUnidadeChecklist(checklistItensNokGlobus.getCodUnidadeChecklist().intValue());
         osGlobus.setCodChecklistRealizado(checklistItensNokGlobus.getCodChecklistRealizado().intValue());
@@ -73,18 +74,19 @@ public final class GlobusPiccoloturConverter {
         osGlobus.setTipoChecklist(checklistItensNokGlobus.getTipoChecklist().asString());
         osGlobus.setDataHoraRealizacaoUtc(DatatypeFactory.newInstance().newXMLGregorianCalendar(checklistItensNokGlobus.getDataHoraRealizacaoUtc().toString()));
         osGlobus.setUsuario("MANAGER");
-        osGlobus.setListaPerguntasNokVO(convertPerguntas(checklistItensNokGlobus.getPerguntasNok()));
+        osGlobus.setListaPerguntasNokVO(convertPerguntas(factory, checklistItensNokGlobus.getPerguntasNok()));
         return osGlobus;
     }
 
     @NotNull
-    private static ArrayOfPerguntasNokVO convertPerguntas(@NotNull final List<PerguntaNokGlobus> perguntasNok) {
-        final ArrayOfPerguntasNokVO arrayOfPerguntasNokVO = new ArrayOfPerguntasNokVO();
+    private static ArrayOfPerguntasNokVO convertPerguntas(@NotNull final ObjectFactory factory,
+                                                          @NotNull final List<PerguntaNokGlobus> perguntasNok) {
+        final ArrayOfPerguntasNokVO arrayOfPerguntasNokVO = factory.createArrayOfPerguntasNokVO();
         for (final PerguntaNokGlobus perguntaNokGlobus : perguntasNok) {
-            final PerguntasNokVO perguntaNokVO = new PerguntasNokVO();
+            final PerguntasNokVO perguntaNokVO = factory.createPerguntasNokVO();
             perguntaNokVO.setCodPerguntaNok(perguntaNokGlobus.getCodPerguntaNok().intValue());
             perguntaNokVO.setDescricaoPerguntaNok(perguntaNokGlobus.getDescricaoPerguntaNok());
-            perguntaNokVO.setListaAlternativasNok(convertAlternativas(perguntaNokGlobus.getAlternativasNok()));
+            perguntaNokVO.setListaAlternativasNok(convertAlternativas(factory, perguntaNokGlobus.getAlternativasNok()));
             arrayOfPerguntasNokVO.getPerguntasNokVO().add(perguntaNokVO);
         }
         return arrayOfPerguntasNokVO;
@@ -92,10 +94,11 @@ public final class GlobusPiccoloturConverter {
 
     @NotNull
     private static ArrayOfAlternativasNokVO convertAlternativas(
+            @NotNull final ObjectFactory factory,
             @NotNull final List<AlternativaNokGlobus> alternativasNok) {
-        final ArrayOfAlternativasNokVO arrayOfAlternativasNokVO = new ArrayOfAlternativasNokVO();
+        final ArrayOfAlternativasNokVO arrayOfAlternativasNokVO = factory.createArrayOfAlternativasNokVO();
         for (final AlternativaNokGlobus alternativaNokGlobus : alternativasNok) {
-            final AlternativasNokVO alternativaNokVO = new AlternativasNokVO();
+            final AlternativasNokVO alternativaNokVO = factory.createAlternativasNokVO();
             alternativaNokVO.setCodAlternativaNok(alternativaNokGlobus.getCodAlternativaNok().intValue());
             alternativaNokVO.setDescricaoAlternativaNok(alternativaNokGlobus.getDescricaoAlternativaNok());
             alternativaNokVO.setPrioridadeAlternativaNok(alternativaNokGlobus.getPrioridadeAlternativaNok().asString());
