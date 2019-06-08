@@ -24,7 +24,10 @@ public final class ProLogExceptionMapper implements ExceptionMapper<Throwable> {
 
         // Também cobre os casos de throwable == null.
         if (!(throwable instanceof ProLogException)) {
-            throwable = new GenericException("Algo deu errado, tente novamente");
+            throwable = new GenericException(
+                    "Algo deu errado, tente novamente",
+                    "Erro mapeado no ProLogExceptionMapper",
+                    throwable);
         }
 
         final ProLogException proLogException = (ProLogException) throwable;
