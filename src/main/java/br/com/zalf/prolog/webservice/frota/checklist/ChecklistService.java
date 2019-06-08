@@ -64,14 +64,17 @@ public class ChecklistService {
         }
     }
 
-    public Checklist getByCod(Long codigo, String userToken) {
+    @NotNull
+    public Checklist getByCod(@NotNull final Long codigo, @NotNull final String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
                     .getChecklistByCodigo(codigo);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar o um checklist específico", e);
-            return null;
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar um checklist específico: " + codigo, throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar checklist, tente novamente");
         }
     }
 

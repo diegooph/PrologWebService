@@ -97,38 +97,69 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         }
     }
 
+    @NotNull
     @Override
-    public Checklist getByCod(Long codChecklist, String userToken) throws SQLException {
+    public Checklist getByCod(@NotNull final Long codChecklist, @NotNull final String userToken) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  C.CODIGO, " +
-                    "  C.COD_CHECKLIST_MODELO, " +
-                    "  C.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
-                    "  C.KM_VEICULO, " +
-                    "  C.TEMPO_REALIZACAO, " +
-                    "  C.CPF_COLABORADOR, " +
-                    "  C.PLACA_VEICULO, " +
-                    "  C.TIPO, CO.NOME " +
-                    "FROM CHECKLIST C " +
-                    "  JOIN COLABORADOR CO " +
-                    "    ON CO.CPF = C.CPF_COLABORADOR " +
-                    "WHERE C.CODIGO = ?;");
-            stmt.setString(1, TimeZoneManager.getZoneIdForToken(userToken, conn).getId());
-            stmt.setLong(2, codChecklist);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_BY_CODIGO(F_COD_CHECKLIST := ?);");
+            stmt.setLong(1, codChecklist);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Checklist checklist = ChecklistConverter.createChecklist(rSet, false);
-                checklist.setListRespostas(getPerguntasRespostas(checklist));
-                return checklist;
-            } else {
-                throw new IllegalStateException("Checklist com o código: " + codChecklist + " não encontrado!");
+            PerguntaRespostaChecklist pergunta = null;
+            Long codChecklistAntigo = null, codChecklistAtual;
+            Long codPerguntaAntigo = null, codPerguntaAtual;
+            Checklist checklist = null;
+            boolean isFirstLine = true;
+            while (rSet.next()) {
+                codChecklistAtual = rSet.getLong("COD_CHECKLIST");
+                if (codChecklistAntigo == null) {
+                    codChecklistAntigo = codChecklistAtual;
+                }
+
+                codPerguntaAtual = rSet.getLong("COD_PERGUNTA");
+                if (codPerguntaAntigo == null) {
+                    codPerguntaAntigo = codPerguntaAtual;
+                }
+
+                if (isFirstLine) {
+                    checklist = ChecklistConverter.createChecklist(rSet, false);
+                    pergunta = ChecklistConverter.createPergunta(rSet);
+                    pergunta.setAlternativasResposta(new ArrayList<>());
+                    pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                    checklist.setListRespostas(new ArrayList<>());
+                    checklist.getListRespostas().add(pergunta);
+                    isFirstLine = false;
+                }
+
+                if (codChecklistAntigo.equals(codChecklistAtual)) {
+                    if (codPerguntaAntigo.equals(codPerguntaAtual)) {
+                        // Cria mais uma alternativa na pergunta atual.
+                        pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                    } else {
+                        // Cria nova pergunta.
+                        pergunta = ChecklistConverter.createPergunta(rSet);
+                        pergunta.setAlternativasResposta(new ArrayList<>());
+                        checklist.getListRespostas().add(pergunta);
+
+                        // Cria primeira alternativa da nova pergunta.
+                        pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                    }
+                } else {
+                    throw new IllegalStateException("Esse método só está preparado para lidar com o retorno de um único " +
+                            "checklist!");
+                }
             }
+
+            if (checklist == null) {
+                throw new IllegalStateException("Nenhum checklist encontrado com o código: " + codChecklist);
+            }
+
+            return checklist;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -166,7 +197,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             }
             return checklists;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -197,7 +228,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             }
             return checklists;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -299,7 +330,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             rSet = stmt.executeQuery();
             return ChecklistConverter.createFarolChecklist(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -351,17 +382,17 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                            "  CP.CODIGO AS COD_PERGUNTA, " +
-                            "  CP.ORDEM AS ORDEM_PERGUNTA, " +
-                            "  CP.PERGUNTA, " +
-                            "  CP.SINGLE_CHOICE, " +
-                            "  CAP.CODIGO AS COD_ALTERNATIVA, " +
-                            "  CAP.PRIORIDADE, " +
-                            "  CAP.ORDEM, " +
-                            "  CGI.COD_IMAGEM, " +
-                            "  CGI.URL_IMAGEM, " +
-                            "  CAP.ALTERNATIVA, " +
-                            "  CR.RESPOSTA " +
+                            "CP.CODIGO              AS COD_PERGUNTA," +
+                            "CP.ORDEM               AS ORDEM_PERGUNTA," +
+                            "CP.PERGUNTA            AS DESCRICAO_PERGUNTA," +
+                            "CP.SINGLE_CHOICE       AS PERGUNTA_SINGLE_CHOICE," +
+                            "CAP.CODIGO             AS COD_ALTERNATIVA," +
+                            "CAP.PRIORIDADE :: TEXT AS PRIORIDADE_ALTERNATIVA," +
+                            "CAP.ORDEM              AS ORDEM_ALTERNATIVA," +
+                            "CAP.ALTERNATIVA        AS DESCRICAO_ALTERNATIVA," +
+                            "CGI.COD_IMAGEM         AS COD_IMAGEM," +
+                            "CGI.URL_IMAGEM         AS URL_IMAGEM," +
+                            "CR.RESPOSTA            AS RESPOSTA " +
                             "FROM CHECKLIST C " +
                             "  JOIN CHECKLIST_RESPOSTAS CR " +
                             "    ON C.CODIGO = CR.COD_CHECKLIST " +
@@ -388,7 +419,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             rSet = stmt.executeQuery();
             return ChecklistConverter.createPerguntasRespostasChecklist(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
