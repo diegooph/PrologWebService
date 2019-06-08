@@ -13,6 +13,8 @@ Change Log
 * Refatora relatórios do quiz para o padrão atual do ProLog (PL-2053)
 * Adiciona placa ao exibir processo de transferência de pneu que ocorreu por conta da transferência de uma placa (PL-1941)
 * Altera criação de O.S. para não setar mais o código - agora é gerado por trigger (PL-2068)
+* Altera `ProLogException` para estender `RuntimeException` (PL-2015)
+* Altera servidor para pegar e converter todos as exceptions para `ProLogError`, com exceção de 401 (PL-2015)
 
 ### Bug Fixes
 * Adiciona permissão de realizar quiz na busca de um modelo específico (PL-2056)
