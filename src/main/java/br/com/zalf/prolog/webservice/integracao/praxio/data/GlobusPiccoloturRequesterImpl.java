@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.integracao.praxio.data;
 import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.*;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.requester.ManutencaoWSTerceiros;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.requester.ManutencaoWSTerceirosSoap;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.ws.Binding;

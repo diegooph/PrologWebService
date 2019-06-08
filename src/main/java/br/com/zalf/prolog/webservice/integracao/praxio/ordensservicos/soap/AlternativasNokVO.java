@@ -8,10 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de AlternativasNokVO complex type.
- * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
- * 
+ * Classe Java de AlternativasNokVO complex type.
+ * <p>
+ * O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * <pre>
  * &lt;complexType name="AlternativasNokVO">
  *   &lt;complexContent>
@@ -25,15 +24,14 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AlternativasNokVO", propOrder = {
-    "codAlternativaNok",
-    "descricaoAlternativaNok",
-    "prioridadeAlternativaNok"
-})
+@XmlType(
+        name = "AlternativasNokVO",
+        propOrder = {
+                "codAlternativaNok",
+                "descricaoAlternativaNok",
+                "prioridadeAlternativaNok"})
 public class AlternativasNokVO {
 
     @XmlElement(name = "CodAlternativaNok")
@@ -45,7 +43,6 @@ public class AlternativasNokVO {
 
     /**
      * Obtém o valor da propriedade codAlternativaNok.
-     * 
      */
     public int getCodAlternativaNok() {
         return codAlternativaNok;
@@ -53,7 +50,6 @@ public class AlternativasNokVO {
 
     /**
      * Define o valor da propriedade codAlternativaNok.
-     * 
      */
     public void setCodAlternativaNok(int value) {
         this.codAlternativaNok = value;
@@ -61,11 +57,8 @@ public class AlternativasNokVO {
 
     /**
      * Obtém o valor da propriedade descricaoAlternativaNok.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getDescricaoAlternativaNok() {
         return descricaoAlternativaNok;
@@ -73,11 +66,8 @@ public class AlternativasNokVO {
 
     /**
      * Define o valor da propriedade descricaoAlternativaNok.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setDescricaoAlternativaNok(String value) {
         this.descricaoAlternativaNok = value;
@@ -85,11 +75,8 @@ public class AlternativasNokVO {
 
     /**
      * Obtém o valor da propriedade prioridadeAlternativaNok.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
     public String getPrioridadeAlternativaNok() {
         return prioridadeAlternativaNok;
@@ -97,14 +84,10 @@ public class AlternativasNokVO {
 
     /**
      * Define o valor da propriedade prioridadeAlternativaNok.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setPrioridadeAlternativaNok(String value) {
         this.prioridadeAlternativaNok = value;
     }
-
 }

@@ -1,19 +1,18 @@
 
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
- * <p>Classe Java de ArrayOfAlternativasNokVO complex type.
- * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
- * 
+ * Classe Java de ArrayOfAlternativasNokVO complex type.
+ * <p>
+ * O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * <pre>
  * &lt;complexType name="ArrayOfAlternativasNokVO">
  *   &lt;complexContent>
@@ -25,13 +24,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArrayOfAlternativasNokVO", propOrder = {
-    "alternativasNokVO"
-})
+@XmlType(
+        name = "ArrayOfAlternativasNokVO",
+        propOrder = {"alternativasNokVO"})
 public class ArrayOfAlternativasNokVO {
 
     @XmlElement(name = "AlternativasNokVO", nillable = true)
@@ -39,31 +36,23 @@ public class ArrayOfAlternativasNokVO {
 
     /**
      * Gets the value of the alternativasNokVO property.
-     * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the alternativasNokVO property.
-     * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getAlternativasNokVO().add(newItem);
      * </pre>
-     * 
-     * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AlternativasNokVO }
-     * 
-     * 
+     * Objects of the following type(s) are allowed in the list {@link AlternativasNokVO }
      */
     public List<AlternativasNokVO> getAlternativasNokVO() {
         if (alternativasNokVO == null) {
-            alternativasNokVO = new ArrayList<AlternativasNokVO>();
+            alternativasNokVO = new ArrayList<>();
         }
         return this.alternativasNokVO;
     }
-
 }
