@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -22,10 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
@@ -319,6 +317,30 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             return ChecklistConverter.createFarolChecklist(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Map<Long, AlternativaChecklistStatus> getItensStatus(@NotNull final Connection conn,
+                                                                @NotNull final Long codModelo,
+                                                                @NotNull final String placaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(?, ?);");
+            stmt.setLong(1, codModelo);
+            stmt.setString(2, placaVeiculo);
+            rSet = stmt.executeQuery();
+            final Map<Long, AlternativaChecklistStatus> alternativas = new HashMap<>();
+            while (rSet.next()) {
+                alternativas.put(
+                        rSet.getLong("COD_ALTERNATIVA"),
+                        ChecklistConverter.createAlternativaChecklistStatus(rSet));
+            }
+            return alternativas;
+        } finally {
+            close(stmt, rSet);
         }
     }
 

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -120,4 +121,9 @@ public interface ChecklistDao {
                                                @NotNull final LocalDate dataInicial,
                                                @NotNull final LocalDate dataFinal,
                                                final boolean itensCriticosRetroativos) throws Throwable;
+
+    @NotNull
+    Map<Long, AlternativaChecklistStatus> getItensStatus(@NotNull final Connection conn,
+                                                    @NotNull final Long codModelo,
+                                                    @NotNull final String placaVeiculo) throws Throwable;
 }

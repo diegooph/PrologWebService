@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
@@ -171,6 +170,5 @@ public interface OrdemServicoDao {
     void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable;
 
     void incrementaQtdApontamentos(@NotNull final Connection conn,
-                                   @NotNull final String placaVeiculo,
-                                   @NotNull final List<PerguntaRespostaChecklist> listRespostas) throws Throwable;
+                                   @NotNull final List<Long> codItensOsIncrementaQtdApontamentos) throws Throwable;
 }

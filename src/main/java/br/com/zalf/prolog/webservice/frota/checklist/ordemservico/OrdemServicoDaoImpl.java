@@ -393,20 +393,19 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @Override
     public void incrementaQtdApontamentos(
             @NotNull final Connection conn,
-            @NotNull final String placaVeiculo,
-            @NotNull final List<PerguntaRespostaChecklist> listRespostas) throws Throwable {
+            @NotNull final List<Long> codItensOsIncrementaQtdApontamentos) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            final List<Long> codItensNok = getCodItensNok(listRespostas);
-            if (codItensNok.size() == 0) {
-                return;
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS_DATA " +
+                    "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1 " +
+                    "WHERE CODIGO = ANY(?);");
+            stmt.setArray(
+                    1,
+                    PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensOsIncrementaQtdApontamentos));
+            if (stmt.executeUpdate() <= 0) {
+                throw new SQLException("Não foi possível atualizar a quantidade de apontamentos dos ites:\n" +
+                        "codItensOs: " + codItensOsIncrementaQtdApontamentos.toString());
             }
-            stmt = conn.prepareStatement("");
-            stmt.setString(1, placaVeiculo);
-            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensNok));
-            // Não podemos verificar se stmt.executeUpdate() == 0 pois pode ser que não houve nenhum incremento de
-            // quantidade de apontamentos, e isso não é um erro.
-            stmt.executeUpdate();
         } finally {
             close(stmt);
         }
