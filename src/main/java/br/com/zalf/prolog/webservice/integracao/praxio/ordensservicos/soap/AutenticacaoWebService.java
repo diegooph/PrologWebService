@@ -28,8 +28,7 @@ import java.util.Map;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(
-        name = "AutenticacaoWebService",
+@XmlType(name = "AutenticacaoWebService",
         propOrder = {"token",
                 "shortCode",
                 "nomeMetodo"})
@@ -42,12 +41,13 @@ public class AutenticacaoWebService {
     @XmlElement(name = "NomeMetodo")
     protected String nomeMetodo;
     @XmlAnyAttribute
-    private Map<QName, String> otherAttributes = new HashMap<QName, String>();
+    private Map<QName, String> otherAttributes = new HashMap<>();
 
     /**
      * Obtém o valor da propriedade token.
      *
-     * @return possible object is {@link String }
+     * @return possible object is
+     * {@link String }
      */
     public String getToken() {
         return token;
@@ -56,7 +56,8 @@ public class AutenticacaoWebService {
     /**
      * Define o valor da propriedade token.
      *
-     * @param value allowed object is {@link String }
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setToken(String value) {
         this.token = value;
@@ -79,7 +80,8 @@ public class AutenticacaoWebService {
     /**
      * Obtém o valor da propriedade nomeMetodo.
      *
-     * @return possible object is {@link String }
+     * @return possible object is
+     * {@link String }
      */
     public String getNomeMetodo() {
         return nomeMetodo;
@@ -88,7 +90,8 @@ public class AutenticacaoWebService {
     /**
      * Define o valor da propriedade nomeMetodo.
      *
-     * @param value allowed object is {@link String }
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setNomeMetodo(String value) {
         this.nomeMetodo = value;
@@ -96,6 +99,7 @@ public class AutenticacaoWebService {
 
     /**
      * Gets a map that contains attributes that aren't bound to any typed property on this class.
+     * <p>
      * <p>
      * the map is keyed by the name of the attribute and
      * the value is the string value of the attribute.
@@ -108,4 +112,5 @@ public class AutenticacaoWebService {
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;
     }
+
 }

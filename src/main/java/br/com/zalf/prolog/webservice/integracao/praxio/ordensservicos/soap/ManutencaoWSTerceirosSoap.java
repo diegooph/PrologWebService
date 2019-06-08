@@ -15,11 +15,26 @@ import javax.xml.ws.ResponseWrapper;
  * JAX-WS RI 2.2.9-b130926.1035
  * Generated source version: 2.2
  */
-@WebService(
-        name = "ManutencaoWSTerceirosSoap",
-        targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
-@XmlSeeAlso({ObjectFactory.class})
+@WebService(name = "ManutencaoWSTerceirosSoap", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+@XmlSeeAlso({
+        ObjectFactory.class
+})
 public interface ManutencaoWSTerceirosSoap {
+
+
+    /**
+     * Gerar ordem de serviço corretiva.
+     *
+     * @param ordemDeServico
+     * @return returns br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.RetornoOsCorretivaVO
+     */
+    @WebMethod(operationName = "GerarOrdemDeServicoCorretiva", action = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros/GerarOrdemDeServicoCorretiva")
+    @WebResult(name = "GerarOrdemDeServicoCorretivaResult", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+    @RequestWrapper(localName = "GerarOrdemDeServicoCorretiva", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros", className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.GerarOrdemDeServicoCorretiva")
+    @ResponseWrapper(localName = "GerarOrdemDeServicoCorretivaResponse", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros", className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.GerarOrdemDeServicoCorretivaResponse")
+    public RetornoOsCorretivaVO gerarOrdemDeServicoCorretiva(
+            @WebParam(name = "ordemDeServico", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+                    OrdemDeServicoCorretivaVO ordemDeServico);
 
     /**
      * Gerar ordem de serviço corretiva por CheckList Prolog.
@@ -42,8 +57,61 @@ public interface ManutencaoWSTerceirosSoap {
             targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros",
             className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.GerarOrdemDeServicoCorretivaPrologResponse")
     RetornoOsCorretivaVO gerarOrdemDeServicoCorretivaProlog(
-            @WebParam(
-                    name = "ordemDeServico",
-                    targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+            @WebParam(name = "ordemDeServico", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
                     OrdemDeServicoCorretivaPrologVO ordemDeServico);
+
+//    /**
+//     * Gerar ordem de serviço corretiva por CheckList Prolog.
+//     *
+//     * @param ordemDeServico
+//     * @return returns br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.RetornoOsCorretivaVO
+//     */
+//    @WebMethod(
+//            operationName = "GerarOrdemDeServicoCorretivaProlog",
+//            action = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros/GerarOrdemDeServicoCorretivaProlog")
+//    @WebResult(
+//            name = "GerarOrdemDeServicoCorretivaPrologResult",
+//            targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+//    @RequestWrapper(
+//            localName = "GerarOrdemDeServicoCorretivaProlog",
+//            targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros",
+//            className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.GerarOrdemDeServicoCorretivaProlog")
+//    @ResponseWrapper(
+//            localName = "GerarOrdemDeServicoCorretivaPrologResponse",
+//            targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros",
+//            className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.GerarOrdemDeServicoCorretivaPrologResponse")
+//    GerarOrdemDeServicoCorretivaPrologResponse gerarOrdemDeServicoCorretivaProlog(
+//            @WebParam(
+//                    name = "ordemDeServico",
+//                    targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+//                    OrdemDeServicoCorretivaPrologVO ordemDeServico);
+
+    /**
+     * Envia O.S. aberta por CheckList Prolog para APi Prolog.
+     *
+     * @param codigoOS
+     * @return returns br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.RetornoEnvioPrologVO
+     */
+    @WebMethod(operationName = "EnviaOsAbertaProlog", action = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros/EnviaOsAbertaProlog")
+    @WebResult(name = "EnviaOsAbertaPrologResult", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+    @RequestWrapper(localName = "EnviaOsAbertaProlog", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros", className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.EnviaOsAbertaProlog")
+    @ResponseWrapper(localName = "EnviaOsAbertaPrologResponse", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros", className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.EnviaOsAbertaPrologResponse")
+    public RetornoEnvioPrologVO enviaOsAbertaProlog(
+            @WebParam(name = "codigoOS", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+                    int codigoOS);
+
+    /**
+     * Envia serviços executados da O.S. aberta por CheckList Prolog para APi Prolog.
+     *
+     * @param codigoOS
+     * @return returns br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.RetornoEnvioPrologVO
+     */
+    @WebMethod(operationName = "EnviaServicosExecutadosProlog", action = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros/EnviaServicosExecutadosProlog")
+    @WebResult(name = "EnviaServicosExecutadosPrologResult", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+    @RequestWrapper(localName = "EnviaServicosExecutadosProlog", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros", className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.EnviaServicosExecutadosProlog")
+    @ResponseWrapper(localName = "EnviaServicosExecutadosPrologResponse", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros", className = "br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.EnviaServicosExecutadosPrologResponse")
+    public RetornoEnvioPrologVO enviaServicosExecutadosProlog(
+            @WebParam(name = "codigoOS", targetNamespace = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros")
+                    int codigoOS);
+
 }

@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Classe Java de PerguntasNokVO complex type.
- *
+ * 
  * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
- *
+ * 
  * <pre>
  * &lt;complexType name="PerguntasNokVO">
  *   &lt;complexContent>
@@ -25,13 +25,15 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
+ * 
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(
-        name = "PerguntasNokVO",
-        propOrder = {"codPerguntaNok",
-                "descricaoPerguntaNok",
-                "listaAlternativasNok"})
+@XmlType(name = "PerguntasNokVO", propOrder = {
+    "codPerguntaNok",
+    "descricaoPerguntaNok",
+    "listaAlternativasNok"
+})
 public class PerguntasNokVO {
 
     @XmlElement(name = "CodPerguntaNok")
@@ -43,6 +45,7 @@ public class PerguntasNokVO {
 
     /**
      * Obtém o valor da propriedade codPerguntaNok.
+     * 
      */
     public int getCodPerguntaNok() {
         return codPerguntaNok;
@@ -50,6 +53,7 @@ public class PerguntasNokVO {
 
     /**
      * Define o valor da propriedade codPerguntaNok.
+     * 
      */
     public void setCodPerguntaNok(int value) {
         this.codPerguntaNok = value;
@@ -57,8 +61,11 @@ public class PerguntasNokVO {
 
     /**
      * Obtém o valor da propriedade descricaoPerguntaNok.
-     *
-     * @return possible object is {@link String }
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
     public String getDescricaoPerguntaNok() {
         return descricaoPerguntaNok;
@@ -66,8 +73,11 @@ public class PerguntasNokVO {
 
     /**
      * Define o valor da propriedade descricaoPerguntaNok.
-     *
-     * @param value allowed object is {@link String }
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
     public void setDescricaoPerguntaNok(String value) {
         this.descricaoPerguntaNok = value;
@@ -75,8 +85,11 @@ public class PerguntasNokVO {
 
     /**
      * Obtém o valor da propriedade listaAlternativasNok.
-     *
-     * @return possible object is {@link ArrayOfAlternativasNokVO }
+     * 
+     * @return
+     *     possible object is
+     *     {@link ArrayOfAlternativasNokVO }
+     *     
      */
     public ArrayOfAlternativasNokVO getListaAlternativasNok() {
         return listaAlternativasNok;
@@ -84,10 +97,14 @@ public class PerguntasNokVO {
 
     /**
      * Define o valor da propriedade listaAlternativasNok.
-     *
-     * @param value allowed object is {@link ArrayOfAlternativasNokVO }
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ArrayOfAlternativasNokVO }
+     *     
      */
     public void setListaAlternativasNok(ArrayOfAlternativasNokVO value) {
         this.listaAlternativasNok = value;
     }
+
 }

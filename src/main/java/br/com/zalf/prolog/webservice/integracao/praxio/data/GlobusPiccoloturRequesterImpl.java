@@ -28,7 +28,7 @@ public class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequester 
         }
 
         final AutenticacaoWebService autenticacaoWebService = new AutenticacaoWebService();
-        autenticacaoWebService.setToken("OTkxMDEwOzMyNzs1MTA");
+        autenticacaoWebService.setToken("NDA2Nzs0OTk7ODEzNA==");
         autenticacaoWebService.setShortCode(1032);
         autenticacaoWebService.setNomeMetodo("GerarOrdemDeServicoCorretivaProlog");
 
@@ -40,12 +40,17 @@ public class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequester 
         handlerChain.add(new SoapHeaderHandler(autenticacaoWebService));
         binding.setHandlerChain(handlerChain);
 
-        final RetornoOsCorretivaVO retornoOsCorretivaVO =
+        final RetornoOsCorretivaVO result =
                 soap.gerarOrdemDeServicoCorretivaProlog(ordemDeServicoCorretivaPrologVO);
 
-        if (!retornoOsCorretivaVO.isSucesso()) {
-            throw new GenericException(retornoOsCorretivaVO.getMensagemDeRetorno());
+        if (result != null) {
+            if (result.isSucesso()) {
+                return (long) result.getCodigoOS();
+            } else {
+                throw new GenericException(result.getMensagemDeRetorno());
+            }
+        } else {
+            throw new GenericException("Erro na integração");
         }
-        return (long) retornoOsCorretivaVO.getCodigoOS();
     }
 }

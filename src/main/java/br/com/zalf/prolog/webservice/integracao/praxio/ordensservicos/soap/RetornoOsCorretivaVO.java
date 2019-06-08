@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Classe Java de RetornoOsCorretivaVO complex type.
- *
+ * 
  * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
- *
+ * 
  * <pre>
  * &lt;complexType name="RetornoOsCorretivaVO">
  *   &lt;complexContent>
@@ -25,13 +25,15 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
+ * 
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(
-        name = "RetornoOsCorretivaVO",
-        propOrder = {"sucesso",
-                "mensagemDeRetorno",
-                "codigoOS"})
+@XmlType(name = "RetornoOsCorretivaVO", propOrder = {
+    "sucesso",
+    "mensagemDeRetorno",
+    "codigoOS"
+})
 public class RetornoOsCorretivaVO {
 
     @XmlElement(name = "Sucesso")
@@ -43,6 +45,7 @@ public class RetornoOsCorretivaVO {
 
     /**
      * Obtém o valor da propriedade sucesso.
+     * 
      */
     public boolean isSucesso() {
         return sucesso;
@@ -50,6 +53,7 @@ public class RetornoOsCorretivaVO {
 
     /**
      * Define o valor da propriedade sucesso.
+     * 
      */
     public void setSucesso(boolean value) {
         this.sucesso = value;
@@ -57,8 +61,11 @@ public class RetornoOsCorretivaVO {
 
     /**
      * Obtém o valor da propriedade mensagemDeRetorno.
-     *
-     * @return possible object is {@link String }
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
     public String getMensagemDeRetorno() {
         return mensagemDeRetorno;
@@ -66,8 +73,11 @@ public class RetornoOsCorretivaVO {
 
     /**
      * Define o valor da propriedade mensagemDeRetorno.
-     *
-     * @param value allowed object is {@link String }
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
     public void setMensagemDeRetorno(String value) {
         this.mensagemDeRetorno = value;
@@ -75,6 +85,7 @@ public class RetornoOsCorretivaVO {
 
     /**
      * Obtém o valor da propriedade codigoOS.
+     * 
      */
     public int getCodigoOS() {
         return codigoOS;
@@ -82,8 +93,10 @@ public class RetornoOsCorretivaVO {
 
     /**
      * Define o valor da propriedade codigoOS.
+     * 
      */
     public void setCodigoOS(int value) {
         this.codigoOS = value;
     }
+
 }

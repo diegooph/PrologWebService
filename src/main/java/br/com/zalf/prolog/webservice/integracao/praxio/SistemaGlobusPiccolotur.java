@@ -34,15 +34,15 @@ public class SistemaGlobusPiccolotur extends Sistema {
     public Long insertChecklist(@NotNull final Checklist checklist) throws Throwable {
         Connection conn = null;
         try {
+            /*
+             * Inserir o checklist no ProLog SEM ABRIR O.S.
+             * Incrementar a quantidade de apontamentos dos itens apontados como NOK já abertos.
+             * Buscar status dos Itens.
+             * Filtrar apenas os Itens que devem abrir uma O.S.
+             * Converter para o objeto específico da Integração e enviar via Requester.
+             */
             conn = new DatabaseConnectionProvider().provideDatabaseConnection();
             conn.setAutoCommit(false);
-            /*
-            * Inserir o checklist no ProLog SEM ABRIR O.S.
-            * Incrementar a quantidade de apontamentos dos itens apontados como NOK já abertos.
-            * Buscar status dos Itens.
-            * Filtrar apenas os Itens que devem abrir uma O.S.
-            * Converter para o objeto específico da Integração e enviar via Requester.
-             */
             // TODO - Mover para o integradorProLog
             final Long codChecklistProLog = Injection.provideChecklistDao().insert(conn, checklist, false);
             // Se o checklist só possui itens OK, não precisamos processar mais nada.

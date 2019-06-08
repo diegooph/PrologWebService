@@ -1,15 +1,19 @@
 
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
  * <p>Classe Java de OrdemDeServicoCorretivaPrologVO complex type.
- *
+ * 
  * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
- *
+ * 
  * <pre>
  * &lt;complexType name="OrdemDeServicoCorretivaPrologVO">
  *   &lt;complexContent>
@@ -29,19 +33,21 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
+ * 
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(
-        name = "OrdemDeServicoCorretivaPrologVO",
-        propOrder = {"codUnidadeChecklist",
-                "codChecklistRealizado",
-                "cpfColaboradorRealizacao",
-                "placaVeiculoChecklist",
-                "kmColetadoChecklist",
-                "tipoChecklist",
-                "dataHoraRealizacaoUtc",
-                "usuario",
-                "listaPerguntasNokVO"})
+@XmlType(name = "OrdemDeServicoCorretivaPrologVO", propOrder = {
+    "codUnidadeChecklist",
+    "codChecklistRealizado",
+    "cpfColaboradorRealizacao",
+    "placaVeiculoChecklist",
+    "kmColetadoChecklist",
+    "tipoChecklist",
+    "dataHoraRealizacaoUtc",
+    "usuario",
+    "listaPerguntasNokVO"
+})
 public class OrdemDeServicoCorretivaPrologVO {
 
     @XmlElement(name = "CodUnidadeChecklist")
@@ -66,6 +72,7 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Obtém o valor da propriedade codUnidadeChecklist.
+     * 
      */
     public int getCodUnidadeChecklist() {
         return codUnidadeChecklist;
@@ -73,6 +80,7 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Define o valor da propriedade codUnidadeChecklist.
+     * 
      */
     public void setCodUnidadeChecklist(int value) {
         this.codUnidadeChecklist = value;
@@ -80,6 +88,7 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Obtém o valor da propriedade codChecklistRealizado.
+     * 
      */
     public int getCodChecklistRealizado() {
         return codChecklistRealizado;
@@ -87,6 +96,7 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Define o valor da propriedade codChecklistRealizado.
+     * 
      */
     public void setCodChecklistRealizado(int value) {
         this.codChecklistRealizado = value;
@@ -94,8 +104,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Obtém o valor da propriedade cpfColaboradorRealizacao.
-     *
-     * @return possible object is {@link String }
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
     public String getCpfColaboradorRealizacao() {
         return cpfColaboradorRealizacao;
@@ -103,8 +116,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Define o valor da propriedade cpfColaboradorRealizacao.
-     *
-     * @param value allowed object is {@link String }
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
     public void setCpfColaboradorRealizacao(String value) {
         this.cpfColaboradorRealizacao = value;
@@ -112,8 +128,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Obtém o valor da propriedade placaVeiculoChecklist.
-     *
-     * @return possible object is {@link String }
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
     public String getPlacaVeiculoChecklist() {
         return placaVeiculoChecklist;
@@ -121,8 +140,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Define o valor da propriedade placaVeiculoChecklist.
-     *
-     * @param value allowed object is {@link String }
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
     public void setPlacaVeiculoChecklist(String value) {
         this.placaVeiculoChecklist = value;
@@ -130,6 +152,7 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Obtém o valor da propriedade kmColetadoChecklist.
+     * 
      */
     public int getKmColetadoChecklist() {
         return kmColetadoChecklist;
@@ -137,6 +160,7 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Define o valor da propriedade kmColetadoChecklist.
+     * 
      */
     public void setKmColetadoChecklist(int value) {
         this.kmColetadoChecklist = value;
@@ -144,8 +168,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Obtém o valor da propriedade tipoChecklist.
-     *
-     * @return possible object is {@link String }
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
     public String getTipoChecklist() {
         return tipoChecklist;
@@ -153,8 +180,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Define o valor da propriedade tipoChecklist.
-     *
-     * @param value allowed object is {@link String }
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
     public void setTipoChecklist(String value) {
         this.tipoChecklist = value;
@@ -162,8 +192,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Obtém o valor da propriedade dataHoraRealizacaoUtc.
-     *
-     * @return possible object is {@link XMLGregorianCalendar }
+     * 
+     * @return
+     *     possible object is
+     *     {@link XMLGregorianCalendar }
+     *     
      */
     public XMLGregorianCalendar getDataHoraRealizacaoUtc() {
         return dataHoraRealizacaoUtc;
@@ -171,8 +204,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Define o valor da propriedade dataHoraRealizacaoUtc.
-     *
-     * @param value allowed object is {@link XMLGregorianCalendar }
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link XMLGregorianCalendar }
+     *     
      */
     public void setDataHoraRealizacaoUtc(XMLGregorianCalendar value) {
         this.dataHoraRealizacaoUtc = value;
@@ -180,8 +216,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Obtém o valor da propriedade usuario.
-     *
-     * @return possible object is {@link String }
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
     public String getUsuario() {
         return usuario;
@@ -189,8 +228,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Define o valor da propriedade usuario.
-     *
-     * @param value allowed object is {@link String }
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
     public void setUsuario(String value) {
         this.usuario = value;
@@ -198,8 +240,11 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Obtém o valor da propriedade listaPerguntasNokVO.
-     *
-     * @return possible object is {@link ArrayOfPerguntasNokVO }
+     * 
+     * @return
+     *     possible object is
+     *     {@link ArrayOfPerguntasNokVO }
+     *     
      */
     public ArrayOfPerguntasNokVO getListaPerguntasNokVO() {
         return listaPerguntasNokVO;
@@ -207,10 +252,14 @@ public class OrdemDeServicoCorretivaPrologVO {
 
     /**
      * Define o valor da propriedade listaPerguntasNokVO.
-     *
-     * @param value allowed object is {@link ArrayOfPerguntasNokVO }
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ArrayOfPerguntasNokVO }
+     *     
      */
     public void setListaPerguntasNokVO(ArrayOfPerguntasNokVO value) {
         this.listaPerguntasNokVO = value;
     }
+
 }
