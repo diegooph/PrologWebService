@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.ReflectionHelper;
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
-import br.com.zalf.prolog.webservice.errorhandling.error.VersaoAppBloqueadaException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
