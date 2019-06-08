@@ -400,12 +400,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                             "       AND C.COD_UNIDADE = CR.COD_UNIDADE " +
                             "  JOIN CHECKLIST_PERGUNTAS CP " +
                             "    ON CP.CODIGO = CR.COD_PERGUNTA " +
-                            "       AND CP.COD_UNIDADE = CR.COD_UNIDADE " +
                             "       AND CP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO " +
                             "       AND CP.CODIGO = CR.COD_PERGUNTA " +
                             "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP " +
                             "    ON CAP.CODIGO = CR.COD_ALTERNATIVA " +
-                            "       AND CAP.COD_UNIDADE = CR.COD_UNIDADE " +
                             "       AND CAP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO " +
                             "       AND CAP.COD_PERGUNTA = CR.COD_PERGUNTA " +
                             "  LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
