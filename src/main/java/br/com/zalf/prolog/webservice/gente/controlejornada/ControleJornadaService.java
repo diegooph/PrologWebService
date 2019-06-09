@@ -99,7 +99,6 @@ public class ControleJornadaService {
         }
     }
 
-    @SuppressWarnings("Duplicates")
     @NotNull
     public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
                                                               Long codUnidade,

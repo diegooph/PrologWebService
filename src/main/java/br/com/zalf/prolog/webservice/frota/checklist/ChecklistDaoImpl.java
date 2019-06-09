@@ -322,6 +322,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         return modeloPlaca;
     }
 
+    @NotNull
     @Override
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
                                                       @NotNull final LocalDate dataInicial,
@@ -341,6 +342,29 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             stmt.setString(5, zoneId);
             rSet = stmt.executeQuery();
             return ChecklistConverter.createFarolChecklist(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_CHECKLIST_REALIZACAO_DIFERENTES_UNIDADES_EMPRESA_BLOQUEADA(" +
+                            "F_COD_EMPRESA := ?);");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return !rSet.getBoolean("REALIZACAO_CHECKLIST_DIFERENTES_UNIDADES_BLOQUEADO_EMPRESA");
+            } else {
+                throw new SQLException("Erro ao verificar se a empresa está bloqueada para realizar checklist de " +
+                        "diferentes unidades");
+            }
         } finally {
             close(conn, stmt, rSet);
         }

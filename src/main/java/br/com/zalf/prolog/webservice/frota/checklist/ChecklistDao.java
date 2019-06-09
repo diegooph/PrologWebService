@@ -105,4 +105,15 @@ public interface ChecklistDao {
                                                @NotNull final LocalDate dataInicial,
                                                @NotNull final LocalDate dataFinal,
                                                final boolean itensCriticosRetroativos) throws Throwable;
+
+    /**
+     * Método utilizado para identificar se os colaboradores da empresa estão liberadps para realizar o checklist de
+     * diferentes unidades.
+     *
+     * @param codEmpresa Código da empresa que será verificado se está liberado.
+     * @return <code>TRUE</code> se os colaboradores da empresa estão aptos a realizar o checklist de diferentes uniades,
+     * <code>FALSE</code> caso contrário.
+     * @throws Throwable Caso ocorrer algum erro na busca dos dados.
+     */
+    boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 }

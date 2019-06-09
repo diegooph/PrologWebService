@@ -155,4 +155,18 @@ public class ChecklistService {
                     .map(throwable, "Erro ao gerar o farol do checklist, tente novamente");
         }
     }
+
+    public boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) {
+        try {
+            return dao.getChecklistDiferentesUnidadesAtivoEmpresa(codEmpresa);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao verificar se empresa está bloqueada para realizar o checklist de " +
+                    "diferentes unidades", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    // Mensagem propositalmente genérica para evitar de mostrar um erro sem sentido para o usuário
+                    // quando ele tentar fazer Login, já que atualmente esse método é usado apenas no login.
+                    .map(t, "Algo deu errado, tente novamente");
+        }
+    }
 }

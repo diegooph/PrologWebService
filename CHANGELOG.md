@@ -3,6 +3,8 @@ Change Log
 
 ### Stage
 refactor: Altera método de busca de um checklist por código (PL-2075)
+refactor: Altera método de login para incluir se empresa está bloqueada
+para realizar checklist de diferentes unidades no `LoginHolder` (PL-2077)
 
 <a name="v0.0.94"></a>
 ## Version [v0.0.94](https://github.com/luizfp/PrologWebService/compare/v0.0.93...v0.0.94) (release-date) [unreleased]
