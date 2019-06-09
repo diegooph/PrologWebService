@@ -22,10 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
@@ -151,11 +148,23 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     throw new IllegalStateException("Esse método só está preparado para lidar com o retorno de um único " +
                             "checklist!");
                 }
+                codChecklistAntigo = codChecklistAtual;
+                codPerguntaAntigo = codPerguntaAtual;
             }
 
             if (checklist == null) {
                 throw new IllegalStateException("Nenhum checklist encontrado com o código: " + codChecklist);
             }
+
+            // Como a busca é feita ordenando pelo código, antes de retornar para o front nós ordenamos pela ordem de
+            // exibição das perguntas. Ignoramos a ordem de exibição das alternativas, não vale o overhead pelo que se
+            // ganha, atualmente, em exibição no front.
+            // O motivo de ordenarmos a busca pelo código ao invés de já direto pela ordem de exibição, é que atualmente
+            // a tabela de perguntas e alternativas não possuem nenhuma constraint que impeça a ordem de exibição de se
+            // repetir.
+            checklist
+                    .getListRespostas()
+                    .sort(Comparator.comparing(PerguntaRespostaChecklist::getOrdemExibicao));
 
             return checklist;
         } finally {
