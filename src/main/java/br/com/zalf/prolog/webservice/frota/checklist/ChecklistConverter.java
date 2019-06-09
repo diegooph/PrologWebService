@@ -292,7 +292,7 @@ public final class ChecklistConverter {
     private static AlternativaChecklist createAlternativa(@NotNull final ResultSet rSet) throws SQLException {
         final AlternativaChecklist alternativa = new AlternativaChecklist();
         alternativa.setCodigo(rSet.getLong("COD_ALTERNATIVA"));
-        alternativa.setAlternativa(rSet.getString("DESCRICAO_PERGUNTA"));
+        alternativa.setAlternativa(rSet.getString("DESCRICAO_ALTERNATIVA"));
         alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
         alternativa.setOrdemExibicao(rSet.getInt("ORDEM_ALTERNATIVA"));
         if (alternativa.getAlternativa().equals("Outros")) {
