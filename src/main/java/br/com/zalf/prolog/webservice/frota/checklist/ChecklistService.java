@@ -38,14 +38,20 @@ public class ChecklistService {
         }
     }
 
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao, String userToken) {
+    @NotNull
+    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codFuncao,
+            @NotNull final String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
                     .getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar os dados de filtro modelo e placa dos veículos", e);
-            return null;
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar os dados modelo de checklist e placa dos veículos", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar modelos de checklist, tente novamente");
         }
     }
 

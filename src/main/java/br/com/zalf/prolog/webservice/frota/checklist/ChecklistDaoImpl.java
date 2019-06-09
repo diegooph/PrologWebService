@@ -256,15 +256,14 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         return holder;
     }
 
+    @NotNull
     @Override
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao)
-            throws SQLException {
+    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codFuncao) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final Map<ModeloChecklist, List<String>> modeloPlaca = new LinkedHashMap<>();
-        ModeloChecklist modelo = null;
-        List<String> placas = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
@@ -291,6 +290,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codFuncao);
             rSet = stmt.executeQuery();
+            final Map<ModeloChecklist, List<String>> modeloPlaca = new LinkedHashMap<>();
+            ModeloChecklist modelo = null;
+            List<String> placas = new ArrayList<>();
             while (rSet.next()) {
                 // Primeira linha do Rset, cria o modelo, add a primeira placa.
                 if (modelo == null) {
@@ -316,10 +318,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             if (modelo != null) {
                 modeloPlaca.put(modelo, placas);
             }
+            return modeloPlaca;
         } finally {
             close(conn, stmt, rSet);
         }
-        return modeloPlaca;
     }
 
     @NotNull

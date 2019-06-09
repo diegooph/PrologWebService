@@ -83,7 +83,10 @@ public interface ChecklistDao {
     NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklist) throws SQLException;
 
     //TODO - adicionar comentário javadoc
-    Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao) throws SQLException;
+    @NotNull
+    Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codFuncao) throws SQLException;
 
 
     /**
