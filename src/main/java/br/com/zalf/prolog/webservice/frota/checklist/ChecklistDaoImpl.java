@@ -34,7 +34,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
     @NotNull
     @Override
-    public Long insert(Checklist checklist) throws SQLException {
+    public Long insert(@NotNull Checklist checklist) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -71,7 +71,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             if (rSet.next()) {
                 checklist.setCodigo(rSet.getLong("CODIGO"));
                 final Long codUnidade = rSet.getLong("COD_UNIDADE");
-                insertRespostas(checklist, conn);
+                insertRespostas(conn, codUnidade, checklist);
                 Injection
                         .provideOrdemServicoDao()
                         .processaChecklistRealizado(conn, codUnidade, checklist);
@@ -370,14 +370,16 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         }
     }
 
-    private void insertRespostas(Checklist checklist, Connection conn) throws SQLException {
+    private void insertRespostas(@NotNull final Connection conn,
+                                 @NotNull final Long codUnidade,
+                                 @NotNull final Checklist checklist) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO CHECKLIST_RESPOSTAS "
                     + "(COD_UNIDADE, COD_CHECKLIST_MODELO, COD_CHECKLIST, COD_PERGUNTA, COD_ALTERNATIVA, RESPOSTA) "
-                    + "VALUES ((SELECT V.COD_UNIDADE FROM VEICULO V WHERE V.PLACA=?), ?, ?, ?, ?, ?)");
+                    + "VALUES (?, ?, ?, ?, ?, ?)");
             for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
-                stmt.setString(1, checklist.getPlacaVeiculo());
+                stmt.setLong(1, codUnidade);
                 stmt.setLong(2, checklist.getCodModelo());
                 stmt.setLong(3, checklist.getCodigo());
                 stmt.setLong(4, resposta.getCodigo());

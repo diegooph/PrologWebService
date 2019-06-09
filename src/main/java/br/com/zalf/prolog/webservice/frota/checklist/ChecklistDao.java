@@ -27,7 +27,7 @@ public interface ChecklistDao {
      * @throws SQLException caso não seja possível inserir o checklist no banco de dados
      */
     @NotNull
-    Long insert(Checklist checklist) throws SQLException;
+    Long insert(@NotNull final Checklist checklist) throws SQLException;
 
     /**
      * Busca um checklist pelo seu código único.
