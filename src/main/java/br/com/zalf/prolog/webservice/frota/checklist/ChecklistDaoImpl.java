@@ -156,6 +156,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                 throw new IllegalStateException("Nenhum checklist encontrado com o código: " + codChecklist);
             }
 
+            // Agora que já acabamos de criar, podemos forçar a contagem de itens OK/NOK a acontecer.
+            checklist.calculaQtdOkOrNok();
+
             // Como a busca é feita ordenando pelo código, antes de retornar para o front nós ordenamos pela ordem de
             // exibição das perguntas. Ignoramos a ordem de exibição das alternativas, não vale o overhead pelo que se
             // ganha, atualmente, em exibição no front.
