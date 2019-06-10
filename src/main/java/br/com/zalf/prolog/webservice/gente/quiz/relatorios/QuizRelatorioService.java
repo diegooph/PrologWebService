@@ -25,8 +25,8 @@ class QuizRelatorioService {
         try {
             dao.getEstratificacaoRealizacaoQuizCsv(
                     out,
-                    codModeloQuiz,
                     codUnidade,
+                    codModeloQuiz,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
