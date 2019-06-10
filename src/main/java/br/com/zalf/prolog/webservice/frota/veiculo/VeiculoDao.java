@@ -256,4 +256,6 @@ public interface VeiculoDao {
                            @NotNull final Long codUnidade,
                            @NotNull final String placa,
                            @NotNull final Long codPneu) throws Throwable;
+
+    Long getCodUnidadeByPlaca(@NotNull final Connection conn, @NotNull final String placaVeiculo) throws Throwable;
 }

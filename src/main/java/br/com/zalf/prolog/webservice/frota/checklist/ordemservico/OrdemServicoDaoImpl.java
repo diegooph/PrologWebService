@@ -390,6 +390,40 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         }
     }
 
+    @Override
+    public void incrementaQtdApontamentos(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codItensOsIncrementaQtdApontamentos) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS_DATA " +
+                    "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1 " +
+                    "WHERE CODIGO = ANY(?);");
+            stmt.setArray(
+                    1,
+                    PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensOsIncrementaQtdApontamentos));
+            if (stmt.executeUpdate() <= 0) {
+                throw new SQLException("Não foi possível atualizar a quantidade de apontamentos dos ites:\n" +
+                        "codItensOs: " + codItensOsIncrementaQtdApontamentos.toString());
+            }
+        } finally {
+            close(stmt);
+        }
+    }
+
+    @NotNull
+    private List<Long> getCodItensNok(@NotNull final List<PerguntaRespostaChecklist> listRespostas) {
+        final List<Long> codItensNok = new ArrayList<>();
+        for (final PerguntaRespostaChecklist resposta : listRespostas) {
+            for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
+                if (alternativa.isSelected()) {
+                    codItensNok.add(alternativa.getCodigo());
+                }
+            }
+        }
+        return codItensNok;
+    }
+
     @NotNull
     private Long criarOrdemServico(@NotNull final Connection conn,
                                    @NotNull final Long codUnidade,

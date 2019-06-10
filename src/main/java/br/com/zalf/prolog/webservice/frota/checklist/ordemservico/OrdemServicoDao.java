@@ -29,9 +29,9 @@ public interface OrdemServicoDao {
      * Processa o checklist que foi realizado pelo usuário e cria itens de ordens de serviços ou incrementa a quantidade
      * de apontamento para itens já existentes e ainda pendentes.
      *
-     * @param conn Conexão com o banco atualmente aberta.
+     * @param conn       Conexão com o banco atualmente aberta.
      * @param codUnidade O código da unidade onde o checklist foi realizado.
-     * @param checklist O checklist que foi realizado.
+     * @param checklist  O checklist que foi realizado.
      * @throws Throwable Se ocorrer algum erro no processamento das informações.
      */
     void processaChecklistRealizado(@NotNull final Connection conn,
@@ -168,4 +168,7 @@ public interface OrdemServicoDao {
      * @throws Throwable Se ocorrer algum erro no processamento das informações.
      */
     void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable;
+
+    void incrementaQtdApontamentos(@NotNull final Connection conn,
+                                   @NotNull final List<Long> codItensOsIncrementaQtdApontamentos) throws Throwable;
 }
