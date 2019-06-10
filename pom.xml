@@ -202,6 +202,14 @@
 			<artifactId>logging-interceptor</artifactId>
 			<version>3.10.0</version>
 		</dependency>
+
+		<!-- https://google.github.io/truth/ -->
+		<dependency>
+			<groupId>com.google.truth</groupId>
+			<artifactId>truth</artifactId>
+			<version>0.44</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>prolog.webservice</finalName>

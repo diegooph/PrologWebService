@@ -17,8 +17,8 @@ public interface ChecklistRelatorioDao {
 
     @NotNull
     List<ChecksRealizadosAbaixoTempoEspecifico> getQtdChecksRealizadosAbaixoTempoEspecifico(@NotNull final List<Long> codUnidades,
-                                                                                            @NotNull final int tempoRealizacao,
-                                                                                            @NotNull final int diasRetroativosParaBuscar)
+                                                                                            final long tempoRealizacaoFiltragemMilis,
+                                                                                            final int diasRetroativosParaBuscar)
             throws Throwable;
 
     @NotNull

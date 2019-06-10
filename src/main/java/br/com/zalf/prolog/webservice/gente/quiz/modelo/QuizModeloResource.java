@@ -77,6 +77,8 @@ public final class QuizModeloResource {
 
     @GET
     @Secured(permissions = {
+            Pilares.Gente.Quiz.REALIZAR,
+            Pilares.Gente.Quiz.VISUALIZAR,
             Pilares.Gente.Quiz.Modelo.CRIAR,
             Pilares.Gente.Quiz.Modelo.VISUALIZAR,
             Pilares.Gente.Quiz.Modelo.ALTERAR})

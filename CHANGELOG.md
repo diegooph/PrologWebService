@@ -1,6 +1,27 @@
 Change Log
 ==========
 
+<a name="v0.0.94"></a>
+## Version [v0.0.94](https://github.com/luizfp/PrologWebService/compare/v0.0.93...v0.0.94) (2019-06-10)
+
+### Features
+* Cria método para permitir a deleção de múltiplos itens do pré contracheque (PL-2002)
+* Cria relatório com as resposta de um quiz (PL-1998)
+* Implementa funcionalidade de transferência de veículos (PL-1532)
+
+### Refactors
+* Refatora relatórios do quiz para o padrão atual do ProLog (PL-2053)
+* Adiciona placa ao exibir processo de transferência de pneu que ocorreu por conta da transferência de uma placa (PL-1941)
+* Altera criação de O.S. para não setar mais o código - agora é gerado por trigger (PL-2068)
+* Altera `ProLogException` para estender `RuntimeException` (PL-2015)
+* Altera servidor para pegar e converter todos as exceptions para `ProLogError`, com exceção de 401 (PL-2015)
+
+### Bug Fixes
+* Adiciona permissão de realizar quiz na busca de um modelo específico (PL-2056)
+* Corrige componente da dash checklists realizados em um determinado tempo (PL-1865)
+* Corrige componente da dash de quantidade de dias com aferições vencidas (PL-1736)
+
+
 <a name="v0.0.93"></a>
 ## Version [v0.0.93](https://github.com/luizfp/PrologWebService/compare/v0.0.92...v0.0.93) (2019-05-30)
 
@@ -52,6 +73,7 @@ a alterar o valor (PL-1966)
 
 ### Refactors
 * Permite atualizar o tipo de um veículo se não houverem pneus aplicados (PL-1903)
+
 * Verifica permissão de relatórios de quiz na busca dos modelos da unidade
 
 <a name="v0.0.88"></a>

@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -115,5 +116,14 @@ public class ContrachequeResource {
         } else {
             return Response.error("Erro ao excluir o item");
         }
+    }
+
+    @DELETE
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = Pilares.Gente.PreContracheque.UPLOAD_E_EDICAO)
+    @Path("/itens")
+    public Response deleteItensImportPreContracheque(final List<Long> codItensDelecao) throws ProLogException {
+        service.deleteItensImportPreContracheque(codItensDelecao);
+        return Response.ok("Itens de pré contracheque deletados com sucesso!");
     }
 }
