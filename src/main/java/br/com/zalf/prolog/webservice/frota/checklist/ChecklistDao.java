@@ -71,6 +71,14 @@ public interface ChecklistDao {
                                      final long offset,
                                      final boolean resumido) throws SQLException;
 
+    /**
+     * Busca as regionais e unidades que o colaborador de código fornecido tem acesso. Isso é verificado com base na
+     * permissão do colaborador (nível de acesso à informação).
+     *
+     * @param codColaborador Código do colaborador para o qual serão buscadas as regionais e unidades que tem acesso.
+     * @return Objeto contendo as regionais e unidades que o colaborador tem acesso.
+     * @throws Throwable Caso ocorrer algum erro na busca dos dados.
+     */
     @NotNull
     FiltroRegionalUnidadeChecklist getRegionaisUnidadesSelecao(@NotNull final Long codColaborador) throws Throwable;
 
