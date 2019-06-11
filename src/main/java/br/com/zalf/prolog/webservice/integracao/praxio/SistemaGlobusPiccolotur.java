@@ -79,7 +79,9 @@ public class SistemaGlobusPiccolotur extends Sistema {
                 }
             }
 
-            Injection.provideOrdemServicoDao().incrementaQtdApontamentos(conn, codItensOsIncrementaQtdApontamentos);
+            if (!codItensOsIncrementaQtdApontamentos.isEmpty()) {
+                Injection.provideOrdemServicoDao().incrementaQtdApontamentos(conn, codItensOsIncrementaQtdApontamentos);
+            }
 
             final ChecklistItensNokGlobus checklistItensNokGlobus =
                     GlobusPiccoloturConverter.createChecklistItensNokGlobus(
