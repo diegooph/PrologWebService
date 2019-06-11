@@ -30,7 +30,7 @@ public class RodoparHorizonteRestClient {
         retrofit = new Retrofit.Builder()
                 .client(provideOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
-                .baseUrl("")
+                .baseUrl("http://54.232.212.10:8263/")
                 .build();
     }
 
@@ -38,7 +38,7 @@ public class RodoparHorizonteRestClient {
     }
 
     @NotNull
-    public static <T> T getService(@NotNull final Class<T> serviceClass) {
+    static <T> T getService(@NotNull final Class<T> serviceClass) {
         final String canonicalName = serviceClass.getCanonicalName();
         //noinspection Duplicates
         if (!SERVICE_CACHE.containsKey(canonicalName)) {

@@ -14,19 +14,19 @@ import retrofit2.http.*;
  */
 public interface RodoparHorizonteRest {
 
-    @GET("")
-    Call<String> getTokenUsuarioIntegracao(@Header("user") @NotNull final String cpf,
-                                           @Header("pass") @NotNull final String dataNascimento);
+    @FormUrlEncoded
+    @POST("token")
+    Call<RodoparToken> getTokenUsuarioIntegracao(@Field("username") String username,
+                                           @Field("password") String password,
+                                           @Field("grant_type") String grant_type);
 
-    // TODO - Estruturar todos os endpoints - Preciso das informações do WS parceiro.
-    // TODO - Descobrir nome das propriedades que irão no Header da requisição.
-    @POST("")
+    @POST("api/AfericaoRealizada")
     Call<ResponseAfericaoRodoparHorizonte> insertAfericaoPlaca(
-            @Header("token") @NotNull final String tokenIntegracao,
+            @Header("authorization") @NotNull final String tokenIntegracao,
             @Body @NotNull final AfericaoPlacaRodoparHorizonte afericao);
 
-    @POST("")
+    @POST("api/AfericaoRealizada")
     Call<ResponseAfericaoRodoparHorizonte> insertAfericaoAvulsa(
-            @Header("token") @NotNull final String tokenIntegracao,
+            @Header("authorization") @NotNull final String tokenIntegracao,
             @Body @NotNull final AfericaoAvulsaRodoparHorizonte afericao);
 }

@@ -17,12 +17,14 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
 
     @NotNull
     @Override
-    public String getTokenUsuarioIntegracao(@NotNull final String cpf,
-                                            @NotNull final String dataNascimento) throws Throwable {
-//        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
-//        final Call<String> call = service.getTokenUsuarioIntegracao(cpf, dataNascimento);
-//        return handleResponse(call.execute());
-        return "dhauhds822dfas";
+    public RodoparToken getTokenUsuarioIntegracao(@NotNull final RodoparCredentials credentials) throws Throwable {
+        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
+        final Call<RodoparToken> call =
+                service.getTokenUsuarioIntegracao(
+                        credentials.getUsername(),
+                        credentials.getPassword(),
+                        credentials.getGrantType());
+        return handleResponse(call.execute());
     }
 
     @NotNull
@@ -32,7 +34,7 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
             @NotNull final AfericaoPlacaRodoparHorizonte afericao) throws Throwable {
         final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
         final Call<ResponseAfericaoRodoparHorizonte> call =
-                service.insertAfericaoPlaca(tokenIntegracao, afericao);
+                service.insertAfericaoPlaca("Bearer " + tokenIntegracao, afericao);
         return handleResponse(call.execute());
     }
 
@@ -43,7 +45,7 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
             @NotNull final AfericaoAvulsaRodoparHorizonte afericao) throws Throwable {
         final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
         final Call<ResponseAfericaoRodoparHorizonte> call =
-                service.insertAfericaoAvulsa(tokenIntegracao, afericao);
+                service.insertAfericaoAvulsa("Bearer " + tokenIntegracao, afericao);
         return handleResponse(call.execute());
     }
 

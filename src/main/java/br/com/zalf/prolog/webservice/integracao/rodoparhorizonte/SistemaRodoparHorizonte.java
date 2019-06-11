@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequester;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparToken;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -40,19 +41,18 @@ public class SistemaRodoparHorizonte extends Sistema {
             conn = new DatabaseConnectionProvider().provideDatabaseConnection();
             conn.setAutoCommit(false);
             final Colaborador colaboradorRequisicao = getIntegradorProLog().getColaboradorByToken(getUserToken());
-            final String tokenIntegracao =
+            final RodoparToken tokenIntegracao =
                     requester.getTokenUsuarioIntegracao(
-                            colaboradorRequisicao.getCpfAsString(),
-                            colaboradorRequisicao.getDataNascimentoAsString());
+                            ProtheusRodalogConverter.createCredentials(colaboradorRequisicao));
             final Long codAfericaoInserida = Injection.provideAfericaoDao().insert(conn, codUnidade, afericao);
 
             if (afericao instanceof AfericaoPlaca) {
                 requester.insertAfericaoPlaca(
-                        tokenIntegracao,
+                        tokenIntegracao.getToken(),
                         ProtheusRodalogConverter.convert(codUnidade, (AfericaoPlaca) afericao));
             } else {
                 requester.insertAfericaoAvulsa(
-                        tokenIntegracao,
+                        tokenIntegracao.getToken(),
                         ProtheusRodalogConverter.convert(codUnidade, (AfericaoAvulsa) afericao));
             }
             conn.commit();

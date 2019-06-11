@@ -1,9 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparCredentials;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoAvulsaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoPlacaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.MedicaoAfericaoRodoparHorizonte;
@@ -50,6 +52,14 @@ public final class ProtheusRodalogConverter {
                 afericao.getDataHora(),
                 tipoMedicao,
                 createMedidaFrom(tipoMedicao, afericao.getPneuAferido()));
+    }
+
+    @NotNull
+    static RodoparCredentials createCredentials(@NotNull final Colaborador colaboradorRequisicao) {
+        return new RodoparCredentials(
+                Colaborador.formatCpf(colaboradorRequisicao.getCpf()),
+                colaboradorRequisicao.getDataNascimentoAsString(),
+                "password");
     }
 
     @NotNull
