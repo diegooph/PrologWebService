@@ -654,7 +654,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
                         rSet.getInt("TOTAL_VENCIDAS"),
-                        rSet.getInt("TOTAL_NO_PRAZO") - rSet.getInt("TOTAL_NO_PRAZO"));
+                        rSet.getInt("TOTAL_NO_PRAZO"));
             } else {
                 throw new SQLException("Erro ao buscar o status das placas");
             }
