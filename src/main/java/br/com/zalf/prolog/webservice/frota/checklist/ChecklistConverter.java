@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.UnidadeSelecaoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.*;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -29,6 +31,25 @@ public final class ChecklistConverter {
 
     private ChecklistConverter() {
         throw new IllegalStateException(ChecklistConverter.class.getSimpleName() + " cannot be instantiated!");
+    }
+
+    @NotNull
+    public static RegionalSelecaoChecklist createRegionalSelecao(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<UnidadeSelecaoChecklist> unidades) throws Throwable {
+        return new RegionalSelecaoChecklist(
+                rSet.getLong("CODIGO_REGIONAL"),
+                rSet.getString("NOME_REGIONAL"),
+                unidades);
+    }
+
+    @NotNull
+    public static UnidadeSelecaoChecklist createUnidadeSelecao(
+            @NotNull final ResultSet rSet) throws Throwable {
+        return new UnidadeSelecaoChecklist(
+                rSet.getLong("CODIGO_UNIDADE"),
+                rSet.getString("NOME_UNIDADE"),
+                rSet.getLong("CODIGO_REGIONAL"));
     }
 
     @VisibleForTesting

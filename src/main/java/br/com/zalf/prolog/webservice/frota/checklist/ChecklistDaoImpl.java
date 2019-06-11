@@ -8,8 +8,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -26,7 +25,7 @@ import java.util.*;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
-public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
+public final class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
 
     public ChecklistDaoImpl() {
 
@@ -244,16 +243,57 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         }
     }
 
+    @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char
-            tipoChecklis) throws SQLException {
-        final NovoChecklistHolder holder = new NovoChecklistHolder();
-        final ChecklistModeloDao checklistModeloDaoImpl = Injection.provideChecklistModeloDao();
-        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        holder.setCodigoModeloChecklist(codModelo);
-        holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidade, codModelo));
-        holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));
-        return holder;
+    public FiltroRegionalUnidadeChecklist getRegionaisUnidadesSelecao(@NotNull final Long codColaborador)
+            throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_REGIONAIS_UNIDADES_SELECAO(" +
+                    "F_COD_COLABORADOR := ?);");
+            stmt.setLong(1, codColaborador);
+            rSet = stmt.executeQuery();
+            FiltroRegionalUnidadeChecklist filtro = null;
+            RegionalSelecaoChecklist regional = null;
+            Long codRegionalAntiga = null, codRegionalAtual;
+            boolean isFirstLine = true;
+            while (rSet.next()) {
+                codRegionalAtual = rSet.getLong("CODIGO_REGIONAL");
+                if (codRegionalAntiga == null) {
+                    codRegionalAntiga = codRegionalAtual;
+                }
+
+                if (isFirstLine) {
+                    filtro = new FiltroRegionalUnidadeChecklist(
+                            codColaborador,
+                            new ArrayList<>(),
+                            !rSet.getBoolean("REALIZACAO_CHECKLIST_DIFERENTES_UNIDADES_BLOQUEADO_EMPRESA"));
+                    regional = ChecklistConverter.createRegionalSelecao(rSet, new ArrayList<>());
+                    filtro.getRegionaisSelecao().add(regional);
+                    isFirstLine = false;
+                }
+
+                if (codRegionalAntiga.equals(codRegionalAtual)) {
+                    regional.getUnidadesVinculadas().add(ChecklistConverter.createUnidadeSelecao(rSet));
+                } else {
+                    regional = ChecklistConverter.createRegionalSelecao(rSet, new ArrayList<>());
+                    regional.getUnidadesVinculadas().add(ChecklistConverter.createUnidadeSelecao(rSet));
+                    filtro.getRegionaisSelecao().add(regional);
+                }
+                codRegionalAntiga = codRegionalAtual;
+            }
+
+            if (filtro == null) {
+                throw new IllegalStateException("Dados de filtro não encontrados para o colaborador: " + codColaborador);
+            }
+
+            return filtro;
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @NotNull
@@ -322,6 +362,18 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @Override
+    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char
+            tipoChecklis) throws SQLException {
+        final NovoChecklistHolder holder = new NovoChecklistHolder();
+        final ChecklistModeloDao checklistModeloDaoImpl = Injection.provideChecklistModeloDao();
+        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+        holder.setCodigoModeloChecklist(codModelo);
+        holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidade, codModelo));
+        holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));
+        return holder;
     }
 
     @NotNull
