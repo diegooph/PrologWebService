@@ -124,7 +124,6 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     checklist = ChecklistConverter.createChecklist(rSet, false);
                     pergunta = ChecklistConverter.createPergunta(rSet);
                     pergunta.setAlternativasResposta(new ArrayList<>());
-                    pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
                     checklist.setListRespostas(new ArrayList<>());
                     checklist.getListRespostas().add(pergunta);
                     isFirstLine = false;
