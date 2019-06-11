@@ -15,32 +15,35 @@ import retrofit2.Response;
  */
 public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester {
 
+    @NotNull
+    @Override
+    public String getTokenUsuarioIntegracao(@NotNull final String cpf,
+                                            @NotNull final String dataNascimento) throws Throwable {
+//        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
+//        final Call<String> call = service.getTokenUsuarioIntegracao(cpf, dataNascimento);
+//        return handleResponse(call.execute());
+        return "dhauhds822dfas";
+    }
 
     @NotNull
     @Override
     public ResponseAfericaoRodoparHorizonte insertAfericaoPlaca(
-            @NotNull final String cpf,
-            @NotNull final String dataNascimento,
             @NotNull final String tokenIntegracao,
-            @NotNull final Long codUnidade,
             @NotNull final AfericaoPlacaRodoparHorizonte afericao) throws Throwable {
         final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
         final Call<ResponseAfericaoRodoparHorizonte> call =
-                service.insertAfericaoPlaca(cpf, dataNascimento, codUnidade, afericao);
+                service.insertAfericaoPlaca(tokenIntegracao, afericao);
         return handleResponse(call.execute());
     }
 
     @NotNull
     @Override
     public ResponseAfericaoRodoparHorizonte insertAfericaoAvulsa(
-            @NotNull final String cpf,
-            @NotNull final String dataNascimento,
             @NotNull final String tokenIntegracao,
-            @NotNull final Long codUnidade,
             @NotNull final AfericaoAvulsaRodoparHorizonte afericao) throws Throwable {
         final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
         final Call<ResponseAfericaoRodoparHorizonte> call =
-                service.insertAfericaoAvulsa(cpf, dataNascimento, codUnidade, afericao);
+                service.insertAfericaoAvulsa(tokenIntegracao, afericao);
         return handleResponse(call.execute());
     }
 

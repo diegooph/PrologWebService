@@ -14,18 +14,16 @@ import org.jetbrains.annotations.NotNull;
 public interface RodoparHorizonteRequester extends Requester {
 
     @NotNull
+    String getTokenUsuarioIntegracao(@NotNull final String cpf,
+                                     @NotNull final String dataNascimento) throws Throwable;
+
+    @NotNull
     ResponseAfericaoRodoparHorizonte insertAfericaoPlaca(
-            @NotNull final String cpf,
-            @NotNull final String dataNascimento,
             @NotNull final String tokenIntegracao,
-            @NotNull final Long codUnidade,
             @NotNull final AfericaoPlacaRodoparHorizonte afericao) throws Throwable;
 
     @NotNull
     ResponseAfericaoRodoparHorizonte insertAfericaoAvulsa(
-            @NotNull final String cpf,
-            @NotNull final String dataNascimento,
             @NotNull final String tokenIntegracao,
-            @NotNull final Long codUnidade,
             @NotNull final AfericaoAvulsaRodoparHorizonte afericao) throws Throwable;
 }
