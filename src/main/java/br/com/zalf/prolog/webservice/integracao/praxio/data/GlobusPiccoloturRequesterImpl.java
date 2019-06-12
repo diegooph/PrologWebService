@@ -49,10 +49,10 @@ public class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequester 
             if (result.isSucesso()) {
                 return (long) result.getCodigoOS();
             } else {
-                throw new GenericException(result.getMensagemDeRetorno());
+                throw new GenericException("[ERRO INTEGRAÇÃO]: " + result.getMensagemDeRetorno());
             }
         } else {
-            throw new GenericException("Erro na integração");
+            throw new GenericException("[ERRO INTEGRAÇÃO]: Nenhuma informação retornada pelo Globus");
         }
     }
 }
