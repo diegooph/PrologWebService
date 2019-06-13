@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class RodoparHorizonteTokenException {
+public final class RodoparHorizonteTokenError {
     @SerializedName("error")
     @NotNull
     private final String error;
@@ -18,14 +18,14 @@ public final class RodoparHorizonteTokenException {
     @NotNull
     private final String errorDescription;
 
-    public RodoparHorizonteTokenException(@NotNull final String error, @NotNull final String errorDescription) {
+    public RodoparHorizonteTokenError(@NotNull final String error, @NotNull final String errorDescription) {
         this.error = error;
         this.errorDescription = errorDescription;
     }
 
     @NotNull
-    public static RodoparHorizonteTokenException generateFromString(@NotNull final String jsonBody) {
-        return GsonUtils.getGson().fromJson(jsonBody, RodoparHorizonteTokenException.class);
+    public static RodoparHorizonteTokenError generateFromString(@NotNull final String jsonBody) {
+        return GsonUtils.getGson().fromJson(jsonBody, RodoparHorizonteTokenError.class);
     }
 
     @NotNull

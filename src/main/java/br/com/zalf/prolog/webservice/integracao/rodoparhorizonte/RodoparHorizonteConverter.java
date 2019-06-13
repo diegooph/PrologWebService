@@ -68,11 +68,11 @@ public class RodoparHorizonteConverter {
             @NotNull final TipoMedicaoAfericaoRodoparHorizonte tipoMedicao,
             @NotNull final Pneu pneuAferido) {
         switch (tipoMedicao) {
-            case SULCO:
-                Sulcos sulcosAtuais = pneuAferido.getSulcosAtuais();
+            case SULCO: {
+                final Sulcos sulcosAtuais = pneuAferido.getSulcosAtuais();
                 if (sulcosAtuais == null) {
                     throw new IllegalStateException(
-                            "[INTEGRACAO - RODOPAR] O tipe de medição é SULCO, mas os sulcos medidos são nulos.");
+                            "[INTEGRACAO - RODOPAR] O tipo de medição é SULCO, mas os sulcos medidos são nulos.");
                 }
                 return new MedicaoAfericaoRodoparHorizonte(
                         pneuAferido.getCodigoCliente(),
@@ -83,7 +83,8 @@ public class RodoparHorizonteConverter {
                         sulcosAtuais.getCentralInterno(),
                         sulcosAtuais.getCentralExterno(),
                         sulcosAtuais.getExterno());
-            case PRESSAO:
+            }
+            case PRESSAO: {
                 return new MedicaoAfericaoRodoparHorizonte(
                         pneuAferido.getCodigoCliente(),
                         pneuAferido.getCodigo(),
@@ -93,11 +94,12 @@ public class RodoparHorizonteConverter {
                         null,
                         null,
                         null);
-            case SULCO_PRESSAO:
-                sulcosAtuais = pneuAferido.getSulcosAtuais();
+            }
+            case SULCO_PRESSAO: {
+                final Sulcos sulcosAtuais = pneuAferido.getSulcosAtuais();
                 if (sulcosAtuais == null) {
                     throw new IllegalStateException(
-                            "[INTEGRACAO - RODOPAR] O tipe de medição é SULCO, mas os sulcos medidos são nulos.");
+                            "[INTEGRACAO - RODOPAR] O tipo de medição é SULCO, mas os sulcos medidos são nulos.");
                 }
                 return new MedicaoAfericaoRodoparHorizonte(
                         pneuAferido.getCodigoCliente(),
@@ -108,6 +110,7 @@ public class RodoparHorizonteConverter {
                         sulcosAtuais.getCentralInterno(),
                         sulcosAtuais.getCentralExterno(),
                         sulcosAtuais.getExterno());
+            }
             default:
                 throw new IllegalStateException("Nenhum tipo de Aferição mapeado para o tipo: " + tipoMedicao);
         }

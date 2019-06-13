@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.Rod
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.error.ErrorBodyHandler;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.error.RodoparHorizonteException;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenCreator;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenException;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenError;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenIntegracao;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
@@ -76,10 +76,10 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
                 if (tokenResponse) {
                     // A busca do token retorna erro em um padrão diferente das demais requisições. Por isso tratamos
                     // esse caso especificamente.
-                    final RodoparHorizonteTokenException tokenErrorMessage =
+                    final RodoparHorizonteTokenError tokenError =
                             ErrorBodyHandler.getTokenExceptionFromBody(response.errorBody());
                     throw new RodoparHorizonteException(
-                            tokenErrorMessage.getErrorDescription(),
+                            tokenError.getErrorDescription(),
                             "A requisição do token retornou erro, provavelmente falta mapeamento no Rodopar");
                 }
                 final ProLogError proLogError = toProLogError(response.errorBody());

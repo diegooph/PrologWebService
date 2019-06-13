@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.error;
 
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenException;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenError;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +15,7 @@ public final class ErrorBodyHandler {
      * Este método receberá o JSON presente na mensagem de erro da integração entre ProLog e Rodopar e retornará um
      * {@link ProLogError}.
      * <p>
-     * Por limitações do Rodopar, não é possível retornar uma extrutura complexa como Response, então, para os casos de
+     * Por limitações do Rodopar, não é possível retornar uma estrutura complexa como Response, então, para os casos de
      * erro o Rodopar está retornando um atributo <code>Message</code> e dentro dele está uma string que representa um
      * {@link ProLogError}.
      *
@@ -33,9 +33,9 @@ public final class ErrorBodyHandler {
     }
 
     @NotNull
-    public static RodoparHorizonteTokenException getTokenExceptionFromBody(
+    public static RodoparHorizonteTokenError getTokenExceptionFromBody(
             @NotNull final ResponseBody errorBody) throws Throwable {
         final String jsonBody = errorBody.string();
-        return RodoparHorizonteTokenException.generateFromString(jsonBody);
+        return RodoparHorizonteTokenError.generateFromString(jsonBody);
     }
 }

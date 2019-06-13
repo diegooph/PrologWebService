@@ -38,8 +38,9 @@ public class SistemaRodoparHorizonte extends Sistema {
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
-            conn = new DatabaseConnectionProvider().provideDatabaseConnection();
+            conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
             final Colaborador colaboradorRequisicao = getIntegradorProLog().getColaboradorByToken(getUserToken());
             final RodoparHorizonteTokenIntegracao tokenIntegracao =
@@ -64,7 +65,7 @@ public class SistemaRodoparHorizonte extends Sistema {
             }
             throw t;
         } finally {
-            new DatabaseConnectionProvider().closeResources(conn);
+            connectionProvider.closeResources(conn);
         }
     }
 }
