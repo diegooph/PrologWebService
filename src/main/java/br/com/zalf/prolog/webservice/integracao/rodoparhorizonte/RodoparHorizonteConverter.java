@@ -1,11 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparCredentials;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoAvulsaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoPlacaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.MedicaoAfericaoRodoparHorizonte;
@@ -16,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created on 10/06/19.
+ * Created on 13/06/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class ProtheusRodalogConverter {
+public class RodoparHorizonteConverter {
     @NotNull
     public static AfericaoPlacaRodoparHorizonte convert(@NotNull final Long codUnidade,
                                                         @NotNull final AfericaoPlaca afericao) {
@@ -52,14 +50,6 @@ public final class ProtheusRodalogConverter {
                 afericao.getDataHora(),
                 tipoMedicao,
                 createMedidaFrom(tipoMedicao, afericao.getPneuAferido()));
-    }
-
-    @NotNull
-    static RodoparCredentials createCredentials(@NotNull final Colaborador colaboradorRequisicao) {
-        return new RodoparCredentials(
-                Colaborador.formatCpf(colaboradorRequisicao.getCpf()),
-                colaboradorRequisicao.getDataNascimentoAsString(),
-                "password");
     }
 
     @NotNull

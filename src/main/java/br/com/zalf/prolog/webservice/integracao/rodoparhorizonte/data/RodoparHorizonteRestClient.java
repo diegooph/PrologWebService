@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data;
 import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.data.ProtheusRodalogRestClient;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.RodoparHorizonteConstants;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.jetbrains.annotations.NotNull;
@@ -26,11 +27,10 @@ public class RodoparHorizonteRestClient {
     private static final Map<String, Object> SERVICE_CACHE = new HashMap<>();
 
     static {
-        // TODO - Inserir a URL do sistema parceiro
         retrofit = new Retrofit.Builder()
                 .client(provideOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
-                .baseUrl("http://54.232.212.10:8263/")
+                .baseUrl(RodoparHorizonteConstants.BASE_URL)
                 .build();
     }
 

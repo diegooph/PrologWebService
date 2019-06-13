@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data;
+package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token;
 
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class RodoparToken {
+public class RodoparHorizonteTokenIntegracao {
     @SerializedName("access_token")
     @NotNull
     private final String token;
@@ -17,8 +17,8 @@ public class RodoparToken {
     @NotNull
     private final String tokenType;
 
-    public RodoparToken(@NotNull final String token,
-                        @NotNull final String tokenType) {
+    public RodoparHorizonteTokenIntegracao(@NotNull final String token,
+                                           @NotNull final String tokenType) {
         this.token = token;
         this.tokenType = tokenType;
     }

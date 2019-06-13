@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data;
+package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token;
 
 import org.jetbrains.annotations.NotNull;
 
