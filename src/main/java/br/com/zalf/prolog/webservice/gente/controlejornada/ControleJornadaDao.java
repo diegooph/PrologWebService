@@ -79,6 +79,13 @@ public interface ControleJornadaDao {
                                                      final long limit,
                                                      final long offset) throws Throwable;
 
+    @NotNull
+    List<Intervalo> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
+                                                   @Nullable final Long cpf,
+                                                   @Nullable final String codTipo,
+                                                   @NotNull final String dataInicial,
+                                                   @NotNull final String dataFinal) throws Throwable;
+
     /**
      * Método específico para validar o Token de autenticação para sincronização de marcacões de jornada.
      *

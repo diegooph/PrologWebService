@@ -12,7 +12,9 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.Null;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -68,6 +70,19 @@ public class ControleJornadaResource {
             @QueryParam("limit") @Required long limit,
             @QueryParam("offset") @Required long offset) throws ProLogException {
         return service.getMarcacoesColaborador(tokenMarcacao, codUnidade, cpf, codTipo, limit, offset);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = Pilares.Gente.Intervalo.AJUSTE_MARCACOES)
+    @Path("/marcacoes-por-data")
+    public List<Intervalo> getMarcacoesColaboradorPorData(
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("cpf") @Nullable final Long cpf,
+            @QueryParam("codTipoIntervalo") @Nullable final String codTipo,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
+        return service.getMarcacoesColaboradorPorData(codUnidade, cpf, codTipo, dataInicial, dataFinal);
     }
 
     /**

@@ -169,6 +169,45 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
         }
         return intervalos;
     }
+    @NotNull
+    @Override
+    public List<Intervalo> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
+                                                          @Nullable final Long cpf,
+                                                          @Nullable final String codTipo,
+                                                          @NotNull final String dataInicial,
+                                                          @NotNull final String dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<Intervalo> intervalos = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_GET_MARCACOES_COLABORADOR(?, ?, ?, ?, ?);");
+            stmt.setLong(1, codUnidade);
+
+            if (cpf.equals("%")) {
+                stmt.setNull(2, Types.BIGINT);
+            } else {
+                stmt.setLong(2, Long.valueOf(cpf));
+            }
+
+            if (codTipo.equals("%")) {
+                stmt.setNull(3, Types.BIGINT);
+            } else {
+                stmt.setLong(3, Long.valueOf(codTipo));
+            }
+            stmt.setString(4, dataInicial);
+            stmt.setString(5, dataFinal);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                //TODO CRIAR LISTA DE OBJETOS DE MarcacaoListagem
+//                intervalos.add(createIntervaloAgrupado(rSet));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return intervalos;
+    }
 
     @Override
     public boolean verifyIfTokenMarcacaoExists(@NotNull final String tokenMarcacao) throws SQLException {

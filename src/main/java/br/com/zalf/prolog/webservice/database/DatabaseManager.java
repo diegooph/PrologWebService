@@ -40,7 +40,8 @@ public final class DatabaseManager {
 //    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/prolog_abril_17";
 //    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_clone_prod_maio_15_v1";
 //    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_trans_veiculo_1";
-    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_clone_prod_maio_24_v1";
+//    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_clone_prod_maio_24_v1";
+    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_clone_prod_junho_7_v1";
     private static final String TESTE_USUARIO = "postgres";
     private static final String TESTE_SENHA = "postgres";
 

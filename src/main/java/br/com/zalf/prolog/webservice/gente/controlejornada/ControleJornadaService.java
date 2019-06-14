@@ -41,8 +41,7 @@ public class ControleJornadaService {
         intervaloMarcacao.setVersaoAppMomentoSincronizacao(versaoAppMomentoSincronizacao);
         EstadoVersaoIntervalo estadoVersaoIntervalo = null;
         try {
-            @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
-            final Long versaoDadosBanco = dao.getDadosMarcacaoUnidade(intervaloMarcacao.getCodUnidade())
+            @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"}) final Long versaoDadosBanco = dao.getDadosMarcacaoUnidade(intervaloMarcacao.getCodUnidade())
                     .get()
                     .getVersaoDadosBanco();
             estadoVersaoIntervalo = versaoDadosIntervalo < versaoDadosBanco
@@ -96,6 +95,27 @@ public class ControleJornadaService {
                     "limit: %d \n" +
                     "offset: %d", cpf, codTipo, limit, offset), t);
             throw Injection.provideProLogExceptionHandler().map(t, "Erro ao buscar marcações");
+        }
+    }
+
+    @NotNull
+    public List<Intervalo> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
+                                                          @Nullable final Long cpf,
+                                                          @Nullable final String codTipo,
+                                                          @NotNull final String dataInicial,
+                                                          @NotNull final String dataFinal) throws ProLogException {
+        try {
+            return dao.getMarcacoesColaboradorPorData(codUnidade, cpf, codTipo, dataInicial, dataFinal);
+        } catch (final Throwable t) {
+            final String errorMessage = String.format("Erro ao buscar marcações de um colaborador.\n" +
+                    "cpf: %s \n" +
+                    "codTipo: %s \n" +
+                    "dataInicial: %d \n" +
+                    "dataFinal: %d", cpf, codTipo, dataInicial, dataFinal);
+            Log.e(TAG, errorMessage, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar marcação(ões), tente novamente");
         }
     }
 
