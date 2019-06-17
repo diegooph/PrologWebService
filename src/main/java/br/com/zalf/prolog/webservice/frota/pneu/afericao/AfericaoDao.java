@@ -10,10 +10,16 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface AfericaoDao {
+
+    @Nullable
+    Long insert(@NotNull final Connection conn,
+                @NotNull final Long codUnidade,
+                @NotNull final Afericao afericao) throws Throwable;
 
     /**
      * Insere uma aferição lincada com o código da unidade.

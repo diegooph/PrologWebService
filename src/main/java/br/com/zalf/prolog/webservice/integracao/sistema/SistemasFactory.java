@@ -7,6 +7,8 @@ import br.com.zalf.prolog.webservice.integracao.praxio.SistemaGlobusPiccolotur;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.ProtheusRodalogRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.SistemaProtheusRodalog;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.SistemaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.transport.SistemaTransportTranslecchi;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +49,12 @@ public final class SistemasFactory {
                         new GlobusPiccoloturRequesterImpl(),
                         sistemaKey,
                         integradorProLog,
+                        userToken);
+            case RODOPAR_HORIZONTE:
+                return new SistemaRodoparHorizonte(
+                        new RodoparHorizonteRequesterImpl(),
+                        integradorProLog,
+                        sistemaKey,
                         userToken);
             default:
                 throw new IllegalStateException("Nenhum sistema encontrado com a chave: " + sistemaKey.getKey());

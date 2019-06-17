@@ -1,7 +1,9 @@
-package br.com.zalf.prolog.webservice.integracao.protheusrodalog.data;
+package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data;
 
 import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.integracao.protheusrodalog.data.ProtheusRodalogRestClient;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.RodoparHorizonteConstants;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.jetbrains.annotations.NotNull;
@@ -13,11 +15,11 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created on 28/02/19.
+ * Created on 25/05/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class ProtheusRodalogRestClient {
+public class RodoparHorizonteRestClient {
     private static final long DEFAULT_TIMEOUT_MINUTES = 1;
     @NotNull
     private static final Retrofit retrofit;
@@ -28,15 +30,15 @@ public final class ProtheusRodalogRestClient {
         retrofit = new Retrofit.Builder()
                 .client(provideOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
-                .baseUrl("http://131.161.40.131:8087/rest/")
+                .baseUrl(RodoparHorizonteConstants.BASE_URL)
                 .build();
     }
 
-    private ProtheusRodalogRestClient() {
+    private RodoparHorizonteRestClient() {
     }
 
     @NotNull
-    public static <T> T getService(@NotNull final Class<T> serviceClass) {
+    static <T> T getService(@NotNull final Class<T> serviceClass) {
         final String canonicalName = serviceClass.getCanonicalName();
         //noinspection Duplicates
         if (!SERVICE_CACHE.containsKey(canonicalName)) {
