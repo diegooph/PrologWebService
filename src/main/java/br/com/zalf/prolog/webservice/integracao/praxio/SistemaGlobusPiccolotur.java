@@ -8,6 +8,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistS
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDao;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ChecklistItensNokGlobus;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -90,6 +92,8 @@ public class SistemaGlobusPiccolotur extends Sistema {
                             checklist,
                             alternativasStatus);
 
+            getSistemaGlobusPiccoloturDaoImpl().insertItensNokEnviadosGlobus(conn, checklistItensNokGlobus);
+
             requester.insertItensNok(GlobusPiccoloturConverter.convert(checklistItensNokGlobus));
             conn.commit();
             return codChecklistProLog;
@@ -101,5 +105,10 @@ public class SistemaGlobusPiccolotur extends Sistema {
         } finally {
             new DatabaseConnectionProvider().closeResources(conn);
         }
+    }
+
+    @NotNull
+    private SistemaGlobusPiccoloturDao getSistemaGlobusPiccoloturDaoImpl() {
+        return new SistemaGlobusPiccoloturDaoImpl();
     }
 }

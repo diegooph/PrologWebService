@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface GlobusPiccoloturRequester {
 
+    @NotNull
     Long insertItensNok(
             @NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO) throws Throwable;
 }

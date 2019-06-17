@@ -18,6 +18,8 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequester {
+
+    @NotNull
     @Override
     public Long insertItensNok(
             @NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO) throws Throwable {
