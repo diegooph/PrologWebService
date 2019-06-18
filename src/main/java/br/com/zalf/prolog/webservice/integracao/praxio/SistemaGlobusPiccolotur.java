@@ -7,10 +7,11 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaCheckli
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
-import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
-import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDao;
-import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDaoImpl;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ChecklistItensNokGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.GlobusPiccoloturRequester;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.SistemaGlobusPiccoloturDao;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.SistemaGlobusPiccoloturDaoImpl;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistItensNokGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,7 @@ import java.util.Map;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class SistemaGlobusPiccolotur extends Sistema {
+public final class SistemaGlobusPiccolotur extends Sistema {
     @NotNull
     private final GlobusPiccoloturRequester requester;
 
@@ -40,16 +41,10 @@ public class SistemaGlobusPiccolotur extends Sistema {
     @NotNull
     @Override
     public Long insertChecklist(@NotNull final Checklist checklist) throws Throwable {
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         Connection conn = null;
         try {
-            /*
-             * Inserir o checklist no ProLog SEM ABRIR O.S.
-             * Incrementar a quantidade de apontamentos dos itens apontados como NOK já abertos.
-             * Buscar status dos Itens.
-             * Filtrar apenas os Itens que devem abrir uma O.S.
-             * Converter para o objeto específico da Integração e enviar via Requester.
-             */
-            conn = new DatabaseConnectionProvider().provideDatabaseConnection();
+            conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
             // TODO - Mover para o integradorProLog
             final Long codChecklistProLog = Injection.provideChecklistDao().insert(conn, checklist, false);
@@ -92,9 +87,14 @@ public class SistemaGlobusPiccolotur extends Sistema {
                             checklist,
                             alternativasStatus);
 
+            // Antes de enviar as informações para o Globus, salvamos quais foram os itens Nok enviados.
             getSistemaGlobusPiccoloturDaoImpl().insertItensNokEnviadosGlobus(conn, checklistItensNokGlobus);
 
-            requester.insertItensNok(GlobusPiccoloturConverter.convert(checklistItensNokGlobus));
+            final Long codOsAbertaGlobus =
+                    requester.insertItensNok(GlobusPiccoloturConverter.convert(checklistItensNokGlobus));
+            if (codOsAbertaGlobus <= 0) {
+                throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Globus retornou um código de O.S inválido");
+            }
             conn.commit();
             return codChecklistProLog;
         } catch (final Throwable t) {
@@ -103,7 +103,7 @@ public class SistemaGlobusPiccolotur extends Sistema {
             }
             throw t;
         } finally {
-            new DatabaseConnectionProvider().closeResources(conn);
+            connectionProvider.closeResources(conn);
         }
     }
 

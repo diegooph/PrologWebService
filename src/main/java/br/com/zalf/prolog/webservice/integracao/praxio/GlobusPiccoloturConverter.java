@@ -5,11 +5,10 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaCheckli
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.*;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.*;
 import org.jetbrains.annotations.NotNull;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.Map;
  */
 public final class GlobusPiccoloturConverter {
     @NotNull
-    public static ChecklistItensNokGlobus createChecklistItensNokGlobus(
+    static ChecklistItensNokGlobus createChecklistItensNokGlobus(
             @NotNull final Long codUnidadeProLog,
             @NotNull final Long codChecklistProLog,
             @NotNull final Checklist checklist,
@@ -55,7 +54,8 @@ public final class GlobusPiccoloturConverter {
             }
         }
         if (perguntasNok.isEmpty()) {
-            throw new IllegalStateException("");
+            throw new IllegalStateException(
+                    "[INTEGRACAO - PICCOLOTUR] O checklist possui itens Nok, mas não foram processadas pelo converter");
         }
         return new ChecklistItensNokGlobus(
                 codUnidadeProLog,
@@ -70,7 +70,7 @@ public final class GlobusPiccoloturConverter {
 
     @NotNull
     public static OrdemDeServicoCorretivaPrologVO convert(
-            @NotNull final ChecklistItensNokGlobus checklistItensNokGlobus) throws DatatypeConfigurationException {
+            @NotNull final ChecklistItensNokGlobus checklistItensNokGlobus) throws Throwable {
         final ObjectFactory factory = new ObjectFactory();
         final OrdemDeServicoCorretivaPrologVO osGlobus = new OrdemDeServicoCorretivaPrologVO();
         osGlobus.setCodUnidadeChecklist(checklistItensNokGlobus.getCodUnidadeChecklist().intValue());
@@ -82,7 +82,7 @@ public final class GlobusPiccoloturConverter {
         osGlobus.setDataHoraRealizacaoUtc(
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(
                         checklistItensNokGlobus.getDataHoraRealizacaoUtc().toString()));
-        osGlobus.setUsuario("MANAGER");
+        osGlobus.setUsuario(GlobusPiccoloturConstants.USUARIO_PROLOG_INTEGRACAO);
         osGlobus.setListaPerguntasNokVO(convertPerguntas(factory, checklistItensNokGlobus.getPerguntasNok()));
         return osGlobus;
     }

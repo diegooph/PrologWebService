@@ -1,8 +1,9 @@
-package br.com.zalf.prolog.webservice.integracao.praxio.data;
+package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.headerhandler;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.AutenticacaoWebService;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.ObjectFactory;
+import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -23,11 +24,13 @@ import java.util.TreeSet;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class SoapHeaderHandler implements SOAPHandler<SOAPMessageContext> {
+public final class SoapHeaderHandler implements SOAPHandler<SOAPMessageContext> {
+    @NotNull
     private static final String TAG = SoapHeaderHandler.class.getSimpleName();
+    @NotNull
     private final AutenticacaoWebService autenticacaoWebService;
 
-    public SoapHeaderHandler(final AutenticacaoWebService autenticacaoWebService) {
+    public SoapHeaderHandler(@NotNull final AutenticacaoWebService autenticacaoWebService) {
         this.autenticacaoWebService = autenticacaoWebService;
     }
 
@@ -38,32 +41,27 @@ public class SoapHeaderHandler implements SOAPHandler<SOAPMessageContext> {
 
     @Override
     public boolean handleMessage(final SOAPMessageContext context) {
-        final boolean out = (boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-        if (out) {
+        final boolean outboundMessage = (boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+        // Caso outboundMessage = false, singnifica que estamos recebendo uma mensagem e nesse caso não queremos
+        // tratar nenhum dado.
+        if (outboundMessage) {
             try {
-                // bookmark #1 - please read explanation after code
-                final ObjectFactory objectFactory = new ObjectFactory();
-                // creating JAXBElement from headerObj
                 final JAXBElement<AutenticacaoWebService> requesterCredentials =
-                        objectFactory.createAutenticacaoWebService(autenticacaoWebService);
-
-                // obtaining marshaller which should marshal instance to xml
+                        new ObjectFactory().createAutenticacaoWebService(autenticacaoWebService);
                 final Marshaller marshaller = JAXBContext.newInstance(AutenticacaoWebService.class).createMarshaller();
-
                 final SOAPEnvelope envelope = context.getMessage().getSOAPPart().getEnvelope();
-
+                // Se já possui um Header, então tiremos ele e adicionamos o nosso proprio objeto no Header.
                 if (envelope.getHeader() != null) {
                     envelope.getHeader().detachNode();
                 }
-                // adding header because otherwise it's null
                 final SOAPHeader soapHeader = envelope.addHeader();
-                // marshalling instance (appending) to SOAP header's xml node
                 marshaller.marshal(requesterCredentials, soapHeader);
             } catch (JAXBException | SOAPException e) {
-                Log.e(TAG,"ERRO ao gerar Header", e);
+                // Podemos, sutilmente, engolir essa exception pois irá resultar em uma erro de autorização e
+                // será mapeado pela nosso estrutura posteriormente.
+                // Basta logar o erro para saber o que está acontecendo.
+                Log.e(TAG, "[ERRO INTEGRAÇÃO]: Erro ao gerar Header com a Autorização", e);
             }
-        } else {
-            // inbound - do nothing.
         }
         return true;
     }
@@ -75,6 +73,6 @@ public class SoapHeaderHandler implements SOAPHandler<SOAPMessageContext> {
 
     @Override
     public void close(final MessageContext context) {
-
+        // do nothing
     }
 }

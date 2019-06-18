@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos;
+package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model;
 
 import org.jetbrains.annotations.NotNull;
 

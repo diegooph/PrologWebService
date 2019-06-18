@@ -1,11 +1,11 @@
-package br.com.zalf.prolog.webservice.integracao.praxio.data;
+package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.AlternativaNokGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ChecklistItensNokGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.PerguntaNokGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.AlternativaNokGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistItensNokGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.PerguntaNokGlobus;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection implements SistemaGlobusPiccoloturDao {
+public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection implements SistemaGlobusPiccoloturDao {
     @Override
     public void insertItensNokEnviadosGlobus(
             @NotNull final Connection conn,
@@ -51,7 +51,8 @@ public class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection implement
                     .of(stmt.executeBatch())
                     .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
             if (!todasInsercoesOk) {
-                throw new IllegalStateException("Erro ao inserir algum item NOK que seria enviado ao Globus");
+                throw new IllegalStateException(
+                        "[ERRO INTEGRAÇÃO]: Erro ao inserir algum item NOK que seria enviado ao Globus");
             }
         } finally {
             close(stmt);

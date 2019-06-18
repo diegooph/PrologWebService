@@ -2,12 +2,12 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.AfericaoIntegracaoPraxioConverter;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ItemOSAbertaGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ItemResolvidoGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.OrdemServicoAbertaGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemOSAbertaGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -77,7 +77,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                 stmt.setLong(3, ordemServicoAberta.getCodChecklistProLog());
                 final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = ordemServicoAberta.getItensOSAbertaGlobus();
                 if (itensOSAbertaGlobus.size() <= 0) {
-                    throw new GenericException(
+                    throw new GlobusPiccoloturException(
                             String.format(
                                     "[ERRO DE ESTRUTURA] A O.S %d não possui nenhum item",
                                     ordemServicoAberta.getCodOsGlobus()));
