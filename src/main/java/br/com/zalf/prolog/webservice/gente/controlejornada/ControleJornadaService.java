@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
@@ -99,19 +100,24 @@ public class ControleJornadaService {
     }
 
     @NotNull
-    public List<Intervalo> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
-                                                          @Nullable final Long cpf,
-                                                          @Nullable final String codTipo,
-                                                          @NotNull final String dataInicial,
-                                                          @NotNull final String dataFinal) throws ProLogException {
+    public List<MarcacaoListagem> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
+                                                                 @Nullable final Long cpf,
+                                                                 @Nullable final Long codTipo,
+                                                                 @NotNull final String dataInicial,
+                                                                 @NotNull final String dataFinal) throws ProLogException {
         try {
-            return dao.getMarcacoesColaboradorPorData(codUnidade, cpf, codTipo, dataInicial, dataFinal);
+            return dao.getMarcacoesColaboradorPorData(
+                    codUnidade,
+                    cpf,
+                    codTipo,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable t) {
             final String errorMessage = String.format("Erro ao buscar marcações de um colaborador.\n" +
                     "cpf: %s \n" +
                     "codTipo: %s \n" +
-                    "dataInicial: %d \n" +
-                    "dataFinal: %d", cpf, codTipo, dataInicial, dataFinal);
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", cpf, codTipo, dataInicial, dataFinal);
             Log.e(TAG, errorMessage, t);
             throw Injection
                     .provideProLogExceptionHandler()

@@ -12,19 +12,33 @@ import java.time.LocalDateTime;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-
-//TODO VERIFICAR TODAS PROPRIEDADES E VINCULAR COM A DAOIMPL
 public class MarcacaoListagem {
     @NotNull
+    private final Long codUnidade;
+    @NotNull
     private final String nomeTipoMarcacao;
+    @NotNull
+    private final String iconeTipoMarcacao;
     @NotNull
     private final String cpfColaborador;
     @NotNull
     private final String nomeColaborador;
     @Nullable
-    private final LocalDateTime marcacaoInicio;
+    private final boolean foiAjustadoInicio;
     @Nullable
-    private final LocalDateTime marcacaoFim;
+    private final boolean foiAjustadoFim;
+    @Nullable
+    private final boolean statusAtivoInicio;
+    @Nullable
+    private final boolean statusAtivoFim;
+    @Nullable
+    private final Long codMarcacaoInicio;
+    @Nullable
+    private final Long codMarcacaoFim;
+    @Nullable
+    private final LocalDateTime dataMarcacaoInicio;
+    @Nullable
+    private final LocalDateTime dataMarcacaoFim;
     @NotNull
     @SerializedName("tempoDecorridoEntreInicioFimEmSegundos")
     private final Duration tempoDecorridoEntreInicioFim;
@@ -38,20 +52,36 @@ public class MarcacaoListagem {
     private final String justificativaTempoRecomendado;
     private final boolean temJustificativaTempoRecomendado;
 
-    public MarcacaoListagem(@NotNull final String nomeTipoMarcacao,
-                                          @NotNull final String cpfColaborador,
-                                          @NotNull final String nomeColaborador,
-                                          @Nullable final LocalDateTime marcacaoInicio,
-                                          @Nullable final LocalDateTime marcacaoFim,
-                                          @NotNull final Duration tempoDecorridoEntreInicioFim,
-                                          @NotNull final Duration tempoRecomendadoTipoMarcacao,
-                                          @Nullable final String justificativaEstouro,
-                                          @Nullable final String justificativaTempoRecomendado) {
+    public MarcacaoListagem(@NotNull final Long codUnidade,
+                            @NotNull final String nomeTipoMarcacao,
+                            @NotNull final String iconeTipoMarcacao,
+                            @NotNull final String cpfColaborador,
+                            @NotNull final String nomeColaborador,
+                            @Nullable final boolean foiAjustadoInicio,
+                            @Nullable final boolean foiAjustadoFim,
+                            @Nullable final boolean statusAtivoInicio,
+                            @Nullable final boolean statusAtivoFim,
+                            @Nullable final Long codMarcacaoInicio,
+                            @Nullable final Long codMarcacaoFim,
+                            @Nullable final LocalDateTime dataMarcacaoInicio,
+                            @Nullable final LocalDateTime dataMarcacaoFim,
+                            @NotNull final Duration tempoDecorridoEntreInicioFim,
+                            @NotNull final Duration tempoRecomendadoTipoMarcacao,
+                            @Nullable final String justificativaEstouro,
+                            @Nullable final String justificativaTempoRecomendado) {
+        this.codUnidade = codUnidade;
         this.nomeTipoMarcacao = nomeTipoMarcacao;
+        this.iconeTipoMarcacao = iconeTipoMarcacao;
         this.cpfColaborador = cpfColaborador;
         this.nomeColaborador = nomeColaborador;
-        this.marcacaoInicio = marcacaoInicio;
-        this.marcacaoFim = marcacaoFim;
+        this.foiAjustadoInicio = foiAjustadoInicio;
+        this.foiAjustadoFim = foiAjustadoFim;
+        this.statusAtivoInicio = statusAtivoInicio;
+        this.statusAtivoFim = statusAtivoFim;
+        this.codMarcacaoInicio = codMarcacaoInicio;
+        this.codMarcacaoFim = codMarcacaoFim;
+        this.dataMarcacaoInicio = dataMarcacaoInicio;
+        this.dataMarcacaoFim = dataMarcacaoFim;
         this.tempoDecorridoEntreInicioFim = tempoDecorridoEntreInicioFim;
         this.tempoRecomendadoTipoMarcacao = tempoRecomendadoTipoMarcacao;
         this.justificativaEstouro = justificativaEstouro;
@@ -61,9 +91,15 @@ public class MarcacaoListagem {
     }
 
     @NotNull
+    public Long getCodUnidade() { return codUnidade; }
+
+    @NotNull
     public String getNomeTipoMarcacao() {
         return nomeTipoMarcacao;
     }
+
+    @NotNull
+    public String getIconeTipoMarcacao() { return iconeTipoMarcacao; }
 
     @NotNull
     public String getCpfColaborador() {
@@ -76,13 +112,31 @@ public class MarcacaoListagem {
     }
 
     @Nullable
-    public LocalDateTime getMarcacaoInicio() {
-        return marcacaoInicio;
+    public boolean isFoiAjustadoInicio() { return foiAjustadoInicio; }
+
+    @Nullable
+    public boolean isFoiAjustadoFim() { return foiAjustadoFim; }
+
+    @Nullable
+    public boolean isStatusAtivoInicio() { return statusAtivoInicio; }
+
+    @Nullable
+    public boolean isStatusAtivoFim() { return statusAtivoFim; }
+
+    @Nullable
+    public Long getCodMarcacaoInicio() { return codMarcacaoInicio; }
+
+    @Nullable
+    public Long getCodMarcacaoFim() { return codMarcacaoFim; }
+
+    @Nullable
+    public LocalDateTime getDataMarcacaoInicio() {
+        return dataMarcacaoInicio;
     }
 
     @Nullable
-    public LocalDateTime getMarcacaoFim() {
-        return marcacaoFim;
+    public LocalDateTime getDataMarcacaoFim() {
+        return dataMarcacaoFim;
     }
 
     @NotNull

@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -169,44 +171,56 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
         }
         return intervalos;
     }
+
     @NotNull
     @Override
-    public List<Intervalo> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
-                                                          @Nullable final Long cpf,
-                                                          @Nullable final String codTipo,
-                                                          @NotNull final String dataInicial,
-                                                          @NotNull final String dataFinal) throws Throwable {
+    public List<MarcacaoListagem> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
+                                                                 @Nullable final Long cpf,
+                                                                 @Nullable final Long codTipo,
+                                                                 @NotNull final LocalDate dataInicial,
+                                                                 @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<Intervalo> intervalos = new ArrayList<>();
+        final List<MarcacaoListagem> marcacoes = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_GET_MARCACOES_COLABORADOR(?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_LISTAGEM_MARCACOES(?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
-
-            if (cpf.equals("%")) {
-                stmt.setNull(2, Types.BIGINT);
-            } else {
-                stmt.setLong(2, Long.valueOf(cpf));
-            }
-
-            if (codTipo.equals("%")) {
-                stmt.setNull(3, Types.BIGINT);
-            } else {
-                stmt.setLong(3, Long.valueOf(codTipo));
-            }
-            stmt.setString(4, dataInicial);
-            stmt.setString(5, dataFinal);
+            StatementUtils.bindValueOrNull(stmt, 2, cpf, SqlType.BIGINT);
+            StatementUtils.bindValueOrNull(stmt, 3, codTipo, SqlType.BIGINT);
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                //TODO CRIAR LISTA DE OBJETOS DE MarcacaoListagem
-//                intervalos.add(createIntervaloAgrupado(rSet));
+                marcacoes.add(createMarcacaoListagem(rSet));
             }
         } finally {
             close(conn, stmt, rSet);
         }
-        return intervalos;
+        return marcacoes;
+    }
+
+    @NotNull
+    private MarcacaoListagem createMarcacaoListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new MarcacaoListagem(
+                rSet.getLong("COD_UNIDADE"),
+                rSet.getString("NOME_TIPO_INTERVALO"),
+                rSet.getString("ICONE_TIPO_INTERVALO"),
+                rSet.getString("CPF_COLABORADOR"),
+                rSet.getString("NOME_COLABORADOR"),
+                rSet.getBoolean("FOI_AJUSTADO_INICIO"),
+                rSet.getBoolean("FOI_AJUSTADO_FIM"),
+                rSet.getBoolean("STATUS_ATIVO_INICIO"),
+                rSet.getBoolean("STATUS_ATIVO_FIM"),
+                rSet.getLong("COD_MARCACAO_INICIO"),
+                rSet.getLong("COD_MARCACAO_FIM"),
+                rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
+                rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
+                Duration.ofSeconds(rSet.getLong("DURACAO_EM_SEGUNDOS")),
+                Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")),
+                rSet.getString("JUSTIFICATIVA_ESTOURO"),
+                rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
     }
 
     @Override
@@ -394,7 +408,7 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
                 final long codigo = rSet.getLong("CODIGO");
                 // retornamos null caso codigo > 0 pois significa que não existe um código de vínculo
                 return codigo > 0 ? codigo : null;
-            } else{
+            } else {
                 throw new SQLException("Erro ao buscar código de vínculo para a marcação");
             }
         } finally {

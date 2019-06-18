@@ -76,10 +76,10 @@ public class ControleJornadaResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Gente.Intervalo.AJUSTE_MARCACOES)
     @Path("/marcacoes-por-data")
-    public List<Intervalo> getMarcacoesColaboradorPorData(
+    public List<MarcacaoListagem> getMarcacoesColaboradorPorData(
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("cpf") @Nullable final Long cpf,
-            @QueryParam("codTipoIntervalo") @Nullable final String codTipo,
+            @QueryParam("codTipoIntervalo") @Nullable final Long codTipo,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
         return service.getMarcacoesColaboradorPorData(codUnidade, cpf, codTipo, dataInicial, dataFinal);

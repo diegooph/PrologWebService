@@ -2,14 +2,12 @@ package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.DadosMarcacaoUnidade;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,11 +78,11 @@ public interface ControleJornadaDao {
                                                      final long offset) throws Throwable;
 
     @NotNull
-    List<Intervalo> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
-                                                   @Nullable final Long cpf,
-                                                   @Nullable final String codTipo,
-                                                   @NotNull final String dataInicial,
-                                                   @NotNull final String dataFinal) throws Throwable;
+    List<MarcacaoListagem> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
+                                                          @Nullable final Long cpf,
+                                                          @Nullable final Long codTipo,
+                                                          @NotNull final LocalDate dataInicial,
+                                                          @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método específico para validar o Token de autenticação para sincronização de marcacões de jornada.
