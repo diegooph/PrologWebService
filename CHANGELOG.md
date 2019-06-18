@@ -1,3 +1,9 @@
+Stage
+==========
+
+### Features
+* Cria funcionalidade de listagem de marcações otimizada, com filtro de data. (PL-2000)
+
 Change Log
 ==========
 
