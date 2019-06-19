@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -37,6 +38,44 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     public RelatorioPneuDaoImpl() {
 
+    }
+
+    @Override
+    public void getPneusComDesgasteIrregularCsv(@NotNull final OutputStream outputStream,
+                                                @NotNull final List<Long> codUnidades,
+                                                @Nullable final StatusPneu statusPneu) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getPneusComDesgasteIrregularStmt(conn, codUnidades, statusPneu);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(outputStream)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getPneusComDesgasteIrregularReport(@NotNull final List<Long> codUnidades,
+                                                     @Nullable final StatusPneu statusPneu) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getPneusComDesgasteIrregularStmt(conn, codUnidades, statusPneu);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @Override
@@ -610,12 +649,12 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_PNEU_RELATORIO_STATUS_PLACAS_AFERICAO(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.localDateTimeUtc());
+            stmt.setObject(2, Now.offsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
                         rSet.getInt("TOTAL_VENCIDAS"),
-                        rSet.getInt("TOTAL_PLACAS") - rSet.getInt("TOTAL_VENCIDAS"));
+                        rSet.getInt("TOTAL_NO_PRAZO"));
             } else {
                 throw new SQLException("Erro ao buscar o status das placas");
             }
@@ -800,16 +839,16 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @NotNull
     @Override
-    public List<QtdDiasAfericoesVencidas> getQtdAfericoesVencidas(
+    public List<QtdDiasAfericoesVencidas> getQtdDiasAfericoesVencidas(
             @NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_AFERICAO_VENCIDA(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.localDateTimeUtc());
+            stmt.setObject(2, Now.offsetDateTimeUtc());
             rSet = stmt.executeQuery();
             final List<QtdDiasAfericoesVencidas> qtdDiasAfericoesVencidas = new ArrayList<>();
             while (rSet.next()) {
@@ -817,8 +856,12 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                         new QtdDiasAfericoesVencidas(
                                 rSet.getString("UNIDADE"),
                                 rSet.getString("PLACA"),
-                                rSet.getInt("QTD DIAS SEM AFERIR SULCO"),
-                                rSet.getInt("QTD DIAS SEM AFERIR PRESSAO")));
+                                rSet.getBoolean("PODE_AFERIR_SULCO"),
+                                rSet.getBoolean("PODE_AFERIR_PRESSAO"),
+                                Optional.ofNullable(
+                                        NullIf.equal(rSet.getInt("QTD_DIAS_AFERICAO_SULCO_VENCIDA"), 0)),
+                                Optional.ofNullable(
+                                        NullIf.equal(rSet.getInt("QTD_DIAS_AFERICAO_PRESSAO_VENCIDA"), 0))));
             }
             return qtdDiasAfericoesVencidas;
         } finally {
@@ -898,6 +941,21 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    private PreparedStatement getPneusComDesgasteIrregularStmt(@NotNull final Connection conn,
+                                                               @NotNull final List<Long> codUnidades,
+                                                               @Nullable final StatusPneu statusPneu) throws Throwable {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_PNEU_RELATORIO_DESGASTE_IRREGULAR(?, ? :: PNEU_STATUS_TYPE);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        if (statusPneu != null) {
+            stmt.setString(2, statusPneu.asString());
+        } else {
+            stmt.setNull(2, SqlType.TEXT.asIntTypeJava());
+        }
+        return stmt;
     }
 
     @NotNull

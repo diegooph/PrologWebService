@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
@@ -128,16 +129,25 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
-        getIntegradorProLog().insertModeloChecklist(modeloChecklist);
+    public void insertModeloChecklist(
+            @NotNull final ModeloChecklistInsercao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener);
     }
 
     @Override
-    public void updateModeloChecklist(@NotNull final String token,
-                                      @NotNull final Long codUnidade,
-                                      @NotNull final Long codModelo,
-                                      @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
-        getIntegradorProLog().updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
+    public void updateModeloChecklist(
+            @NotNull final String token,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo,
+            @NotNull final ModeloChecklistEdicao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        getIntegradorProLog().updateModeloChecklist(
+                token,
+                codUnidade,
+                codModelo,
+                modeloChecklist,
+                checklistOfflineListener);
     }
 
     @NotNull

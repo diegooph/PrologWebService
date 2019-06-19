@@ -19,6 +19,12 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     private String placa;
 
     /**
+     * Valor numérico que representa a última quilometragem da {@code placa}. Assumimos como a quilometragem mais atual
+     * da placa.
+     */
+    private Long ultimoKmVeiculo;
+
+    /**
      * Atributo numérico que representa o código da {@link Unidade unidade} em que a placa está alocada.
      */
     private Long codUnidadePlacaAlocada;
@@ -34,9 +40,9 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     /**
      * Variação de perda de milimitragem que o ProLog aceitará no momento da aferição de cada sulco.
      * <p>
-     * Supondo que a última medida do sulco seja de 15.0 milimetros e a {@code variacaoAceitaSulcoMenorMilimetros}
-     * seja de 2.0 milimetros, no momento que o usuário medir o sulco atual do pneu, se a medida estiver abaixo de
-     * 13.0 milimetros (última medida - variação), o ProLog irá mostrar um aviso, pedindo que o usuário confirme aquela
+     * Supondo que a última medida do sulco seja de 15.0 milímetros e a {@code variacaoAceitaSulcoMenorMilimetros}
+     * seja de 2.0 milímetros, no momento que o usuário medir o sulco atual do pneu, se a medida estiver abaixo de
+     * 13.0 milímetros (última medida - variação), o ProLog irá mostrar um aviso, pedindo que o usuário confirme aquela
      * medida ou realize novamente a medição daquele sulco.
      */
     private Double variacaoAceitaSulcoMenorMilimetros;
@@ -44,15 +50,15 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     /**
      * Variação de ganho de milimitragem que o ProLog aceitará no momento da aferição de cada sulco.
      * <p>
-     * Supondo que a última medida do sulco seja de 15.0 milimetros e a {@code variacaoAceitaSulcoMaiorMilimetros}
-     * seja de 2.0 milimetros, no momento que o usuário medir o sulco atual do pneu, se a medida estiver acima de
-     * 17.0 milimetros (última medida + variação), o ProLog irá mostrar um aviso, pedindo que o usuário confirme aquela
+     * Supondo que a última medida do sulco seja de 15.0 milímetros e a {@code variacaoAceitaSulcoMaiorMilimetros}
+     * seja de 2.0 milímetros, no momento que o usuário medir o sulco atual do pneu, se a medida estiver acima de
+     * 17.0 milímetros (última medida + variação), o ProLog irá mostrar um aviso, pedindo que o usuário confirme aquela
      * medida ou realize novamente a medição daquele sulco.
      */
     private Double variacaoAceitaSulcoMaiorMilimetros;
 
     /**
-     * Atributo booleano que indica se deve-se aferir os pneus do veículo ou não.
+     * Atributo booleano que indica se deve-se aferir os estepes do veículo ou não.
      * <p>
      * A aferição de estepes é uma opção de cada {@link Unidade unidade}. Cada unidade define quais
      * {@link TipoVeiculo tipos de veículos} terão seus estepes aferíveis ou não.
@@ -83,6 +89,7 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     public static NovaAfericaoPlacaProtheusRodalog createNovaAfericaoDummy() {
         final NovaAfericaoPlacaProtheusRodalog novaAfericao = new NovaAfericaoPlacaProtheusRodalog();
         novaAfericao.setPlaca("PRO0001");
+        novaAfericao.setUltimoKmVeiculo(10000L);
         novaAfericao.setCodUnidadePlacaAlocada(29L);
         novaAfericao.setCodDiagrama(1);
         novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(2.0);
@@ -108,6 +115,14 @@ public final class NovaAfericaoPlacaProtheusRodalog {
 
     public void setPlaca(final String placa) {
         this.placa = placa;
+    }
+
+    public Long getUltimoKmVeiculo() {
+        return ultimoKmVeiculo;
+    }
+
+    public void setUltimoKmVeiculo(final Long ultimoKmVeiculo) {
+        this.ultimoKmVeiculo = ultimoKmVeiculo;
     }
 
     public Long getCodUnidadePlacaAlocada() {

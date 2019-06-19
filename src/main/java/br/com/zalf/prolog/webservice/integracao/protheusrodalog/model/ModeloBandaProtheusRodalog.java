@@ -3,14 +3,14 @@ package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created on 26/02/19.
- *
- * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
- * <p>
  * Objeto buscado através de um endpoint integrado, onde contém informações referentes ao modelo da banda aplicada no
  * Pneu.
  * <p>
  * O pneu só deve possuir banda aplicada para o caso em que já tenha sofrido algum recape.
+ * <p>
+ * Created on 26/02/19.
+ *
+ * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  * <p>
  * {@see protheusrodalog}
  */

@@ -1,4 +1,4 @@
-package test.frota;
+package test.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;

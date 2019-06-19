@@ -150,7 +150,12 @@ public class EmpresaService {
 
     public boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) {
         try {
-            dao.alterarVisaoCargo(visao, codUnidade, codCargo, Injection.provideDadosIntervaloChangedListener());
+            dao.alterarVisaoCargo(
+                    codUnidade,
+                    codCargo,
+                    visao,
+                    Injection.provideDadosIntervaloChangedListener(),
+                    Injection.provideDadosChecklistOfflineChangedListener());
             return true;
         } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao alterar a visão do cargo %d da unidade %d", codCargo, codUnidade), e);

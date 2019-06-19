@@ -37,7 +37,10 @@ public final class DatabaseManager {
 //    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_ajuste_marcacao_4";
 //    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_delecao_checklist_1";
 //    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.45:5432/prolog_tipo_veiculo_release_6";
-    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/prolog_abril_17";
+//    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/prolog_abril_17";
+//    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_clone_prod_maio_15_v1";
+//    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_trans_veiculo_1";
+    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_clone_prod_maio_24_v1";
     private static final String TESTE_USUARIO = "postgres";
     private static final String TESTE_SENHA = "postgres";
 

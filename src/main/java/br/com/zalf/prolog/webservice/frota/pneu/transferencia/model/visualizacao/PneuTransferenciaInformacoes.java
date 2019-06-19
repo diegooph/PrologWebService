@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 06/12/18.
@@ -8,56 +9,62 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class PneuTransferenciaInformacoes {
-    private Long codPneuTransferenciaInformacoes;
     /**
-     * Código do cliente, número de fogo do pneu.
+     * Código das informações do pneu transferido.
      */
-    private String codPneuCliente;
-    private Sulcos sulcosMomentoTransferencia;
-    private double pressaoMomentoTransferencia;
-    private int vidaMomentoTransferencia;
+    @NotNull
+    private final Long codPneuTransferenciaInformacoes;
+    /**
+     * Código de identificação do pneu, normalmente, número de fogo do pneu.
+     */
+    @NotNull
+    private final String codPneuCliente;
+    /**
+     * Objeto que contém as medidas de milimetragem do pneu quando ele foi transferido.
+     */
+    @NotNull
+    private final Sulcos sulcosMomentoTransferencia;
+    /**
+     * Pressão do pneu no momento que ele foi transferido.
+     */
+    private final double pressaoMomentoTransferencia;
+    /**
+     * Vida do pneu no momento que ele foi transferido.
+     */
+    private final int vidaMomentoTransferencia;
 
-    public PneuTransferenciaInformacoes() {
-
+    public PneuTransferenciaInformacoes(@NotNull final Long codPneuTransferenciaInformacoes,
+                                        @NotNull final String codPneuCliente,
+                                        @NotNull final Sulcos sulcosMomentoTransferencia,
+                                        final double pressaoMomentoTransferencia,
+                                        final int vidaMomentoTransferencia) {
+        this.codPneuTransferenciaInformacoes = codPneuTransferenciaInformacoes;
+        this.codPneuCliente = codPneuCliente;
+        this.sulcosMomentoTransferencia = sulcosMomentoTransferencia;
+        this.pressaoMomentoTransferencia = pressaoMomentoTransferencia;
+        this.vidaMomentoTransferencia = vidaMomentoTransferencia;
     }
 
+    @NotNull
+    public Long getCodPneuTransferenciaInformacoes() {
+        return codPneuTransferenciaInformacoes;
+    }
+
+    @NotNull
     public String getCodPneuCliente() {
         return codPneuCliente;
     }
 
-    public void setCodPneuCliente(String codPneuCliente) {
-        this.codPneuCliente = codPneuCliente;
-    }
-
+    @NotNull
     public Sulcos getSulcosMomentoTransferencia() {
         return sulcosMomentoTransferencia;
-    }
-
-    public void setSulcosMomentoTransferencia(Sulcos sulcosMomentoTransferencia) {
-        this.sulcosMomentoTransferencia = sulcosMomentoTransferencia;
     }
 
     public double getPressaoMomentoTransferencia() {
         return pressaoMomentoTransferencia;
     }
 
-    public void setPressaoMomentoTransferencia(double pressaoMomentoTransferencia) {
-        this.pressaoMomentoTransferencia = pressaoMomentoTransferencia;
-    }
-
     public int getVidaMomentoTransferencia() {
         return vidaMomentoTransferencia;
-    }
-
-    public void setVidaMomentoTransferencia(int vidaMomentoTransferencia) {
-        this.vidaMomentoTransferencia = vidaMomentoTransferencia;
-    }
-
-    public Long getCodPneuTransferenciaInformacoes() {
-        return codPneuTransferenciaInformacoes;
-    }
-
-    public void setCodPneuTransferenciaInformacoes(Long codPneuTransferenciaInformacoes) {
-        this.codPneuTransferenciaInformacoes = codPneuTransferenciaInformacoes;
     }
 }

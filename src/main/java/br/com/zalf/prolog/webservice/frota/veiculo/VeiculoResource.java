@@ -7,7 +7,10 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -31,16 +34,18 @@ public final class VeiculoResource {
     @POST
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
     @Path("/{codUnidade}")
-    public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) throws Throwable {
-        service.insert(veiculo, codUnidade);
+    public Response insert(@PathParam("codUnidade") @Required final Long codUnidade,
+                           @Required final Veiculo veiculo) throws Throwable {
+        service.insert(codUnidade, veiculo);
         return Response.ok("Veículo inserido com sucesso");
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
     @Path("/{placaOriginal}")
-    public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) throws ProLogException {
-        service.update(veiculo, placaOriginal);
+    public Response update(@PathParam("placaOriginal") @Required final String placaOriginal,
+                           @Required final Veiculo veiculo) throws ProLogException {
+        service.update(placaOriginal, veiculo);
         return Response.ok("Veículo atualizado com sucesso");
     }
 

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Luiz Felipe
  *
  */
-public abstract class ProLogException extends Exception {
+public abstract class ProLogException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	/** contains the same HTTP Status code returned by the server */

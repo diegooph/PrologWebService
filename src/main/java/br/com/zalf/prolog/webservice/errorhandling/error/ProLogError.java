@@ -5,78 +5,67 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ProLogError {
+public final class ProLogError {
 	/** contains the same HTTP Status code returned by the server */
-	private int httpStatusCode;
+	private final int httpStatusCode;
 	
 	/** application specific error code */
-	private int proLogErrorCode;
+	private final int proLogErrorCode;
 	
 	/** message describing the error*/
 	@NotNull
-	private String message;
+	private final String message;
 		
 	/** link point to page where the error message is documented */
 	@Nullable
-	private String moreInfoLink;
-	
+	private final String moreInfoLink;
+
 	/** extra information that might useful for developers */
 	@Nullable
-	private String developerMessage;
-	
-	private ProLogError() {
-		
+	private final String developerMessage;
+
+	private ProLogError(final int httpStatusCode,
+						final int proLogErrorCode,
+						@NotNull final String message,
+						@Nullable final String moreInfoLink,
+						@Nullable final String developerMessage) {
+		this.httpStatusCode = httpStatusCode;
+		this.proLogErrorCode = proLogErrorCode;
+		this.message = message;
+		this.moreInfoLink = moreInfoLink;
+		this.developerMessage = developerMessage;
 	}
 
+	@NotNull
 	public static ProLogError createFrom(@NotNull final ProLogException ex) {
-		final ProLogError proLogError = new ProLogError();
-		proLogError.setDeveloperMessage(ex.getDeveloperMessage());
-		proLogError.setMessage(ex.getMessage());
-		proLogError.setProLogErrorCode(ex.getProLogErrorCode());
-		proLogError.setHttpStatusCode(ex.getHttpStatusCode());
-		proLogError.setMoreInfoLink(ex.getMoreInfoLink());
-		return proLogError;
+		return new ProLogError(
+				ex.getHttpStatusCode(),
+				ex.getProLogErrorCode(),
+				ex.getMessage(),
+				ex.getMoreInfoLink(),
+				/* Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
+				* sensitiva. */
+				BuildConfig.DEBUG ? ex.getDeveloperMessage() : null);
 	}
 
 	public int getHttpStatusCode() {
 		return httpStatusCode;
 	}
 
-	public void setHttpStatusCode(int httpStatusCode) {
-		this.httpStatusCode = httpStatusCode;
-	}
-
 	public int getProLogErrorCode() {
 		return proLogErrorCode;
-	}
-
-	public void setProLogErrorCode(int code) {
-		this.proLogErrorCode = code;
 	}
 
 	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
 	public String getDeveloperMessage() {
 		return developerMessage;
 	}
 
-	public void setDeveloperMessage(String developerMessage) {
-		if (BuildConfig.DEBUG)
-			this.developerMessage = developerMessage;
-	}
-
 	public String getMoreInfoLink() {
 		return moreInfoLink;
-	}
-
-	public void setMoreInfoLink(String link) {
-		this.moreInfoLink = link;
 	}
 
 	@Override

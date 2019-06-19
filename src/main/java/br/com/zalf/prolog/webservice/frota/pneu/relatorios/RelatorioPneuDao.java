@@ -26,11 +26,43 @@ import java.util.Map;
 public interface RelatorioPneuDao {
 
     /**
+     * Método para gerar um relatório contendo os pneus que possuem algum desgaste irregular, dentro dos desgastes
+     * atualmente analisados pelo ProLog e respeitando as unidades e status filtrados.
+     * <p>
+     * Apenas pneus que possuírem algum tipo de desgaste irregular serão buscados.
+     *
+     * @param outputStream Stream onde os dados serão escritos para retorno.
+     * @param codUnidades  {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param statusPneu   O {@link StatusPneu status do pneu} pelo qual se quer filtrar, ou <code>NULL</code> para
+     *                     buscar pneus de todos os status.
+     * @throws Throwable Se algum erro ocorrer na busca dos dados.
+     */
+    void getPneusComDesgasteIrregularCsv(@NotNull final OutputStream outputStream,
+                                         @NotNull final List<Long> codUnidades,
+                                         @Nullable final StatusPneu statusPneu) throws Throwable;
+
+    /**
+     * Método para gerar um relatório contendo os pneus que possuem algum desgaste irregular, dentro dos desgastes
+     * atualmente analisados pelo ProLog e respeitando as unidades e status filtrados.
+     * <p>
+     * Apenas pneus que possuírem algum tipo de desgaste irregular serão buscados.
+     *
+     * @param codUnidades {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param statusPneu  O {@link StatusPneu status do pneu} pelo qual se quer filtrar, ou <code>NULL</code> para
+     *                    buscar pneus de todos os status.
+     * @return Um objeto {@link Report report} com os dados filtrados.
+     * @throws Throwable Se algum erro ocorrer na busca dos dados.
+     */
+    @NotNull
+    Report getPneusComDesgasteIrregularReport(@NotNull final List<Long> codUnidades,
+                                              @Nullable final StatusPneu statusPneu) throws Throwable;
+
+    /**
      * Método para gerar um relatório contendo o status atual (onde ele se encontra) de cada pneu das unidades buscadas.
      *
      * @param outputStream Arquivo onde os dados serão armazenados para retornar.
      * @param codUnidades  {@link List<Long>} de códigos das {@link Unidade}s.
-     * @throws Throwable Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws Throwable Se algum erro ocorrer na busca dos dados.
      */
     void getStatusAtualPneusCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades) throws Throwable;
@@ -40,7 +72,7 @@ public interface RelatorioPneuDao {
      *
      * @param codUnidades {@link List<Long>} de códigos das {@link Unidade}s.
      * @return Um objeto {@link Report} com os dados filtrados.
-     * @throws Throwable Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws Throwable Se algum erro ocorrer na busca dos dados.
      */
     @NotNull
     Report getStatusAtualPneusReport(@NotNull final List<Long> codUnidades) throws Throwable;
@@ -50,7 +82,7 @@ public interface RelatorioPneuDao {
      *
      * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
      * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
-     * @throws Throwable - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws Throwable - Se algum erro ocorrer na busca dos dados.
      */
     void getKmRodadoPorPneuPorVidaCsv(@NotNull final OutputStream outputStream,
                                       @NotNull final List<Long> codUnidades) throws Throwable;
@@ -60,7 +92,7 @@ public interface RelatorioPneuDao {
      *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws Throwable - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws Throwable - Se algum erro ocorrer na busca dos dados.
      */
     @NotNull
     Report getKmRodadoPorPneuPorVidaReport(@NotNull final List<Long> codUnidades) throws Throwable;
@@ -73,7 +105,7 @@ public interface RelatorioPneuDao {
      * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
      * @param dataInicial  - Data inicial do período de filtro.
      * @param dataFinal    - Data final do período de filtro.
-     * @throws Throwable - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws Throwable - Se algum erro ocorrer na busca dos dados.
      */
     void getAfericoesAvulsasCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades,
@@ -88,7 +120,7 @@ public interface RelatorioPneuDao {
      * @param dataInicial - Data inicial do período de filtro.
      * @param dataFinal   - Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws Throwable - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws Throwable - Se algum erro ocorrer na busca dos dados.
      */
     @NotNull
     Report getAfericoesAvulsasReport(@NotNull final List<Long> codUnidades,
@@ -101,7 +133,7 @@ public interface RelatorioPneuDao {
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @param status      - {@link List<String>} de status em que o {@link Pneu} pode se encontrar.
      * @return - {@link List<Faixa>} agrupando os {@link Pneu}s numa dada {@link Faixa}.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<Long> codUnidades,
                                         @NotNull final List<String> status) throws SQLException;
@@ -114,7 +146,7 @@ public interface RelatorioPneuDao {
      * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
      * @param dataInicial  - Data inicial do período de filtro.
      * @param dataFinal    - Data final do período de filtro.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      * @throws IOException  - Se algum erro ocorrer na busca dos dados na escrita dos dados.
      */
     void getPrevisaoTrocaEstratificadoCsv(@NotNull final OutputStream outputStream,
@@ -130,7 +162,7 @@ public interface RelatorioPneuDao {
      * @param dataInicial - Data inicial do período de filtro.
      * @param dataFinal   - Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Report getPrevisaoTrocaEstratificadoReport(@NotNull final List<Long> codUnidades,
                                                @NotNull final LocalDate dataInicial,
@@ -145,7 +177,7 @@ public interface RelatorioPneuDao {
      * @param dataInicial  - Data inicial do período de filtro.
      * @param dataFinal    - Data final do período de filtro.
      * @throws IOException  - Se algum erro ocorrer na busca dos dados na escrita dos dados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     void getPrevisaoTrocaConsolidadoCsv(@NotNull final OutputStream outputStream,
                                         @NotNull final List<Long> codUnidades,
@@ -160,7 +192,7 @@ public interface RelatorioPneuDao {
      * @param dataInicial - Data inicial do período de filtro.
      * @param dataFinal   - Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Report getPrevisaoTrocaConsolidadoReport(@NotNull final List<Long> codUnidades,
                                              @NotNull final LocalDate dataInicial,
@@ -175,7 +207,7 @@ public interface RelatorioPneuDao {
      * @param dataInicial  - Data inicial do período de filtro.
      * @param dataFinal    - Data final do período de filtro.
      * @throws IOException  - Se algum erro ocorrer na busca dos dados na escrita dos dados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     void getAderenciaPlacasCsv(@NotNull final OutputStream outputStream,
                                @NotNull final List<Long> codUnidades,
@@ -190,7 +222,7 @@ public interface RelatorioPneuDao {
      * @param dataInicial - Data inicial do período de filtro.
      * @param dataFinal   - Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Report getAderenciaPlacasReport(@NotNull final List<Long> codUnidades,
                                     @NotNull final LocalDate dataInicial,
@@ -204,7 +236,7 @@ public interface RelatorioPneuDao {
      * @param dataInicial - Data inicial do período de filtro.
      * @param dataFinal   - Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Report getPneusDescartadosReport(@NotNull final List<Long> codUnidades,
                                      @NotNull final LocalDate dataInicial,
@@ -219,7 +251,7 @@ public interface RelatorioPneuDao {
      * @param dataInicial  - Data inicial do período de filtro.
      * @param dataFinal    - Data final do período de filtro.
      * @throws IOException  - Se algum erro ocorrer na busca dos dados na escrita dos dados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     void getPneusDescartadosCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades,
@@ -233,7 +265,7 @@ public interface RelatorioPneuDao {
      * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
      * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
      * @throws IOException  - Se algum erro ocorrer na busca dos dados na escrita dos dados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     void getDadosUltimaAfericaoCsv(@NotNull final OutputStream outputStream,
                                    @NotNull final List<Long> codUnidades) throws SQLException, IOException;
@@ -244,7 +276,7 @@ public interface RelatorioPneuDao {
      *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Report getDadosUltimaAfericaoReport(@NotNull final List<Long> codUnidades) throws SQLException;
 
@@ -256,7 +288,7 @@ public interface RelatorioPneuDao {
      * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
      * @param status       - {@link List<String>} de status em que o {@link Pneu} pode se encontrar.
      * @throws IOException  - Se algum erro ocorrer na busca dos dados na escrita dos dados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     void getResumoGeralPneusCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades,
@@ -269,7 +301,7 @@ public interface RelatorioPneuDao {
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @param status      - {@link List<String>} de status em que o {@link Pneu} pode se encontrar.
      * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Report getResumoGeralPneusReport(@NotNull final List<Long> codUnidades,
                                      @Nullable final String status) throws SQLException;
@@ -281,7 +313,7 @@ public interface RelatorioPneuDao {
      * @param mes        mes a ser buscado
      * @param codUnidade código da unidade
      * @return lista de aderencias
-     * @throws SQLException Se algum erro ocorrer na busca dos dados na busca dos dados
+     * @throws SQLException Se algum erro ocorrer na busca dos dados
      */
     @Deprecated
     List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws Throwable;
@@ -292,7 +324,7 @@ public interface RelatorioPneuDao {
      * @param codUnidades código da unidade
      * @param status      status do pneu
      * @return lista de faixas
-     * @throws SQLException Se algum erro ocorrer na busca dos dados na busca dos dados
+     * @throws SQLException Se algum erro ocorrer na busca dos dados
      */
     @Deprecated
     List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws Throwable;
@@ -302,7 +334,7 @@ public interface RelatorioPneuDao {
      *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - Um {@link Map} contendo quantidade de pneus presentes em cada {@link StatusPneu}.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Map<StatusPneu, Integer> getQtdPneusByStatus(@NotNull final List<Long> codUnidades) throws SQLException;
 
@@ -314,7 +346,7 @@ public interface RelatorioPneuDao {
      * @param dataInicial - Data inicial do período de filtro.
      * @param dataFinal   - Data final do período de filtro.
      * @return - Um {@link List} contendo a {@link QuantidadeAfericao} para cada dia do filtro aplicado.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     List<QuantidadeAfericao> getQtdAfericoesByTipoByData(@NotNull final List<Long> codUnidades,
                                                          @NotNull final Date dataInicial,
@@ -325,7 +357,7 @@ public interface RelatorioPneuDao {
      *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - Um {@link Map} contendo a quantidade de serviços abertos para cada {@link TipoServico}.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Map<TipoServico, Integer> getServicosEmAbertoByTipo(@NotNull final List<Long> codUnidades) throws SQLException;
 
@@ -336,7 +368,7 @@ public interface RelatorioPneuDao {
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - Um objeto{@link StatusPlacasAfericao} contendo a quantidade de placas com a aferição em dia
      * e a quantidade de placas com a aferição fora do prazo.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     StatusPlacasAfericao getStatusPlacasAfericao(@NotNull final List<Long> codUnidades) throws SQLException;
 
@@ -345,7 +377,7 @@ public interface RelatorioPneuDao {
      *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - Um {@link Map} contendo a média de tempo de conserto para cada {@link TipoServico}.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(@NotNull final List<Long> codUnidades) throws
             SQLException;
@@ -356,7 +388,7 @@ public interface RelatorioPneuDao {
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - Um {@link Map} contendo a quantidade de quilometros rodados com serviços em
      * abertos para cada placa.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Map<String, Integer> getQtdKmRodadoComServicoEmAberto(@NotNull final List<Long> codUnidades) throws SQLException;
 
@@ -365,7 +397,7 @@ public interface RelatorioPneuDao {
      *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - Um {@link Map} contendo a quantidade de pneus com problemas, presentes em cada placa.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(@NotNull final List<Long> codUnidades) throws
             SQLException;
@@ -375,7 +407,7 @@ public interface RelatorioPneuDao {
      *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - A quantidade de pneus com pressão incorreta.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     int getQtdPneusPressaoIncorreta(@NotNull final List<Long> codUnidades) throws SQLException;
 
@@ -396,7 +428,7 @@ public interface RelatorioPneuDao {
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - Um {@link Map} contendo os {@link MotivoDescarte} e a quantidade de pneus descartados
      * para cada motivo.
-     * @throws SQLException - Se algum erro ocorrer na busca dos dados na busca dos dados.
+     * @throws SQLException - Se algum erro ocorrer na busca dos dados.
      */
     Map<String, Integer> getQtdPneusDescartadosPorMotivo(@NotNull final List<Long> codUnidades) throws SQLException;
 
@@ -408,7 +440,7 @@ public interface RelatorioPneuDao {
      * @throws Throwable Se qualquer erro acontecer.
      */
     @NotNull
-    List<QtdDiasAfericoesVencidas> getQtdAfericoesVencidas(@NotNull final List<Long> codUnidades) throws Throwable;
+    List<QtdDiasAfericoesVencidas> getQtdDiasAfericoesVencidas(@NotNull final List<Long> codUnidades) throws Throwable;
 
     /**
      * Método que busca a quantidade de aferições realizadas por tipo em um determinado período.
