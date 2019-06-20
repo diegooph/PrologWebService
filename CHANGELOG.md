@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.95"></a>
-## Version [v0.0.95](https://github.com/luizfp/PrologWebService/compare/v0.0.94...v0.0.95) (release-date) [unreleased]
+## Version [v0.0.95](https://github.com/luizfp/PrologWebService/compare/v0.0.94...v0.0.95) (2019-06-20)
 
 ### Features
 * Integração de pneus com o Rodopar (PL-2024)
