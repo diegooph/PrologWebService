@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
@@ -12,8 +13,6 @@ import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -31,7 +30,7 @@ public class AfericaoService {
                 @NotNull final Long codUnidade,
                 @NotNull final Afericao afericao) throws ProLogException {
         try {
-            afericao.setDataHora(LocalDateTime.now(Clock.systemUTC()));
+            afericao.setDataHora(Now.localDateTimeUtc());
             return RouterAfericao
                     .create(dao, userToken)
                     .insertAfericao(codUnidade, afericao);

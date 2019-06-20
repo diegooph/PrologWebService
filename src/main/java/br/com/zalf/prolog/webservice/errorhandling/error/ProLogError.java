@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.errorhandling.error;
 
 import br.com.zalf.prolog.webservice.BuildConfig;
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,14 +9,14 @@ import org.jetbrains.annotations.Nullable;
 public final class ProLogError {
 	/** contains the same HTTP Status code returned by the server */
 	private final int httpStatusCode;
-	
+
 	/** application specific error code */
 	private final int proLogErrorCode;
-	
+
 	/** message describing the error*/
 	@NotNull
 	private final String message;
-		
+
 	/** link point to page where the error message is documented */
 	@Nullable
 	private final String moreInfoLink;
@@ -48,9 +49,14 @@ public final class ProLogError {
 				BuildConfig.DEBUG ? ex.getDeveloperMessage() : null);
 	}
 
-	public int getHttpStatusCode() {
-		return httpStatusCode;
-	}
+    @NotNull
+    public static ProLogError generateFromString(@NotNull final String jsonError) {
+        return GsonUtils.getGson().fromJson(jsonError, ProLogError.class);
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
 
 	public int getProLogErrorCode() {
 		return proLogErrorCode;

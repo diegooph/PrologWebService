@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.praxio;
+package br.com.zalf.prolog.webservice.integracao.praxio.afericao;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoProcessoColetaAfericao;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class AfericaoIntegracaoPraxioConverter {
+public final class AfericaoIntegracaoPraxioConverter {
 
     public AfericaoIntegracaoPraxioConverter() {
         throw new IllegalStateException(AfericaoIntegracaoPraxioConverter.class.getSimpleName()
@@ -22,7 +22,7 @@ final class AfericaoIntegracaoPraxioConverter {
     }
 
     @NotNull
-    static MedicaoIntegracaoPraxio convert(@NotNull final ResultSet rSet) throws SQLException {
+    public static MedicaoIntegracaoPraxio convert(@NotNull final ResultSet rSet) throws SQLException {
         final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
         medicao.setCodigo(rSet.getLong("COD_AFERICAO"));
         medicao.setCodUnidadeAfericao(rSet.getLong("COD_UNIDADE_AFERICAO"));

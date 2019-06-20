@@ -30,7 +30,7 @@ public final class NovaAfericaoPlacaProtheusRodalog {
     private Long codUnidadePlacaAlocada;
 
     /**
-     * Atributo numérico que indica qual o diagrama do véiculo que será aferido. Diagrama consiste na organização dos
+     * Atributo numérico que indica qual o diagrama do veículo que será aferido. Diagrama consiste na organização dos
      * pneus nos eixos do veículo, exemplos:
      * * Diagrama TOCO - possui 2 eixos e 2 pneus cada eixo;
      * * Diagrama TRUCK - possui 3 eixos, 2 pneus no eixo direcional e 4 pneus em cada eixo restante.

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.response;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 08/01/19.
@@ -10,13 +11,14 @@ import org.jetbrains.annotations.NotNull;
 public final class SuccessResponseIntegracao {
     @NotNull
     private String msg;
+    @Nullable
     private Long codigo;
 
     public SuccessResponseIntegracao(@NotNull final String msg) {
         this.msg = msg;
     }
 
-    public SuccessResponseIntegracao(@NotNull final String msg, @NotNull final Long codigo) {
+    public SuccessResponseIntegracao(@NotNull final String msg, @Nullable final Long codigo) {
         this.msg = msg;
         this.codigo = codigo;
     }
@@ -30,11 +32,12 @@ public final class SuccessResponseIntegracao {
         this.msg = msg;
     }
 
+    @Nullable
     public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(final Long codigo) {
+    public void setCodigo(@Nullable final Long codigo) {
         this.codigo = codigo;
     }
 }

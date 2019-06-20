@@ -3,8 +3,12 @@ package br.com.zalf.prolog.webservice.integracao.sistema;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.praxio.SistemaGlobusPiccolotur;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.ProtheusRodalogRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.SistemaProtheusRodalog;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.SistemaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.transport.SistemaTransportTranslecchi;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,6 +43,18 @@ public final class SistemasFactory {
                         new ProtheusRodalogRequesterImpl(),
                         sistemaKey,
                         integradorProLog,
+                        userToken);
+            case GLOBUS_PICCOLOTUR:
+                return new SistemaGlobusPiccolotur(
+                        new GlobusPiccoloturRequesterImpl(),
+                        sistemaKey,
+                        integradorProLog,
+                        userToken);
+            case RODOPAR_HORIZONTE:
+                return new SistemaRodoparHorizonte(
+                        new RodoparHorizonteRequesterImpl(),
+                        integradorProLog,
+                        sistemaKey,
                         userToken);
             default:
                 throw new IllegalStateException("Nenhum sistema encontrado com a chave: " + sistemaKey.getKey());

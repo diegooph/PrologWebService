@@ -190,7 +190,7 @@ public interface VeiculoDao {
      *
      * @param codUnidade código da unidade
      * @param conn       conexão com o banco
-     * @return o numero de véiculos
+     * @return o numero de veículos
      * @throws SQLException caso ocorrer erro no banco
      */
     int getTotalVeiculosByUnidade(Long codUnidade, Connection conn) throws SQLException;
@@ -294,4 +294,6 @@ public interface VeiculoDao {
     @NotNull
     Optional<List<Long>> getCodPneusAplicadosVeiculo(@NotNull final Connection conn,
                                                      @NotNull final Long codVeiculo) throws Throwable;
+
+    Long getCodUnidadeByPlaca(@NotNull final Connection conn, @NotNull final String placaVeiculo) throws Throwable;
 }
