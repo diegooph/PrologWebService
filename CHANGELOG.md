@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.95"></a>
 ## Version [v0.0.95](https://github.com/luizfp/PrologWebService/compare/v0.0.94...v0.0.95) (release-date) [unreleased]
 
+### Features
+* Integração de pneus com o Rodopar (PL-2024)
+
 ### Bug Fixes
 * Corrige componente da dash relatório status de placas aferição (PL-1672)
 
