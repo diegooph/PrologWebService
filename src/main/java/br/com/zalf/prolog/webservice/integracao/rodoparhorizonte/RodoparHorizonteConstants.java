@@ -8,7 +8,7 @@ package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte;
 public final class RodoparHorizonteConstants {
 
     // CONTANTES PARA CONEXÃO COM O RODOPAR
-    public static final String BASE_URL = "http://54.232.212.10:8263/";
+    public static final String BASE_URL = "http://187.103.73.245:8082/";
     public static final String URL_TOKEN_INTEGRACAO = "token";
     public static final String URL_AFERICAO_PLACA_INTEGRACAO = "api/AfericaoRealizada";
     public static final String URL_AFERICAO_AVULSA_INTEGRACAO = "api/AfericaoAvulsaRealizada";
