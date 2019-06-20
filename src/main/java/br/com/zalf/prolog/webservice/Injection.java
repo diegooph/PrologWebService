@@ -463,7 +463,7 @@ public final class Injection {
     }
 
     @NotNull
-    public static ColaboradorRelatorioDao provideColaboradorRelatorioDao(){
+    public static ColaboradorRelatorioDao provideColaboradorRelatorioDao() {
         return new ColaboradorRelatorioDaoImpl();
     }
 

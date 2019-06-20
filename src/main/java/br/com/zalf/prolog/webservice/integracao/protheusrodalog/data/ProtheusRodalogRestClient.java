@@ -33,12 +33,12 @@ public final class ProtheusRodalogRestClient {
     }
 
     private ProtheusRodalogRestClient() {
-
     }
 
     @NotNull
     public static <T> T getService(@NotNull final Class<T> serviceClass) {
         final String canonicalName = serviceClass.getCanonicalName();
+        //noinspection Duplicates
         if (!SERVICE_CACHE.containsKey(canonicalName)) {
             synchronized (ProtheusRodalogRestClient.class) {
                 if (!SERVICE_CACHE.containsKey(canonicalName)) {
@@ -47,7 +47,6 @@ public final class ProtheusRodalogRestClient {
                 }
             }
         }
-
         //noinspection unchecked
         return (T) SERVICE_CACHE.get(canonicalName);
     }

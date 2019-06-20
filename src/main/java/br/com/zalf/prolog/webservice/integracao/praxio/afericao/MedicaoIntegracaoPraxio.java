@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.praxio;
+package br.com.zalf.prolog.webservice.integracao.praxio.afericao;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoProcessoColetaAfericao;
@@ -36,7 +36,7 @@ public final class MedicaoIntegracaoPraxio {
     }
 
     @NotNull
-    static MedicaoIntegracaoPraxio createDummyAfericaoPlacaSulcoPressao() {
+    public static MedicaoIntegracaoPraxio createDummyAfericaoPlacaSulcoPressao() {
         final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
         medicao.setCodigo(12345L);
         medicao.setCodUnidadeAfericao(5L);
@@ -60,7 +60,7 @@ public final class MedicaoIntegracaoPraxio {
     }
 
     @NotNull
-    static MedicaoIntegracaoPraxio createDummyAfericaoPlacaSulco() {
+    public static MedicaoIntegracaoPraxio createDummyAfericaoPlacaSulco() {
         final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
         medicao.setCodigo(12345L);
         medicao.setCodUnidadeAfericao(5L);
@@ -83,7 +83,7 @@ public final class MedicaoIntegracaoPraxio {
     }
 
     @NotNull
-    static MedicaoIntegracaoPraxio createDummyAfericaoPlacaPressao() {
+    public static MedicaoIntegracaoPraxio createDummyAfericaoPlacaPressao() {
         final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
         medicao.setCodigo(12345L);
         medicao.setCodUnidadeAfericao(5L);
@@ -103,7 +103,7 @@ public final class MedicaoIntegracaoPraxio {
     }
 
     @NotNull
-    static MedicaoIntegracaoPraxio createDummyAfericaoPneuAvulsoSulco() {
+    public static MedicaoIntegracaoPraxio createDummyAfericaoPneuAvulsoSulco() {
         final MedicaoIntegracaoPraxio medicao = new MedicaoIntegracaoPraxio();
         medicao.setCodigo(12345L);
         medicao.setCodUnidadeAfericao(5L);
