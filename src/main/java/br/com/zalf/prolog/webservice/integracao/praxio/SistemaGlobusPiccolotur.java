@@ -2,10 +2,15 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
+import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.GlobusPiccoloturRequester;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.SistemaGlobusPiccoloturDao;
@@ -105,6 +110,31 @@ public final class SistemaGlobusPiccolotur extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    @Override
+    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
+        throw new BloqueadoIntegracaoException("Devido à integração com o Sistema Globus, " +
+                "a criação de modelos de checklist está bloqueada.");
+    }
+
+    @Override
+    public void updateModeloChecklist(@NotNull final String token,
+                                      @NotNull final Long codUnidade,
+                                      @NotNull final Long codModelo,
+                                      @NotNull final ModeloChecklistEdicao modeloChecklist) throws Throwable {
+        throw new BloqueadoIntegracaoException("Devido à integração com o Sistema Globus, " +
+                "a atualização de modelos de checklist está bloqueada.");
+    }
+
+    @Override
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
+    }
+
+    @Override
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
     }
 
     @NotNull
