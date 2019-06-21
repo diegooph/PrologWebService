@@ -74,7 +74,9 @@ public class ControleJornadaResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Gente.Intervalo.AJUSTE_MARCACOES)
+    @Secured(permissions = {
+            Pilares.Gente.Intervalo.AJUSTE_MARCACOES,
+            Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
     @Path("/marcacoes-por-data")
     public List<MarcacaoListagem> getMarcacoesColaboradorPorData(
             @QueryParam("codUnidade") @Required final Long codUnidade,
