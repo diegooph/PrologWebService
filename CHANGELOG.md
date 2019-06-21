@@ -4,6 +4,8 @@ Change Log
 <a name="v0.0.96"></a>
 ## Version [v0.0.96](https://github.com/luizfp/PrologWebService/compare/v0.0.95...v0.0.96) (release-date) [unreleased]
 
+### Bug Fixes
+* Corrige inserção de checklist, seta autoCommit = false;
 
 <a name="v0.0.95"></a>
 ## Version [v0.0.95](https://github.com/luizfp/PrologWebService/compare/v0.0.94...v0.0.95) (2019-06-20)
