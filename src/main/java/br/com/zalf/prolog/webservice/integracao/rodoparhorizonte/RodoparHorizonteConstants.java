@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte;
 
+import br.com.zalf.prolog.webservice.BuildConfig;
+
 /**
  * Created on 13/06/19.
  *
@@ -8,7 +10,9 @@ package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte;
 public final class RodoparHorizonteConstants {
 
     // CONTANTES PARA CONEXÃO COM O RODOPAR
-    public static final String BASE_URL = "http://187.103.73.245:8082/";
+    private static final String BASE_PROD_URL = "http://187.103.73.245:8082/";
+    private static final String BASE_TEST_URL = "http://54.232.212.10:8263/";
+    public static final String BASE_URL = BuildConfig.DEBUG ? BASE_TEST_URL : BASE_PROD_URL;
     public static final String URL_TOKEN_INTEGRACAO = "token";
     public static final String URL_AFERICAO_PLACA_INTEGRACAO = "api/AfericaoRealizada";
     public static final String URL_AFERICAO_AVULSA_INTEGRACAO = "api/AfericaoAvulsaRealizada";
