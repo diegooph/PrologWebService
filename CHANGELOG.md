@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.96"></a>
 ## Version [v0.0.96](https://github.com/luizfp/PrologWebService/compare/v0.0.95...v0.0.96) (release-date) [unreleased]
 
+### Refactors
+* Adiciona data/hora importado ProLog no objeto de checklist
+
 ### Bug Fixes
 * Corrige inserção de checklist, seta autoCommit = false;
 
