@@ -48,7 +48,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            return internalInsertChecklist(conn, checklist, true);
+            final Long codChecklist = internalInsertChecklist(conn, checklist, true);
+            conn.commit();
+            return codChecklist;
         } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
