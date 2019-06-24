@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.cargo;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
-import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
-import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
-import br.com.zalf.prolog.webservice.cargo.model.CargoVisualizacao;
+import br.com.zalf.prolog.webservice.cargo.model.*;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +25,19 @@ public final class CargoService {
             return dao.getTodosCargosUnidade(codUnidade);
         } catch (final Throwable throwable) {
             final String errorMessage = String.format("Erro ao buscar todos os cargos da unidade %d", codUnidade);
+            Log.e(TAG, errorMessage, throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar todos os cargos, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<CargoListagemEmpresa> getTodosCargosEmpresa(final Long codEmpresa) throws ProLogException {
+        try {
+            return dao.getTodosCargosEmpresa(codEmpresa);
+        } catch (final Throwable throwable) {
+            final String errorMessage = String.format("Erro ao buscar todos os cargos da unidade %d", codEmpresa);
             Log.e(TAG, errorMessage, throwable);
             throw Injection
                     .provideProLogExceptionHandler()

@@ -26,12 +26,32 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_TODOS_CARGOS(?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_TODOS_CARGOS_UNIDADE(?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             final List<CargoSelecao> cargos = new ArrayList<>();
             while (rSet.next()) {
-                cargos.add(CargoConverter.createCargoTodos(rSet));
+                cargos.add(CargoConverter.createCargoTodosUnidade(rSet));
+            }
+            return cargos;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+    @NotNull
+    @Override
+    public List<CargoListagemEmpresa> getTodosCargosEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_TODOS_CARGOS_EMPRESA(?);");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            final List<CargoListagemEmpresa> cargos = new ArrayList<>();
+            while (rSet.next()) {
+                cargos.add(CargoConverter.createCargoTodosEmpresa(rSet));
             }
             return cargos;
         } finally {

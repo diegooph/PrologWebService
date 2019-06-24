@@ -20,10 +20,18 @@ public final class CargoConverter {
     }
 
     @NotNull
-    static CargoSelecao createCargoTodos(@NotNull final ResultSet rSet) throws Throwable {
+    static CargoSelecao createCargoTodosUnidade(@NotNull final ResultSet rSet) throws Throwable {
         return new CargoSelecao(
                 rSet.getLong("COD_CARGO"),
                 rSet.getString("NOME_CARGO"));
+    }
+
+    @NotNull
+    static CargoListagemEmpresa createCargoTodosEmpresa(@NotNull final ResultSet rSet) throws Throwable {
+        return new CargoListagemEmpresa(
+                rSet.getLong("COD_CARGO"),
+                rSet.getString("NOME_CARGO"),
+                rSet.getLong("QTD_COLABORADORES_VINCULADOS"));
     }
 
     @NotNull

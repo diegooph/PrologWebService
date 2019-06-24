@@ -32,10 +32,23 @@ public final class CargoResource {
      */
     @GET
     @Secured
-    @Path("/todos")
+    @Path("/todos/por-unidade")
     public List<CargoSelecao> getTodosCargosUnidade(
             @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
         return service.getTodosCargosUnidade(codUnidade);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Permissao.VISUALIZAR,
+            Pilares.Gente.Colaborador.VISUALIZAR,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    @Path("/todos/por-empresa")
+    public List<CargoListagemEmpresa> getTodosCargosEmrpesa(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
+        return service.getTodosCargosEmpresa(codEmpresa);
     }
 
     @GET
