@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.MarcacaoListagem;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +23,28 @@ public final class ControleJornadaConverter {
 
     public ControleJornadaConverter() {
         throw new IllegalStateException(ControleJornadaConverter.class.getSimpleName() + " cannot be instantiated!");
+    }
+
+    @NotNull
+    public static MarcacaoListagem createMarcacaoListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new MarcacaoListagem(
+                rSet.getLong("COD_UNIDADE"),
+                rSet.getString("NOME_TIPO_INTERVALO"),
+                rSet.getString("ICONE_TIPO_INTERVALO"),
+                rSet.getString("CPF_COLABORADOR"),
+                rSet.getString("NOME_COLABORADOR"),
+                rSet.getBoolean("FOI_AJUSTADO_INICIO"),
+                rSet.getBoolean("FOI_AJUSTADO_FIM"),
+                rSet.getBoolean("STATUS_ATIVO_INICIO"),
+                rSet.getBoolean("STATUS_ATIVO_FIM"),
+                rSet.getLong("COD_MARCACAO_INICIO"),
+                rSet.getLong("COD_MARCACAO_FIM"),
+                rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
+                rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
+                Duration.ofSeconds(rSet.getLong("DURACAO_EM_SEGUNDOS")),
+                Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")),
+                rSet.getString("JUSTIFICATIVA_ESTOURO"),
+                rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
     }
 
     @NotNull

@@ -23,13 +23,9 @@ public class MarcacaoListagem {
     private final String cpfColaborador;
     @NotNull
     private final String nomeColaborador;
-    @Nullable
     private final boolean foiAjustadoInicio;
-    @Nullable
     private final boolean foiAjustadoFim;
-    @Nullable
     private final boolean statusAtivoInicio;
-    @Nullable
     private final boolean statusAtivoFim;
     @Nullable
     private final Long codMarcacaoInicio;
@@ -57,10 +53,10 @@ public class MarcacaoListagem {
                             @NotNull final String iconeTipoMarcacao,
                             @NotNull final String cpfColaborador,
                             @NotNull final String nomeColaborador,
-                            @Nullable final boolean foiAjustadoInicio,
-                            @Nullable final boolean foiAjustadoFim,
-                            @Nullable final boolean statusAtivoInicio,
-                            @Nullable final boolean statusAtivoFim,
+                            final boolean foiAjustadoInicio,
+                            final boolean foiAjustadoFim,
+                            final boolean statusAtivoInicio,
+                            final boolean statusAtivoFim,
                             @Nullable final Long codMarcacaoInicio,
                             @Nullable final Long codMarcacaoFim,
                             @Nullable final LocalDateTime dataMarcacaoInicio,
@@ -111,16 +107,12 @@ public class MarcacaoListagem {
         return nomeColaborador;
     }
 
-    @Nullable
     public boolean isFoiAjustadoInicio() { return foiAjustadoInicio; }
 
-    @Nullable
     public boolean isFoiAjustadoFim() { return foiAjustadoFim; }
 
-    @Nullable
     public boolean isStatusAtivoInicio() { return statusAtivoInicio; }
 
-    @Nullable
     public boolean isStatusAtivoFim() { return statusAtivoFim; }
 
     @Nullable

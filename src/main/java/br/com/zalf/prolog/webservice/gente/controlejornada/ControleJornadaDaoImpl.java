@@ -182,7 +182,6 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<MarcacaoListagem> marcacoes = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_LISTAGEM_MARCACOES(?, ?, ?, ?, ?);");
@@ -192,35 +191,14 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
             stmt.setObject(4, dataInicial);
             stmt.setObject(5, dataFinal);
             rSet = stmt.executeQuery();
+            final List<MarcacaoListagem> marcacoes = new ArrayList<>();
             while (rSet.next()) {
-                marcacoes.add(createMarcacaoListagem(rSet));
+                marcacoes.add(ControleJornadaConverter.createMarcacaoListagem(rSet));
             }
+            return marcacoes;
         } finally {
             close(conn, stmt, rSet);
         }
-        return marcacoes;
-    }
-
-    @NotNull
-    private MarcacaoListagem createMarcacaoListagem(@NotNull final ResultSet rSet) throws Throwable {
-        return new MarcacaoListagem(
-                rSet.getLong("COD_UNIDADE"),
-                rSet.getString("NOME_TIPO_INTERVALO"),
-                rSet.getString("ICONE_TIPO_INTERVALO"),
-                rSet.getString("CPF_COLABORADOR"),
-                rSet.getString("NOME_COLABORADOR"),
-                rSet.getBoolean("FOI_AJUSTADO_INICIO"),
-                rSet.getBoolean("FOI_AJUSTADO_FIM"),
-                rSet.getBoolean("STATUS_ATIVO_INICIO"),
-                rSet.getBoolean("STATUS_ATIVO_FIM"),
-                rSet.getLong("COD_MARCACAO_INICIO"),
-                rSet.getLong("COD_MARCACAO_FIM"),
-                rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class),
-                rSet.getObject("DATA_HORA_FIM", LocalDateTime.class),
-                Duration.ofSeconds(rSet.getLong("DURACAO_EM_SEGUNDOS")),
-                Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")),
-                rSet.getString("JUSTIFICATIVA_ESTOURO"),
-                rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
     }
 
     @Override

@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
-import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
@@ -12,9 +9,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.Null;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -80,8 +75,8 @@ public class ControleJornadaResource {
     @Path("/marcacoes-por-data")
     public List<MarcacaoListagem> getMarcacoesColaboradorPorData(
             @QueryParam("codUnidade") @Required final Long codUnidade,
-            @QueryParam("cpf") @Nullable final Long cpf,
-            @QueryParam("codTipoIntervalo") @Nullable final Long codTipo,
+            @QueryParam("cpf") @Optional final Long cpf,
+            @QueryParam("codTipoIntervalo") @Optional final Long codTipo,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
         return service.getMarcacoesColaboradorPorData(codUnidade, cpf, codTipo, dataInicial, dataFinal);

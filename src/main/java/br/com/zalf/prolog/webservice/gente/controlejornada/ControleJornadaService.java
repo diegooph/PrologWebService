@@ -114,9 +114,9 @@ public class ControleJornadaService {
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable t) {
             final String errorMessage = String.format("Erro ao buscar marcações de um colaborador.\n" +
-                    "cpf: %s \n" +
-                    "codTipo: %s \n" +
-                    "dataInicial: %s \n" +
+                    "cpf: %d\n" +
+                    "codTipo: %d\n" +
+                    "dataInicial: %s\n" +
                     "dataFinal: %s", cpf, codTipo, dataInicial, dataFinal);
             Log.e(TAG, errorMessage, t);
             throw Injection

@@ -77,6 +77,20 @@ public interface ControleJornadaDao {
                                                      final long limit,
                                                      final long offset) throws Throwable;
 
+    /**
+     * Busca uma lista de {@link MarcacaoListagem marcações} para exibição na listagem respeitando os parâmetros de
+     * filtro informados. Marcações incompletas (sem fim ou início) também serão buscadas.
+     *
+     * @param codUnidade  Código da {@link Unidade unidade} de onde será filtrado as marcações.
+     * @param cpf         CPF do {@link Colaborador colaborador} do qual se quer buscar as marcações ou
+     *                    <code>NULL</code> para ignorar esse filtro.
+     * @param codTipo     Código do tipo de marcação do qual se quer buscar as marcações ou <code>NULL</code> para
+     *                    ignorar esse filtro.
+     * @param dataInicial Data inicial a partir da qual se quer buscar as marcações. É inclusiva.
+     * @param dataFinal   Data final até a qual se quer buscar as marcações. É inclusiva.
+     * @return Uma lista de {@link MarcacaoListagem marcações} respeitando os parâmetros de filtro.
+     * @throws Throwable Se algum erro ocorrer.
+     */
     @NotNull
     List<MarcacaoListagem> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
                                                           @Nullable final Long cpf,
