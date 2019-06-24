@@ -184,7 +184,12 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_LISTAGEM_MARCACOES(?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_LISTAGEM_MARCACOES(" +
+                    "F_COD_UNIDADE        := ?," +
+                    "F_CPF_COLABORADOR    := ?," +
+                    "F_COD_TIPO_INTERVALO := ?," +
+                    "F_DATA_INICIAL       := ?," +
+                    "F_DATA_FINAL         := ?);");
             stmt.setLong(1, codUnidade);
             StatementUtils.bindValueOrNull(stmt, 2, cpf, SqlType.BIGINT);
             StatementUtils.bindValueOrNull(stmt, 3, codTipo, SqlType.BIGINT);
