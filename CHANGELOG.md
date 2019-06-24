@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Cria funcionalidade de listagem de marcações otimizada, com filtro de data. (PL-2000)
 
+### Bug Fixes
+* Corrige problema no fechamento de serviço de movimentação (PL-2114)
+
 <a name="v0.0.96"></a>
 ## Version [v0.0.96](https://github.com/luizfp/PrologWebService/compare/v0.0.95...v0.0.96) (2019-06-21)
 
