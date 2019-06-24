@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -168,6 +170,40 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
             close(conn, stmt, rSet);
         }
         return intervalos;
+    }
+
+    @NotNull
+    @Override
+    public List<MarcacaoListagem> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
+                                                                 @Nullable final Long cpf,
+                                                                 @Nullable final Long codTipo,
+                                                                 @NotNull final LocalDate dataInicial,
+                                                                 @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_LISTAGEM_MARCACOES(" +
+                    "F_COD_UNIDADE        := ?," +
+                    "F_CPF_COLABORADOR    := ?," +
+                    "F_COD_TIPO_INTERVALO := ?," +
+                    "F_DATA_INICIAL       := ?," +
+                    "F_DATA_FINAL         := ?);");
+            stmt.setLong(1, codUnidade);
+            StatementUtils.bindValueOrNull(stmt, 2, cpf, SqlType.BIGINT);
+            StatementUtils.bindValueOrNull(stmt, 3, codTipo, SqlType.BIGINT);
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
+            rSet = stmt.executeQuery();
+            final List<MarcacaoListagem> marcacoes = new ArrayList<>();
+            while (rSet.next()) {
+                marcacoes.add(ControleJornadaConverter.createMarcacaoListagem(rSet));
+            }
+            return marcacoes;
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @Override
@@ -355,7 +391,7 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
                 final long codigo = rSet.getLong("CODIGO");
                 // retornamos null caso codigo > 0 pois significa que não existe um código de vínculo
                 return codigo > 0 ? codigo : null;
-            } else{
+            } else {
                 throw new SQLException("Erro ao buscar código de vínculo para a marcação");
             }
         } finally {
