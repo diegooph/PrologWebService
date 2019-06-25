@@ -355,12 +355,43 @@ final class DashboardPneuComponentsCreator {
         // Linhas.
         final List<TableLine> lines = new ArrayList<>();
         qtdDiasAfericoesVencidas.forEach(afericoesVencidas -> {
-            // Colunas.
             final List<TableColumn> columns = new ArrayList<>(4);
             columns.add(new TableColumn(afericoesVencidas.getNomeUnidade()));
             columns.add(new TableColumn(afericoesVencidas.getPlacaVeiculo()));
-            columns.add(new TableColumn(String.valueOf(afericoesVencidas.getQtdDiasAfericaoSulcoVencido())));
-            columns.add(new TableColumn(String.valueOf(afericoesVencidas.getQtdDiasAfericaoPressaoVencida())));
+
+            // Aferição sulco.
+            if (afericoesVencidas.isPodeAferirSulco()) {
+                if (afericoesVencidas.getQtdDiasAfericaoSulcoVencido().isPresent()) {
+                    final int diasVencidos = afericoesVencidas.getQtdDiasAfericaoSulcoVencido().get();
+                    if (diasVencidos > 0) {
+                        columns.add(new TableColumn(String.valueOf(diasVencidos)));
+                    } else {
+                        columns.add(new TableColumn("-"));
+                    }
+                } else {
+                    columns.add(new TableColumn("-"));
+                }
+            } else {
+                columns.add(new TableColumn("-"));
+            }
+
+
+            // Aferição pressão.
+            if (afericoesVencidas.isPodeAferirPressao()) {
+                if (afericoesVencidas.getQtdDiasAfericaoPressaoVencida().isPresent()) {
+                    final int diasVencidos = afericoesVencidas.getQtdDiasAfericaoPressaoVencida().get();
+                    if (diasVencidos > 0) {
+                        columns.add(new TableColumn(String.valueOf(diasVencidos)));
+                    } else {
+                        columns.add(new TableColumn("-"));
+                    }
+                } else {
+                    columns.add(new TableColumn("-"));
+                }
+            } else {
+                columns.add(new TableColumn("-"));
+            }
+
             lines.add(new TableLine(columns));
         });
 
@@ -406,13 +437,16 @@ final class DashboardPneuComponentsCreator {
             String informacaoPonto = qtdAfericao.getDataFormatada();
             if (qtdAfericao.teveAfericoesRealizadas()) {
                 if (qtdAfericao.getQtdAfericoesSulco() > 0) {
-                    informacaoPonto = String.format("%s\nSulco: %d", informacaoPonto, qtdAfericao.getQtdAfericoesSulco());
+                    informacaoPonto = String.format("%s\nSulco: %d", informacaoPonto,
+                            qtdAfericao.getQtdAfericoesSulco());
                 }
                 if (qtdAfericao.getQtdAfericoesPressao() > 0) {
-                    informacaoPonto = String.format("%s\nPressão: %d", informacaoPonto, qtdAfericao.getQtdAfericoesPressao());
+                    informacaoPonto = String.format("%s\nPressão: %d", informacaoPonto,
+                            qtdAfericao.getQtdAfericoesPressao());
                 }
                 if (qtdAfericao.getQtdAfericoesSulcoPressao() > 0) {
-                    informacaoPonto = String.format("%s\nSulco/Pressão: %d", informacaoPonto, qtdAfericao.getQtdAfericoesSulcoPressao());
+                    informacaoPonto = String.format("%s\nSulco/Pressão: %d", informacaoPonto,
+                            qtdAfericao.getQtdAfericoesSulcoPressao());
                 }
             } else {
                 informacaoPonto = String.format("%s\nsem aferições", informacaoPonto);
@@ -424,7 +458,8 @@ final class DashboardPneuComponentsCreator {
         final List<LineGroup> groups = new ArrayList<>(3 /* sulco, pressao, pressão e sulco*/);
         final LineGroup groupSulco = new LineGroup("Sulco", entriesSulco, SULCO.getColor());
         final LineGroup groupPressao = new LineGroup("Pressão", entriesPressao, PRESSAO.getColor());
-        final LineGroup groupSulcoPressao = new LineGroup("Sulco/Pressão", entriesSulcoPressao, SULCO_PRESSAO.getColor());
+        final LineGroup groupSulcoPressao = new LineGroup("Sulco/Pressão", entriesSulcoPressao,
+                SULCO_PRESSAO.getColor());
         groups.add(groupSulco);
         groups.add(groupPressao);
         groups.add(groupSulcoPressao);

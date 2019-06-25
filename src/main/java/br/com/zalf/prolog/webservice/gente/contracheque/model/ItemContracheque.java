@@ -9,6 +9,7 @@ public class ItemContracheque {
      * Código pode conter letras, justificando o uso da String
      */
     private String codigo;
+    private String codigoItem;
     private String descricao;
     private String subDescricao;
     private Double valor;
@@ -23,6 +24,10 @@ public class ItemContracheque {
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
+
+    public String getCodigoItem() { return codigoItem; }
+
+    public void setCodigoItem(String codigoItem) { this.codigoItem = codigoItem; }
 
     public String getDescricao() {
         return descricao;
@@ -52,6 +57,7 @@ public class ItemContracheque {
     public String toString() {
         return " item{" +
                 "codigo=" + codigo +
+                "codigoItem=" + codigoItem +
                 ", descrição='" + descricao + '\'' +
                 ", subDescrição='" + subDescricao + '\'' +
                 ", valor=" + valor +

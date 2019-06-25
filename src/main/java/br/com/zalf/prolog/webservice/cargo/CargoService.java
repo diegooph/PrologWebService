@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
 import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
+import br.com.zalf.prolog.webservice.cargo.model.CargoVisualizacao;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
@@ -57,6 +58,19 @@ public final class CargoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar os cargos não utilizados, tente novamente");
+        }
+    }
+
+    @NotNull
+    public CargoVisualizacao getPermissoesDetalhadasUnidade(final Long codUnidade,
+                                                            final Long codCargo) throws ProLogException {
+        try {
+            return dao.getPermissoesDetalhadasUnidade(codUnidade, codCargo);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar as permissões detalhadas da unidade %d", codUnidade), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar as permissões, tente novamente");
         }
     }
 }

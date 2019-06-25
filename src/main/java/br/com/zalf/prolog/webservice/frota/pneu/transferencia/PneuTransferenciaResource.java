@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 
-import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -33,9 +33,9 @@ public final class PneuTransferenciaResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    public Response transferencia(PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
-        service.insertTransferencia(pneuTransferenciaRealizacao);
-        return Response.ok("Transferência realizada com sucesso");
+    public ResponseWithCod transferencia(
+            @Required final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
+        return service.insertTransferencia(pneuTransferenciaRealizacao);
     }
 
     @GET

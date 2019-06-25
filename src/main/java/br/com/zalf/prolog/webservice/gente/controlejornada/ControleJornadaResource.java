@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
-import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
@@ -68,6 +65,21 @@ public class ControleJornadaResource {
             @QueryParam("limit") @Required long limit,
             @QueryParam("offset") @Required long offset) throws ProLogException {
         return service.getMarcacoesColaborador(tokenMarcacao, codUnidade, cpf, codTipo, limit, offset);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = {
+            Pilares.Gente.Intervalo.AJUSTE_MARCACOES,
+            Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
+    @Path("/marcacoes-por-data")
+    public List<MarcacaoListagem> getMarcacoesColaboradorPorData(
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("cpf") @Optional final Long cpf,
+            @QueryParam("codTipoIntervalo") @Optional final Long codTipo,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
+        return service.getMarcacoesColaboradorPorData(codUnidade, cpf, codTipo, dataInicial, dataFinal);
     }
 
     /**

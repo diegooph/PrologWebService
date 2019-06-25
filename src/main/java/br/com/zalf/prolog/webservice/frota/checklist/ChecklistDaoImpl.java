@@ -47,7 +47,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         Connection conn = null;
         try {
             conn = getConnection();
-            return internalInsertChecklist(conn, checklist, true);
+            conn.setAutoCommit(false);
+            final Long codChecklist = internalInsertChecklist(conn, checklist, true);
+            conn.commit();
+            return codChecklist;
         } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
@@ -125,6 +128,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     "  C.CODIGO, " +
                     "  C.COD_CHECKLIST_MODELO, " +
                     "  C.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
+                    "  C.DATA_HORA_IMPORTADO_PROLOG AT TIME ZONE ? AS DATA_HORA_IMPORTADO_PROLOG, " +
                     "  C.KM_VEICULO, " +
                     "  C.TEMPO_REALIZACAO, " +
                     "  C.CPF_COLABORADOR, " +
@@ -134,8 +138,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     "  JOIN COLABORADOR CO " +
                     "    ON CO.CPF = C.CPF_COLABORADOR " +
                     "WHERE C.CODIGO = ?;");
-            stmt.setString(1, TimeZoneManager.getZoneIdForToken(userToken, conn).getId());
-            stmt.setLong(2, codChecklist);
+            final String id = TimeZoneManager.getZoneIdForToken(userToken, conn).getId();
+            stmt.setString(1, id);
+            stmt.setString(2, id);
+            stmt.setLong(3, codChecklist);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Checklist checklist = ChecklistConverter.createChecklist(rSet, false);

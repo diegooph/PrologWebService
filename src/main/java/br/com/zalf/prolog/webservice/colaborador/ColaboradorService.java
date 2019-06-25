@@ -31,7 +31,10 @@ public class ColaboradorService {
     public void insert(Colaborador colaborador) throws ProLogException {
         try {
             ColaboradorValidator.validacaoAtributosColaborador(colaborador);
-            dao.insert(colaborador, Injection.provideDadosIntervaloChangedListener());
+            dao.insert(
+                    colaborador,
+                    Injection.provideDadosIntervaloChangedListener(),
+                    Injection.provideDadosChecklistOfflineChangedListener());
         } catch (Throwable e) {
             final String errorMessage = "Erro ao inserir o colaborador";
             Log.e(TAG, errorMessage, e);
@@ -44,7 +47,11 @@ public class ColaboradorService {
     public void update(Long cpfAntigo, Colaborador colaborador) throws ProLogException {
         try {
             ColaboradorValidator.validacaoAtributosColaborador(colaborador);
-            dao.update(cpfAntigo, colaborador, Injection.provideDadosIntervaloChangedListener());
+            dao.update(
+                    cpfAntigo,
+                    colaborador,
+                    Injection.provideDadosIntervaloChangedListener(),
+                    Injection.provideDadosChecklistOfflineChangedListener());
         } catch (Throwable e) {
             final String errorMessage = "Erro ao atualizar colaborador";
             Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
@@ -56,7 +63,7 @@ public class ColaboradorService {
 
     public boolean updateStatus(Long cpf, Colaborador colaborador) {
         try {
-            dao.updateStatus(cpf, colaborador);
+            dao.updateStatus(cpf, colaborador, Injection.provideDadosChecklistOfflineChangedListener());
             return true;
         } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao atualizar o status do colaborador %d", cpf), e);
@@ -66,7 +73,10 @@ public class ColaboradorService {
 
     public boolean delete(Long cpf) {
         try {
-            dao.delete(cpf, Injection.provideDadosIntervaloChangedListener());
+            dao.delete(
+                    cpf,
+                    Injection.provideDadosIntervaloChangedListener(),
+                    Injection.provideDadosChecklistOfflineChangedListener());
             return true;
         } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao deletar o colaborador %d", cpf), e);

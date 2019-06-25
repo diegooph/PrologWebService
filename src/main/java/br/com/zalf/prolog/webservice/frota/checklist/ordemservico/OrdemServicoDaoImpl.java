@@ -432,14 +432,11 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
-                    "CHECKLIST_ORDEM_SERVICO(CODIGO, COD_UNIDADE, COD_CHECKLIST, STATUS) VALUES " +
-                    "((SELECT COALESCE(MAX(CODIGO), MAX(CODIGO), 0) + 1 AS CODIGO " +
-                    "  FROM CHECKLIST_ORDEM_SERVICO " +
-                    "  WHERE COD_UNIDADE = ?), ?, ?, ?) RETURNING CODIGO;");
+                    "CHECKLIST_ORDEM_SERVICO(COD_UNIDADE, COD_CHECKLIST, STATUS) VALUES " +
+                    "(?, ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codUnidade);
-            stmt.setLong(3, codChecklist);
-            stmt.setString(4, StatusOrdemServico.ABERTA.asString());
+            stmt.setLong(2, codChecklist);
+            stmt.setString(3, StatusOrdemServico.ABERTA.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");

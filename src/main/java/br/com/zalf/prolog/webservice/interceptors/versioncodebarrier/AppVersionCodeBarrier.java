@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.interceptors.versioncodebarrier;
 
-import br.com.zalf.prolog.webservice.errorhandling.error.VersaoAppBloqueadaException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import org.jetbrains.annotations.NotNull;
 
 /**

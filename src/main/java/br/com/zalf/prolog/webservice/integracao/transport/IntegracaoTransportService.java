@@ -37,8 +37,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             }
             ensureValidToken(tokenIntegracao, TAG);
             final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
-            validateDataHoraItensResolvidos(dataHoraAtualUtc, itensResolvidos);
-            validateDadosItensResolvidos(itensResolvidos);
+            validateDadosItensResolvidos(dataHoraAtualUtc, itensResolvidos);
             dao.resolverMultiplosItens(tokenIntegracao, dataHoraAtualUtc, itensResolvidos);
             return new SuccessResponseIntegracao("Itens resolvidos com sucesso");
         } catch (final Throwable t) {
@@ -72,10 +71,11 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
     }
 
     private void validateDadosItensResolvidos(
+            @NotNull final LocalDateTime dataHoraAtualUtc,
             @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < itensResolvidos.size(); i++) {
             final ItemResolvidoIntegracaoTransport itemResolvido = itensResolvidos.get(i);
-
             if (itemResolvido.getCodUnidadeOrdemServico() == null
                     || itemResolvido.getCodUnidadeOrdemServico() <= 0) {
                 throw new GenericException(String.format(
@@ -115,7 +115,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             if (itemResolvido.getDuracaoResolucaoItemEmMilissegundos() == null
                     || itemResolvido.getDuracaoResolucaoItemEmMilissegundos() < 0) {
                 throw new GenericException(
-                        "O atributo 'duracaoResolucaoItemEmMilissegundos' deve ser um número positivo e não nulo.");
+                        "A 'duracaoResolucaoItemEmMilissegundos' deve ser um número positivo e não nulo.");
             }
             if (itemResolvido.getFeedbackResolucao() == null ||
                     itemResolvido.getFeedbackResolucao().isEmpty()) {
@@ -132,13 +132,6 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
             if (itemResolvido.getDataHoraFimResolucao() == null) {
                 throw new GenericException("A 'dataHoraFimResolucao' não pode ser nula.");
             }
-        }
-    }
-
-    private void validateDataHoraItensResolvidos(
-            @NotNull final LocalDateTime dataHoraAtualUtc,
-            @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
-        for (final ItemResolvidoIntegracaoTransport itemResolvido : itensResolvidos) {
             if (itemResolvido.getDataHoraInicioResolucao().isAfter(itemResolvido.getDataHoraFimResolucao())) {
                 final String msg = String.format(
                         "A data/hora de ínicio da resolução é posterior à data/hora de fim do conserto para o item %d",
@@ -204,7 +197,8 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
     @NotNull
     private SuccessResponseIntegracao verifyItensDummy(
             @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
-        validateDadosItensResolvidos(itensResolvidos);
+        final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
+        validateDadosItensResolvidos(dataHoraAtualUtc, itensResolvidos);
         return new SuccessResponseIntegracao("Itens resolvidos");
     }
 

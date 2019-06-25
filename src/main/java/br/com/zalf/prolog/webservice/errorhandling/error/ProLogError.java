@@ -6,48 +6,48 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ProLogError {
-    /**
-     * contains the same HTTP Status code returned by the server
-     */
-    private int httpStatusCode;
+public final class ProLogError {
+	/** contains the same HTTP Status code returned by the server */
+	private final int httpStatusCode;
 
-    /**
-     * application specific error code
-     */
-    private int proLogErrorCode;
+	/** application specific error code */
+	private final int proLogErrorCode;
 
-    /**
-     * message describing the error
-     */
-    @NotNull
-    private String message;
+	/** message describing the error*/
+	@NotNull
+	private final String message;
 
-    /**
-     * link point to page where the error message is documented
-     */
-    @Nullable
-    private String moreInfoLink;
+	/** link point to page where the error message is documented */
+	@Nullable
+	private final String moreInfoLink;
 
-    /**
-     * extra information that might useful for developers
-     */
-    @Nullable
-    private String developerMessage;
+	/** extra information that might useful for developers */
+	@Nullable
+	private final String developerMessage;
 
-    private ProLogError() {
+	private ProLogError(final int httpStatusCode,
+						final int proLogErrorCode,
+						@NotNull final String message,
+						@Nullable final String moreInfoLink,
+						@Nullable final String developerMessage) {
+		this.httpStatusCode = httpStatusCode;
+		this.proLogErrorCode = proLogErrorCode;
+		this.message = message;
+		this.moreInfoLink = moreInfoLink;
+		this.developerMessage = developerMessage;
+	}
 
-    }
-
-    public static ProLogError createFrom(@NotNull final ProLogException ex) {
-        final ProLogError proLogError = new ProLogError();
-        proLogError.setDeveloperMessage(ex.getDeveloperMessage());
-        proLogError.setMessage(ex.getMessage());
-        proLogError.setProLogErrorCode(ex.getProLogErrorCode());
-        proLogError.setHttpStatusCode(ex.getHttpStatusCode());
-        proLogError.setMoreInfoLink(ex.getMoreInfoLink());
-        return proLogError;
-    }
+	@NotNull
+	public static ProLogError createFrom(@NotNull final ProLogException ex) {
+		return new ProLogError(
+				ex.getHttpStatusCode(),
+				ex.getProLogErrorCode(),
+				ex.getMessage(),
+				ex.getMoreInfoLink(),
+				/* Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
+				* sensitiva. */
+				BuildConfig.DEBUG ? ex.getDeveloperMessage() : null);
+	}
 
     @NotNull
     public static ProLogError generateFromString(@NotNull final String jsonError) {
@@ -58,47 +58,26 @@ public class ProLogError {
         return httpStatusCode;
     }
 
-    public void setHttpStatusCode(int httpStatusCode) {
-        this.httpStatusCode = httpStatusCode;
-    }
+	public int getProLogErrorCode() {
+		return proLogErrorCode;
+	}
 
-    public int getProLogErrorCode() {
-        return proLogErrorCode;
-    }
+	public String getMessage() {
+		return message;
+	}
 
-    public void setProLogErrorCode(int code) {
-        this.proLogErrorCode = code;
-    }
+	public String getDeveloperMessage() {
+		return developerMessage;
+	}
 
-    public String getMessage() {
-        return message;
-    }
+	public String getMoreInfoLink() {
+		return moreInfoLink;
+	}
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getDeveloperMessage() {
-        return developerMessage;
-    }
-
-    public void setDeveloperMessage(String developerMessage) {
-        if (BuildConfig.DEBUG)
-            this.developerMessage = developerMessage;
-    }
-
-    public String getMoreInfoLink() {
-        return moreInfoLink;
-    }
-
-    public void setMoreInfoLink(String link) {
-        this.moreInfoLink = link;
-    }
-
-    @Override
-    public String toString() {
-        return "ErrorMessage [httpStatusCode=" + httpStatusCode + ", proLogErrorCode=" + proLogErrorCode
-                + ", message=" + message + ", moreInfoLink=" + moreInfoLink + ", developerMessage=" + developerMessage
-                + "]";
-    }
+	@Override
+	public String toString() {
+		return "ErrorMessage [httpStatusCode=" + httpStatusCode + ", proLogErrorCode=" + proLogErrorCode
+				+ ", message=" + message + ", moreInfoLink=" + moreInfoLink + ", developerMessage=" + developerMessage
+				+ "]";
+	}
 }

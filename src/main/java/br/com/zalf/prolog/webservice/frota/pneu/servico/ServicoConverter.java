@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import org.jetbrains.annotations.NotNull;
@@ -152,7 +153,7 @@ final class ServicoConverter {
         sulcos.setInterno(rSet.getDouble("SULCO_INTERNO_PNEU_NOVO"));
         movimentacao.setSulcosColetadosFechamento(sulcos);
 
-        final PneuComum pneuNovo = new PneuComum();
+        final PneuEstoque pneuNovo = new PneuEstoque();
         pneuNovo.setCodigo(rSet.getLong("COD_PNEU_NOVO"));
         pneuNovo.setCodigoCliente(rSet.getString("COD_PNEU_NOVO_CLIENTE"));
         pneuNovo.setSulcosAtuais(sulcos);
