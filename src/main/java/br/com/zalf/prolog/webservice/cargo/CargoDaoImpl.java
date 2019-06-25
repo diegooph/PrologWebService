@@ -38,6 +38,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
             close(conn, stmt, rSet);
         }
     }
+
     @NotNull
     @Override
     public List<CargoListagemEmpresa> getTodosCargosEmpresa(@NotNull final Long codEmpresa) throws Throwable {

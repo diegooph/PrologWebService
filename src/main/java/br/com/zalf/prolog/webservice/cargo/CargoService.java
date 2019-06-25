@@ -37,7 +37,7 @@ public final class CargoService {
         try {
             return dao.getTodosCargosEmpresa(codEmpresa);
         } catch (final Throwable throwable) {
-            final String errorMessage = String.format("Erro ao buscar todos os cargos da unidade %d", codEmpresa);
+            final String errorMessage = String.format("Erro ao buscar todos os cargos da empresa %d", codEmpresa);
             Log.e(TAG, errorMessage, throwable);
             throw Injection
                     .provideProLogExceptionHandler()

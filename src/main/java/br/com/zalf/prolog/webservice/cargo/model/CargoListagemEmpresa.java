@@ -12,11 +12,12 @@ public final class CargoListagemEmpresa {
     private final Long codigo;
     @NotNull
     private final String nome;
+    @NotNull
     private final Long qtdColaboradoresVinculados;
 
     public CargoListagemEmpresa(@NotNull final Long codigo,
                                 @NotNull final String nome,
-                                final Long qtdColaboradoresVinculados) {
+                                @NotNull final Long qtdColaboradoresVinculados) {
         this.codigo = codigo;
         this.nome = nome;
         this.qtdColaboradoresVinculados = qtdColaboradoresVinculados;
@@ -40,6 +41,7 @@ public final class CargoListagemEmpresa {
         return nome;
     }
 
+    @NotNull
     public Long getQtdColaboradoresVinculados() {
         return qtdColaboradoresVinculados;
     }

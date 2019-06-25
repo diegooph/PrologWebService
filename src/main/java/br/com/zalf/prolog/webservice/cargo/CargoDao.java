@@ -22,6 +22,13 @@ public interface CargoDao {
     @NotNull
     List<CargoSelecao> getTodosCargosUnidade(@NotNull final Long codUnidade) throws Throwable;
 
+    /**
+     * Este método é utilizado para buscar todos os {@link CargoListagemEmpresa cargos} da Empresa selecionada.
+     *
+     * @param codEmpresa Código da Empresa a qual os cargos serão buscados.
+     * @return Uma lista com todos os {@link CargoListagemEmpresa cargos} da unidade.
+     * @throws Throwable Caso ocorra qualquer na busca dos dados.
+     */
     @NotNull
     List<CargoListagemEmpresa> getTodosCargosEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
