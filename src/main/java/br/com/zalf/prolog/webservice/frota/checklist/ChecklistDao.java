@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -125,8 +125,8 @@ public interface ChecklistDao {
      * diferentes unidades.
      *
      * @param codEmpresa Código da empresa que será verificado se está liberado.
-     * @return <code>TRUE</code> se os colaboradores da empresa estão aptos a realizar o checklist de diferentes uniades,
-     * <code>FALSE</code> caso contrário.
+     * @return <code>TRUE</code> se os colaboradores da empresa estão aptos a realizar o checklist de diferentes
+     * uniades, <code>FALSE</code> caso contrário.
      * @throws Throwable Caso ocorrer algum erro na busca dos dados.
      */
     boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;

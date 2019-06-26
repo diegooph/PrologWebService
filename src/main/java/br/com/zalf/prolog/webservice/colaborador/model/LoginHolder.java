@@ -65,7 +65,7 @@ public class LoginHolder {
      * checklist de diferentes unidades. Se <code>TRUE</code> então a aplicação permitirá que o colaborador selecione
      * de qual unidade ele realizará o checklist, tanto online quanto offline. Caso <code>FALSE</code>, então o
      * processo de realização de checklist só exibirá os modelos de checklist disponíveis na unidade onde o colaborador
-     * que está realizando se encontra. Ou seja, um colaborador de Viamão só poderia realizar checklist de Viamão.
+     * que está realizando estś cadastrado.
      */
     private boolean checklistDiferentesUnidadesAtivoEmpresa;
 
