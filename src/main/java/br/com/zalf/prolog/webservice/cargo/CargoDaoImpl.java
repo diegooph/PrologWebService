@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.cargo;
 
 import br.com.zalf.prolog.webservice.cargo.model.*;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -119,6 +120,43 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
             return createCargoVisualizacao(rSet);
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    public Long insertCargo(@NotNull final CargoInsercao cargo,
+                            @NotNull final String userToken) throws Throwable{
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            final Long codCargoInserido = internalInsertCargo(conn, cargo, userToken);
+            return codCargoInserido;
+        } finally {
+            close(conn);
+        }
+    }
+
+    @NotNull
+    private Long internalInsertCargo(@NotNull final Connection conn,
+                                     @NotNull final CargoInsercao cargo,
+                                     @NotNull final String userToken) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+
+        try {
+            stmt = conn.prepareStatement("SELECT FUNC_CARGOS_INSERE_CARGO(?,?,?) AS CODIGO;");
+            stmt.setLong(1, cargo.getCodEmpresa());
+            stmt.setString(2, cargo.getNome());
+            stmt.setString(3, TokenCleaner.getOnlyToken(userToken));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Long codCargoInserido = rSet.getLong("CODIGO");
+                return codCargoInserido;
+            } else {
+                throw new SQLException("Erro ao inserir cargo");
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 

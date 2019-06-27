@@ -67,4 +67,15 @@ public interface CargoDao {
     @NotNull
     CargoVisualizacao getPermissoesDetalhadasUnidade(@NotNull final Long codUnidade,
                                                      @NotNull final Long codCargo) throws Throwable;
+
+    /**
+     * Insere um cargo
+     *
+     * @param cargo      um cargo
+     * @param userToken  o token do usuário que fez a requisição
+     * @return código do cargo recém cadastrado
+     * @throws Throwable caso ocorra erro no banco
+     */
+    @NotNull
+    Long insertCargo(@NotNull final CargoInsercao cargo, @NotNull final String userToken) throws Throwable;
 }

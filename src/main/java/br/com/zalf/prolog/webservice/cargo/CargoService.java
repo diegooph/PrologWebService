@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.cargo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.cargo.model.*;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
@@ -81,6 +83,19 @@ public final class CargoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar as permissões, tente novamente");
+        }
+    }
+
+    @NotNull
+    public AbstractResponse insertCargo(CargoInsercao cargo, final String userToken) throws ProLogException{
+        try{
+            return ResponseWithCod.ok("Cargo inserido com sucesso", dao.insertCargo(cargo, userToken));
+        } catch (Throwable e){
+            final String errorMessage = "Erro ao inserir o cargo";
+            Log.e(TAG, "Erro ao inserir cargo para a empresa: " + cargo.getCodEmpresa(), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, errorMessage);
         }
     }
 }

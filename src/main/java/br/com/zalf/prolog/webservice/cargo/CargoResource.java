@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.cargo;
 
 import br.com.zalf.prolog.webservice.cargo.model.*;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -84,5 +85,12 @@ public final class CargoResource {
                                                               @QueryParam("codCargo") @Required Long codCargo)
             throws ProLogException {
         return service.getPermissoesDetalhadasUnidade(codUnidade, codCargo);
+    }
+
+    @POST
+    @Secured(permissions = Pilares.Gente.Permissao.VINCULAR_CARGO)
+    @Path("/inserir")
+    public AbstractResponse insertCargo(CargoInsercao cargo, @HeaderParam("Authorization") @Required final String userToken){
+        return service.insertCargo(cargo, userToken);
     }
 }
