@@ -33,6 +33,17 @@ public interface CargoDao {
     List<CargoListagemEmpresa> getTodosCargosEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
+     * Este método é utilizado para buscar um {@link CargoEdicao cargo} específico.
+     *
+     * @param codEmpresa Código da Empresa a qual os cargos serão buscados.
+     * @param codigo Código do cargo.
+     * @return O object do {@link CargoEdicao cargo} encontrado
+     * @throws Throwable Caso ocorra qualquer na busca dos dados.
+     */
+    @NotNull CargoEdicao getByCod(@NotNull final Long codEmpresa,
+                                  @NotNull final Long codigo) throws Throwable;
+
+    /**
      * Busca os cargos que estão em uso na unidade informada como parâmetro. Entende-se um cargo como <b>em uso</b>,
      * caso ele tenha pelo menos 1 colaborador vinculado. Colaboradores inativos também são considerados para validar
      * um cargo como <b>em uso</b>.

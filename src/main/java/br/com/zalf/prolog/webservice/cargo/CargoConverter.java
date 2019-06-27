@@ -35,6 +35,14 @@ public final class CargoConverter {
     }
 
     @NotNull
+    static CargoEdicao createCargoEdicao(@NotNull final ResultSet rSet) throws Throwable {
+        return new CargoEdicao(
+                rSet.getLong("COD_EMPRESA"),
+                rSet.getLong("COD_CARGO"),
+                rSet.getString("NOME_CARGO"));
+    }
+
+    @NotNull
     static CargoEmUso createCargoEmUso(@NotNull final ResultSet rSet) throws Throwable {
         return new CargoEmUso(
                 rSet.getLong("COD_CARGO"),

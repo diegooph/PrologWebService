@@ -48,6 +48,20 @@ public final class CargoService {
         }
     }
 
+
+    @NotNull
+    public CargoEdicao getByCod(final Long codEmpresa, final Long codigo) throws ProLogException {
+        try {
+            return dao.getByCod(codEmpresa, codigo);
+        } catch (final Throwable throwable) {
+            final String errorMessage = String.format("Erro ao buscar o cargo: %d", codigo);
+            Log.e(TAG, errorMessage, throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar o cargo, tente novamente");
+        }
+    }
+
     @NotNull
     public List<CargoEmUso> getCargosEmUsoUnidade(final Long codUnidade) throws ProLogException {
         try {

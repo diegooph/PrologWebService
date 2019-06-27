@@ -53,6 +53,21 @@ public final class CargoResource {
         return service.getTodosCargosEmpresa(codEmpresa);
     }
 
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Permissao.VISUALIZAR,
+            Pilares.Gente.Colaborador.VISUALIZAR,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    @Path("/editar")
+    public CargoEdicao getByCod(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa,
+            @QueryParam("codigo") @Required final Long codigo) throws ProLogException {
+        return service.getByCod(codEmpresa, codigo);
+    }
+
     @GET
     @Secured(permissions = {
             Pilares.Gente.Permissao.VINCULAR_CARGO,

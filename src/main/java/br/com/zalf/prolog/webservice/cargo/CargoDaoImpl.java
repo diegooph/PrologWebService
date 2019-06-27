@@ -63,6 +63,30 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
 
     @NotNull
     @Override
+    public CargoEdicao getByCod(@NotNull final Long codEmpresa, @NotNull final Long codigo) throws Throwable {
+        Connection conn = null;
+        ResultSet rSet = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_CARGO(?, ?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codigo);
+            rSet = stmt.executeQuery();
+            CargoEdicao cargo;
+            if (rSet.next()) {
+                cargo = CargoConverter.createCargoEdicao(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar cargo de código: " + codigo);
+            }
+            return cargo;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
     public List<CargoEmUso> getCargosEmUsoUnidade(@NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
