@@ -251,8 +251,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_REGIONAIS_UNIDADES_SELECAO(" +
-                    "F_COD_COLABORADOR := ?);");
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_CHECKLIST_GET_REGIONAIS_UNIDADES_SELECAO(F_COD_COLABORADOR := ?);");
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
             FiltroRegionalUnidadeChecklist filtro = null;
@@ -286,7 +286,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             }
 
             if (filtro == null) {
-                throw new IllegalStateException("Dados de filtro não encontrados para o colaborador: " + codColaborador);
+                throw new IllegalStateException(
+                        "Dados de filtro não encontrados para o colaborador: " + codColaborador);
             }
 
             return filtro;
