@@ -126,7 +126,7 @@ public interface ChecklistDao {
      *
      * @param codEmpresa Código da empresa que será verificado se está liberado.
      * @return <code>TRUE</code> se os colaboradores da empresa estão aptos a realizar o checklist de diferentes
-     * uniades, <code>FALSE</code> caso contrário.
+     * unidades, <code>FALSE</code> caso contrário.
      * @throws Throwable Caso ocorrer algum erro na busca dos dados.
      */
     boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;

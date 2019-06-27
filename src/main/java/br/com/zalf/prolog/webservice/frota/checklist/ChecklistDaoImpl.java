@@ -143,8 +143,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                         pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
                     }
                 } else {
-                    throw new IllegalStateException("Esse método só está preparado para lidar com o retorno de um único " +
-                            "checklist!");
+                    throw new IllegalStateException(
+                            "Esse método só está preparado para lidar com o retorno de um único checklist!");
                 }
                 codChecklistAntigo = codChecklistAtual;
                 codPerguntaAntigo = codPerguntaAtual;
