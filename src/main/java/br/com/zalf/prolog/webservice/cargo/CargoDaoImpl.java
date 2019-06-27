@@ -170,6 +170,28 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         }
     }
 
+    @Override
+    public void deleteCargo(@NotNull final Long codEmpresa,
+                            @NotNull final Long codigo,
+                            @NotNull final String userToken) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_CARGOS_DELETA_CARGO(?, ?, ?);");
+            stmt.setLong(1,codEmpresa);
+            stmt.setLong(2, codigo);
+            stmt.setString(3, TokenCleaner.getOnlyToken(userToken));
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || rSet.getInt(1) <= 0) {
+                throw new SQLException("Erro ao deletar o cargo: " + codigo);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @NotNull
     private CargoVisualizacao createCargoVisualizacao(@NotNull final ResultSet rSet) throws SQLException {
         final List<CargoPilarProLog> pilares = new ArrayList<>();

@@ -112,4 +112,17 @@ public final class CargoService {
                     .map(t, "Erro ao atualizar o cargo, tente novamente");
         }
     }
+
+    @NotNull
+    public Response deleteCargo(final Long codEmpresa, final Long codigo, final String userToken) throws ProLogException {
+        try {
+            dao.deleteCargo(codEmpresa, codigo, userToken);
+            return Response.ok("Cargo deletado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao deletar o cargo", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao deletar o cargo, tente novamente");
+        }
+    }
 }

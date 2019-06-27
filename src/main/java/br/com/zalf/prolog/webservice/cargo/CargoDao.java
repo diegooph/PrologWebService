@@ -95,4 +95,18 @@ public interface CargoDao {
      */
     void updateCargo(@NotNull final CargoEdicao cargo,
                      @NotNull final String userToken) throws Throwable;
+
+    /**
+     * Delete logicamente um {@link CargoEdicao cargo}.
+     * Atualmente este método é baseado na seguinte lógica:
+     *
+     * Não é possível deletar logicamente caso o cargo tenha colaboradores vinculados
+     *
+     * @param cargo Objeto contendo as novas informações para o cargo.
+     * @param userToken  o token do usuário que fez a requisição
+     * @throws Throwable Se algum erro ocorrer no processo de atualização.
+     */
+    void deleteCargo(@NotNull final Long codEmpresa,
+                     @NotNull final Long codigo,
+                     @NotNull final String userToken) throws Throwable;
 }

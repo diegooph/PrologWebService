@@ -101,4 +101,13 @@ public final class CargoResource {
     public Response updateCargo(@Required final CargoEdicao cargo, @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
         return service.updateCargo(cargo, userToken);
     }
+
+    @DELETE
+    @Secured(permissions = {Pilares.Gente.Permissao.VINCULAR_CARGO})
+    @Path("/deletar/{codEmpresa}/{codigo}")
+    public Response deleteCargo(@PathParam("codEmpresa") @Required final Long codEmpresa,
+                                @PathParam("codigo") @Required final Long codigo,
+                                @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
+        return service.deleteCargo(codEmpresa, codigo, userToken);
+    }
 }
