@@ -124,6 +124,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
     }
 
     @NotNull
+    @Override
     public Long insertCargo(@NotNull final CargoInsercao cargo,
                             @NotNull final String userToken) throws Throwable{
         PreparedStatement stmt = null;
@@ -141,6 +142,28 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
                 return codCargoInserido;
             } else {
                 throw new SQLException("Erro ao inserir cargo");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void updateCargo(@NotNull final CargoEdicao cargo,
+                            @NotNull final String userToken) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_CARGOS_EDITA_CARGO(?, ?, ?, ?);");
+            stmt.setLong(1, cargo.getCodEmpresa());
+            stmt.setLong(2, cargo.getCodigo());
+            stmt.setString(3, cargo.getNome());
+            stmt.setString(4, TokenCleaner.getOnlyToken(userToken));
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || rSet.getInt(1) <= 0) {
+                throw new SQLException("Erro ao atualizar o cargo: " + cargo.getCodigo());
             }
         } finally {
             close(conn, stmt, rSet);

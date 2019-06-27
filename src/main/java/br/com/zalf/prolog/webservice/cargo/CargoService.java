@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.cargo;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.cargo.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -96,6 +97,19 @@ public final class CargoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, errorMessage);
+        }
+    }
+
+    @NotNull
+    public Response updateCargo(final CargoEdicao cargo, final String userToken) throws ProLogException {
+        try {
+            dao.updateCargo(cargo, userToken);
+            return Response.ok("Cargo atualizado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o cargo", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o cargo, tente novamente");
         }
     }
 }

@@ -69,7 +69,10 @@ public interface CargoDao {
                                                      @NotNull final Long codCargo) throws Throwable;
 
     /**
-     * Insere um cargo
+     * Insere um {@link CargoEdicao cargo}
+     * Atualmente este método atualiza as informações baseado na seguinte lógica:
+     *
+     * Não é possível inserir um cargo já existente (não deletado logicamente por empresa)
      *
      * @param cargo      um cargo
      * @param userToken  o token do usuário que fez a requisição
@@ -77,5 +80,19 @@ public interface CargoDao {
      * @throws Throwable caso ocorra erro no banco
      */
     @NotNull
-    Long insertCargo(@NotNull final CargoInsercao cargo, @NotNull final String userToken) throws Throwable;
+    Long insertCargo(@NotNull final CargoInsercao cargo,
+                     @NotNull final String userToken) throws Throwable;
+
+    /**
+     * Atualiza as informações de um {@link CargoEdicao cargo}.
+     * Atualmente este método atualiza as informações baseado na seguinte lógica:
+     *
+     * Não é possível alterar o nome para um já existente (não deletado logicamente por empresa)
+     *
+     * @param cargo Objeto contendo as novas informações para o cargo.
+     * @param userToken  o token do usuário que fez a requisição
+     * @throws Throwable Se algum erro ocorrer no processo de atualização.
+     */
+    void updateCargo(@NotNull final CargoEdicao cargo,
+                     @NotNull final String userToken) throws Throwable;
 }
