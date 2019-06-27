@@ -126,24 +126,11 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
     @NotNull
     public Long insertCargo(@NotNull final CargoInsercao cargo,
                             @NotNull final String userToken) throws Throwable{
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
         Connection conn = null;
         try {
             conn = getConnection();
-            final Long codCargoInserido = internalInsertCargo(conn, cargo, userToken);
-            return codCargoInserido;
-        } finally {
-            close(conn);
-        }
-    }
-
-    @NotNull
-    private Long internalInsertCargo(@NotNull final Connection conn,
-                                     @NotNull final CargoInsercao cargo,
-                                     @NotNull final String userToken) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-
-        try {
             stmt = conn.prepareStatement("SELECT FUNC_CARGOS_INSERE_CARGO(?,?,?) AS CODIGO;");
             stmt.setLong(1, cargo.getCodEmpresa());
             stmt.setString(2, cargo.getNome());
@@ -156,7 +143,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
                 throw new SQLException("Erro ao inserir cargo");
             }
         } finally {
-            close(stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
