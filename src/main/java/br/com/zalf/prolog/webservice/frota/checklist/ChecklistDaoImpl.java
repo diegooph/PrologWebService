@@ -68,7 +68,6 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                                          final boolean deveAbrirOs) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         try {
             stmt = conn.prepareStatement("INSERT INTO CHECKLIST(" +
                     "  COD_UNIDADE, " +
@@ -105,6 +104,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                             .provideOrdemServicoDao()
                             .processaChecklistRealizado(conn, codUnidade, checklist);
                 }
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                 veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo(), conn);
                 return checklist.getCodigo();
             } else {
