@@ -58,6 +58,7 @@ public final class ChecklistConverter {
         checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
         checklist.setColaborador(createColaborador(rSet));
         checklist.setData(rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class));
+        checklist.setDataHoraImportadoProLog(rSet.getObject("DATA_HORA_IMPORTADO_PROLOG", LocalDateTime.class));
         checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         checklist.setTipo(rSet.getString("TIPO_CHECKLIST").charAt(0));
         checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO_MOMENTO_REALIZACAO"));

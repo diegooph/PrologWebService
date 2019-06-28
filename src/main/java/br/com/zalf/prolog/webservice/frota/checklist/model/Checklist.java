@@ -103,7 +103,7 @@ public class Checklist {
 		return dataHoraImportadoProLog;
 	}
 
-	public void setDataHoraImportadoProLog(final LocalDateTime dataHoraImportadoProLog) {
+	public void setDataHoraImportadoProLog(@Nullable final LocalDateTime dataHoraImportadoProLog) {
 		this.dataHoraImportadoProLog = dataHoraImportadoProLog;
 	}
 
