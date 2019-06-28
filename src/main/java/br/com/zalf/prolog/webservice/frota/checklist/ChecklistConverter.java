@@ -4,10 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
-import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.UnidadeSelecaoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.*;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -105,6 +102,18 @@ public final class ChecklistConverter {
         pergunta.setAlternativasResposta(alternativas);
         perguntas.add(pergunta);
         return perguntas;
+    }
+
+    @NotNull
+    static AlternativaChecklistStatus createAlternativaChecklistStatus(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new AlternativaChecklistStatus(
+                rSet.getLong("COD_ALTERNATIVA"),
+                rSet.getLong("COD_ITEM_ORDEM_SERVICO"),
+                rSet.getBoolean("TEM_ITEM_OS_PENDENTE"),
+                rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
+                rSet.getInt("QTD_APONTAMENTOS_ITEM"),
+                PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
     }
 
     @NotNull
