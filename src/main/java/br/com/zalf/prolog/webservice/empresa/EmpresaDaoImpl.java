@@ -762,7 +762,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
                     codUnidade,
                     codCargo,
                     Pilares.Frota.Checklist.REALIZAR);
-            // Primeiro deletamos qualquer função do ProLog cadastrada nesse cargo para essa unidade.
+            // Primeiro deletamos qualquer função dos pilares ativos do ProLog cadastrada nesse cargo para essa unidade.
             deleteCargoFuncaoProlog(codCargo, codUnidade, conn);
 
             stmt = conn.prepareStatement("INSERT INTO CARGO_FUNCAO_PROLOG_V11(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
@@ -830,9 +830,11 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
     private void deleteCargoFuncaoProlog(Long codCargo, Long codUnidade, Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG_V11 WHERE " +
-                "COD_UNIDADE = ? AND COD_FUNCAO_COLABORADOR = ?;");
+                "COD_UNIDADE = ? AND COD_FUNCAO_COLABORADOR = ? " +
+                "AND COD_PILAR_PROLOG IN (SELECT COD_PILAR FROM UNIDADE_PILAR_PROLOG WHERE COD_UNIDADE = ?);");
         stmt.setLong(1, codUnidade);
         stmt.setLong(2, codCargo);
+        stmt.setLong(3, codUnidade);
         stmt.executeUpdate();
         // Não precisamos verificar se o delete afetou alguma linha pois o cargo pode não ter nenhuma permissão vinculada.
     }
