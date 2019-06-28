@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuEstoque;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuTipo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 
 /**
@@ -14,10 +15,16 @@ public final class ServicoMovimentacao extends Servico {
      * fechado, ele possuirá um código de processo diferente de {@code null}.
      */
     private Long codProcessoMovimentacao;
-    private PneuComum pneuNovo;
+
+    /**
+     * Utilizamos um {@link PneuEstoque PneuEstoque} pois o App quando envia esse pneu no fechamento do serviço envia
+     * com o tipo {@link PneuTipo#PNEU_ESTOQUE estoque} já que o pneu é pré-selecionado de uma listagem de pneus em
+     * estoque.
+     */
+    private PneuEstoque pneuNovo;
     private Sulcos sulcosColetadosFechamento;
 
-    public ServicoMovimentacao(PneuComum pneuNovo) {
+    public ServicoMovimentacao(PneuEstoque pneuNovo) {
         this.pneuNovo = pneuNovo;
         setTipoServico(TipoServico.MOVIMENTACAO);
     }
@@ -26,11 +33,11 @@ public final class ServicoMovimentacao extends Servico {
         setTipoServico(TipoServico.MOVIMENTACAO);
     }
 
-    public PneuComum getPneuNovo() {
+    public PneuEstoque getPneuNovo() {
         return pneuNovo;
     }
 
-    public void setPneuNovo(PneuComum pneuNovo) {
+    public void setPneuNovo(PneuEstoque pneuNovo) {
         this.pneuNovo = pneuNovo;
     }
 

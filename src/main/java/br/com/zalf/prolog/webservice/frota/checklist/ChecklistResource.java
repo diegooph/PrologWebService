@@ -5,8 +5,9 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
@@ -24,7 +25,7 @@ import java.util.Map;
 @DebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class ChecklistResource {
+public final class ChecklistResource {
 
     private ChecklistService service = new ChecklistService();
 
@@ -133,35 +134,42 @@ public class ChecklistResource {
     }
 
     @GET
+    @Path("/novo/filtros-regionais-unidades")
+    public FiltroRegionalUnidadeChecklist getRegionaisUnidadesSelecao(
+            @QueryParam("codColaborador") @Required final Long codColaborador) {
+        return service.getRegionaisUnidadesSelecao(codColaborador);
+    }
+
+    @GET
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     @Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
     public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
             @PathParam("codUnidade") Long codUnidade,
-            @PathParam("codFuncaoColaborador") Long codFuncao,
+            @PathParam("codFuncaoColaborador") Long codCargo,
             @HeaderParam("Authorization") String userToken) {
-        return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao, userToken);
+        return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codCargo, userToken);
     }
 
     @GET
-    @Path("/novo/{codUnidade}/{codModelo}/{placa}/saida")
+    @Path("/novo/{codUnidadeModelo}/{codModelo}/{placa}/saida")
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public NovoChecklistHolder getNovoChecklistSaida(
-            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("codUnidadeModelo") Long codUnidadeModelo,
             @PathParam("codModelo") Long codModelo,
             @PathParam("placa") String placa,
             @HeaderParam("Authorization") String userToken) {
-        return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
+        return service.getNovoChecklistHolder(codUnidadeModelo, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
     }
 
     @GET
-    @Path("/novo/{codUnidade}/{codModelo}/{placa}/retorno")
+    @Path("/novo/{codUnidadeModelo}/{codModelo}/{placa}/retorno")
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public NovoChecklistHolder getNovoChecklistRetorno(
-            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("codUnidadeModelo") Long codUnidadeModelo,
             @PathParam("codModelo") Long codModelo,
             @PathParam("placa") String placa,
             @HeaderParam("Authorization") String userToken) {
-        return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_RETORNO, userToken);
+        return service.getNovoChecklistHolder(codUnidadeModelo, codModelo, placa, Checklist.TIPO_RETORNO, userToken);
     }
 
     /**

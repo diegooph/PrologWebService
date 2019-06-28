@@ -2,14 +2,12 @@ package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.DadosMarcacaoUnidade;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
+import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,6 +76,27 @@ public interface ControleJornadaDao {
                                                      @NotNull final String codTipo,
                                                      final long limit,
                                                      final long offset) throws Throwable;
+
+    /**
+     * Busca uma lista de {@link MarcacaoListagem marcações} para exibição na listagem respeitando os parâmetros de
+     * filtro informados. Marcações incompletas (sem fim ou início) também serão buscadas.
+     *
+     * @param codUnidade  Código da {@link Unidade unidade} de onde será filtrado as marcações.
+     * @param cpf         CPF do {@link Colaborador colaborador} do qual se quer buscar as marcações ou
+     *                    <code>NULL</code> para ignorar esse filtro.
+     * @param codTipo     Código do tipo de marcação do qual se quer buscar as marcações ou <code>NULL</code> para
+     *                    ignorar esse filtro.
+     * @param dataInicial Data inicial a partir da qual se quer buscar as marcações. É inclusiva.
+     * @param dataFinal   Data final até a qual se quer buscar as marcações. É inclusiva.
+     * @return Uma lista de {@link MarcacaoListagem marcações} respeitando os parâmetros de filtro.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    List<MarcacaoListagem> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
+                                                          @Nullable final Long cpf,
+                                                          @Nullable final Long codTipo,
+                                                          @NotNull final LocalDate dataInicial,
+                                                          @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método específico para validar o Token de autenticação para sincronização de marcacões de jornada.
