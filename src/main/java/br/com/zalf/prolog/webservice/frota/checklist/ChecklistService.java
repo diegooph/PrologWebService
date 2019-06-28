@@ -7,19 +7,23 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Classe ChecklistService responsável por comunicar-se com a interface DAO
  */
-public class ChecklistService {
+public final class ChecklistService {
     private static final String TAG = ChecklistService.class.getSimpleName();
     @NotNull
     private final ChecklistDao dao = Injection.provideChecklistDao();
@@ -38,40 +42,67 @@ public class ChecklistService {
         }
     }
 
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao, String userToken) {
+    @NotNull
+    public FiltroRegionalUnidadeChecklist getRegionaisUnidadesSelecao(@NotNull final Long codColaborador) {
         try {
-            return RouterChecklists
-                    .create(dao, userToken)
-                    .getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar os dados de filtro modelo e placa dos veículos", e);
-            return null;
+            return dao.getRegionaisUnidadesSelecao(codColaborador);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar o regionais e unidades para seleção\n" +
+                    "codColaborador: %d", codColaborador), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar unidades, tente novamente");
         }
     }
 
-    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade,
-                                                      Long codModelo,
-                                                      String placa,
-                                                      char tipoChecklist,
-                                                      String userToken) {
+    @NotNull
+    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codCargo,
+            @NotNull final String userToken) {
+        try {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codCargo);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar modelos de checklist e placas dos veículos\n" +
+                    "codUnidade: %d\n" +
+                    "codCargo: %d", codUnidade, codCargo), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar modelos de checklist, tente novamente");
+        }
+    }
+
+    @NotNull
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull final Long codUnidade,
+                                                      @NotNull final Long codModelo,
+                                                      @NotNull final String placa,
+                                                      final char tipoChecklist,
+                                                      @NotNull final String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
                     .getNovoChecklistHolder(codUnidade, codModelo, placa, tipoChecklist);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar o modelo de checklist", e);
-            return null;
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o NovoChecklistHolder", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao iniciar checklist, tente novamente");
         }
     }
 
-    public Checklist getByCod(Long codigo, String userToken) {
+    @NotNull
+    public Checklist getByCod(@NotNull final Long codigo, @NotNull final String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
                     .getChecklistByCodigo(codigo);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar o um checklist específico", e);
-            return null;
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar um checklist específico: " + codigo, throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar checklist, tente novamente");
         }
     }
 
@@ -129,6 +160,20 @@ public class ChecklistService {
         // TODO: Precisamos aplicar o tz do cliente
         final LocalDate hoje = ZonedDateTime.now(Clock.systemUTC()).withZoneSameInstant(ZoneId.of("America/Sao_Paulo")).toLocalDate();
         return internalGetFarolChecklist(codUnidade, hoje, hoje, itensCriticosRetroativos, userToken);
+    }
+
+    public boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) {
+        try {
+            return dao.getChecklistDiferentesUnidadesAtivoEmpresa(codEmpresa);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao verificar se empresa está bloqueada para realizar o checklist de " +
+                    "diferentes unidades", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    // Mensagem propositalmente genérica para evitar de mostrar um erro sem sentido para o usuário
+                    // quando ele tentar fazer Login, já que atualmente esse método é usado apenas no login.
+                    .map(t, "Algo deu errado, tente novamente");
+        }
     }
 
     @NotNull

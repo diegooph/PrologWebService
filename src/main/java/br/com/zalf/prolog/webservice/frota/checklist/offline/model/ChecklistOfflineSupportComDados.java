@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ChecklistOfflineSupportComDados extends ChecklistOfflineSupport {
+public final class ChecklistOfflineSupportComDados extends ChecklistOfflineSupport {
     @NotNull
     static final String COM_DADOS = "COM_DADOS";
 

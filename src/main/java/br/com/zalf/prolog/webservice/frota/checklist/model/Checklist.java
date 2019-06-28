@@ -156,10 +156,10 @@ public class Checklist {
 		this.qtdItensNok = qtdItensNok;
 	}
 
-	private void calculaQtdOkOrNok() {
+	public void calculaQtdOkOrNok() {
         int qtdNok = 0;
-        for (PerguntaRespostaChecklist resposta : listRespostas) {
-            for (AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
+        for (final PerguntaRespostaChecklist resposta : listRespostas) {
+            for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
                 if (alternativa.selected) {
                     qtdNok++;
                     break;
