@@ -151,25 +151,25 @@ public final class ChecklistResource {
     }
 
     @GET
-    @Path("/novo/{codUnidade}/{codModelo}/{placa}/saida")
+    @Path("/novo/{codUnidadeModelo}/{codModelo}/{placa}/saida")
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public NovoChecklistHolder getNovoChecklistSaida(
-            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("codUnidadeModelo") Long codUnidadeModelo,
             @PathParam("codModelo") Long codModelo,
             @PathParam("placa") String placa,
             @HeaderParam("Authorization") String userToken) {
-        return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
+        return service.getNovoChecklistHolder(codUnidadeModelo, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
     }
 
     @GET
-    @Path("/novo/{codUnidade}/{codModelo}/{placa}/retorno")
+    @Path("/novo/{codUnidadeModelo}/{codModelo}/{placa}/retorno")
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public NovoChecklistHolder getNovoChecklistRetorno(
-            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("codUnidadeModelo") Long codUnidadeModelo,
             @PathParam("codModelo") Long codModelo,
             @PathParam("placa") String placa,
             @HeaderParam("Authorization") String userToken) {
-        return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_RETORNO, userToken);
+        return service.getNovoChecklistHolder(codUnidadeModelo, codModelo, placa, Checklist.TIPO_RETORNO, userToken);
     }
 
     /**

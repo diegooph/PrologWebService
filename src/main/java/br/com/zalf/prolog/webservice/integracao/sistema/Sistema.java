@@ -152,11 +152,11 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidadeModelo,
                                                       @NotNull Long codModelo,
                                                       @NotNull String placaVeiculo,
                                                       char tipoChecklist) throws Exception {
-        return getIntegradorProLog().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
+        return getIntegradorProLog().getNovoChecklistHolder(codUnidadeModelo, codModelo, placaVeiculo, tipoChecklist);
     }
 
     @NotNull

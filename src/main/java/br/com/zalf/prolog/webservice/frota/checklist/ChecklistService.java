@@ -75,7 +75,7 @@ public final class ChecklistService {
     }
 
     @NotNull
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull final Long codUnidade,
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull final Long codUnidadeModelo,
                                                       @NotNull final Long codModelo,
                                                       @NotNull final String placa,
                                                       final char tipoChecklist,
@@ -83,7 +83,7 @@ public final class ChecklistService {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .getNovoChecklistHolder(codUnidade, codModelo, placa, tipoChecklist);
+                    .getNovoChecklistHolder(codUnidadeModelo, codModelo, placa, tipoChecklist);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o NovoChecklistHolder", throwable);
             throw Injection

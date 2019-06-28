@@ -248,14 +248,14 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidadeModelo,
                                                       @NotNull Long codModelo,
                                                       @NotNull String placaVeiculo,
                                                       char tipoChecklist) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
+            return getSistema().getNovoChecklistHolder(codUnidadeModelo, codModelo, placaVeiculo, tipoChecklist);
         } else {
-            return integradorProLog.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
+            return integradorProLog.getNovoChecklistHolder(codUnidadeModelo, codModelo, placaVeiculo, tipoChecklist);
         }
     }
 

@@ -200,7 +200,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     @NotNull
     @Override
     @Deprecated
-    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
+    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidadeModelo,
                                                         @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -233,7 +233,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                             "ORDER BY CP.ORDEM, Cp.PERGUNTA, CAP.ORDEM;",
                     ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
-            stmt.setLong(1, codUnidade);
+            stmt.setLong(1, codUnidadeModelo);
             stmt.setLong(2, codModelo);
             rSet = stmt.executeQuery();
             return createPerguntasAlternativas(rSet);

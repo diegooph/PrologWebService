@@ -387,13 +387,13 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char
+    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidadeModelo, Long codModelo, String placa, char
             tipoChecklis) throws SQLException {
         final NovoChecklistHolder holder = new NovoChecklistHolder();
         final ChecklistModeloDao checklistModeloDaoImpl = Injection.provideChecklistModeloDao();
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         holder.setCodigoModeloChecklist(codModelo);
-        holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidade, codModelo));
+        holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidadeModelo, codModelo));
         holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));
         return holder;
     }

@@ -108,14 +108,17 @@ public interface ChecklistDao {
     /**
      * busca um novo checklist de perguntas
      *
-     * @param codUnidade    código da unidade
-     * @param codModelo     código do modelo
-     * @param placa         placa do veículo
-     * @param tipoChecklist o tipo do {@link Checklist checklist} sendo realizado
+     * @param codUnidadeModelo código da unidade do modelo de checklist.
+     * @param codModelo        código do modelo
+     * @param placa            placa do veículo
+     * @param tipoChecklist    o tipo do {@link Checklist checklist} sendo realizado
      * @return retorno um novo checklist
      * @throws SQLException caso ocorrer erro no banco
      */
-    NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklist) throws SQLException;
+    NovoChecklistHolder getNovoChecklistHolder(Long codUnidadeModelo,
+                                               Long codModelo,
+                                               String placa,
+                                               char tipoChecklist) throws SQLException;
 
     /**
      * Método utilizado para buscar o {@link DeprecatedFarolChecklist} contendo todas as placas e as informações

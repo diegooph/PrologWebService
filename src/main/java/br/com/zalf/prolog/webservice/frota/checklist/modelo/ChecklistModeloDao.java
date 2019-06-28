@@ -85,13 +85,13 @@ public interface ChecklistModeloDao {
     /**
      * Busca as {@link PerguntaRespostaChecklist perguntas} que compoẽm o checklist.
      *
-     * @param codUnidade Código da {@link Unidade}.
-     * @param codModelo  Código do modelo.
-     * @return Lista de {@link PerguntaRespostaChecklist}.
-     * @throws Throwable Se ocorrer erro na execução.
+     * @param codUnidadeModelo Código da {@link Unidade unidade} do modelo.
+     * @param codModelo        Código do modelo.
+     * @return Lista de {@link PerguntaRespostaChecklist perguntas}.
+     * @throws SQLException Se ocorrer erro na execução.
      */
     @NotNull
-    List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
+    List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidadeModelo,
                                                  @NotNull final Long codModelo) throws SQLException;
 
     /**
