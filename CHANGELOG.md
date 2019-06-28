@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.97"></a>
-## Version [v0.0.97](https://github.com/luizfp/PrologWebService/compare/v0.0.96...v0.0.97) (release-date) [unreleased]
+## Version [v0.0.97](https://github.com/luizfp/PrologWebService/compare/v0.0.96...v0.0.97) (2019-06-28)
 
 ### Features
 * Cria funcionalidade de listagem de marcações otimizada, com filtro de data. (PL-2000)
