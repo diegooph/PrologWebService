@@ -6,6 +6,11 @@ Change Log
 
 ### Features
 * Cria funcionalidade de listagem de marcações otimizada, com filtro de data. (PL-2000)
+* Cria método de busca das regionais e unidades de filtro para início de checklist (PL-2085)
+
+### Refactors
+* Altera método de login para incluir se empresa está bloqueada para realizar checklist de diferentes unidades no `LoginHolder` (PL-2077)
+* Altera método de busca de um checklist por código (PL-2075)
 
 ### Bug Fixes
 * Corrige problema no fechamento de serviço de movimentação (PL-2114)
