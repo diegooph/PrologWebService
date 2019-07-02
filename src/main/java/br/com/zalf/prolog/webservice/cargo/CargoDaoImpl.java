@@ -27,7 +27,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_TODOS_CARGOS_UNIDADE(?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_TODOS_CARGOS_UNIDADE(F_COD_UNIDADE := ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             final List<CargoSelecao> cargos = new ArrayList<>();
@@ -48,7 +48,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_TODOS_CARGOS_EMPRESA(?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_TODOS_CARGOS_EMPRESA(F_COD_EMPRESA := ?);");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             final List<CargoListagemEmpresa> cargos = new ArrayList<>();
@@ -69,7 +69,9 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_CARGO(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_CARGO(" +
+                    "F_COD_EMPRESA := ?, " +
+                    "F_COD_CARGO := ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codigo);
             rSet = stmt.executeQuery();
@@ -93,7 +95,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_CARGOS_EM_USO(?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_CARGOS_EM_USO(F_COD_UNIDADE := ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             final List<CargoEmUso> cargos = new ArrayList<>();
@@ -114,7 +116,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_CARGOS_NAO_UTILIZADOS(?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_CARGOS_NAO_UTILIZADOS(F_COD_UNIDADE := ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             final List<CargoNaoUtilizado> cargos = new ArrayList<>();
@@ -136,12 +138,13 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_PERMISSOES_DETALHADAS(F_COD_UNIDADE := ?, " +
-                    "F_COD_CARGO := ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_PERMISSOES_DETALHADAS(" +
+                    "F_COD_UNIDADE := ?, " +
+                    "F_COD_CARGO   := ?);");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codCargo);
             rSet = stmt.executeQuery();
-            return createCargoVisualizacao(rSet);
+            return CargoConverter.createCargoVisualizacao(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -156,14 +159,16 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         Connection conn = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_CARGOS_INSERE_CARGO(?,?,?) AS CODIGO;");
+            stmt = conn.prepareStatement("SELECT FUNC_CARGOS_INSERE_CARGO(" +
+                    "F_COD_EMPRESA := ?," +
+                    "F_NOME_CARGO  := ?," +
+                    "F_TOKEN       := ?) AS CODIGO;");
             stmt.setLong(1, cargo.getCodEmpresa());
             stmt.setString(2, cargo.getNome());
             stmt.setString(3, TokenCleaner.getOnlyToken(userToken));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Long codCargoInserido = rSet.getLong("CODIGO");
-                return codCargoInserido;
+                return rSet.getLong("CODIGO");
             } else {
                 throw new SQLException("Erro ao inserir cargo");
             }
@@ -180,7 +185,11 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_CARGOS_EDITA_CARGO(?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT FUNC_CARGOS_EDITA_CARGO(" +
+                    "F_COD_EMPRESA := ?, " +
+                    "F_COD_CARGO   := ?, " +
+                    "F_NOME_CARGO  := ?, " +
+                    "F_TOKEN       := ?);");
             stmt.setLong(1, cargo.getCodEmpresa());
             stmt.setLong(2, cargo.getCodigo());
             stmt.setString(3, cargo.getNome());
@@ -203,7 +212,10 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_CARGOS_DELETA_CARGO(?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT FUNC_CARGOS_DELETA_CARGO(" +
+                    "F_COD_EMPRESA := ?, " +
+                    "F_COD_CARGO   := ?, " +
+                    "F_TOKEN       := ?);");
             stmt.setLong(1,codEmpresa);
             stmt.setLong(2, codigo);
             stmt.setString(3, TokenCleaner.getOnlyToken(userToken));
@@ -214,51 +226,5 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         } finally {
             close(conn, stmt, rSet);
         }
-    }
-
-    @NotNull
-    private CargoVisualizacao createCargoVisualizacao(@NotNull final ResultSet rSet) throws SQLException {
-        final List<CargoPilarProLog> pilares = new ArrayList<>();
-        List<CargoFuncionalidadeProLog> funcionalidades = new ArrayList<>();
-        List<CargoPermissaoProLog> permissoes = new ArrayList<>();
-        CargoPilarProLog pilar = null;
-        CargoFuncionalidadeProLog funcionalidade = null;
-        CargoVisualizacao cargoVisualizacao;
-        if (rSet.next()) {
-            cargoVisualizacao = CargoConverter.createCargoVisualizacao(rSet, pilares);
-            do {
-                if (pilar == null) {
-                    pilar = CargoConverter.createPilarDetalhado(rSet, funcionalidades);
-                    funcionalidade = CargoConverter.createFuncionalidadeProLog(rSet, permissoes);
-                    permissoes.add(CargoConverter.createPermissaoDetalhadaProLog(rSet));
-                } else {
-                    if (rSet.getInt("COD_PILAR") == pilar.getCodigo()) {
-                        if (rSet.getInt("COD_FUNCIONALIDADE") == funcionalidade.getCodigo()) {
-                            permissoes.add(CargoConverter.createPermissaoDetalhadaProLog(rSet));
-                        } else {
-                            funcionalidades.add(funcionalidade);
-                            permissoes = new ArrayList<>();
-                            permissoes.add(CargoConverter.createPermissaoDetalhadaProLog(rSet));
-                            funcionalidade = CargoConverter.createFuncionalidadeProLog(rSet, permissoes);
-                        }
-                    } else {
-                        funcionalidades.add(funcionalidade);
-                        pilares.add(pilar);
-                        permissoes = new ArrayList<>();
-                        permissoes.add(CargoConverter.createPermissaoDetalhadaProLog(rSet));
-                        funcionalidades = new ArrayList<>();
-                        funcionalidade = CargoConverter.createFuncionalidadeProLog(rSet, permissoes);
-                        pilar = CargoConverter.createPilarDetalhado(rSet, funcionalidades);
-                    }
-                }
-            } while (rSet.next());
-
-            funcionalidades.add(funcionalidade);
-            pilares.add(pilar);
-        } else {
-            throw new IllegalStateException("Nenhum dado de permissão encontrado para o cargo buscado");
-        }
-
-        return cargoVisualizacao;
     }
 }

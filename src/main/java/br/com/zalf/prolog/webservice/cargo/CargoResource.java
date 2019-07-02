@@ -25,6 +25,26 @@ public final class CargoResource {
     @NotNull
     private final CargoService service = new CargoService();
 
+    @POST
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    public AbstractResponse insertCargo(@Required CargoInsercao cargo,
+                                        @HeaderParam("Authorization") @Required final String userToken){
+        return service.insertCargo(cargo, userToken);
+    }
+
+    @PUT
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    public Response updateCargo(@Required final CargoEdicao cargo,
+                                @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
+        return service.updateCargo(cargo, userToken);
+    }
+
     /**
      * Esse método não verifica nenhuma permissão. Isso porque ele poderá ser utilizado em diversas telas como
      * parâmetro para filtragem e pré-requisito de seleção em algum processo, como a criação de um modelo de checklist.
@@ -61,20 +81,6 @@ public final class CargoResource {
             Pilares.Gente.Colaborador.VISUALIZAR,
             Pilares.Gente.Colaborador.CADASTRAR,
             Pilares.Gente.Colaborador.EDITAR})
-    @Path("/editar")
-    public CargoEdicao getByCod(
-            @QueryParam("codEmpresa") @Required final Long codEmpresa,
-            @QueryParam("codigo") @Required final Long codigo) throws ProLogException {
-        return service.getByCod(codEmpresa, codigo);
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Gente.Permissao.VINCULAR_CARGO,
-            Pilares.Gente.Permissao.VISUALIZAR,
-            Pilares.Gente.Colaborador.VISUALIZAR,
-            Pilares.Gente.Colaborador.CADASTRAR,
-            Pilares.Gente.Colaborador.EDITAR})
     @Path("/em-uso")
     public List<CargoEmUso> getCargosEmUsoUnidade(
             @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
@@ -103,23 +109,25 @@ public final class CargoResource {
         return service.getPermissoesDetalhadasUnidade(codUnidade, codCargo);
     }
 
-    @POST
-    @Secured(permissions = Pilares.Gente.Permissao.VINCULAR_CARGO)
-    @Path("/inserir")
-    public AbstractResponse insertCargo(@Required CargoInsercao cargo, @HeaderParam("Authorization") @Required final String userToken){
-        return service.insertCargo(cargo, userToken);
-    }
-
-    @PUT
-    @Secured(permissions = {Pilares.Gente.Permissao.VINCULAR_CARGO})
-    @Path("/editar")
-    public Response updateCargo(@Required final CargoEdicao cargo, @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
-        return service.updateCargo(cargo, userToken);
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Permissao.VISUALIZAR,
+            Pilares.Gente.Colaborador.VISUALIZAR,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    public CargoEdicao getByCod(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa,
+            @QueryParam("codigo") @Required final Long codigo) throws ProLogException {
+        return service.getByCod(codEmpresa, codigo);
     }
 
     @DELETE
-    @Secured(permissions = {Pilares.Gente.Permissao.VINCULAR_CARGO})
-    @Path("/deletar/{codEmpresa}/{codigo}")
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    @Path("/{codEmpresa}/{codigo}")
     public Response deleteCargo(@PathParam("codEmpresa") @Required final Long codEmpresa,
                                 @PathParam("codigo") @Required final Long codigo,
                                 @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {

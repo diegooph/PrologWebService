@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public class CargoEdicao {
+public final class CargoEdicao {
     @NotNull
     private final Long codEmpresa;
     @NotNull
@@ -17,7 +17,7 @@ public class CargoEdicao {
 
     public CargoEdicao(@NotNull final Long codEmpresa,
                        @NotNull final Long codigo,
-                        @NotNull final String nome) {
+                       @NotNull final String nome) {
         this.codEmpresa = codEmpresa;
         this.codigo = codigo;
         this.nome = nome;

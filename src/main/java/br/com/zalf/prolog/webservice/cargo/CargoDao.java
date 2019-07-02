@@ -17,7 +17,7 @@ public interface CargoDao {
      *
      * @param codUnidade Código da Unidade a qual os cargos serão buscados.
      * @return Uma lista com todos os {@link CargoSelecao cargos} da unidade.
-     * @throws Throwable Caso ocorra qualquer na busca dos dados.
+     * @throws Throwable Caso ocorra qualquer erro na busca dos dados.
      */
     @NotNull
     List<CargoSelecao> getTodosCargosUnidade(@NotNull final Long codUnidade) throws Throwable;
@@ -27,7 +27,7 @@ public interface CargoDao {
      *
      * @param codEmpresa Código da Empresa a qual os cargos serão buscados.
      * @return Uma lista com todos os {@link CargoListagemEmpresa cargos} da unidade.
-     * @throws Throwable Caso ocorra qualquer na busca dos dados.
+     * @throws Throwable Caso ocorra qualquer erro na busca dos dados.
      */
     @NotNull
     List<CargoListagemEmpresa> getTodosCargosEmpresa(@NotNull final Long codEmpresa) throws Throwable;
@@ -35,13 +35,14 @@ public interface CargoDao {
     /**
      * Este método é utilizado para buscar um {@link CargoEdicao cargo} específico.
      *
-     * @param codEmpresa Código da Empresa a qual os cargos serão buscados.
-     * @param codigo Código do cargo.
+     * @param codEmpresa Código da Empresa a qual o cargo buscado pertence.
+     * @param codigo     Código do cargo.
      * @return O object do {@link CargoEdicao cargo} encontrado
-     * @throws Throwable Caso ocorra qualquer na busca dos dados.
+     * @throws Throwable Caso ocorra qualquer erro na busca dos dados.
      */
-    @NotNull CargoEdicao getByCod(@NotNull final Long codEmpresa,
-                                  @NotNull final Long codigo) throws Throwable;
+    @NotNull
+    CargoEdicao getByCod(@NotNull final Long codEmpresa,
+                         @NotNull final Long codigo) throws Throwable;
 
     /**
      * Busca os cargos que estão em uso na unidade informada como parâmetro. Entende-se um cargo como <b>em uso</b>,
@@ -82,13 +83,14 @@ public interface CargoDao {
     /**
      * Insere um {@link CargoEdicao cargo}
      * Atualmente este método atualiza as informações baseado na seguinte lógica:
+     * <p>
+     * Não é possível inserir um cargo já existente (não deletado logicamente por empresa).
+     * A detecção de nomes já existentes é case-insensitive.
      *
-     * Não é possível inserir um cargo já existente (não deletado logicamente por empresa)
-     *
-     * @param cargo      um cargo
-     * @param userToken  o token do usuário que fez a requisição
-     * @return código do cargo recém cadastrado
-     * @throws Throwable caso ocorra erro no banco
+     * @param cargo     um cargo.
+     * @param userToken o token do usuário que fez a requisição.
+     * @return código do cargo recém cadastrado.
+     * @throws Throwable Caso qualquer erro aconteça.
      */
     @NotNull
     Long insertCargo(@NotNull final CargoInsercao cargo,
@@ -97,25 +99,27 @@ public interface CargoDao {
     /**
      * Atualiza as informações de um {@link CargoEdicao cargo}.
      * Atualmente este método atualiza as informações baseado na seguinte lógica:
+     * <p>
+     * Não é possível alterar o nome para um já existente (não deletado logicamente por empresa).
+     * A detecção de nomes já existentes é case-insensitive.
      *
-     * Não é possível alterar o nome para um já existente (não deletado logicamente por empresa)
-     *
-     * @param cargo Objeto contendo as novas informações para o cargo.
-     * @param userToken  o token do usuário que fez a requisição
-     * @throws Throwable Se algum erro ocorrer no processo de atualização.
+     * @param cargo     Objeto contendo as novas informações para o cargo.
+     * @param userToken o token do usuário que fez a requisição.
+     * @throws Throwable Caso qualquer erro aconteça.
      */
     void updateCargo(@NotNull final CargoEdicao cargo,
                      @NotNull final String userToken) throws Throwable;
 
     /**
-     * Delete logicamente um {@link CargoEdicao cargo}.
+     * Deleta logicamente um cargo.
      * Atualmente este método é baseado na seguinte lógica:
+     * <p>
+     * Não é possível deletar logicamente caso o cargo tenha colaboradores vinculados.
      *
-     * Não é possível deletar logicamente caso o cargo tenha colaboradores vinculados
-     *
-     * @param cargo Objeto contendo as novas informações para o cargo.
-     * @param userToken  o token do usuário que fez a requisição
-     * @throws Throwable Se algum erro ocorrer no processo de atualização.
+     * @param codEmpresa Código da empresa que o cargo que será deletado pertence.
+     * @param codigo     Código do cargo que será deletado.
+     * @param userToken  o token do usuário que fez a requisição.
+     * @throws Throwable Caso qualquer erro aconteça.
      */
     void deleteCargo(@NotNull final Long codEmpresa,
                      @NotNull final Long codigo,

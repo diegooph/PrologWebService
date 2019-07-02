@@ -105,12 +105,11 @@ public final class CargoService {
     public AbstractResponse insertCargo(CargoInsercao cargo, final String userToken) throws ProLogException{
         try{
             return ResponseWithCod.ok("Cargo inserido com sucesso", dao.insertCargo(cargo, userToken));
-        } catch (Throwable e){
-            final String errorMessage = "Erro ao inserir o cargo";
+        } catch (final Throwable e){
             Log.e(TAG, "Erro ao inserir cargo para a empresa: " + cargo.getCodEmpresa(), e);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(e, errorMessage);
+                    .map(e, "Erro ao inserir o cargo");
         }
     }
 
