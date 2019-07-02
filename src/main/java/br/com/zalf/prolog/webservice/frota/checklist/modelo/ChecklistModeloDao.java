@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.M
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -45,7 +46,7 @@ public interface ChecklistModeloDao {
     @NotNull
     List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
             @NotNull final Long codUnidade,
-            @NotNull final String codCargo) throws Throwable;
+            @Nullable final String codCargo) throws Throwable;
 
     /**
      * Busca um {@link ModeloChecklistVisualizacao modelo de checklist} através do
