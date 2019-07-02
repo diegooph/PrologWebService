@@ -26,7 +26,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_TODOS_CARGOS(?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CARGOS_GET_TODOS_CARGOS_UNIDADE(?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             final List<CargoSelecao> cargos = new ArrayList<>();
