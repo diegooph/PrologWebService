@@ -1,3 +1,8 @@
+Stage
+==========
+### Refactors
+* Corrige a listagem e edição dos modelos de checklist para exibir modelos sem cargos vinculados (PL-2037)
+
 Change Log
 ==========
 
