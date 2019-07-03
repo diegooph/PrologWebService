@@ -1,15 +1,11 @@
-Stage
-==========
-
-### Refactors
-* Corrige visão e edição de permissões para considerar apenas os pilares ativos por unidade (PL-2038)
-
 Change Log
 ==========
 
 <a name="v0.0.98"></a>
 ## Version [v0.0.98](https://github.com/luizfp/PrologWebService/compare/v0.0.97...v0.0.98) (release-date) [unreleased]
 
+### Refactors
+* Corrige visão e edição de permissões para considerar apenas os pilares ativos por unidade (PL-2038)
 
 
 <a name="v0.0.97"></a>
