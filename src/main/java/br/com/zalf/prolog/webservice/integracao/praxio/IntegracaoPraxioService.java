@@ -7,6 +7,8 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoEdicaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemOSAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
@@ -27,6 +29,48 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     private static final String TAG = IntegracaoPraxioService.class.getSimpleName();
     @NotNull
     private final IntegracaoPraxioDao dao = new IntegracaoPraxioDaoImpl();
+
+    @NotNull
+    SuccessResponseIntegracao inserirVeiculoCadastroPraxioDummy(
+            final String tokenIntegracao,
+            final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+                throw new GenericException("O Token fornecido é inválido");
+            }
+            validateVeiculoCadastro(veiculoCadastroPraxio);
+            return new SuccessResponseIntegracao("Veículo do Globus inserido no ProLog com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir o veículo do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir o veículo do Globus no ProLog");
+        }
+    }
+
+    @NotNull
+    SuccessResponseIntegracao atualizarVeiculoPraxio(
+            final String tokenIntegracao,
+            final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+                throw new GenericException("O Token fornecido é inválido");
+            }
+            validateVeiculoEdicao(veiculoEdicaoPraxio);
+            return new SuccessResponseIntegracao("Veículo do Globus atualizado no ProLog com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o veículo do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o veículo do Globus no ProLog");
+        }
+    }
 
     @NotNull
     public List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(final String tokenIntegracao,
@@ -149,6 +193,39 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao resolver os itens no ProLog");
+        }
+    }
+
+    private void validateVeiculoCadastro(
+            @NotNull final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
+        if (veiculoCadastroPraxio.getCodUnidadeAlocado() <= 0) {
+            throw new GenericException("A propriedade 'codUnidadeAlocado' deve ser um número positivo");
+        }
+        if (veiculoCadastroPraxio.getPlacaVeiculo().isEmpty()
+                || veiculoCadastroPraxio.getPlacaVeiculo().length() > 7) {
+            throw new GenericException(
+                    "A propriedade 'placaVeiculo' não pode ser vazia nem conter mais que 7 caracteres");
+        }
+        if (veiculoCadastroPraxio.getKmAtualVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'kmAtualVeiculo' deve ser um número positivo maior que zero");
+        }
+        if (veiculoCadastroPraxio.getCodModeloVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'codModeloVeiculo' deve ser um número positivo");
+        }
+        if (veiculoCadastroPraxio.getCodTipoVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'codTipoVeiculo' deve ser um número positivo");
+        }
+    }
+
+    private void validateVeiculoEdicao(@NotNull final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
+        if (veiculoEdicaoPraxio.getKmAtualVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'kmAtualVeiculo' deve ser um número positivo maior que zero");
+        }
+        if (veiculoEdicaoPraxio.getCodModeloVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'codModeloVeiculo' deve ser um número positivo");
+        }
+        if (veiculoEdicaoPraxio.getCodTipoVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'codTipoVeiculo' deve ser um número positivo");
         }
     }
 
