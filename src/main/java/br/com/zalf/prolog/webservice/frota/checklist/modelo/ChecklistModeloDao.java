@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.M
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -45,7 +46,7 @@ public interface ChecklistModeloDao {
     @NotNull
     List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
             @NotNull final Long codUnidade,
-            @NotNull final String codCargo) throws Throwable;
+            @Nullable final String codCargo) throws Throwable;
 
     /**
      * Busca um {@link ModeloChecklistVisualizacao modelo de checklist} através do
@@ -85,13 +86,13 @@ public interface ChecklistModeloDao {
     /**
      * Busca as {@link PerguntaRespostaChecklist perguntas} que compoẽm o checklist.
      *
-     * @param codUnidade Código da {@link Unidade}.
-     * @param codModelo  Código do modelo.
-     * @return Lista de {@link PerguntaRespostaChecklist}.
-     * @throws Throwable Se ocorrer erro na execução.
+     * @param codUnidadeModelo Código da {@link Unidade unidade} do modelo.
+     * @param codModelo        Código do modelo.
+     * @return Lista de {@link PerguntaRespostaChecklist perguntas}.
+     * @throws SQLException Se ocorrer erro na execução.
      */
     @NotNull
-    List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
+    List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidadeModelo,
                                                  @NotNull final Long codModelo) throws SQLException;
 
     /**

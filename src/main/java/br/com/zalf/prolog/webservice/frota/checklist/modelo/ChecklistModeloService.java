@@ -21,6 +21,7 @@ import br.com.zalf.prolog.webservice.integracao.router.RouterModeloChecklist;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 import java.util.List;
@@ -52,7 +53,7 @@ public final class ChecklistModeloService {
     @NotNull
     List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodCargo(
             @NotNull final Long codUnidade,
-            @NotNull final String codCargo) throws ProLogException {
+            @Nullable final String codCargo) throws ProLogException {
         try {
             return dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, codCargo);
         } catch (final Throwable t) {

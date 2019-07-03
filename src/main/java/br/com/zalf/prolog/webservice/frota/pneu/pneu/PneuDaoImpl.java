@@ -193,7 +193,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean update(Pneu pneu, Long codUnidade, Long codOriginalPneu) throws SQLException {
+    public void update(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final Long codOriginalPneu) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
@@ -225,13 +227,14 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar as informações do pneu: " + pneu.getCodigo());
             }
             conn.commit();
-        } catch (SQLException e) {
-            conn.rollback();
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
             throw e;
         } finally {
             close(conn, stmt);
         }
-        return true;
     }
 
     @Override

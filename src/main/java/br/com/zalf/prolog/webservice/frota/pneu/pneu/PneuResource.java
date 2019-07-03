@@ -55,11 +55,8 @@ public class PneuResource {
     public Response update(Pneu pneu,
                            @PathParam("codUnidade") Long codUnidade,
                            @PathParam("codPneuOriginal") Long codOriginalPneu) {
-        if (service.update(pneu, codUnidade, codOriginalPneu)) {
-            return Response.ok("Pneu atualizado com sucesso.");
-        } else {
-            return Response.error("Erro ao atualizar o pneu.");
-        }
+        service.update(pneu, codUnidade, codOriginalPneu);
+        return Response.ok("Pneu atualizado com sucesso");
     }
 
     @POST

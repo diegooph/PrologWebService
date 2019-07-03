@@ -51,7 +51,7 @@ public final class ChecklistModeloResource {
     @Path("/{codUnidade}")
     public List<ModeloChecklistListagem> getModelosChecklistByCodUnidade(
             @PathParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
-        return service.getModelosChecklistListagemByCodUnidadeByCodCargo(codUnidade, "%");
+        return service.getModelosChecklistListagemByCodUnidadeByCodCargo(codUnidade, null);
     }
 
     @GET
