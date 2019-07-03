@@ -51,12 +51,15 @@ public class PneuService {
         }
     }
 
-    public boolean update(Pneu pneu, Long codUnidade, Long codOriginal) {
+    public void update(@NotNull final Pneu pneu, @NotNull final  Long codUnidade, @NotNull final  Long codOriginal) {
         try {
-            return dao.update(pneu, codUnidade, codOriginal);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao atualizar pneu com código: " + codOriginal + " da unidade: " + codUnidade, e);
-            return false;
+            dao.update(pneu, codUnidade, codOriginal);
+        } catch (final Throwable throwable) {
+            final String errorMessage = "Erro ao atualizar pneu: " + codOriginal;
+            Log.e(TAG, errorMessage, throwable);
+            throw Injection
+                    .providePneuExceptionHandler()
+                    .map(throwable, errorMessage);
         }
     }
 

@@ -24,7 +24,7 @@ import java.util.Map;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Deprecated
-public class DEPRECATED_CHECKLIST_RESOURCE {
+public final class DEPRECATED_CHECKLIST_RESOURCE {
 
 	private ChecklistService service = new ChecklistService();
 

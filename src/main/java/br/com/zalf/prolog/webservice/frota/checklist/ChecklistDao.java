@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import org.jetbrains.annotations.NotNull;
@@ -47,14 +48,15 @@ public interface ChecklistDao {
     Long insert(Checklist checklist) throws SQLException;
 
     /**
-     * Busca um checklist pelo seu código único
+     * Busca um checklist pelo seu código único.
      *
-     * @param codChecklist codigo do checklist a ser buscado
-     * @param userToken    token do usuário que está realizando a busca
+     * @param codChecklist codigo do checklist a ser buscado.
+     * @param userToken    token do usuário que está realizando a busca.
      * @return um checklist
-     * @throws SQLException caso não consiga buscar o checklist no banco de dados
+     * @throws SQLException caso não consiga buscar o checklist no banco de dados.
      */
-    Checklist getByCod(Long codChecklist, String userToken) throws SQLException;
+    @NotNull
+    Checklist getByCod(@NotNull final Long codChecklist, @NotNull final String userToken) throws SQLException;
 
     /**
      * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
@@ -87,20 +89,36 @@ public interface ChecklistDao {
                                      final boolean resumido) throws SQLException;
 
     /**
+     * Busca as regionais e unidades que o colaborador de código fornecido tem acesso. Isso é verificado com base na
+     * permissão do colaborador (nível de acesso à informação).
+     *
+     * @param codColaborador Código do colaborador para o qual serão buscadas as regionais e unidades que tem acesso.
+     * @return Objeto contendo as regionais e unidades que o colaborador tem acesso.
+     * @throws Throwable Caso ocorrer algum erro na busca dos dados.
+     */
+    @NotNull
+    FiltroRegionalUnidadeChecklist getRegionaisUnidadesSelecao(@NotNull final Long codColaborador) throws Throwable;
+
+    //TODO - adicionar comentário javadoc
+    @NotNull
+    Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codFuncao) throws SQLException;
+
+    /**
      * busca um novo checklist de perguntas
      *
-     * @param codUnidade    código da unidade
-     * @param codModelo     código do modelo
-     * @param placa         placa do veículo
-     * @param tipoChecklist o tipo do {@link Checklist checklist} sendo realizado
+     * @param codUnidadeModelo código da unidade do modelo de checklist.
+     * @param codModelo        código do modelo
+     * @param placa            placa do veículo
+     * @param tipoChecklist    o tipo do {@link Checklist checklist} sendo realizado
      * @return retorno um novo checklist
      * @throws SQLException caso ocorrer erro no banco
      */
-    NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklist) throws SQLException;
-
-    //TODO - adicionar comentário javadoc
-    Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao) throws SQLException;
-
+    NovoChecklistHolder getNovoChecklistHolder(Long codUnidadeModelo,
+                                               Long codModelo,
+                                               String placa,
+                                               char tipoChecklist) throws SQLException;
 
     /**
      * Método utilizado para buscar o {@link DeprecatedFarolChecklist} contendo todas as placas e as informações
@@ -122,8 +140,19 @@ public interface ChecklistDao {
                                                @NotNull final LocalDate dataFinal,
                                                final boolean itensCriticosRetroativos) throws Throwable;
 
+    /**
+     * Método utilizado para identificar se os colaboradores da empresa estão liberadps para realizar o checklist de
+     * diferentes unidades.
+     *
+     * @param codEmpresa Código da empresa que será verificado se está liberado.
+     * @return <code>TRUE</code> se os colaboradores da empresa estão aptos a realizar o checklist de diferentes
+     * unidades, <code>FALSE</code> caso contrário.
+     * @throws Throwable Caso ocorrer algum erro na busca dos dados.
+     */
+    boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;
+
     @NotNull
     Map<Long, AlternativaChecklistStatus> getItensStatus(@NotNull final Connection conn,
-                                                    @NotNull final Long codModelo,
-                                                    @NotNull final String placaVeiculo) throws Throwable;
+                                                         @NotNull final Long codModelo,
+                                                         @NotNull final String placaVeiculo) throws Throwable;
 }
