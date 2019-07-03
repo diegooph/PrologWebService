@@ -218,13 +218,13 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     }
 
     private void validateVeiculoEdicao(@NotNull final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
-        if (veiculoEdicaoPraxio.getKmAtualVeiculo() <= 0) {
+        if (veiculoEdicaoPraxio.getNovoKmAtualVeiculo() <= 0) {
             throw new GenericException("A propriedade 'kmAtualVeiculo' deve ser um número positivo maior que zero");
         }
         if (veiculoEdicaoPraxio.getCodModeloVeiculo() <= 0) {
             throw new GenericException("A propriedade 'codModeloVeiculo' deve ser um número positivo");
         }
-        if (veiculoEdicaoPraxio.getCodTipoVeiculo() <= 0) {
+        if (veiculoEdicaoPraxio.getNovoCodTipoVeiculo() <= 0) {
             throw new GenericException("A propriedade 'codTipoVeiculo' deve ser um número positivo");
         }
     }

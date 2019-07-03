@@ -13,22 +13,22 @@ public final class VeiculoEdicaoPraxio {
     @NotNull
     private final String placaVeiculo;
     @NotNull
-    private final Long kmAtualVeiculo;
+    private final Long novoKmAtualVeiculo;
     @NotNull
-    private final Long codModeloVeiculo;
+    private final Long novoCodModeloVeiculo;
     @NotNull
-    private final Long codTipoVeiculo;
+    private final Long novoCodTipoVeiculo;
 
     public VeiculoEdicaoPraxio(@NotNull final Long codUnidadeAlocado,
                                @NotNull final String placaVeiculo,
-                               @NotNull final Long kmAtualVeiculo,
-                               @NotNull final Long codModeloVeiculo,
-                               @NotNull final Long codTipoVeiculo) {
+                               @NotNull final Long novoKmAtualVeiculo,
+                               @NotNull final Long novoCodModeloVeiculo,
+                               @NotNull final Long novoCodTipoVeiculo) {
         this.codUnidadeAlocado = codUnidadeAlocado;
         this.placaVeiculo = placaVeiculo;
-        this.kmAtualVeiculo = kmAtualVeiculo;
-        this.codModeloVeiculo = codModeloVeiculo;
-        this.codTipoVeiculo = codTipoVeiculo;
+        this.novoKmAtualVeiculo = novoKmAtualVeiculo;
+        this.novoCodModeloVeiculo = novoCodModeloVeiculo;
+        this.novoCodTipoVeiculo = novoCodTipoVeiculo;
     }
 
     @NotNull
@@ -42,17 +42,17 @@ public final class VeiculoEdicaoPraxio {
     }
 
     @NotNull
-    public Long getKmAtualVeiculo() {
-        return kmAtualVeiculo;
+    public Long getNovoKmAtualVeiculo() {
+        return novoKmAtualVeiculo;
     }
 
     @NotNull
     public Long getCodModeloVeiculo() {
-        return codModeloVeiculo;
+        return novoCodModeloVeiculo;
     }
 
     @NotNull
-    public Long getCodTipoVeiculo() {
-        return codTipoVeiculo;
+    public Long getNovoCodTipoVeiculo() {
+        return novoCodTipoVeiculo;
     }
 }

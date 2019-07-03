@@ -61,7 +61,7 @@ public final class IntegracaoPraxioResource {
     @LogIntegracaoRequest
     @Path("/veiculo/ativar-desativar/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
-    public SuccessResponseIntegracao atualizarVeiculoPraxio(
+    public SuccessResponseIntegracao ativarDesativarVeiculoPraxio(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("placaVeiculo") @Required final String placaVeiculo,
             @QueryParam("veiculoAtivo") @Required final Boolean veiculoAtivo) throws ProLogException {
