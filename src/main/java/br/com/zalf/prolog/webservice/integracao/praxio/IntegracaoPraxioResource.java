@@ -47,7 +47,7 @@ public final class IntegracaoPraxioResource {
         return service.inserirVeiculoCadastroPraxioDummy(tokenIntegracao, veiculoCadastroPraxio);
     }
 
-    @POST
+    @PUT
     @LogIntegracaoRequest
     @Path("/veiculo/edição/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
