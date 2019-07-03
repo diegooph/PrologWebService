@@ -1,3 +1,9 @@
+Stage
+==========
+
+### Refactors
+* Corrige visão e edição de permissões para considerar apenas os pilares ativos por unidade (PL-2038)
+
 Change Log
 ==========
 
