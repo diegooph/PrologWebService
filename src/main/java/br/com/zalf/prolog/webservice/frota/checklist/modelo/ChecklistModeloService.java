@@ -21,7 +21,6 @@ import br.com.zalf.prolog.webservice.integracao.router.RouterModeloChecklist;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 import java.util.List;
@@ -51,13 +50,12 @@ public final class ChecklistModeloService {
     }
 
     @NotNull
-    List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodCargo(
-            @NotNull final Long codUnidade,
-            @Nullable final String codCargo) throws ProLogException {
+    List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidade(@NotNull final Long codUnidade)
+            throws ProLogException {
         try {
-            return dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, codCargo);
+            return dao.getModelosChecklistListagemByCodUnidade(codUnidade);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar os modelos de checklist para o cargo " + codCargo, t);
+            Log.e(TAG, "Erro ao buscar os modelos de checklist para a unidade " + codUnidade, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar modelos de checklist, tente novamente");

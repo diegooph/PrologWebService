@@ -119,18 +119,17 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
-    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
-            @NotNull final Long codUnidade,
-            @Nullable final String codCargo) throws Throwable {
+    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidade(@NotNull final Long codUnidade)
+            throws Throwable {
         final List<ModeloChecklistListagem> modelosChecklistListagem = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_LISTAGEM_MODELOS_CHECKLIST(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_LISTAGEM_MODELOS_CHECKLIST(" +
+                    "F_COD_UNIDADE := ?);");
             stmt.setLong(1, codUnidade);
-            stmt.setString(2, codCargo);
             rSet = stmt.executeQuery();
             Set<String> setCargos = new HashSet<>();
             Set<String> setTiposVeiculos = new HashSet<>();

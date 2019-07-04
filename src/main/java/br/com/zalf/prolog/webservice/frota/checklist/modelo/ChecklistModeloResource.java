@@ -51,20 +51,7 @@ public final class ChecklistModeloResource {
     @Path("/{codUnidade}")
     public List<ModeloChecklistListagem> getModelosChecklistByCodUnidade(
             @PathParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
-        return service.getModelosChecklistListagemByCodUnidadeByCodCargo(codUnidade, null);
-    }
-
-    @GET
-    @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = {
-            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
-            Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    @Path("/{codUnidade}/cargos/{codCargo}")
-    public List<ModeloChecklistListagem> getModelosChecklistByCodUnidadeByCodCargo(
-            @PathParam("codUnidade") @Required final Long codUnidade,
-            @PathParam("codCargo") @Required final String codFuncao) throws ProLogException {
-        return service.getModelosChecklistListagemByCodUnidadeByCodCargo(codUnidade, codFuncao);
+        return service.getModelosChecklistListagemByCodUnidade(codUnidade);
     }
 
     @GET
