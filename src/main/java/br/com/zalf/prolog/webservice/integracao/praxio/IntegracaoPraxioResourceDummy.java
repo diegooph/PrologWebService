@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
@@ -21,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
- * Created on 12/12/18.
+ * Created on 04/07/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
@@ -29,48 +30,44 @@ import java.util.List;
 @Path("/integracoes/praxio")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class IntegracaoPraxioResource {
+public final class IntegracaoPraxioResourceDummy {
     @NotNull
     private final IntegracaoPraxioService service = new IntegracaoPraxioService();
 
-////----------------------------------------------------------------------------------------------------------------////
-////-------------------------- VALIDAÇÃO DE TOKEN PARA A INTEGRÇÃO -------------------------------------------------////
-////----------------------------------------------------------------------------------------------------------------////
-
     @GET
     @LogIntegracaoRequest
-    @Path("/validate-token")
+    @Path("/validate-token/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao validateTokenIntegracao(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao)
             throws ProLogException {
-        return service.validateTokenIntegracao(tokenIntegracao);
+        if (tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+            return new SuccessResponseIntegracao("Token validado com sucesso!");
+        } else {
+            throw new GenericException("Token inválido!");
+        }
     }
-
-////----------------------------------------------------------------------------------------------------------------////
-////-------------------------- INTEGRAÇÃO DE CADASTRO DE VEÍCULOS --------------------------------------------------////
-////----------------------------------------------------------------------------------------------------------------////
 
     @POST
     @LogIntegracaoRequest
-    @Path("/veiculo/cadastro")
+    @Path("/veiculo/cadastro/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao inserirVeiculoPraxio(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
-        return service.inserirVeiculoPraxio(tokenIntegracao, veiculoCadastroPraxio);
+        return service.inserirVeiculoCadastroPraxioDummy(tokenIntegracao, veiculoCadastroPraxio);
     }
 
     @PUT
     @LogIntegracaoRequest
-    @Path("/veiculo/edicao")
+    @Path("/veiculo/edicao/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao atualizarVeiculoPraxio(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUnidadeVeiculoAntesEdicao") @Required final Long codUnidadeVeiculoAntesEdicao,
             @QueryParam("placaVeiculoAntesEdicao") @Required final String placaVeiculoAntesEdicao,
             @Required final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
-        return service.atualizarVeiculoPraxio(
+        return service.atualizarVeiculoPraxioDummy(
                 tokenIntegracao,
                 codUnidadeVeiculoAntesEdicao,
                 placaVeiculoAntesEdicao,
@@ -79,60 +76,61 @@ public final class IntegracaoPraxioResource {
 
     @POST
     @LogIntegracaoRequest
-    @Path("/veiculo/transferencia")
+    @Path("/veiculo/transferencia/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao transferirVeiculoPraxio(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws ProLogException {
-        return service.transferirVeiculoPraxio(tokenIntegracao, veiculoTransferenciaPraxio);
+        return service.transferirVeiculoPraxioDummy(tokenIntegracao, veiculoTransferenciaPraxio);
     }
 
     @DELETE
     @LogIntegracaoRequest
-    @Path("/veiculo/ativar-desativar")
+    @Path("/veiculo/ativar-desativar/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao ativarDesativarVeiculoPraxio(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("placaVeiculo") @Required final String placaVeiculo,
             @QueryParam("veiculoAtivo") @Required final Boolean veiculoAtivo) throws ProLogException {
-        return service.ativarDesativarVeiculoPraxio(tokenIntegracao, placaVeiculo, veiculoAtivo);
+        if (placaVeiculo == null || placaVeiculo.isEmpty() || placaVeiculo.length() > 7) {
+            throw new GenericException(
+                    "O parâmetro 'placaVeiculo' não pode ser vazia nem conter mais que 7 caracteres");
+        }
+        if (veiculoAtivo == null) {
+            throw new GenericException(
+                    "O parâmetro 'veiculoAtivo' deve ser um valor VERDADEIRO ou FALSO");
+        }
+        final String msg = veiculoAtivo ? "ativado" : "desativado";
+        return new SuccessResponseIntegracao("Veículo do Globus " + msg + " no ProLog com sucesso");
     }
-
-////----------------------------------------------------------------------------------------------------------------////
-////----------------------------------- INTEGRAÇÃO DE PNEUS --------------------------------------------------------////
-////----------------------------------------------------------------------------------------------------------------////
 
     @GET
     @LogIntegracaoRequest
-    @Path("/afericoes")
+    @Path("/afericoes/dummies")
     @UsedBy(platforms = Platform.INTEGRACOES)
-    public List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(
+    public List<MedicaoIntegracaoPraxio> getAfericoesRealizadasDummies(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @QueryParam("codUltimaAfericao") @Required final Long codUltimaAfericao) throws ProLogException {
-        return service.getAfericoesRealizadas(tokenIntegracao, codUltimaAfericao);
+            @QueryParam("codUltimaAfericao") @Required final Long codUltimaAfericao) {
+        return service.getAfericoesRealizadasDummy();
     }
-
-////----------------------------------------------------------------------------------------------------------------////
-////----------------------------------- INTEGRAÇÃO DE ORDENS DE SERVIÇO --------------------------------------------////
-////----------------------------------------------------------------------------------------------------------------////
 
     @POST
     @LogIntegracaoRequest
-    @Path("/ordens-servico/itens-pendentes")
+    @Path("/ordens-servico/itens-pendentes/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
-    public SuccessResponseIntegracao inserirOrdensServicoGlobus(
+    public SuccessResponseIntegracao inserirOrdensServicoGlobusDummy(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws ProLogException {
-        return service.inserirOrdensServicoGlobus(tokenIntegracao, ordensServicoAbertas);
+        return service.inserirOrdensServicoGlobusDummy(tokenIntegracao, ordensServicoAbertas);
     }
 
     @POST
     @LogIntegracaoRequest
-    @Path("/ordens-servico/resolver-multiplos-itens")
+    @Path("/ordens-servicos/resolver-multiplos-itens/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
-    public SuccessResponseIntegracao resolverMultiplosItens(
+    public SuccessResponseIntegracao resolverMultiplosItensDummy(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
-        return service.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
+        return service.resolverMultiplosItensDummy(tokenIntegracao, itensResolvidos);
     }
 }

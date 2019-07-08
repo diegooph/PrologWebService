@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoEdicaoPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoTransferenciaPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemOSAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
@@ -14,6 +17,68 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 interface IntegracaoPraxioDao {
+
+    /**
+     * Método utilizado para inserir, no banco de dados do ProLog, um veículo cadastrado no Sistema Globus da Praxio.
+     * Este método será utilizado pelo sistema Globus sempre que um novo cadastro de veículo ocorrer.
+     * As informações repassadas para o ProLog serão inseridas no banco de dados e os vínculos criados de acordo com a
+     * lógica do ProLog.
+     *
+     * @param tokenIntegracao       Token utilizado para autenticar a empresa que realizou a requisição.
+     * @param veiculoCadastroPraxio Objeto que contém as informações que o Globus repassou ao ProLog sobre o veículo
+     *                              cadastrado.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    void inserirVeiculoCadastroPraxio(@NotNull final String tokenIntegracao,
+                                      @NotNull final VeiculoCadastroPraxio veiculoCadastroPraxio) throws Throwable;
+
+    /**
+     * Método utilizado para alterar informações de um veículo. Este método é utilizando sempre que um veículo sofrer
+     * alterações no sistema Globus.
+     * As informações recebidas serão validadas e inseridas no Banco de dados, refletindo as mudanças executadas no
+     * Globus.
+     * <p>
+     * O ProLog possui uma limitação onde não é possível a alteraçãa da Placa, porém, o Globus permite. Enquanto o
+     * ProLog ainda conter essa limitação, sempre que identificado uma mudança de placa, iremos retornar um erro para o
+     * usuário, dizendo que não é possível realizar a operação no ProLog.
+     *
+     * @param tokenIntegracao              Token utilizado para autenticar a empresa que realizou a requisição.
+     * @param codUnidadeVeiculoAntesEdicao Código da Unidade antes do veículo ser alterado.
+     * @param placaVeiculoAntesEdicao      Placa do veículo antes de ser alterado.
+     * @param veiculoEdicaoPraxio          Objeto contendo as novas informações do veículo.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    void atualizarVeiculoPraxio(@NotNull final String tokenIntegracao,
+                                @NotNull final Long codUnidadeVeiculoAntesEdicao,
+                                @NotNull final String placaVeiculoAntesEdicao,
+                                @NotNull final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws Throwable;
+
+    /**
+     * Método utilizado para transferir um veículo entre Unidades a partir da integração. Por limitações do Sistema
+     * Globus, o processo de transferência de veículo não irá contér mais de um veículo por vez.
+     * <p>
+     * Para não gerar inconsistências com a integração de Ordem de Serviço, a Transferência de Veículo a partir da
+     * integração não deverá fechar as Ordens de Serviços Abertas.
+     *
+     * @param tokenIntegracao            Token utilizado para autenticar a empresa que realizou a requisição.
+     * @param veiculoTransferenciaPraxio Objeto contendo as informações do veículo que será transferido entre unidades.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    void transferirVeiculoPraxio(@NotNull final String tokenIntegracao,
+                                 @NotNull final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws Throwable;
+
+    /**
+     * Método utilizado para Ativar ou Desetivar um veículo a partir da integrtação com o Sistema Globus.
+     *
+     * @param tokenIntegracao Token utilizado para autenticar a empresa que realizou a requisição.
+     * @param placaVeiculo    Placa do veículo que será atualizado.
+     * @param veiculoAtivo    Valor booleano que diz se o veículo será Ativado (<code>veiculoAtivo = true</code>) ou se
+     *                        o veículo será desativado (<code>veiculoAtivo = false</code>).
+     * @throws Throwable Se algum erro acontecer.
+     */
+    void ativarDesativarVeiculoPraxio(@NotNull final String tokenIntegracao,
+                                      @NotNull final String placaVeiculo,
+                                      @NotNull final Boolean veiculoAtivo) throws Throwable;
 
     /**
      * Este método busca as {@link MedicaoIntegracaoPraxio aferições} a partir
