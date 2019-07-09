@@ -39,7 +39,10 @@ public final class ChecklistModeloService {
         try {
             RouterModeloChecklist
                     .create(dao, token)
-                    .insertModeloChecklist(modeloChecklist, Injection.provideDadosChecklistOfflineChangedListener());
+                    .insertModeloChecklist(
+                            modeloChecklist,
+                            Injection.provideDadosChecklistOfflineChangedListener(),
+                            true);
             return Response.ok("Modelo de checklist inserido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir modelo de checklist", t);
@@ -89,7 +92,8 @@ public final class ChecklistModeloService {
                             codUnidade,
                             codModelo,
                             modeloChecklist,
-                            Injection.provideDadosChecklistOfflineChangedListener());
+                            Injection.provideDadosChecklistOfflineChangedListener(),
+                            false);
             return Response.ok("Modelo de checklist atualizado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atualizar modelo de checklist", t);

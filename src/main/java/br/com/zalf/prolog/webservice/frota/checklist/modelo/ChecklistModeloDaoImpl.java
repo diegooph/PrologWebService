@@ -47,7 +47,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     @Override
     public void insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -58,7 +59,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     "VALUES (?, ?, ?) RETURNING CODIGO");
             stmt.setLong(1, modeloChecklist.getCodUnidade());
             stmt.setString(2, modeloChecklist.getNome());
-            stmt.setBoolean(3, true);
+            stmt.setBoolean(3, statusAtivo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codModeloChecklistInserido = rSet.getLong("CODIGO");
@@ -94,7 +95,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean sobrescreverPerguntasAlternativas) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -102,7 +104,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             atualizaModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
             // Caso nenhuma pergunta tenha sido editada, o servidor não receberá nada.
             if (modeloChecklist.getPerguntas() != null && modeloChecklist.getPerguntas().size() > 0) {
-                atualizaPerguntasModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
+                atualizaPerguntasModeloChecklist(
+                        conn,
+                        codUnidade,
+                        codModelo,
+                        modeloChecklist,
+                        sobrescreverPerguntasAlternativas);
             }
             // Notificamos o Listener que ouve atualização no modelo de checklist.
             checklistOfflineListener.onUpdateModeloChecklist(conn, codModelo);
@@ -426,7 +433,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             @NotNull final Connection conn,
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
-            @NotNull final ModeloChecklistEdicao modeloChecklist) throws SQLException {
+            @NotNull final ModeloChecklistEdicao modeloChecklist,
+            final boolean sobrescreverPerguntasAlternativas) throws SQLException {
         for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
             switch (pergunta.getAcaoEdicao()) {
                 case CRIADA:
@@ -435,12 +443,17 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     insertPerguntaAlternativaModeloChecklist(conn, codUnidade, codModelo, pergunta);
                     break;
                 case ALTERADA_NOME:
-                    // Inativa a Pergunta atual.
-                    // Cria uma nova entrada no banco de dados e retorna o código.
-                    // Insere as alternativas (NÃO DELETADAS) da pergunta no código novo.
-                    inativarPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
-                    inativarTodasAlternativasPerguntaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo());
-                    final Long codPergunta = insertApenasPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
+                    Long codPergunta = pergunta.getCodigo();
+                    if (sobrescreverPerguntasAlternativas) {
+                        atualizaPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
+                    } else {
+                        // Inativa a Pergunta atual.
+                        // Cria uma nova entrada no banco de dados e retorna o código.
+                        // Insere as alternativas (NÃO DELETADAS) da pergunta no código novo.
+                        inativarPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
+                        inativarTodasAlternativasPerguntaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo());
+                        codPergunta = insertApenasPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
+                    }
 
                     // Se nenhuma alternativa tiver sido alterada, a lista será nula e precisamos instanciá-la
                     if (pergunta.getAlternativas() == null) {
@@ -451,8 +464,31 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         if (alternativa instanceof AlternativaModeloChecklistEdicao) {
                             final AlternativaModeloChecklistEdicao alternativaEdicao =
                                     (AlternativaModeloChecklistEdicao) alternativa;
-                            if (!alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.DELETADA)) {
-                                insertAlternativaChecklist(conn, codUnidade, codModelo, codPergunta, alternativaEdicao);
+                            if (sobrescreverPerguntasAlternativas) {
+                                if (alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.CRIADA)) {
+                                    insertAlternativaChecklist(conn, codUnidade, codModelo, codPergunta, alternativa);
+                                } else if (alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.ALTERADA)) {
+                                    atualizaAlternativaChecklist(
+                                            conn,
+                                            codUnidade,
+                                            codModelo,
+                                            codPergunta,
+                                            alternativaEdicao);
+                                } else if (alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.ALTERADA_ORDENACAO)) {
+                                    updateOrdemExibicaoAlternativa(
+                                            conn,
+                                            alternativa.getCodigo(),
+                                            alternativa.getOrdemExibicao());
+                                }
+                            } else {
+                                if (!alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.DELETADA)) {
+                                    insertAlternativaChecklist(
+                                            conn,
+                                            codUnidade,
+                                            codModelo,
+                                            codPergunta,
+                                            alternativaEdicao);
+                                }
                             }
                         } else {
                             throw new IllegalStateException("Apenas alternativa do tipo "
@@ -480,20 +516,29 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                             pergunta.getCodigo(),
                                             alternativaEdicao);
                                 } else if (alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.ALTERADA)) {
-                                    // Devemos passar o código da pergunta que foi alterada,
-                                    // para podermos desativar as suas alternativas.
-                                    inativarAlternativaModeloChecklist(
-                                            conn,
-                                            codUnidade,
-                                            codModelo,
-                                            pergunta.getCodigo(),
-                                            alternativaEdicao);
-                                    insertAlternativaChecklist(
-                                            conn,
-                                            codUnidade,
-                                            codModelo,
-                                            pergunta.getCodigo(),
-                                            alternativaEdicao);
+                                    if (sobrescreverPerguntasAlternativas) {
+                                        atualizaAlternativaChecklist(
+                                                conn,
+                                                codUnidade,
+                                                codModelo,
+                                                pergunta.getCodigo(),
+                                                alternativaEdicao);
+                                    } else {
+                                        // Devemos passar o código da pergunta que foi alterada,
+                                        // para podermos desativar as suas alternativas.
+                                        inativarAlternativaModeloChecklist(
+                                                conn,
+                                                codUnidade,
+                                                codModelo,
+                                                pergunta.getCodigo(),
+                                                alternativaEdicao);
+                                        insertAlternativaChecklist(
+                                                conn,
+                                                codUnidade,
+                                                codModelo,
+                                                pergunta.getCodigo(),
+                                                alternativaEdicao);
+                                    }
                                 } else if (alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.ALTERADA_ORDENACAO)) {
                                     updateOrdemExibicaoAlternativa(
                                             conn,
@@ -523,6 +568,45 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     inativarTodasAlternativasPerguntaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo());
                     break;
             }
+        }
+    }
+
+    private void atualizaAlternativaChecklist(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo,
+            @NotNull final Long codPergunta,
+            @NotNull final AlternativaModeloChecklistEdicao alternativa) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ALTERNATIVA_PERGUNTA " +
+                    "SET" +
+                    "  ALTERNATIVA = ?," +
+                    "  ORDEM = ?," +
+                    "  ALTERNATIVA_TIPO_OUTROS = ?," +
+                    "  PRIORIDADE = ?," +
+                    "  DEVE_ABRIR_ORDEM_SERVICO = ? " +
+                    "WHERE COD_UNIDADE = ?" +
+                    "      AND COD_CHECKLIST_MODELO = ?" +
+                    "      AND COD_PERGUNTA = ?" +
+                    "      AND CODIGO = ?;");
+            stmt.setString(1, alternativa.getDescricao());
+            stmt.setInt(2, alternativa.getOrdemExibicao());
+            stmt.setBoolean(3, alternativa.isTipoOutros());
+            stmt.setString(4, alternativa.getPrioridade().asString());
+            stmt.setBoolean(5, alternativa.isDeveAbrirOrdemServico());
+            stmt.setLong(6, codUnidade);
+            stmt.setLong(7, codModelo);
+            stmt.setLong(8, codPergunta);
+            stmt.setLong(9, alternativa.getCodigo());
+            if (stmt.executeUpdate() <= 0) {
+                throw new SQLException("Não foi possível atualizar a alternativa da pergunta:\n" +
+                        "codUnidade: " + codUnidade + "\n" +
+                        "codModelo: " + codModelo + "\n" +
+                        "codPergunta: " + codPergunta);
+            }
+        } finally {
+            close(stmt);
         }
     }
 
