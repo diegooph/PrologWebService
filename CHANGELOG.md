@@ -9,6 +9,8 @@ Change Log
 
 ### Refactors
 * Altera todos os usos de @Notnull e @Nullable para biblioteca da jetbrains
+* Altera inserção de modelos de checklist para permitir inserir um modelo já inativo (PL-2139)
+* Altera update de modelos de checklist para permitir atualizar sem recriar perguntas e alternativas (PL-2139)
 
 ### Bug Fixes
 * Corrige visão e edição de permissões para considerar apenas os pilares ativos por unidade (PL-2038)
