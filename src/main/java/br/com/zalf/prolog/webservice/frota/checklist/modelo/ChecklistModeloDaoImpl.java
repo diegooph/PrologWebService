@@ -456,7 +456,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         codPergunta = insertApenasPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
                     }
 
-                    // Se nenhuma alternativa tiver sido alterada, a lista será nula e precisamos instanciá-la
+                    // Se nenhuma alternativa tiver sido alterada, a lista será nula e precisamos instanciá-la.
                     if (pergunta.getAlternativas() == null) {
                         pergunta.setAlternativas(new ArrayList<>());
                     }
@@ -495,6 +495,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                             alternativa);
                                 }
                             } else {
+                                // Se não for para sobrescrever, todas as alternativas antigas da pergunta já foram
+                                // inativadas, por isso precisamos apenas realizar criações. Se for DELETADA, nada
+                                // precisa ser feito.
                                 if (!alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.DELETADA)) {
                                     insertAlternativaChecklist(
                                             conn,
