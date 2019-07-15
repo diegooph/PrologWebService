@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 public final class VersaoDadosIntervaloDesatualizadaException extends ProLogException {
 

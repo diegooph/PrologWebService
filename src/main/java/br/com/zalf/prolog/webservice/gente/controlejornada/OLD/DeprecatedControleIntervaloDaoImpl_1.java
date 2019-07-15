@@ -2,14 +2,14 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.DadosMarcacaoUnidade;
-import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.time.*;

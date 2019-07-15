@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model.farol;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 

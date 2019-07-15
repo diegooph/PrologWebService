@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.Destino;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Responsável por validar se {@link Origem} e {@link Destino} estão corretas utilizando as {@link OrigemDestinoRegras}.

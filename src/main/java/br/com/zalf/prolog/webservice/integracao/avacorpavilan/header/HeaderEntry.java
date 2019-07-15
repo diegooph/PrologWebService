@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.header;
 
 import com.google.common.base.Charsets;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Base64;
 

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.commons.report;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

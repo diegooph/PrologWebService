@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Adiciona estrutura para inserção, listagem, edição e deleção lógica de cargos
 
+### Refactors
+* Altera todos os usos de @Notnull e @Nullable para biblioteca da jetbrains
+
 ### Bug Fixes
 * Corrige visão e edição de permissões para considerar apenas os pilares ativos por unidade (PL-2038)
 * Corrige a listagem e edição dos modelos de checklist para exibir modelos sem cargos vinculados (PL-2037)

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 9/29/17
