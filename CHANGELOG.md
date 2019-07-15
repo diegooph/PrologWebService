@@ -1,3 +1,12 @@
+Stage
+==========
+
+### Features
+* Adiciona estrutura para inserção, listagem, edição e deleção lógica de cargos
+
+### Refactors
+* Corrige a listagem e edição dos modelos de checklist para exibir modelos sem cargos vinculados (PL-2037)
+
 Change Log
 ==========
 

@@ -36,8 +36,7 @@ public class ChecklistTest extends BaseTest {
 
     @Test
     public void testGetModelosChecklistListagem() throws Throwable {
-        final List<ModeloChecklistListagem> listagem =
-                dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(5L, "%");
+        final List<ModeloChecklistListagem> listagem = dao.getModelosChecklistListagemByCodUnidade(5L);
 
         System.out.println(GsonUtils.getGson().toJson(listagem));
         Assert.assertFalse(listagem.isEmpty());
