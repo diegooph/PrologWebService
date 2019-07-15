@@ -1,21 +1,15 @@
-Stage
-==========
-
-### Features
-* Adiciona estrutura para inserção, listagem, edição e deleção lógica de cargos
-
-### Refactors
-* Corrige a listagem e edição dos modelos de checklist para exibir modelos sem cargos vinculados (PL-2037)
-
 Change Log
 ==========
 
 <a name="v0.0.98"></a>
 ## Version [v0.0.98](https://github.com/luizfp/PrologWebService/compare/v0.0.97...v0.0.98) (release-date) [unreleased]
 
-### Refactors
-* Corrige visão e edição de permissões para considerar apenas os pilares ativos por unidade (PL-2038)
+### Features
+* Adiciona estrutura para inserção, listagem, edição e deleção lógica de cargos
 
+### Bug Fixes
+* Corrige visão e edição de permissões para considerar apenas os pilares ativos por unidade (PL-2038)
+* Corrige a listagem e edição dos modelos de checklist para exibir modelos sem cargos vinculados (PL-2037)
 
 <a name="v0.0.97"></a>
 ## Version [v0.0.97](https://github.com/luizfp/PrologWebService/compare/v0.0.96...v0.0.97) (2019-06-28)
