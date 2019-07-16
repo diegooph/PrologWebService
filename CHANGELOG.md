@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+<a name="v0.0.99"></a>
+## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (release-date) [unreleased]
+
+
 <a name="v0.0.98"></a>
 ## Version [v0.0.98](https://github.com/luizfp/PrologWebService/compare/v0.0.97...v0.0.98) (2019-07-16)
 
