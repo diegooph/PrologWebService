@@ -234,7 +234,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                 throw new GenericException("Um Token deve ser fornecido");
             }
             if (codUnidadeVeiculoAntesEdicao == null) {
-                throw new GenericException("A propriedade 'codUnidadeVeiculoAntesEditacao' deve ser fornecida");
+                throw new GenericException("A propriedade 'codUnidadeVeiculoAntesEdicao' deve ser fornecida");
             }
             if (placaVeiculoAntesEdicao == null
                     || placaVeiculoAntesEdicao.isEmpty()
