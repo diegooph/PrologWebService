@@ -162,7 +162,7 @@ public class ControleJornadaService {
                         Log.e(TAG, "Erro versão dados intervalo",
                                 new IllegalStateException("Versão dos dados do app (" + versaoDadosApp + ") não pode " +
                                         "ser " +
-                                        "maior do que a versão dos dados no banco(" + dadosMarcacaoUnidade.get() + ")" +
+                                        "maior do que a versão dos dados no banco(" + versaoDadosWs + ")" +
                                         "!"));
                     }
                     estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;

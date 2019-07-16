@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,8 +21,24 @@ public final class CargoConverter {
     }
 
     @NotNull
-    static CargoSelecao createCargoTodos(@NotNull final ResultSet rSet) throws Throwable {
+    static CargoSelecao createCargoTodosUnidade(@NotNull final ResultSet rSet) throws Throwable {
         return new CargoSelecao(
+                rSet.getLong("COD_CARGO"),
+                rSet.getString("NOME_CARGO"));
+    }
+
+    @NotNull
+    static CargoListagemEmpresa createCargoTodosEmpresa(@NotNull final ResultSet rSet) throws Throwable {
+        return new CargoListagemEmpresa(
+                rSet.getLong("COD_CARGO"),
+                rSet.getString("NOME_CARGO"),
+                rSet.getLong("QTD_COLABORADORES_VINCULADOS"));
+    }
+
+    @NotNull
+    static CargoEdicao createCargoEdicao(@NotNull final ResultSet rSet) throws Throwable {
+        return new CargoEdicao(
+                rSet.getLong("COD_EMPRESA"),
                 rSet.getLong("COD_CARGO"),
                 rSet.getString("NOME_CARGO"));
     }
@@ -44,8 +61,54 @@ public final class CargoConverter {
     }
 
     @NotNull
-    static CargoVisualizacao createCargoVisualizacao(@NotNull final ResultSet rSet,
-                                                     @NotNull final List<CargoPilarProLog> pilaresCargo)
+    static CargoVisualizacao createCargoVisualizacao(@NotNull final ResultSet rSet) throws SQLException {
+        final List<CargoPilarProLog> pilares = new ArrayList<>();
+        List<CargoFuncionalidadeProLog> funcionalidades = new ArrayList<>();
+        List<CargoPermissaoProLog> permissoes = new ArrayList<>();
+        CargoPilarProLog pilar = null;
+        CargoFuncionalidadeProLog funcionalidade = null;
+        CargoVisualizacao cargoVisualizacao;
+        if (rSet.next()) {
+            cargoVisualizacao = CargoConverter.createCargoVisualizacao(rSet, pilares);
+            do {
+                if (pilar == null) {
+                    pilar = CargoConverter.createPilarDetalhado(rSet, funcionalidades);
+                    funcionalidade = CargoConverter.createFuncionalidadeProLog(rSet, permissoes);
+                    permissoes.add(CargoConverter.createPermissaoDetalhadaProLog(rSet));
+                } else {
+                    if (rSet.getInt("COD_PILAR") == pilar.getCodigo()) {
+                        if (rSet.getInt("COD_FUNCIONALIDADE") == funcionalidade.getCodigo()) {
+                            permissoes.add(CargoConverter.createPermissaoDetalhadaProLog(rSet));
+                        } else {
+                            funcionalidades.add(funcionalidade);
+                            permissoes = new ArrayList<>();
+                            permissoes.add(CargoConverter.createPermissaoDetalhadaProLog(rSet));
+                            funcionalidade = CargoConverter.createFuncionalidadeProLog(rSet, permissoes);
+                        }
+                    } else {
+                        funcionalidades.add(funcionalidade);
+                        pilares.add(pilar);
+                        permissoes = new ArrayList<>();
+                        permissoes.add(CargoConverter.createPermissaoDetalhadaProLog(rSet));
+                        funcionalidades = new ArrayList<>();
+                        funcionalidade = CargoConverter.createFuncionalidadeProLog(rSet, permissoes);
+                        pilar = CargoConverter.createPilarDetalhado(rSet, funcionalidades);
+                    }
+                }
+            } while (rSet.next());
+
+            funcionalidades.add(funcionalidade);
+            pilares.add(pilar);
+        } else {
+            throw new IllegalStateException("Nenhum dado de permissão encontrado para o cargo buscado");
+        }
+
+        return cargoVisualizacao;
+    }
+
+    @NotNull
+    private static CargoVisualizacao createCargoVisualizacao(@NotNull final ResultSet rSet,
+                                                             @NotNull final List<CargoPilarProLog> pilaresCargo)
             throws SQLException {
         return new CargoVisualizacao(
                 rSet.getLong("COD_CARGO"),
@@ -55,9 +118,9 @@ public final class CargoConverter {
     }
 
     @NotNull
-    static CargoFuncionalidadeProLog createFuncionalidadeProLog(@NotNull final ResultSet rSet,
-                                                                @NotNull final List<CargoPermissaoProLog> permissoes)
-            throws SQLException {
+    private static CargoFuncionalidadeProLog createFuncionalidadeProLog(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<CargoPermissaoProLog> permissoes) throws SQLException {
         return new CargoFuncionalidadeProLog(
                 rSet.getInt("COD_FUNCIONALIDADE"),
                 rSet.getString("NOME_FUNCIONALIDADE"),
@@ -65,7 +128,8 @@ public final class CargoConverter {
     }
 
     @NotNull
-    static CargoPermissaoProLog createPermissaoDetalhadaProLog(@NotNull final ResultSet rSet) throws SQLException {
+    private static CargoPermissaoProLog createPermissaoDetalhadaProLog(
+            @NotNull final ResultSet rSet) throws SQLException {
         return new CargoPermissaoProLog(
                 rSet.getInt("COD_PERMISSAO"),
                 rSet.getString("NOME_PERMISSAO"),
@@ -75,8 +139,8 @@ public final class CargoConverter {
     }
 
     @NotNull
-    static CargoPilarProLog createPilarDetalhado(@NotNull final ResultSet rSet,
-                                                 @NotNull final List<CargoFuncionalidadeProLog> funcionalidades)
+    private static CargoPilarProLog createPilarDetalhado(@NotNull final ResultSet rSet,
+                                                         @NotNull final List<CargoFuncionalidadeProLog> funcionalidades)
             throws SQLException {
         return new CargoPilarProLog(
                 rSet.getInt("COD_PILAR"),

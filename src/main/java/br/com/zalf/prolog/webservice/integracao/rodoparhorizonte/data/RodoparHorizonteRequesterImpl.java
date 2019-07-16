@@ -4,9 +4,9 @@ import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoAvulsaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoPlacaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.ResponseAfericaoRodoparHorizonte;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparCredentials;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.error.ErrorBodyHandler;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.error.RodoparHorizonteException;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparCredentials;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenCreator;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenError;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenIntegracao;
@@ -99,7 +99,9 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
         try {
             return ErrorBodyHandler.getProLogErrorFromBody(errorBody);
         } catch (final Throwable t) {
-            throw new IllegalStateException("Não foi possível obter o JSON de resposta da requisição", t);
+            throw new RodoparHorizonteException(
+                    "[INTEGRACAO - HORIZONTE] Mensagem do sistema Rodopar fora do padrão esperado",
+                    "Não foi possível obter o JSON de resposta da requisição");
         }
     }
 }

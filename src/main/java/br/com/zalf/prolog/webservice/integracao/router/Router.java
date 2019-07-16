@@ -202,11 +202,12 @@ public abstract class Router implements OperacoesIntegradas {
     @Override
     public void insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo) throws Throwable {
         if (getSistema() != null) {
-            getSistema().insertModeloChecklist(modeloChecklist, checklistOfflineListener);
+            getSistema().insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo);
         } else {
-            integradorProLog.insertModeloChecklist(modeloChecklist, checklistOfflineListener);
+            integradorProLog.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo);
         }
     }
 
@@ -216,21 +217,24 @@ public abstract class Router implements OperacoesIntegradas {
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean sobrescreverPerguntasAlternativas) throws Throwable {
         if (getSistema() != null) {
             getSistema().updateModeloChecklist(
                     token,
                     codUnidade,
                     codModelo,
                     modeloChecklist,
-                    checklistOfflineListener);
+                    checklistOfflineListener,
+                    sobrescreverPerguntasAlternativas);
         } else {
             integradorProLog.updateModeloChecklist(
                     token,
                     codUnidade,
                     codModelo,
                     modeloChecklist,
-                    checklistOfflineListener);
+                    checklistOfflineListener,
+                    sobrescreverPerguntasAlternativas);
         }
     }
 

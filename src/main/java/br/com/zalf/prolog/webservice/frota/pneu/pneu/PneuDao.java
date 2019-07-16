@@ -65,10 +65,11 @@ public interface PneuDao {
      * @param pneu            um pneu
      * @param codUnidade      código da unidade
      * @param codOriginalPneu código original do pneu
-     * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean update(Pneu pneu, Long codUnidade, Long codOriginalPneu) throws SQLException;
+    void update(@NotNull final Pneu pneu,
+                @NotNull final Long codUnidade,
+                @NotNull final Long codOriginalPneu) throws Throwable;
 
     /**
      * Atualiza a pressão do pneu.

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.error;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenError;
 import okhttp3.ResponseBody;
@@ -11,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ErrorBodyHandler {
+    private static final String TAG = ErrorBodyHandler.class.getSimpleName();
+
     /**
      * Este método receberá o JSON presente na mensagem de erro da integração entre ProLog e Rodopar e retornará um
      * {@link ProLogError}.
@@ -29,7 +32,15 @@ public final class ErrorBodyHandler {
         final String stringError = jsonBody.substring("{\"Message\":\"".length(), jsonBody.length() - "\"}".length());
         // Removemos os caracteres especiais para que o parse do JSON fique correto.
         final String stringPrologError = stringError.replaceAll("\\\\", "");
-        return ProLogError.generateFromString(stringPrologError);
+        try {
+            return ProLogError.generateFromString(stringPrologError);
+        } catch (final Throwable t) {
+            final String msg = String.format("Erro ao realizar o parse da mensagem de erro recebida do Rodopar:\n" +
+                    "jsonBody: %s\n" +
+                    "stringPrologError: %s", jsonBody, stringPrologError);
+            Log.e(TAG, msg, t);
+            throw t;
+        }
     }
 
     @NotNull
