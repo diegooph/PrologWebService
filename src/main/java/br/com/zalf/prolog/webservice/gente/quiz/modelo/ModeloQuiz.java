@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.gente.quiz.modelo;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;

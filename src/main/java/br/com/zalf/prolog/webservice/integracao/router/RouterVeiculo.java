@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by luiz on 21/07/17.

@@ -6,14 +6,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.relatorios.model;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class StatusPlacasAfericao {
-    private int qtdPlacasAfericaoVencida;
-    private int qtdPlacasAfericaoNoPrazo;
+    private final int qtdPlacasAfericaoVencida;
+    private final int qtdPlacasAfericaoNoPrazo;
 
-    public StatusPlacasAfericao() {
-
-    }
-
-    public StatusPlacasAfericao(int qtdPlacasAfericaoVencida, int qtdPlacasAfericaoNoPrazo) {
+    public StatusPlacasAfericao(final int qtdPlacasAfericaoVencida, final int qtdPlacasAfericaoNoPrazo) {
         this.qtdPlacasAfericaoVencida = qtdPlacasAfericaoVencida;
         this.qtdPlacasAfericaoNoPrazo = qtdPlacasAfericaoNoPrazo;
     }
@@ -22,15 +18,7 @@ public final class StatusPlacasAfericao {
         return qtdPlacasAfericaoVencida;
     }
 
-    public void setQtdPlacasAfericaoVencida(int qtdPlacasAfericaoVencida) {
-        this.qtdPlacasAfericaoVencida = qtdPlacasAfericaoVencida;
-    }
-
     public int getQtdPlacasAfericaoNoPrazo() {
         return qtdPlacasAfericaoNoPrazo;
-    }
-
-    public void setQtdPlacasAfericaoNoPrazo(int qtdPlacasAfericaoNoPrazo) {
-        this.qtdPlacasAfericaoNoPrazo = qtdPlacasAfericaoNoPrazo;
     }
 }

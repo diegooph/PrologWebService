@@ -8,8 +8,9 @@ import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineService;
-import br.com.zalf.prolog.webservice.gente.controlejornada.OLD.DeprecatedControleIntervaloService_2;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDao;
@@ -152,7 +153,7 @@ public class ColaboradorService {
     }
 
     @NotNull
-    LoginHolder getLoginHolder(LoginRequest loginRequest) {
+    public LoginHolder getLoginHolder(@NotNull final LoginRequest loginRequest) {
         final LoginHolder loginHolder = new LoginHolder();
         try {
             loginHolder.setColaborador(dao.getByCpf(loginRequest.getCpf(), true));
@@ -173,8 +174,8 @@ public class ColaboradorService {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             }
 
-            final DeprecatedControleIntervaloService_2 intervaloService = new DeprecatedControleIntervaloService_2();
-            final IntervaloOfflineSupport intervaloOfflineSupport = intervaloService.getIntervaloOfflineSupport(
+            final ControleJornadaService controleJornadaService = new ControleJornadaService();
+            final IntervaloOfflineSupport intervaloOfflineSupport = controleJornadaService.getIntervaloOfflineSupport(
                     loginRequest.getVersaoDadosIntervalo(),
                     colaborador.getUnidade().getCodigo(),
                     this);
@@ -184,6 +185,11 @@ public class ColaboradorService {
             final boolean checklistOfflineAtivoEmpresa =
                     checklistOfflineService.getChecklistOfflineAtivoEmpresa(colaborador.getCodEmpresa());
             loginHolder.setChecklistOfflineAtivoEmpresa(checklistOfflineAtivoEmpresa);
+
+            final ChecklistService checklistService = new ChecklistService();
+            final boolean checklistDiferentesUnidadesAtivoEmpresa =
+                    checklistService.getChecklistDiferentesUnidadesAtivoEmpresa(colaborador.getCodEmpresa());
+            loginHolder.setChecklistDiferentesUnidadesAtivoEmpresa(checklistDiferentesUnidadesAtivoEmpresa);
 
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao buscar o loginHolder", e);

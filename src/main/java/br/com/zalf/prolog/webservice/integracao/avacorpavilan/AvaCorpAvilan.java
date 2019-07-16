@@ -133,7 +133,7 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidadeModelo,
                                                       @NotNull Long codModelo,
                                                       @NotNull String placaVeiculo,
                                                       char tipoChecklist) throws Exception {

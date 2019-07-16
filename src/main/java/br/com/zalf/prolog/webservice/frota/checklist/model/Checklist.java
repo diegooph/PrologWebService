@@ -4,8 +4,9 @@ package br.com.zalf.prolog.webservice.frota.checklist.model;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -22,6 +23,8 @@ public class Checklist {
 	private Long codigo;
 	private Colaborador colaborador;
 	private LocalDateTime data;
+	@Nullable
+	private LocalDateTime dataHoraImportadoProLog;
 	private String placaVeiculo;
 	private List<PerguntaRespostaChecklist> listRespostas;
 	/**
@@ -37,8 +40,8 @@ public class Checklist {
 		
 	}
 
-	@Nonnull
-	public static List<Checklist> sortByDate(@Nonnull final List<Checklist> checklists, final boolean ascending) {
+	@NotNull
+	public static List<Checklist> sortByDate(@NotNull final List<Checklist> checklists, final boolean ascending) {
 		if (ascending) {
 			checklists.sort(Comparator.comparing(Checklist::getData));
 		} else {
@@ -96,6 +99,14 @@ public class Checklist {
 		this.data = data;
 	}
 
+	public LocalDateTime getDataHoraImportadoProLog() {
+		return dataHoraImportadoProLog;
+	}
+
+	public void setDataHoraImportadoProLog(@Nullable final LocalDateTime dataHoraImportadoProLog) {
+		this.dataHoraImportadoProLog = dataHoraImportadoProLog;
+	}
+
 	public String getPlacaVeiculo() {
 		return placaVeiculo;
 	}
@@ -145,10 +156,10 @@ public class Checklist {
 		this.qtdItensNok = qtdItensNok;
 	}
 
-	private void calculaQtdOkOrNok() {
+	public void calculaQtdOkOrNok() {
         int qtdNok = 0;
-        for (PerguntaRespostaChecklist resposta : listRespostas) {
-            for (AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
+        for (final PerguntaRespostaChecklist resposta : listRespostas) {
+            for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
                 if (alternativa.selected) {
                     qtdNok++;
                     break;

@@ -1,8 +1,49 @@
 Change Log
 ==========
 
+<a name="v0.0.98"></a>
+## Version [v0.0.98](https://github.com/luizfp/PrologWebService/compare/v0.0.97...v0.0.98) (release-date) [unreleased]
+
+### Features
+* Adiciona estrutura para inserção, listagem, edição e deleção lógica de cargos
+
+### Refactors
+* Altera todos os usos de @Notnull e @Nullable para biblioteca da jetbrains
+* Altera inserção de modelos de checklist para permitir inserir um modelo já inativo (PL-2139)
+* Altera update de modelos de checklist para permitir atualizar sem recriar perguntas e alternativas (PL-2139)
+
+### Bug Fixes
+* Corrige visão e edição de permissões para considerar apenas os pilares ativos por unidade (PL-2038)
+* Corrige a listagem e edição dos modelos de checklist para exibir modelos sem cargos vinculados (PL-2037)
+
+<a name="v0.0.97"></a>
+## Version [v0.0.97](https://github.com/luizfp/PrologWebService/compare/v0.0.96...v0.0.97) (2019-06-28)
+
+### Features
+* Cria funcionalidade de listagem de marcações otimizada, com filtro de data. (PL-2000)
+* Cria método de busca das regionais e unidades de filtro para início de checklist (PL-2085)
+
+### Refactors
+* Altera método de login para incluir se empresa está bloqueada para realizar checklist de diferentes unidades no `LoginHolder` (PL-2077)
+* Altera método de busca de um checklist por código (PL-2075)
+
+### Bug Fixes
+* Corrige problema no fechamento de serviço de movimentação (PL-2114)
+
+<a name="v0.0.96"></a>
+## Version [v0.0.96](https://github.com/luizfp/PrologWebService/compare/v0.0.95...v0.0.96) (2019-06-21)
+
+### Refactors
+* Adiciona data/hora importado ProLog no objeto de checklist
+
+### Bug Fixes
+* Corrige inserção de checklist, seta autoCommit = false;
+
 <a name="v0.0.95"></a>
-## Version [v0.0.95](https://github.com/luizfp/PrologWebService/compare/v0.0.94...v0.0.95) (release-date) [unreleased]
+## Version [v0.0.95](https://github.com/luizfp/PrologWebService/compare/v0.0.94...v0.0.95) (2019-06-20)
+
+### Features
+* Integração de pneus com o Rodopar (PL-2024)
 
 ### Bug Fixes
 * Corrige componente da dash relatório status de placas aferição (PL-1672)

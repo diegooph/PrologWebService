@@ -4,8 +4,8 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 import java.util.List;
@@ -60,7 +60,17 @@ public class LoginHolder {
      */
     private boolean checklistOfflineAtivoEmpresa;
 
+    /**
+     * Valor booleano que indica se a empresa a qual o colaborador está cadastrado está liberada para realizar o
+     * checklist de diferentes unidades. Se <code>TRUE</code> então a aplicação permitirá que o colaborador selecione
+     * de qual unidade ele realizará o checklist, tanto online quanto offline. Caso <code>FALSE</code>, então o
+     * processo de realização de checklist só exibirá os modelos de checklist disponíveis na unidade onde o colaborador
+     * que está realizando está cadastrado.
+     */
+    private boolean checklistDiferentesUnidadesAtivoEmpresa;
+
     public LoginHolder() {
+
     }
 
     public Colaborador getColaborador() {
@@ -111,5 +121,13 @@ public class LoginHolder {
 
     public void setChecklistOfflineAtivoEmpresa(final boolean checklistOfflineAtivoEmpresa) {
         this.checklistOfflineAtivoEmpresa = checklistOfflineAtivoEmpresa;
+    }
+
+    public boolean isChecklistDiferentesUnidadesAtivoEmpresa() {
+        return checklistDiferentesUnidadesAtivoEmpresa;
+    }
+
+    public void setChecklistDiferentesUnidadesAtivoEmpresa(final boolean checklistDiferentesUnidadesAtivoEmpresa) {
+        this.checklistDiferentesUnidadesAtivoEmpresa = checklistDiferentesUnidadesAtivoEmpresa;
     }
 }

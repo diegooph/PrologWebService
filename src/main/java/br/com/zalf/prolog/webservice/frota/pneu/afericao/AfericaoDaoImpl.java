@@ -33,15 +33,39 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @Nullable
     @Override
+    public Long insert(@NotNull final Connection conn,
+                       @NotNull final Long codUnidade,
+                       @NotNull final Afericao afericao) throws Throwable {
+        return internalInsertAfericao(conn, codUnidade, afericao);
+    }
+
+    @Nullable
+    @Override
     public Long insert(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
         Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        Long codAfericao = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
+            final Long codAfericao = internalInsertAfericao(conn, codUnidade, afericao);
+            conn.commit();
+            return codAfericao;
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            close(conn);
+        }
+    }
+
+    @NotNull
+    private Long internalInsertAfericao(@NotNull final Connection conn,
+                                        @NotNull final Long codUnidade,
+                                        @NotNull final Afericao afericao) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
             stmt = conn.prepareStatement("INSERT INTO AFERICAO(COD_UNIDADE, DATA_HORA, CPF_AFERIDOR, "
                     + "TEMPO_REALIZACAO, TIPO_MEDICAO_COLETADA, TIPO_PROCESSO_COLETA, PLACA_VEICULO, KM_VEICULO) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
@@ -59,35 +83,31 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                 stmt.setString(7, afericaoPlaca.getVeiculo().getPlaca());
                 stmt.setLong(8, afericaoPlaca.getKmMomentoAfericao());
-                veiculoDao.updateKmByPlaca(
-                        afericaoPlaca.getVeiculo().getPlaca(),
-                        afericaoPlaca.getKmMomentoAfericao(),
-                        conn);
+                Injection.provideVeiculoDao()
+                        .updateKmByPlaca(
+                                afericaoPlaca.getVeiculo().getPlaca(),
+                                afericaoPlaca.getKmMomentoAfericao(),
+                                conn);
                 deveAbrirServicos = true;
             } else {
                 stmt.setNull(7, Types.VARCHAR);
                 stmt.setNull(8, Types.BIGINT);
             }
+            Long codAfericao = null;
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 codAfericao = rSet.getLong("CODIGO");
                 afericao.setCodigo(codAfericao);
                 insertValores(conn, codUnidade, afericao, deveAbrirServicos);
             }
-            conn.commit();
-        } catch (final Throwable e) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw e;
-        } finally {
-            close(conn, stmt, rSet);
-        }
 
-        if (codAfericao != null && codAfericao != 0) {
-            return codAfericao;
-        } else {
-            throw new IllegalStateException("Não foi possível retornar o código da aferição realizada");
+            if (codAfericao != null && codAfericao != 0) {
+                return codAfericao;
+            } else {
+                throw new IllegalStateException("Não foi possível retornar o código da aferição realizada");
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 

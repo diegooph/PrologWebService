@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador.model;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Classe responsável por conter as credenciais de acesso a Amazon.

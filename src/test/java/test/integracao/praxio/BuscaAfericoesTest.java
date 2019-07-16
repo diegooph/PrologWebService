@@ -3,7 +3,7 @@ package test.integracao.praxio;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoProcessoColetaAfericao;
-import br.com.zalf.prolog.webservice.integracao.praxio.MedicaoIntegracaoPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import org.junit.Assert;
 import org.junit.Test;

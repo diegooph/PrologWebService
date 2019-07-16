@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import com.google.common.base.Preconditions;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by luiz on 18/07/17.
@@ -9,7 +9,9 @@ import com.sun.istack.internal.NotNull;
 public enum SistemaKey {
     AVACORP_AVILAN("AVACORP_AVILAN"),
     TRANSPORT_TRANSLECCHI("TRANSPORT_TRANSLECCHI"),
-    PROTHEUS_RODALOG("PROTHEUS_RODALOG");
+    PROTHEUS_RODALOG("PROTHEUS_RODALOG"),
+    GLOBUS_PICCOLOTUR("GLOBUS_PICCOLOTUR"),
+    RODOPAR_HORIZONTE("RODOPAR_HORIZONTE");
 
     @NotNull
     private final String key;

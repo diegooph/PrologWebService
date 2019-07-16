@@ -69,7 +69,6 @@ public class DeprecatedControleIntervaloService_2 {
         }
     }
 
-    @SuppressWarnings("Duplicates")
     @NotNull
     public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
                                                               Long codUnidade,

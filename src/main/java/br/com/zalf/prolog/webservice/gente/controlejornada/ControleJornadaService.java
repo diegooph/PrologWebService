@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
@@ -41,8 +42,7 @@ public class ControleJornadaService {
         intervaloMarcacao.setVersaoAppMomentoSincronizacao(versaoAppMomentoSincronizacao);
         EstadoVersaoIntervalo estadoVersaoIntervalo = null;
         try {
-            @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
-            final Long versaoDadosBanco = dao.getDadosMarcacaoUnidade(intervaloMarcacao.getCodUnidade())
+            @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"}) final Long versaoDadosBanco = dao.getDadosMarcacaoUnidade(intervaloMarcacao.getCodUnidade())
                     .get()
                     .getVersaoDadosBanco();
             estadoVersaoIntervalo = versaoDadosIntervalo < versaoDadosBanco
@@ -99,6 +99,32 @@ public class ControleJornadaService {
         }
     }
 
+    @NotNull
+    public List<MarcacaoListagem> getMarcacoesColaboradorPorData(@NotNull final Long codUnidade,
+                                                                 @Nullable final Long cpf,
+                                                                 @Nullable final Long codTipo,
+                                                                 @NotNull final String dataInicial,
+                                                                 @NotNull final String dataFinal) throws ProLogException {
+        try {
+            return dao.getMarcacoesColaboradorPorData(
+                    codUnidade,
+                    cpf,
+                    codTipo,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable t) {
+            final String errorMessage = String.format("Erro ao buscar marcações de um colaborador.\n" +
+                    "cpf: %d\n" +
+                    "codTipo: %d\n" +
+                    "dataInicial: %s\n" +
+                    "dataFinal: %s", cpf, codTipo, dataInicial, dataFinal);
+            Log.e(TAG, errorMessage, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar marcação(ões), tente novamente");
+        }
+    }
+
     @SuppressWarnings("Duplicates")
     @NotNull
     public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
@@ -136,7 +162,7 @@ public class ControleJornadaService {
                         Log.e(TAG, "Erro versão dados intervalo",
                                 new IllegalStateException("Versão dos dados do app (" + versaoDadosApp + ") não pode " +
                                         "ser " +
-                                        "maior do que a versão dos dados no banco(" + dadosMarcacaoUnidade.get() + ")" +
+                                        "maior do que a versão dos dados no banco(" + versaoDadosWs + ")" +
                                         "!"));
                     }
                     estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;

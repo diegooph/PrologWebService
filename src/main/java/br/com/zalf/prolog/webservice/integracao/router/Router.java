@@ -202,11 +202,12 @@ public abstract class Router implements OperacoesIntegradas {
     @Override
     public void insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo) throws Throwable {
         if (getSistema() != null) {
-            getSistema().insertModeloChecklist(modeloChecklist, checklistOfflineListener);
+            getSistema().insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo);
         } else {
-            integradorProLog.insertModeloChecklist(modeloChecklist, checklistOfflineListener);
+            integradorProLog.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo);
         }
     }
 
@@ -216,21 +217,24 @@ public abstract class Router implements OperacoesIntegradas {
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean sobrescreverPerguntasAlternativas) throws Throwable {
         if (getSistema() != null) {
             getSistema().updateModeloChecklist(
                     token,
                     codUnidade,
                     codModelo,
                     modeloChecklist,
-                    checklistOfflineListener);
+                    checklistOfflineListener,
+                    sobrescreverPerguntasAlternativas);
         } else {
             integradorProLog.updateModeloChecklist(
                     token,
                     codUnidade,
                     codModelo,
                     modeloChecklist,
-                    checklistOfflineListener);
+                    checklistOfflineListener,
+                    sobrescreverPerguntasAlternativas);
         }
     }
 
@@ -248,20 +252,20 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidadeModelo,
                                                       @NotNull Long codModelo,
                                                       @NotNull String placaVeiculo,
                                                       char tipoChecklist) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
+            return getSistema().getNovoChecklistHolder(codUnidadeModelo, codModelo, placaVeiculo, tipoChecklist);
         } else {
-            return integradorProLog.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
+            return integradorProLog.getNovoChecklistHolder(codUnidadeModelo, codModelo, placaVeiculo, tipoChecklist);
         }
     }
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
+    public Long insertChecklist(@NotNull Checklist checklist) throws Throwable {
         if (getSistema() != null) {
             return getSistema().insertChecklist(checklist);
         } else {

@@ -45,7 +45,7 @@ public final class PneuAfericaoProtheusRodalog {
     private Integer vidaTotal;
 
     /**
-     * Número inteiro que representa a posição em que o pneu está aplicado no véiculo.
+     * Número inteiro que representa a posição em que o pneu está aplicado no veículo.
      */
     private Integer posicao;
 

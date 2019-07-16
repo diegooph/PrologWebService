@@ -3,12 +3,15 @@ package br.com.zalf.prolog.webservice.colaborador.model;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Informações do colaborador.
  */
 public class Colaborador {
+	private static final String DATA_FORMATTER = "yyyy-MM-dd";
 	private Long codigo;
 	private Long cpf;
 	private String pis;
@@ -204,6 +207,11 @@ public class Colaborador {
 
 	public long getCodUnidade() {
 		return unidade.getCodigo();
+	}
+
+	public String getDataNascimentoAsString() {
+		final Format formatter = new SimpleDateFormat(DATA_FORMATTER);
+		return formatter.format(dataNascimento);
 	}
 
 	@Override

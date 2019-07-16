@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.cargo;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.cargo.model.CargoEmUso;
-import br.com.zalf.prolog.webservice.cargo.model.CargoNaoUtilizado;
-import br.com.zalf.prolog.webservice.cargo.model.CargoSelecao;
-import br.com.zalf.prolog.webservice.cargo.model.CargoVisualizacao;
+import br.com.zalf.prolog.webservice.cargo.model.*;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +32,33 @@ public final class CargoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar todos os cargos, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<CargoListagemEmpresa> getTodosCargosEmpresa(final Long codEmpresa) throws ProLogException {
+        try {
+            return dao.getTodosCargosEmpresa(codEmpresa);
+        } catch (final Throwable throwable) {
+            final String errorMessage = String.format("Erro ao buscar todos os cargos da empresa %d", codEmpresa);
+            Log.e(TAG, errorMessage, throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar todos os cargos, tente novamente");
+        }
+    }
+
+
+    @NotNull
+    public CargoEdicao getByCod(final Long codEmpresa, final Long codigo) throws ProLogException {
+        try {
+            return dao.getByCod(codEmpresa, codigo);
+        } catch (final Throwable throwable) {
+            final String errorMessage = String.format("Erro ao buscar o cargo: %d", codigo);
+            Log.e(TAG, errorMessage, throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar o cargo, tente novamente");
         }
     }
 
@@ -71,6 +98,44 @@ public final class CargoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar as permissões, tente novamente");
+        }
+    }
+
+    @NotNull
+    public AbstractResponse insertCargo(CargoInsercao cargo, final String userToken) throws ProLogException{
+        try{
+            return ResponseWithCod.ok("Cargo inserido com sucesso", dao.insertCargo(cargo, userToken));
+        } catch (final Throwable e){
+            Log.e(TAG, "Erro ao inserir cargo para a empresa: " + cargo.getCodEmpresa(), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao inserir o cargo");
+        }
+    }
+
+    @NotNull
+    public Response updateCargo(final CargoEdicao cargo, final String userToken) throws ProLogException {
+        try {
+            dao.updateCargo(cargo, userToken);
+            return Response.ok("Cargo atualizado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o cargo", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o cargo, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Response deleteCargo(final Long codEmpresa, final Long codigo, final String userToken) throws ProLogException {
+        try {
+            dao.deleteCargo(codEmpresa, codigo, userToken);
+            return Response.ok("Cargo deletado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao deletar o cargo", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao deletar o cargo, tente novamente");
         }
     }
 }

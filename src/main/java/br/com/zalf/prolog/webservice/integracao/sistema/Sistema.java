@@ -131,8 +131,9 @@ public abstract class Sistema implements OperacoesIntegradas {
     @Override
     public void insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener);
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo) throws Throwable {
+        getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo);
     }
 
     @Override
@@ -141,27 +142,29 @@ public abstract class Sistema implements OperacoesIntegradas {
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean sobrescreverPerguntasAlternativas) throws Throwable {
         getIntegradorProLog().updateModeloChecklist(
                 token,
                 codUnidade,
                 codModelo,
                 modeloChecklist,
-                checklistOfflineListener);
+                checklistOfflineListener,
+                sobrescreverPerguntasAlternativas);
     }
 
     @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidadeModelo,
                                                       @NotNull Long codModelo,
                                                       @NotNull String placaVeiculo,
                                                       char tipoChecklist) throws Exception {
-        return getIntegradorProLog().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
+        return getIntegradorProLog().getNovoChecklistHolder(codUnidadeModelo, codModelo, placaVeiculo, tipoChecklist);
     }
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
+    public Long insertChecklist(@NotNull Checklist checklist) throws Throwable {
         return getIntegradorProLog().insertChecklist(checklist);
     }
 

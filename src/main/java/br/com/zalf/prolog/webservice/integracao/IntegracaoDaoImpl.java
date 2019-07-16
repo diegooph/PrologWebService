@@ -4,8 +4,8 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

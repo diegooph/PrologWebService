@@ -93,8 +93,8 @@ public class AvaCorpAvilanSistemaTest {
                 Checklist.TIPO_SAIDA));
     }
 
-    @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Exception.class)
-    public void testInsertChecklist() throws Exception {
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Throwable.class)
+    public void testInsertChecklist() throws Throwable {
         sistema.insertChecklist(new Checklist());
     }
 }

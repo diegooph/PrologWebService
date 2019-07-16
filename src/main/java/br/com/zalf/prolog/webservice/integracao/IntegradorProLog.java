@@ -247,8 +247,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public void insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        checklistModeloDao.insertModeloChecklist(modeloChecklist, checklistOfflineListener);
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo) throws Throwable {
+        checklistModeloDao.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo);
     }
 
     @Override
@@ -257,13 +258,15 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean sobrescreverPerguntasAlternativas) throws Throwable {
         checklistModeloDao.updateModeloChecklist(
                 token,
                 codUnidade,
                 codModelo,
                 modeloChecklist,
-                checklistOfflineListener);
+                checklistOfflineListener,
+                sobrescreverPerguntasAlternativas);
     }
 
     @NotNull
@@ -276,11 +279,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidadeModelo,
                                                       @NotNull Long codModelo,
                                                       @NotNull String placaVeiculo,
                                                       char tipoChecklist) throws Exception {
-        return checklistDao.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
+        return checklistDao.getNovoChecklistHolder(codUnidadeModelo, codModelo, placaVeiculo, tipoChecklist);
     }
 
     @NotNull

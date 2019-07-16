@@ -3,9 +3,8 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.*;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -31,19 +30,39 @@ public final class ChecklistConverter {
         throw new IllegalStateException(ChecklistConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
+    @NotNull
+    public static RegionalSelecaoChecklist createRegionalSelecao(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<UnidadeSelecaoChecklist> unidades) throws Throwable {
+        return new RegionalSelecaoChecklist(
+                rSet.getLong("CODIGO_REGIONAL"),
+                rSet.getString("NOME_REGIONAL"),
+                unidades);
+    }
+
+    @NotNull
+    public static UnidadeSelecaoChecklist createUnidadeSelecao(
+            @NotNull final ResultSet rSet) throws Throwable {
+        return new UnidadeSelecaoChecklist(
+                rSet.getLong("CODIGO_UNIDADE"),
+                rSet.getString("NOME_UNIDADE"),
+                rSet.getLong("CODIGO_REGIONAL"));
+    }
+
     @VisibleForTesting
     @NotNull
     public static Checklist createChecklist(@NotNull final ResultSet rSet,
                                             final boolean setTotalItensOkNok) throws SQLException {
         final Checklist checklist = new Checklist();
-        checklist.setCodigo(rSet.getLong("CODIGO"));
+        checklist.setCodigo(rSet.getLong("COD_CHECKLIST"));
         checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
         checklist.setColaborador(createColaborador(rSet));
-        checklist.setData(rSet.getObject("DATA_HORA", LocalDateTime.class));
+        checklist.setData(rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class));
+        checklist.setDataHoraImportadoProLog(rSet.getObject("DATA_HORA_IMPORTADO_PROLOG", LocalDateTime.class));
         checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
-        checklist.setTipo(rSet.getString("TIPO").charAt(0));
-        checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO"));
-        checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("TEMPO_REALIZACAO"));
+        checklist.setTipo(rSet.getString("TIPO_CHECKLIST").charAt(0));
+        checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO_MOMENTO_REALIZACAO"));
+        checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("DURACAO_REALIZACAO_MILLIS"));
         if (setTotalItensOkNok) {
             checklist.setQtdItensOk(rSet.getInt("TOTAL_ITENS_OK"));
             checklist.setQtdItensNok(rSet.getInt("TOTAL_ITENS_NOK"));
@@ -87,6 +106,18 @@ public final class ChecklistConverter {
     }
 
     @NotNull
+    static AlternativaChecklistStatus createAlternativaChecklistStatus(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new AlternativaChecklistStatus(
+                rSet.getLong("COD_ALTERNATIVA"),
+                rSet.getLong("COD_ITEM_ORDEM_SERVICO"),
+                rSet.getBoolean("TEM_ITEM_OS_PENDENTE"),
+                rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
+                rSet.getInt("QTD_APONTAMENTOS_ITEM"),
+                PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
+    }
+
+    @NotNull
     static DeprecatedFarolChecklist createFarolChecklist(@NotNull final ResultSet rSet) throws SQLException {
         final List<FarolVeiculoDia> farolVeiculoDias = new ArrayList<>();
         String placaAntiga = null, placaAtual = null;
@@ -107,6 +138,25 @@ public final class ChecklistConverter {
 
         }
         return parseToDeprecatedFarolChecklist(new FarolChecklist(farolVeiculoDias));
+    }
+
+    @NotNull
+    static PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException {
+        final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
+        pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
+        pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
+        pergunta.setPergunta(rSet.getString("DESCRICAO_PERGUNTA"));
+        pergunta.setSingleChoice(rSet.getBoolean("PERGUNTA_SINGLE_CHOICE"));
+        pergunta.setUrl(rSet.getString("URL_IMAGEM"));
+        pergunta.setCodImagem(rSet.getLong("COD_IMAGEM"));
+        return pergunta;
+    }
+
+    @NotNull
+    static AlternativaChecklist createAlternativaComResposta(@NotNull final ResultSet rSet) throws SQLException {
+        final AlternativaChecklist alternativaChecklist = createAlternativa(rSet);
+        setRespostaAlternativa(alternativaChecklist, rSet);
+        return alternativaChecklist;
     }
 
     @NotNull
@@ -264,28 +314,18 @@ public final class ChecklistConverter {
     private static Colaborador createColaborador(@NotNull final ResultSet rSet) throws SQLException {
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
-        colaborador.setNome(rSet.getString("NOME"));
+        colaborador.setNome(rSet.getString("NOME_COLABORADOR"));
         return colaborador;
     }
 
+    @SuppressWarnings("Duplicates")
     @NotNull
-    private static PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException {
-        final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
-        pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
-        pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
-        pergunta.setPergunta(rSet.getString("PERGUNTA"));
-        pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
-        pergunta.setUrl(rSet.getString("URL_IMAGEM"));
-        pergunta.setCodImagem(rSet.getLong("COD_IMAGEM"));
-        return pergunta;
-    }
-
-    @NotNull
-    private static AlternativaChecklist createAlternativa(ResultSet rSet) throws SQLException {
+    private static AlternativaChecklist createAlternativa(@NotNull final ResultSet rSet) throws SQLException {
         final AlternativaChecklist alternativa = new AlternativaChecklist();
         alternativa.setCodigo(rSet.getLong("COD_ALTERNATIVA"));
-        alternativa.setAlternativa(rSet.getString("ALTERNATIVA"));
-        alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE")));
+        alternativa.setAlternativa(rSet.getString("DESCRICAO_ALTERNATIVA"));
+        alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
+        alternativa.setOrdemExibicao(rSet.getInt("ORDEM_ALTERNATIVA"));
         if (alternativa.getAlternativa().equals("Outros")) {
             alternativa.setTipo(AlternativaChecklist.TIPO_OUTROS);
             alternativa.setRespostaOutros(rSet.getString("RESPOSTA"));
@@ -294,7 +334,8 @@ public final class ChecklistConverter {
     }
 
     // remonta as alternativas de uma Pergunta
-    private static void setRespostaAlternativa(AlternativaChecklist alternativa, ResultSet rSet) throws SQLException {
+    private static void setRespostaAlternativa(@NotNull final AlternativaChecklist alternativa,
+                                               @NotNull final ResultSet rSet) throws SQLException {
         if (rSet.getString("RESPOSTA").equals("NOK")) {
             alternativa.selected = true;
         } else if (rSet.getString("RESPOSTA").equals("OK")) {

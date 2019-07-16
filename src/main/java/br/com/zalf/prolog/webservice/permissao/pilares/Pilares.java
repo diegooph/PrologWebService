@@ -160,8 +160,6 @@ public final class Pilares {
 
     public static final class Gente extends Pilar {
 
-        public static final int RANKING = 33;
-
         public final class Intervalo {
             private Intervalo() {
             }
