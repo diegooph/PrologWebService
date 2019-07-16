@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.98"></a>
-## Version [v0.0.98](https://github.com/luizfp/PrologWebService/compare/v0.0.97...v0.0.98) (release-date) [unreleased]
+## Version [v0.0.98](https://github.com/luizfp/PrologWebService/compare/v0.0.97...v0.0.98) (2019-07-16)
 
 ### Features
 * Adiciona estrutura para inserção, listagem, edição e deleção lógica de cargos
