@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.geral.dispositivo_movel;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovel;
+import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovelInsercao;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.MarcaDispositivoMovelSelecao;
 import org.jetbrains.annotations.NotNull;
 
@@ -108,6 +109,35 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
             rSet = stmt.executeQuery();
             if (!rSet.next() || rSet.getInt(1) <= 0) {
                 throw new SQLException("Erro ao atualizar o dispositivo móvel: " + dispositivo.getCodDispositivo());
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Long insertDispositivoMovel(@NotNull final DispositivoMovelInsercao dispositivo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_GERAL_INSERE_DISPOSITIVO_MOVEL(" +
+                    "F_COD_EMPRESA := ?, " +
+                    "F_COD_MARCA  := ?, " +
+                    "F_IMEI  := ?, " +
+                    "F_MODELO  := ?, " +
+                    "F_DESCRICAO       := ?) AS CODIGO;");
+            stmt.setLong(1, dispositivo.getCodEmpresa());
+            stmt.setLong(2, dispositivo.getCodMarca());
+            stmt.setString(3, dispositivo.getNumeroImei());
+            stmt.setString(4, dispositivo.getModelo());
+            stmt.setString(5, dispositivo.getDescricao());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Erro ao inserir dispositivo móvel");
             }
         } finally {
             close(conn, stmt, rSet);

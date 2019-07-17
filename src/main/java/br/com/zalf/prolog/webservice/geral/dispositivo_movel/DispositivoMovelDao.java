@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.geral.dispositivo_movel;
 
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovel;
+import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovelInsercao;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.MarcaDispositivoMovelSelecao;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,9 +52,20 @@ public interface DispositivoMovelDao {
      * <p>
      * Não é possível alterar o IMEI para um já existente.
      *
-     * @param dispositivoMovel Objeto contendo as novas informações para o cargo.
+     * @param dispositivoMovel Objeto contendo as novas informações para o dispositivo.
      * @throws Throwable Caso qualquer erro aconteça.
      */
     void updateDispositivoMovel(@NotNull final DispositivoMovel dispositivoMovel) throws Throwable;
+
+    /**
+     * Insere um {@link DispositivoMovelInsercao dispositivo móvel}.
+     * Atualmente este método insere as informações baseado na seguinte lógica:
+     * <p>
+     * Não é possível inserir um IMEI já existente.
+     *
+     * @param dispositivoMovel Objeto contendo as novas informações para o dispositivo.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
+    Long insertDispositivoMovel(@NotNull final DispositivoMovelInsercao dispositivoMovel) throws Throwable;
 
 }

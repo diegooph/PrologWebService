@@ -1,10 +1,13 @@
 package br.com.zalf.prolog.webservice.geral.dispositivo_movel;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovel;
+import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovelInsercao;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.MarcaDispositivoMovelSelecao;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,6 +73,20 @@ public final class DispositivoMovelService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar o dispositivo móvel, tente novamente");
+        }
+    }
+
+
+
+    @NotNull
+    public AbstractResponse insertDispositivoMovel(DispositivoMovelInsercao dispositivo) throws ProLogException{
+        try{
+            return ResponseWithCod.ok("Dispositivo móvel inserido com sucesso", dao.insertDispositivoMovel(dispositivo));
+        } catch (final Throwable e){
+            Log.e(TAG, "Erro ao inserir dispositivo móvel para a empresa: " + dispositivo.getCodEmpresa(), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao inserir o dispositivo móvel");
         }
     }
 }

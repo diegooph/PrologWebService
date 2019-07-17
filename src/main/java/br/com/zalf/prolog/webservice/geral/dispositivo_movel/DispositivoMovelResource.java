@@ -1,9 +1,11 @@
 package br.com.zalf.prolog.webservice.geral.dispositivo_movel;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovel;
+import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovelInsercao;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.MarcaDispositivoMovelSelecao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
@@ -60,5 +62,12 @@ public final class DispositivoMovelResource {
     @Path("/dispositivo")
     public Response updateDispositivoMovel(@Required final DispositivoMovel dispositivo) throws ProLogException {
         return service.updateDispositivoMovel(dispositivo);
+    }
+
+    @POST
+    @Secured()
+    @Path("/dispositivo")
+    public AbstractResponse insertDispositivoMovel(@Required DispositivoMovelInsercao dispositivo){
+        return service.insertDispositivoMovel(dispositivo);
     }
 }
