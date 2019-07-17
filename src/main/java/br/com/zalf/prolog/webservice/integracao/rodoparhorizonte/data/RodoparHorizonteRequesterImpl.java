@@ -84,7 +84,7 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
                 }
                 final ProLogError proLogError = toProLogError(response.errorBody());
                 throw new RodoparHorizonteException(
-                        proLogError.getMessage(),
+                        ErrorBodyHandler.getErrorMessage(response.code(), proLogError),
                         "Integração retornou um erro e mapeamos para a estrutura do ProLogError");
             }
         } else {

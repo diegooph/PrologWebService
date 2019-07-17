@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ErrorBodyHandler {
     private static final String TAG = ErrorBodyHandler.class.getSimpleName();
+    private static final String DEFAULT_MESSAGE_FOR_INTERNAL_SERVER_ERROR =
+            "Erro no Sistema Rodopar, contate os administradores da Horizonte";
 
     /**
      * Este método receberá o JSON presente na mensagem de erro da integração entre ProLog e Rodopar e retornará um
@@ -43,10 +45,34 @@ public final class ErrorBodyHandler {
         }
     }
 
+    /**
+     * Método utilizado para ler o conteúdo presente no corpo do erro retornado pelo Sistema Rodopar.
+     *
+     * @param errorBody Body presente em uma error response de uma requisição.
+     * @return Um objeto específico para tratar erros de autenticação na integração com o Rodopar.
+     * @throws Throwable Se algum erro acontecer.
+     */
     @NotNull
     public static RodoparHorizonteTokenError getTokenExceptionFromBody(
             @NotNull final ResponseBody errorBody) throws Throwable {
         final String jsonBody = errorBody.string();
         return RodoparHorizonteTokenError.generateFromString(jsonBody);
+    }
+
+    /**
+     * Método utilizado para tratar corretamente as situações de erro. Este método retorna uma mensagem específica para
+     * situações onde ocorram ERRO 500 (Internal Server Error).
+     *
+     * @param httpStatusCode Código que representa o estado do retorno.
+     * @param proLogError    Objeto retornado do Sistema Rodopar contendo as informações sobre o erro ocorrido.
+     * @return Uma String que representa a mensagem a ser exibida ao usuário.
+     */
+    @NotNull
+    public static String getErrorMessage(final int httpStatusCode, @NotNull final ProLogError proLogError) {
+        // Se for um ERRO 500 então retornamos a mensagem padrão.
+        if (httpStatusCode == javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+            return DEFAULT_MESSAGE_FOR_INTERNAL_SERVER_ERROR;
+        }
+        return proLogError.getMessage();
     }
 }
