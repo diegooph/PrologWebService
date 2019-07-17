@@ -38,7 +38,7 @@ public interface DispositivoMovelDao {
      * Este método é utilizado para buscar um {@link DispositivoMovel dispositivo móvel} específico pelo
      * código do registro e código da empresa.
      *
-     * @param codEmpresa Código da Empresa a qual o dispositivo móvel está cadastrado
+     * @param codEmpresa     Código da Empresa a qual o dispositivo móvel está cadastrado
      * @param codDispositivo Código do registro do dispositivo móvel no banco de dados.
      * @return O objeto com as informações do {@link DispositivoMovel dispositivo móvel}.
      * @throws Throwable Caso ocorra qualquer erro na busca dos dados.
@@ -67,5 +67,15 @@ public interface DispositivoMovelDao {
      * @throws Throwable Caso qualquer erro aconteça.
      */
     Long insertDispositivoMovel(@NotNull final DispositivoMovelInsercao dispositivoMovel) throws Throwable;
+
+    /**
+     * Deleta um dispositivo móvel.
+     *
+     * @param codEmpresa     Código da empresa que o dispositivo que será deletado pertence.
+     * @param codDispositivo Código do dispositivo que será deletado.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
+    void deleteDispositivoMovel(@NotNull final Long codEmpresa,
+                                @NotNull final Long codDispositivo) throws Throwable;
 
 }

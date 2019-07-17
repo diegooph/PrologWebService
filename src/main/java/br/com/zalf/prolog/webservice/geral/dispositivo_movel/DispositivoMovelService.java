@@ -76,8 +76,6 @@ public final class DispositivoMovelService {
         }
     }
 
-
-
     @NotNull
     public AbstractResponse insertDispositivoMovel(DispositivoMovelInsercao dispositivo) throws ProLogException{
         try{
@@ -87,6 +85,21 @@ public final class DispositivoMovelService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao inserir o dispositivo móvel");
+        }
+    }
+
+
+    @NotNull
+    public Response deleteDispositivoMovel(@NotNull final Long codEmpresa,
+                                           @NotNull final Long codDispositivo) throws ProLogException {
+        try {
+            dao.deleteDispositivoMovel(codEmpresa, codDispositivo);
+            return Response.ok("Dispositivo móvel deletado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao deletar o dispositivo móvel", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao deletar o  móvel, tente novamente");
         }
     }
 }

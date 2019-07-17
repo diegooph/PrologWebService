@@ -143,4 +143,26 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
             close(conn, stmt, rSet);
         }
     }
+
+    @Override
+    public void deleteDispositivoMovel(@NotNull final Long codEmpresa,
+                                       @NotNull final Long codDispositivo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_GERAL_DELETA_DISPOSITIVO_MOVEL(" +
+                    "F_COD_EMPRESA := ?, " +
+                    "F_COD_DISPOSITIVO       := ?);");
+            stmt.setLong(1,codEmpresa);
+            stmt.setLong(2, codDispositivo);
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || rSet.getInt(1) <= 0) {
+                throw new SQLException("Erro ao deletar o dispositivo móvel: " + codDispositivo);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

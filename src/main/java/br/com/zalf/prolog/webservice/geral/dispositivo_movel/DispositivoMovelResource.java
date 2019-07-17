@@ -41,7 +41,7 @@ public final class DispositivoMovelResource {
     }
 
     @GET
-    @Secured()
+    @Secured
     @Path("/dispositivos-por-empresa")
     public List<DispositivoMovel> getDispositivosPorEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
@@ -49,7 +49,7 @@ public final class DispositivoMovelResource {
     }
 
     @GET
-    @Secured()
+    @Secured
     @Path("/dispositivo")
     public DispositivoMovel getDispositivo(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
@@ -58,16 +58,25 @@ public final class DispositivoMovelResource {
     }
 
     @PUT
-    @Secured()
+    @Secured
     @Path("/dispositivo")
     public Response updateDispositivoMovel(@Required final DispositivoMovel dispositivo) throws ProLogException {
         return service.updateDispositivoMovel(dispositivo);
     }
 
     @POST
-    @Secured()
+    @Secured
     @Path("/dispositivo")
-    public AbstractResponse insertDispositivoMovel(@Required DispositivoMovelInsercao dispositivo){
+    public AbstractResponse insertDispositivoMovel(@Required DispositivoMovelInsercao dispositivo) {
         return service.insertDispositivoMovel(dispositivo);
+    }
+
+    @DELETE
+    @Secured
+    @Path("/dispositivo/{codEmpresa}/{codDispositivo}")
+    public Response deleteDispositivoMovel(
+            @PathParam("codEmpresa") @Required final Long codEmpresa,
+            @PathParam("codDispositivo") @Required final Long codDispositivo) throws ProLogException {
+        return service.deleteDispositivoMovel(codEmpresa, codDispositivo);
     }
 }
