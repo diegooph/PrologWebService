@@ -45,6 +45,15 @@ public interface DispositivoMovelDao {
     @NotNull
     DispositivoMovel getDispositivoMovel(@NotNull final Long codEmpresa, @NotNull final Long codDispositivo) throws Throwable;
 
-
+    /**
+     * Atualiza as informações de um {@link DispositivoMovel dispositivo móvel}.
+     * Atualmente este método atualiza as informações baseado na seguinte lógica:
+     * <p>
+     * Não é possível alterar o IMEI para um já existente.
+     *
+     * @param dispositivoMovel Objeto contendo as novas informações para o cargo.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
+    void updateDispositivoMovel(@NotNull final DispositivoMovel dispositivoMovel) throws Throwable;
 
 }

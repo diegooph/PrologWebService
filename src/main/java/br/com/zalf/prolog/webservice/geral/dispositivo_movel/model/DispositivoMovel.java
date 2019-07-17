@@ -26,8 +26,8 @@ public final class DispositivoMovel {
                 final String descricao) {
         this.codDispositivo = codDispositivo;
         this.codEmpresa = codEmpresa;
-        this.codMarca = codMarca;
         this.numeroImei = numeroImei;
+        this.codMarca = codMarca;
         this.modelo = modelo;
         this.descricao = descricao;
     }

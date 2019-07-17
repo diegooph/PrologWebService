@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.geral.dispositivo_movel;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovel;
@@ -56,6 +57,19 @@ public final class DispositivoMovelService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar o dispositivo móvel, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Response updateDispositivoMovel(@NotNull final DispositivoMovel dispositivoMovel) throws ProLogException {
+        try {
+            dao.updateDispositivoMovel(dispositivoMovel);
+            return Response.ok("Dispositivo móvel atualizado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o dispositivo móvel", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o dispositivo móvel, tente novamente");
         }
     }
 }

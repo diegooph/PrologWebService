@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.geral.dispositivo_movel;
 
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovel;
@@ -52,5 +53,12 @@ public final class DispositivoMovelResource {
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
             @QueryParam("codDispositivo") @Required final Long codDispositivo) throws ProLogException {
         return service.getDispositivoMovel(codEmpresa, codDispositivo);
+    }
+
+    @PUT
+    @Secured()
+    @Path("/dispositivo")
+    public Response updateDispositivoMovel(@Required final DispositivoMovel dispositivo) throws ProLogException {
+        return service.updateDispositivoMovel(dispositivo);
     }
 }

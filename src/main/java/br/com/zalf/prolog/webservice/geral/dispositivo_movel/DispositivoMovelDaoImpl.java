@@ -83,4 +83,34 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
             close(conn, stmt, rSet);
         }
     }
+
+
+    @Override
+    public void updateDispositivoMovel(@NotNull final DispositivoMovel dispositivo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_GERAL_EDITA_DISPOSITIVO_MOVEL(" +
+                    "F_COD_EMPRESA := ?, " +
+                    "F_COD_DISPOSITIVO   := ?, " +
+                    "F_COD_MARCA  := ?, " +
+                    "F_IMEI  := ?, " +
+                    "F_MODELO  := ?, " +
+                    "F_DESCRICAO       := ?);");
+            stmt.setLong(1, dispositivo.getCodEmpresa());
+            stmt.setLong(2, dispositivo.getCodDispositivo());
+            stmt.setLong(3, dispositivo.getCodMarca());
+            stmt.setString(4, dispositivo.getNumeroImei());
+            stmt.setString(5, dispositivo.getModelo());
+            stmt.setString(6, dispositivo.getDescricao());
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || rSet.getInt(1) <= 0) {
+                throw new SQLException("Erro ao atualizar o dispositivo móvel: " + dispositivo.getCodDispositivo());
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }
