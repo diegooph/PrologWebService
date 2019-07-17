@@ -124,8 +124,8 @@ import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
-import br.com.zalf.prolog.webservice.geral.imei.ImeiDao;
-import br.com.zalf.prolog.webservice.geral.imei.ImeiDaoImpl;
+import br.com.zalf.prolog.webservice.geral.dispositivo_movel.DispositivoMovelDao;
+import br.com.zalf.prolog.webservice.geral.dispositivo_movel.DispositivoMovelDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDao;
@@ -471,8 +471,8 @@ public final class Injection {
 
 
     @NotNull
-    public static ImeiDao provideImeiDao() {
-        return new ImeiDaoImpl();
+    public static DispositivoMovelDao provideDispositivoMovelDao() {
+        return new DispositivoMovelDaoImpl();
     }
 
     // ================================================

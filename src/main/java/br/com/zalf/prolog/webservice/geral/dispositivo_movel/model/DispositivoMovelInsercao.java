@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.geral.imei.model;
+package br.com.zalf.prolog.webservice.geral.dispositivo_movel.model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public final class ImeiInsercao {
+public final class DispositivoMovelInsercao {
     @NotNull
     private final Long codEmpresa;
     @NotNull
@@ -16,7 +16,7 @@ public final class ImeiInsercao {
     private final String modelo;
     private final String descricao;
 
-    public ImeiInsercao(@NotNull final Long codEmpresa,
+    public DispositivoMovelInsercao(@NotNull final Long codEmpresa,
                         @NotNull final String numeroImei,
                         final Long codMarca,
                         final String modelo,

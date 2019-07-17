@@ -1,17 +1,15 @@
-package br.com.zalf.prolog.webservice.geral.imei.model;
+package br.com.zalf.prolog.webservice.geral.dispositivo_movel.model;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * Created on 16/07/19
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public final class Imei {
+public final class DispositivoMovel {
     @NotNull
-    private final Long codImei;
+    private final Long codDispositivo;
     @NotNull
     private final Long codEmpresa;
     @NotNull
@@ -20,13 +18,13 @@ public final class Imei {
     private final String modelo;
     private final String descricao;
 
-    public Imei(@NotNull final Long codImei,
+    public DispositivoMovel(@NotNull final Long codDispositivo,
                 @NotNull final Long codEmpresa,
                 @NotNull final String numeroImei,
                 final Long codMarca,
                 final String modelo,
                 final String descricao) {
-        this.codImei = codImei;
+        this.codDispositivo = codDispositivo;
         this.codEmpresa = codEmpresa;
         this.codMarca = codMarca;
         this.numeroImei = numeroImei;
@@ -35,8 +33,8 @@ public final class Imei {
     }
 
     @NotNull
-    public Long getCodImei() {
-        return codImei;
+    public Long getCodDispositivo() {
+        return codDispositivo;
     }
 
     @NotNull
