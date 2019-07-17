@@ -38,4 +38,25 @@ public final class ImeiDaoImpl extends DatabaseConnection implements ImeiDao {
             close(conn, stmt, rSet);
         }
     }
+
+    @NotNull
+    @Override
+    public List<Imei> getImeisPorEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_GERAL_GET_IMEIS_EMPRESA(F_COD_EMPRESA := ?);");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            final List<Imei> imeis = new ArrayList<>();
+            while (rSet.next()) {
+                imeis.add(ImeiConverter.createImei(rSet));
+            }
+            return imeis;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

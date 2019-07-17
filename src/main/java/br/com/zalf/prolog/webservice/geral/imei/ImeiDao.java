@@ -21,6 +21,16 @@ public interface ImeiDao {
     @NotNull
     List<MarcaCelularSelecao> getMarcasCelular() throws Throwable;
 
+
+    /**
+     * Este método é utilizado para buscar todos os {@link Imei IMEIs} por empresa.
+     *
+     * @return Uma lista com os {@link Imei IMEIs}.
+     * @throws Throwable Caso ocorra qualquer erro na busca dos dados.
+     */
+    @NotNull
+    List<Imei> getImeisPorEmpresa(@NotNull final Long codEmpresa) throws Throwable;
+
 //    /**
 //     * Este método é utilizado para buscar todos os {@link Imei IMEIs} da empresa.
 //     *

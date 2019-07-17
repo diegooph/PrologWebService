@@ -38,4 +38,12 @@ public final class ImeiResource {
     public List<MarcaCelularSelecao> getMarcasCelular() throws ProLogException {
         return service.getMarcasCelular();
     }
+
+    @GET
+    @Secured()
+    @Path("/imeis-por-empresa")
+    public List<Imei> getImeisPorEmpresa(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
+        return service.getImeisPorEmpresa(codEmpresa);
+    }
 }

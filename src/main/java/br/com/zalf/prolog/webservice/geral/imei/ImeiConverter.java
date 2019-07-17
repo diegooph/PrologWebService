@@ -27,4 +27,15 @@ public final class ImeiConverter {
                 rSet.getString("NOME_MARCA"));
     }
 
+    @NotNull
+    static Imei createImei(@NotNull final ResultSet rSet) throws Throwable {
+        return new Imei(
+                rSet.getLong("CODIGO"),
+                rSet.getLong("COD_EMPRESA"),
+                rSet.getString("IMEI"),
+                rSet.getLong("COD_MARCA"),
+                rSet.getString("MODELO"),
+                rSet.getString("DESCRICAO")
+        );
+    }
 }

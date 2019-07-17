@@ -34,4 +34,17 @@ public final class ImeiService {
                     .map(throwable, "Erro ao buscar as marcas de celular, tente novamente");
         }
     }
+
+    @NotNull
+    public List<Imei> getImeisPorEmpresa(@NotNull final Long codEmpresa) throws ProLogException {
+        try {
+            return dao.getImeisPorEmpresa(codEmpresa);
+        } catch (final Throwable throwable) {
+            final String errorMessage = "Erro ao buscar os IMEIs";
+            Log.e(TAG, errorMessage, throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar as marcas de celular, tente novamente");
+        }
+    }
 }
