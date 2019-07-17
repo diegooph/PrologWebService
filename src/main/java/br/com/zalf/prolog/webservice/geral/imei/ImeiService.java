@@ -27,7 +27,7 @@ public final class ImeiService {
         try {
             return dao.getMarcasCelular();
         } catch (final Throwable throwable) {
-            final String errorMessage = String.format("Erro ao buscar as marcas de celular");
+            final String errorMessage = "Erro ao buscar as marcas de celular";
             Log.e(TAG, errorMessage, throwable);
             throw Injection
                     .provideProLogExceptionHandler()
