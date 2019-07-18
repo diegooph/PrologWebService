@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMo
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovelInsercao;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.MarcaDispositivoMovelSelecao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -41,7 +42,7 @@ public final class DispositivoMovelResource {
     }
 
     @GET
-    @Secured
+    @Secured(permissions = {Pilares.Geral.DispositivosMoveis.GESTAO})
     @Path("/dispositivos-por-empresa")
     public List<DispositivoMovel> getDispositivosPorEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
@@ -49,7 +50,7 @@ public final class DispositivoMovelResource {
     }
 
     @GET
-    @Secured
+    @Secured(permissions = {Pilares.Geral.DispositivosMoveis.GESTAO})
     @Path("/dispositivo")
     public DispositivoMovel getDispositivo(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
@@ -58,21 +59,21 @@ public final class DispositivoMovelResource {
     }
 
     @PUT
-    @Secured
+    @Secured(permissions = {Pilares.Geral.DispositivosMoveis.GESTAO})
     @Path("/dispositivo")
     public Response updateDispositivoMovel(@Required final DispositivoMovel dispositivo) throws ProLogException {
         return service.updateDispositivoMovel(dispositivo);
     }
 
     @POST
-    @Secured
+    @Secured(permissions = {Pilares.Geral.DispositivosMoveis.GESTAO})
     @Path("/dispositivo")
     public AbstractResponse insertDispositivoMovel(@Required DispositivoMovelInsercao dispositivo) {
         return service.insertDispositivoMovel(dispositivo);
     }
 
     @DELETE
-    @Secured
+    @Secured(permissions = {Pilares.Geral.DispositivosMoveis.GESTAO})
     @Path("/dispositivo/{codEmpresa}/{codDispositivo}")
     public Response deleteDispositivoMovel(
             @PathParam("codEmpresa") @Required final Long codEmpresa,

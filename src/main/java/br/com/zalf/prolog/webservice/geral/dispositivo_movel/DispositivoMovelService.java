@@ -38,7 +38,7 @@ public final class DispositivoMovelService {
     }
 
     @NotNull
-    public List<DispositivoMovel> getDispositivosPorEmpresa(@NotNull final Long codEmpresa) throws ProLogException {
+    public List<DispositivoMovel> getDispositivosPorEmpresa(final Long codEmpresa) throws ProLogException {
         try {
             return dao.getDispositivosPorEmpresa(codEmpresa);
         } catch (final Throwable throwable) {
@@ -51,7 +51,8 @@ public final class DispositivoMovelService {
     }
 
     @NotNull
-    public DispositivoMovel getDispositivoMovel(@NotNull final Long codEmpresa, @NotNull final Long codDispositivo) throws ProLogException {
+    public DispositivoMovel getDispositivoMovel(final Long codEmpresa,
+                                                final Long codDispositivo) throws ProLogException {
         try {
             return dao.getDispositivoMovel(codEmpresa, codDispositivo);
         } catch (final Throwable throwable) {
@@ -64,7 +65,7 @@ public final class DispositivoMovelService {
     }
 
     @NotNull
-    public Response updateDispositivoMovel(@NotNull final DispositivoMovel dispositivoMovel) throws ProLogException {
+    public Response updateDispositivoMovel(final DispositivoMovel dispositivoMovel) throws ProLogException {
         try {
             dao.updateDispositivoMovel(dispositivoMovel);
             return Response.ok("Dispositivo móvel atualizado com sucesso");
@@ -77,7 +78,7 @@ public final class DispositivoMovelService {
     }
 
     @NotNull
-    public AbstractResponse insertDispositivoMovel(DispositivoMovelInsercao dispositivo) throws ProLogException{
+    public AbstractResponse insertDispositivoMovel(final DispositivoMovelInsercao dispositivo) throws ProLogException{
         try{
             return ResponseWithCod.ok("Dispositivo móvel inserido com sucesso", dao.insertDispositivoMovel(dispositivo));
         } catch (final Throwable e){
@@ -90,8 +91,8 @@ public final class DispositivoMovelService {
 
 
     @NotNull
-    public Response deleteDispositivoMovel(@NotNull final Long codEmpresa,
-                                           @NotNull final Long codDispositivo) throws ProLogException {
+    public Response deleteDispositivoMovel(final Long codEmpresa,
+                                           final Long codDispositivo) throws ProLogException {
         try {
             dao.deleteDispositivoMovel(codEmpresa, codDispositivo);
             return Response.ok("Dispositivo móvel deletado com sucesso");

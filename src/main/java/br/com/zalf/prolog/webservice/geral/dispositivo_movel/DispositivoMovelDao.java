@@ -15,9 +15,9 @@ import java.util.List;
 public interface DispositivoMovelDao {
 
     /**
-     * Este método é utilizado para buscar todos as {@link MarcaDispositivoMovelSelecao marcas de celular}.
+     * Este método é utilizado para buscar todos as {@link MarcaDispositivoMovelSelecao marcas de dispositivos móveis}.
      *
-     * @return Uma lista com todos as {@link MarcaDispositivoMovelSelecao marcas de celular}.
+     * @return Uma lista com todos as {@link MarcaDispositivoMovelSelecao marcas de dispositivos móveis}.
      * @throws Throwable Caso ocorra qualquer erro na busca dos dados.
      */
     @NotNull
