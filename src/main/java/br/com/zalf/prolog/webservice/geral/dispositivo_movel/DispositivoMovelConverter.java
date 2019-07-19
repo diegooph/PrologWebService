@@ -31,6 +31,7 @@ public final class DispositivoMovelConverter {
                 rSet.getLong("COD_EMPRESA"),
                 rSet.getString("IMEI"),
                 rSet.getLong("COD_MARCA"),
+                rSet.getString("MARCA"),
                 rSet.getString("MODELO"),
                 rSet.getString("DESCRICAO")
         );

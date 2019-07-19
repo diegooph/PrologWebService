@@ -15,19 +15,22 @@ public final class DispositivoMovel {
     @NotNull
     private final String numeroImei;
     private final Long codMarca;
+    private final String marca;
     private final String modelo;
     private final String descricao;
 
     public DispositivoMovel(@NotNull final Long codDispositivo,
-                @NotNull final Long codEmpresa,
-                @NotNull final String numeroImei,
-                final Long codMarca,
-                final String modelo,
-                final String descricao) {
+                            @NotNull final Long codEmpresa,
+                            @NotNull final String numeroImei,
+                            final Long codMarca,
+                            final String marca,
+                            final String modelo,
+                            final String descricao) {
         this.codDispositivo = codDispositivo;
         this.codEmpresa = codEmpresa;
         this.numeroImei = numeroImei;
         this.codMarca = codMarca;
+        this.marca = marca;
         this.modelo = modelo;
         this.descricao = descricao;
     }
@@ -50,6 +53,8 @@ public final class DispositivoMovel {
     public Long getCodMarca() {
         return codMarca;
     }
+
+    public String getMarca() { return marca; }
 
     public String getModelo() {
         return modelo;
