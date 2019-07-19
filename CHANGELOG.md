@@ -1,3 +1,9 @@
+Stage
+==========
+
+### Features
+* Adiciona a gestão de dispositivos móveis por empresa
+
 Change Log
 ==========
 
