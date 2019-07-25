@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
 import org.jetbrains.annotations.NotNull;
-
 import java.sql.Connection;
 import java.util.List;
 

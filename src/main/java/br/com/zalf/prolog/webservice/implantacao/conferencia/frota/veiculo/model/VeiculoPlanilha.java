@@ -7,20 +7,22 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.mode
  */
 public class VeiculoPlanilha {
 
-    private Long cod_unidade;
+    private Long codUnidade;
     private String placa;
     private Long km;
-    private boolean status_ativo;
-    private Long cod_tipo;
-    private Long cod_modelo;
-    private Long cod_unidade_cadastro;
+    private boolean statusAtivo;
+    private String tipo;
+    private String marca;
+    private String modelo;
+    private Long codUnidadeCadastro;
+    private int linha = -1;
 
-    public Long getCod_unidade() {
-        return cod_unidade;
+    public Long getCodUnidade() {
+        return codUnidade;
     }
 
-    public void setCod_unidade(Long cod_unidade) {
-        this.cod_unidade = cod_unidade;
+    public void setCodUnidade(Long codUnidade) {
+        this.codUnidade = codUnidade;
     }
 
     public String getPlaca() {
@@ -39,35 +41,55 @@ public class VeiculoPlanilha {
         this.km = km;
     }
 
-    public boolean isStatus_ativo() {
-        return status_ativo;
+    public boolean isStatusAtivo() {
+        return statusAtivo;
     }
 
-    public void setStatus_ativo(boolean status_ativo) {
-        this.status_ativo = status_ativo;
+    public void setStatusAtivo(boolean statusAtivo) {
+        this.statusAtivo = statusAtivo;
     }
 
-    public Long getCod_tipo() {
-        return cod_tipo;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setCod_tipo(Long cod_tipo) {
-        this.cod_tipo = cod_tipo;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
-    public Long getCod_modelo() {
-        return cod_modelo;
+    public String getMarca() {
+        return marca;
     }
 
-    public void setCod_modelo(Long cod_modelo) {
-        this.cod_modelo = cod_modelo;
+    public void setMarca(String marca) {
+        this.marca = marca;
     }
 
-    public Long getCod_unidade_cadastro() {
-        return cod_unidade_cadastro;
+    public String getModelo() {
+        return modelo;
     }
 
-    public void setCod_unidade_cadastro(Long cod_unidade_cadastro) {
-        this.cod_unidade_cadastro = cod_unidade_cadastro;
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
     }
+
+    public Long getCodUnidadeCadastro() {
+        return codUnidadeCadastro;
+    }
+
+    public void setCodUnidadeCadastro(Long codUnidadeCadastro) {
+        this.codUnidadeCadastro = codUnidadeCadastro;
+    }
+
+    public int getLinha() {
+        return linha;
+    }
+
+    public void setLinha(int linha) {
+        this.linha = linha;
+    }
+
 }
+
+
+

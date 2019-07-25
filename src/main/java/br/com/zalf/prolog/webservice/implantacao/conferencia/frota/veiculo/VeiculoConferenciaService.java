@@ -2,9 +2,18 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
+import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.insert.VeiculoPlanilhaReader;
+import org.apache.commons.io.IOUtils;
+import com.google.common.io.Files;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
 
@@ -19,17 +28,51 @@ public class VeiculoConferenciaService  {
     private final VeiculoConferenciaDao dao = Injection.provideVeiculoConferenciaDao();
 
     @NotNull
-    public List<Long> insert(@NotNull final InputStream fileInputStream) throws ProLogException {
-        /*try {
-            return dao.insert(VeiculoImportReader.readFromCsv(fileInputStream));
-        } catch (final Throwable throwable) {
-            final String errorMessage = "Erro ao inserir pneus -- " + throwable.getMessage();
-            Log.e(TAG, errorMessage, throwable);
-            throw Injection
-                    .providePneuExceptionHandler()
-                    .map(throwable, errorMessage);
-        }*/
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
+
+    @NotNull
+    public List<Long> insert(@NotNull final Long codUnidade,
+                             @NotNull final InputStream fileInputStream,
+                             @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
+        try {
+            final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
+            final List<VeiculoPlanilha> veiculoPlanilhaItens = VeiculoPlanilhaReader
+                    .readListFromCsvFilePath(file);
+
+            //Montar JSON para verificar no banco
+
+//            for (VeiculoPlanilha item : veiculoPlanilhaItens) {
+//                RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(item);
+//                // O código da unidade vem no path pois os itens são importados através de arquivo.
+//                item.setCodUnidade(codUnidade);
+//            }
+
+//            dao.insertOrUpdateProdutividadeRaizen(
+//                    TokenCleaner.getOnlyToken(token),
+//                    raizenProdutividadeItens);
+//            return Response.ok("Upload realizado com sucesso!");
+        } catch (final Throwable e) {
+            final String errorMessage = "Não foi possível inserir os dados no banco de dados, tente novamente!";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
+        }
+
         return null;
     }
 
+    @NotNull
+    @SuppressWarnings("Duplicates")
+    private File createFileFromImport(@NotNull final Long codUnidade,
+                                      @NotNull final InputStream fileInputStream,
+                                      @NotNull final FormDataContentDisposition fileDetail) throws Throwable {
+        final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade
+                + "_" + fileDetail.getFileName().replace(" ", "_");
+        // Pasta temporária
+        final File tmpDir = Files.createTempDir();
+        final File file = new File(tmpDir, fileName);
+        final FileOutputStream out = new FileOutputStream(file);
+        IOUtils.copy(fileInputStream, out);
+        IOUtils.closeQuietly(out);
+        return file;
+    }
 }
