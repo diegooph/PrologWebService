@@ -1,12 +1,10 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.modal.VeiculoPlanilha;
+import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.util.List;
-
-import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
 
 /**
  * Created on 23/07/19.
@@ -18,7 +16,7 @@ public class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
 
     @NotNull
     @Override
-    public List<Long> insert(@NotNull List<VeiculoPLanilha> veiculoPLanilha) throws Throwable {
+    public List<Long> insert(@NotNull List<VeiculoPlanilha> veiculoPLanilha) throws Throwable {
 
         Connection conn = null;
         int linha = 1;
