@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
 import org.jetbrains.annotations.NotNull;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.modal.*;
+import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.*;
 
 import java.util.List;
 
@@ -20,5 +20,5 @@ public interface VeiculoConferenciaDao {
      * @throws Throwable Caso ocorra erro no banco.
      */
     @NotNull
-    List<Long> insert(@NotNull final List<VeiculoPLanilha> veiculoPLanilha) throws Throwable;
+    List<Long> insert(@NotNull final List<VeiculoPlanilha> veiculoPLanilha) throws Throwable;
 }
