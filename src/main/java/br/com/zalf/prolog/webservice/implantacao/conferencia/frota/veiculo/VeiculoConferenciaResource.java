@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionC
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,12 +42,12 @@ public class VeiculoConferenciaResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured
+    @Path ("/insert")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public List<Long> insert(
             @NotNull final Long codUnidade,
-            @FormDataParam("file") InputStream fileInputStream,
-            @FormDataParam("file") final FormDataContentDisposition fileDetail) throws ProLogException {
-        return service.insert(codUnidade, fileInputStream, fileDetail);
+            @FormDataParam("file") InputStream fileInputStream) throws ProLogException {
+        return service.insert(codUnidade, fileInputStream);
     }
 
 }

@@ -7,9 +7,8 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.insert.VeiculoPlanilhaReader;
-import org.apache.commons.io.IOUtils;
 import com.google.common.io.Files;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -32,10 +31,9 @@ public class VeiculoConferenciaService  {
 
     @NotNull
     public List<Long> insert(@NotNull final Long codUnidade,
-                             @NotNull final InputStream fileInputStream,
-                             @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
+                             @NotNull final InputStream fileInputStream) throws ProLogException {
         try {
-            final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
+            final File file = createFileFromImport(codUnidade, fileInputStream);
             final List<VeiculoPlanilha> veiculoPlanilhaItens = VeiculoPlanilhaReader
                     .readListFromCsvFilePath(file);
 
@@ -63,10 +61,9 @@ public class VeiculoConferenciaService  {
     @NotNull
     @SuppressWarnings("Duplicates")
     private File createFileFromImport(@NotNull final Long codUnidade,
-                                      @NotNull final InputStream fileInputStream,
-                                      @NotNull final FormDataContentDisposition fileDetail) throws Throwable {
+                                      @NotNull final InputStream fileInputStream) throws Throwable {
         final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade
-                + "_" + fileDetail.getFileName().replace(" ", "_");
+                + "_";
         // Pasta temporária
         final File tmpDir = Files.createTempDir();
         final File file = new File(tmpDir, fileName);
