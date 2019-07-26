@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.geral.dispositivo_movel.model;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * Created on 6/27/19
  *
@@ -11,19 +13,19 @@ public final class DispositivoMovelInsercao {
     @NotNull
     private final Long codEmpresa;
     @NotNull
-    private final String numeroImei;
+    private final List<String> numerosImei;
     private final Long codMarca;
     private final String modelo;
     private final String descricao;
 
     public DispositivoMovelInsercao(@NotNull final Long codEmpresa,
-                        @NotNull final String numeroImei,
+                        @NotNull final List<String> numerosImei,
                         final Long codMarca,
                         final String modelo,
                         final String descricao) {
         this.codEmpresa = codEmpresa;
         this.codMarca = codMarca;
-        this.numeroImei = numeroImei;
+        this.numerosImei = numerosImei;
         this.modelo = modelo;
         this.descricao = descricao;
     }
@@ -34,8 +36,8 @@ public final class DispositivoMovelInsercao {
     }
 
     @NotNull
-    public String getNumeroImei() {
-        return numeroImei;
+    public List<String> getNumerosImei() {
+        return numerosImei;
     }
 
     public Long getCodMarca() {

@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.geral.dispositivo_movel;
 
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovel;
 import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovelInsercao;
@@ -48,14 +50,10 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_GERAL_GET_DISPOSITIVOS_MOVEIS(F_COD_EMPRESA := ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_DISPOSITIVO_GET_DISPOSITIVOS_MOVEIS(F_COD_EMPRESA := ?);");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
-            final List<DispositivoMovel> dispositivos = new ArrayList<>();
-            while (rSet.next()) {
-                dispositivos.add(DispositivoMovelConverter.createDispositivoMovel(rSet));
-            }
-            return dispositivos;
+            return DispositivoMovelConverter.createDispositivoMovelListagem(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -69,17 +67,11 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_GERAL_GET_DISPOSITIVO_MOVEL(F_COD_EMPRESA := ?, F_COD_DISPOSITIVO := ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_DISPOSITIVO_GET_DISPOSITIVO_MOVEL(F_COD_EMPRESA := ?, F_COD_DISPOSITIVO := ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codDispositivo);
             rSet = stmt.executeQuery();
-            DispositivoMovel dispositivo;
-            if (rSet.next()) {
-                dispositivo = DispositivoMovelConverter.createDispositivoMovel(rSet);
-            } else {
-                throw new SQLException("Erro ao buscar dispositivo de código: " + codDispositivo);
-            }
-            return dispositivo;
+            return DispositivoMovelConverter.createDispositivoMovelVisualizacao(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -93,19 +85,19 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_GERAL_EDITA_DISPOSITIVO_MOVEL(" +
+            stmt = conn.prepareStatement("SELECT FUNC_DISPOSITIVO_EDITA_DISPOSITIVO_MOVEL(" +
                     "F_COD_EMPRESA := ?, " +
                     "F_COD_DISPOSITIVO   := ?, " +
                     "F_COD_MARCA  := ?, " +
-                    "F_IMEI  := ?, " +
                     "F_MODELO  := ?, " +
-                    "F_DESCRICAO       := ?);");
+                    "F_DESCRICAO  := ?, " +
+                    "F_IMEI       := ?);");
             stmt.setLong(1, dispositivo.getCodEmpresa());
             stmt.setLong(2, dispositivo.getCodDispositivo());
             stmt.setLong(3, dispositivo.getCodMarca());
-            stmt.setString(4, dispositivo.getNumeroImei());
-            stmt.setString(5, dispositivo.getModelo());
-            stmt.setString(6, dispositivo.getDescricao());
+            stmt.setString(4, dispositivo.getModelo());
+            stmt.setString(5, dispositivo.getDescricao());
+            stmt.setArray(6, PostgresUtils.listToArray(conn, SqlType.TEXT, dispositivo.getNumerosImei()));
             rSet = stmt.executeQuery();
             if (!rSet.next() || rSet.getInt(1) <= 0) {
                 throw new SQLException("Erro ao atualizar o dispositivo móvel: " + dispositivo.getCodDispositivo());
@@ -122,17 +114,17 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_GERAL_INSERE_DISPOSITIVO_MOVEL(" +
+            stmt = conn.prepareStatement("SELECT FUNC_DISPOSITIVO_INSERE_DISPOSITIVO_MOVEL_COM_IMEI(" +
                     "F_COD_EMPRESA := ?, " +
                     "F_COD_MARCA  := ?, " +
-                    "F_IMEI  := ?, " +
                     "F_MODELO  := ?, " +
-                    "F_DESCRICAO       := ?) AS CODIGO;");
+                    "F_DESCRICAO  := ?, " +
+                    "F_IMEI       := ?) AS CODIGO;");
             stmt.setLong(1, dispositivo.getCodEmpresa());
             stmt.setLong(2, dispositivo.getCodMarca());
-            stmt.setString(3, dispositivo.getNumeroImei());
-            stmt.setString(4, dispositivo.getModelo());
-            stmt.setString(5, dispositivo.getDescricao());
+            stmt.setString(3, dispositivo.getModelo());
+            stmt.setString(4, dispositivo.getDescricao());
+            stmt.setArray(5, PostgresUtils.listToArray(conn, SqlType.TEXT, dispositivo.getNumerosImei()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -152,7 +144,7 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_GERAL_DELETA_DISPOSITIVO_MOVEL(" +
+            stmt = conn.prepareStatement("SELECT FUNC_DISPOSITIVO_DELETA_DISPOSITIVO_MOVEL(" +
                     "F_COD_EMPRESA := ?, " +
                     "F_COD_DISPOSITIVO       := ?);");
             stmt.setLong(1,codEmpresa);
