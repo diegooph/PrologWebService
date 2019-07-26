@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.model;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
+import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,36 +14,135 @@ import java.util.Date;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class IntervaloMarcacao {
+    /**
+     * Código desta marcação presente no servidor.
+     */
     @NotNull
     private Long codigo;
+
+    /**
+     * Código sequencial desta marcação, para a unidade.
+     */
     @NotNull
     private Long codMarcacaoPorUnidade;
+
+    /**
+     * Código do Tipo da marcação realizada.
+     */
     @NotNull
     private Long codTipoIntervalo;
+
+    /**
+     * Código da Unidade da Marcação.
+     */
     @NotNull
     private Long codUnidade;
+
+    /**
+     * CPF do Colaborador que realizou a marcação
+     */
     @NotNull
     private Long cpfColaborador;
+
+    /**
+     * Data de Nascimento do Colaborador que realizou a marcação.
+     */
     @NotNull
     private Date dataNascimentoColaborador;
+
+    /**
+     * Data e Hora da marcação realizada.
+     */
     @NotNull
     private LocalDateTime dataHoraMaracao;
+
+    /**
+     * Constante que representa de onde a {@code dataHoraMaracao} foi obtida.
+     */
     @NotNull
     private FonteDataHora fonteDataHora;
+
+    /**
+     * Constante que representa se a marcação foi {@link TipoInicioFim#MARCACAO_INICIO}
+     * ou {@link TipoInicioFim#MARCACAO_FIM}.
+     */
     @NotNull
     private TipoInicioFim tipoMarcacaoIntervalo;
+
+    /**
+     * Descrição do motivo de o {@code tempoDecorrido} ser MAIOR que
+     * o {@link TipoMarcacao#tempoLimiteEstouro}.
+     */
     @Nullable
     private String justificativaEstouro;
+
+    /**
+     * Descrição do motivo de o {@code tempoDecorrido} ser MENOR que
+     * o {@link TipoMarcacao#tempoRecomendado}.
+     */
     @Nullable
     private String justificativaTempoRecomendado;
+
+    /**
+     * Localidade em que a marcação foi realizada.
+     */
     @Nullable
     private Localizacao localizacaoMarcacao;
+
+    /**
+     * Código da marcação vinculada à esta marcação.
+     */
     @Nullable
     private Long codMarcacaoVinculada;
+
+    /**
+     * Versão do aplicativo no momento que a marcação foi realizada.
+     */
     @Nullable
     private Integer versaoAppMomentoMarcacao;
+
+    /**
+     * Versão do aplicativo no momento que a marcação foi sincronizada.
+     */
     @Nullable
     private Integer versaoAppMomentoSincronizacao;
+
+    /**
+     * Identificador único do aparelho. No Android, é equivalente ao Android ID.
+     *
+     * @see <a href="Android Docs">https://developer.android.com/reference/android/provider/Settings.Secure.html#ANDROID_ID</a>
+     */
+    @Nullable
+    public String deviceId;
+
+    /**
+     * IMEI do aparelho.
+     */
+    @Nullable
+    public String deviceImei;
+
+    /**
+     * A versão da API do Android no momento da realização da marcação.
+     *
+     * @see <a href="Android Docs">https://developer.android.com/reference/android/os/Build.VERSION.html#SDK_INT</a>
+     */
+    public int androidApiVersion;
+
+    /**
+     * O tempo, em milissegundos, desde que o aparelho foi ligado até o momento da realização da
+     * marcação.
+     *
+     * @see <a href="Android Docs">https://developer.android.com/reference/android/os/SystemClock.html#elapsedRealtime()</a>
+     */
+    public long deviceUptimeRealizacaoMarcacaoMillis;
+
+    /**
+     * O tempo, em milissegundos, desde que o aparelho foi ligado até o momento da sincronização da
+     * marcação.
+     *
+     * @see <a href="Android Docs">https://developer.android.com/reference/android/os/SystemClock.html#elapsedRealtime()</a>
+     */
+    public long deviceUptimeSincronizacaoMarcacaoMillis;
 
     public IntervaloMarcacao() {
 
@@ -187,24 +287,45 @@ public final class IntervaloMarcacao {
         this.versaoAppMomentoSincronizacao = versaoAppMomentoSincronizacao;
     }
 
-    @Override
-    public String toString() {
-        return "IntervaloMarcacao{" +
-                "codigo=" + codigo +
-                ", codMarcacaoPorUnidade=" + codMarcacaoPorUnidade +
-                ", codTipoIntervalo=" + codTipoIntervalo +
-                ", codUnidade=" + codUnidade +
-                ", cpfColaborador=" + cpfColaborador +
-                ", dataNascimentoColaborador=" + dataNascimentoColaborador +
-                ", dataHoraMaracao=" + dataHoraMaracao +
-                ", fonteDataHora=" + fonteDataHora +
-                ", tipoMarcacaoIntervalo=" + tipoMarcacaoIntervalo +
-                ", justificativaEstouro='" + justificativaEstouro + '\'' +
-                ", justificativaTempoRecomendado='" + justificativaTempoRecomendado + '\'' +
-                ", localizacaoMarcacao=" + localizacaoMarcacao +
-                ", codMarcacaoVinculada=" + codMarcacaoVinculada +
-                ", versaoAppMomentoMarcacao=" + versaoAppMomentoMarcacao +
-                ", versaoAppMomentoSincronizacao=" + versaoAppMomentoSincronizacao +
-                '}';
+    @Nullable
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(@Nullable String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    @Nullable
+    public String getDeviceImei() {
+        return deviceImei;
+    }
+
+    public void setDeviceImei(@Nullable String deviceImei) {
+        this.deviceImei = deviceImei;
+    }
+
+    public int getAndroidApiVersion() {
+        return androidApiVersion;
+    }
+
+    public void setAndroidApiVersion(int androidApiVersion) {
+        this.androidApiVersion = androidApiVersion;
+    }
+
+    public long getDeviceUptimeRealizacaoMarcacaoMillis() {
+        return deviceUptimeRealizacaoMarcacaoMillis;
+    }
+
+    public void setDeviceUptimeRealizacaoMarcacaoMillis(long deviceUptimeRealizacaoMarcacaoMillis) {
+        this.deviceUptimeRealizacaoMarcacaoMillis = deviceUptimeRealizacaoMarcacaoMillis;
+    }
+
+    public long getDeviceUptimeSincronizacaoMarcacaoMillis() {
+        return deviceUptimeSincronizacaoMarcacaoMillis;
+    }
+
+    public void setDeviceUptimeSincronizacaoMarcacaoMillis(long deviceUptimeSincronizacaoMarcacaoMillis) {
+        this.deviceUptimeSincronizacaoMarcacaoMillis = deviceUptimeSincronizacaoMarcacaoMillis;
     }
 }
