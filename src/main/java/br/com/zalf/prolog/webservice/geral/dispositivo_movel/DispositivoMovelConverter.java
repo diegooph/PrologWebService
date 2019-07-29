@@ -49,8 +49,6 @@ public final class DispositivoMovelConverter {
                 }
             } while (rSet.next());
             dispositivos.add(dispositivo);
-        } else {
-            throw new IllegalStateException("Nenhum dispositivo móvel foi encontrado.");
         }
         return dispositivos;
     }
