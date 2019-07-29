@@ -30,7 +30,7 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_GERAL_GET_MARCAS_DISPOSITIVO_MOVEL();");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_DISPOSITIVO_GET_MARCAS_DISPOSITIVO_MOVEL();");
             rSet = stmt.executeQuery();
             final List<MarcaDispositivoMovelSelecao> marcas = new ArrayList<>();
             while (rSet.next()) {
