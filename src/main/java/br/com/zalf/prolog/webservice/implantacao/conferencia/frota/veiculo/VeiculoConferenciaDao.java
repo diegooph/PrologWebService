@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 import org.jetbrains.annotations.NotNull;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -12,13 +13,5 @@ import java.util.List;
  */
 public interface VeiculoConferenciaDao {
 
-    /**
-     * Confere veiculos em lote.
-     *
-     * @param veiculoPLanilha planilha para conferência.
-     * @return Planilha com erros encontrados.
-     * @throws Throwable Caso ocorra erro no banco.
-     */
-    @NotNull
-    List<Long> insert(@NotNull final List<VeiculoPlanilha> veiculoPLanilha) throws Throwable;
+    void verificarPlanilha(Long codUnidade, List<VeiculoPlanilha> veiculoPlanilha) throws SQLException;
 }

@@ -17,6 +17,10 @@ public class VeiculoPlanilha {
     private Long codUnidadeCadastro;
     private int linha = -1;
 
+    public VeiculoPlanilha() {
+
+    }
+
     public Long getCodUnidade() {
         return codUnidade;
     }

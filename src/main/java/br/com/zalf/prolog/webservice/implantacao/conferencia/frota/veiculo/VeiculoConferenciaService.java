@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -13,7 +14,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -29,47 +32,53 @@ public class VeiculoConferenciaService  {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
-    @NotNull
-    public List<Long> insert(@NotNull final Long codUnidade,
-                             @NotNull final InputStream fileInputStream) throws ProLogException {
-        try {
-            final File file = createFileFromImport(codUnidade, fileInputStream);
-            final List<VeiculoPlanilha> veiculoPlanilhaItens = VeiculoPlanilhaReader
-                    .readListFromCsvFilePath(file);
-
-            //Montar JSON para verificar no banco
-
-//            for (VeiculoPlanilha item : veiculoPlanilhaItens) {
-//                RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(item);
-//                // O código da unidade vem no path pois os itens são importados através de arquivo.
-//                item.setCodUnidade(codUnidade);
-//            }
-
-//            dao.insertOrUpdateProdutividadeRaizen(
-//                    TokenCleaner.getOnlyToken(token),
-//                    raizenProdutividadeItens);
-//            return Response.ok("Upload realizado com sucesso!");
-        } catch (final Throwable e) {
-            final String errorMessage = "Não foi possível inserir os dados no banco de dados, tente novamente!";
-            Log.e(TAG, errorMessage, e);
-            throw exceptionHandler.map(e, errorMessage);
-        }
-
-        return null;
+    public Response uploadVeiculoPlanilha(@NotNull final Long codUnidade,
+                                          @NotNull final InputStream fileInputStream)
+            throws ProLogException {
+        final File file = createFileFromImport(codUnidade, fileInputStream);
+        readAndInsertImport(codUnidade, file);
+        return Response.ok("Verificação realizada com sucesso!");
     }
 
     @NotNull
-    @SuppressWarnings("Duplicates")
     private File createFileFromImport(@NotNull final Long codUnidade,
-                                      @NotNull final InputStream fileInputStream) throws Throwable {
-        final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade
-                + "_";
-        // Pasta temporária
-        final File tmpDir = Files.createTempDir();
-        final File file = new File(tmpDir, fileName);
-        final FileOutputStream out = new FileOutputStream(file);
-        IOUtils.copy(fileInputStream, out);
-        IOUtils.closeQuietly(out);
-        return file;
+                                           @NotNull final InputStream fileInputStream) throws ProLogException {
+
+        try {
+            final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade;
+            // Pasta temporária da JVM
+            final File tmpDir = Files.createTempDir();
+            final File file = new File(tmpDir, fileName);
+            final FileOutputStream out = new FileOutputStream(file);
+            IOUtils.copy(fileInputStream, out);
+            IOUtils.closeQuietly(out);
+            return file;
+        } catch (IOException e) {
+            Log.e(TAG, "Erro ao ler arquivo binário do import", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao verificar dados, tente novamente");
+        }
+    }
+
+    private void readAndInsertImport(@NotNull final Long codUnidade,
+                                     @NotNull final File file)
+            throws ProLogException {
+        try {
+            final List<VeiculoPlanilha> veiculoPlanilha = VeiculoPlanilhaReader.readListFromCsvFilePath(file);
+
+            // TODO esse método tem que receber o Json.
+            dao.verificarPlanilha(codUnidade, veiculoPlanilha);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao enviar dados para o BD", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao verificar dados, tente novamente");
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao ler arquivo no servidor", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro verificar dados, tente novamente");
+        }
     }
 }
