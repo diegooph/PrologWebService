@@ -3,16 +3,17 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.mode
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.Files;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeReader;
-import com.google.common.base.Charsets;
 
+import com.google.common.base.Charsets;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.validation.constraints.NotNull;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,9 +31,9 @@ public class VeiculoPlanilhaReader {
     }
 
     @NotNull
-    public static List<VeiculoPlanilha> readListFromCsvFilePath(@NotNull final File file) {
+    public static String readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
-        if (extension.equalsIgnoreCase("xlsx")) {
+        if (true) {
             try {
                 new XlsxConverter().convertFileToCsv(file, 0, new SimpleDateFormat("ddMMyyyy"));
             } catch (final IOException ex) {
@@ -46,13 +47,23 @@ public class VeiculoPlanilhaReader {
         settings.setNumberOfRowsToSkip(1);
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
+
+        String jsonPlanilha = GsonUtils.getGson().toJson(rows);
+//        try {
+//            String dados = String.valueOf(java.nio.file.Files.readAllLines(Paths.get(nossoJson)));
+//            System.out.println(dados);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        String dados = new String(Files.readAllBytes(file.toPath()));
         try {
             final File json = Files.createTempDir();
             json.createNewFile();
             IOUtils.write(GsonUtils.getGson().toJson(rows), new FileOutputStream(json), Charsets.UTF_8);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return jsonPlanilha;
     }
 }

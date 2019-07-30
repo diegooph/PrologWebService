@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface VeiculoConferenciaDao {
 
-    void verificarPlanilha(Long codUnidade, List<VeiculoPlanilha> veiculoPlanilha) throws SQLException;
+    void verificarPlanilha(String json) throws Throwable;
 }

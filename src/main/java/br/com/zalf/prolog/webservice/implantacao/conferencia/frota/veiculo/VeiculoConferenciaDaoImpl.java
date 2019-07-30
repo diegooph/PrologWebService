@@ -1,10 +1,13 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
 import org.jetbrains.annotations.NotNull;
+
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
+import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
 
 /**
  * Created on 23/07/19.
@@ -14,7 +17,20 @@ import java.util.List;
 public class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
 
     @Override
-    public void verificarPlanilha(Long codUnidade, List<VeiculoPlanilha> veiculoPlanilha) throws SQLException {
+    public void verificarPlanilha(@NotNull final String json) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
 
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_CONFERE_PLANILHA_IMPLEMENTACAO(?)");
+
+            stmt.setString(1, json);
+            rSet = stmt.executeQuery();
+
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 }
