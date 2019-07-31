@@ -17,7 +17,8 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
 
     @Override
-    public void verificarPlanilha(@NotNull final String json) throws Throwable {
+    public void verificarPlanilha(@NotNull final Long codUnidade,
+                                  @NotNull final String jsonPlanilha) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -26,7 +27,7 @@ public class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_CONFERE_PLANILHA_IMPLEMENTACAO(?)");
 
-            stmt.setString(1, json);
+            stmt.setObject(1, jsonPlanilha);
             rSet = stmt.executeQuery();
 
         } finally {

@@ -11,10 +11,10 @@ public class VeiculoPlanilha {
     private String placa;
     private Long km;
     private boolean statusAtivo;
-    private String tipo;
     private String marca;
     private String modelo;
-    private Long codUnidadeCadastro;
+    private String tipo;
+    private String diagrama;
     private int linha = -1;
 
     public VeiculoPlanilha() {
@@ -77,12 +77,12 @@ public class VeiculoPlanilha {
         this.modelo = modelo;
     }
 
-    public Long getCodUnidadeCadastro() {
-        return codUnidadeCadastro;
+    public String getDiagrama() {
+        return diagrama;
     }
 
-    public void setCodUnidadeCadastro(Long codUnidadeCadastro) {
-        this.codUnidadeCadastro = codUnidadeCadastro;
+    public void setDiagrama(String diagrama) {
+        this.diagrama = diagrama;
     }
 
     public int getLinha() {

@@ -1,13 +1,16 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.insert.VeiculoPlanilhaReader;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 import org.apache.commons.io.IOUtils;
@@ -18,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created on 23/07/19.
@@ -42,7 +46,7 @@ public class VeiculoConferenciaService  {
 
     @NotNull
     private File createFileFromImport(@NotNull final Long codUnidade,
-                                           @NotNull final InputStream fileInputStream) throws ProLogException {
+                                      @NotNull final InputStream fileInputStream) throws ProLogException {
 
         try {
             final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade;
@@ -65,11 +69,9 @@ public class VeiculoConferenciaService  {
                                      @NotNull final File file)
             throws ProLogException {
         try {
-
-            final String jsonPlanilha = VeiculoPlanilhaReader.readListFromCsvFilePath(file);
-
-            dao.verificarPlanilha(jsonPlanilha);
-
+            final List<VeiculoPlanilha> veiculoPlanilha = VeiculoPlanilhaReader.readListFromCsvFilePath(file);
+            String jsonPlanilha = GsonUtils.getGson().toJson(veiculoPlanilha);
+            dao.verificarPlanilha(codUnidade, jsonPlanilha);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection

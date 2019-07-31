@@ -1,10 +1,6 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
 import org.jetbrains.annotations.NotNull;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.*;
-
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Created on 23/07/19.
@@ -13,5 +9,6 @@ import java.util.List;
  */
 public interface VeiculoConferenciaDao {
 
-    void verificarPlanilha(String json) throws Throwable;
+    void verificarPlanilha(@NotNull final Long codUnidade,
+                           @NotNull final String json) throws Throwable;
 }

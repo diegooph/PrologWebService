@@ -1,25 +1,19 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.insert;
 
-import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.commons.util.Files;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
+import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeReader;
-
-import com.google.common.base.Charsets;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-
 import javax.validation.constraints.NotNull;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
-
 /**
  * Created on 24/07/19.
  *
@@ -31,9 +25,9 @@ public class VeiculoPlanilhaReader {
     }
 
     @NotNull
-    public static String readListFromCsvFilePath(@NotNull final File file) {
+    public static List<VeiculoPlanilha> readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
-        if (true) {
+        if (extension.equalsIgnoreCase("xlsx")) {
             try {
                 new XlsxConverter().convertFileToCsv(file, 0, new SimpleDateFormat("ddMMyyyy"));
             } catch (final IOException ex) {
@@ -48,22 +42,46 @@ public class VeiculoPlanilhaReader {
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
 
-        String jsonPlanilha = GsonUtils.getGson().toJson(rows);
-//        try {
-//            String dados = String.valueOf(java.nio.file.Files.readAllLines(Paths.get(nossoJson)));
-//            System.out.println(dados);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        String dados = new String(Files.readAllBytes(file.toPath()));
-        try {
-            final File json = Files.createTempDir();
-            json.createNewFile();
-            IOUtils.write(GsonUtils.getGson().toJson(rows), new FileOutputStream(json), Charsets.UTF_8);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        final List<VeiculoPlanilha> veiculoPlanilha = new ArrayList<>();
+        for (final String[] row : rows) {
+            final VeiculoPlanilha item = read(row);
+            if (item != null) {
+                veiculoPlanilha.add(item);
+            }
         }
-        return jsonPlanilha;
+        return veiculoPlanilha;
+    }
+
+    private static VeiculoPlanilha read(@NotNull final String[] linha) {
+        if (linha[0].isEmpty()) {
+            return null;
+        }
+
+        final VeiculoPlanilha item = new VeiculoPlanilha();
+        // PLACA
+        if (!linha[0].isEmpty()) {
+            item.setPlaca(linha[0]);
+        }
+        // KM
+        if (!linha[1].isEmpty()) {
+            item.setKm(Long.parseLong(linha[1]));
+        }
+        // MARCA
+        if (!linha[2].isEmpty()) {
+            item.setMarca(linha[2]);
+        }
+        // MODELO
+        if (!linha[3].isEmpty()) {
+            item.setModelo(linha[3]);
+        }
+        // TIPO
+        if (!linha[4].isEmpty()) {
+            item.setTipo(linha[4]);
+        }
+        // DIAGRAMA
+        if (!linha[5].isEmpty()) {
+            item.setDiagrama(linha[5]);
+        }
+        return item;
     }
 }
