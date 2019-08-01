@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.geral.dispositivo_movel.model;
+package br.com.zalf.prolog.webservice.geral.dispositivomovel.model;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,8 +1,8 @@
-package br.com.zalf.prolog.webservice.geral.dispositivo_movel;
+package br.com.zalf.prolog.webservice.geral.dispositivomovel;
 
-import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovel;
-import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.DispositivoMovelInsercao;
-import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.MarcaDispositivoMovelSelecao;
+import br.com.zalf.prolog.webservice.geral.dispositivomovel.model.DispositivoMovel;
+import br.com.zalf.prolog.webservice.geral.dispositivomovel.model.DispositivoMovelInsercao;
+import br.com.zalf.prolog.webservice.geral.dispositivomovel.model.MarcaDispositivoMovelSelecao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
