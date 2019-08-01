@@ -5,8 +5,8 @@ import br.com.zalf.prolog.webservice.geral.dispositivo_movel.model.MarcaDisposit
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,7 +21,7 @@ public final class DispositivoMovelConverter {
     }
 
     @NotNull
-    static MarcaDispositivoMovelSelecao createMarcaCelularSelecao(@NotNull final ResultSet rSet) throws Throwable {
+    static MarcaDispositivoMovelSelecao createMarcaDispositivoSelecao(@NotNull final ResultSet rSet) throws Throwable {
         return new MarcaDispositivoMovelSelecao(
                 rSet.getLong("COD_MARCA"),
                 rSet.getString("NOME_MARCA"));
@@ -29,10 +29,10 @@ public final class DispositivoMovelConverter {
 
     @NotNull
     static List<DispositivoMovel> createDispositivoMovelListagem(@NotNull final ResultSet rSet) throws Throwable {
-        final List<DispositivoMovel> dispositivos = new ArrayList<>();
         DispositivoMovel dispositivo = null;
-        List<String> imeis = new ArrayList<>();
         if (rSet.next()) {
+            final List<DispositivoMovel> dispositivos = new ArrayList<>();
+            List<String> imeis = new ArrayList<>();
             do {
                 if (dispositivo == null) {
                     dispositivo = DispositivoMovelConverter.createDispositivoMovel(rSet, imeis);
@@ -49,27 +49,29 @@ public final class DispositivoMovelConverter {
                 }
             } while (rSet.next());
             dispositivos.add(dispositivo);
+            return dispositivos;
+        } else {
+            return Collections.emptyList();
         }
-        return dispositivos;
     }
 
     @NotNull
     static DispositivoMovel createDispositivoMovelVisualizacao(@NotNull final ResultSet rSet) throws Throwable {
-        List<String> imeis = new ArrayList<>();
-        DispositivoMovel dispositivo = null;
         if (rSet.next()) {
-            dispositivo = DispositivoMovelConverter.createDispositivoMovel(rSet, imeis);
+            List<String> imeis = new ArrayList<>();
+            final DispositivoMovel dispositivo = DispositivoMovelConverter.createDispositivoMovel(rSet, imeis);
             do {
                 imeis.add(rSet.getString("IMEI"));
             } while (rSet.next());
+            return dispositivo;
         } else {
             throw new IllegalStateException("Nenhum dispositivo móvel foi encontrado.");
         }
-        return dispositivo;
     }
 
     @NotNull
-    static DispositivoMovel createDispositivoMovel(@NotNull final ResultSet rSet, @NotNull final List<String> imeis) throws Throwable {
+    private static DispositivoMovel createDispositivoMovel(@NotNull final ResultSet rSet,
+                                                           @NotNull final List<String> imeis) throws Throwable {
         return new DispositivoMovel(
                 rSet.getLong("COD_DISPOSITIVO"),
                 rSet.getLong("COD_EMPRESA"),
@@ -77,7 +79,6 @@ public final class DispositivoMovelConverter {
                 rSet.getLong("COD_MARCA"),
                 rSet.getString("MARCA"),
                 rSet.getString("MODELO"),
-                rSet.getString("DESCRICAO")
-        );
+                rSet.getString("DESCRICAO"));
     }
 }

@@ -18,11 +18,12 @@ public final class DispositivoMovelInsercao {
     private final String modelo;
     private final String descricao;
 
-    public DispositivoMovelInsercao(@NotNull final Long codEmpresa,
-                        @NotNull final List<String> numerosImei,
-                        final Long codMarca,
-                        final String modelo,
-                        final String descricao) {
+    public DispositivoMovelInsercao(
+            @NotNull final Long codEmpresa,
+            @NotNull final List<String> numerosImei,
+            final Long codMarca,
+            final String modelo,
+            final String descricao) {
         this.codEmpresa = codEmpresa;
         this.codMarca = codMarca;
         this.numerosImei = numerosImei;

@@ -10,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
 public final class MarcaDispositivoMovelSelecao {
     @NotNull
     private final Long codMarca;
-
     private final String nome;
 
-    public MarcaDispositivoMovelSelecao(@NotNull final Long codMarca,
-                               @NotNull final String nome) {
+    public MarcaDispositivoMovelSelecao(
+            @NotNull final Long codMarca,
+            @NotNull final String nome) {
         this.codMarca = codMarca;
         this.nome = nome;
     }
@@ -27,5 +27,4 @@ public final class MarcaDispositivoMovelSelecao {
     public String getNome() {
         return nome;
     }
-
 }

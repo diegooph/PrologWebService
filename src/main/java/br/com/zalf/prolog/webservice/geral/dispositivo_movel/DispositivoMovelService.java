@@ -25,15 +25,27 @@ public final class DispositivoMovelService {
     private final DispositivoMovelDao dao = Injection.provideDispositivoMovelDao();
 
     @NotNull
-    public List<MarcaDispositivoMovelSelecao> getMarcasDispositivos() throws ProLogException {
-        try {
-            return dao.getMarcasDispositivos();
-        } catch (final Throwable throwable) {
-            final String errorMessage = "Erro ao buscar as marcas de dispositivos móveis";
-            Log.e(TAG, errorMessage, throwable);
+    public AbstractResponse insertDispositivoMovel(final DispositivoMovelInsercao dispositivo) throws ProLogException{
+        try{
+            return ResponseWithCod.ok("Dispositivo móvel inserido com sucesso", dao.insertDispositivoMovel(dispositivo));
+        } catch (final Throwable e){
+            Log.e(TAG, "Erro ao inserir dispositivo móvel para a empresa: " + dispositivo.getCodEmpresa(), e);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(throwable, "Erro ao buscar as marcas de dispositivos móveis, tente novamente");
+                    .map(e, "Erro ao inserir o dispositivo móvel");
+        }
+    }
+
+    @NotNull
+    public Response updateDispositivoMovel(final DispositivoMovel dispositivoMovel) throws ProLogException {
+        try {
+            dao.updateDispositivoMovel(dispositivoMovel);
+            return Response.ok("Dispositivo móvel atualizado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o dispositivo móvel", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o dispositivo móvel, tente novamente");
         }
     }
 
@@ -65,30 +77,17 @@ public final class DispositivoMovelService {
     }
 
     @NotNull
-    public Response updateDispositivoMovel(final DispositivoMovel dispositivoMovel) throws ProLogException {
+    public List<MarcaDispositivoMovelSelecao> getMarcasDispositivos() throws ProLogException {
         try {
-            dao.updateDispositivoMovel(dispositivoMovel);
-            return Response.ok("Dispositivo móvel atualizado com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao atualizar o dispositivo móvel", t);
+            return dao.getMarcasDispositivos();
+        } catch (final Throwable throwable) {
+            final String errorMessage = "Erro ao buscar as marcas de dispositivos móveis";
+            Log.e(TAG, errorMessage, throwable);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao atualizar o dispositivo móvel, tente novamente");
+                    .map(throwable, "Erro ao buscar as marcas de dispositivos móveis, tente novamente");
         }
     }
-
-    @NotNull
-    public AbstractResponse insertDispositivoMovel(final DispositivoMovelInsercao dispositivo) throws ProLogException{
-        try{
-            return ResponseWithCod.ok("Dispositivo móvel inserido com sucesso", dao.insertDispositivoMovel(dispositivo));
-        } catch (final Throwable e){
-            Log.e(TAG, "Erro ao inserir dispositivo móvel para a empresa: " + dispositivo.getCodEmpresa(), e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao inserir o dispositivo móvel");
-        }
-    }
-
 
     @NotNull
     public Response deleteDispositivoMovel(final Long codEmpresa,

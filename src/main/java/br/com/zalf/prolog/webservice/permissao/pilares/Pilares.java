@@ -361,7 +361,7 @@ public final class Pilares {
             private DispositivosMoveis() {
             }
 
-            public static final int GESTAO = 420;
+            public static final int GESTAO = 501;
         }
     }
 }
