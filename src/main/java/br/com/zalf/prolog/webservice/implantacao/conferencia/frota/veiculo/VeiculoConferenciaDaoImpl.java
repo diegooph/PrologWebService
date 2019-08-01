@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
 import org.jetbrains.annotations.NotNull;
+import org.postgresql.util.PGobject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,9 +26,12 @@ public class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_CONFERE_PLANILHA_IMPLEMENTACAO(?)");
-
-            stmt.setObject(1, jsonPlanilha);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_CONFERE_PLANILHA_IMPLANTACAO(?,?)");
+            PGobject json = new PGobject();
+              json.setType("json");
+              json.setValue(jsonPlanilha);
+            stmt.setLong(1, codUnidade);
+            stmt.setObject(2, json);
             rSet = stmt.executeQuery();
 
         } finally {

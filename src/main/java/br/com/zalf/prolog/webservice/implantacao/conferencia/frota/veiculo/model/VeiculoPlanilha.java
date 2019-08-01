@@ -15,7 +15,7 @@ public class VeiculoPlanilha {
     private String modelo;
     private String tipo;
     private String diagrama;
-    private int linha = -1;
+ //   private int linha = -1;
 
     public VeiculoPlanilha() {
 
@@ -85,6 +85,7 @@ public class VeiculoPlanilha {
         this.diagrama = diagrama;
     }
 
+/*
     public int getLinha() {
         return linha;
     }
@@ -92,6 +93,7 @@ public class VeiculoPlanilha {
     public void setLinha(int linha) {
         this.linha = linha;
     }
+*/
 
 }
 
