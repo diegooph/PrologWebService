@@ -29,6 +29,9 @@ public final class MarcacaoAcompanhamento {
     @Nullable
     private final Integer versaoAppMomentoSincronizacao;
     private final boolean foiAjustado;
+    @Nullable
+    private final String deviceImei;
+    private final boolean deviceReconhecido;
 
     public MarcacaoAcompanhamento(@NotNull final Long codigo,
                                   @NotNull final LocalDateTime dataHoraMarcacao,
@@ -37,7 +40,9 @@ public final class MarcacaoAcompanhamento {
                                   @Nullable final Localizacao localizacaoMarcacao,
                                   @Nullable final Integer versaoAppMomentoMarcacao,
                                   @Nullable final Integer versaoAppMomentoSincronizacao,
-                                  final boolean foiAjustado) {
+                                  final boolean foiAjustado,
+                                  @Nullable final String deviceImei,
+                                  final boolean deviceReconhecido) {
         this.codigo = codigo;
         this.dataHoraMarcacao = dataHoraMarcacao;
         this.fonteDataHora = fonteDataHora;
@@ -46,6 +51,8 @@ public final class MarcacaoAcompanhamento {
         this.versaoAppMomentoMarcacao = versaoAppMomentoMarcacao;
         this.versaoAppMomentoSincronizacao = versaoAppMomentoSincronizacao;
         this.foiAjustado = foiAjustado;
+        this.deviceImei = deviceImei;
+        this.deviceReconhecido = deviceReconhecido;
     }
 
     @NotNull
@@ -58,6 +65,8 @@ public final class MarcacaoAcompanhamento {
                 new Localizacao("-27.6403877", "-48.6827399"),
                 60,
                 61,
+                true,
+                "123456789123456",
                 true);
     }
 
@@ -99,4 +108,9 @@ public final class MarcacaoAcompanhamento {
     public boolean isFoiAjustado() {
         return foiAjustado;
     }
+
+    @Nullable
+    public String getDeviceImei() { return deviceImei; }
+
+    public boolean isDeviceReconhecido() { return deviceReconhecido; }
 }

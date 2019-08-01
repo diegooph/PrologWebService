@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.exibicao;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -36,6 +37,10 @@ public final class MarcacaoAjusteExibicao {
      */
     private boolean jaFoiAjustada;
 
+    @Nullable
+    private String deviceImei;
+    private boolean deviceReconhecido;
+
     public MarcacaoAjusteExibicao() {
 
     }
@@ -47,6 +52,8 @@ public final class MarcacaoAjusteExibicao {
         intervalo.setJaFoiAjustada(true);
         intervalo.setAtiva(true);
         intervalo.setDataHoraMarcacao(LocalDateTime.now());
+        intervalo.setDeviceImei("123456789123456");
+        intervalo.setDeviceReconhecido(true);
         return intervalo;
     }
 
@@ -57,6 +64,8 @@ public final class MarcacaoAjusteExibicao {
         intervalo.setJaFoiAjustada(false);
         intervalo.setAtiva(true);
         intervalo.setDataHoraMarcacao(LocalDateTime.now().plus(30, ChronoUnit.MINUTES));
+        intervalo.setDeviceImei("123456789123456");
+        intervalo.setDeviceReconhecido(true);
         return intervalo;
     }
 
@@ -91,4 +100,13 @@ public final class MarcacaoAjusteExibicao {
     public void setJaFoiAjustada(final boolean jaFoiAjustada) {
         this.jaFoiAjustada = jaFoiAjustada;
     }
+
+    @Nullable
+    public String getDeviceImei() { return deviceImei; }
+
+    public void setDeviceImei(@Nullable String deviceImei) { this.deviceImei = deviceImei; }
+
+    public boolean isDeviceReconhecido() { return deviceReconhecido; }
+
+    public void setDeviceReconhecido(boolean deviceReconhecido) { this.deviceReconhecido = deviceReconhecido; }
 }
