@@ -15,6 +15,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+
 /**
  * Created on 16/07/19
  *
@@ -37,7 +39,7 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
                     "F_DESCRICAO   := ?, " +
                     "F_IMEI        := ?) AS CODIGO;");
             stmt.setLong(1, dispositivo.getCodEmpresa());
-            stmt.setLong(2, dispositivo.getCodMarca());
+            bindValueOrNull(stmt, 2, dispositivo.getCodMarca(), SqlType.BIGINT);
             stmt.setString(3, dispositivo.getModelo());
             stmt.setString(4, dispositivo.getDescricao());
             stmt.setArray(5, PostgresUtils.listToArray(conn, SqlType.TEXT, dispositivo.getNumerosImei()));
@@ -68,7 +70,7 @@ public final class DispositivoMovelDaoImpl extends DatabaseConnection implements
                     "F_IMEI            := ?);");
             stmt.setLong(1, dispositivo.getCodEmpresa());
             stmt.setLong(2, dispositivo.getCodDispositivo());
-            stmt.setLong(3, dispositivo.getCodMarca());
+            bindValueOrNull(stmt, 3, dispositivo.getCodMarca(), SqlType.BIGINT);
             stmt.setString(4, dispositivo.getModelo());
             stmt.setString(5, dispositivo.getDescricao());
             stmt.setArray(6, PostgresUtils.listToArray(conn, SqlType.TEXT, dispositivo.getNumerosImei()));
