@@ -39,7 +39,7 @@ public class VeiculoConferenciaResource {
     @Path("/upload/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response uploadPlanilhaVeiculo(@PathParam("codUnidade") Long codUnidade,
-                                 @FormDataParam("file") InputStream fileInputStream) throws ProLogException {
+                                          @FormDataParam("file") InputStream fileInputStream) throws ProLogException {
         return service.uploadPlanilhaVeiculo(codUnidade, fileInputStream);
     }
 

@@ -14,9 +14,8 @@ public interface VeiculoConferenciaDao {
     /*void verificarPlanilha(@NotNull final Long codUnidade,
                            @NotNull final String json) throws Throwable;*/
 
-    void getVerificacaoPlanilhaCsv(@NotNull final OutputStream out,
-                   @NotNull final Long codUnidade,
-                   @NotNull final String jsonPlanilha)throws Throwable;
+    void getVerificacaoPlanilhaCsv(@NotNull final Long codUnidade,
+                                   @NotNull final String jsonPlanilha) throws Throwable;
 }
 
 

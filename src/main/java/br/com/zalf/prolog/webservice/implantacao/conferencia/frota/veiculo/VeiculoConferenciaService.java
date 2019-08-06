@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class VeiculoConferenciaService  {
+public class VeiculoConferenciaService {
     @NotNull
     private static final String TAG = VeiculoConferenciaService.class.getSimpleName();
     @NotNull
@@ -72,14 +72,13 @@ public class VeiculoConferenciaService  {
         try {
             final List<VeiculoPlanilha> veiculoPlanilha = VeiculoPlanilhaReader.readListFromCsvFilePath(file);
             String jsonPlanilha = GsonUtils.getGson().toJson(veiculoPlanilha);
-            dao.verificarPlanilha(codUnidade, jsonPlanilha);
+            dao.getVerificacaoPlanilhaCsv(codUnidade, jsonPlanilha);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao verificar dados, tente novamente");
-        }
-        catch (Throwable throwable) {
+        } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
     }

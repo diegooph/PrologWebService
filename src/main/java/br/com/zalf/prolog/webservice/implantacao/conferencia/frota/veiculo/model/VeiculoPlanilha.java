@@ -15,7 +15,6 @@ public class VeiculoPlanilha {
     private String modelo;
     private String tipo;
     private String diagrama;
- //   private int linha = -1;
 
     public VeiculoPlanilha() {
 
