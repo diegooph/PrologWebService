@@ -363,7 +363,9 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
                     "F_DEVICE_IMEI                        := ?, " +
                     "F_DEVICE_UPTIME_REALIZACAO_MILLIS    := ?, " +
                     "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS := ?, " +
-                    "F_ANDROID_API_VERSION                := ?) AS CODIGO;");
+                    "F_ANDROID_API_VERSION                := ?, " +
+                    "F_MARCA_DEVICE                       := ?, " +
+                    "F_MODELO_DEVICE                      := ?) AS CODIGO;");
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);
@@ -385,6 +387,8 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
             stmt.setLong(16, intervaloMarcacao.getDeviceUptimeRealizacaoMarcacaoMillis());
             stmt.setLong(17, intervaloMarcacao.getDeviceUptimeSincronizacaoMarcacaoMillis());
             stmt.setInt(18, intervaloMarcacao.getAndroidApiVersion());
+            stmt.setString(19, intervaloMarcacao.getMarcaDevice());
+            stmt.setString(20, intervaloMarcacao.getModeloDevice());
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.getLong("CODIGO") > 0) {
                 return rSet.getLong("CODIGO");

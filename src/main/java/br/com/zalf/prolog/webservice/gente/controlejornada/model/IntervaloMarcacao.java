@@ -113,20 +113,20 @@ public final class IntervaloMarcacao {
      * @see <a href="Android Docs">https://developer.android.com/reference/android/provider/Settings.Secure.html#ANDROID_ID</a>
      */
     @Nullable
-    public String deviceId;
+    private String deviceId;
 
     /**
      * IMEI do aparelho.
      */
     @Nullable
-    public String deviceImei;
+    private String deviceImei;
 
     /**
      * A versão da API do Android no momento da realização da marcação.
      *
      * @see <a href="Android Docs">https://developer.android.com/reference/android/os/Build.VERSION.html#SDK_INT</a>
      */
-    public int androidApiVersion;
+    private int androidApiVersion;
 
     /**
      * O tempo, em milissegundos, desde que o aparelho foi ligado até o momento da realização da
@@ -134,7 +134,7 @@ public final class IntervaloMarcacao {
      *
      * @see <a href="Android Docs">https://developer.android.com/reference/android/os/SystemClock.html#elapsedRealtime()</a>
      */
-    public long deviceUptimeRealizacaoMarcacaoMillis;
+    private long deviceUptimeRealizacaoMarcacaoMillis;
 
     /**
      * O tempo, em milissegundos, desde que o aparelho foi ligado até o momento da sincronização da
@@ -142,7 +142,17 @@ public final class IntervaloMarcacao {
      *
      * @see <a href="Android Docs">https://developer.android.com/reference/android/os/SystemClock.html#elapsedRealtime()</a>
      */
-    public long deviceUptimeSincronizacaoMarcacaoMillis;
+    private long deviceUptimeSincronizacaoMarcacaoMillis;
+
+    /**
+     * A marca do aparelho. Exemplo: Asus, Motorola e etc.
+     */
+    private String marcaDevice;
+
+    /**
+     * O modelo do aparelho. Exemplo: ASUS_Z01KD, Moto G6 e etc.
+     */
+    private String modeloDevice;
 
     public IntervaloMarcacao() {
 
@@ -327,5 +337,21 @@ public final class IntervaloMarcacao {
 
     public void setDeviceUptimeSincronizacaoMarcacaoMillis(long deviceUptimeSincronizacaoMarcacaoMillis) {
         this.deviceUptimeSincronizacaoMarcacaoMillis = deviceUptimeSincronizacaoMarcacaoMillis;
+    }
+
+    public String getMarcaDevice() {
+        return marcaDevice;
+    }
+
+    public void setMarcaDevice(String marcaDevice) {
+        this.marcaDevice = marcaDevice;
+    }
+
+    public String getModeloDevice() {
+        return modeloDevice;
+    }
+
+    public void setModeloDevice(String modeloDevice) {
+        this.modeloDevice = modeloDevice;
     }
 }
