@@ -29,6 +29,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class VeiculoConferenciaService  {
+    @NotNull
     private static final String TAG = VeiculoConferenciaService.class.getSimpleName();
     @NotNull
     private final VeiculoConferenciaDao dao = Injection.provideVeiculoConferenciaDao();
@@ -36,7 +37,7 @@ public class VeiculoConferenciaService  {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
-    public Response uploadVeiculoPlanilha(@NotNull final Long codUnidade,
+    public Response uploadPlanilhaVeiculo(@NotNull final Long codUnidade,
                                           @NotNull final InputStream fileInputStream)
             throws ProLogException {
         final File file = createFileFromImport(codUnidade, fileInputStream);
@@ -78,12 +79,6 @@ public class VeiculoConferenciaService  {
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao verificar dados, tente novamente");
         }
-        /*catch (Exception e) {
-            Log.e(TAG, "Erro ao ler arquivo no servidor", e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro verificar dados, tente novamente");
-        } */
         catch (Throwable throwable) {
             throwable.printStackTrace();
         }

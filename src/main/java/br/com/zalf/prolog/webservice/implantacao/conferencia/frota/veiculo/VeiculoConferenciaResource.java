@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
@@ -37,9 +38,9 @@ public class VeiculoConferenciaResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/upload/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public Response uploadEscala(@PathParam("codUnidade") Long codUnidade,
-                                 @FormDataParam("file") InputStream fileInputStream) throws Exception {
-        return service.uploadVeiculoPlanilha(codUnidade, fileInputStream);
+    public Response uploadPlanilhaVeiculo(@PathParam("codUnidade") Long codUnidade,
+                                 @FormDataParam("file") InputStream fileInputStream) throws ProLogException {
+        return service.uploadPlanilhaVeiculo(codUnidade, fileInputStream);
     }
 
 }
