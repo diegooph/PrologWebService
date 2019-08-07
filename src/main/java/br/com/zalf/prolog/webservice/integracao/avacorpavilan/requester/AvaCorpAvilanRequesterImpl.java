@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanException;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
@@ -34,95 +35,115 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     @Override
     public ArrayOfVeiculo getVeiculosAtivos(@NotNull final String cpf,
                                             @NotNull final String dataNascimento) throws Exception {
-        final VeiculosAtivos request = getCadastroSoap(cpf, dataNascimento).buscarVeiculosAtivos(cpf);
+        try {
 
-        if (success(request)) {
-            return request.getListaVeiculos();
+            if (true)
+                throw new IllegalStateException("TESTANDO ERROS--");
+
+            final VeiculosAtivos request = getCadastroSoap(cpf, dataNascimento).buscarVeiculosAtivos(cpf);
+
+            if (success(request)) {
+                return request.getListaVeiculos();
+            }
+
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            AvaCorpAvilanException exception = new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar os veículos ativos", t);
+            Log.e("AvaCorpAvilanRequesterImpl", "TESTE LOG ERROS", exception);
+            throw exception;
+
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar os veículos ativos",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
     public Veiculo getVeiculoAtivo(@NotNull final String placaVeiculo,
                                    @NotNull final String cpf,
                                    @NotNull final String dataNascimento) throws Exception {
-        final VeiculosAtivos request = getCadastroSoap(cpf, dataNascimento).buscarVeiculoAtivo(cpf, placaVeiculo);
+        try {
+            final VeiculosAtivos request = getCadastroSoap(cpf, dataNascimento).buscarVeiculoAtivo(cpf, placaVeiculo);
 
-        if (success(request)) {
-            final ArrayOfVeiculo veiculos = request.getListaVeiculos();
-            if (veiculos.getVeiculo().size() != 1) {
-                throw new IllegalStateException("Busca de um veículo retornou mais de um resultado para a placa: "
-                        + placaVeiculo);
+            if (success(request)) {
+                final ArrayOfVeiculo veiculos = request.getListaVeiculos();
+                if (veiculos.getVeiculo().size() != 1) {
+                    throw new IllegalStateException("Busca de um veículo retornou mais de um resultado para a placa: "
+                            + placaVeiculo);
+                }
+
+                return veiculos.getVeiculo().get(0);
             }
 
-            return veiculos.getVeiculo().get(0);
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar veículo com placa: " + placaVeiculo, t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar veículo com placa: " + placaVeiculo,
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
     public ArrayOfTipoVeiculo getTiposVeiculo(@NotNull final String cpf,
                                               @NotNull final String dataNascimento) throws Exception {
-        final TiposVeiculo request = getCadastroSoap(cpf, dataNascimento).buscarTiposVeiculo();
+        try {
+            final TiposVeiculo request = getCadastroSoap(cpf, dataNascimento).buscarTiposVeiculo();
 
-        if (success(request)) {
-            return request.getTiposVeiculo();
+            if (success(request)) {
+                return request.getTiposVeiculo();
+            }
+
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar tipos de veículo", t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar tipos de veículo",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
     public ArrayOfString getPlacasVeiculoByTipo(@NotNull final String codTipoVeiculo,
                                                 @NotNull final String cpf,
                                                 @NotNull final String dataNascimento) throws Exception {
-        final VeiculoTipo request = getCadastroSoap(cpf, dataNascimento).buscarVeiculosTipo(codTipoVeiculo);
+        try {
+            final VeiculoTipo request = getCadastroSoap(cpf, dataNascimento).buscarVeiculosTipo(codTipoVeiculo);
 
-        if (success(request)) {
-            return request.getVeiculos();
+            if (success(request)) {
+                return request.getVeiculos();
+            }
+
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar placas de um tipo de veículo", t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar placas de um tipo de veículo",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
     public ArrayOfQuestionarioVeiculos getSelecaoModeloChecklistPlacaVeiculo(
             @NotNull final String cpf,
             @NotNull final String dataNascimento) throws Exception {
-        final BuscaQuestionarioColaborador request = getChecklistSoap(cpf, dataNascimento).buscarQuestionariosColaborador(cpf);
+        try {
+            final BuscaQuestionarioColaborador request = getChecklistSoap(cpf, dataNascimento).buscarQuestionariosColaborador(cpf);
 
-        if (success(request)) {
-            return request.getQuestionarioVeiculos();
+            if (success(request)) {
+                return request.getQuestionarioVeiculos();
+            }
+
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar modelos de checklist", t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar modelos de checklist",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
     public Long insertChecklist(@NotNull final RespostasAvaliacao respostasAvaliacao,
                                 @NotNull final String cpf,
                                 @NotNull final String dataNascimento) throws Exception {
-        final EnviaRespostaAvaliacao request = getChecklistSoap(cpf, dataNascimento).enviarChecklist(respostasAvaliacao);
+        try {
+            final EnviaRespostaAvaliacao request = getChecklistSoap(cpf, dataNascimento).enviarChecklist(respostasAvaliacao);
 
-        if (success(request)) {
-            return (long) respostasAvaliacao.getCodigoAvaliacao();
+            if (success(request)) {
+                return (long) respostasAvaliacao.getCodigoAvaliacao();
+            }
+
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao inserir checklist", t);
+
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao inserir checklist",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
@@ -131,62 +152,69 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                                     @NotNull final AvacorpAvilanTipoChecklist tipoChecklist,
                                                     @NotNull final String cpf,
                                                     @NotNull final String dataNascimento) throws Exception {
-        final AdicionarChecklist adicionarChecklist = new AdicionarChecklist();
-        adicionarChecklist.setCpf(cpf);
-        adicionarChecklist.setDtNascimento(dataNascimento);
-        adicionarChecklist.setVeiculo(placaVeiculo);
-        adicionarChecklist.setCodigoQuestionario(codigoQuestionario);
-        adicionarChecklist.setTipoChecklist(tipoChecklist);
+        try {
+            final AdicionarChecklist adicionarChecklist = new AdicionarChecklist();
+            adicionarChecklist.setCpf(cpf);
+            adicionarChecklist.setDtNascimento(dataNascimento);
+            adicionarChecklist.setVeiculo(placaVeiculo);
+            adicionarChecklist.setCodigoQuestionario(codigoQuestionario);
+            adicionarChecklist.setTipoChecklist(tipoChecklist);
 
-        final PerguntasAlternativasQuestionario request
-                = getChecklistSoap(cpf, dataNascimento).buscarPerguntasAlternativasQuestionario(adicionarChecklist);
-        if (success(request)) {
-            // Esse request retorna uma lista de VeiculoQuestao pois, dado um veículo ABC,
-            // caso queiramos buscar seu questionário, ele pode estar atrelado a carretas DIK e XYZ, por exemplo.
-            // Desse modo, as questões vêm separadas por veículo.
-            return request.getVeiculoQuestoes();
+            final PerguntasAlternativasQuestionario request
+                    = getChecklistSoap(cpf, dataNascimento).buscarPerguntasAlternativasQuestionario(adicionarChecklist);
+            if (success(request)) {
+                // Esse request retorna uma lista de VeiculoQuestao pois, dado um veículo ABC,
+                // caso queiramos buscar seu questionário, ele pode estar atrelado a carretas DIK e XYZ, por exemplo.
+                // Desse modo, as questões vêm separadas por veículo.
+                return request.getVeiculoQuestoes();
+            }
+
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException(
+                    "[INTEGRAÇÃO - AVILAN] Erro ao buscar modelo de checklist para a placa: " + placaVeiculo, t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar modelo de checklist para a placa: " + placaVeiculo,
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
     public Long insertAfericao(@NotNull final IncluirMedida2 medidas,
                                @NotNull final String cpf,
                                @NotNull final String dataNascimento) throws Exception {
-        final IncluirRegistroVeiculo request = getAfericaoSoap(cpf, dataNascimento).incluirMedida(medidas);
+        try {
+            final IncluirRegistroVeiculo request = getAfericaoSoap(cpf, dataNascimento).incluirMedida(medidas);
 
-        if (success(request)) {
-            return (long) request.getSequenciaRegistro();
+            if (success(request)) {
+                return (long) request.getSequenciaRegistro();
+            }
+
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao inserir aferição", t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao inserir aferição",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
     public AfericaoFiltro getAfericaoByCodigo(final int codigoAfericao,
                                               @NotNull final String cpf,
                                               @NotNull final String dataNascimento) throws Exception {
-        final AfericoesFiltro request = getAfericaoSoap(cpf, dataNascimento)
-                .buscarAfericoesFiltroEspecifico(codigoAfericao);
+        try {
+            final AfericoesFiltro request = getAfericaoSoap(cpf, dataNascimento)
+                    .buscarAfericoesFiltroEspecifico(codigoAfericao);
 
-        if (success(request)) {
-            final List<AfericaoFiltro> afericoesFiltro = request.getAfericoes().getAfericaoFiltro();
-            if (afericoesFiltro.size() != 1) {
-                throw new IllegalStateException("Busca de uma aferição retornou mais de um resultado para o código: "
-                        + codigoAfericao);
+            if (success(request)) {
+                final List<AfericaoFiltro> afericoesFiltro = request.getAfericoes().getAfericaoFiltro();
+                if (afericoesFiltro.size() != 1) {
+                    throw new IllegalStateException("Busca de uma aferição retornou mais de um resultado para o código: "
+                            + codigoAfericao);
+                }
+
+                return afericoesFiltro.get(0);
             }
 
-            return afericoesFiltro.get(0);
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar aferição", t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar aferição",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
@@ -200,39 +228,42 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                               final int offset,
                                               @NotNull final String cpf,
                                               @NotNull final String dataNascimento) throws Exception {
+        try {
+            final AfericoesFiltro request = getAfericaoSoap(cpf, dataNascimento).buscarAfericoesFiltro(
+                    codFilialAvilan,
+                    codUnidadeAvilan,
+                    dataInicial,
+                    dataFinal,
+                    placaVeiculo,
+                    codTipoVeiculo,
+                    limit,
+                    offset);
 
-        final AfericoesFiltro request = getAfericaoSoap(cpf, dataNascimento).buscarAfericoesFiltro(
-                codFilialAvilan,
-                codUnidadeAvilan,
-                dataInicial,
-                dataFinal,
-                placaVeiculo,
-                codTipoVeiculo,
-                limit,
-                offset);
+            if (success(request)) {
+                return request.getAfericoes();
+            }
 
-        if (success(request)) {
-            return request.getAfericoes();
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar aferições", t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar aferições",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
     public ArrayOfPneu getPneusVeiculo(@NotNull final String placaVeiculo,
                                        @NotNull final String cpf,
                                        @NotNull final String dataNascimento) throws Exception {
-        final PneusVeiculo request = getCadastroSoap(cpf, dataNascimento).buscarPneusVeiculo(placaVeiculo);
+        try {
+            final PneusVeiculo request = getCadastroSoap(cpf, dataNascimento).buscarPneusVeiculo(placaVeiculo);
 
-        if (success(request)) {
-            return request.getPneus();
+            if (success(request)) {
+                return request.getPneus();
+            }
+
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar pneus da placa: " + placaVeiculo, t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar pneus da placa: " + placaVeiculo,
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
@@ -240,32 +271,35 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                                 @NotNull final String cpf,
                                                 @NotNull final String dataNascimento) throws Exception {
 
-        final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarAvaliacaoFiltro(codigoAvaliacao);
+        try {
+            final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarAvaliacaoFiltro(codigoAvaliacao);
 
-        if (success(request)) {
-            final List<ChecklistFiltro> checklists = request.getChecklists().getChecklistFiltro();
-            if (checklists.size() != 1) {
-                throw new IllegalStateException("Busca de um checklist retornou mais de um resultado para o código: "
-                        + codigoAvaliacao);
+            if (success(request)) {
+                final List<ChecklistFiltro> checklists = request.getChecklists().getChecklistFiltro();
+                if (checklists.size() != 1) {
+                    throw new IllegalStateException("Busca de um checklist retornou mais de um resultado para o código: "
+                            + codigoAvaliacao);
+                }
+
+                return checklists.get(0);
             }
 
-            return checklists.get(0);
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar um checklist", t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar um checklist",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
-    public ArrayOfChecklistFiltro getChecklistsByColaborador(final int codFilialAvilan,
-                                                             final int codUnidadeAvilan,
-                                                             @NotNull final String codTipoVeiculo,
-                                                             @NotNull final String placaVeiculo,
-                                                             @NotNull final String dataInicial,
-                                                             @NotNull final String dataFinal,
-                                                             @NotNull final String cpf,
-                                                             @NotNull final String dataNascimento) throws Exception {
+    public ArrayOfChecklistFiltro getChecklistsByColaborador(
+            final int codFilialAvilan,
+            final int codUnidadeAvilan,
+            @NotNull final String codTipoVeiculo,
+            @NotNull final String placaVeiculo,
+            @NotNull final String dataInicial,
+            @NotNull final String dataFinal,
+            @NotNull final String cpf,
+            @NotNull final String dataNascimento) throws Exception {
         return internalGetChecklists(
                 codFilialAvilan,
                 codUnidadeAvilan,
@@ -298,30 +332,33 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @NotNull
-    private ArrayOfChecklistFiltro internalGetChecklists(final int codFilialAvilan,
-                                                         final int codUnidadeAvilan,
-                                                         @NotNull final String codTipoVeiculo,
-                                                         @NotNull final String placaVeiculo,
-                                                         @NotNull final String dataInicial,
-                                                         @NotNull final String dataFinal,
-                                                         @NotNull final String cpf,
-                                                         @NotNull final String dataNascimento) throws Exception {
-        final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarChecklistFiltro(
-                codFilialAvilan,
-                codUnidadeAvilan,
-                dataInicial,
-                dataFinal,
-                placaVeiculo,
-                cpf,
-                codTipoVeiculo);
+    private ArrayOfChecklistFiltro internalGetChecklists(
+            final int codFilialAvilan,
+            final int codUnidadeAvilan,
+            @NotNull final String codTipoVeiculo,
+            @NotNull final String placaVeiculo,
+            @NotNull final String dataInicial,
+            @NotNull final String dataFinal,
+            @NotNull final String cpf,
+            @NotNull final String dataNascimento) throws Exception {
+        try {
+            final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarChecklistFiltro(
+                    codFilialAvilan,
+                    codUnidadeAvilan,
+                    dataInicial,
+                    dataFinal,
+                    placaVeiculo,
+                    cpf,
+                    codTipoVeiculo);
 
-        if (success(request)) {
-            return request.getChecklists();
+            if (success(request)) {
+                return request.getChecklists();
+            }
+
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar checklists", t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar checklists",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
     @Override
@@ -332,24 +369,26 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                              final boolean itensCriticosRetroativos,
                                              @NotNull final String cpf,
                                              @NotNull final String dataNascimento) throws Exception {
+        try {
+            final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(
+                    codFilialAvilan,
+                    codUnidadeAvilan,
+                    dataInicial,
+                    dataFinal,
+                    itensCriticosRetroativos);
 
-        final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(
-                codFilialAvilan,
-                codUnidadeAvilan,
-                dataInicial,
-                dataFinal,
-                itensCriticosRetroativos);
+            if (success(request)) {
+                return request.getFarolDia();
+            }
 
-        if (success(request)) {
-            return request.getFarolDia();
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar farol do checklist", t);
         }
-
-        throw new AvaCorpAvilanException(
-                "[INTEGRAÇÃO - AVILAN] Erro ao buscar farol do checklist",
-                Strings.isNullOrEmpty(request.getMensagem()) ? null : request.getMensagem());
     }
 
-    private boolean success(@Nullable final AvacorpAvilanRequestStatus requestStatus) {
+    private boolean success(
+            @Nullable final AvacorpAvilanRequestStatus requestStatus) {
         // Se a busca tiver sido feita COM sucesso, mas não tem dados, então sucesso false e mensagem igual a null ou
         // vazio.
         // Se a busca tiver sido feita SEM sucesso, então sucesso false e mensagem diferente de null ou vazio.
@@ -360,7 +399,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Deprecated
-    private boolean error(final boolean sucesso, @Nullable final String mensagem) {
+    private boolean error(final boolean sucesso,
+                          @Nullable final String mensagem) {
         // Se a busca tiver sido feita COM sucesso, mas não tem dados, então sucesso false e mensagem igual a null ou
         // vazio.
         // Se a busca tiver sido feita SEM sucesso, então sucesso false e mensagem diferente de null ou vazio.
@@ -368,8 +408,9 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         return !sucesso && !Strings.isNullOrEmpty(mensagem);
     }
 
-    private CadastroAvaCorpAvilanSoap getCadastroSoap(@NotNull final String cpf,
-                                                      @NotNull final String dataNascimento) {
+    private CadastroAvaCorpAvilanSoap getCadastroSoap(
+            @NotNull final String cpf,
+            @NotNull final String dataNascimento) {
         final CadastroAvaCorpAvilanService service = new CadastroAvaCorpAvilanService();
         final CadastroAvaCorpAvilanSoap soap = service.getCadastroSoap();
         HeaderUtils.bindHeadersToService(
@@ -378,8 +419,9 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         return soap;
     }
 
-    private AfericaoAvaCorpAvilanSoap getAfericaoSoap(@NotNull final String cpf,
-                                                      @NotNull final String dataNascimento) {
+    private AfericaoAvaCorpAvilanSoap getAfericaoSoap(
+            @NotNull final String cpf,
+            @NotNull final String dataNascimento) {
         final AfericaoAvaCorpAvilanService service = new AfericaoAvaCorpAvilanService();
         final AfericaoAvaCorpAvilanSoap soap = service.getAfericaoSoap();
         HeaderUtils.bindHeadersToService(
@@ -388,8 +430,9 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         return soap;
     }
 
-    private ChecklistAvaCorpAvilanSoap getChecklistSoap(@NotNull final String cpf,
-                                                        @NotNull final String dataNascimento) {
+    private ChecklistAvaCorpAvilanSoap getChecklistSoap(
+            @NotNull final String cpf,
+            @NotNull final String dataNascimento) {
         final ChecklistAvaCorpAvilanService service = new ChecklistAvaCorpAvilanService();
         final ChecklistAvaCorpAvilanSoap soap = service.getChecklistSoap();
         HeaderUtils.bindHeadersToService(

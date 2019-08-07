@@ -20,4 +20,11 @@ public class IntegracaoException extends ProLogException {
                                @Nullable String developerMessage) {
         super(httpStatusCode, ProLogErrorCodes.INTEGRACAO.errorCode(), message, developerMessage);
     }
+
+    public IntegracaoException(int httpStatusCode,
+                               @NotNull String message,
+                               @Nullable String developerMessage,
+                               @NotNull Throwable parentException) {
+        super(httpStatusCode, ProLogErrorCodes.INTEGRACAO.errorCode(), message, developerMessage, parentException);
+    }
 }
