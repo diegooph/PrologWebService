@@ -6,6 +6,7 @@ Stage
 
 ### Refactors
 * Melhora tratamento de erros na integração com Avilan (PL-2210)
+* Remove pilar GERAL da visão ao logar pelo app (PL-2187)
 
 Change Log
 ==========
