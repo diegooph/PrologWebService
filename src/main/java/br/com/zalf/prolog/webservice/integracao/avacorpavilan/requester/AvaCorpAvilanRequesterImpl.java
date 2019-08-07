@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanException;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
@@ -36,10 +35,6 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     public ArrayOfVeiculo getVeiculosAtivos(@NotNull final String cpf,
                                             @NotNull final String dataNascimento) throws Exception {
         try {
-
-            if (true)
-                throw new IllegalStateException("TESTANDO ERROS--");
-
             final VeiculosAtivos request = getCadastroSoap(cpf, dataNascimento).buscarVeiculosAtivos(cpf);
 
             if (success(request)) {
@@ -48,10 +43,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
 
             throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
         } catch (final Throwable t) {
-            AvaCorpAvilanException exception = new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar os veículos ativos", t);
-            Log.e("AvaCorpAvilanRequesterImpl", "TESTE LOG ERROS", exception);
-            throw exception;
-
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar os veículos ativos", t);
         }
     }
 
