@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -50,11 +51,11 @@ public class Visao {
         return false;
     }
 
-    @Override
-    public String toString() {
-        return "Visao{" +
-                "pilares=" + pilares +
-                '}';
+    public void removePilar(final int codPilar) {
+        pilares = pilares
+                .stream()
+                .filter(p -> p.getCodigo() != codPilar)
+                .collect(Collectors.toList());
     }
 
     @NotNull
