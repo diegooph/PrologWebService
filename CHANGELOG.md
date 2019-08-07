@@ -4,6 +4,9 @@ Stage
 ### Features
 * Adiciona a gestão de dispositivos móveis por empresa
 
+### Refactors
+* Melhora tratamento de erros na integração com Avilan (PL-2210)
+
 Change Log
 ==========
 
