@@ -24,8 +24,7 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
 
     @NotNull
     @Override
-    public Long insertItensNok(
-            @NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO) throws Throwable {
+    public Long insertItensNok(@NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO) {
         if (BuildConfig.DEBUG) {
             System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
             System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
@@ -49,7 +48,7 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
     }
 
     @NotNull
-    private Long handleResponse(@Nullable final RetornoOsCorretivaVO result) throws Throwable {
+    private Long handleResponse(@Nullable final RetornoOsCorretivaVO result) {
         if (result != null) {
             if (result.isSucesso()) {
                 return (long) result.getCodigoOS();

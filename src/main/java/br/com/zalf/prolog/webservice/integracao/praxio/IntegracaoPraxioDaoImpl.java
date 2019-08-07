@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -170,6 +171,28 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             throw t;
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long getCodChecklistParaSincronizar() throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM PICCOLOTUR.FUNC_CHECK_GET_NEXT_COD_CHECKLIST_PARA_SINCRONIZAR() " +
+                    "AS COD_CHECKLIST_PARA_SINCRONIZAR;");
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("COD_CHECKLIST_PARA_SINCRONIZAR");
+            } else {
+                throw new SQLException("Não foi possível buscar o código do checklist que será sincronizado");
+            }
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 }

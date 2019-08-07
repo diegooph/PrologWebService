@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
+import br.com.zalf.prolog.webservice.integracao.agendador.AgendadorService;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemOSAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 /**
  * Created on 12/12/18.
@@ -62,6 +64,8 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             }
             ensureValidToken(tokenIntegracao, TAG);
             dao.inserirOrdensServicoGlobus(tokenIntegracao, ordensServicoAbertas);
+            // Ao receber uma O.S sincronizada, disparamos a sincronia do próximo checklist.
+            sincronizaProximoChecklist();
             return new SuccessResponseIntegracao("Ordens de Serviços Abertas foram inseridas no ProLog");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir as Ordens de Serviços Abertas no banco de dados do ProLog", t);
@@ -91,6 +95,23 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao resolver os itens no ProLog");
         }
+    }
+
+    @NotNull
+    public Long getCodChecklistParaSincronizar() {
+        try {
+            return dao.getCodChecklistParaSincronizar();
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao resolver os itens no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao resolver os itens no ProLog");
+        }
+    }
+
+    private void sincronizaProximoChecklist() {
+        // Não queremos que o processo de nova sincronia trave o fim do processo de inserção de um Nova O.S.
+        Executors.newSingleThreadExecutor().execute(() -> new AgendadorService().sincronizaChecklists());
     }
 
     @NotNull

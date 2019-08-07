@@ -65,4 +65,15 @@ interface IntegracaoPraxioDao {
      */
     void resolverMultiplosItens(@NotNull final String tokenIntegracao,
                                 @NotNull final List<ItemResolvidoGlobus> itensResolvidos) throws Throwable;
+
+    /**
+     * Método utilizado para buscar o código do checklist que deve ser sincronizado no momento.
+     * <p>
+     * Se não tem nenhum checklist para ser sincronizado o valor retornado é 0 (ZERO).
+     *
+     * @return O código do checklist que deverá ser sincronizado
+     * @throws Throwable Se algum erro ocorrer
+     */
+    @NotNull
+    Long getCodChecklistParaSincronizar() throws Throwable;
 }
