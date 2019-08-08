@@ -18,10 +18,18 @@ public final class ApiChecklistService extends BaseIntegracaoService {
     private ApiChecklistDao dao = new ApiChecklistDaoImpl();
 
     @NotNull
-    List<ApiAlternativaModeloChecklist> getAlternativasModeloChecklist(final String tokenIntegracao) {
+    List<ApiAlternativaModeloChecklist> getAlternativasModeloChecklist(
+            final String tokenIntegracao,
+            final boolean apenasModelosAtivos,
+            final boolean apenasPerguntasAtivas,
+            final boolean apenasAlternativasAtivas) {
         try {
             ensureValidToken(tokenIntegracao, TAG);
-            return dao.getAlternativasModeloChecklist(tokenIntegracao);
+            return dao.getAlternativasModeloChecklist(
+                    tokenIntegracao,
+                    apenasModelosAtivos,
+                    apenasPerguntasAtivas,
+                    apenasAlternativasAtivas);
         } catch (final Throwable t) {
             throw Injection
                     .provideProLogExceptionHandler()

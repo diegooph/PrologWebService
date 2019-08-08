@@ -18,15 +18,25 @@ public final class ApiChecklistDaoImpl extends DatabaseConnection implements Api
     @NotNull
     @Override
     public List<ApiAlternativaModeloChecklist> getAlternativasModeloChecklist(
-            @NotNull final String tokenIntegracao) throws Throwable {
+            @NotNull final String tokenIntegracao,
+            final boolean apenasModelosAtivos,
+            final boolean apenasPerguntasAtivas,
+            final boolean apenasAlternativasAtivas) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT * FROM INTEGRACAO.FUNC_ALTERNATIVAS_MODELO_CHECKLIST(F_TOKEN_INTEGRACAO := ?);");
+                    "SELECT * FROM INTEGRACAO.FUNC_ALTERNATIVAS_MODELO_CHECKLIST(" +
+                            "F_TOKEN_INTEGRACAO := ?, " +
+                            "F_APENAS_MODELOS_CHECKLIST_ATIVOS := ?, " +
+                            "F_APENAS_PERGUNTAS_ATIVAS := ?, " +
+                            "F_APENAS_ALTERNATIVAS_ATIVAS := ?);");
             stmt.setString(1, tokenIntegracao);
+            stmt.setBoolean(2, apenasModelosAtivos);
+            stmt.setBoolean(3, apenasPerguntasAtivas);
+            stmt.setBoolean(4, apenasAlternativasAtivas);
             rSet = stmt.executeQuery();
             final List<ApiAlternativaModeloChecklist> alternativas = new ArrayList<>();
             while (rSet.next()) {

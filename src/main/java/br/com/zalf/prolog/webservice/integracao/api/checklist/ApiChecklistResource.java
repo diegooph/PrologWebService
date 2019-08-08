@@ -31,8 +31,14 @@ public final class ApiChecklistResource {
     @Path("/alternativas")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiAlternativaModeloChecklist> getAlternativasModeloChecklist(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO)
-            @Required final String tokenIntegracao) throws ProLogException {
-        return service.getAlternativasModeloChecklist(tokenIntegracao);
+            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @QueryParam("apenasModelosAtivos") @Required final boolean apenasModelosAtivos,
+            @QueryParam("apenasPerguntasAtivas") @Required final boolean apenasPerguntasAtivas,
+            @QueryParam("apenasAlternativasAtivas") @Required final boolean apenasAlternativasAtivas) throws ProLogException {
+        return service.getAlternativasModeloChecklist(
+                tokenIntegracao,
+                apenasModelosAtivos,
+                apenasPerguntasAtivas,
+                apenasAlternativasAtivas);
     }
 }
