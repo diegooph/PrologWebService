@@ -41,6 +41,18 @@ public final class MarcacaoAjusteExibicao {
     private String deviceImei;
     private boolean deviceReconhecido;
 
+    /**
+     * A marca do aparelho. Exemplo: Asus, Motorola e etc.
+     */
+    @Nullable
+    private String marcaDevice;
+
+    /**
+     * O modelo do aparelho. Exemplo: ASUS_Z01KD, Moto G6 e etc.
+     */
+    @Nullable
+    private String modeloDevice;
+
     public MarcacaoAjusteExibicao() {
 
     }
@@ -54,6 +66,8 @@ public final class MarcacaoAjusteExibicao {
         intervalo.setDataHoraMarcacao(LocalDateTime.now());
         intervalo.setDeviceImei("123456789123456");
         intervalo.setDeviceReconhecido(true);
+        intervalo.setMarcaDevice("ASUS");
+        intervalo.setModeloDevice("Zenfone");
         return intervalo;
     }
 
@@ -66,6 +80,8 @@ public final class MarcacaoAjusteExibicao {
         intervalo.setDataHoraMarcacao(LocalDateTime.now().plus(30, ChronoUnit.MINUTES));
         intervalo.setDeviceImei("123456789123456");
         intervalo.setDeviceReconhecido(true);
+        intervalo.setMarcaDevice("ASUS");
+        intervalo.setModeloDevice("Zenfone");
         return intervalo;
     }
 
@@ -109,4 +125,14 @@ public final class MarcacaoAjusteExibicao {
     public boolean isDeviceReconhecido() { return deviceReconhecido; }
 
     public void setDeviceReconhecido(boolean deviceReconhecido) { this.deviceReconhecido = deviceReconhecido; }
+
+    @Nullable
+    public String getMarcaDevice() { return marcaDevice; }
+
+    public void setMarcaDevice(@Nullable String marcaDevice) { this.marcaDevice = marcaDevice; }
+
+    @Nullable
+    public String getModeloDevice() { return modeloDevice; }
+
+    public void setModeloDevice(@Nullable String modeloDevice) { this.modeloDevice = modeloDevice; }
 }
