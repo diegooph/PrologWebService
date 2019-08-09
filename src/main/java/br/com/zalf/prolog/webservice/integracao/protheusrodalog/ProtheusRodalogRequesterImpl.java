@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.integracao.protheusrodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.data.ProtheusRodalogRest;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.data.ProtheusRodalogRestClient;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.*;
+import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.error.ProtheusRodalogException;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.error.RodoparHorizonteException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
@@ -54,13 +56,18 @@ public class ProtheusRodalogRequesterImpl implements ProtheusRodalogRequester {
                 return response.body();
             } else {
                 if (response.errorBody() == null) {
-                    throw new IllegalStateException("[INTEGRACAO - RODALOG] O corpo da requisição está vazio");
+                    throw new ProtheusRodalogException(
+                            "[INTEGRACAO - RODALOG] Protheus não retornou todas as informações necessárias",
+                            "A comunicação retornou erro porém sem nenhuma informação no corpo do erro");
                 }
-                throw new IllegalStateException(
-                        "[INTEGRACAO - RODALOG] A requisição retornou código de erro: " + response.code());
+                throw new ProtheusRodalogException(
+                        "[INTEGRACAO - RODALOG] Protheus não conseguiu processar as informações",
+                        "A requisição do token retornou erro, provavelmente falta mapeamento no Protheus");
             }
         } else {
-            throw new IllegalStateException("[INTEGRACAO - RODALOG] Nunhuma resposta obtida da integração");
+            throw new RodoparHorizonteException(
+                    "[INTEGRACAO - RODALOG] Nunhuma resposta obtida da integração com o sistema Protheus",
+                    "A comunicação com o Protheus retornou um response vazio");
         }
     }
 }
