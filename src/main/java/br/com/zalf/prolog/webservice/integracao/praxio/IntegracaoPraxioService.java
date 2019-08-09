@@ -102,10 +102,10 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
         try {
             return dao.getCodChecklistParaSincronizar();
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao resolver os itens no ProLog", t);
+            Log.e(TAG, "Erro ao buscar código de checklist para sincronizar", t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao resolver os itens no ProLog");
+                    .map(t, "Erro ao buscar código de checklist para sincronizar");
         }
     }
 

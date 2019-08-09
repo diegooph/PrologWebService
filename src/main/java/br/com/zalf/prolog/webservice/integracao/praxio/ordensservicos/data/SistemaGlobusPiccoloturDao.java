@@ -41,7 +41,7 @@ public interface SistemaGlobusPiccoloturDao {
     /**
      * Método utilizado exclusivamente para a integração entre ProLog e Globus.
      * <p>
-     * Este método marca o código de um checklist como a flag <code>precisa_ser_sincroniza = false</code> evitando que
+     * Este método marca o código de um checklist com a flag <code>precisa_ser_sincronizado = false</code> evitando que
      * o mesmo seja processado e enviado para o sistema integrado de forma desnecessária.
      *
      * @param conn                              Conexão utilizada para inserir os dados no banco de dados.

@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.RandomUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
@@ -92,10 +90,10 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
 
             // Pode acontecer de o checklist ter itens NOK apontados, porém, ou estes itens não devem abrir O.S ou
             // eles já estão abertos em outra O.S e não precisam ser lançados na integração. Para essa situação
-            // consideramos que o checklist não precisa mais ser sincronizados.
+            // consideramos que o checklist não precisa mais ser sincronizado.
             // Outra situação que pode ocorrer onde este if se torna necessário é a alteração de um modelo de checklist
             // onde alternativas que deveriam abrir O.S passam a não abrir mais, neste ponto, o checklist tem itens NOK
-            // apontados na realização, porém nenhum deles devem configurar um nova O.S neste momento.
+            // apontados na realização, porém nenhum deles devem configurar uma nova O.S neste momento.
             if (checklistItensNokGlobus.getPerguntasNok().size() <= 0) {
                 // Marca checklist como não precisa ser sincronizado.
                 sistema.marcaChecklistNaoPrecisaSincronizar(conn, codChecklistProLog);
@@ -105,13 +103,10 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 return;
             }
 
-            // If utilizado para, em situação de teste, simular inserções no sistema integrado.
-            if (BuildConfig.DEBUG && RandomUtils.randomBoolean()) {
-                final Long codOsAbertaGlobus =
-                        requester.insertItensNok(GlobusPiccoloturConverter.convert(checklistItensNokGlobus));
-                if (codOsAbertaGlobus <= 0) {
-                    throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Globus retornou um código de O.S inválido");
-                }
+            final Long codOsAbertaGlobus =
+                    requester.insertItensNok(GlobusPiccoloturConverter.convert(checklistItensNokGlobus));
+            if (codOsAbertaGlobus <= 0) {
+                throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Globus retornou um código de O.S inválido");
             }
 
             // Após enviar os Itens NOK para a integração, salvamos quais foram os itens enviados para poder consultar.
@@ -129,7 +124,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                     conn.rollback();
                 }
                 throw t;
-            } catch (Throwable ignore) {
+            } catch (final Throwable ignored) {
                 // Here you die, quietly! Indeed, i don't know what to do.
             }
         } finally {

@@ -65,7 +65,8 @@ public final class SistemaGlobusPiccolotur extends Sistema implements SincroniaC
                                 codChecklistProLog,
                                 checklist,
                                 getSistemaGlobusPiccoloturDaoImpl(),
-                                requester, this));
+                                requester,
+                                this));
             }
             conn.commit();
             return codChecklistProLog;
