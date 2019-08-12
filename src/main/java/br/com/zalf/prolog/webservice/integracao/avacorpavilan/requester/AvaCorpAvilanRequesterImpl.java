@@ -6,9 +6,9 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoC
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanSoap;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
@@ -28,7 +28,7 @@ import java.util.List;
  * Created by luiz on 24/07/17.
  */
 public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
-
+    @NotNull
     private static final String TODOS_COLABORADORES = "";
 
     @Override
@@ -60,13 +60,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                     throw new IllegalStateException("Busca de um veículo retornou mais de um resultado para a placa: "
                             + placaVeiculo);
                 }
-
                 return veiculos.getVeiculo().get(0);
             }
 
             throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
         } catch (final Throwable t) {
-            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar veículo com placa: " + placaVeiculo, t);
+            throw new AvaCorpAvilanException(
+                    "[INTEGRAÇÃO - AVILAN] Erro ao buscar veículo com placa: " + placaVeiculo, t);
         }
     }
 
@@ -108,7 +108,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
             @NotNull final String cpf,
             @NotNull final String dataNascimento) throws Exception {
         try {
-            final BuscaQuestionarioColaborador request = getChecklistSoap(cpf, dataNascimento).buscarQuestionariosColaborador(cpf);
+            final BuscaQuestionarioColaborador request =
+                    getChecklistSoap(cpf, dataNascimento).buscarQuestionariosColaborador(cpf);
 
             if (success(request)) {
                 return request.getQuestionarioVeiculos();
@@ -125,7 +126,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                 @NotNull final String cpf,
                                 @NotNull final String dataNascimento) throws Exception {
         try {
-            final EnviaRespostaAvaliacao request = getChecklistSoap(cpf, dataNascimento).enviarChecklist(respostasAvaliacao);
+            final EnviaRespostaAvaliacao request =
+                    getChecklistSoap(cpf, dataNascimento).enviarChecklist(respostasAvaliacao);
 
             if (success(request)) {
                 return (long) respostasAvaliacao.getCodigoAvaliacao();
@@ -152,8 +154,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
             adicionarChecklist.setCodigoQuestionario(codigoQuestionario);
             adicionarChecklist.setTipoChecklist(tipoChecklist);
 
-            final PerguntasAlternativasQuestionario request
-                    = getChecklistSoap(cpf, dataNascimento).buscarPerguntasAlternativasQuestionario(adicionarChecklist);
+            final PerguntasAlternativasQuestionario request =
+                    getChecklistSoap(cpf, dataNascimento).buscarPerguntasAlternativasQuestionario(adicionarChecklist);
             if (success(request)) {
                 // Esse request retorna uma lista de VeiculoQuestao pois, dado um veículo ABC,
                 // caso queiramos buscar seu questionário, ele pode estar atrelado a carretas DIK e XYZ, por exemplo.
@@ -196,8 +198,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
             if (success(request)) {
                 final List<AfericaoFiltro> afericoesFiltro = request.getAfericoes().getAfericaoFiltro();
                 if (afericoesFiltro.size() != 1) {
-                    throw new IllegalStateException("Busca de uma aferição retornou mais de um resultado para o código: "
-                            + codigoAfericao);
+                    throw new IllegalStateException(
+                            "Busca de uma aferição retornou mais de um resultado para o código: " + codigoAfericao);
                 }
 
                 return afericoesFiltro.get(0);
@@ -264,13 +266,14 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                                 @NotNull final String dataNascimento) throws Exception {
 
         try {
-            final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarAvaliacaoFiltro(codigoAvaliacao);
+            final ChecklistsFiltro request =
+                    getChecklistSoap(cpf, dataNascimento).buscarAvaliacaoFiltro(codigoAvaliacao);
 
             if (success(request)) {
                 final List<ChecklistFiltro> checklists = request.getChecklists().getChecklistFiltro();
                 if (checklists.size() != 1) {
-                    throw new IllegalStateException("Busca de um checklist retornou mais de um resultado para o código: "
-                            + codigoAvaliacao);
+                    throw new IllegalStateException(
+                            "Busca de um checklist retornou mais de um resultado para o código: " + codigoAvaliacao);
                 }
 
                 return checklists.get(0);
@@ -379,12 +382,10 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         }
     }
 
-    private boolean success(
-            @Nullable final AvacorpAvilanRequestStatus requestStatus) {
+    private boolean success(@Nullable final AvacorpAvilanRequestStatus requestStatus) {
         // Se a busca tiver sido feita COM sucesso, mas não tem dados, então sucesso false e mensagem igual a null ou
         // vazio.
         // Se a busca tiver sido feita SEM sucesso, então sucesso false e mensagem diferente de null ou vazio.
-
         return requestStatus != null
                 && (requestStatus.isSucesso()
                 || (!requestStatus.isSucesso() && StringUtils.isNullOrEmpty(requestStatus.getMensagem())));
