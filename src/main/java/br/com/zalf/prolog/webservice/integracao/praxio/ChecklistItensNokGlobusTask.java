@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.Siste
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistItensNokGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -32,14 +33,14 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
     private final SistemaGlobusPiccoloturDao sistema;
     @NotNull
     private final GlobusPiccoloturRequester requester;
-    @NotNull
+    @Nullable
     private final SincroniaChecklistListener listener;
 
     public ChecklistItensNokGlobusTask(@NotNull final Long codChecklistProLog,
                                        @NotNull final Checklist checklist,
                                        @NotNull final SistemaGlobusPiccoloturDao sistema,
                                        @NotNull final GlobusPiccoloturRequester requester,
-                                       @NotNull final SincroniaChecklistListener listener) {
+                                       @Nullable final SincroniaChecklistListener listener) {
         this.codChecklistProLog = codChecklistProLog;
         this.checklist = checklist;
         this.sistema = sistema;
@@ -60,7 +61,9 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 sistema.marcaChecklistNaoPrecisaSincronizar(conn, codChecklistProLog);
                 conn.commit();
                 // Avisamos que a sincronia não foi necessária para o checklist em questão.
-                listener.onSincroniaNaoExecutada(checklist);
+                if (listener != null){
+                    listener.onSincroniaNaoExecutada(checklist);
+                }
                 return;
             }
 
@@ -99,7 +102,9 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 sistema.marcaChecklistNaoPrecisaSincronizar(conn, codChecklistProLog);
                 conn.commit();
                 // Avisamos que a sincronia não foi necessária para o checklist em questão.
-                listener.onSincroniaNaoExecutada(checklist);
+                if (listener != null) {
+                    listener.onSincroniaNaoExecutada(checklist);
+                }
                 return;
             }
 
@@ -115,10 +120,14 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             sistema.marcaChecklistSincronizado(conn, codChecklistProLog);
             conn.commit();
             // Avismos que os itens foram sincronizados com sucesso.
-            listener.onSincroniaOk(checklist);
+            if (listener != null) {
+                listener.onSincroniaOk(checklist);
+            }
         } catch (final Throwable t) {
             // Avisamos sobre o erro ao sincronizar o checklist.
-            listener.onErroSincronia(checklist, t);
+            if (listener != null) {
+                listener.onErroSincronia(checklist, t);
+            }
             try {
                 if (conn != null) {
                     conn.rollback();

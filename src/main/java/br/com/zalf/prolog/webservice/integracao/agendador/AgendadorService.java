@@ -21,6 +21,8 @@ import java.util.concurrent.Executors;
 public final class AgendadorService implements SincroniaChecklistListener {
     @NotNull
     private static final String TAG = AgendadorService.class.getSimpleName();
+    @NotNull
+    private static final Long NENHUM_CHECKLIST_PARA_SINCRONIZAR = 0L;
 
     public void sincronizaChecklists() throws ProLogException {
         try {
@@ -28,8 +30,7 @@ public final class AgendadorService implements SincroniaChecklistListener {
             // realizados, não podemos sincronizar uma lista de checklists, deve ser um a um para garantir que a
             // contagem de apontamentos será incrementada corretamente.
             final Long codChecklistParaSincronizar = new IntegracaoPraxioService().getCodChecklistParaSincronizar();
-            // Se codChecklistParaSincronizar == 0 então não tem nenhum checklist para ser sincronizado.
-            if (codChecklistParaSincronizar == 0) {
+            if (codChecklistParaSincronizar.equals(NENHUM_CHECKLIST_PARA_SINCRONIZAR)) {
                 return;
             }
             final Checklist checklist = Injection.provideChecklistDao().getByCod(codChecklistParaSincronizar);
