@@ -18,9 +18,7 @@ public interface GlobusPiccoloturRequester {
      *
      * @param ordemDeServicoCorretivaPrologVO Objeto que encapsula as informações para enviar ao endpoint do Globus.
      * @return O código da Ordem de Serviço que foi criada no Globus.
-     * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    Long insertItensNok(
-            @NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO) throws Throwable;
+    Long insertItensNok(@NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO);
 }

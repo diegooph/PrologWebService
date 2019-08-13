@@ -593,13 +593,14 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "JOIN FUNCAO_PROLOG_v11 FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
                     "JOIN colaborador C ON C.cod_unidade = CF.cod_unidade AND CF.cod_funcao_colaborador = C" +
                     ".cod_funcao\n" +
+                    "JOIN UNIDADE_PILAR_PROLOG UPP ON UPP.COD_UNIDADE = C.COD_UNIDADE AND UPP.cod_pilar = CF.cod_pilar_prolog\n" +
                     "WHERE C.CPF = ?\n" +
                     "ORDER BY PP.pilar, FP.funcao");
             stmt.setLong(1, cpf);
             rSet = stmt.executeQuery();
             pilares = empresaDao.createPilares(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         visao.setPilares(pilares);
         return visao;

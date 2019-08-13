@@ -21,14 +21,16 @@ interface OperacoesIntegradasChecklist {
 
     void insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo) throws Throwable;
 
     void updateModeloChecklist(
             @NotNull final String token,
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean sobrescreverPerguntasAlternativas) throws Throwable;
 
     Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
             @NotNull final Long codUnidade,

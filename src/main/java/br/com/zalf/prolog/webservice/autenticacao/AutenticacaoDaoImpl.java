@@ -164,9 +164,10 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO TOKEN_AUTENTICACAO"
-                    + "(CPF_COLABORADOR, TOKEN) VALUES (?, ?);");
+                    + "(CPF_COLABORADOR, COD_COLABORADOR, TOKEN) VALUES (?, (SELECT CODIGO FROM COLABORADOR WHERE CPF = ?), ?);");
             stmt.setLong(1, cpf);
-            stmt.setString(2, token);
+            stmt.setLong(2, cpf);
+            stmt.setString(3, token);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 autenticacao.setStatus(Autenticacao.ERROR);

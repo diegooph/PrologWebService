@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public final class GlobusPiccoloturConverter {
     @NotNull
-    static ChecklistItensNokGlobus createChecklistItensNokGlobus(
+    public static ChecklistItensNokGlobus createChecklistItensNokGlobus(
             @NotNull final Long codUnidadeProLog,
             @NotNull final Long codChecklistProLog,
             @NotNull final Checklist checklist,
@@ -32,10 +32,12 @@ public final class GlobusPiccoloturConverter {
             for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
                 // Uma alternativa selecionada quer dizer uma alternativa NOK
                 if (alternativa.selected) {
+                    // O Map irá conter todas as alternativas do modelo (ativas e inativas) isso garante que nunca
+                    // retornará null em um get.
                     final AlternativaChecklistStatus alternativaChecklistStatus =
                             alternativasStatus.get(alternativa.getCodigo());
-
-                    if (!alternativaChecklistStatus.isTemItemOsPendente()) {
+                    if (!alternativaChecklistStatus.isTemItemOsPendente()
+                            && alternativaChecklistStatus.isDeveAbrirOrdemServico()) {
                         final String descricao = alternativa.isTipoOutros()
                                 ? alternativa.getRespostaOutros()
                                 : alternativa.getAlternativa();
@@ -52,10 +54,6 @@ public final class GlobusPiccoloturConverter {
                         resposta.getPergunta(),
                         alternativasNok));
             }
-        }
-        if (perguntasNok.isEmpty()) {
-            throw new IllegalStateException(
-                    "[INTEGRACAO - PICCOLOTUR] O checklist possui itens Nok, mas não foram processadas pelo converter");
         }
         return new ChecklistItensNokGlobus(
                 codUnidadeProLog,

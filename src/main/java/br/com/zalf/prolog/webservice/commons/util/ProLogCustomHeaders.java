@@ -20,4 +20,6 @@ public final class ProLogCustomHeaders {
     public static final String APP_VERSION_ANDROID_APP = "ProLog-Android-App-Version";
     @NotNull
     public static final String HEADER_TOKEN_INTEGRACAO = "ProLog-Token-Integracao";
+    @NotNull
+    public static final String HEADER_TOKEN_AGENDADOR = "ProLog-Token-Agendador";
 }

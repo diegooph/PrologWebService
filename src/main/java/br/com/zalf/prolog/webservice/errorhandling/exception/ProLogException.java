@@ -63,7 +63,7 @@ public abstract class ProLogException extends RuntimeException {
 						   int proLogErrorCode,
 						   @NotNull String message,
 						   @Nullable String developerMessage,
-						   @NotNull Throwable parentException) {
+						   @Nullable Throwable parentException) {
 		super(parentException);
 		this.httpStatusCode = httpStatusCode;
 		this.proLogErrorCode = proLogErrorCode;
@@ -101,36 +101,40 @@ public abstract class ProLogException extends RuntimeException {
 		this.proLogErrorCode = proLogErrorCode;
 	}
 
+	@NotNull
 	@Override
 	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(@NotNull String message) {
 		this.message = message;
 	}
 
+	@Nullable
 	public String getMoreInfoLink() {
 		return moreInfoLink;
 	}
 
-	public void setMoreInfoLink(String moreInfoLink) {
+	public void setMoreInfoLink(@Nullable String moreInfoLink) {
 		this.moreInfoLink = moreInfoLink;
 	}
 
+	@Nullable
 	public String getDeveloperMessage() {
 		return developerMessage;
 	}
 
-	public void setDeveloperMessage(String developerMessage) {
+	public void setDeveloperMessage(@Nullable String developerMessage) {
 		this.developerMessage = developerMessage;
 	}
 
+	@Nullable
 	public Throwable getParentException() {
 		return parentException;
 	}
 
-	public void setParentException(final Throwable parentException) {
+	public void setParentException(@Nullable final Throwable parentException) {
 		this.parentException = parentException;
 	}
 }

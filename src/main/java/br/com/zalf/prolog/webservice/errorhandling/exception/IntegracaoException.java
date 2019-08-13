@@ -11,13 +11,20 @@ import org.jetbrains.annotations.Nullable;
  */
 public class IntegracaoException extends ProLogException {
 
-    public IntegracaoException(int httpStatusCode, @NotNull String message) {
+    public IntegracaoException(final int httpStatusCode, @NotNull final String message) {
         super(httpStatusCode, ProLogErrorCodes.INTEGRACAO.errorCode(), message, null);
     }
 
-    public IntegracaoException(int httpStatusCode,
-                               @NotNull String message,
-                               @Nullable String developerMessage) {
+    public IntegracaoException(final int httpStatusCode,
+                               @NotNull final String message,
+                               @Nullable final String developerMessage) {
         super(httpStatusCode, ProLogErrorCodes.INTEGRACAO.errorCode(), message, developerMessage);
+    }
+
+    public IntegracaoException(final int httpStatusCode,
+                               @NotNull final String message,
+                               @Nullable final String developerMessage,
+                               @Nullable final Throwable exception) {
+        super(httpStatusCode, ProLogErrorCodes.INTEGRACAO.errorCode(), message, developerMessage, exception);
     }
 }

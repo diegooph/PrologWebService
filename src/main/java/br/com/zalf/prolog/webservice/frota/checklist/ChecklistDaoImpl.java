@@ -117,7 +117,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
     @NotNull
     @Override
-    public Checklist getByCod(@NotNull final Long codChecklist, @NotNull final String userToken) throws SQLException {
+    public Checklist getByCod(@NotNull final Long codChecklist) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

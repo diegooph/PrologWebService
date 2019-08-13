@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 import com.google.common.collect.BiMap;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.sql.SQLException;

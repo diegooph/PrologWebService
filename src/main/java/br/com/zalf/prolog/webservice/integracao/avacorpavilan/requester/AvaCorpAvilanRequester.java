@@ -4,12 +4,12 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoC
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import br.com.zalf.prolog.webservice.integracao.sistema.Requester;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by luiz on 24/07/17.

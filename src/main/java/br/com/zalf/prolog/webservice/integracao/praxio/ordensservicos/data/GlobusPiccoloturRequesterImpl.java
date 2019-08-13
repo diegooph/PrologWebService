@@ -24,8 +24,7 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
 
     @NotNull
     @Override
-    public Long insertItensNok(
-            @NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO) throws Throwable {
+    public Long insertItensNok(@NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO) {
         if (BuildConfig.DEBUG) {
             System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
             System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
@@ -42,14 +41,17 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
                     getSoapRequester().gerarOrdemDeServicoCorretivaProlog(ordemDeServicoCorretivaPrologVO));
         } catch (final Throwable t) {
             if (!(t instanceof GlobusPiccoloturException)) {
-                throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Erro na comunicação com o Globus");
+                throw new GlobusPiccoloturException(
+                        "[ERRO INTEGRAÇÃO]: Erro na comunicação com o Sistema Globus",
+                        "Uma exception não mapeada estourou na integração, a exception está presente nos logs",
+                        t);
             }
             throw t;
         }
     }
 
     @NotNull
-    private Long handleResponse(@Nullable final RetornoOsCorretivaVO result) throws Throwable {
+    private Long handleResponse(@Nullable final RetornoOsCorretivaVO result) {
         if (result != null) {
             if (result.isSucesso()) {
                 return (long) result.getCodigoOS();

@@ -17,7 +17,9 @@ public final class GlobusPiccoloturException extends IntegracaoException {
         super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), message);
     }
 
-    public GlobusPiccoloturException(@NotNull final String message, @Nullable final String developerMessage) {
-        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), message, developerMessage);
+    public GlobusPiccoloturException(@NotNull final String message,
+                                     @Nullable final String developerMessage,
+                                     @Nullable final Throwable exception) {
+        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), message, developerMessage, exception);
     }
 }

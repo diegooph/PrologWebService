@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.Item
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
+import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -326,6 +327,29 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             throw t;
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Pair<Long, Boolean> getCodChecklistParaSincronizar() throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM PICCOLOTUR.FUNC_CHECK_GET_NEXT_COD_CHECKLIST_PARA_SINCRONIZAR();");
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return new Pair<>(
+                        rSet.getLong("COD_CHECKLIST"),
+                        rSet.getBoolean("IS_LAST_COD"));
+            } else {
+                throw new SQLException("Não foi possível buscar o código do checklist que será sincronizado");
+            }
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 }

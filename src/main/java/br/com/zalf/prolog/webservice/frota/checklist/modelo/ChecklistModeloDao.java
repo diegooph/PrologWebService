@@ -27,25 +27,27 @@ public interface ChecklistModeloDao {
      *
      * @param modeloChecklist          O {@link ModeloChecklistInsercao modelo} contendo as informações para inserir.
      * @param checklistOfflineListener Listener utilizado para notificar sobre a atualização de modelos de checklist.
+     * @param statusAtivo              Propriedade que diz se o modelo de checklist será adicionado como ativo ou
+     *                                 inativo. É utilizado a inserção com <code>statusAtivo = false</code> para as
+     *                                 integrações onde é necessário uma parametrização com tabelas DE-PARA.
      * @throws Throwable Caso ocorrer algum erro ao salvar os dados.
      */
     void insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo) throws Throwable;
 
     /**
      * Busca a listagem de {@link ModeloChecklistListagem modelos de checklist}
-     * da {@link Unidade} filtrando pela {@link FuncaoProLog}.
+     * da {@link Unidade unidade}.
      *
      * @param codUnidade Código da {@link Unidade}.
-     * @param codCargo   Código da {@link FuncaoProLog} ou "%" para buscar de todas as funções.
      * @return Lista de {@link ModeloChecklistListagem} da Unidade.
      * @throws Throwable Se ocorrer algum erro na busca dos dados.
      */
     @NotNull
-    List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
-            @NotNull final Long codUnidade,
-            @NotNull final String codCargo) throws Throwable;
+    List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidade(
+            @NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Busca um {@link ModeloChecklistVisualizacao modelo de checklist} através do
@@ -67,12 +69,18 @@ public interface ChecklistModeloDao {
      * * {@link ModeloChecklistEdicao#tiposVeiculoLiberados}.
      * * {@link ModeloChecklistEdicao#perguntas}.
      *
-     * @param token                    Token do usuário que está solicitando a alteração do
-     *                                 {@link ModeloChecklistEdicao modelo}.
-     * @param codUnidade               Código da Unidade.
-     * @param codModelo                Código do modelo.
-     * @param modeloChecklist          O novo {@link ModeloChecklistEdicao} que será inserido.
-     * @param checklistOfflineListener Listener utilizado para notificar sobre a atualização de modelos de checklist.
+     * @param token                             Token do usuário que está solicitando a alteração do
+     *                                          {@link ModeloChecklistEdicao modelo}.
+     * @param codUnidade                        Código da Unidade.
+     * @param codModelo                         Código do modelo.
+     * @param modeloChecklist                   O novo {@link ModeloChecklistEdicao} que será inserido.
+     * @param checklistOfflineListener          Listener utilizado para notificar sobre a atualização de modelos de
+     *                                          checklist.
+     * @param sobrescreverPerguntasAlternativas Esta propriedade é utilizada para dizer se as perguntas presentes na
+     *                                          edição do modelo serão sobrescritas e manterão os mesmos códigos ou se
+     *                                          devem ser desativadas e criadas novamente, gerando novos códigos. Essa
+     *                                          propriedade é utilizada por integrações onde há o vínculo com códigos
+     *                                          em tabelas DE-PARA, assim não pode-se alterar os códigos.
      * @throws Throwable Se algum erro acontecer na atualização dos dados.
      */
     void updateModeloChecklist(
@@ -80,7 +88,8 @@ public interface ChecklistModeloDao {
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean sobrescreverPerguntasAlternativas) throws Throwable;
 
     /**
      * Busca as {@link PerguntaRespostaChecklist perguntas} que compoẽm o checklist.
