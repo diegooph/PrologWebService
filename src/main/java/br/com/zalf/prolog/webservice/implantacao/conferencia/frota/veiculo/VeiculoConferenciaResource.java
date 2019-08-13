@@ -12,7 +12,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.InputStream;
 
 
@@ -39,9 +38,9 @@ public class VeiculoConferenciaResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/upload/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public StreamingOutput uploadEscala(@PathParam("codUnidade") Long codUnidade,
-                                        @FormDataParam("file") InputStream fileInputStream) throws Exception {
-        return outputStream -> new VeiculoConferenciaService().uploadVeiculoPlanilha(outputStream, codUnidade, fileInputStream);
+    public Response uploadPlanilhaVeiculo(@PathParam("codUnidade") Long codUnidade,
+                                          @FormDataParam("file") InputStream fileInputStream) throws ProLogException {
+        return service.uploadPlanilhaVeiculo(codUnidade, fileInputStream);
     }
 
 }

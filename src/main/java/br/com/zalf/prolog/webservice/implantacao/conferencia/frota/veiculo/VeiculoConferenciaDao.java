@@ -11,16 +11,10 @@ import java.io.OutputStream;
  */
 public interface VeiculoConferenciaDao {
 
-    /**
-     * Método para receber a planilha .csv do banco, com todas as validações.
-     * <p>
-     * @param out Stream onde os dados serão escritos para retorno.
-     * @param codUnidade código da unidade referente ao import.
-     * @param jsonPlanilha json com todos os atributos do objeto VeiculoPlanilha.
-     * @throws Throwable Se algum erro ocorrer na busca dos dados.
-     */
-    void getVerificacaoPlanilhaCsv(@NotNull final OutputStream out,
-                                   @NotNull final Long codUnidade,
+    /*void verificarPlanilha(@NotNull final Long codUnidade,
+                           @NotNull final String json) throws Throwable;*/
+
+    void getVerificacaoPlanilhaCsv(@NotNull final Long codUnidade,
                                    @NotNull final String jsonPlanilha) throws Throwable;
 }
 
