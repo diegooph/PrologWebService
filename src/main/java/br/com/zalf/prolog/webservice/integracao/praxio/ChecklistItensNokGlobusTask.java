@@ -28,6 +28,8 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
     @NotNull
     private final Long codChecklistProLog;
     @NotNull
+    private final Boolean isLastChecklist;
+    @NotNull
     private final Checklist checklist;
     @NotNull
     private final SistemaGlobusPiccoloturDao sistema;
@@ -37,6 +39,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
     private final SincroniaChecklistListener listener;
 
     public ChecklistItensNokGlobusTask(@NotNull final Long codChecklistProLog,
+                                       @NotNull final Boolean isLastChecklist,
                                        @NotNull final Checklist checklist,
                                        @NotNull final SistemaGlobusPiccoloturDao sistema,
                                        @NotNull final GlobusPiccoloturRequester requester,
@@ -46,6 +49,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
         this.sistema = sistema;
         this.requester = requester;
         this.listener = listener;
+        this.isLastChecklist = isLastChecklist;
     }
 
     @Override
@@ -61,8 +65,8 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 sistema.marcaChecklistNaoPrecisaSincronizar(conn, codChecklistProLog);
                 conn.commit();
                 // Avisamos que a sincronia não foi necessária para o checklist em questão.
-                if (listener != null){
-                    listener.onSincroniaNaoExecutada(checklist);
+                if (listener != null) {
+                    listener.onSincroniaNaoExecutada(checklist, isLastChecklist);
                 }
                 return;
             }
@@ -103,7 +107,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 conn.commit();
                 // Avisamos que a sincronia não foi necessária para o checklist em questão.
                 if (listener != null) {
-                    listener.onSincroniaNaoExecutada(checklist);
+                    listener.onSincroniaNaoExecutada(checklist, isLastChecklist);
                 }
                 return;
             }
@@ -121,12 +125,12 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             conn.commit();
             // Avismos que os itens foram sincronizados com sucesso.
             if (listener != null) {
-                listener.onSincroniaOk(checklist);
+                listener.onSincroniaOk(checklist, isLastChecklist);
             }
         } catch (final Throwable t) {
             // Avisamos sobre o erro ao sincronizar o checklist.
             if (listener != null) {
-                listener.onErroSincronia(checklist, t);
+                listener.onErroSincronia(checklist, isLastChecklist, t);
             }
             try {
                 if (conn != null) {

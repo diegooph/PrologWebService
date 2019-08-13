@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
@@ -11,14 +10,12 @@ import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOffli
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
-import br.com.zalf.prolog.webservice.integracao.agendador.SincroniaChecklistListener;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.GlobusPiccoloturRequester;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.SistemaGlobusPiccoloturDao;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.SistemaGlobusPiccoloturDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.util.concurrent.Executors;
@@ -28,9 +25,7 @@ import java.util.concurrent.Executors;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class SistemaGlobusPiccolotur extends Sistema implements SincroniaChecklistListener {
-    @NotNull
-    private static final String TAG = SistemaGlobusPiccolotur.class.getSimpleName();
+public final class SistemaGlobusPiccolotur extends Sistema {
     @NotNull
     private final GlobusPiccoloturRequester requester;
 
@@ -63,6 +58,7 @@ public final class SistemaGlobusPiccolotur extends Sistema implements SincroniaC
                 Executors.newSingleThreadExecutor().execute(
                         new ChecklistItensNokGlobusTask(
                                 codChecklistProLog,
+                                true,
                                 checklist,
                                 getSistemaGlobusPiccoloturDaoImpl(),
                                 requester,
@@ -81,20 +77,20 @@ public final class SistemaGlobusPiccolotur extends Sistema implements SincroniaC
     }
 
     @Override
-    public void insertModeloChecklist(
-            @NotNull final ModeloChecklistInsercao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) {
+    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
+                                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+                                      final boolean statusAtivo) {
         throw new BloqueadoIntegracaoException("Devido à integração com o Sistema Globus, " +
                 "a criação de modelos de checklist está bloqueada.");
     }
 
     @Override
-    public void updateModeloChecklist(
-            @NotNull final String token,
-            @NotNull final Long codUnidade,
-            @NotNull final Long codModelo,
-            @NotNull final ModeloChecklistEdicao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) {
+    public void updateModeloChecklist(@NotNull final String token,
+                                      @NotNull final Long codUnidade,
+                                      @NotNull final Long codModelo,
+                                      @NotNull final ModeloChecklistEdicao modeloChecklist,
+                                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+                                      final boolean sobrescreverPerguntasAlternativas) {
         throw new BloqueadoIntegracaoException("Devido à integração com o Sistema Globus, " +
                 "a atualização de modelos de checklist está bloqueada.");
     }
@@ -107,21 +103,6 @@ public final class SistemaGlobusPiccolotur extends Sistema implements SincroniaC
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) {
         throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
-    }
-
-    @Override
-    public void onSincroniaOk(@NotNull final Checklist checklist) {
-        Log.d(TAG, "Checklist sincronizado com sucesso: " + checklist.getCodigo());
-    }
-
-    @Override
-    public void onSincroniaNaoExecutada(@NotNull final Checklist checklist) {
-        Log.d(TAG, "Não foi preciso sincronizar o checklist: " + checklist.getCodigo());
-    }
-
-    @Override
-    public void onErroSincronia(@NotNull final Checklist checklist, @Nullable final Throwable t) {
-        Log.d(TAG, "Não foi possível sincronizar o checklist: " + checklist.getCodigo());
     }
 
     @NotNull

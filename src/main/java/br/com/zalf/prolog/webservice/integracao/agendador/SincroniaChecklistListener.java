@@ -10,9 +10,11 @@ import org.jetbrains.annotations.Nullable;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public interface SincroniaChecklistListener {
-    void onSincroniaOk(@NotNull final Checklist checklist);
+    void onSincroniaOk(@NotNull final Checklist checklist, @NotNull final Boolean isLastChecklist);
 
-    void onSincroniaNaoExecutada(@NotNull final Checklist checklist);
+    void onSincroniaNaoExecutada(@NotNull final Checklist checklist, @NotNull final Boolean isLastChecklist);
 
-    void onErroSincronia(@NotNull final Checklist checklist, @Nullable final Throwable t);
+    void onErroSincronia(@NotNull final Checklist checklist,
+                         @NotNull final Boolean isLastChecklist,
+                         @Nullable final Throwable t);
 }

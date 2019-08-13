@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.Item
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
+import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -98,7 +99,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     }
 
     @NotNull
-    public Long getCodChecklistParaSincronizar() {
+    public Pair<Long, Boolean> getCodChecklistParaSincronizar() {
         try {
             return dao.getCodChecklistParaSincronizar();
         } catch (final Throwable t) {

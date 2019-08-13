@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegraca
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemOSAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
+import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -70,10 +71,13 @@ interface IntegracaoPraxioDao {
      * Método utilizado para buscar o código do checklist que deve ser sincronizado no momento.
      * <p>
      * Se não tem nenhum checklist para ser sincronizado o valor retornado é 0 (ZERO).
+     * <p>
+     * A flag booleana que retorna junto ao código indica se este é o último código da lista.
      *
-     * @return O código do checklist que deverá ser sincronizado
-     * @throws Throwable Se algum erro ocorrer
+     * @return Um {@link Pair par} onde o primeiro elemento é o código do checklist e o último é uma flag indicando
+     * se é o último código da lista.
+     * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    Long getCodChecklistParaSincronizar() throws Throwable;
+    Pair<Long, Boolean> getCodChecklistParaSincronizar() throws Throwable;
 }
