@@ -176,7 +176,7 @@ public class Checklist {
 			final PerguntaRespostaChecklist checklistResposta = listRespostas.get(i);
 			final List<AlternativaChecklist> alternativasRespostas = checklistResposta.getAlternativasResposta();
 			for (int j = 0; j < alternativasRespostas.size(); j++) {
-				final AlternativaChecklist alternativaResposta = alternativasRespostas.get(i);
+				final AlternativaChecklist alternativaResposta = alternativasRespostas.get(j);
 				if (alternativaResposta.isSelected()) {
 					qtdAlternativasNok++;
 					perguntaTeveAlternativasNok = true;
@@ -185,7 +185,7 @@ public class Checklist {
 				}
 			}
 			if (perguntaTeveAlternativasNok) {
-				qtdAlternativasNok++;
+				qtdPerguntasNok++;
 				perguntaTeveAlternativasNok = false;
 			} else {
 				qtdPerguntasOk++;
