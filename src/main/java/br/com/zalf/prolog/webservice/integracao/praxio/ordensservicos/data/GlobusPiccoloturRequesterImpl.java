@@ -41,7 +41,10 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
                     getSoapRequester().gerarOrdemDeServicoCorretivaProlog(ordemDeServicoCorretivaPrologVO));
         } catch (final Throwable t) {
             if (!(t instanceof GlobusPiccoloturException)) {
-                throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Erro na comunicação com o Globus");
+                throw new GlobusPiccoloturException(
+                        "[ERRO INTEGRAÇÃO]: Erro na comunicação com o Sistema Globus",
+                        "Uma exception não mapeada estourou na integração, a exception está presente nos logs",
+                        t);
             }
             throw t;
         }
