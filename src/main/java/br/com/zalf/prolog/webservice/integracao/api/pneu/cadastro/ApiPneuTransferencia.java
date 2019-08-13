@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.praxio.cadastro;
+package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class PneuTransferenciaPraxio {
+public final class ApiPneuTransferencia {
     @NotNull
     private final Long codUnidadeOrigem;
     @NotNull
@@ -23,11 +23,11 @@ public class PneuTransferenciaPraxio {
     @Nullable
     private final String observacao;
 
-    public PneuTransferenciaPraxio(@NotNull final Long codUnidadeOrigem,
-                                   @NotNull final Long codUnidadeDestino,
-                                   @NotNull final String cpfColaboradorRealizacaoTransferencia,
-                                   @NotNull final List<String> codPneusTransferidos,
-                                   @Nullable final String observacao) {
+    public ApiPneuTransferencia(@NotNull final Long codUnidadeOrigem,
+                                @NotNull final Long codUnidadeDestino,
+                                @NotNull final String cpfColaboradorRealizacaoTransferencia,
+                                @NotNull final List<String> codPneusTransferidos,
+                                @Nullable final String observacao) {
         this.codUnidadeOrigem = codUnidadeOrigem;
         this.codUnidadeDestino = codUnidadeDestino;
         this.cpfColaboradorRealizacaoTransferencia = cpfColaboradorRealizacaoTransferencia;
@@ -36,8 +36,8 @@ public class PneuTransferenciaPraxio {
     }
 
     @NotNull
-    public static PneuTransferenciaPraxio getPneuTransferenciaPraxioDummy() {
-        return new PneuTransferenciaPraxio(
+    public static ApiPneuTransferencia getPneuTransferenciaPraxioDummy() {
+        return new ApiPneuTransferencia(
                 5L,
                 15L,
                 "03383283104",

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.praxio.cadastro;
+package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,9 +10,9 @@ import java.math.BigDecimal;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class PneuEdicaoPraxio {
+public final class ApiPneuEdicao {
     @NotNull
-    private final Long codigoPraxio;
+    private final Long codigoSistemaIntegrado;
     @NotNull
     private final String novoCodigoCliente;
     @NotNull
@@ -28,15 +28,15 @@ public class PneuEdicaoPraxio {
     @Nullable
     private final BigDecimal novoValorBandaPneu;
 
-    public PneuEdicaoPraxio(@NotNull final Long codigoPraxio,
-                            @NotNull final String novoCodigoCliente,
-                            @NotNull final Long novoCodModeloPneu,
-                            @NotNull final Long novoCodDimensaoPneu,
-                            @NotNull final String novoDotPneu,
-                            @NotNull final BigDecimal novoValorPneu,
-                            @Nullable final Long novoCodModeloBanda,
-                            @Nullable final BigDecimal novoValorBandaPneu) {
-        this.codigoPraxio = codigoPraxio;
+    public ApiPneuEdicao(@NotNull final Long codigoSistemaIntegrado,
+                         @NotNull final String novoCodigoCliente,
+                         @NotNull final Long novoCodModeloPneu,
+                         @NotNull final Long novoCodDimensaoPneu,
+                         @NotNull final String novoDotPneu,
+                         @NotNull final BigDecimal novoValorPneu,
+                         @Nullable final Long novoCodModeloBanda,
+                         @Nullable final BigDecimal novoValorBandaPneu) {
+        this.codigoSistemaIntegrado = codigoSistemaIntegrado;
         this.novoCodigoCliente = novoCodigoCliente;
         this.novoCodModeloPneu = novoCodModeloPneu;
         this.novoCodDimensaoPneu = novoCodDimensaoPneu;
@@ -47,8 +47,8 @@ public class PneuEdicaoPraxio {
     }
 
     @NotNull
-    public static PneuEdicaoPraxio getPneuEdicaoPraxioDummy() {
-        return new PneuEdicaoPraxio(
+    public static ApiPneuEdicao getPneuEdicaoPraxioDummy() {
+        return new ApiPneuEdicao(
                 18723L,
                 "PN0023",
                 131L,
@@ -60,8 +60,8 @@ public class PneuEdicaoPraxio {
     }
 
     @NotNull
-    public Long getCodigoPraxio() {
-        return codigoPraxio;
+    public Long getCodigoSistemaIntegrado() {
+        return codigoSistemaIntegrado;
     }
 
     @NotNull

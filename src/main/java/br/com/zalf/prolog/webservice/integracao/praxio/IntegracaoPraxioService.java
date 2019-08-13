@@ -322,7 +322,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             if (ordensServicoAbertas == null || ordensServicoAbertas.isEmpty()) {
                 throw new GenericException("Nenhuma informação de O.S. aberta foi recebida");
             }
-            validateOrdemsServico(ordensServicoAbertas);
+            validateOrdensServico(ordensServicoAbertas);
             return new SuccessResponseIntegracao("Ordens de Serviços Abertas foram inseridas no ProLog");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir as Ordens de Serviços Abertas no banco de dados do ProLog", t);
@@ -410,7 +410,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
         }
     }
 
-    private void validateOrdemsServico(
+    private void validateOrdensServico(
             @NotNull final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws ProLogException {
         for (final OrdemServicoAbertaGlobus ordemServico : ordensServicoAbertas) {
             if (ordemServico.getCodOsGlobus() <= 0) {

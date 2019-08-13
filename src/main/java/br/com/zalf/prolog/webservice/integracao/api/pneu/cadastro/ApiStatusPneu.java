@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.praxio.cadastro;
+package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public enum StatusPneuPraxio {
+public enum ApiStatusPneu {
     EM_USO("EM_USO"),
     ESTOQUE("ESTOQUE"),
     ANALISE("ANALISE"),
@@ -17,7 +17,7 @@ public enum StatusPneuPraxio {
     @NotNull
     private final String stringRepresentation;
 
-    StatusPneuPraxio(@NotNull final String stringRepresentation) {
+    ApiStatusPneu(@NotNull final String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 
@@ -33,9 +33,9 @@ public enum StatusPneuPraxio {
     }
 
     @NotNull
-    public static StatusPneuPraxio fromString(@Nullable final String text) throws IllegalArgumentException {
+    public static ApiStatusPneu fromString(@Nullable final String text) throws IllegalArgumentException {
         if (text != null) {
-            for (final StatusPneuPraxio statusPneu : StatusPneuPraxio.values()) {
+            for (final ApiStatusPneu statusPneu : ApiStatusPneu.values()) {
                 if (text.equalsIgnoreCase(statusPneu.stringRepresentation)) {
                     return statusPneu;
                 }

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.praxio.cadastro;
+package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -6,13 +6,13 @@ import org.jetbrains.annotations.Nullable;
 import java.math.BigDecimal;
 
 /**
- * Created on 31/07/19.
+ * Created on 27/07/19.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class PneuCargaInicialPraxio {
+public final class ApiPneuCadastro {
     @NotNull
-    private final Long codigoPraxio;
+    private final Long codigoSistemaIntegrado;
     @NotNull
     private final String codigoCliente;
     @NotNull
@@ -37,30 +37,21 @@ public class PneuCargaInicialPraxio {
     private final Long codModeloBanda;
     @Nullable
     private final BigDecimal valorBandaPneu;
-    @NotNull
-    private final StatusPneuPraxio statusPneu;
-    @Nullable
-    private final String placaVeiculoPneuAplicado;
-    @Nullable
-    private final Integer posicaoPneuAplicado;
 
-    public PneuCargaInicialPraxio(@NotNull final Long codigoPraxio,
-                                  @NotNull final String codigoCliente,
-                                  @NotNull final Long codUnidadePneu,
-                                  @NotNull final Long codModeloPneu,
-                                  @NotNull final Long codDimensaoPneu,
-                                  @NotNull final Double pressaoCorretaPneu,
-                                  @NotNull final Integer vidaAtualPneu,
-                                  @NotNull final Integer vidaTotalPneu,
-                                  @NotNull final String dotPneu,
-                                  @NotNull final BigDecimal valorPneu,
-                                  @NotNull final Boolean pneuNovoNuncaRodado,
-                                  @Nullable final Long codModeloBanda,
-                                  @Nullable final BigDecimal valorBandaPneu,
-                                  @NotNull final StatusPneuPraxio statusPneu,
-                                  @Nullable final String placaVeiculoPneuAplicado,
-                                  @Nullable final Integer posicaoPneuAplicado) {
-        this.codigoPraxio = codigoPraxio;
+    public ApiPneuCadastro(@NotNull final Long codigoSistemaIntegrado,
+                           @NotNull final String codigoCliente,
+                           @NotNull final Long codUnidadePneu,
+                           @NotNull final Long codModeloPneu,
+                           @NotNull final Long codDimensaoPneu,
+                           @NotNull final Double pressaoCorretaPneu,
+                           @NotNull final Integer vidaAtualPneu,
+                           @NotNull final Integer vidaTotalPneu,
+                           @NotNull final String dotPneu,
+                           @NotNull final BigDecimal valorPneu,
+                           @NotNull final Boolean pneuNovoNuncaRodado,
+                           @Nullable final Long codModeloBanda,
+                           @Nullable final BigDecimal valorBandaPneu) {
+        this.codigoSistemaIntegrado = codigoSistemaIntegrado;
         this.codigoCliente = codigoCliente;
         this.codUnidadePneu = codUnidadePneu;
         this.codModeloPneu = codModeloPneu;
@@ -73,14 +64,11 @@ public class PneuCargaInicialPraxio {
         this.pneuNovoNuncaRodado = pneuNovoNuncaRodado;
         this.codModeloBanda = codModeloBanda;
         this.valorBandaPneu = valorBandaPneu;
-        this.statusPneu = statusPneu;
-        this.placaVeiculoPneuAplicado = placaVeiculoPneuAplicado;
-        this.posicaoPneuAplicado = posicaoPneuAplicado;
     }
 
     @NotNull
-    public static PneuCargaInicialPraxio getPneuCargaInicialPraxioDummy() {
-        return new PneuCargaInicialPraxio(
+    public static ApiPneuCadastro getPneuCadastroPraxioDummy() {
+        return new ApiPneuCadastro(
                 18723L,
                 "PN0001",
                 5L,
@@ -93,15 +81,12 @@ public class PneuCargaInicialPraxio {
                 new BigDecimal(1343.50),
                 false,
                 482L,
-                new BigDecimal(352.00),
-                StatusPneuPraxio.EM_USO,
-                "PRO0001",
-                111);
+                new BigDecimal(352.00));
     }
 
     @NotNull
-    public Long getCodigoPraxio() {
-        return codigoPraxio;
+    public Long getCodigoSistemaIntegrado() {
+        return codigoSistemaIntegrado;
     }
 
     @NotNull
@@ -162,20 +147,5 @@ public class PneuCargaInicialPraxio {
     @Nullable
     public BigDecimal getValorBandaPneu() {
         return valorBandaPneu;
-    }
-
-    @NotNull
-    public StatusPneuPraxio getStatusPneu() {
-        return statusPneu;
-    }
-
-    @Nullable
-    public String getPlacaVeiculoPneuAplicado() {
-        return placaVeiculoPneuAplicado;
-    }
-
-    @Nullable
-    public Integer getPosicaoPneuAplicado() {
-        return posicaoPneuAplicado;
     }
 }
