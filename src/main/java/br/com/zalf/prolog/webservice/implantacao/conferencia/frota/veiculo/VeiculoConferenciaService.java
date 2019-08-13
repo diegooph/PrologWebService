@@ -16,10 +16,7 @@ import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -37,11 +34,12 @@ public class VeiculoConferenciaService {
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
-    public Response uploadPlanilhaVeiculo(@NotNull final Long codUnidade,
+    public Response uploadVeiculoPlanilha(@NotNull final OutputStream out,
+                                          @NotNull final Long codUnidade,
                                           @NotNull final InputStream fileInputStream)
             throws ProLogException {
         final File file = createFileFromImport(codUnidade, fileInputStream);
-        readAndInsertImport(codUnidade, file);
+        readAndInsertImport(out, codUnidade, file);
         return Response.ok("Verificação realizada com sucesso!");
     }
 
@@ -66,13 +64,14 @@ public class VeiculoConferenciaService {
         }
     }
 
-    private void readAndInsertImport(@NotNull final Long codUnidade,
+    private void readAndInsertImport(@NotNull final OutputStream out,
+                                     @NotNull final Long codUnidade,
                                      @NotNull final File file)
             throws ProLogException {
         try {
             final List<VeiculoPlanilha> veiculoPlanilha = VeiculoPlanilhaReader.readListFromCsvFilePath(file);
             String jsonPlanilha = GsonUtils.getGson().toJson(veiculoPlanilha);
-            dao.getVerificacaoPlanilhaCsv(codUnidade, jsonPlanilha);
+            dao.getVerificacaoPlanilhaCsv(out, codUnidade, jsonPlanilha);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection
