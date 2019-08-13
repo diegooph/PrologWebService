@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import com.google.common.base.Preconditions;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by luiz on 18/07/17.

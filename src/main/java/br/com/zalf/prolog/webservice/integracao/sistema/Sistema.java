@@ -131,8 +131,9 @@ public abstract class Sistema implements OperacoesIntegradas {
     @Override
     public void insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener);
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo) throws Throwable {
+        getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo);
     }
 
     @Override
@@ -141,13 +142,15 @@ public abstract class Sistema implements OperacoesIntegradas {
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean sobrescreverPerguntasAlternativas) throws Throwable {
         getIntegradorProLog().updateModeloChecklist(
                 token,
                 codUnidade,
                 codModelo,
                 modeloChecklist,
-                checklistOfflineListener);
+                checklistOfflineListener,
+                sobrescreverPerguntasAlternativas);
     }
 
     @NotNull

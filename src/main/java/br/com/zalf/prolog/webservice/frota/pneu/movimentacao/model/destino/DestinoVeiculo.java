@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
-import com.sun.istack.internal.NotNull;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Zart on 24/02/17.

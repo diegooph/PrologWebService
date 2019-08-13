@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 

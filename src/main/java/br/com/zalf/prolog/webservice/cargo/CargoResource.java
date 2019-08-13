@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.cargo;
 
 import br.com.zalf.prolog.webservice.cargo.model.*;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -23,6 +25,26 @@ public final class CargoResource {
     @NotNull
     private final CargoService service = new CargoService();
 
+    @POST
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    public AbstractResponse insertCargo(@Required CargoInsercao cargo,
+                                        @HeaderParam("Authorization") @Required final String userToken){
+        return service.insertCargo(cargo, userToken);
+    }
+
+    @PUT
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    public Response updateCargo(@Required final CargoEdicao cargo,
+                                @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
+        return service.updateCargo(cargo, userToken);
+    }
+
     /**
      * Esse método não verifica nenhuma permissão. Isso porque ele poderá ser utilizado em diversas telas como
      * parâmetro para filtragem e pré-requisito de seleção em algum processo, como a criação de um modelo de checklist.
@@ -32,11 +54,25 @@ public final class CargoResource {
      */
     @GET
     @Secured
-    @Path("/todos")
+    @Path("/todos/por-unidade")
     public List<CargoSelecao> getTodosCargosUnidade(
             @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
         return service.getTodosCargosUnidade(codUnidade);
     }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Permissao.VISUALIZAR,
+            Pilares.Gente.Colaborador.VISUALIZAR,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    @Path("/todos/por-empresa")
+    public List<CargoListagemEmpresa> getTodosCargosEmrpesa(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
+        return service.getTodosCargosEmpresa(codEmpresa);
+    }
+
 
     @GET
     @Secured(permissions = {
@@ -71,5 +107,30 @@ public final class CargoResource {
                                                               @QueryParam("codCargo") @Required Long codCargo)
             throws ProLogException {
         return service.getPermissoesDetalhadasUnidade(codUnidade, codCargo);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Permissao.VISUALIZAR,
+            Pilares.Gente.Colaborador.VISUALIZAR,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    public CargoEdicao getByCod(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa,
+            @QueryParam("codigo") @Required final Long codigo) throws ProLogException {
+        return service.getByCod(codEmpresa, codigo);
+    }
+
+    @DELETE
+    @Secured(permissions = {
+            Pilares.Gente.Permissao.VINCULAR_CARGO,
+            Pilares.Gente.Colaborador.CADASTRAR,
+            Pilares.Gente.Colaborador.EDITAR})
+    @Path("/{codEmpresa}/{codigo}")
+    public Response deleteCargo(@PathParam("codEmpresa") @Required final Long codEmpresa,
+                                @PathParam("codigo") @Required final Long codigo,
+                                @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
+        return service.deleteCargo(codEmpresa, codigo, userToken);
     }
 }
