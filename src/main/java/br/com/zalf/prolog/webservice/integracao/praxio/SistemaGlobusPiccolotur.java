@@ -79,9 +79,9 @@ public final class SistemaGlobusPiccolotur extends Sistema {
     @Override
     public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
                                       @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-                                      final boolean statusAtivo) {
-        throw new BloqueadoIntegracaoException("Devido à integração com o Sistema Globus, " +
-                "a criação de modelos de checklist está bloqueada.");
+                                      final boolean statusAtivo) throws Throwable {
+        // Ignoramos o statusAtivo repassado pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
+        getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, false);
     }
 
     @Override
@@ -90,9 +90,17 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                       @NotNull final Long codModelo,
                                       @NotNull final ModeloChecklistEdicao modeloChecklist,
                                       @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-                                      final boolean sobrescreverPerguntasAlternativas) {
-        throw new BloqueadoIntegracaoException("Devido à integração com o Sistema Globus, " +
-                "a atualização de modelos de checklist está bloqueada.");
+                                      final boolean sobrescreverPerguntasAlternativas) throws Throwable {
+        // Ignoramos a propriedade sobrescreverPerguntasAlternativas pois queremos que para essa integração todas as
+        // edições de perguntas e alternativas sobrescrevam os valores antigos sem alterar os códigos existentes.
+        getIntegradorProLog()
+                .updateModeloChecklist(
+                        token,
+                        codUnidade,
+                        codModelo,
+                        modeloChecklist,
+                        checklistOfflineListener,
+                        true);
     }
 
     @Override
