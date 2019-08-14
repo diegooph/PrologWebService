@@ -36,14 +36,12 @@ public class VeiculoPlanilhaReader {
                 throw new RuntimeException("Erro ao converter de XLSX para CSV", ex);
             }
         }
-
         final CsvParserSettings settings = new CsvParserSettings();
         settings.setDelimiterDetectionEnabled(true, ',', ';');
         settings.setHeaderExtractionEnabled(true);
         settings.setNumberOfRowsToSkip(0);
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
-
         final List<VeiculoPlanilha> veiculoPlanilha = new ArrayList<>();
         for (final String[] row : rows) {
             final VeiculoPlanilha item = read(row);
@@ -58,7 +56,6 @@ public class VeiculoPlanilhaReader {
         if (linha[0].isEmpty()) {
             return null;
         }
-
         final VeiculoPlanilha item = new VeiculoPlanilha();
         // PLACA
         if (!linha[0].isEmpty()) {

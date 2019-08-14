@@ -10,14 +10,12 @@ public class VeiculoPlanilha {
     private Long codUnidade;
     private String placa;
     private Long km;
-    private boolean statusAtivo;
     private String marca;
     private String modelo;
     private String tipo;
     private String diagrama;
 
     public VeiculoPlanilha() {
-
     }
 
     public Long getCodUnidade() {
@@ -42,14 +40,6 @@ public class VeiculoPlanilha {
 
     public void setKm(Long km) {
         this.km = km;
-    }
-
-    public boolean isStatusAtivo() {
-        return statusAtivo;
-    }
-
-    public void setStatusAtivo(boolean statusAtivo) {
-        this.statusAtivo = statusAtivo;
     }
 
     public String getTipo() {
@@ -83,17 +73,6 @@ public class VeiculoPlanilha {
     public void setDiagrama(String diagrama) {
         this.diagrama = diagrama;
     }
-
-/*
-    public int getLinha() {
-        return linha;
-    }
-
-    public void setLinha(int linha) {
-        this.linha = linha;
-    }
-*/
-
 }
 
 
