@@ -4,6 +4,8 @@ Change Log
 <a name="v0.0.99"></a>
 ## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (release-date) [unreleased]
 
+### Refactors
+* Altera inserção de checklist para salvar quantidade de perguntas e alternativas OK e NOK (PL-2118)
 
 <a name="v0.0.98"></a>
 ## Version [v0.0.98](https://github.com/luizfp/PrologWebService/compare/v0.0.97...v0.0.98) (2019-07-16)
