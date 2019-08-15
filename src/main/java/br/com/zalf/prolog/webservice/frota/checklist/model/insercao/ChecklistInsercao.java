@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model.insercao;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,6 +84,14 @@ public final class ChecklistInsercao {
      */
     private final long deviceUptimeSincronizacaoMillis;
 
+    /**
+     * Metadados criados no momento de criação desse objeto contendo informações extras sobre o checklist sendo
+     * inserido.
+     */
+    @NotNull
+    @Exclude
+    private final ChecklistInsercaoMetadata cachedMetadata;
+
     public ChecklistInsercao(@NotNull final Long codUnidade,
                              @NotNull final Long codModelo,
                              @NotNull final Long codColaborador,
@@ -117,6 +126,7 @@ public final class ChecklistInsercao {
         this.deviceImei = deviceImei;
         this.deviceUptimeRealizacaoMillis = deviceUptimeRealizacaoMillis;
         this.deviceUptimeSincronizacaoMillis = deviceUptimeSincronizacaoMillis;
+        this.cachedMetadata = createMetadata();
     }
 
     @NotNull
@@ -198,5 +208,88 @@ public final class ChecklistInsercao {
 
     public long getDeviceUptimeSincronizacaoMillis() {
         return deviceUptimeSincronizacaoMillis;
+    }
+
+    public int getQtdPerguntasOk() {
+        return cachedMetadata.getQtdPerguntasOk();
+    }
+
+    public int getQtdPerguntasNok() {
+        return cachedMetadata.getQtdPerguntasNok();
+    }
+
+    public int getQtdAlternativasOk() {
+        return cachedMetadata.getQtdAlternativasOk();
+    }
+
+    public int getQtdAlternativasNok() {
+        return cachedMetadata.getQtdAlternativasNok();
+    }
+
+    @NotNull
+    private ChecklistInsercaoMetadata createMetadata() {
+        int qtdPerguntasOk = 0;
+        int qtdPerguntasNok = 0;
+        int qtdAlternativasOk = 0;
+        int qtdAlternativasNok = 0;
+        boolean perguntaTeveAlternativasNok = false;
+        for (int i = 0; i < respostas.size(); i++) {
+            final ChecklistResposta checklistResposta = respostas.get(i);
+            final List<ChecklistAlternativaResposta> alternativasRespostas = checklistResposta.getAlternativasRespostas();
+            for (int j = 0; j < alternativasRespostas.size(); j++) {
+                final ChecklistAlternativaResposta alternativaResposta = alternativasRespostas.get(j);
+                if (alternativaResposta.isAlternativaSelecionada()) {
+                    qtdAlternativasNok++;
+                    perguntaTeveAlternativasNok = true;
+                } else {
+                    qtdAlternativasOk++;
+                }
+            }
+            if (perguntaTeveAlternativasNok) {
+                qtdPerguntasNok++;
+                perguntaTeveAlternativasNok = false;
+            } else {
+                qtdPerguntasOk++;
+            }
+        }
+
+        return new ChecklistInsercaoMetadata(
+                qtdPerguntasOk,
+                qtdPerguntasNok,
+                qtdAlternativasOk,
+                qtdAlternativasNok);
+    }
+
+    private static final class ChecklistInsercaoMetadata {
+        private final int qtdPerguntasOk;
+        private final int qtdPerguntasNok;
+        private final int qtdAlternativasOk;
+        private final int qtdAlternativasNok;
+
+        ChecklistInsercaoMetadata(final int qtdPerguntasOk,
+                                  final int qtdPerguntasNok,
+                                  final int qtdAlternativasOk,
+                                  final int qtdAlternativasNok) {
+            this.qtdPerguntasOk = qtdPerguntasOk;
+            this.qtdPerguntasNok = qtdPerguntasNok;
+            this.qtdAlternativasOk = qtdAlternativasOk;
+            this.qtdAlternativasNok = qtdAlternativasNok;
+        }
+
+        int getQtdPerguntasOk() {
+            return qtdPerguntasOk;
+        }
+
+        int getQtdPerguntasNok() {
+            return qtdPerguntasNok;
+        }
+
+        int getQtdAlternativasOk() {
+            return qtdAlternativasOk;
+        }
+
+        int getQtdAlternativasNok() {
+            return qtdAlternativasNok;
+        }
     }
 }
