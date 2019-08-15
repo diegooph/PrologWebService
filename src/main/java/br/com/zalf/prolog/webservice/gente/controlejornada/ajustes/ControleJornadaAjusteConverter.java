@@ -135,6 +135,10 @@ public final class ControleJornadaAjusteConverter {
             inicio.setCodMarcacao(rSet.getLong("COD_MARCACAO_INICIO"));
             inicio.setJaFoiAjustada(rSet.getBoolean("FOI_AJUSTADO_INICIO"));
             inicio.setDataHoraMarcacao(dataHoraInicio);
+            inicio.setDeviceImei(rSet.getString("DEVICE_IMEI_INICIO"));
+            inicio.setDeviceReconhecido(rSet.getBoolean("DEVICE_IMEI_INICIO_RECONHECIDO"));
+            inicio.setMarcaDevice(rSet.getString("DEVICE_MARCA_INICIO"));
+            inicio.setModeloDevice(rSet.getString("DEVICE_MODELO_INICIO"));
         }
 
         MarcacaoAjusteExibicao fim = null;
@@ -145,6 +149,10 @@ public final class ControleJornadaAjusteConverter {
             fim.setCodMarcacao(rSet.getLong("COD_MARCACAO_FIM"));
             fim.setJaFoiAjustada(rSet.getBoolean("FOI_AJUSTADO_FIM"));
             fim.setDataHoraMarcacao(dataHoraFim);
+            fim.setDeviceImei(rSet.getString("DEVICE_IMEI_FIM"));
+            fim.setDeviceReconhecido(rSet.getBoolean("DEVICE_IMEI_FIM_RECONHECIDO"));
+            fim.setMarcaDevice(rSet.getString("DEVICE_MARCA_FIM"));
+            fim.setModeloDevice(rSet.getString("DEVICE_MODELO_FIM"));
         }
 
         return new MarcacaoAgrupadaAjusteExibicao(inicio, fim);

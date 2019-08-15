@@ -1,3 +1,14 @@
+Stage
+==========
+
+### Features
+* Adiciona a gestão de dispositivos móveis por empresa (PL-2150)
+
+### Refactors
+* Melhora tratamento de erros na integração com Avilan (PL-2210)
+* Remove pilar GERAL da visão ao logar pelo app (PL-2187)
+* Adiciona os registros de IMEI nas telas de listagem e gestão de marcações (PL-2152) 
+
 Change Log
 ==========
 
