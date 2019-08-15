@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
@@ -340,10 +341,20 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
+
+            // Isso é necessário pois apps antigos não tem a versão do modelo de checklist e portanto nós não recebemos
+            // ela. Nessa etapa, com base nas perguntas e alternativas recebidas, iremos tentar adivinhar qual a versão
+            // com fall back para 1 se não for encontrada.
+            if (!ChecklistMigracaoEstruturaSuporte.isAppNovaEstruturaChecklist(checklist)) {
+                final ChecklistMigracaoEstruturaSuporte migracaoSuporte = new ChecklistMigracaoEstruturaSuporte();
+                checklist.setCodVersaoModeloChecklist(migracaoSuporte.encontraCodVersaoModeloChecklist(conn, checklist));
+            }
+
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(" +
                     "F_COD_UNIDADE_CHECKLIST              := ?," +
                     "F_COD_MODELO_CHECKLIST               := ?," +
+                    "F_COD_VERSAO_MODELO_CHECKLIST        := ?," +
                     "F_DATA_HORA_REALIZACAO               := ?," +
                     "F_COD_COLABORADOR                    := ?," +
                     "F_COD_VEICULO                        := ?," +
@@ -367,25 +378,26 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
             stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
-            stmt.setObject(3, checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime());
-            stmt.setLong(4, checklist.getCodColaborador());
-            stmt.setLong(5, checklist.getCodVeiculo());
-            stmt.setString(6, checklist.getPlacaVeiculo());
-            stmt.setString(7, String.valueOf(checklist.getTipo().asChar()));
-            stmt.setLong(8, checklist.getKmColetadoVeiculo());
-            stmt.setLong(9, checklist.getTempoRealizacaoCheckInMillis());
-            stmt.setObject(10, Now.offsetDateTimeUtc());
-            stmt.setString(11, checklist.getFonteDataHoraRealizacao().asString());
-            stmt.setInt(12, checklist.getVersaoAppMomentoRealizacao());
-            stmt.setInt(13, checklist.getVersaoAppMomentoSincronizacao());
-            stmt.setString(14, checklist.getDeviceId());
-            stmt.setString(15, checklist.getDeviceImei());
-            stmt.setLong(16, checklist.getDeviceUptimeRealizacaoMillis());
-            stmt.setLong(17, checklist.getDeviceUptimeSincronizacaoMillis());
-            stmt.setInt(18, checklist.getQtdPerguntasOk());
-            stmt.setInt(19, checklist.getQtdPerguntasNok());
-            stmt.setInt(20, checklist.getQtdAlternativasOk());
-            stmt.setInt(21, checklist.getQtdAlternativasNok());
+            stmt.setLong(3, checklist.getCodVersaoModeloChecklist());
+            stmt.setObject(4, checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime());
+            stmt.setLong(5, checklist.getCodColaborador());
+            stmt.setLong(6, checklist.getCodVeiculo());
+            stmt.setString(7, checklist.getPlacaVeiculo());
+            stmt.setString(8, String.valueOf(checklist.getTipo().asChar()));
+            stmt.setLong(9, checklist.getKmColetadoVeiculo());
+            stmt.setLong(10, checklist.getTempoRealizacaoCheckInMillis());
+            stmt.setObject(11, Now.offsetDateTimeUtc());
+            stmt.setString(12, checklist.getFonteDataHoraRealizacao().asString());
+            stmt.setInt(13, checklist.getVersaoAppMomentoRealizacao());
+            stmt.setInt(14, checklist.getVersaoAppMomentoSincronizacao());
+            stmt.setString(15, checklist.getDeviceId());
+            stmt.setString(16, checklist.getDeviceImei());
+            stmt.setLong(17, checklist.getDeviceUptimeRealizacaoMillis());
+            stmt.setLong(18, checklist.getDeviceUptimeSincronizacaoMillis());
+            stmt.setInt(19, checklist.getQtdPerguntasOk());
+            stmt.setInt(20, checklist.getQtdPerguntasNok());
+            stmt.setInt(21, checklist.getQtdAlternativasOk());
+            stmt.setInt(22, checklist.getQtdAlternativasNok());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codChecklistInserido = rSet.getLong("CODIGO");

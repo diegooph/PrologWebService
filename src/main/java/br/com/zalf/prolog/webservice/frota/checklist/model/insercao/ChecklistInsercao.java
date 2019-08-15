@@ -21,6 +21,13 @@ public final class ChecklistInsercao {
     @NotNull
     private final Long codModelo;
 
+    /**
+     * Versão do modelo que o checklist realizado referencia.
+     * TODO: Será provisoriamente não-final para funcionar no processo de migração dos apps antigos para a nova estrutura.
+     */
+    @NotNull
+    private Long codVersaoModeloChecklist;
+
     @NotNull
     private final Long codColaborador;
 
@@ -94,6 +101,7 @@ public final class ChecklistInsercao {
 
     public ChecklistInsercao(@NotNull final Long codUnidade,
                              @NotNull final Long codModelo,
+                             @NotNull final Long codVersaoModeloChecklist,
                              @NotNull final Long codColaborador,
                              @NotNull final Long codVeiculo,
                              @NotNull final String placaVeiculo,
@@ -111,6 +119,7 @@ public final class ChecklistInsercao {
                              final long deviceUptimeSincronizacaoMillis) {
         this.codUnidade = codUnidade;
         this.codModelo = codModelo;
+        this.codVersaoModeloChecklist = codVersaoModeloChecklist;
         this.codColaborador = codColaborador;
         this.codVeiculo = codVeiculo;
         this.placaVeiculo = placaVeiculo;
@@ -137,6 +146,15 @@ public final class ChecklistInsercao {
     @NotNull
     public Long getCodModelo() {
         return codModelo;
+    }
+
+    @NotNull
+    public Long getCodVersaoModeloChecklist() {
+        return codVersaoModeloChecklist;
+    }
+
+    public void setCodVersaoModeloChecklist(@NotNull final Long codVersaoModeloChecklist) {
+        this.codVersaoModeloChecklist = codVersaoModeloChecklist;
     }
 
     @NotNull
