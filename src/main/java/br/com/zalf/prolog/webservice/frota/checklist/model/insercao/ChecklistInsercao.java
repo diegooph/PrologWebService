@@ -90,7 +90,7 @@ public final class ChecklistInsercao {
      */
     @NotNull
     @Exclude
-    private final ChecklistInsercaoMetadata cachedMetadata;
+    private ChecklistInsercaoMetadata cachedMetadata;
 
     public ChecklistInsercao(@NotNull final Long codUnidade,
                              @NotNull final Long codModelo,
@@ -211,19 +211,30 @@ public final class ChecklistInsercao {
     }
 
     public int getQtdPerguntasOk() {
+        ensureMetadataCreated();
         return cachedMetadata.getQtdPerguntasOk();
     }
 
     public int getQtdPerguntasNok() {
+        ensureMetadataCreated();
         return cachedMetadata.getQtdPerguntasNok();
     }
 
     public int getQtdAlternativasOk() {
+        ensureMetadataCreated();
         return cachedMetadata.getQtdAlternativasOk();
     }
 
     public int getQtdAlternativasNok() {
+        ensureMetadataCreated();
         return cachedMetadata.getQtdAlternativasNok();
+    }
+
+    private void ensureMetadataCreated() {
+        //noinspection ConstantConditions
+        if (cachedMetadata == null) {
+            cachedMetadata = createMetadata();
+        }
     }
 
     @NotNull
