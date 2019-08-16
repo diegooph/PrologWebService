@@ -157,6 +157,7 @@ public class ChecklistOfflineTest extends BaseTest {
         return new ChecklistInsercao(
                 5L,
         1L,
+        1L,
         2272L,
         3195L,
         "PRO0001",
