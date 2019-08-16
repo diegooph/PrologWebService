@@ -247,4 +247,18 @@ public interface PneuDao {
 
     void marcarFotoComoSincronizada(@NotNull final Long codPneu,
                                     @NotNull final String urlFotoPneu) throws SQLException;
+
+    /**
+     * Método utilizado para buscar os códigos internos dos pneus dados os respectivos códigos de clientes.
+     *
+     * @param conn               Conexão que será utilizada para buscar os dados.
+     * @param codEmpresa         Código da empresa onde esses códigos serão buscados.
+     * @param codigoClientePneus Códigos dos clientes, para utilizar na busca.
+     * @return Uma lista dos códigos internos que representam os códigos do cliente.
+     * @throws Throwable Caso algum erro ocorrer.
+     */
+    @NotNull
+    List<Long> getCodPneuByCodCliente(@NotNull final Connection conn,
+                                      @NotNull final Long codEmpresa,
+                                      @NotNull final List<String> codigoClientePneus) throws Throwable;
 }
