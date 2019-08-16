@@ -2,12 +2,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.ChecklistMigracaoEstruturaSuporte;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -338,126 +334,6 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
     @NotNull
     private Long internalInsertChecklist(@NotNull final Connection conn,
                                          @NotNull final ChecklistInsercao checklist) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-
-            // Isso é necessário pois apps antigos não tem a versão do modelo de checklist e portanto nós não recebemos
-            // ela. Nessa etapa, com base nas perguntas e alternativas recebidas, iremos tentar adivinhar qual a versão
-            // com fall back para 1 se não for encontrada.
-            if (!ChecklistMigracaoEstruturaSuporte.isAppNovaEstruturaChecklist(checklist)) {
-                final ChecklistMigracaoEstruturaSuporte migracaoSuporte = new ChecklistMigracaoEstruturaSuporte();
-                checklist.setCodVersaoModeloChecklist(migracaoSuporte.encontraCodVersaoModeloChecklist(conn, checklist));
-            }
-
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(" +
-                    "F_COD_UNIDADE_CHECKLIST              := ?," +
-                    "F_COD_MODELO_CHECKLIST               := ?," +
-                    "F_COD_VERSAO_MODELO_CHECKLIST        := ?," +
-                    "F_DATA_HORA_REALIZACAO               := ?," +
-                    "F_COD_COLABORADOR                    := ?," +
-                    "F_COD_VEICULO                        := ?," +
-                    "F_PLACA_VEICULO                      := ?," +
-                    "F_TIPO_CHECKLIST                     := ?," +
-                    "F_KM_COLETADO                        := ?," +
-                    "F_TEMPO_REALIZACAO                   := ?," +
-                    "F_DATA_HORA_SINCRONIZACAO            := ?," +
-                    "F_FONTE_DATA_HORA_REALIZACAO         := ?," +
-                    "F_VERSAO_APP_MOMENTO_REALIZACAO      := ?," +
-                    "F_VERSAO_APP_MOMENTO_SINCRONIZACAO   := ?," +
-                    "F_DEVICE_ID                          := ?," +
-                    "F_DEVICE_IMEI                        := ?," +
-                    "F_DEVICE_UPTIME_REALIZACAO_MILLIS    := ?," +
-                    "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS := ?," +
-                    "F_TOTAL_PERGUNTAS_OK                 := ?," +
-                    "F_TOTAL_PERGUNTAS_NOK                := ?," +
-                    "F_TOTAL_ALTERNATIVAS_OK              := ?," +
-                    "F_TOTAL_ALTERNATIVAS_NOK             := ?) " +
-                    "AS CODIGO;");
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
-            stmt.setLong(1, checklist.getCodUnidade());
-            stmt.setLong(2, checklist.getCodModelo());
-            stmt.setLong(3, checklist.getCodVersaoModeloChecklist());
-            stmt.setObject(4, checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime());
-            stmt.setLong(5, checklist.getCodColaborador());
-            stmt.setLong(6, checklist.getCodVeiculo());
-            stmt.setString(7, checklist.getPlacaVeiculo());
-            stmt.setString(8, String.valueOf(checklist.getTipo().asChar()));
-            stmt.setLong(9, checklist.getKmColetadoVeiculo());
-            stmt.setLong(10, checklist.getTempoRealizacaoCheckInMillis());
-            stmt.setObject(11, Now.offsetDateTimeUtc());
-            stmt.setString(12, checklist.getFonteDataHoraRealizacao().asString());
-            stmt.setInt(13, checklist.getVersaoAppMomentoRealizacao());
-            stmt.setInt(14, checklist.getVersaoAppMomentoSincronizacao());
-            stmt.setString(15, checklist.getDeviceId());
-            stmt.setString(16, checklist.getDeviceImei());
-            stmt.setLong(17, checklist.getDeviceUptimeRealizacaoMillis());
-            stmt.setLong(18, checklist.getDeviceUptimeSincronizacaoMillis());
-            stmt.setInt(19, checklist.getQtdPerguntasOk());
-            stmt.setInt(20, checklist.getQtdPerguntasNok());
-            stmt.setInt(21, checklist.getQtdAlternativasOk());
-            stmt.setInt(22, checklist.getQtdAlternativasNok());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Long codChecklistInserido = rSet.getLong("CODIGO");
-                insertChecklistPerguntasOffline(
-                        conn,
-                        checklist.getCodUnidade(),
-                        checklist.getCodModelo(),
-                        codChecklistInserido,
-                        checklist.getRespostas());
-                // Após inserir o checklist devemos abrir as Ordens de Serviços, caso necessário.
-                Injection
-                        .provideOrdemServicoDao()
-                        .processaChecklistRealizado(
-                                conn,
-                                checklist.getCodUnidade(),
-                                ChecklistOfflineConverter.toChecklist(codChecklistInserido, checklist));
-                return codChecklistInserido;
-            } else {
-                throw new SQLException("Erro ao salvar checklist");
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    private void insertChecklistPerguntasOffline(@NotNull final Connection conn,
-                                                 @NotNull final Long codUnidadeChecklist,
-                                                 @NotNull final Long codModeloChecklist,
-                                                 @NotNull final Long codChecklistInserido,
-                                                 @NotNull final List<ChecklistResposta> respostas) throws Throwable {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_CHECKLIST_INSERT_RESPOSTAS_CHECKLIST(?, ?, ?, ?, ?, ?);");
-            stmt.setLong(1, codUnidadeChecklist);
-            stmt.setLong(2, codModeloChecklist);
-            stmt.setLong(3, codChecklistInserido);
-            int linhasParaExecutar = 0;
-            for (final ChecklistResposta resposta : respostas) {
-                for (final ChecklistAlternativaResposta alternativa : resposta.getAlternativasRespostas()) {
-                    if (alternativa.isAlternativaSelecionada()) {
-                        if (alternativa.isTipoOutros()) {
-                            stmt.setString(4, alternativa.getRespostaTipoOutros());
-                        } else {
-                            stmt.setString(4, alternativa.getDescricaoAlternativaNok());
-                        }
-                    } else {
-                        stmt.setString(4, alternativa.getDescricaoAlternativaOk());
-                    }
-                    stmt.setLong(5, resposta.getCodPergunta());
-                    stmt.setLong(6, alternativa.getCodAlternativa());
-                    stmt.addBatch();
-                    linhasParaExecutar++;
-                }
-            }
-            if (stmt.executeBatch().length != linhasParaExecutar) {
-                throw new SQLException("Não foi possível salvar todas as respostas do checklist");
-            }
-        } finally {
-            close(stmt);
-        }
+       return Injection.provideChecklistDao().insert(conn, checklist, true);
     }
 }

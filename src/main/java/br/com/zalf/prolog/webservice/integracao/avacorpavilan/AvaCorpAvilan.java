@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
@@ -154,16 +155,16 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist) throws Exception {
 
-        if (checklist.getKmAtualVeiculo() == 0) {
+        if (checklist.getKmColetadoVeiculo() == 0) {
             throw new AvaCorpAvilanException(
                     "O KM enviado não pode ser 0!",
                     "A integração com a Avilan não aceita mais KMs 0");
         }
 
         return requester.insertChecklist(
-                AvaCorpAvilanConverter.convert(checklist, getCpf(), getDataNascimento()),
+                AvaCorpAvilanConverter.convert(checklist.getChecklistAntigo(), getCpf(), getDataNascimento()),
                 getCpf(),
                 getDataNascimento());
     }

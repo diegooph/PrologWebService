@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
@@ -265,7 +266,7 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull Checklist checklist) throws Throwable {
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist) throws Throwable {
         if (getSistema() != null) {
             return getSistema().insertChecklist(checklist);
         } else {

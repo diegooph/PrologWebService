@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +34,7 @@ public interface ChecklistDao {
      */
     @NotNull
     Long insert(@NotNull final Connection conn,
-                @NotNull final Checklist checklist,
+                @NotNull final ChecklistInsercao checklist,
                 final boolean deveAbrirOs) throws Throwable;
 
     /**
@@ -45,7 +46,7 @@ public interface ChecklistDao {
      * @throws SQLException caso não seja possível inserir o checklist no banco de dados
      */
     @NotNull
-    Long insert(Checklist checklist) throws SQLException;
+    Long insert(@NotNull final ChecklistInsercao checklist) throws SQLException;
 
     /**
      * Busca um checklist pelo seu código único.

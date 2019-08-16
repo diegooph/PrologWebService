@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
@@ -10,11 +12,13 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -26,14 +30,25 @@ import java.util.Map;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ChecklistResource {
-
-    private ChecklistService service = new ChecklistService();
+    @NotNull
+    private final ChecklistService service = new ChecklistService();
 
     @POST
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
-                                   @Required final Checklist checklist) throws ProLogException {
-        final Long codChecklist = service.insert(userToken, checklist);
+                                   @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) Integer versaoApp,
+                                   @Required final String checklistJson) throws ProLogException {
+        final ChecklistInsercao checklistNew;
+        // Convertemos o JSON dependendo da versão do App.
+        if (ChecklistMigracaoEstruturaSuporte.isAppNovaEstruturaChecklist(versaoApp)) {
+            checklistNew = GsonUtils.getGson().fromJson(checklistJson, ChecklistInsercao.class);
+        } else {
+            final Checklist checklistOld = GsonUtils.getGson().fromJson(checklistJson, Checklist.class);
+            checklistNew = ChecklistInsercao.createFrom(checklistOld, versaoApp);
+            checklistNew.setChecklistAntigo(checklistOld);
+        }
+        final Long codChecklist = service.insert(userToken, checklistNew);
+        //noinspection ConstantConditions
         if (codChecklist != null) {
             return ResponseWithCod.ok("Checklist inserido com sucesso", codChecklist);
         } else {

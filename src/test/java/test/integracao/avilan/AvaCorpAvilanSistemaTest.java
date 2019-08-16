@@ -1,8 +1,8 @@
 package test.integracao.avilan;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
@@ -18,7 +18,8 @@ import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static test.integracao.avilan.AvaCorpAvilanConstants.*;
+import static test.integracao.avilan.AvaCorpAvilanConstants.DEFAULT_TIMEOUT_MILLIS;
+import static test.integracao.avilan.AvaCorpAvilanConstants.PROLOG_TOKEN;
 
 /**
  * Created by luiz on 01/08/17.
@@ -95,6 +96,6 @@ public class AvaCorpAvilanSistemaTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Throwable.class)
     public void testInsertChecklist() throws Throwable {
-        sistema.insertChecklist(new Checklist());
+        sistema.insertChecklist(null);
     }
 }

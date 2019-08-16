@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
@@ -42,7 +43,8 @@ interface OperacoesIntegradasChecklist {
             @NotNull final String placaVeiculo,
             final char tipoChecklist) throws Exception;
 
-    Long insertChecklist(@NotNull final Checklist checklist) throws Throwable;
+    @NotNull
+    Long insertChecklist(@NotNull final ChecklistInsercao checklist) throws Throwable;
 
     @NotNull
     Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception;

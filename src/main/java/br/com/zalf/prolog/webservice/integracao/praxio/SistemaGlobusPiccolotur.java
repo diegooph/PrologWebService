@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ChecklistItensNokGlobus;
@@ -37,7 +38,7 @@ public class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull final Checklist checklist) throws Throwable {
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklistNew) throws Throwable {
         Connection conn = null;
         try {
             /*
@@ -50,7 +51,13 @@ public class SistemaGlobusPiccolotur extends Sistema {
             conn = new DatabaseConnectionProvider().provideDatabaseConnection();
             conn.setAutoCommit(false);
             // TODO - Mover para o integradorProLog
-            final Long codChecklistProLog = Injection.provideChecklistDao().insert(conn, checklist, false);
+            final Long codChecklistProLog = Injection
+                    .provideChecklistDao()
+                    .insert(conn, checklistNew, false);
+
+            // TODO: o fluxo da integração continua usando o objeto antigo.
+            final Checklist checklist = checklistNew.getChecklistAntigo();
+
             // Se o checklist só possui itens OK, não precisamos processar mais nada.
             if (checklist.getQtdItensNok() <= 0) {
                 return codChecklistProLog;

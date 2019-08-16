@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ChecklistMigracaoEstruturaSuporte {
-    private static final long VERSION_CODE_APP_NOVA_ESTRUTURA = 83L;
+    private static final int VERSION_CODE_APP_NOVA_ESTRUTURA = 83;
 
     @NotNull
     public Long encontraCodVersaoModeloChecklist(@NotNull final Connection conn,
@@ -101,5 +102,9 @@ public final class ChecklistMigracaoEstruturaSuporte {
 
     public static boolean isAppNovaEstruturaChecklist(@NotNull final ChecklistInsercao checklist) {
         return checklist.getCodVersaoModeloChecklist() != null;
+    }
+
+    public static boolean isAppNovaEstruturaChecklist(@Nullable final Integer versaoApp) {
+        return versaoApp != null && versaoApp >= VERSION_CODE_APP_NOVA_ESTRUTURA;
     }
 }

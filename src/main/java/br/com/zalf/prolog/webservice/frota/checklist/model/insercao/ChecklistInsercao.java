@@ -1,12 +1,19 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model.insercao;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,11 +32,14 @@ public final class ChecklistInsercao {
      * Versão do modelo que o checklist realizado referencia.
      * TODO: Será provisoriamente não-final para funcionar no processo de migração dos apps antigos para a nova estrutura.
      */
-    @NotNull
+    @Nullable
     private Long codVersaoModeloChecklist;
 
     @NotNull
     private final Long codColaborador;
+
+    @NotNull
+    private final String cpfColaborador;
 
     @NotNull
     private final Long codVeiculo;
@@ -99,10 +109,14 @@ public final class ChecklistInsercao {
     @Exclude
     private final ChecklistInsercaoMetadata cachedMetadata;
 
+    @Nullable
+    private Checklist checklistAntigo;
+
     public ChecklistInsercao(@NotNull final Long codUnidade,
                              @NotNull final Long codModelo,
                              @NotNull final Long codVersaoModeloChecklist,
                              @NotNull final Long codColaborador,
+                             @NotNull final String cpfColaborador,
                              @NotNull final Long codVeiculo,
                              @NotNull final String placaVeiculo,
                              @NotNull final TipoChecklist tipo,
@@ -121,6 +135,7 @@ public final class ChecklistInsercao {
         this.codModelo = codModelo;
         this.codVersaoModeloChecklist = codVersaoModeloChecklist;
         this.codColaborador = codColaborador;
+        this.cpfColaborador = cpfColaborador;
         this.codVeiculo = codVeiculo;
         this.placaVeiculo = placaVeiculo;
         this.tipo = tipo;
@@ -150,6 +165,10 @@ public final class ChecklistInsercao {
 
     @NotNull
     public Long getCodVersaoModeloChecklist() {
+        if (codVersaoModeloChecklist == null) {
+            throw new IllegalStateException("Código da versão do modelo não pode ser null!");
+        }
+
         return codVersaoModeloChecklist;
     }
 
@@ -160,6 +179,11 @@ public final class ChecklistInsercao {
     @NotNull
     public Long getCodColaborador() {
         return codColaborador;
+    }
+
+    @NotNull
+    public String getCpfColaborador() {
+        return cpfColaborador;
     }
 
     @NotNull
@@ -242,6 +266,110 @@ public final class ChecklistInsercao {
 
     public int getQtdAlternativasNok() {
         return cachedMetadata.getQtdAlternativasNok();
+    }
+
+    public void setChecklistAntigo(@Nullable final Checklist checklistAntigo) {
+        this.checklistAntigo = checklistAntigo;
+    }
+
+    @NotNull
+    public static ChecklistInsercao createFrom(@NotNull final Checklist antigo,
+                                               @NotNull final Integer versaoApp) {
+        return new ChecklistInsercao(
+                -1L /* antigo não tem unidade */,
+                antigo.getCodModelo(),
+                antigo.getCodVersaoModeloChecklist(),
+                antigo.getColaborador().getCodigo() /* TODO: talvez não tenha */,
+                antigo.getColaborador().getCpfAsString() /* antigo não tem codVeiculo */,
+                -1L /* antigo não tem codVeiculo */,
+                antigo.getPlacaVeiculo(),
+                TipoChecklist.fromChar(antigo.getTipo()),
+                antigo.getKmAtualVeiculo(),
+                antigo.getTempoRealizacaoCheckInMillis(),
+                convertRespostas(antigo.getListRespostas()),
+                antigo.getData(),
+                FonteDataHora.SERVIDOR,
+                versaoApp,
+                versaoApp,
+                null,
+                null,
+                0,
+                0);
+    }
+
+    @NotNull
+    private static List<ChecklistResposta> convertRespostas(@NotNull final List<PerguntaRespostaChecklist> antigas) {
+        final List<ChecklistResposta> respostas = new ArrayList<>();
+        antigas
+                .forEach(respostaAntiga -> {
+                    final ChecklistResposta resposta = new ChecklistResposta();
+                    resposta.setCodPergunta(respostaAntiga.getCodigo());
+                    final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+                    respostaAntiga
+                            .getAlternativasResposta()
+                            .forEach(alternativaAntiga -> {
+                                final ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
+                                alternativa.setCodAlternativa(alternativaAntiga.getCodigo());
+                                alternativa.setAlternativaSelecionada(alternativaAntiga.isSelected());
+                                alternativa.setTipoOutros(alternativaAntiga.isTipoOutros());
+                                alternativa.setRespostaTipoOutros(alternativaAntiga.getRespostaOutros());
+                                alternativas.add(alternativa);
+                            });
+                    resposta.setAlternativasRespostas(alternativas);
+                    respostas.add(resposta);
+                });
+        return respostas;
+    }
+
+    @NotNull
+    public Checklist getChecklistAntigo() {
+        if (checklistAntigo != null) {
+            // Já foi convertido e setado no Service.
+            return checklistAntigo;
+        } else {
+            checklistAntigo = new Checklist();
+            checklistAntigo.setCodModelo(getCodModelo());
+            checklistAntigo.setCodVersaoModeloChecklist(getCodVersaoModeloChecklist());
+            final LocalDateTime now = Now.localDateTimeUtc();
+            checklistAntigo.setData(now);
+            checklistAntigo.setDataHoraImportadoProLog(now);
+            checklistAntigo.setPlacaVeiculo(getPlacaVeiculo());
+            checklistAntigo.setTipo(getTipo().asChar());
+            checklistAntigo.setKmAtualVeiculo(getKmColetadoVeiculo());
+            checklistAntigo.setTempoRealizacaoCheckInMillis(getTempoRealizacaoCheckInMillis());
+            final Colaborador colaborador = new Colaborador();
+            colaborador.setCodigo(getCodColaborador());
+            colaborador.setCpf(Long.valueOf(getCpfColaborador()));
+            checklistAntigo.setColaborador(colaborador);
+
+            // Conversão das respostas.
+            final List<PerguntaRespostaChecklist> respostas = new ArrayList<>();
+            getRespostas()
+                    .forEach(novaPergunta -> {
+                final PerguntaRespostaChecklist resposta = new PerguntaRespostaChecklist();
+                resposta.setCodigo(novaPergunta.getCodPergunta());
+                final List<AlternativaChecklist> alternativas = new ArrayList<>();
+                novaPergunta
+                        .getAlternativasRespostas()
+                        .forEach(novaAlternativa -> {
+                    final AlternativaChecklist alternativa = new AlternativaChecklist();
+                    alternativa.setSelected(novaAlternativa.isAlternativaSelecionada());
+                    alternativa.setCodigo(novaAlternativa.getCodAlternativa());
+                    if (novaAlternativa.isTipoOutros()) {
+                        alternativa.setTipo(Alternativa.TIPO_OUTROS);
+                        alternativa.setRespostaOutros(novaAlternativa.getRespostaTipoOutros());
+                    }
+                    alternativas.add(alternativa);
+                });
+                resposta.setAlternativasResposta(alternativas);
+                respostas.add(resposta);
+            });
+            checklistAntigo.setListRespostas(respostas);
+
+            // Antes de retornar, calcula as quantidades.
+            checklistAntigo.calculaQtdOkOrNok();
+            return checklistAntigo;
+        }
     }
 
     @NotNull
