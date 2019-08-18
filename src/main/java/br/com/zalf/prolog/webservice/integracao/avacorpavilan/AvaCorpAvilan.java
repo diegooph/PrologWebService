@@ -4,13 +4,12 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ChecklistMigracaoEstruturaSuporte;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -126,10 +125,12 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
-                                                                                    @NotNull Long codFuncao)
-            throws Exception {
-        return AvaCorpAvilanConverter.convert(requester.getSelecaoModeloChecklistPlacaVeiculo(getCpf(), getDataNascimento()));
+    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                                    @NotNull final Long codCargo) throws Throwable {
+        return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaSelecaoModelo(
+                AvaCorpAvilanConverter.convert(requester.getSelecaoModeloChecklistPlacaVeiculo(
+                        getCpf(),
+                        getDataNascimento())));
     }
 
     @NotNull

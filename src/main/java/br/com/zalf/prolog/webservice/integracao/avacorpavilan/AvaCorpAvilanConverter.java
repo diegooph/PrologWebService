@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;

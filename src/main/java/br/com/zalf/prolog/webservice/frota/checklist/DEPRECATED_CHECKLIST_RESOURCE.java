@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
@@ -89,16 +89,6 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 	}
 
 	@GET
-	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
-	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-			@PathParam("codUnidade") Long codUnidade,
-			@PathParam("codFuncaoColaborador") Long codFuncao,
-			@HeaderParam("Authorization") String userToken) {
-		return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao, userToken);
-	}
-
-	@GET
 	@Path("/novo/{codUnidade}/{codModelo}/{placa}")
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public NovoChecklistHolder getNovoChecklistHolder(
@@ -114,6 +104,22 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 			throw new IllegalStateException("É preciso atualizar o aplicativo para usar a nova versão do checklist");
 		}
 		return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
+	}
+
+	/**
+	 * @deprecated at 2019-08-18. Use {@link ChecklistModeloResource#getModelosSelecaoRealizacao(Long, Long, String)}
+	 * instead.
+	 */
+	@GET
+	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
+	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("codFuncaoColaborador") Long codFuncao,
+			@HeaderParam("Authorization") String userToken) {
+		// Esse método já está redirecionando para o novo Service.
+		return ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaSelecaoModelo(
+				new ChecklistModeloService().getModelosSelecaoRealizacao(codUnidade, codFuncao, userToken));
 	}
 
 	/**

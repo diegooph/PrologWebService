@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;

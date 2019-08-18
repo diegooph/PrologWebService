@@ -10,7 +10,7 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;

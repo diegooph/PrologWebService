@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistConverter;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.OrdemServico;

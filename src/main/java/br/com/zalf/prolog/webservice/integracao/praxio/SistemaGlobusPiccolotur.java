@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;

@@ -1,8 +1,9 @@
 package test.integracao.avilan;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.frota.checklist.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
@@ -63,13 +64,16 @@ public class AvaCorpAvilanSistemaTest {
     }
 
     @Test
-    public void testBuscarSelecaoModeloChecklistPlacaVeiculo() throws Exception {
-        assertNotNull(sistema.getSelecaoModeloChecklistPlacaVeiculo(0L, 0L));
+    public void testBuscarSelecaoModeloChecklistPlacaVeiculo() throws Throwable {
+        assertNotNull(ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaSelecaoModelo(
+                sistema.getModelosSelecaoRealizacao(0L, 0L)));
     }
 
     @Test
-    public void testBuscarNovoChecklistHolder() throws Exception {
-        final Map<ModeloChecklist, List<String>> map = sistema.getSelecaoModeloChecklistPlacaVeiculo(0L, 0L);
+    public void testBuscarNovoChecklistHolder() throws Throwable {
+        final Map<ModeloChecklist, List<String>> map =
+                ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaSelecaoModelo(
+                        sistema.getModelosSelecaoRealizacao(0L, 0L));
         // Não pode ser nulo
         assertNotNull(map);
         // Esperamos que venha algum questionário

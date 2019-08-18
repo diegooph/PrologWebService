@@ -18,6 +18,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloC
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.VeiculoChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.AlternativaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
@@ -31,10 +33,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
@@ -422,6 +421,50 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                 conn.rollback();
             }
             throw t;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                                    @NotNull final Long codCargo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_MODELOS_SELECAO_REALIZACAO(" +
+                            "F_COD_UNIDADE := ? "+
+                            "F_COD_CARGO   := ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codCargo);
+            rSet = stmt.executeQuery();
+            ModeloChecklistSelecao modeloSelecao = null;
+            if (rSet.next()) {
+                final List<ModeloChecklistSelecao> dispositivos = new ArrayList<>();
+                List<VeiculoChecklistSelecao> veiculosSelecao = new ArrayList<>();
+                do {
+                    if (modeloSelecao == null) {
+                        modeloSelecao = ChecklistModeloConverter.createModeloChecklistSelecao(rSet, veiculosSelecao);
+                        veiculosSelecao.add(ChecklistModeloConverter.createVeiculoChecklistSelecao(rSet));
+                    } else {
+                        if (modeloSelecao.getCodModelo() == rSet.getLong("COD_MODELO")) {
+                            veiculosSelecao.add(ChecklistModeloConverter.createVeiculoChecklistSelecao(rSet));
+                        } else {
+                            dispositivos.add(modeloSelecao);
+                            veiculosSelecao = new ArrayList<>();
+                            veiculosSelecao.add(ChecklistModeloConverter.createVeiculoChecklistSelecao(rSet));
+                            modeloSelecao = ChecklistModeloConverter.createModeloChecklistSelecao(rSet, veiculosSelecao);
+                        }
+                    }
+                } while (rSet.next());
+                dispositivos.add(modeloSelecao);
+                return dispositivos;
+            } else {
+                return Collections.emptyList();
+            }
         } finally {
             close(conn, stmt, rSet);
         }

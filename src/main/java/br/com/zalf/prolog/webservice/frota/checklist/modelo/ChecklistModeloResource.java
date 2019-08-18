@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaCheckli
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -99,6 +100,17 @@ public final class ChecklistModeloResource {
     @Path("/prolog")
     public List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws ProLogException {
         return service.getModelosChecklistProLog();
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured(permissions = {Pilares.Frota.Checklist.REALIZAR})
+    @Path("/selecao-realizacao")
+    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("codCargo") @Required final Long codCargo,
+            @HeaderParam("Authorization") final String userToken) {
+        return service.getModelosSelecaoRealizacao(codUnidade, codCargo, userToken);
     }
 
     //

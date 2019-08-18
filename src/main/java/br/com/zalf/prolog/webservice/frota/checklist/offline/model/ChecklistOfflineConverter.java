@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;

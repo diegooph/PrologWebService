@@ -4,8 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -18,7 +17,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Classe ChecklistService responsável por comunicar-se com a interface DAO
@@ -53,25 +51,6 @@ public final class ChecklistService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar unidades, tente novamente");
-        }
-    }
-
-    @NotNull
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codCargo,
-            @NotNull final String userToken) {
-        try {
-            return RouterChecklists
-                    .create(dao, userToken)
-                    .getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codCargo);
-        } catch (final Throwable throwable) {
-            Log.e(TAG, String.format("Erro ao buscar modelos de checklist e placas dos veículos\n" +
-                    "codUnidade: %d\n" +
-                    "codCargo: %d", codUnidade, codCargo), throwable);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(throwable, "Erro ao buscar modelos de checklist, tente novamente");
         }
     }
 

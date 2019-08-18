@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.*;

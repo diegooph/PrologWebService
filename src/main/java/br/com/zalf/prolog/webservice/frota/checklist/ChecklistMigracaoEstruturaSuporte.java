@@ -3,9 +3,12 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.VeiculoChecklistSelecao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +17,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -26,21 +31,60 @@ public final class ChecklistMigracaoEstruturaSuporte {
     private static final int VERSION_CODE_APP_NOVA_ESTRUTURA = 83;
 
     @NotNull
-    public Long encontraCodVersaoModeloChecklist(@NotNull final Connection conn,
-                                                 @NotNull final ChecklistInsercao checklist) throws Throwable {
+    public static List<ModeloChecklistSelecao> toEstruturaNovaSelecaoModelo(
+            @NotNull final Map<ModeloChecklist, List<String>> map) {
+        final List<ModeloChecklistSelecao> modelos = new ArrayList<>(map.size());
+        map.forEach((modeloOld, placas) -> {
+            final List<VeiculoChecklistSelecao> veiculos = placas
+                    .stream()
+                    .map(p -> new VeiculoChecklistSelecao(-1L, p, -1))
+                    .collect(Collectors.toList());
+            final ModeloChecklistSelecao modeloNew = new ModeloChecklistSelecao(
+                    modeloOld.getCodigo(),
+                    -1L,
+                    modeloOld.getCodUnidade(),
+                    modeloOld.getNome(),
+                    veiculos);
+            modelos.add(modeloNew);
+        });
+        return modelos;
+    }
+
+    @NotNull
+    public static Map<ModeloChecklist, List<String>> toEstruturaAntigaSelecaoModelo(
+            @NotNull final List<ModeloChecklistSelecao> modelos) {
+        final Map<ModeloChecklist, List<String>> map = new LinkedHashMap<>();
+        modelos.forEach(modeloNew -> {
+            final ModeloChecklist modeloOld = new ModeloChecklist();
+            modeloOld.setCodigo(modeloNew.getCodModelo());
+            modeloOld.setCodUnidade(modeloNew.getCodUnidadeModelo());
+            modeloOld.setNome(modeloNew.getNomeModelo());
+            final List<String> placas = modeloNew
+                    .getVeiculosVinculadosModelo()
+                    .stream()
+                    .map(VeiculoChecklistSelecao::getPlacaVeiculo)
+                    .collect(Collectors.toList());
+            map.put(modeloOld, placas);
+        });
+        return map;
+    }
+
+    @NotNull
+    public static Long encontraCodVersaoModeloChecklist(@NotNull final Connection conn,
+                                                        @NotNull final ChecklistInsercao checklist) throws Throwable {
         final List<ChecklistJson> checklistJson = createChecklistJson(checklist);
         return interalEncontraCodVersaoModeloChecklist(conn, checklist.getCodModelo(), checklistJson);
     }
 
     @NotNull
-    public Long encontraCodVersaoModeloChecklist(@NotNull final Connection conn,
-                                                 @NotNull final Checklist checklist) throws Throwable {
+    public static Long encontraCodVersaoModeloChecklist(@NotNull final Connection conn,
+                                                        @NotNull final Checklist checklist) throws Throwable {
         final List<ChecklistJson> checklistJson = createChecklistJson(checklist);
         return interalEncontraCodVersaoModeloChecklist(conn, checklist.getCodModelo(), checklistJson);
     }
 
     @NotNull
-    private Long interalEncontraCodVersaoModeloChecklist(
+    private static Long interalEncontraCodVersaoModeloChecklist(
             @NotNull final Connection conn,
             @NotNull final Long codModeloChecklist,
             @NotNull final List<ChecklistJson> checklistJson) throws Throwable {
@@ -65,7 +109,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
     }
 
     @NotNull
-    private List<ChecklistJson> createChecklistJson(@NotNull final ChecklistInsercao checklist) {
+    private static List<ChecklistJson> createChecklistJson(@NotNull final ChecklistInsercao checklist) {
         final List<ChecklistJson> jsons = new ArrayList<>();
         checklist
                 .getRespostas()
@@ -81,7 +125,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
     }
 
     @NotNull
-    private List<ChecklistJson> createChecklistJson(@NotNull final Checklist checklist) {
+    private static List<ChecklistJson> createChecklistJson(@NotNull final Checklist checklist) {
         final List<ChecklistJson> jsons = new ArrayList<>();
         checklist
                 .getListRespostas()

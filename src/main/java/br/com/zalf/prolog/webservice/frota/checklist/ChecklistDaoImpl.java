@@ -7,9 +7,12 @@ import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.*;
+import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -79,8 +82,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             // ela. Nessa etapa, com base nas perguntas e alternativas recebidas, iremos tentar adivinhar qual a versão
             // com fall back para 1 se não for encontrada.
             if (!ChecklistMigracaoEstruturaSuporte.isAppNovaEstruturaChecklist(checklist)) {
-                final ChecklistMigracaoEstruturaSuporte migracaoSuporte = new ChecklistMigracaoEstruturaSuporte();
-                checklist.setCodVersaoModeloChecklist(migracaoSuporte.encontraCodVersaoModeloChecklist(conn, checklist));
+                checklist.setCodVersaoModeloChecklist(ChecklistMigracaoEstruturaSuporte
+                        .encontraCodVersaoModeloChecklist(conn, checklist));
             }
 
             stmt = conn.prepareStatement("SELECT * " +
@@ -405,74 +408,6 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             }
 
             return filtro;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codFuncao) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                            "  CM.CODIGO, " +
-                            "  CM.NOME, " +
-                            "  V.PLACA, " +
-                            "  V.KM " +
-                            "FROM CHECKLIST_MODELO CM " +
-                            "  JOIN CHECKLIST_MODELO_FUNCAO CMF " +
-                            "    ON CMF.COD_CHECKLIST_MODELO = CM.CODIGO AND CM.COD_UNIDADE = CMF.COD_UNIDADE " +
-                            "  JOIN CHECKLIST_MODELO_VEICULO_TIPO CMVT " +
-                            "    ON CMVT.COD_MODELO = CM.CODIGO AND CMVT.COD_UNIDADE = CM.COD_UNIDADE " +
-                            "  JOIN VEICULO_TIPO VT " +
-                            "    ON VT.CODIGO = CMVT.COD_TIPO_VEICULO " +
-                            "  JOIN VEICULO V " +
-                            "    ON V.COD_TIPO = VT.CODIGO AND V.COD_UNIDADE = CM.COD_UNIDADE " +
-                            "WHERE CM.COD_UNIDADE = ? " +
-                            "      AND CMF.COD_FUNCAO = ? " +
-                            "      AND CM.STATUS_ATIVO = TRUE " +
-                            "      AND V.STATUS_ATIVO = TRUE " +
-                            "ORDER BY CM.CODIGO, V.PLACA;",
-                    ResultSet.TYPE_SCROLL_SENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codFuncao);
-            rSet = stmt.executeQuery();
-            final Map<ModeloChecklist, List<String>> modeloPlaca = new LinkedHashMap<>();
-            ModeloChecklist modelo = null;
-            List<String> placas = new ArrayList<>();
-            while (rSet.next()) {
-                // Primeira linha do Rset, cria o modelo, add a primeira placa.
-                if (modelo == null) {
-                    modelo = new ModeloChecklist();
-                    modelo.setCodigo(rSet.getLong("CODIGO"));
-                    modelo.setNome(rSet.getString("NOME"));
-                    placas.add(rSet.getString("PLACA"));
-                } else {
-                    // Verificar se o prox modelo é igual ao ja criado.
-                    if (modelo.getCodigo().equals(rSet.getLong("CODIGO"))) {
-                        placas.add(rSet.getString("PLACA"));
-                    } else {
-                        // Modelo diferente, deve setar adicionar tudo ao map e zerar os valores.
-                        modeloPlaca.put(modelo, placas);
-                        modelo = new ModeloChecklist();
-                        placas = new ArrayList<>();
-                        modelo.setCodigo(rSet.getLong("CODIGO"));
-                        modelo.setNome(rSet.getString("NOME"));
-                        placas.add(rSet.getString("PLACA"));
-                    }
-                }
-            }
-            if (modelo != null) {
-                modeloPlaca.put(modelo, placas);
-            }
-            return modeloPlaca;
         } finally {
             close(conn, stmt, rSet);
         }

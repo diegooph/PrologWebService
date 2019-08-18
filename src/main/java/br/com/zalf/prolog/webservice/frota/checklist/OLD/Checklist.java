@@ -1,9 +1,7 @@
-package br.com.zalf.prolog.webservice.frota.checklist.model;
+package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

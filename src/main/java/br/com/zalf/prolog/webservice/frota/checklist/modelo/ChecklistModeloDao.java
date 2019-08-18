@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaCheckli
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
@@ -166,4 +167,8 @@ public interface ChecklistModeloDao {
      */
     @NotNull
     Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws Throwable;
+
+    @NotNull
+    List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                             @NotNull final Long codCargo) throws Throwable;
 }

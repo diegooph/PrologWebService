@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklis
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterModeloChecklist;
 import org.apache.commons.io.FilenameUtils;
@@ -207,6 +208,24 @@ public final class ChecklistModeloService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar perguntas do modelo de checklist, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                                    @NotNull final Long codCargo,
+                                                                    @NotNull final String userToken) {
+        try {
+            return RouterModeloChecklist
+                    .create(dao, userToken)
+                    .getModelosSelecaoRealizacao(codUnidade, codCargo);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar os modelos de checklist para seleção." +
+                    "\ncodUnidade: " + codUnidade +
+                    "\ncodCargo: " + codCargo, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar os modelos de checklist para seleção, tente novamente");
         }
     }
 }

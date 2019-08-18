@@ -1,19 +1,18 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Operações integradas do checklist.
@@ -33,9 +32,9 @@ interface OperacoesIntegradasChecklist {
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
             final boolean sobrescreverPerguntasAlternativas) throws Throwable;
 
-    Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codFuncao) throws Exception;
+    @NotNull
+    List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                             @NotNull final Long codCargo) throws Throwable;
 
     NovoChecklistHolder getNovoChecklistHolder(
             @NotNull final Long codUnidade,
