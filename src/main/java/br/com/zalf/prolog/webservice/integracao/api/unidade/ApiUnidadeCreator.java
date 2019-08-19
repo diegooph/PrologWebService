@@ -21,7 +21,7 @@ final class ApiUnidadeCreator {
         return new ApiUnidade(
                 rSet.getLong("COD_EMPRESA"),
                 rSet.getLong("CODIGO"),
-                rSet.getString("NOME_UNIDADE"),
+                rSet.getString("NOME"),
                 rSet.getBoolean("STATUS_ATIVO"));
     }
 }

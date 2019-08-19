@@ -24,7 +24,9 @@ public final class ApiUnidadeDaoImpl extends DatabaseConnection implements ApiUn
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("");
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_UNIDADE_LISTA_UNIDADES_EMPRESA(?, ?);");
+            stmt.setString(1, tokenIntegracao);
+            stmt.setBoolean(2, apenasUnidadesAtivas);
             rSet = stmt.executeQuery();
             final List<ApiUnidade> unidades = new ArrayList<>();
             while (rSet.next()) {

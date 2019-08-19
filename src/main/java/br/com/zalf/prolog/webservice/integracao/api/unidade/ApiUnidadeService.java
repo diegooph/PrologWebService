@@ -12,15 +12,15 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class ApiUnidadeService extends BaseIntegracaoService {
+public final class ApiUnidadeService extends BaseIntegracaoService {
     @NotNull
     private static final String TAG = ApiUnidadeService.class.getSimpleName();
     @NotNull
     private final ApiUnidadeDao dao = new ApiUnidadeDaoImpl();
 
     @NotNull
-    List<ApiUnidade> getUnidades(final String tokenIntegracao,
-                                 final boolean apenasUnidadesAtivas) throws ProLogException {
+    public List<ApiUnidade> getUnidades(final String tokenIntegracao,
+                                        final boolean apenasUnidadesAtivas) throws ProLogException {
         try {
             ensureValidToken(tokenIntegracao, TAG);
             return dao.getUnidades(tokenIntegracao, apenasUnidadesAtivas);
