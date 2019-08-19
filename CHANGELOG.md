@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.99"></a>
-## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (release-date) [unreleased]
+## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (2019-08-18)
 
 ### Features
 * Adiciona a gestão de dispositivos móveis por empresa (PL-2150)
