@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvacorpAvilanRequestStatus;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -33,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
     "sucesso",
     "farolDia"
 })
-public class FarolChecklist2 {
+public class FarolChecklist2 implements AvacorpAvilanRequestStatus {
 
     protected String mensagem;
     protected boolean sucesso;

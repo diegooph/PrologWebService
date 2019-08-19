@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+<a name="v0.0.99"></a>
+## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (2019-08-18)
+
+### Features
+* Adiciona a gestão de dispositivos móveis por empresa (PL-2150)
+
+### Refactors
+* Altera inserção de checklist para salvar quantidade de perguntas e alternativas OK e NOK (PL-2118)
+* Melhora tratamento de erros na integração com Avilan (PL-2210)
+* Remove pilar GERAL da visão ao logar pelo app (PL-2187)
+* Adiciona os registros de IMEI nas telas de listagem e gestão de marcações (PL-2152) 
+
 <a name="v0.0.98"></a>
 ## Version [v0.0.98](https://github.com/luizfp/PrologWebService/compare/v0.0.97...v0.0.98) (2019-07-16)
 

@@ -84,7 +84,7 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
                 }
                 final ProLogError proLogError = toProLogError(response.errorBody());
                 throw new RodoparHorizonteException(
-                        proLogError.getMessage(),
+                        ErrorBodyHandler.getErrorMessage(response.code(), proLogError),
                         "Integração retornou um erro e mapeamos para a estrutura do ProLogError");
             }
         } else {
@@ -101,7 +101,8 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
         } catch (final Throwable t) {
             throw new RodoparHorizonteException(
                     "[INTEGRACAO - HORIZONTE] Mensagem do sistema Rodopar fora do padrão esperado",
-                    "Não foi possível obter o JSON de resposta da requisição");
+                    "Não foi possível obter o JSON de resposta da requisição",
+                    t);
         }
     }
 }
