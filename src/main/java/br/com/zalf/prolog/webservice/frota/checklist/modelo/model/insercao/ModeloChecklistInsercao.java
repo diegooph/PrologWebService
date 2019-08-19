@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -8,62 +10,51 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ModeloChecklistInsercao {
-    private Long codigo;
-    private String nome;
-    private Long codUnidade;
-    private List<Long> tiposVeiculoLiberados;
-    private List<Long> cargosLiberados;
-    private List<PerguntaModeloChecklistInsercao> perguntas;
+    @NotNull
+    private final String nome;
+    @NotNull
+    private final Long codUnidade;
+    @NotNull
+    private final List<Long> tiposVeiculoLiberados;
+    @NotNull
+    private final List<Long> cargosLiberados;
+    @NotNull
+    private final List<PerguntaModeloChecklistInsercao> perguntas;
 
-    public ModeloChecklistInsercao() {
-
+    public ModeloChecklistInsercao(@NotNull final String nome,
+                                   @NotNull final Long codUnidade,
+                                   @NotNull final List<Long> tiposVeiculoLiberados,
+                                   @NotNull final List<Long> cargosLiberados,
+                                   @NotNull final List<PerguntaModeloChecklistInsercao> perguntas) {
+        this.nome = nome;
+        this.codUnidade = codUnidade;
+        this.tiposVeiculoLiberados = tiposVeiculoLiberados;
+        this.cargosLiberados = cargosLiberados;
+        this.perguntas = perguntas;
     }
 
-    public Long getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(final Long codigo) {
-        this.codigo = codigo;
-    }
-
+    @NotNull
     public String getNome() {
         return nome;
     }
 
-    public void setNome(final String nome) {
-        this.nome = nome;
-    }
-
+    @NotNull
     public Long getCodUnidade() {
         return codUnidade;
     }
 
-    public void setCodUnidade(final Long codUnidade) {
-        this.codUnidade = codUnidade;
-    }
-
+    @NotNull
     public List<Long> getTiposVeiculoLiberados() {
         return tiposVeiculoLiberados;
     }
 
-    public void setTiposVeiculoLiberados(final List<Long> tiposVeiculoLiberados) {
-        this.tiposVeiculoLiberados = tiposVeiculoLiberados;
-    }
-
+    @NotNull
     public List<Long> getCargosLiberados() {
         return cargosLiberados;
     }
 
-    public void setCargosLiberados(final List<Long> cargosLiberados) {
-        this.cargosLiberados = cargosLiberados;
-    }
-
+    @NotNull
     public List<PerguntaModeloChecklistInsercao> getPerguntas() {
         return perguntas;
-    }
-
-    public void setPerguntas(final List<PerguntaModeloChecklistInsercao> perguntas) {
-        this.perguntas = perguntas;
     }
 }

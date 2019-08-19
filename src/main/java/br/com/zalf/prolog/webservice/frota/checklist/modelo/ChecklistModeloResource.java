@@ -40,7 +40,22 @@ public final class ChecklistModeloResource {
     public Response insertModeloChecklist(
             @HeaderParam("Authorization") @Required final String token,
             @Required final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
-        return service.insertModeloChecklist(token, modeloChecklist);
+        return service.insertModeloChecklist(modeloChecklist, token);
+    }
+
+    @PUT
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = {
+            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
+            Pilares.Frota.Checklist.Modelo.ALTERAR,
+            Pilares.Frota.Checklist.Modelo.CADASTRAR})
+    @Path("/{codUnidade}/{codModelo}")
+    public Response updateModeloChecklist(
+            @HeaderParam("Authorization") @Required final String token,
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codModelo") @Required final Long codModelo,
+            @Required final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
+        return service.updateModeloChecklist(codUnidade, codModelo, modeloChecklist, token);
     }
 
     @GET
@@ -66,21 +81,6 @@ public final class ChecklistModeloResource {
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codModelo") @Required final Long codModelo) throws ProLogException {
         return service.getModeloChecklist(codUnidade, codModelo);
-    }
-
-    @PUT
-    @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = {
-            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
-            Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    @Path("/{codUnidade}/{codModelo}")
-    public Response updateModeloChecklist(
-            @HeaderParam("Authorization") @Required final String token,
-            @PathParam("codUnidade") @Required final Long codUnidade,
-            @PathParam("codModelo") @Required final Long codModelo,
-            @Required final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
-        return service.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
     }
 
     @PUT

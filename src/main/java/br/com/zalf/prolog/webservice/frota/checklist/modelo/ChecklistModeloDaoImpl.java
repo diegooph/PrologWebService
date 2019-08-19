@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
@@ -47,29 +48,38 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     public void insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean statusAtivo) throws Throwable {
+            final boolean statusAtivo,
+            @NotNull final String userToken) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO(COD_UNIDADE, NOME, STATUS_ATIVO) " +
-                    "VALUES (?, ?, ?) RETURNING CODIGO");
+            // Essa function insere o modelo e já cria a primeira versão (1).
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_INSERT_MODELO_CHECKLIST_INFOS(" +
+                    "F_COD_UNIDADE_MODELO := ?," +
+                    "F_NOME_MODELO        := ?," +
+                    "F_STATUS_ATIVO       := ?," +
+                    "F_DATA_HORA_ATUAL    := ?," +
+                    "F_TOKEN_COLABORADOR  := ?);");
             stmt.setLong(1, modeloChecklist.getCodUnidade());
             stmt.setString(2, modeloChecklist.getNome());
             stmt.setBoolean(3, statusAtivo);
+            stmt.setObject(4, Now.offsetDateTimeUtc());
+            stmt.setString(5, userToken);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final long codModeloChecklistInserido = rSet.getLong("CODIGO");
-                if (codModeloChecklistInserido <= 0) {
+                final long codModeloChecklistInserido = rSet.getLong("COD_MODELO_CHECKLIST");
+                final long codVersaoModeloChecklist = rSet.getLong("COD_VERSAO_MODELO_CHECKLIST");
+                if (codModeloChecklistInserido <= 0 || codVersaoModeloChecklist <= 0) {
                     throw new SQLException("Erro ao inserir modelo de checklist:\n" +
                             "codModeloChecklistInserido: " + codModeloChecklistInserido);
                 }
-                modeloChecklist.setCodigo(codModeloChecklistInserido);
-                insertModeloTipoVeiculo(conn, modeloChecklist);
-                insertModeloCargo(conn, modeloChecklist);
-                insertModeloPerguntas(conn, modeloChecklist);
+
+                insertModeloTipoVeiculo(conn, modeloChecklist, codModeloChecklistInserido);
+                insertModeloCargo(conn, modeloChecklist, codModeloChecklistInserido);
+                insertModeloPerguntas(conn, modeloChecklist, codModeloChecklistInserido, codVersaoModeloChecklist);
 
                 // Devemos notificar que uma inserção de modelo de checklist foi realizada.
                 checklistOfflineListener.onInsertModeloChecklist(conn, codModeloChecklistInserido);
@@ -90,12 +100,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
 
     @Override
     public void updateModeloChecklist(
-            @NotNull final String token,
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean sobrescreverPerguntasAlternativas) throws Throwable {
+            final boolean  sobrescreverDescricaoPerguntasAlternativas,
+            @NotNull final String userToken) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -108,7 +118,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         codUnidade,
                         codModelo,
                         modeloChecklist,
-                        sobrescreverPerguntasAlternativas);
+                         sobrescreverDescricaoPerguntasAlternativas);
             }
             // Notificamos o Listener que ouve atualização no modelo de checklist.
             checklistOfflineListener.onUpdateModeloChecklist(conn, codModelo);
@@ -121,6 +131,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         } finally {
             close(conn);
         }
+    }
+
+    private void criarNovaVersaoModelo(@NotNull final Connection conn,
+                                       @NotNull final ModeloChecklistEdicao modeloChecklist,
+                                       @NotNull final String userToken) {
+
     }
 
     @NotNull
@@ -475,17 +491,18 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
-            final boolean sobrescreverPerguntasAlternativas) throws SQLException {
+            final boolean  sobrescreverDescricaoPerguntasAlternativas) throws SQLException {
         for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
             switch (pergunta.getAcaoEdicao()) {
                 case CRIADA:
                     // Apenas adicionamos uma nova entrada no banco.
                     // Adicionamos as alternativas também.
-                    insertPerguntaAlternativaModeloChecklist(conn, codUnidade, codModelo, pergunta);
+                    // TODO:
+//                    insertPerguntaAlternativaModeloChecklist(conn, codUnidade, codModelo, pergunta);
                     break;
                 case ALTERADA_NOME:
                     Long codPergunta = pergunta.getCodigo();
-                    if (sobrescreverPerguntasAlternativas) {
+                    if ( sobrescreverDescricaoPerguntasAlternativas) {
                         // Para manter o código original da pergunta, apenas atualizamos os dados.
                         atualizaPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
                     } else {
@@ -506,7 +523,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         if (alternativa instanceof AlternativaModeloChecklistEdicao) {
                             final AlternativaModeloChecklistEdicao alternativaEdicao =
                                     (AlternativaModeloChecklistEdicao) alternativa;
-                            if (sobrescreverPerguntasAlternativas) {
+                            if ( sobrescreverDescricaoPerguntasAlternativas) {
                                 if (alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.CRIADA)
                                         && alternativaEdicao.getCodigo() != null) {
                                     // Significa que é uma alternativa nova adicionada na pergunta. Para esse caso
@@ -567,7 +584,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                 final AlternativaModeloChecklistEdicao alternativaEdicao =
                                         (AlternativaModeloChecklistEdicao) alternativa;
                                 if (alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.CRIADA)) {
-                                    if (sobrescreverPerguntasAlternativas && alternativaEdicao.getCodigo() != null) {
+                                    if ( sobrescreverDescricaoPerguntasAlternativas && alternativaEdicao.getCodigo() != null) {
                                         // Se o código da alternativa não é null, significa que a alternativa já
                                         // existia, assim, só precisamos atualizar os dados dela.
                                         atualizaAlternativaChecklist(
@@ -586,7 +603,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                                 alternativaEdicao);
                                     }
                                 } else if (alternativaEdicao.getAcaoEdicao().equals(AcaoEdicaoAlternativa.ALTERADA)) {
-                                    if (sobrescreverPerguntasAlternativas) {
+                                    if ( sobrescreverDescricaoPerguntasAlternativas) {
                                         // Se a alternativa foi alterada, precisamos atualizar e manter o código.
                                         atualizaAlternativaChecklist(
                                                 conn,
@@ -685,20 +702,22 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             @NotNull final Connection conn,
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
+            @NotNull final Long codVersaoModelo,
             @NotNull final PerguntaModeloChecklist pergunta) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
-                    + "COD_CHECKLIST_MODELO, COD_UNIDADE, ORDEM, PERGUNTA, COD_IMAGEM, "
-                    + "STATUS_ATIVO, SINGLE_CHOICE) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
-            stmt.setLong(1, codModelo);
-            stmt.setLong(2, codUnidade);
-            stmt.setInt(3, pergunta.getOrdemExibicao());
-            stmt.setString(4, pergunta.getDescricao());
-            bindValueOrNull(stmt, 5, pergunta.getCodImagem(), SqlType.BIGINT);
-            stmt.setBoolean(6, true);
-            stmt.setBoolean(7, pergunta.isSingleChoice());
+                    + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, ORDEM, PERGUNTA, COD_IMAGEM, "
+                    + "STATUS_ATIVO, SINGLE_CHOICE) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModelo);
+            stmt.setLong(3, codVersaoModelo);
+            stmt.setInt(4, pergunta.getOrdemExibicao());
+            stmt.setString(5, pergunta.getDescricao());
+            bindValueOrNull(stmt, 6, pergunta.getCodImagem(), SqlType.BIGINT);
+            stmt.setBoolean(7, true);
+            stmt.setBoolean(8, pergunta.isSingleChoice());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 pergunta.setCodigo(rSet.getLong("CODIGO"));
@@ -1121,13 +1140,14 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     }
 
     private void insertModeloTipoVeiculo(@NotNull final Connection conn,
-                                         @NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
+                                         @NotNull final ModeloChecklistInsercao modeloChecklist,
+                                         @NotNull final Long codModeloInserido) throws Throwable {
         PreparedStatement stmt = null;
         try {
             for (final Long codTipoVeiculo : modeloChecklist.getTiposVeiculoLiberados()) {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO_VEICULO_TIPO VALUES (?,?,?);");
                 stmt.setLong(1, modeloChecklist.getCodUnidade());
-                stmt.setLong(2, modeloChecklist.getCodigo());
+                stmt.setLong(2, codModeloInserido);
                 stmt.setLong(3, codTipoVeiculo);
                 if (stmt.executeUpdate() == 0) {
                     throw new SQLException("Erro ao vincular o tipo de veículo ao modelo de checklist:\n"
@@ -1141,14 +1161,15 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     }
 
     private void insertModeloCargo(@NotNull final Connection conn,
-                                   @NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
+                                   @NotNull final ModeloChecklistInsercao modeloChecklist,
+                                   @NotNull final Long codModeloInserido) throws Throwable {
         PreparedStatement stmt = null;
         try {
             for (final Long codCargo : modeloChecklist.getCargosLiberados()) {
                 stmt = conn.prepareStatement(
                         "INSERT INTO CHECKLIST_MODELO_FUNCAO VALUES (?,?,?);");
                 stmt.setLong(1, modeloChecklist.getCodUnidade());
-                stmt.setLong(2, modeloChecklist.getCodigo());
+                stmt.setLong(2, codModeloInserido);
                 stmt.setLong(3, codCargo);
                 if (stmt.executeUpdate() == 0) {
                     throw new SQLException("Erro ao vincular o cargo ao modelo de checklist:\n"
@@ -1162,12 +1183,15 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     }
 
     private void insertModeloPerguntas(@NotNull final Connection conn,
-                                       @NotNull final ModeloChecklistInsercao modeloChecklist) throws Throwable {
+                                       @NotNull final ModeloChecklistInsercao modeloChecklist,
+                                       @NotNull final Long codModelo,
+                                       @NotNull final Long codVersaoModelo) throws Throwable {
         for (final PerguntaModeloChecklistInsercao pergunta : modeloChecklist.getPerguntas()) {
             insertPerguntaAlternativaModeloChecklist(
                     conn,
                     modeloChecklist.getCodUnidade(),
-                    modeloChecklist.getCodigo(),
+                    codModelo,
+                    codVersaoModelo,
                     pergunta);
         }
     }
