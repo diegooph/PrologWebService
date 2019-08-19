@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,13 +27,12 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM INTEGRACAO.FUNC_PNEU_LISTA_MARCAS_MODELOS_PNEUS_EMPRESA(?, ?);");
+            stmt.setString(1, tokenIntegracao);
+            stmt.setBoolean(2, apenasMarcasPneuAtivas);
             rSet = stmt.executeQuery();
-            final List<ApiMarcaPneu> marcasPneu = new ArrayList<>();
-            while (rSet.next()) {
-
-            }
-            return marcasPneu;
+            return ApiPneuCreator.createMarcasPneu(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -50,13 +48,13 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM INTEGRACAO.FUNC_PNEU_LISTA_MODELOS_PNEUS_EMPRESA(?, ?, ?);");
+            stmt.setString(1, tokenIntegracao);
+            stmt.setLong(2, codMarcaPneu);
+            stmt.setBoolean(3, apenasModelosPneuAtivos);
             rSet = stmt.executeQuery();
-            final List<ApiModeloPneu> modeloPneus = new ArrayList<>();
-            while (rSet.next()) {
-
-            }
-            return modeloPneus;
+            return ApiPneuCreator.createModelosPneu(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -71,13 +69,12 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM INTEGRACAO.FUNC_PNEU_LISTA_MARCAS_MODELOS_BANDA_EMPRESA(?, ?);");
+            stmt.setString(1, tokenIntegracao);
+            stmt.setBoolean(2, apenasMarcasBandaAtivas);
             rSet = stmt.executeQuery();
-            final List<ApiMarcaBanda> marcasBanda = new ArrayList<>();
-            while (rSet.next()) {
-
-            }
-            return marcasBanda;
+            return ApiPneuCreator.createMarcasBanda(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -93,13 +90,13 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM INTEGRACAO.FUNC_PNEU_LISTA_MODELOS_BANDAS_EMPRESA(?, ?, ?);");
+            stmt.setString(1, tokenIntegracao);
+            stmt.setLong(2, codMarcaBanda);
+            stmt.setBoolean(3, apenasModelosBandaAtivos);
             rSet = stmt.executeQuery();
-            final List<ApiModeloBanda> modelosBanda = new ArrayList<>();
-            while (rSet.next()) {
-
-            }
-            return modelosBanda;
+            return ApiPneuCreator.createModelosBanda(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
