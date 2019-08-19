@@ -2,18 +2,12 @@ package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AcaoEdicaoAlternativa;
 
 /**
  * Created by Zalf on 07/01/17.
  */
 @Deprecated
 public class AlternativaChecklist extends Alternativa {
-
-    /**
-     * Atributo restrito a ser apenas {@code DELETADA}/{@code ALTERADA}/{@code CRIADA}
-     */
-    public AcaoEdicaoAlternativa acaoEdicao;
 
     public PrioridadeAlternativa prioridade;
 
@@ -24,14 +18,6 @@ public class AlternativaChecklist extends Alternativa {
 
     public AlternativaChecklist() {
 
-    }
-
-    public AcaoEdicaoAlternativa getAcaoEdicao() {
-        return acaoEdicao;
-    }
-
-    public void setAcaoEdicao(final AcaoEdicaoAlternativa acaoEdicao) {
-        this.acaoEdicao = acaoEdicao;
     }
 
     public PrioridadeAlternativa getPrioridade() {
@@ -53,7 +39,6 @@ public class AlternativaChecklist extends Alternativa {
     @Override
     public String toString() {
         return "AlternativaChecklist{" +
-                "acaoEdicao='" + acaoEdicao + '\'' +
                 ", selected=" + selected +
                 super.toString() +
                 '}';

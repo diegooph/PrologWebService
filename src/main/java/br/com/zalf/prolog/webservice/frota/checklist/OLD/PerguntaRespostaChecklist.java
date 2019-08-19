@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Pergunta;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AcaoEdicaoPergunta;
 
 import java.util.List;
 
@@ -23,7 +22,6 @@ public class PerguntaRespostaChecklist extends Pergunta {
     private String url;
     private List<AlternativaChecklist> alternativasResposta;
     private boolean singleChoice;
-    private AcaoEdicaoPergunta acaoEdicao;
 
     public PerguntaRespostaChecklist() {
 
@@ -86,14 +84,6 @@ public class PerguntaRespostaChecklist extends Pergunta {
         this.singleChoice = singleChoice;
     }
 
-    public AcaoEdicaoPergunta getAcaoEdicao() {
-        return acaoEdicao;
-    }
-
-    public void setAcaoEdicao(final AcaoEdicaoPergunta acaoEdicao) {
-        this.acaoEdicao = acaoEdicao;
-    }
-
     @Override
     public String toString() {
         return "PerguntaRespostaChecklist{" +
@@ -102,7 +92,6 @@ public class PerguntaRespostaChecklist extends Pergunta {
                 ", url='" + url + '\'' +
                 ", alternativasResposta=" + alternativasResposta +
                 ", singleChoice=" + singleChoice +
-                ", acaoEdicao='" + acaoEdicao + '\'' +
                 '}';
     }
 }

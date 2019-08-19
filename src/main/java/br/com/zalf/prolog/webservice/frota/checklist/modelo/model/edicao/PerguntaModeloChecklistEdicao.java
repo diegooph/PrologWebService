@@ -10,20 +10,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModelo
 public final class PerguntaModeloChecklistEdicao extends PerguntaModeloChecklist {
     public static final String TIPO_SERIALIZACAO = "PERGUNTA_MODELO_CHECKLIST_EDICAO";
 
-    /**
-     * Quando um modelo de checklist é editado, indica qual foi a operação de edição realizada nessa pergunta.
-     */
-    private AcaoEdicaoPergunta acaoEdicao;
-
     public PerguntaModeloChecklistEdicao() {
         super(TIPO_SERIALIZACAO);
-    }
-
-    public AcaoEdicaoPergunta getAcaoEdicao() {
-        return acaoEdicao;
-    }
-
-    public void setAcaoEdicao(final AcaoEdicaoPergunta acaoEdicao) {
-        this.acaoEdicao = acaoEdicao;
     }
 }
