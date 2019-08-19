@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
+import br.com.zalf.prolog.webservice.commons.util.DBTablePrinter;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -51,7 +52,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             }
             return itensOsAbertos;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -78,7 +79,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             }
             return qtdItensOs;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -96,7 +97,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -114,7 +115,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -132,7 +133,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -150,7 +151,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -168,7 +169,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -186,7 +187,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -196,18 +197,28 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                                        @NotNull final String placa,
                                        @NotNull final String statusOs,
                                        @NotNull final String statusItemOs,
-                                       @NotNull final LocalDate dataInicial,
-                                       @NotNull final LocalDate dataFinal) throws Throwable {
+                                       final LocalDate dataInicialAbertura,
+                                       final LocalDate dataFinalAbertura,
+                                       final LocalDate dataInicialResolucao,
+                                       final LocalDate dataFinalResolucao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEstratificacaoOs(conn, codUnidades, placa, statusOs, statusItemOs, dataInicial, dataFinal);
+            stmt = getEstratificacaoOs(conn, codUnidades, placa, statusOs, statusItemOs,
+                    dataInicialAbertura,
+                    dataFinalAbertura,
+                    dataInicialResolucao,
+                    dataFinalResolucao);
             rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, outputStream);
+            new CsvWriter
+                    .Builder(outputStream)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -217,18 +228,24 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                                             @NotNull final String placa,
                                             @NotNull final String statusOs,
                                             @NotNull final String statusItemOs,
-                                            @NotNull final LocalDate dataInicial,
-                                            @NotNull final LocalDate dataFinal) throws Throwable {
+                                            final LocalDate dataInicialAbertura,
+                                            final LocalDate dataFinalAbertura,
+                                            final LocalDate dataInicialResolucao,
+                                            final LocalDate dataFinalResolucao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEstratificacaoOs(conn, codUnidades, placa, statusOs, statusItemOs, dataInicial, dataFinal);
+            stmt = getEstratificacaoOs(conn, codUnidades, placa, statusOs, statusItemOs,
+                    dataInicialAbertura,
+                    dataFinalAbertura,
+                    dataInicialResolucao,
+                    dataFinalResolucao);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -238,16 +255,20 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                                                   @NotNull final String placa,
                                                   @NotNull final String statusOs,
                                                   @NotNull final String statusItemOs,
-                                                  @NotNull final LocalDate dataInicial,
-                                                  @NotNull final LocalDate dataFinal) throws Throwable {
+                                                  final LocalDate dataInicialAbertura,
+                                                  final LocalDate dataFinalAbertura,
+                                                  final LocalDate dataInicialResolucao,
+                                                  final LocalDate dataFinalResolucao) throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(?, ?, ?, ?, ?, ?);");
+                "FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(?, ?, ?, ?, ?, ?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setString(2, placa);
         stmt.setString(3, statusOs);
         stmt.setString(4, statusItemOs);
-        stmt.setObject(5, dataInicial);
-        stmt.setObject(6, dataFinal);
+        stmt.setObject(5, dataInicialAbertura);
+        stmt.setObject(6, dataFinalAbertura);
+        stmt.setObject(7, dataInicialResolucao);
+        stmt.setObject(8, dataFinalResolucao);
         return stmt;
     }
 
