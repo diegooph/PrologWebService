@@ -4,6 +4,9 @@ Change Log
 <a name="v0.1.0"></a>
 ## Version [v0.1.0](https://github.com/luizfp/PrologWebService/compare/v0.0.99...v0.1.0) (release-date) [unreleased]
 
+### Refactors
+* Melhora tratamento de erros na busca de checklists
+
 
 <a name="v0.0.99"></a>
 ## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (2019-08-18)
