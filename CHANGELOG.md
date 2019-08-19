@@ -7,6 +7,8 @@ Change Log
 ### Refactors
 * Melhora tratamento de erros na busca de checklists
 
+### Bug Fixes
+* Corrige busca de checklists na integração com Avilan
 
 <a name="v0.0.99"></a>
 ## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (2019-08-18)
