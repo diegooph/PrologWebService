@@ -1,3 +1,8 @@
+### Stage
+
+### Refactors
+* Adiciona o separa datas para o filtro de abertura e fechamento no relatório de estratificação de O.S.
+
 Change Log
 ==========
 
