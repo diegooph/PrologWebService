@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuDao {
+public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuDao {
     @NotNull
     @Override
     public List<ApiMarcaPneu> getMarcasPneu(@NotNull final String tokenIntegracao,

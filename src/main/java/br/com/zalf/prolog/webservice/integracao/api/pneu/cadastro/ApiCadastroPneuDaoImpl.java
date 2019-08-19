@@ -22,7 +22,7 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ApiCadastroPneuDaoImpl extends DatabaseConnection implements ApiCadastroPneuDao {
+public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements ApiCadastroPneuDao {
     @NotNull
     @Override
     public List<ApiPneuCargaInicialResponse> inserirCargaInicialPneu(

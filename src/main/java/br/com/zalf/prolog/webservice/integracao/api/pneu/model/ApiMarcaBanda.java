@@ -17,13 +17,17 @@ public final class ApiMarcaBanda {
     private final String nome;
     @NotNull
     private final List<ApiModeloBanda> modelos;
+    @NotNull
+    private final Boolean statusAtivo;
 
     public ApiMarcaBanda(@NotNull final Long codigo,
                          @NotNull final String nome,
-                         @NotNull final List<ApiModeloBanda> modelos) {
+                         @NotNull final List<ApiModeloBanda> modelos,
+                         @NotNull final Boolean statusAtivo) {
         this.codigo = codigo;
         this.nome = nome;
         this.modelos = modelos;
+        this.statusAtivo = statusAtivo;
     }
 
     @NotNull
@@ -31,7 +35,8 @@ public final class ApiMarcaBanda {
         return new ApiMarcaBanda(
                 25L,
                 "Vipal",
-                Collections.singletonList(ApiModeloBanda.getApiModeloBandaDummy()));
+                Collections.singletonList(ApiModeloBanda.getApiModeloBandaDummy()),
+                true);
     }
 
     @NotNull
@@ -47,5 +52,10 @@ public final class ApiMarcaBanda {
     @NotNull
     public List<ApiModeloBanda> getModelos() {
         return modelos;
+    }
+
+    @NotNull
+    public Boolean getStatusAtivo() {
+        return statusAtivo;
     }
 }

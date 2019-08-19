@@ -18,17 +18,21 @@ public final class ApiModeloPneu {
     private final Integer quantidadeSulcos;
     @NotNull
     private final Double alturaSulcoQuandoNovo;
+    @NotNull
+    private final Boolean statusAtivo;
 
     public ApiModeloPneu(@NotNull final Long codMarcaPneu,
                          @NotNull final Long codigo,
                          @NotNull final String nome,
                          @NotNull final Integer quantidadeSulcos,
-                         @NotNull final Double alturaSulcoQuandoNovo) {
+                         @NotNull final Double alturaSulcoQuandoNovo,
+                         @NotNull final Boolean statusAtivo) {
         this.codMarcaPneu = codMarcaPneu;
         this.codigo = codigo;
         this.nome = nome;
         this.quantidadeSulcos = quantidadeSulcos;
         this.alturaSulcoQuandoNovo = alturaSulcoQuandoNovo;
+        this.statusAtivo = statusAtivo;
     }
 
     @NotNull
@@ -38,7 +42,8 @@ public final class ApiModeloPneu {
                 5L,
                 "G685",
                 4,
-                15.0);
+                15.0,
+                true);
     }
 
     @NotNull
@@ -64,5 +69,10 @@ public final class ApiModeloPneu {
     @NotNull
     public Double getAlturaSulcoQuandoNovo() {
         return alturaSulcoQuandoNovo;
+    }
+
+    @NotNull
+    public Boolean getStatusAtivo() {
+        return statusAtivo;
     }
 }

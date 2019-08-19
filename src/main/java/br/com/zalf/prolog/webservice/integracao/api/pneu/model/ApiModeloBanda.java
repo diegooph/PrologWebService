@@ -18,17 +18,21 @@ public final class ApiModeloBanda {
     private final Integer quantidadeSulcos;
     @NotNull
     private final Double alturaSulcoQuandoNovo;
+    @NotNull
+    private final Boolean statusAtivo;
 
     public ApiModeloBanda(@NotNull final Long codMarcaBanda,
                           @NotNull final Long codigo,
                           @NotNull final String nome,
                           @NotNull final Integer quantidadeSulcos,
-                          @NotNull final Double alturaSulcoQuandoNovo) {
+                          @NotNull final Double alturaSulcoQuandoNovo,
+                          @NotNull final Boolean statusAtivo) {
         this.codMarcaBanda = codMarcaBanda;
         this.codigo = codigo;
         this.nome = nome;
         this.quantidadeSulcos = quantidadeSulcos;
         this.alturaSulcoQuandoNovo = alturaSulcoQuandoNovo;
+        this.statusAtivo = statusAtivo;
     }
 
     @NotNull
@@ -38,7 +42,8 @@ public final class ApiModeloBanda {
                 57L,
                 "vlw110",
                 3,
-                16.0);
+                16.0,
+                true);
     }
 
     @NotNull
@@ -64,5 +69,10 @@ public final class ApiModeloBanda {
     @NotNull
     public Double getAlturaSulcoQuandoNovo() {
         return alturaSulcoQuandoNovo;
+    }
+
+    @NotNull
+    public Boolean getStatusAtivo() {
+        return statusAtivo;
     }
 }

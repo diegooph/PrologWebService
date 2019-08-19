@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ApiPneuService extends BaseIntegracaoService {
+public final class ApiPneuService extends BaseIntegracaoService {
     @NotNull
     private static final String TAG = ApiPneuService.class.getSimpleName();
     @NotNull

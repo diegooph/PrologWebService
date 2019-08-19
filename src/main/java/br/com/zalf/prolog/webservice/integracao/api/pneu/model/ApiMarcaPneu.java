@@ -17,13 +17,17 @@ public final class ApiMarcaPneu {
     private final String nome;
     @NotNull
     private final List<ApiModeloPneu> modelos;
+    @NotNull
+    private final Boolean statusAtivo;
 
     public ApiMarcaPneu(@NotNull final Long codigo,
                         @NotNull final String nome,
-                        @NotNull final List<ApiModeloPneu> modelos) {
+                        @NotNull final List<ApiModeloPneu> modelos,
+                        @NotNull final Boolean statusAtivo) {
         this.codigo = codigo;
         this.nome = nome;
         this.modelos = modelos;
+        this.statusAtivo = statusAtivo;
     }
 
     @NotNull
@@ -31,7 +35,8 @@ public final class ApiMarcaPneu {
         return new ApiMarcaPneu(
                 1L,
                 "Goodyear",
-                Collections.singletonList(ApiModeloPneu.getApiModeloPneuDummy()));
+                Collections.singletonList(ApiModeloPneu.getApiModeloPneuDummy()),
+                true);
     }
 
     @NotNull
@@ -47,5 +52,10 @@ public final class ApiMarcaPneu {
     @NotNull
     public List<ApiModeloPneu> getModelos() {
         return modelos;
+    }
+
+    @NotNull
+    public Boolean getStatusAtivo() {
+        return statusAtivo;
     }
 }
