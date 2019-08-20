@@ -118,4 +118,23 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             close(stmt);
         }
     }
+
+    @Override
+    public void erroAoSicronizarChecklist(@NotNull final Long codChecklistProLog,
+                                          @NotNull final String errorMessage) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR " +
+                    "SET " +
+                    "  MENSAGEM_ERRO_AO_SINCRONIZAR = ? " +
+                    "WHERE COD_CHECKLIST_PARA_SINCRONIZAR = ?;");
+            stmt.setString(1, errorMessage);
+            stmt.setLong(2, codChecklistProLog);
+            stmt.executeUpdate();
+        } finally {
+            close(conn, stmt);
+        }
+    }
 }
