@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.api.pneu.model;
+package br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class ApiModeloPneu {
+public final class ApiModeloBanda {
     @NotNull
-    private final Long codMarcaPneu;
+    private final Long codMarcaBanda;
     @NotNull
     private final Long codigo;
     @NotNull
@@ -21,13 +21,13 @@ public final class ApiModeloPneu {
     @NotNull
     private final Boolean statusAtivo;
 
-    public ApiModeloPneu(@NotNull final Long codMarcaPneu,
-                         @NotNull final Long codigo,
-                         @NotNull final String nome,
-                         @NotNull final Integer quantidadeSulcos,
-                         @NotNull final Double alturaSulcoQuandoNovo,
-                         @NotNull final Boolean statusAtivo) {
-        this.codMarcaPneu = codMarcaPneu;
+    public ApiModeloBanda(@NotNull final Long codMarcaBanda,
+                          @NotNull final Long codigo,
+                          @NotNull final String nome,
+                          @NotNull final Integer quantidadeSulcos,
+                          @NotNull final Double alturaSulcoQuandoNovo,
+                          @NotNull final Boolean statusAtivo) {
+        this.codMarcaBanda = codMarcaBanda;
         this.codigo = codigo;
         this.nome = nome;
         this.quantidadeSulcos = quantidadeSulcos;
@@ -36,19 +36,19 @@ public final class ApiModeloPneu {
     }
 
     @NotNull
-    static ApiModeloPneu getApiModeloPneuDummy() {
-        return new ApiModeloPneu(
-                1L,
-                5L,
-                "G685",
-                4,
-                15.0,
+    static ApiModeloBanda getApiModeloBandaDummy() {
+        return new ApiModeloBanda(
+                25L,
+                57L,
+                "vlw110",
+                3,
+                16.0,
                 true);
     }
 
     @NotNull
-    public Long getCodMarcaPneu() {
-        return codMarcaPneu;
+    public Long getCodMarcaBanda() {
+        return codMarcaBanda;
     }
 
     @NotNull

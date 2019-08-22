@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.api.pneu.model;
+package br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model;
 
 import org.jetbrains.annotations.NotNull;
 

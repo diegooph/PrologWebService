@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
+import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

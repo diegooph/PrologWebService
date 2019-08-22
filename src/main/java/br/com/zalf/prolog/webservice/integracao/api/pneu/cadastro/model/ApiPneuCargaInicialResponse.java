@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
+package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,9 +10,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class ApiPneuCargaInicialResponse {
     @NotNull
-    static final String SUCCESS_MESSAGE = "Pneu cadastrado com sucesso no Sistema ProLog";
+    public static final String SUCCESS_MESSAGE = "Pneu cadastrado com sucesso no Sistema ProLog";
     @NotNull
-    static final String ERROR_MESSAGE = "Não foi possível cadastrar o pneu no Sistema ProLog";
+    public static final String ERROR_MESSAGE = "Não foi possível cadastrar o pneu no Sistema ProLog";
     @NotNull
     private final Long codigoSistemaIntegrado;
     @NotNull

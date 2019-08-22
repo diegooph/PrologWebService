@@ -1,9 +1,9 @@
 package test.integracao.api;
 
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.ApiPneuService;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiMarcaBanda;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiModeloBanda;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.ApiMarcaModeloPneuService;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiMarcaBanda;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiModeloBanda;
 import org.junit.Test;
 import test.BaseTest;
 
@@ -19,13 +19,13 @@ import static com.google.common.truth.Truth.assertThat;
  */
 public class ListagemMarcasModelosBandaTest extends BaseTest {
     private static final String TOKEN_INTEGRACAO = "kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck";
-    private ApiPneuService service;
+    private ApiMarcaModeloPneuService service;
 
     @Override
     public void initialize() throws Throwable {
         super.initialize();
         DatabaseManager.init();
-        service = new ApiPneuService();
+        service = new ApiMarcaModeloPneuService();
     }
 
     @Override

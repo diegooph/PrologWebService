@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
+package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

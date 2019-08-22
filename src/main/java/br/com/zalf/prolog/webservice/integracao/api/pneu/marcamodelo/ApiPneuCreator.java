@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.integracao.api.pneu;
+package br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo;
 
-import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiMarcaBanda;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiMarcaPneu;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiModeloBanda;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiModeloPneu;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiMarcaBanda;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiMarcaPneu;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiModeloBanda;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiModeloPneu;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
