@@ -4,14 +4,12 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.sql.SqlErrorCodes;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PSQLException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,6 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_CARGA_INICIAL_PNEU_PROLOG(" +
                     "F_COD_PNEU_SISTEMA_INTEGRADO := ?, " +
                     "F_CODIGO_PNEU_CLIENTE := ?, " +
@@ -70,9 +67,9 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     stmt.setBigDecimal(10, pneuCargaInicial.getValorPneu());
                     stmt.setBoolean(11, pneuCargaInicial.getPneuNovoNuncaRodado());
                     bindValueOrNull(stmt, 12, pneuCargaInicial.getCodModeloBanda(), SqlType.BIGINT);
-                    bindValueOrNull(stmt, 13, pneuCargaInicial.getValorBandaPneu(), SqlType.REAL);
+                    bindValueOrNull(stmt, 13, pneuCargaInicial.getValorBandaPneu(), SqlType.NUMERIC);
                     stmt.setString(14, pneuCargaInicial.getStatusPneu().asString());
-                    bindValueOrNull(stmt, 15, pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.TEXT);
+                    bindValueOrNull(stmt, 15, pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.VARCHAR);
                     bindValueOrNull(stmt, 16, pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
                     stmt.setObject(17, dataHoraAtual);
                     stmt.setString(18, tokenIntegracao);
@@ -126,13 +123,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                         "pneusCargaInicial.size: " + pneusCargaInicial.size() + "\n" +
                         "pneuCargaInicialResponses.size: " + pneuCargaInicialResponses.size());
             }
-            conn.commit();
             return pneuCargaInicialResponses;
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -309,6 +300,15 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     private String getPSQLErrorMessage(@NotNull final SQLException sqlException) {
-        return ((PSQLException) sqlException).getServerErrorMessage().getMessage();
+        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.BD_GENERIC_ERROR_CODE.getErrorCode())) {
+            if (sqlException instanceof PSQLException) {
+                return ((PSQLException) sqlException).getServerErrorMessage().getMessage();
+            } else if (sqlException instanceof BatchUpdateException) {
+                if (sqlException.getNextException() instanceof PSQLException) {
+                    return ((PSQLException) sqlException.getNextException()).getServerErrorMessage().getMessage();
+                }
+            }
+        }
+        return ApiPneuCargaInicialResponse.ERROR_MESSAGE;
     }
 }

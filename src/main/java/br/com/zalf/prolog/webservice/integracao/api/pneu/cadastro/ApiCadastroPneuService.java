@@ -14,14 +14,14 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class ApiCadastroPneuService extends BaseIntegracaoService {
+public final class ApiCadastroPneuService extends BaseIntegracaoService {
     @NotNull
     private static final String TAG = ApiCadastroPneuService.class.getSimpleName();
     @NotNull
     private ApiCadastroPneuDao dao = new ApiCadastroPneuDaoImpl();
 
     @NotNull
-    List<ApiPneuCargaInicialResponse> inserirCargaInicialPneu(
+    public List<ApiPneuCargaInicialResponse> inserirCargaInicialPneu(
             final String tokenIntegracao,
             final List<ApiPneuCargaInicial> pneusCargaInicial) throws ProLogException {
         try {
