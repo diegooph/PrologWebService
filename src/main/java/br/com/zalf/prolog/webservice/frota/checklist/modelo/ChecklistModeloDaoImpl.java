@@ -57,13 +57,23 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     "F_COD_UNIDADE_MODELO := ?," +
                     "F_NOME_MODELO        := ?," +
                     "F_STATUS_ATIVO       := ?," +
+                    "F_COD_CARGOS         := ?," +
+                    "F_COD_TIPOS_VEICULOS := ?," +
                     "F_DATA_HORA_ATUAL    := ?," +
                     "F_TOKEN_COLABORADOR  := ?);");
             stmt.setLong(1, modeloChecklist.getCodUnidade());
             stmt.setString(2, modeloChecklist.getNome());
             stmt.setBoolean(3, statusAtivo);
-            stmt.setObject(4, Now.offsetDateTimeUtc());
-            stmt.setString(5, userToken);
+            stmt.setArray(4, PostgresUtils.listToArray(
+                    conn,
+                    SqlType.BIGINT,
+                    modeloChecklist.getCargosLiberados()));
+            stmt.setArray(5, PostgresUtils.listToArray(
+                    conn,
+                    SqlType.BIGINT,
+                    modeloChecklist.getTiposVeiculoLiberados()));
+            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.setString(7, userToken);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codModeloChecklistInserido = rSet.getLong("COD_MODELO_CHECKLIST");
@@ -73,8 +83,6 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                             "codModeloChecklistInserido: " + codModeloChecklistInserido);
                 }
 
-                insertModeloTipoVeiculo(conn, modeloChecklist, codModeloChecklistInserido);
-                insertModeloCargo(conn, modeloChecklist, codModeloChecklistInserido);
                 insertModeloPerguntas(conn, modeloChecklist, codModeloChecklistInserido, codVersaoModeloChecklist);
 
                 // Devemos notificar que uma inserção de modelo de checklist foi realizada.
@@ -122,7 +130,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             } else {
                 // Os únicos casos cobertos por esse else são esses:
                 // • Pergunta descrição ALTERADA **NÃO** MUDANDO CONTEXTO;
+                // • Pergunta ordem exibição ALTERADA;
                 // • Alternativa descrição ALTERADA **NÃO** MUDANDO CONTEXTO;
+                // • Alternativa ordem exibição ALTERADA;
                 if (modeloChecklist.getPerguntasAlteracaoDescricao() != null) {
                     atualizaPerguntasModeloChecklist(
                             conn,
@@ -509,10 +519,15 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_UPDATE_MODELO_CHECKLIST(?, ?, ?, ?, ?);");
-            stmt.setString(1, modeloChecklist.getNome());
-            stmt.setLong(2, codUnidade);
-            stmt.setLong(3, codModelo);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_UPDATE_MODELO_CHECKLIST(" +
+                    "F_COD_UNIDADE        := ?," +
+                    "F_COD_MODELO         := ?," +
+                    "F_NOME_MODELO        := ?," +
+                    "F_COD_CARGOS         := ?," +
+                    "F_COD_TIPOS_VEICULOS := ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModelo);
+            stmt.setString(3, modeloChecklist.getNome());
             stmt.setArray(4, PostgresUtils.listToArray(
                     conn,
                     SqlType.BIGINT,
@@ -683,49 +698,6 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         return perguntas;
     }
 
-    private void insertModeloTipoVeiculo(@NotNull final Connection conn,
-                                         @NotNull final ModeloChecklistInsercao modeloChecklist,
-                                         @NotNull final Long codModeloInserido) throws Throwable {
-        PreparedStatement stmt = null;
-        try {
-            for (final Long codTipoVeiculo : modeloChecklist.getTiposVeiculoLiberados()) {
-                stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO_VEICULO_TIPO VALUES (?,?,?);");
-                stmt.setLong(1, modeloChecklist.getCodUnidade());
-                stmt.setLong(2, codModeloInserido);
-                stmt.setLong(3, codTipoVeiculo);
-                if (stmt.executeUpdate() == 0) {
-                    throw new SQLException("Erro ao vincular o tipo de veículo ao modelo de checklist:\n"
-                            + "unidade: " + modeloChecklist.getCodUnidade() + "\n"
-                            + "tipo do veículo: " + codTipoVeiculo);
-                }
-            }
-        } finally {
-            close(stmt);
-        }
-    }
-
-    private void insertModeloCargo(@NotNull final Connection conn,
-                                   @NotNull final ModeloChecklistInsercao modeloChecklist,
-                                   @NotNull final Long codModeloInserido) throws Throwable {
-        PreparedStatement stmt = null;
-        try {
-            for (final Long codCargo : modeloChecklist.getCargosLiberados()) {
-                stmt = conn.prepareStatement(
-                        "INSERT INTO CHECKLIST_MODELO_FUNCAO VALUES (?,?,?);");
-                stmt.setLong(1, modeloChecklist.getCodUnidade());
-                stmt.setLong(2, codModeloInserido);
-                stmt.setLong(3, codCargo);
-                if (stmt.executeUpdate() == 0) {
-                    throw new SQLException("Erro ao vincular o cargo ao modelo de checklist:\n"
-                            + "unidade: " + modeloChecklist.getCodUnidade() + "\n"
-                            + "cargo: " + codCargo);
-                }
-            }
-        } finally {
-            close(stmt);
-        }
-    }
-
     private void insertModeloPerguntas(@NotNull final Connection conn,
                                        @NotNull final ModeloChecklistInsercao modeloChecklist,
                                        @NotNull final Long codModelo,
@@ -877,7 +849,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         "SET PERGUNTA = ?, ORDEM = ? " +
                         "WHERE COD_UNIDADE = ? AND COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
                 stmt.setString(1, pergunta.getNovaDescricao());
-                stmt.setInt(2, pergunta.getNovaOrdemExibicao());
+                // TODO:
+                stmt.setInt(2, 0);
                 stmt.setLong(3, codUnidade);
                 stmt.setLong(4, codModelo);
                 stmt.setLong(5, pergunta.getCodigo());
@@ -906,7 +879,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         "      AND COD_CHECKLIST_MODELO = ?" +
                         "      AND CODIGO = ?;");
                 stmt.setString(1, alternativa.getNovaDescricao());
-                stmt.setInt(2, alternativa.getNovaOrdemExibicao());
+                // TODO:
+                stmt.setInt(2, 0);
                 stmt.setLong(3, codUnidade);
                 stmt.setLong(4, codModelo);
                 stmt.setLong(5, alternativa.getCodigo());

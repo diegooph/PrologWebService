@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 06/12/18.
@@ -28,10 +29,15 @@ public final class ModeloChecklistEdicao {
     private final boolean criarNovaVersao;
     @Nullable
     private final List<PerguntaModeloChecklistEdicao> perguntasNovaVersao;
+
     @Nullable
     private final List<PerguntaAlteracaoDescricao> perguntasAlteracaoDescricao;
     @Nullable
     private final List<AlternativaAlteracaoDescricao> alternativasAlteracaoDescricao;
+    @Nullable
+    private final Map<Long, Integer> perguntasAlteracaoOrdemExibicao;
+    @Nullable
+    private final Map<Long, Integer> alternativasAlteracaoOrdemExibicao;
 
     public ModeloChecklistEdicao(
             @NotNull final Long codUnidade,
@@ -44,7 +50,9 @@ public final class ModeloChecklistEdicao {
             final boolean criarNovaVersao,
             @Nullable final List<PerguntaModeloChecklistEdicao> perguntasNovaVersao,
             @Nullable final List<PerguntaAlteracaoDescricao> perguntasAlteracaoDescricao,
-            @Nullable final List<AlternativaAlteracaoDescricao> alternativasAlteracaoDescricao) {
+            @Nullable final List<AlternativaAlteracaoDescricao> alternativasAlteracaoDescricao,
+            @Nullable final Map<Long, Integer> perguntasAlteracaoOrdemExibicao,
+            @Nullable final Map<Long, Integer> alternativasAlteracaoOrdemExibicao) {
         this.codUnidade = codUnidade;
         this.codModelo = codModelo;
         this.codVersaoModelo = codVersaoModelo;
@@ -56,6 +64,8 @@ public final class ModeloChecklistEdicao {
         this.perguntasNovaVersao = perguntasNovaVersao;
         this.perguntasAlteracaoDescricao = perguntasAlteracaoDescricao;
         this.alternativasAlteracaoDescricao = alternativasAlteracaoDescricao;
+        this.perguntasAlteracaoOrdemExibicao = perguntasAlteracaoOrdemExibicao;
+        this.alternativasAlteracaoOrdemExibicao = alternativasAlteracaoOrdemExibicao;
     }
 
     @NotNull
@@ -109,5 +119,15 @@ public final class ModeloChecklistEdicao {
     @Nullable
     public List<AlternativaAlteracaoDescricao> getAlternativasAlteracaoDescricao() {
         return alternativasAlteracaoDescricao;
+    }
+
+    @Nullable
+    public Map<Long, Integer> getPerguntasAlteracaoOrdemExibicao() {
+        return perguntasAlteracaoOrdemExibicao;
+    }
+
+    @Nullable
+    public Map<Long, Integer> getAlternativasAlteracaoOrdemExibicao() {
+        return alternativasAlteracaoOrdemExibicao;
     }
 }

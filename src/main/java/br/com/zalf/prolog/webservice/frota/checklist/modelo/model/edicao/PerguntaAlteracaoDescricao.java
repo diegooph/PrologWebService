@@ -12,15 +12,11 @@ public final class PerguntaAlteracaoDescricao {
     private final Long codigo;
     @NotNull
     private final String novaDescricao;
-    @NotNull
-    private final Integer novaOrdemExibicao;
 
     public PerguntaAlteracaoDescricao(@NotNull final Long codigo,
-                                      @NotNull final String novaDescricao,
-                                      @NotNull final Integer novaOrdemExibicao) {
+                                      @NotNull final String novaDescricao) {
         this.codigo = codigo;
         this.novaDescricao = novaDescricao;
-        this.novaOrdemExibicao = novaOrdemExibicao;
     }
 
     @NotNull
@@ -31,10 +27,5 @@ public final class PerguntaAlteracaoDescricao {
     @NotNull
     public String getNovaDescricao() {
         return novaDescricao;
-    }
-
-    @NotNull
-    public Integer getNovaOrdemExibicao() {
-        return novaOrdemExibicao;
     }
 }
