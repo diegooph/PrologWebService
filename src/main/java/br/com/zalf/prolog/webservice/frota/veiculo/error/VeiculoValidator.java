@@ -29,9 +29,9 @@ public class VeiculoValidator {
     private static void validacaoPlaca(String placa) throws Exception {
         Preconditions.checkNotNull(placa, "Você deve fornecer a placa");
 
-        if (placa.length() != MAX_LENGTH_PLACA) {
-            throw new GenericException("Placa inválida\nA placa deve conter sete caracteres", "Placa informada: " + placa);
-        }
+//        if (placa.length() != MAX_LENGTH_PLACA) {
+//            throw new GenericException("Placa inválida\nA placa deve conter sete caracteres", "Placa informada: " + placa);
+//        }
         if (!(StringUtils.stripCharactersWithAccents(placa)).equals(placa)) {
             throw new GenericException("Placa inválida\nA placa não deve conter acentos", "Placa informada: " + placa);
         }

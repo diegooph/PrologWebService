@@ -4,6 +4,8 @@ Change Log
 <a name="v0.1.01"></a>
 ## Version [v0.1.01](https://github.com/luizfp/PrologWebService/compare/v0.1.0...v0.1.01) (release-date) [unreleased]
 
+### Refactors
+* Remove provisoriamente validador de placa do veículo no cadastro (foco em internacionalização)
 
 <a name="v0.1.0"></a>
 ## Version [v0.1.0](https://github.com/luizfp/PrologWebService/compare/v0.0.99...v0.1.0) (2019-08-19)
