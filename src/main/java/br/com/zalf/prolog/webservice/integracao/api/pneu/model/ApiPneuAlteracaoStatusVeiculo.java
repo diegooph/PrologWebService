@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.integracao.api.pneu.model;
 
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -22,13 +24,19 @@ public final class ApiPneuAlteracaoStatusVeiculo extends ApiPneuAlteracaoStatus 
                                          @NotNull final String cpfColaboradorAlteracaoStatus,
                                          @NotNull final LocalDateTime dataHoraAlteracaoStatus,
                                          @NotNull final String placaVeiculoPneuAplicado,
-                                         @NotNull final Integer posicaoVeiculoPneuAplicado) {
+                                         @NotNull final Integer posicaoVeiculoPneuAplicado,
+                                         final boolean trocouDeBanda,
+                                         @Nullable final Long codNovoModeloBanda,
+                                         @Nullable final BigDecimal valorNovaBandaPneu) {
         super(ApiStatusPneu.EM_USO,
                 codigoPneuSistemaIntegrado,
                 codigoPneuCliente,
                 codUnidadePneu,
                 cpfColaboradorAlteracaoStatus,
-                dataHoraAlteracaoStatus);
+                dataHoraAlteracaoStatus,
+                trocouDeBanda,
+                codNovoModeloBanda,
+                valorNovaBandaPneu);
         this.placaVeiculoPneuAplicado = placaVeiculoPneuAplicado;
         this.posicaoVeiculoPneuAplicado = posicaoVeiculoPneuAplicado;
     }

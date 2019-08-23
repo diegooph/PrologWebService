@@ -28,13 +28,13 @@ public final class ApiPneuResource {
     @NotNull
     private ApiPneuService service = new ApiPneuService();
 
-    @GET
+    @PUT
     @LogIntegracaoRequest
     @Path("/atualiza-status")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao atualizaStatusPneus(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @Required List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) throws ProLogException {
+            @Required final List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) throws ProLogException {
         return service.atualizaStatusPneus(tokenIntegracao, pneusAtualizacaoStatus);
     }
 }

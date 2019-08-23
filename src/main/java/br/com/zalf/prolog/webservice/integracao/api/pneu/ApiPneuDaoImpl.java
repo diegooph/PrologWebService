@@ -9,8 +9,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 16/08/19.
@@ -24,32 +26,53 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
             @NotNull final List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("");
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_ATUALIZA_STATUS_PNEU_PROLOG(" +
+                    "F_COD_PNEU_SISTEMA_INTEGRADO := ?, " +
+                    "F_CODIGO_PNEU_CLIENTE := ?, " +
+                    "F_COD_UNIDADE_PNEU := ?, " +
+                    "F_CPF_COLABORADOR_ALTERACAO_STATUS := ?, " +
+                    "F_DATA_HORA_ALTERACAO_STATUS := ?, " +
+                    "F_STATUS_PNEU := ?, " +
+                    "F_TROCOU_DE_BANDA := ?, " +
+                    "F_COD_NOVO_MODELO_BANDA_PNEU := ?, " +
+                    "F_VALOR_NOVA_BANDA_PNEU := ?, " +
+                    "F_PLACA_VEICULO_PNEU_APLICADO := ?, " +
+                    "F_POSICAO_VEICULO_PNEU_APLICADO := ?, " +
+                    "F_TOKEN_INTEGRACAO := ?) AS COD_PNEU_PROLOG;");
             for (final ApiPneuAlteracaoStatus pneuAlteracaoStatus : pneusAtualizacaoStatus) {
                 stmt.setLong(1, pneuAlteracaoStatus.getCodigoPneuSistemaIntegrado());
                 stmt.setString(2, pneuAlteracaoStatus.getCodigoPneuCliente());
                 stmt.setLong(3, pneuAlteracaoStatus.getCodUnidadePneu());
                 stmt.setString(4, pneuAlteracaoStatus.getCpfColaboradorAlteracaoStatus());
-                stmt.setObject(5, pneuAlteracaoStatus.getDataHoraAlteracaoStatus());
+                stmt.setObject(5, pneuAlteracaoStatus.getDataHoraAlteracaoStatusUtc());
                 stmt.setString(6, pneuAlteracaoStatus.getStatusPneu().asString());
+                stmt.setBoolean(7, pneuAlteracaoStatus.isTrocouDeBanda());
+                if (pneuAlteracaoStatus.isTrocouDeBanda()) {
+                    bindValueOrNull(stmt, 8, pneuAlteracaoStatus.getCodNovoModeloBanda(), SqlType.BIGINT);
+                    bindValueOrNull(stmt, 9, pneuAlteracaoStatus.getValorNovaBandaPneu(), SqlType.NUMERIC);
+                } else {
+                    stmt.setNull(8, SqlType.BIGINT.asIntTypeJava());
+                    stmt.setNull(9, SqlType.NUMERIC.asIntTypeJava());
+                }
                 if (pneuAlteracaoStatus.getStatusPneu().equals(ApiStatusPneu.EM_USO)) {
                     final ApiPneuAlteracaoStatusVeiculo pneuAlteracaoStatusveiculo =
                             (ApiPneuAlteracaoStatusVeiculo) pneuAlteracaoStatus;
-                    stmt.setString(7, pneuAlteracaoStatusveiculo.getPlacaVeiculoPneuAplicado());
-                    stmt.setInt(8, pneuAlteracaoStatusveiculo.getPosicaoVeiculoPneuAplicado());
+                    stmt.setString(10, pneuAlteracaoStatusveiculo.getPlacaVeiculoPneuAplicado());
+                    stmt.setInt(11, pneuAlteracaoStatusveiculo.getPosicaoVeiculoPneuAplicado());
                 } else {
-                    stmt.setNull(7, SqlType.VARCHAR.asIntTypeJava());
-                    stmt.setNull(8, SqlType.INTEGER.asIntTypeJava());
+                    stmt.setNull(10, SqlType.VARCHAR.asIntTypeJava());
+                    stmt.setNull(11, SqlType.INTEGER.asIntTypeJava());
                 }
-                stmt.setString(9, tokenIntegracao);
+                stmt.setString(12, tokenIntegracao);
                 stmt.addBatch();
             }
-            final int[] ints = stmt.executeBatch();
+            if (stmt.executeBatch().length != pneusAtualizacaoStatus.size()) {
+                throw new SQLException("Não foi possível resolver os itens");
+            }
         } finally {
-            close(conn, stmt, rSet);
+            close(conn, stmt);
         }
     }
 }
