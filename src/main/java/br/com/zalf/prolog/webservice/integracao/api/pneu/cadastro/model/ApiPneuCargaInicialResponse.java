@@ -16,7 +16,7 @@ public final class ApiPneuCargaInicialResponse {
     @NotNull
     private final Long codigoSistemaIntegrado;
     @NotNull
-    private final String novoCodigoCliente;
+    private final String codigoCliente;
     @NotNull
     private final Boolean sucesso;
     @NotNull
@@ -25,12 +25,12 @@ public final class ApiPneuCargaInicialResponse {
     private final Long codPneuProLog;
 
     public ApiPneuCargaInicialResponse(@NotNull final Long codigoSistemaIntegrado,
-                                       @NotNull final String novoCodigoCliente,
+                                       @NotNull final String codigoCliente,
                                        @NotNull final Boolean sucesso,
                                        @NotNull final String mensagem,
                                        @Nullable final Long codPneuProLog) {
         this.codigoSistemaIntegrado = codigoSistemaIntegrado;
-        this.novoCodigoCliente = novoCodigoCliente;
+        this.codigoCliente = codigoCliente;
         this.sucesso = sucesso;
         this.mensagem = mensagem;
         this.codPneuProLog = codPneuProLog;
@@ -42,8 +42,8 @@ public final class ApiPneuCargaInicialResponse {
     }
 
     @NotNull
-    public String getNovoCodigoCliente() {
-        return novoCodigoCliente;
+    public String getCodigoCliente() {
+        return codigoCliente;
     }
 
     @NotNull

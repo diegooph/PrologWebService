@@ -66,11 +66,23 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     stmt.setString(9, pneuCargaInicial.getDotPneu());
                     stmt.setBigDecimal(10, pneuCargaInicial.getValorPneu());
                     stmt.setBoolean(11, pneuCargaInicial.getPneuNovoNuncaRodado());
-                    bindValueOrNull(stmt, 12, pneuCargaInicial.getCodModeloBanda(), SqlType.BIGINT);
-                    bindValueOrNull(stmt, 13, pneuCargaInicial.getValorBandaPneu(), SqlType.NUMERIC);
+                    if (pneuCargaInicial.getCodModeloBanda() == null) {
+                        stmt.setNull(12, SqlType.BIGINT.asIntTypeJava());
+                        stmt.setNull(13, SqlType.NUMERIC.asIntTypeJava());
+                    } else {
+                        bindValueOrNull(stmt, 12, pneuCargaInicial.getCodModeloBanda(), SqlType.BIGINT);
+                        bindValueOrNull(stmt, 13, pneuCargaInicial.getValorBandaPneu(), SqlType.NUMERIC);
+                    }
                     stmt.setString(14, pneuCargaInicial.getStatusPneu().asString());
-                    bindValueOrNull(stmt, 15, pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.VARCHAR);
-                    bindValueOrNull(stmt, 16, pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
+                    if (pneuCargaInicial.getPlacaVeiculoPneuAplicado() == null) {
+                        stmt.setNull(15, SqlType.VARCHAR.asIntTypeJava());
+                        stmt.setNull(16, SqlType.INTEGER.asIntTypeJava());
+                    } else {
+                        bindValueOrNull(stmt, 15,
+                                pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.VARCHAR);
+                        bindValueOrNull(stmt, 16,
+                                pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
+                    }
                     stmt.setObject(17, dataHoraAtual);
                     stmt.setString(18, tokenIntegracao);
                     rSet = stmt.executeQuery();
