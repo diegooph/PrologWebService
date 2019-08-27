@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
+import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.StatusSecured;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -67,10 +68,10 @@ public interface AutenticacaoDao {
      * @return Verdadeiro se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário falso.
      * @throws SQLException Caso não seja possível consultar as permissões no banco de dados.
      */
-    boolean userHasPermission(@NotNull final String token,
-                              @NotNull final int[] permissions,
-                              final boolean needsToHaveAllPermissions,
-                              final boolean apenasUsuariosAtivos) throws SQLException;
+    StatusSecured userHasPermission(@NotNull final String token,
+                                    @NotNull final int[] permissions,
+                                    final boolean needsToHaveAllPermissions,
+                                    final boolean apenasUsuariosAtivos) throws SQLException;
 
     /**
      * Verifica se o usuário tem as permissões necessárias para acessar determinada função.
@@ -85,7 +86,7 @@ public interface AutenticacaoDao {
      * @return Verdadeiro se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário falso.
      * @throws SQLException Caso não seja possível consultar as permissões no banco de dados.
      */
-    boolean userHasPermission(final long cpf,
+    StatusSecured userHasPermission(final long cpf,
                               @NotNull final LocalDate dataNascimento,
                               @NotNull int[] permissions,
                               final boolean needsToHaveAllPermissions,

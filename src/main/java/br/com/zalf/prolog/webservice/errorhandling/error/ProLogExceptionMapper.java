@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -19,6 +20,13 @@ public final class ProLogExceptionMapper implements ExceptionMapper<Throwable> {
         if (throwable instanceof NotAuthorizedException) {
             return Response
                     .status(Response.Status.UNAUTHORIZED)
+                    .build();
+        }
+
+        // Em casos de ForbiddenException, retornamos erro 403, sem seguir o padrão ProLog.
+        if (throwable instanceof ForbiddenException) {
+            return Response
+                    .status(Response.Status.FORBIDDEN)
                     .build();
         }
 

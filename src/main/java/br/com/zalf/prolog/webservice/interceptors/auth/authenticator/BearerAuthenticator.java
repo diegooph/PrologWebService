@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import org.jetbrains.annotations.NotNull;
 
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
 
 public final class BearerAuthenticator extends ProLogAuthenticator {
@@ -23,8 +24,14 @@ public final class BearerAuthenticator extends ProLogAuthenticator {
             if (!service.verifyIfTokenExists(value, considerOnlyActiveUsers))
                 throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
         } else {
-            if (!service.userHasPermission(value, permissions, needsToHaveAllPermissions, considerOnlyActiveUsers))
-                throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+            StatusSecured statusSecured = service.userHasPermission(value, permissions, needsToHaveAllPermissions, considerOnlyActiveUsers);
+
+            switch (statusSecured){
+                case TOKEN_INVALIDO:
+                    throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+                case TOKEN_OK_SEM_PERMISSAO:
+                    throw new ForbiddenException("Usuário não tem permissão para utilizar esse método");
+            }
         }
     }
 }

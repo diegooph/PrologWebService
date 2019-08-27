@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.autenticacao;
 import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
+import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.StatusSecured;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -96,10 +97,10 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
     }
 
     @Override
-    public boolean userHasPermission(@NotNull final String token,
-                                     @NotNull final int[] permissions,
-                                     final boolean needsToHaveAllPermissions,
-                                     final boolean apenasUsuariosAtivos) throws SQLException {
+    public StatusSecured userHasPermission(@NotNull final String token,
+                                           @NotNull final int[] permissions,
+                                           final boolean needsToHaveAllPermissions,
+                                           final boolean apenasUsuariosAtivos) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -124,7 +125,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
     }
 
     @Override
-    public boolean userHasPermission(final long cpf,
+    public StatusSecured userHasPermission(final long cpf,
                                      @NotNull final LocalDate dataNascimento,
                                      @NotNull int[] permissions,
                                      final boolean needsToHaveAllPermissions,
@@ -180,24 +181,25 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         return autenticacao;
     }
 
-    private boolean verifyPermissions(@NotNull final ResultSet rSet,
+    private StatusSecured verifyPermissions(@NotNull final ResultSet rSet,
                                       @NotNull final List<Integer> permissoes,
                                       final boolean needsToHaveAll) throws SQLException {
         if (!rSet.next()) {
-            return false;
+            return StatusSecured.TOKEN_INVALIDO;
         }
+
         rSet.beforeFirst();
         while (rSet.next()) {
             if (needsToHaveAll) {
                 if (!permissoes.contains(rSet.getInt("cod_permissao"))) {
-                    return false;
+                    return StatusSecured.TOKEN_OK_SEM_PERMISSAO;
                 }
             } else {
                 if (permissoes.contains(rSet.getInt("cod_permissao"))) {
-                    return true;
+                    return StatusSecured.TOKEN_E_PERMISSAO_OK;
                 }
             }
         }
-        return needsToHaveAll;
+        return StatusSecured.TOKEN_OK_SEM_PERMISSAO;
     }
 }
