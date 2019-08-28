@@ -65,7 +65,7 @@ public interface AutenticacaoDao {
      *                                  as permissões passadas no array no mínimo uma.
      * @param apenasUsuariosAtivos      Indica se devemos considerar na verificação apenas usuário
      *                                  que estão ativados no sistema (STATUS_ATIVO = true).
-     * @return Verdadeiro se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário falso.
+     * @return Objeto {@link StatusSecured StatusSecured} com o estado atual da validação do token e permissões
      * @throws SQLException Caso não seja possível consultar as permissões no banco de dados.
      */
     StatusSecured userHasPermission(@NotNull final String token,
@@ -83,7 +83,7 @@ public interface AutenticacaoDao {
      *                                  as permissões passadas no array ou mínimo uma.
      * @param apenasUsuariosAtivos      Indica se devemos considerar na verificação apenas usuário
      *                                  que estão ativados no sistema (STATUS_ATIVO = true).
-     * @return Verdadeiro se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário falso.
+     * @return Objeto {@link StatusSecured StatusSecured} com o estado atual da validação do token e permissões
      * @throws SQLException Caso não seja possível consultar as permissões no banco de dados.
      */
     StatusSecured userHasPermission(final long cpf,
