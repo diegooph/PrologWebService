@@ -1,3 +1,9 @@
+Stage
+==========
+
+### Refactors
+* Altera os métodos de validação das requisições para diferenciar retornos de login inválido e sem permissão.
+
 Change Log
 ==========
 
