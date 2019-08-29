@@ -11,6 +11,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public interface ApiPneuDao {
+
     void atualizaStatusPneus(@NotNull final String tokenIntegracao,
                              @NotNull final List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) throws Throwable;
 }
