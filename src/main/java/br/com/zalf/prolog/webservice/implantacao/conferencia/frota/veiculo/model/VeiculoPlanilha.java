@@ -5,8 +5,7 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.mode
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class VeiculoPlanilha {
-
+public final class VeiculoPlanilha {
     private Long codUnidade;
     private String placa;
     private Long km;
@@ -74,6 +73,3 @@ public class VeiculoPlanilha {
         this.diagrama = diagrama;
     }
 }
-
-
-

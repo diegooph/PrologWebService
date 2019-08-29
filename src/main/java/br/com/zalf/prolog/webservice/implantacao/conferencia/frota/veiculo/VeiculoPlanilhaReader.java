@@ -1,15 +1,13 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.insert;
+package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeReader;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-
 import org.apache.commons.io.FilenameUtils;
 
 import javax.validation.constraints.NotNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -21,11 +19,13 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class VeiculoPlanilhaReader {
+public final class VeiculoPlanilhaReader {
+
     private VeiculoPlanilhaReader() {
-        throw new IllegalStateException(RaizenProdutividadeReader.class.getSimpleName() + " cannot be instantiated!");
+        throw new IllegalStateException(VeiculoPlanilhaReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
+    /** @noinspection Duplicates*/
     @NotNull
     public static List<VeiculoPlanilha> readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
@@ -57,30 +57,35 @@ public class VeiculoPlanilhaReader {
             return null;
         }
         final VeiculoPlanilha item = new VeiculoPlanilha();
-        // PLACA
-        if (!linha[0].isEmpty()) {
-            item.setPlaca(linha[0]);
-        }
-        // KM
-        if (!linha[1].isEmpty()) {
+
+        // PLACA.
+        item.setPlaca(linha[0]);
+
+        // KM.
+        if (!StringUtils.isNullOrEmpty(linha[1])) {
             item.setKm(Long.parseLong(linha[1]));
         }
-        // MARCA
-        if (!linha[2].isEmpty()) {
+
+        // MARCA.
+        if (!StringUtils.isNullOrEmpty(linha[2])) {
             item.setMarca(linha[2]);
         }
-        // MODELO
-        if (!linha[3].isEmpty()) {
+
+        // MODELO.
+        if (!StringUtils.isNullOrEmpty(linha[3])) {
             item.setModelo(linha[3]);
         }
-        // TIPO
-        if (!linha[4].isEmpty()) {
+
+        // TIPO.
+        if (!StringUtils.isNullOrEmpty(linha[4])) {
             item.setTipo(linha[4]);
         }
-        // DIAGRAMA
-        if (!linha[5].isEmpty()) {
+
+        // DIAGRAMA.
+        if (!StringUtils.isNullOrEmpty(linha[5])) {
             item.setDiagrama(linha[5]);
         }
+
         return item;
     }
 }
