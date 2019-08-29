@@ -57,14 +57,18 @@ public interface OrdemServicoRelatorioDao {
                                 @NotNull final String placa,
                                 @NotNull final String statusOs,
                                 @NotNull final String statusItemOs,
-                                @NotNull final LocalDate dataInicial,
-                                @NotNull final LocalDate dataFinal) throws Throwable;
+                                final LocalDate dataInicialAbertura,
+                                final LocalDate dataFinalAbertura,
+                                final LocalDate dataInicialResolucao,
+                                final LocalDate dataFinalResolucao) throws Throwable;
 
     @NotNull
     Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
                                      @NotNull final String placa,
                                      @NotNull final String statusOs,
                                      @NotNull final String statusItemOs,
-                                     @NotNull final LocalDate dataInicial,
-                                     @NotNull final LocalDate dataFinal) throws Throwable;
+                                     final LocalDate dataInicialAbertura,
+                                     final LocalDate dataFinalAbertura,
+                                     final LocalDate dataInicialResolucao,
+                                     final LocalDate dataFinalResolucao) throws Throwable;
 }
