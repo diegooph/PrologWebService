@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ChecklistItensNokGlobusTa
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.GlobusPiccoloturRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.SistemaGlobusPiccoloturDaoImpl;
-import javafx.util.Pair;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistParaSincronizar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,27 +22,27 @@ import java.util.concurrent.Executors;
 public final class AgendadorService implements SincroniaChecklistListener {
     @NotNull
     private static final String TAG = AgendadorService.class.getSimpleName();
-    @NotNull
-    private static final Long NENHUM_CHECKLIST_PARA_SINCRONIZAR = 0L;
 
     public void sincronizaChecklists() throws ProLogException {
         try {
             // Buscamos qual checklist precisa ser sincronizado. Por questões de dependência entre os checklists
             // realizados, não podemos sincronizar uma lista de checklists, deve ser um a um para garantir que a
             // contagem de apontamentos será incrementada corretamente.
-            final Pair<Long, Boolean> checklistParaSincronizar =
+            final ChecklistParaSincronizar checklistParaSincronizar =
                     new IntegracaoPraxioService().getCodChecklistParaSincronizar();
-            final Long codChecklistParaSincronizar = checklistParaSincronizar.getKey();
-            if (codChecklistParaSincronizar == null ||
-                    codChecklistParaSincronizar.equals(NENHUM_CHECKLIST_PARA_SINCRONIZAR)) {
+            if (!checklistParaSincronizar.temChecklistParaSincronizar()) {
                 return;
             }
-            final Checklist checklist = Injection.provideChecklistDao().getByCod(codChecklistParaSincronizar);
+            final Long codChecklistParaSincronizar = checklistParaSincronizar.getCodChecklist();
+            final Checklist checklist =
+                    Injection
+                            .provideChecklistDao()
+                            .getByCod(codChecklistParaSincronizar);
             // Executamos a sincronia utilizando a thread específica para esse serviço.
             Executors.newSingleThreadExecutor().execute(
                     new ChecklistItensNokGlobusTask(
                             codChecklistParaSincronizar,
-                            checklistParaSincronizar.getValue(),
+                            checklistParaSincronizar.isLastCod(),
                             checklist,
                             new SistemaGlobusPiccoloturDaoImpl(),
                             new GlobusPiccoloturRequesterImpl(),

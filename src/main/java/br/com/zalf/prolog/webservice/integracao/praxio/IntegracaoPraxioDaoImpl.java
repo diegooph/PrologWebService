@@ -9,11 +9,11 @@ import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.CadastroVeiculoI
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoEdicaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoTransferenciaPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistParaSincronizar;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemOSAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
-import javafx.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -332,7 +332,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
 
     @NotNull
     @Override
-    public Pair<Long, Boolean> getCodChecklistParaSincronizar() throws Throwable {
+    public ChecklistParaSincronizar getCodChecklistParaSincronizar() throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -342,7 +342,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                     "FROM PICCOLOTUR.FUNC_CHECK_GET_NEXT_COD_CHECKLIST_PARA_SINCRONIZAR();");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return new Pair<>(
+                return new ChecklistParaSincronizar(
                         rSet.getLong("COD_CHECKLIST"),
                         rSet.getBoolean("IS_LAST_COD"));
             } else {
