@@ -24,11 +24,46 @@ public final class ApiPneuCargaInicialResponse {
     @Nullable
     private final Long codPneuProLog;
 
-    public ApiPneuCargaInicialResponse(@NotNull final Long codigoSistemaIntegrado,
-                                       @NotNull final String codigoCliente,
-                                       @NotNull final Boolean sucesso,
-                                       @NotNull final String mensagem,
-                                       @Nullable final Long codPneuProLog) {
+    @NotNull
+    public static ApiPneuCargaInicialResponse ok(@NotNull final Long codigoSistemaIntegrado,
+                                                 @NotNull final String codigoCliente,
+                                                 @NotNull final Long codPneuProLog) {
+        return new ApiPneuCargaInicialResponse(
+                codigoSistemaIntegrado,
+                codigoCliente,
+                true,
+                SUCCESS_MESSAGE,
+                codPneuProLog);
+    }
+
+    @NotNull
+    public static ApiPneuCargaInicialResponse error(@NotNull final Long codigoSistemaIntegrado,
+                                                    @NotNull final String codigoCliente) {
+        return new ApiPneuCargaInicialResponse(
+                codigoSistemaIntegrado,
+                codigoCliente,
+                false,
+                ERROR_MESSAGE,
+                null);
+    }
+
+    @NotNull
+    public static ApiPneuCargaInicialResponse error(@NotNull final Long codigoSistemaIntegrado,
+                                                    @NotNull final String codigoCliente,
+                                                    @NotNull final String errorMessage) {
+        return new ApiPneuCargaInicialResponse(
+                codigoSistemaIntegrado,
+                codigoCliente,
+                false,
+                errorMessage,
+                null);
+    }
+
+    private ApiPneuCargaInicialResponse(@NotNull final Long codigoSistemaIntegrado,
+                                        @NotNull final String codigoCliente,
+                                        @NotNull final Boolean sucesso,
+                                        @NotNull final String mensagem,
+                                        @Nullable final Long codPneuProLog) {
         this.codigoSistemaIntegrado = codigoSistemaIntegrado;
         this.codigoCliente = codigoCliente;
         this.sucesso = sucesso;
