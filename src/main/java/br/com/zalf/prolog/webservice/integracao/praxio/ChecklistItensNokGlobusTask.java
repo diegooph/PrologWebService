@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
@@ -15,9 +16,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created on 01/08/19.
@@ -128,11 +131,14 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 listener.onSincroniaOk(checklist, isLastChecklist);
             }
         } catch (final Throwable t) {
-            // Avisamos sobre o erro ao sincronizar o checklist.
-            if (listener != null) {
-                listener.onErroSincronia(checklist, isLastChecklist, t);
-            }
             try {
+                // Se tivemos um erro ao logar o checklist, precisamos logar para saber como proceder na solução do
+                // erro e conseguir sincronizar esse checklist.
+                sistema.erroAoSicronizarChecklist(codChecklistProLog, getErrorMessage(t));
+                // Avisamos sobre o erro ao sincronizar o checklist.
+                if (listener != null) {
+                    listener.onErroSincronia(checklist, isLastChecklist, t);
+                }
                 if (conn != null) {
                     conn.rollback();
                 }
@@ -162,5 +168,18 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             }
         }
         return codItensOsIncrementaQtdApontamentos;
+    }
+
+    @NotNull
+    private String getErrorMessage(@NotNull final Throwable t) {
+        String errorMessage = "Erro não mapeado. Algo deu errado na integração ao enviar os itens NOK.";
+        if (t instanceof ProLogException) {
+            errorMessage = ((ProLogException) t).getMessage();
+        } else if (t instanceof SQLException || t instanceof IllegalStateException) {
+            errorMessage = "Erro Interno. Algo deu errado ao processar o envio localmente.";
+        } else if (t instanceof TimeoutException) {
+            errorMessage = "Erro no Globus. O Globus não respondeu a mensagem a tempo.";
+        }
+        return errorMessage;
     }
 }

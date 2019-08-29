@@ -294,6 +294,14 @@ public interface VeiculoDao {
     Optional<List<Long>> getCodPneusAplicadosVeiculo(@NotNull final Connection conn,
                                                      @NotNull final Long codVeiculo) throws Throwable;
 
+    /**
+     * Método utilizado para buscar o código da unidade a qual a placa está associada.
+     *
+     * @param conn         Conexão utilizada para realizar busca no bando de dados.
+     * @param placaVeiculo Placa do veículo para buscar a unidade.
+     * @return O código da unidade onde o veículo está situado.
+     * @throws Throwable Se algum erro ocorrer.
+     */
     Long getCodUnidadeByPlaca(@NotNull final Connection conn, @NotNull final String placaVeiculo) throws Throwable;
 
     /**
