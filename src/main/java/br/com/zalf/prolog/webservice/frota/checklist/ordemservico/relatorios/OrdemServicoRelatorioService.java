@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 class OrdemServicoRelatorioService {
     private static final String TAG = OrdemServicoRelatorioService.class.getSimpleName();
     @NotNull
-    private OrdemServicoRelatorioDao dao = Injection.provideRelatoriosOrdemServicoDao();
+    private final OrdemServicoRelatorioDao dao = Injection.provideRelatoriosOrdemServicoDao();
 
     void getItensMaiorQuantidadeNokCsv(@NotNull final OutputStream outputStream,
                                        @NotNull final List<Long> codUnidades,
@@ -34,6 +35,9 @@ class OrdemServicoRelatorioService {
                     "Unidades: %s\n" +
                     "Data Inicial: %s\n" +
                     "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -52,7 +56,9 @@ class OrdemServicoRelatorioService {
                     "Unidades: %s\n" +
                     "Data Inicial: %s\n" +
                     "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
-            return null;
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -71,6 +77,9 @@ class OrdemServicoRelatorioService {
                     "Unidades: %s\n" +
                     "Data Inicial: %s\n" +
                     "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -88,7 +97,9 @@ class OrdemServicoRelatorioService {
                     "Unidades: %s\n" +
                     "Data Inicial: %s\n" +
                     "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
-            return null;
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -107,6 +118,9 @@ class OrdemServicoRelatorioService {
                     "Unidades: %s\n" +
                     "Data Inicial: %s\n" +
                     "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -124,7 +138,9 @@ class OrdemServicoRelatorioService {
                     "Unidades: %s\n" +
                     "Data Inicial: %s\n" +
                     "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
-            return null;
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -133,28 +149,30 @@ class OrdemServicoRelatorioService {
                                             @NotNull final String placa,
                                             @NotNull final String statusOs,
                                             @NotNull final String statusItemOs,
-                                            final String dataInicialAbertura,
-                                            final String dataFinalAbertura,
-                                            final String dataInicialResolucao,
-                                            final String dataFinalResolucao) {
+                                            @Nullable final String dataInicialAbertura,
+                                            @Nullable final String dataFinalAbertura,
+                                            @Nullable final String dataInicialResolucao,
+                                            @Nullable final String dataFinalResolucao) {
         try {
             return dao.getEstratificacaoOsReport(
                     codUnidades,
                     placa,
                     statusOs,
                     statusItemOs,
-                    ProLogDateParser.toLocalDate(dataInicialAbertura),
-                    ProLogDateParser.toLocalDate(dataFinalAbertura),
-                    ProLogDateParser.toLocalDate(dataInicialResolucao),
-                    ProLogDateParser.toLocalDate(dataFinalResolucao));
+                    StringUtils.isNullOrEmpty(dataInicialAbertura) ? null : ProLogDateParser.toLocalDate(dataInicialAbertura),
+                    StringUtils.isNullOrEmpty(dataFinalAbertura) ? null : ProLogDateParser.toLocalDate(dataFinalAbertura),
+                    StringUtils.isNullOrEmpty(dataInicialResolucao) ? null : ProLogDateParser.toLocalDate(dataInicialResolucao),
+                    StringUtils.isNullOrEmpty(dataFinalResolucao) ? null : ProLogDateParser.toLocalDate(dataFinalResolucao));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar a estratificação das OS (REPORT)\n" +
                     "Unidades: %s\n" +
                     "Placa: %s\n" +
                     "statusOs: %s\n" +
                     "statusItemOs: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s",
+                    "Data Inicial Abertura: %s\n" +
+                    "Data Final Abertura: %s" +
+                    "Data Inicial Resolução: %s\n" +
+                    "Data Final Resolução: %s" +
                     codUnidades.toString(),
                     placa,
                     statusOs,
@@ -163,7 +181,9 @@ class OrdemServicoRelatorioService {
                     dataFinalAbertura,
                     dataInicialResolucao,
                     dataFinalResolucao), e);
-            return null;
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -172,10 +192,10 @@ class OrdemServicoRelatorioService {
                                 @NotNull final String placa,
                                 @NotNull final String statusOs,
                                 @NotNull final String statusItemOs,
-                                final String dataInicialAbertura,
-                                final String dataFinalAbertura,
-                                final String dataInicialResolucao,
-                                final String dataFinalResolucao) {
+                                @Nullable final String dataInicialAbertura,
+                                @Nullable final String dataFinalAbertura,
+                                @Nullable final String dataInicialResolucao,
+                                @Nullable final String dataFinalResolucao) {
         try {
             dao.getEstratificacaoOsCsv(
                     outputStream,
@@ -205,6 +225,9 @@ class OrdemServicoRelatorioService {
                     dataFinalAbertura,
                     dataInicialResolucao,
                     dataFinalResolucao), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 }

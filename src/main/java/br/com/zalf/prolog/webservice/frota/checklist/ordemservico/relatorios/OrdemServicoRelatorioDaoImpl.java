@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.DBTablePrinter;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -11,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacaItensOsAbertos;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
 import java.sql.Connection;
@@ -197,10 +197,10 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                                        @NotNull final String placa,
                                        @NotNull final String statusOs,
                                        @NotNull final String statusItemOs,
-                                       final LocalDate dataInicialAbertura,
-                                       final LocalDate dataFinalAbertura,
-                                       final LocalDate dataInicialResolucao,
-                                       final LocalDate dataFinalResolucao) throws Throwable {
+                                       @Nullable final LocalDate dataInicialAbertura,
+                                       @Nullable final LocalDate dataFinalAbertura,
+                                       @Nullable final LocalDate dataInicialResolucao,
+                                       @Nullable final LocalDate dataFinalResolucao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -228,10 +228,10 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                                             @NotNull final String placa,
                                             @NotNull final String statusOs,
                                             @NotNull final String statusItemOs,
-                                            final LocalDate dataInicialAbertura,
-                                            final LocalDate dataFinalAbertura,
-                                            final LocalDate dataInicialResolucao,
-                                            final LocalDate dataFinalResolucao) throws Throwable {
+                                            @Nullable final LocalDate dataInicialAbertura,
+                                            @Nullable final LocalDate dataFinalAbertura,
+                                            @Nullable final LocalDate dataInicialResolucao,
+                                            @Nullable final LocalDate dataFinalResolucao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -255,10 +255,10 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                                                   @NotNull final String placa,
                                                   @NotNull final String statusOs,
                                                   @NotNull final String statusItemOs,
-                                                  final LocalDate dataInicialAbertura,
-                                                  final LocalDate dataFinalAbertura,
-                                                  final LocalDate dataInicialResolucao,
-                                                  final LocalDate dataFinalResolucao) throws Throwable {
+                                                  @Nullable final LocalDate dataInicialAbertura,
+                                                  @Nullable final LocalDate dataFinalAbertura,
+                                                  @Nullable final LocalDate dataInicialResolucao,
+                                                  @Nullable final LocalDate dataFinalResolucao) throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(?, ?, ?, ?, ?, ?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));

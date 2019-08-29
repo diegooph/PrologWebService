@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacaItensOsAbertos;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
 import java.time.LocalDate;
@@ -57,18 +58,18 @@ public interface OrdemServicoRelatorioDao {
                                 @NotNull final String placa,
                                 @NotNull final String statusOs,
                                 @NotNull final String statusItemOs,
-                                final LocalDate dataInicialAbertura,
-                                final LocalDate dataFinalAbertura,
-                                final LocalDate dataInicialResolucao,
-                                final LocalDate dataFinalResolucao) throws Throwable;
+                                @Nullable final LocalDate dataInicialAbertura,
+                                @Nullable final LocalDate dataFinalAbertura,
+                                @Nullable final LocalDate dataInicialResolucao,
+                                @Nullable final LocalDate dataFinalResolucao) throws Throwable;
 
     @NotNull
     Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
                                      @NotNull final String placa,
                                      @NotNull final String statusOs,
                                      @NotNull final String statusItemOs,
-                                     final LocalDate dataInicialAbertura,
-                                     final LocalDate dataFinalAbertura,
-                                     final LocalDate dataInicialResolucao,
-                                     final LocalDate dataFinalResolucao) throws Throwable;
+                                     @Nullable final LocalDate dataInicialAbertura,
+                                     @Nullable final LocalDate dataFinalAbertura,
+                                     @Nullable final LocalDate dataInicialResolucao,
+                                     @Nullable final LocalDate dataFinalResolucao) throws Throwable;
 }
