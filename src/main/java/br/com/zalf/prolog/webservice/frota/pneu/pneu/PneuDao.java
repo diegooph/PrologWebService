@@ -247,4 +247,15 @@ public interface PneuDao {
 
     void marcarFotoComoSincronizada(@NotNull final Long codPneu,
                                     @NotNull final String urlFotoPneu) throws SQLException;
+
+
+    /**
+     * Insere ou atualiza as informações de uma {@link Nomenclatura nomenclatura}.
+     *
+     * @param nomenclatura    Lista de objetos contendo as informações para a nomenclatura.
+     * @param userToken o token do usuário que fez a requisição.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
+    void insertOrUpdateNomenclatura(@NotNull final List <Nomenclatura> nomenclatura,
+                                    @NotNull final String userToken) throws Throwable;
 }

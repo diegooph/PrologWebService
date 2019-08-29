@@ -44,7 +44,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                 }
             }
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -56,7 +56,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             conn = getConnection();
             internalInsertRaizenProdutividadeItem(conn, token, item);
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -96,7 +96,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                 throw new SQLDataException("Não foi possível atualizar o item de código: " + item.getCodigo());
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt, null);
         }
     }
 
@@ -139,7 +139,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                 primeiraLinha = false;
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return produtividades;
     }
@@ -180,7 +180,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                 primeiraLinha = false;
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return produtividades;
     }
@@ -203,7 +203,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                 throw new Throwable("Item não encontrado com código: " + codItem);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -230,7 +230,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                 itens.add(RaizenProdutividadeConverter.createRaizenProdutividadeItemIndividual(rSet));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return new RaizenProdutividadeIndividualHolder(itens);
     }
@@ -250,7 +250,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                 throw new Throwable("Erro ao deletar produtividade");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            close(conn, stmt, null);
         }
     }
 
@@ -292,7 +292,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                 throw new Throwable("Erro ao inserir item na tabela produtividade");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -332,7 +332,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             // True se o item foi atualizado.
             return stmt.executeUpdate() != 0;
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 }

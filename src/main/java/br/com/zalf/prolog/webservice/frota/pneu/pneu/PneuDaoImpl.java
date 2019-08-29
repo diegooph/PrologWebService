@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
@@ -15,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -709,6 +712,52 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    @Override
+    public void insertOrUpdateNomenclatura(@NotNull final List<Nomenclatura> nomenclaturas,
+                                           @NotNull final String userToken) throws Throwable {
+        Connection conn = null;
+        try {
+            for (final Nomenclatura nomenclatura : nomenclaturas) {
+                insertOrUpdateNomenclaturaStmt(conn, nomenclatura, userToken);
+            }
+        } finally {
+            close(conn);
+        }
+    }
+
+    @NotNull
+    private void insertOrUpdateNomenclaturaStmt(@NotNull final Connection conn,
+                                                @NotNull final Nomenclatura nomenclatura,
+                                                @NotNull final String userToken) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_NOMENCLATURA_INSERE_EDITA_NOMENCLATURA(" +
+                    "F_COD_DIAGRAMA := ?, " +
+                    "F_COD_EMPRESA   := ?, " +
+                    "F_POSICAO_PROLOG  := ?, " +
+                    "F_NOMENCLATURA:= ?)," +
+                    "F_COD_IDIOMA := ?, " +
+                    "F_COLABORADOR :=?," +
+                    "F_DATA_HORA_CADASTR0 := ?," +
+                    "F_TOKEN := ?;");
+            final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCodUnidade(nomenclatura.getCodUnidade(), conn);
+            stmt.setLong(1, nomenclatura.getCodDiagrama());
+            stmt.setLong(2, nomenclatura.getCodEmpresa());
+            stmt.setLong(3, nomenclatura.getPosicaoProlog());
+            stmt.setString(4, nomenclatura.getNomenclatura());
+            stmt.setLong(5, nomenclatura.getCodIdioma());
+            stmt.setString(6, nomenclatura.getColaborador());
+            stmt.setObject(7, nomenclatura.getDataHoraCadastro().atZone(unidadeZoneId).toOffsetDateTime());
+            stmt.setString(8, TokenCleaner.getOnlyToken(userToken));
+
+            if (stmt.executeUpdate() == 0) {
+                throw new Throwable("Erro ao inserir nomenclatura");
+            }
+        } finally {
+            close(stmt);
         }
     }
 

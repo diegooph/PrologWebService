@@ -4,10 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -193,6 +190,16 @@ public class PneuResource {
                                                @QueryParam("urlFotoPneu") @Required final String urlFotoPneu) {
         service.marcarFotoComoSincronizada(codPneu, urlFotoPneu);
         return Response.ok("Foto marcada como sincronizada com sucesso");
+    }
+
+    @POST
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR})
+    @Path("/nomenclatura")
+    public Response insertOrUpdateNomenclatura(@Required final List<Nomenclatura> nomenclatura,
+                                               @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
+        return service.insertOrUpdateNomenclatura(nomenclatura, userToken);
     }
 
     /**
