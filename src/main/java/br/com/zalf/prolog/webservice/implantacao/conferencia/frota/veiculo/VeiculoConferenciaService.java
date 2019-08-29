@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.implantacao.ImplantacaoImportTokensValidator;
-import br.com.zalf.prolog.webservice.implantacao.ImplatancaoImportTokens;
+import br.com.zalf.prolog.webservice.implantacao.ImplantacaoImportTokens;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
 import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
@@ -31,7 +31,7 @@ public final class VeiculoConferenciaService {
                                                 @NotNull final Long codUnidade,
                                                 @NotNull final InputStream fileInputStream) {
         try {
-            ImplantacaoImportTokensValidator.validateTokenFor(ImplatancaoImportTokens.IMPORT_VEICULO, token);
+            ImplantacaoImportTokensValidator.validateTokenFor(ImplantacaoImportTokens.IMPORT_VEICULO, token);
 
             final File file = createFileFromImport(codUnidade, fileInputStream);
             readAndInsertImport(out, codUnidade, file);

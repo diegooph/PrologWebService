@@ -7,13 +7,13 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum ImplatancaoImportTokens {
+public enum ImplantacaoImportTokens {
     IMPORT_VEICULO("VAN9tX7Be7egIAPliXXrKCDjDSMQ4K7aUUjP3rahyGPIRo4ANc2ipGS3ipTnAbOf795A1gs1xIJP8OZV");
 
     @NotNull
     private final String token;
 
-    ImplatancaoImportTokens(@NotNull final String token) {
+    ImplantacaoImportTokens(@NotNull final String token) {
         ImplantacaoImportTokensValidator.ensureRightTokenLength(token);
 
         this.token = token;

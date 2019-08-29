@@ -24,7 +24,7 @@ public final class ImplantacaoImportTokensValidator {
         }
     }
 
-    public static void validateTokenFor(@NotNull final ImplatancaoImportTokens typeToken,
+    public static void validateTokenFor(@NotNull final ImplantacaoImportTokens typeToken,
                                         @NotNull final String token) {
         ensureRightTokenLength(token);
 
