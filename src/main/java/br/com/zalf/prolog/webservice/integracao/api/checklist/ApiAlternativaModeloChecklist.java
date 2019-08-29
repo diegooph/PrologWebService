@@ -16,44 +16,38 @@ public final class ApiAlternativaModeloChecklist {
     private final Long codModeloChecklist;
     @NotNull
     private final String nomeModeloChecklist;
-    @NotNull
-    private final Boolean statusModeloChecklist;
+    private final boolean statusModeloChecklist;
     @NotNull
     private final Long codPergunta;
     @NotNull
     private final String descricaoPergunta;
-    @NotNull
-    private final Boolean singleChoice;
-    @NotNull
-    private final Boolean statusPergunta;
+    private final boolean singleChoice;
+    private final boolean statusPergunta;
     @NotNull
     private final Long codAlternativa;
     @NotNull
     private final String descricaoAlternativa;
-    @NotNull
-    private final Boolean tipoOutros;
+    private final boolean tipoOutros;
     @NotNull
     private final ApiPrioridadeAlternativa prioridadeAlternativa;
-    @NotNull
-    private final Boolean deveAbrirOrdemServico;
-    @NotNull
-    private final Boolean statusAlternativa;
+    private final boolean deveAbrirOrdemServico;
+    private final boolean statusAlternativa;
 
     public ApiAlternativaModeloChecklist(@NotNull final Long codUnidade,
                                          @NotNull final String nomeUnidade,
                                          @NotNull final Long codModeloChecklist,
                                          @NotNull final String nomeModeloChecklist,
-                                         @NotNull final Boolean statusModeloChecklist,
+                                         final boolean statusModeloChecklist,
                                          @NotNull final Long codPergunta,
                                          @NotNull final String descricaoPergunta,
-                                         @NotNull final Boolean singleChoice,
-                                         @NotNull final Boolean statusPergunta,
+                                         final boolean singleChoice,
+                                         final boolean statusPergunta,
                                          @NotNull final Long codAlternativa,
                                          @NotNull final String descricaoAlternativa,
-                                         @NotNull final Boolean tipoOutros,
+                                         final boolean tipoOutros,
                                          @NotNull final ApiPrioridadeAlternativa prioridadeAlternativa,
-                                         @NotNull final Boolean deveAbrirOrdemServico,
-                                         @NotNull final Boolean statusAlternativa) {
+                                         final boolean deveAbrirOrdemServico,
+                                         final boolean statusAlternativa) {
         this.codUnidade = codUnidade;
         this.nomeUnidade = nomeUnidade;
         this.codModeloChecklist = codModeloChecklist;
@@ -111,8 +105,7 @@ public final class ApiAlternativaModeloChecklist {
         return nomeModeloChecklist;
     }
 
-    @NotNull
-    public Boolean getStatusModeloChecklist() {
+    public boolean isStatusModeloChecklist() {
         return statusModeloChecklist;
     }
 
@@ -126,13 +119,11 @@ public final class ApiAlternativaModeloChecklist {
         return descricaoPergunta;
     }
 
-    @NotNull
-    public Boolean getSingleChoice() {
+    public boolean isSingleChoice() {
         return singleChoice;
     }
 
-    @NotNull
-    public Boolean getStatusPergunta() {
+    public boolean isStatusPergunta() {
         return statusPergunta;
     }
 
@@ -146,8 +137,7 @@ public final class ApiAlternativaModeloChecklist {
         return descricaoAlternativa;
     }
 
-    @NotNull
-    public Boolean getTipoOutros() {
+    public boolean isTipoOutros() {
         return tipoOutros;
     }
 
@@ -156,13 +146,11 @@ public final class ApiAlternativaModeloChecklist {
         return prioridadeAlternativa;
     }
 
-    @NotNull
-    public Boolean getDeveAbrirOrdemServico() {
+    public boolean isDeveAbrirOrdemServico() {
         return deveAbrirOrdemServico;
     }
 
-    @NotNull
-    public Boolean getStatusAlternativa() {
+    public boolean isStatusAlternativa() {
         return statusAlternativa;
     }
 }

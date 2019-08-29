@@ -28,7 +28,7 @@ public final class ApiChecklistDaoImpl extends DatabaseConnection implements Api
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT * FROM INTEGRACAO.FUNC_ALTERNATIVAS_MODELO_CHECKLIST(" +
+                    "SELECT * FROM INTEGRACAO.FUNC_CHECKLIST_ALTERNATIVAS_MODELO_CHECKLIST(" +
                             "F_TOKEN_INTEGRACAO := ?, " +
                             "F_APENAS_MODELOS_CHECKLIST_ATIVOS := ?, " +
                             "F_APENAS_PERGUNTAS_ATIVAS := ?, " +
