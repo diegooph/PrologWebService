@@ -169,7 +169,11 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                         : null,
                 NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_MARCACAO_INICIO"), 0),
                 NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_SINCRONIZACAO_INICIO"), 0),
-                rSet.getBoolean("FOI_AJUSTADO_INICIO"));
+                rSet.getBoolean("FOI_AJUSTADO_INICIO"),
+                rSet.getString("DEVICE_IMEI_INICIO"),
+                rSet.getBoolean("DEVICE_IMEI_INICIO_RECONHECIDO"),
+                rSet.getString("DEVICE_MARCA_INICIO"),
+                rSet.getString("DEVICE_MODELO_INICIO"));
     }
 
     @NotNull
@@ -186,7 +190,11 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                         : null,
                 NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_MARCACAO_FIM"), 0),
                 NullIf.equalOrLess(rSet.getInt("VERSAO_APP_MOMENTO_SINCRONIZACAO_FIM"), 0),
-                rSet.getBoolean("FOI_AJUSTADO_FIM"));
+                rSet.getBoolean("FOI_AJUSTADO_FIM"),
+                rSet.getString("DEVICE_IMEI_FIM"),
+                rSet.getBoolean("DEVICE_IMEI_FIM_RECONHECIDO"),
+                rSet.getString("DEVICE_MARCA_FIM"),
+                rSet.getString("DEVICE_MODELO_FIM"));
     }
 
     @NotNull

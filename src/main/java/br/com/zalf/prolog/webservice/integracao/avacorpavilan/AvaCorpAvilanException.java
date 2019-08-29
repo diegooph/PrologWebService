@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.IntegracaoException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.Response;
 
@@ -12,7 +13,13 @@ import javax.ws.rs.core.Response;
  */
 public class AvaCorpAvilanException extends IntegracaoException {
 
-    public AvaCorpAvilanException(@NotNull final String message, @NotNull final String developerMessage) {
+    public AvaCorpAvilanException(@NotNull final String message,
+                                  @Nullable final String developerMessage) {
         super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), message, developerMessage);
+    }
+
+    public AvaCorpAvilanException(@NotNull String message,
+                                  @NotNull Throwable parentException) {
+        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), message, null, parentException);
     }
 }

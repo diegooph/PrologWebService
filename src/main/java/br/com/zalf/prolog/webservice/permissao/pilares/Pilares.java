@@ -352,4 +352,16 @@ public final class Pilares {
             public static final int VISUALIZAR_RELATORIOS = 419;
         }
     }
+
+    public static final int GERAL = 5;
+
+    public static final class Geral extends Pilar {
+
+        public final class DispositivosMoveis {
+            private DispositivosMoveis() {
+            }
+
+            public static final int GESTAO = 501;
+        }
+    }
 }

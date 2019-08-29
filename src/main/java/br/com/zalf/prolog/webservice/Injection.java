@@ -124,6 +124,8 @@ import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDao;
+import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDao;
@@ -465,6 +467,12 @@ public final class Injection {
     @NotNull
     public static ColaboradorRelatorioDao provideColaboradorRelatorioDao() {
         return new ColaboradorRelatorioDaoImpl();
+    }
+
+
+    @NotNull
+    public static DispositivoMovelDao provideDispositivoMovelDao() {
+        return new DispositivoMovelDaoImpl();
     }
 
     // ================================================

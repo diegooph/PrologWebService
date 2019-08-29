@@ -35,6 +35,8 @@ public class Checklist {
 	private long tempoRealizacaoCheckInMillis;
 	private int qtdItensOk;
 	private int qtdItensNok;
+	private int qtdAlternativasOk;
+	private int qtdAlternativasNok;
 	
 	public Checklist() {
 		
@@ -156,18 +158,43 @@ public class Checklist {
 		this.qtdItensNok = qtdItensNok;
 	}
 
+	public int getQtdAlternativasOk() {
+		return qtdAlternativasOk;
+	}
+
+	public int getQtdAlternativasNok() {
+		return qtdAlternativasNok;
+	}
+
 	public void calculaQtdOkOrNok() {
-        int qtdNok = 0;
-        for (final PerguntaRespostaChecklist resposta : listRespostas) {
-            for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
-                if (alternativa.selected) {
-                    qtdNok++;
-                    break;
-                }
-            }
-        }
-        setQtdItensNok(qtdNok);
-        setQtdItensOk(listRespostas.size() - qtdNok);
+		int qtdPerguntasOk = 0;
+		int qtdPerguntasNok = 0;
+		int qtdAlternativasOk = 0;
+		int qtdAlternativasNok = 0;
+		boolean perguntaTeveAlternativasNok = false;
+		for (int i = 0; i < listRespostas.size(); i++) {
+			final PerguntaRespostaChecklist checklistResposta = listRespostas.get(i);
+			final List<AlternativaChecklist> alternativasRespostas = checklistResposta.getAlternativasResposta();
+			for (int j = 0; j < alternativasRespostas.size(); j++) {
+				final AlternativaChecklist alternativaResposta = alternativasRespostas.get(j);
+				if (alternativaResposta.isSelected()) {
+					qtdAlternativasNok++;
+					perguntaTeveAlternativasNok = true;
+				} else {
+					qtdAlternativasOk++;
+				}
+			}
+			if (perguntaTeveAlternativasNok) {
+				qtdPerguntasNok++;
+				perguntaTeveAlternativasNok = false;
+			} else {
+				qtdPerguntasOk++;
+			}
+		}
+        this.qtdItensOk = qtdPerguntasOk;
+		this.qtdItensNok = qtdPerguntasNok;
+        this.qtdAlternativasOk = qtdAlternativasOk;
+        this.qtdAlternativasNok = qtdAlternativasNok;
 	}
 
 	@Override

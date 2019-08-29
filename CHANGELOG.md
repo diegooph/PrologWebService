@@ -1,9 +1,33 @@
 Change Log
 ==========
 
-<a name="v0.0.99"></a>
-## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (release-date) [unreleased]
+<a name="v0.1.01"></a>
+## Version [v0.1.01](https://github.com/luizfp/PrologWebService/compare/v0.1.0...v0.1.01) (release-date) [unreleased]
 
+### Refactors
+* Remove provisoriamente validador de placa do veículo no cadastro (foco em internacionalização)
+* Melhora método de busca de um quiz pelo código (PL-2249)
+
+<a name="v0.1.0"></a>
+## Version [v0.1.0](https://github.com/luizfp/PrologWebService/compare/v0.0.99...v0.1.0) (2019-08-19)
+
+### Refactors
+* Melhora tratamento de erros na busca de checklists
+
+### Bug Fixes
+* Corrige busca de checklists na integração com Avilan
+
+<a name="v0.0.99"></a>
+## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (2019-08-18)
+
+### Features
+* Adiciona a gestão de dispositivos móveis por empresa (PL-2150)
+
+### Refactors
+* Altera inserção de checklist para salvar quantidade de perguntas e alternativas OK e NOK (PL-2118)
+* Melhora tratamento de erros na integração com Avilan (PL-2210)
+* Remove pilar GERAL da visão ao logar pelo app (PL-2187)
+* Adiciona os registros de IMEI nas telas de listagem e gestão de marcações (PL-2152) 
 
 <a name="v0.0.98"></a>
 ## Version [v0.0.98](https://github.com/luizfp/PrologWebService/compare/v0.0.97...v0.0.98) (2019-07-16)

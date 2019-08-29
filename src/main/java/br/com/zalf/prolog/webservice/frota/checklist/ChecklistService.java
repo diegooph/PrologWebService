@@ -121,9 +121,11 @@ public final class ChecklistService {
                     .create(dao, userToken)
                     .getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
                             limit, offset, resumido);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar os checklists", e);
-            return null;
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar checklists", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar checklists, tente novamente");
         }
     }
 

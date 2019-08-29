@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvacorpAvilanRequestStatus;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -34,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
     "mensagem",
     "listaVeiculos"
 })
-public class VeiculosAtivos {
+public class VeiculosAtivos implements AvacorpAvilanRequestStatus {
 
     protected boolean sucesso;
     protected String mensagem;
@@ -104,5 +106,4 @@ public class VeiculosAtivos {
     public void setListaVeiculos(ArrayOfVeiculo value) {
         this.listaVeiculos = value;
     }
-
 }
