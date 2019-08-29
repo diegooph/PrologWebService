@@ -18,7 +18,7 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
     @NotNull
     private static final String TAG = ApiCadastroPneuService.class.getSimpleName();
     @NotNull
-    private ApiCadastroPneuDao dao = new ApiCadastroPneuDaoImpl();
+    private final ApiCadastroPneuDao dao = new ApiCadastroPneuDaoImpl();
 
     @NotNull
     public List<ApiPneuCargaInicialResponse> inserirCargaInicialPneu(

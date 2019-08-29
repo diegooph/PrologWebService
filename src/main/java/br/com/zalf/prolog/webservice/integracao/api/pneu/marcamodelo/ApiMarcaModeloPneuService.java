@@ -20,7 +20,7 @@ public final class ApiMarcaModeloPneuService extends BaseIntegracaoService {
     @NotNull
     private static final String TAG = ApiMarcaModeloPneuService.class.getSimpleName();
     @NotNull
-    private ApiMarcaModeloPneuDao dao = new ApiMarcaModeloPneuDaoImpl();
+    private final ApiMarcaModeloPneuDao dao = new ApiMarcaModeloPneuDaoImpl();
 
     @NotNull
     public List<ApiMarcaPneu> getMarcasPneu(final String tokenIntegracao,

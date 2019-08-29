@@ -22,8 +22,10 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements ApiCadastroPneuDao {
+
     @NotNull
     @Override
+    @SuppressWarnings("Duplicates")
     public List<ApiPneuCargaInicialResponse> inserirCargaInicialPneu(
             @NotNull final String tokenIntegracao,
             @NotNull final List<ApiPneuCargaInicial> pneusCargaInicial) throws Throwable {
@@ -86,47 +88,28 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     stmt.setObject(17, dataHoraAtual);
                     stmt.setString(18, tokenIntegracao);
                     rSet = stmt.executeQuery();
-                    if (rSet.next()) {
-                        final long codPneuProlog = rSet.getLong("COD_PNEU_PROLOG");
-                        if (codPneuProlog > 0) {
-                            // codPneuProlog > 0 significa que o pneu foi cadastrado com sucesso.
-                            pneuCargaInicialResponses.add(new ApiPneuCargaInicialResponse(
-                                    pneuCargaInicial.getCodigoSistemaIntegrado(),
-                                    pneuCargaInicial.getCodigoCliente(),
-                                    true,
-                                    ApiPneuCargaInicialResponse.SUCCESS_MESSAGE,
-                                    codPneuProlog));
-                        } else {
-                            pneuCargaInicialResponses.add(new ApiPneuCargaInicialResponse(
-                                    pneuCargaInicial.getCodigoSistemaIntegrado(),
-                                    pneuCargaInicial.getCodigoCliente(),
-                                    false,
-                                    ApiPneuCargaInicialResponse.ERROR_MESSAGE,
-                                    null));
-                        }
-                    } else {
-                        pneuCargaInicialResponses.add(new ApiPneuCargaInicialResponse(
+                    final long codPneuProlog;
+                    if (rSet.next() && (codPneuProlog = rSet.getLong("COD_PNEU_PROLOG")) > 0) {
+                        // codPneuProlog > 0 significa que o pneu foi cadastrado com sucesso.
+                        pneuCargaInicialResponses.add(ApiPneuCargaInicialResponse.ok(
                                 pneuCargaInicial.getCodigoSistemaIntegrado(),
                                 pneuCargaInicial.getCodigoCliente(),
-                                false,
-                                ApiPneuCargaInicialResponse.ERROR_MESSAGE,
-                                null));
+                                codPneuProlog));
+                    } else {
+                        pneuCargaInicialResponses.add(ApiPneuCargaInicialResponse.error(
+                                pneuCargaInicial.getCodigoSistemaIntegrado(),
+                                pneuCargaInicial.getCodigoCliente()));
                     }
                 } catch (final PSQLException sqlException) {
-                    // Se ocorreu uma SQLException deveremos mapear a mensagem que está nela
-                    pneuCargaInicialResponses.add(new ApiPneuCargaInicialResponse(
+                    // Se ocorreu uma SQLException deveremos mapear a mensagem que está nela.
+                    pneuCargaInicialResponses.add(ApiPneuCargaInicialResponse.error(
                             pneuCargaInicial.getCodigoSistemaIntegrado(),
                             pneuCargaInicial.getCodigoCliente(),
-                            false,
-                            getPSQLErrorMessage(sqlException),
-                            null));
+                            getPSQLErrorMessage(sqlException)));
                 } catch (final Throwable t) {
-                    pneuCargaInicialResponses.add(new ApiPneuCargaInicialResponse(
+                    pneuCargaInicialResponses.add(ApiPneuCargaInicialResponse.error(
                             pneuCargaInicial.getCodigoSistemaIntegrado(),
-                            pneuCargaInicial.getCodigoCliente(),
-                            false,
-                            ApiPneuCargaInicialResponse.ERROR_MESSAGE,
-                            null));
+                            pneuCargaInicial.getCodigoCliente()));
                 }
             }
 
@@ -135,6 +118,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                         "pneusCargaInicial.size: " + pneusCargaInicial.size() + "\n" +
                         "pneuCargaInicialResponses.size: " + pneuCargaInicialResponses.size());
             }
+
             return pneuCargaInicialResponses;
         } finally {
             close(conn, stmt, rSet);
@@ -143,6 +127,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
+    @SuppressWarnings("Duplicates")
     public Long inserirPneuCadastro(@NotNull final String tokenIntegracao,
                                     @NotNull final ApiPneuCadastro pneuCadastro) throws Throwable {
         Connection conn = null;
@@ -182,11 +167,8 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setObject(14, Now.localDateTimeUtc());
             stmt.setString(15, tokenIntegracao);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final long codPneuProlog = rSet.getLong("COD_PNEU_PROLOG");
-                if (codPneuProlog <= 0) {
-                    throw new SQLException("Erro ao inserir o pneu no Sistema ProLog");
-                }
+            final long codPneuProlog;
+            if (rSet.next() && (codPneuProlog = rSet.getLong("COD_PNEU_PROLOG")) > 0) {
                 return codPneuProlog;
             } else {
                 throw new SQLException("Erro ao inserir o pneu no Sistema ProLog");
@@ -227,11 +209,8 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setObject(9, Now.localDateTimeUtc());
             stmt.setString(10, tokenIntegracao);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final long codPneuProlog = rSet.getLong("COD_PNEU_PROLOG");
-                if (codPneuProlog <= 0) {
-                    throw new SQLException("Erro ao atualizar o pneu no Sistema ProLog");
-                }
+            final long codPneuProlog;
+            if (rSet.next() && (codPneuProlog = rSet.getLong("COD_PNEU_PROLOG")) > 0) {
                 return codPneuProlog;
             } else {
                 throw new SQLException("Erro ao atualizar o pneu no Sistema ProLog");

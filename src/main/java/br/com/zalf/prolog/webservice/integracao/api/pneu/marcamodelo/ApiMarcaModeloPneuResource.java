@@ -28,7 +28,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ApiMarcaModeloPneuResource {
     @NotNull
-    private ApiMarcaModeloPneuService service = new ApiMarcaModeloPneuService();
+    private final ApiMarcaModeloPneuService service = new ApiMarcaModeloPneuService();
 
     @GET
     @LogIntegracaoRequest

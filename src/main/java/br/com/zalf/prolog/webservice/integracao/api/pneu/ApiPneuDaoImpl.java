@@ -20,6 +20,7 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuDao {
+
     @Override
     public void atualizaStatusPneus(
             @NotNull final String tokenIntegracao,
@@ -69,7 +70,7 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
                 stmt.addBatch();
             }
             if (stmt.executeBatch().length != pneusAtualizacaoStatus.size()) {
-                throw new SQLException("Não foi possível resolver os itens");
+                throw new SQLException("Não foi possível atualizar o status dos pneus");
             }
         } finally {
             close(conn, stmt);
