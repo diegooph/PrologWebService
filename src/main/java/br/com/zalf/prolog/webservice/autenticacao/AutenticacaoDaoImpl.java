@@ -13,9 +13,6 @@ import java.sql.SQLException;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Classe responsável pela comunicação com o banco de dados da aplicação.
@@ -96,60 +93,66 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         return false;
     }
 
+    @NotNull
     @Override
     public StatusSecured userHasPermission(@NotNull final String token,
                                            @NotNull final int[] permissions,
                                            final boolean needsToHaveAllPermissions,
-                                           final boolean apenasUsuariosAtivos) throws SQLException {
+                                           final boolean apenasUsuariosAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            String query = "SELECT CFP.COD_FUNCAO_PROLOG AS COD_PERMISSAO " +
-                    "FROM TOKEN_AUTENTICACAO TA " +
-                    "  JOIN COLABORADOR C ON C.CPF = TA.CPF_COLABORADOR " +
-                    "  JOIN CARGO_FUNCAO_PROLOG_V11 CFP " +
-                    "    ON CFP.COD_UNIDADE = C.COD_UNIDADE " +
-                    "       AND CFP.COD_FUNCAO_COLABORADOR = C.COD_FUNCAO " +
-                    "WHERE TA.TOKEN = ? AND C.STATUS_ATIVO::TEXT LIKE ?;";
             conn = getConnection();
-            stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_VERIFICA_PERMISSOES_TOKEN(" +
+                    "F_TOKEN                           := ?," +
+                    "F_PERMISSSOES_NECESSARIAS         := ?," +
+                    "F_PRECISA_TER_TODAS_AS_PERMISSOES := ?," +
+                    "F_APENAS_USUARIOS_ATIVOS          := ?);");
             stmt.setString(1, token);
-            stmt.setString(2, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
+            stmt.setObject(2, permissions);
+            stmt.setBoolean(3, needsToHaveAllPermissions);
+            stmt.setBoolean(4, apenasUsuariosAtivos);
             rSet = stmt.executeQuery();
-            final List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
-            return verifyPermissions(rSet, permissoes, needsToHaveAllPermissions);
+            if (rSet.next()) {
+                return generateStatusSecured(rSet);
+            } else {
+                throw new SQLException("Erro ao verificar permissões do colaborador!");
+            }
         } finally {
             close(conn, stmt, rSet);
         }
     }
 
+    @NotNull
     @Override
     public StatusSecured userHasPermission(final long cpf,
-                                     @NotNull final LocalDate dataNascimento,
-                                     @NotNull int[] permissions,
-                                     final boolean needsToHaveAllPermissions,
-                                     final boolean apenasUsuariosAtivos) throws SQLException {
+                                           @NotNull final LocalDate dataNascimento,
+                                           @NotNull int[] permissions,
+                                           final boolean needsToHaveAllPermissions,
+                                           final boolean apenasUsuariosAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            String query = "SELECT CFP.COD_FUNCAO_PROLOG AS COD_PERMISSAO " +
-                    "FROM COLABORADOR C " +
-                    "  JOIN CARGO_FUNCAO_PROLOG_V11 CFP " +
-                    "    ON CFP.COD_UNIDADE = C.COD_UNIDADE " +
-                    "       AND CFP.COD_FUNCAO_COLABORADOR = C.COD_FUNCAO " +
-                    "WHERE C.CPF = ? " +
-                    "      AND C.DATA_NASCIMENTO = ? " +
-                    "      AND C.STATUS_ATIVO::TEXT LIKE ?;";
             conn = getConnection();
-            stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_VERIFICA_PERMISSOES_CPF_DATA_NASCIMENTO(" +
+                    "F_CPF                             := ?," +
+                    "F_DATA_NASCIMENTO                 := ?," +
+                    "F_PERMISSSOES_NECESSARIAS         := ?," +
+                    "F_PRECISA_TER_TODAS_AS_PERMISSOES := ?," +
+                    "F_APENAS_USUARIOS_ATIVOS          := ?);");
             stmt.setLong(1, cpf);
             stmt.setObject(2, dataNascimento);
-            stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
+            stmt.setObject(3, permissions);
+            stmt.setBoolean(4, needsToHaveAllPermissions);
+            stmt.setBoolean(5, apenasUsuariosAtivos);
             rSet = stmt.executeQuery();
-            final List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
-            return verifyPermissions(rSet, permissoes, needsToHaveAllPermissions);
+            if (rSet.next()) {
+                return generateStatusSecured(rSet);
+            } else {
+                throw new SQLException("Erro ao verificar permissões do colaborador!");
+            }
         } finally {
             close(conn, stmt, rSet);
         }
@@ -181,25 +184,16 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         return autenticacao;
     }
 
-    private StatusSecured verifyPermissions(@NotNull final ResultSet rSet,
-                                      @NotNull final List<Integer> permissoes,
-                                      final boolean needsToHaveAll) throws SQLException {
-        if (!rSet.next()) {
+    @NotNull
+    private StatusSecured generateStatusSecured(@NotNull final ResultSet rSet) throws Throwable {
+        final boolean tokenValido = rSet.getBoolean("TOKEN_VALIDO");
+        final boolean possuiPermisssao = rSet.getBoolean("POSSUI_PERMISSSAO");
+        if (tokenValido && possuiPermisssao) {
+            return StatusSecured.TOKEN_E_PERMISSAO_OK;
+        } else if (tokenValido) {
+            return StatusSecured.TOKEN_OK_SEM_PERMISSAO;
+        } else {
             return StatusSecured.TOKEN_INVALIDO;
         }
-
-        rSet.beforeFirst();
-        while (rSet.next()) {
-            if (needsToHaveAll) {
-                if (!permissoes.contains(rSet.getInt("cod_permissao"))) {
-                    return StatusSecured.TOKEN_OK_SEM_PERMISSAO;
-                }
-            } else {
-                if (permissoes.contains(rSet.getInt("cod_permissao"))) {
-                    return StatusSecured.TOKEN_E_PERMISSAO_OK;
-                }
-            }
-        }
-        return StatusSecured.TOKEN_OK_SEM_PERMISSAO;
     }
 }
