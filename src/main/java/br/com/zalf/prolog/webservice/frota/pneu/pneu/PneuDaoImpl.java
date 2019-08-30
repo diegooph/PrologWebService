@@ -716,48 +716,72 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void insertOrUpdateNomenclatura(@NotNull final List<Nomenclatura> nomenclaturas,
+    public void insertOrUpdateNomenclatura(@NotNull final List<PneuNomenclaturaItem> pneuNomenclaturaItems,
                                            @NotNull final String userToken) throws Throwable {
         Connection conn = null;
+        PreparedStatement stmt = null;
+        boolean nomenclaturaCompleta;
         try {
-            for (final Nomenclatura nomenclatura : nomenclaturas) {
-                insertOrUpdateNomenclaturaStmt(conn, nomenclatura, userToken);
+            if (nomenclaturaCompleta = confereNomenclaturaCompleta(conn,
+                    pneuNomenclaturaItems.get(pneuNomenclaturaItems.size()).getCodDiagrama(),
+                    pneuNomenclaturaItems.size())) {
+                try {
+                    int linhasParaExecutar = 0;
+                    for (final PneuNomenclaturaItem pneuNomenclaturaItem : pneuNomenclaturaItems) {
+                        stmt = conn.prepareStatement("SELECT * FROM FUNC_NOMENCLATURA_INSERE_EDITA_NOMENCLATURA(" +
+                                "F_COD_DIAGRAMA := ?, " +
+                                "F_COD_EMPRESA   := ?, " +
+                                "F_POSICAO_PROLOG  := ?, " +
+                                "F_NOMENCLATURA:= ?," +
+                                "F_COD_IDIOMA := ?, " +
+                                "F_TOKEN_RESPONSAVEL_INSERCAO := ?," +
+                                "F_DATA_HORA_CADASTR0 := ?;");
+                        final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCodUnidade(pneuNomenclaturaItem.getCodUnidade(), conn);
+                        stmt.setLong(1, pneuNomenclaturaItem.getCodDiagrama());
+                        stmt.setLong(2, pneuNomenclaturaItem.getCodEmpresa());
+                        stmt.setLong(3, pneuNomenclaturaItem.getPosicaoProlog());
+                        stmt.setString(4, pneuNomenclaturaItem.getNomenclatura());
+                        stmt.setLong(5, pneuNomenclaturaItem.getCodIdioma());
+                        stmt.setLong(6, pneuNomenclaturaItem.getCodColaborador());
+                        stmt.setObject(7, pneuNomenclaturaItem.getDataHoraCadastro().atZone(unidadeZoneId).toOffsetDateTime());
+                        stmt.setString(8, TokenCleaner.getOnlyToken(userToken));
+
+                        stmt.addBatch();
+                        linhasParaExecutar++;
+                    }
+                    stmt.executeBatch();
+                    if (stmt.executeBatch().length != linhasParaExecutar) {
+                        throw new SQLException("Não foi possível salvar todos as nomenclaturas");
+                    }
+                    if (stmt.executeBatch().length == 0) {
+                        throw new Throwable("Erro ao inserir nomenclatura");
+                    }
+                } finally {
+                    close(stmt);
+                }
+            } else {
+                throw new SQLException("Nomenclatura incompleta");
             }
         } finally {
             close(conn);
         }
     }
 
-    @NotNull
-    private void insertOrUpdateNomenclaturaStmt(@NotNull final Connection conn,
-                                                @NotNull final Nomenclatura nomenclatura,
-                                                @NotNull final String userToken) throws Throwable {
+    private boolean confereNomenclaturaCompleta(@NotNull final Connection conn,
+                                                @NotNull final Long codDiagrama,
+                                                @NotNull final int qtdObjetos) throws Throwable {
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_NOMENCLATURA_INSERE_EDITA_NOMENCLATURA(" +
-                    "F_COD_DIAGRAMA := ?, " +
-                    "F_COD_EMPRESA   := ?, " +
-                    "F_POSICAO_PROLOG  := ?, " +
-                    "F_NOMENCLATURA:= ?)," +
-                    "F_COD_IDIOMA := ?, " +
-                    "F_COLABORADOR :=?," +
-                    "F_DATA_HORA_CADASTR0 := ?," +
-                    "F_TOKEN := ?;");
-            final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCodUnidade(nomenclatura.getCodUnidade(), conn);
-            stmt.setLong(1, nomenclatura.getCodDiagrama());
-            stmt.setLong(2, nomenclatura.getCodEmpresa());
-            stmt.setLong(3, nomenclatura.getPosicaoProlog());
-            stmt.setString(4, nomenclatura.getNomenclatura());
-            stmt.setLong(5, nomenclatura.getCodIdioma());
-            stmt.setString(6, nomenclatura.getColaborador());
-            stmt.setObject(7, nomenclatura.getDataHoraCadastro().atZone(unidadeZoneId).toOffsetDateTime());
-            stmt.setString(8, TokenCleaner.getOnlyToken(userToken));
-
-            if (stmt.executeUpdate() == 0) {
-                throw new Throwable("Erro ao inserir nomenclatura");
-            }
+            stmt = conn.prepareStatement("SELECT SELECT * FROM FUNC_GARANTE_PNEU_NOMENCLATURA_COMPLETA(" +
+                    "F_COD_DIAGRAMA := ?," +
+                    "F_QTD_OBJETOS := ?);");
+            stmt.setLong(1, codDiagrama);
+            stmt.setInt(2, qtdObjetos);
+            rSet = stmt.executeQuery();
+            return rSet.getBoolean(1);
         } finally {
-            close(stmt);
+            close(stmt, rSet);
         }
     }
 

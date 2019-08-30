@@ -204,9 +204,9 @@ public class PneuService {
     }
 
     @NotNull
-    public Response insertOrUpdateNomenclatura(final List<Nomenclatura> nomenclatura, final String userToken) throws ProLogException {
+    public Response insertOrUpdateNomenclatura(final List<PneuNomenclaturaItem> pneuNomenclaturaItem, final String userToken) throws ProLogException {
         try {
-            dao.insertOrUpdateNomenclatura(nomenclatura, userToken);
+            dao.insertOrUpdateNomenclatura(pneuNomenclaturaItem, userToken);
             return Response.ok("Nomenclatura inserida com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir nomenclatura", t);

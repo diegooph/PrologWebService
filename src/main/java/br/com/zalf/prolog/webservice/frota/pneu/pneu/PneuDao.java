@@ -250,12 +250,12 @@ public interface PneuDao {
 
 
     /**
-     * Insere ou atualiza as informações de uma {@link Nomenclatura nomenclatura}.
+     * Insere ou atualiza as informações de uma {@link PneuNomenclaturaItem pneuNomenclaturaItem}.
      *
-     * @param nomenclatura    Lista de objetos contendo as informações para a nomenclatura.
+     * @param pneuNomenclaturaItem    Lista de objetos contendo as informações para a pneuNomenclaturaItem.
      * @param userToken o token do usuário que fez a requisição.
      * @throws Throwable Caso qualquer erro aconteça.
      */
-    void insertOrUpdateNomenclatura(@NotNull final List <Nomenclatura> nomenclatura,
+    void insertOrUpdateNomenclatura(@NotNull final List <PneuNomenclaturaItem> pneuNomenclaturaItem,
                                     @NotNull final String userToken) throws Throwable;
 }

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class Nomenclatura {
+public class PneuNomenclaturaItem {
 
     @NotNull
     private final Long codDiagrama;
@@ -24,39 +24,39 @@ public class Nomenclatura {
     @NotNull
     private final Long codIdioma;
     @NotNull
-    private final String colaborador;
+    private final Long codColaborador;
     @NotNull
     private final LocalDateTime dataHoraCadastro;
 
 
-    public Nomenclatura(@NotNull final Long codDiagrama,
-                        @NotNull final Long codEmpresa,
-                        @NotNull final Long codUnidade,
-                        @NotNull final Long posicaoProlog,
-                        @NotNull final String nomenclatura,
-                        @NotNull final Long codIdioma,
-                        @NotNull final String colaborador,
-                        @NotNull final LocalDateTime dataHoraCadastro) {
+    public PneuNomenclaturaItem(@NotNull final Long codDiagrama,
+                                @NotNull final Long codEmpresa,
+                                @NotNull final Long codUnidade,
+                                @NotNull final Long posicaoProlog,
+                                @NotNull final String nomenclatura,
+                                @NotNull final Long codIdioma,
+                                @NotNull final Long codColaborador,
+                                @NotNull final LocalDateTime dataHoraCadastro) {
         this.codDiagrama = codDiagrama;
         this.codEmpresa = codEmpresa;
         this.codUnidade = codUnidade;
         this.posicaoProlog = posicaoProlog;
         this.nomenclatura = nomenclatura;
         this.codIdioma = codIdioma;
-        this.colaborador = colaborador;
+        this.codColaborador = codColaborador;
         this.dataHoraCadastro = dataHoraCadastro;
     }
 
     @NotNull
-    public static Nomenclatura createDummy() {
-        return new Nomenclatura(
+    public static PneuNomenclaturaItem createDummy() {
+        return new PneuNomenclaturaItem(
                 1L,
                 3L,
                 5L,
                 112L,
                 "TDI",
                 1L,
-                "Cleiton",
+                30338922L,
                 LocalDateTime.now());
     }
 
@@ -91,8 +91,8 @@ public class Nomenclatura {
     }
 
     @NotNull
-    public String getColaborador() {
-        return colaborador;
+    public Long getCodColaborador() {
+        return codColaborador;
     }
 
     @NotNull

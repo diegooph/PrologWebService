@@ -197,9 +197,9 @@ public class PneuResource {
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
     @Path("/nomenclatura")
-    public Response insertOrUpdateNomenclatura(@Required final List<Nomenclatura> nomenclatura,
+    public Response insertOrUpdateNomenclatura(@Required final List<PneuNomenclaturaItem> pneuNomenclaturaItem,
                                                @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
-        return service.insertOrUpdateNomenclatura(nomenclatura, userToken);
+        return service.insertOrUpdateNomenclatura(pneuNomenclaturaItem, userToken);
     }
 
     /**
