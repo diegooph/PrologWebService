@@ -500,7 +500,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                                                                   @NotNull final Connection conn) throws SQLException {
         Preconditions.checkNotNull(codUnidade);
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM FUNC_MARCACAO_RELATORIO_EXPORTACAO_GENERICA(?, ?, ?, ?, ?, ?);");
+                "SELECT * FROM FUNC_INTERVALO_RELATORIO_EXPORTACAO_GENERICA(?, ?, ?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
