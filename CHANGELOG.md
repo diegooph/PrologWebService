@@ -1,3 +1,9 @@
+Stage
+==========
+
+### Refactors
+* Adicionar código auxiliar ao cadastro de tipos de marcação
+
 Change Log
 ==========
 
