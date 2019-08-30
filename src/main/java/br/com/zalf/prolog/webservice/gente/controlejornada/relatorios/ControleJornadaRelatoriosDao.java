@@ -250,6 +250,20 @@ public interface ControleJornadaRelatoriosDao {
                                               @NotNull final LocalDate dataInicial,
                                               @NotNull final LocalDate dataFinal) throws SQLException;
 
+    /**
+     * Método para gerar um relatório contendo as marcações em um padrão de importação.
+     * A function no banco está preparada para não receber os filtros opcionais de colaborador, tipo de intervalo e
+     * apenas ativos
+     *
+     * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
+     * @param codTipoIntervalo - Código do {@link TipoMarcacao} que os dados serão filtrados.
+     * @param codColaborador   - Código do {@link Colaborador} que os dados serão filtrados.
+     * @param apenasAtivos     - Filtra apenas por marcações ativas.
+     * @param dataInicial      - Data inicial do período de filtro.
+     * @param dataFinal        - Data final do período de filtro.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
+     */
     void getIntervalosExportacaoGenericaCsv(@NotNull final OutputStream out,
                                             @NotNull final Long codUnidade,
                                             final Long codTipoIntervalo,
