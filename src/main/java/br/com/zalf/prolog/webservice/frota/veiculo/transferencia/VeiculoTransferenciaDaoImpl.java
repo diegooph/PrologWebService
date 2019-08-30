@@ -555,7 +555,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT EXISTS(SELECT COD_EMPRESA " +
-                    "FROM EMPRESA_BLOQUEADA_FECHAMENTO_OS_TRANSFERENCIA " +
+                    "FROM VEICULO_TRANSFERENCIA_EMPRESA_BLOQUEADA_FECHAMENTO_OS " +
                     "WHERE COD_EMPRESA = ?) AS EMPRESA_FECHA_OS_AUTOMATICAMENTE");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
