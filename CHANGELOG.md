@@ -4,6 +4,9 @@ Stage
 ### Refactors
 * Adicionar código auxiliar ao cadastro de tipos de marcação
 
+### Features
+* Adiciona relatório para exportação das marcações
+
 Change Log
 ==========
 
