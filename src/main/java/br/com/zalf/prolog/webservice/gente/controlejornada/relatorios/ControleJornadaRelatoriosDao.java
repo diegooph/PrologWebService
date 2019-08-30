@@ -249,4 +249,12 @@ public interface ControleJornadaRelatoriosDao {
                                               @NotNull final String codTipoIntervalo,
                                               @NotNull final LocalDate dataInicial,
                                               @NotNull final LocalDate dataFinal) throws SQLException;
+
+    void getIntervalosExportacaoGenericaCsv(@NotNull final OutputStream out,
+                                            @NotNull final Long codUnidade,
+                                            final Long codTipoIntervalo,
+                                            final Long codColaborador,
+                                            final boolean apenasAtivos,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal) throws SQLException, IOException;
 }

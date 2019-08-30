@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -290,6 +291,33 @@ public class ControleJornadaRelatorioService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+
+    public void getIntervalosExportacaoGenericaCsv(@NotNull final OutputStream out,
+                                                @NotNull final Long codUnidade,
+                                                @Nullable final Long codTipoIntervalo,
+                                                @Nullable final Long codColaborador,
+                                                @Nullable final boolean apenasAtivos,
+                                                @NotNull final String dataInicial,
+                                                @NotNull final String dataFinal) {
+        try {
+            dao.getIntervalosExportacaoGenericaCsv(
+                    out,
+                    codUnidade,
+                    codTipoIntervalo,
+                    codColaborador,
+                    apenasAtivos,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (SQLException | IOException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório csv para exportação genérica de marcações. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipoIntervalo: %d \n" +
+                    "codColaborador: %d \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, codColaborador, dataInicial, dataFinal), e);
         }
     }
 }

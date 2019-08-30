@@ -223,4 +223,23 @@ public class ControleJornadaRelatorioResource {
                 dataInicial,
                 dataFinal);
     }
+
+    @GET
+    @Secured
+    @Path("/exportacao-marcacoes/csv")
+    public StreamingOutput getIntervalosExportacaoGenericaCsv(@QueryParam("codUnidade") @Required Long codUnidade,
+                                                              @QueryParam("codTipoIntervalo") @Optional Long codTipoIntervalo,
+                                                              @QueryParam("codColaborador") @Optional Long codColaborador,
+                                                              @QueryParam("apenasAtivos") @Optional boolean apenasAtivos,
+                                                              @QueryParam("dataInicial") @Required String dataInicial,
+                                                              @QueryParam("dataFinal") @Required String dataFinal) {
+        return outputStream -> service.getIntervalosExportacaoGenericaCsv(
+                outputStream,
+                codUnidade,
+                codTipoIntervalo,
+                codColaborador,
+                apenasAtivos,
+                dataInicial,
+                dataFinal);
+    }
 }
