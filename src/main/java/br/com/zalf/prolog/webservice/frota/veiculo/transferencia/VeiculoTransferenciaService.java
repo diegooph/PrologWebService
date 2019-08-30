@@ -108,14 +108,18 @@ public final class VeiculoTransferenciaService {
                     .map(t, "Erro ao buscar detalhes da placa transferida, tente novamente");
         }
     }
-    @NotNull
-    public boolean verificaFluxoTransferencia(final  Long codEmpresa) throws ProLogException {
+
+    public boolean possuiFechamentoAutomaticoOrdemServico(@NotNull final Long codEmpresa) throws ProLogException {
         try {
-            return dao.verificaFluxoTransferencia(codEmpresa);
-        } catch (final Throwable t){
-            System.out.println("Erro ao buscar informação de fluxo para transferência." + t);
+            return dao.possuiFechamentoAutomaticoOrdemServico(codEmpresa);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao verificar se empresa tem fechamento automático de " +
+                    "Ordens de Serviço habilitado:\ncodEmpresa: " + codEmpresa, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao verificar se empresa tem fechamento automático de " +
+                            "Ordens de Serviço habilitado, tente novamente");
         }
-        return false;
     }
 
 }

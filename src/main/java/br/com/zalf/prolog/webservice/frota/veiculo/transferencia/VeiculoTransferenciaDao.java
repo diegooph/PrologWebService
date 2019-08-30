@@ -28,7 +28,7 @@ public interface VeiculoTransferenciaDao {
      * <p>
      * O processo de transferência de placas também transfere os pneus que estão aplicados na placa.
      *
-     * @param processoTransferenciaVeiculo Objeto que contém as placas que serão transferidas.
+     * @param processoTransferenciaVeiculo         Objeto que contém as placas que serão transferidas.
      * @param dadosChecklistOfflineChangedListener Listener para informarmos quando os veículos forem transferidos
      *                                             assim a versão dos dados será incrementada na unidade de origem e
      *                                             destino. Desde que as unidades já possuam uma versão criada,
@@ -101,6 +101,14 @@ public interface VeiculoTransferenciaDao {
     DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(@NotNull final Long codProcessoTransferencia,
                                                              @NotNull final Long codVeiculo) throws Throwable;
 
-    @NotNull
-    boolean verificaFluxoTransferencia(@NotNull final Long codEmpresa) throws Throwable;
+    /**
+     * Método utilizado para buscar a informação se a empresa possui fechamento automático de Ordens de Serviço quando
+     * transfere veículos entre unidades.
+     *
+     * @param codEmpresa Código da empresa que será verificada.
+     * @return <code>True</code> caso empresa realiza o fechamento automático de Ordens de Serviços na transferência de
+     * veículos, <code>False</code> caso contrário.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    boolean possuiFechamentoAutomaticoOrdemServico(@NotNull final Long codEmpresa) throws Throwable;
 }

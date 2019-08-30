@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -22,7 +21,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualiza
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.VeiculoTransferidoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -546,29 +548,28 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
         }
     }
 
-     public boolean verificaFluxoTransferencia(@NotNull final Long codEmpresa) throws Throwable {
-         Connection conn = null;
-         PreparedStatement stmt = null;
-         ResultSet rSet = null;
-
-         try {
-             conn = getConnection();
-             stmt = conn.prepareStatement("SELECT EXISTS (SELECT COD_EMPRESA " +
-                     "              FROM EMPRESA_BLOQUEADA_FECHAMENTO_OS_TRANSFERENCIA " +
-                     "              WHERE COD_EMPRESA = ?) AS EXIST_ID");
-             stmt.setLong(1, codEmpresa);
-             rSet = stmt.executeQuery();
-
-            if(rSet.next()){
-                return rSet.getBoolean("EXIST_ID");
+    public boolean possuiFechamentoAutomaticoOrdemServico(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT COD_EMPRESA " +
+                    "FROM EMPRESA_BLOQUEADA_FECHAMENTO_OS_TRANSFERENCIA " +
+                    "WHERE COD_EMPRESA = ?) AS EMPRESA_FECHA_OS_AUTOMATICAMENTE");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                // Negamos o retono pois, se o código da empresa estiver nessa tabela, ela não fecha automaticamente
+                // ordens de serviços ao transferir veículos entre unidades.
+                return !rSet.getBoolean("EMPRESA_FECHA_OS_AUTOMATICAMENTE");
+            } else {
+                throw new SQLException("Erro ao identificar se empresa fecha ordem de serviço de forma automática " +
+                        "ao transferir veículos entre unidades:\n" +
+                        "codEmpresa: " + codEmpresa);
             }
-
-         } catch (SQLException e) {
-             e.printStackTrace();
-         } finally {
-             close(conn, stmt, rSet);
-         }
-
-        return false;
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 }

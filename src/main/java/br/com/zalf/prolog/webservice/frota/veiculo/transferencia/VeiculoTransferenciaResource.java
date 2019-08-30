@@ -81,11 +81,10 @@ public final class VeiculoTransferenciaResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/empresa-transferencia")
-    public boolean verificaFluxoTransferencia(
-            @QueryParam(value = "codEmpresa")
-            @NotNull final Long codEmpresa ) throws ProLogException {
-        return service.verificaFluxoTransferencia(codEmpresa);
+    @Path("/fechar-ordens-servicos-automaticamente")
+    public boolean possuiFechamentoAutomaticoOrdemServico(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
+        return service.possuiFechamentoAutomaticoOrdemServico(codEmpresa);
     }
 
 }
