@@ -108,4 +108,14 @@ public final class VeiculoTransferenciaService {
                     .map(t, "Erro ao buscar detalhes da placa transferida, tente novamente");
         }
     }
+    @NotNull
+    public boolean verificaFluxoTransferencia(final  Long codEmpresa) throws ProLogException {
+        try {
+            return dao.verificaFluxoTransferencia(codEmpresa);
+        } catch (final Throwable t){
+            System.out.println("Erro ao buscar informação de fluxo para transferência." + t);
+        }
+        return false;
+    }
+
 }

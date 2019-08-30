@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -543,5 +544,31 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
         } finally {
             close(stmt);
         }
+    }
+
+     public boolean verificaFluxoTransferencia(@NotNull final Long codEmpresa) throws Throwable {
+         Connection conn = null;
+         PreparedStatement stmt = null;
+         ResultSet rSet = null;
+
+         try {
+             conn = getConnection();
+             stmt = conn.prepareStatement("SELECT EXISTS (SELECT COD_EMPRESA " +
+                     "              FROM EMPRESA_BLOQUEADA_FECHAMENTO_OS_TRANSFERENCIA " +
+                     "              WHERE COD_EMPRESA = ?) AS EXIST_ID");
+             stmt.setLong(1, codEmpresa);
+             rSet = stmt.executeQuery();
+
+            if(rSet.next()){
+                return rSet.getBoolean("EXIST_ID");
+            }
+
+         } catch (SQLException e) {
+             e.printStackTrace();
+         } finally {
+             close(conn, stmt, rSet);
+         }
+
+        return false;
     }
 }

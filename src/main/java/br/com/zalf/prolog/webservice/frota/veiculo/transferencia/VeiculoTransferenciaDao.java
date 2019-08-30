@@ -100,4 +100,7 @@ public interface VeiculoTransferenciaDao {
     @NotNull
     DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(@NotNull final Long codProcessoTransferencia,
                                                              @NotNull final Long codVeiculo) throws Throwable;
+
+    @NotNull
+    boolean verificaFluxoTransferencia(@NotNull final Long codEmpresa) throws Throwable;
 }

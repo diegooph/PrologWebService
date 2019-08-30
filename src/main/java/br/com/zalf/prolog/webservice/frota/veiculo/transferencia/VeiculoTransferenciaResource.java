@@ -78,4 +78,14 @@ public final class VeiculoTransferenciaResource {
             @PathParam("codVeiculo") @Required final Long codVeiculo) throws ProLogException {
         return service.getDetalhesVeiculoTransferido(codProcessoTransferencia, codVeiculo);
     }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/empresa-transferencia")
+    public boolean verificaFluxoTransferencia(
+            @QueryParam(value = "codEmpresa")
+            @NotNull final Long codEmpresa ) throws ProLogException {
+        return service.verificaFluxoTransferencia(codEmpresa);
+    }
+
 }
