@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada;
 
 import br.com.zalf.prolog.webservice.commons.util.NullIf;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada.ajustes.model.ApiAcaoAjusteMarcacao;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada.ajustes.model.ApiAjusteMarcacao;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiCoordenadasMarcacao;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiFonteDataHora;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiMarcacao;
@@ -68,6 +70,19 @@ public final class ApiMarcacaoCreator {
                 rSet.getLong("DEVICE_UPTIME_SINCRONIZACAO_MILLIS"),
                 NullIf.equalOrLess(rSet.getInt("ANDROID_API_VERSION"), 0),
                 rSet.getBoolean("STATUS_ATIVO"));
+    }
+
+    @NotNull
+    public static ApiAjusteMarcacao createAjusteMarcacao(@NotNull final ResultSet rSet) throws SQLException {
+        return new ApiAjusteMarcacao(
+                rSet.getLong("CODIGO_EDICAO"),
+                rSet.getLong("COD_JUSTIFICATIVA_SELECIONADA_AJUSTE"),
+                rSet.getString("JUSTIFICATIVA_SELECIONADA_AJUSTE"),
+                rSet.getString("OBSERVACAO_AJUSTE_MARCACAO"),
+                ApiAcaoAjusteMarcacao.fromString(rSet.getString("ACAO_AJUSTE_MARCACAO")),
+                rSet.getString("CPF_COLABORADOR_AJUSTE"),
+                rSet.getObject("DATA_HORA_AJUSTE_UTC", LocalDateTime.class),
+                createMarcacao(rSet));
     }
 
     @Nullable
