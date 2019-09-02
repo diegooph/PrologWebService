@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.api.controlejornada.model;
+package br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcacao.model;
 
 import org.jetbrains.annotations.NotNull;
 
