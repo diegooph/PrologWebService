@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuNomenclaturaItem;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuNomenclaturaItemVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 
@@ -30,11 +30,11 @@ public final class DummyPneuResource extends DummyData {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/pneus-nomenclatura")
-    public List<PneuNomenclaturaItem> getPneuNomenclaturaItem() {
-        final List<PneuNomenclaturaItem> pneuNomenclaturaItem = new ArrayList<>();
+    @Path("/pneus-nomenclaturas")
+    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItem() {
+        final List<PneuNomenclaturaItemVisualizacao> pneuNomenclaturaItem = new ArrayList<>();
         for (int i = 0; i < 15; i++) {
-            pneuNomenclaturaItem.add(PneuNomenclaturaItem.createDummy());
+            pneuNomenclaturaItem.add(PneuNomenclaturaItemVisualizacao.createDummy(i));
         }
         return pneuNomenclaturaItem;
     }

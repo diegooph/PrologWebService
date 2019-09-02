@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
@@ -193,13 +195,27 @@ public class PneuResource {
     }
 
     @POST
+    @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
-    @Path("/nomenclatura")
+    @Path("/nomenclaturas-post")
     public Response insertOrUpdateNomenclatura(@Required final List<PneuNomenclaturaItem> pneuNomenclaturaItem,
                                                @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
         return service.insertOrUpdateNomenclatura(pneuNomenclaturaItem, userToken);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.Pneu.VISUALIZAR})
+    @Path("/nomenclaturas-get")
+    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa,
+            @QueryParam("codDiagrama") @Required final Long codDiagrama) throws ProLogException {
+        final Long codIdioma = 1L;
+        return service.getPneuNomenclaturaItemVisualizacao(codEmpresa, codDiagrama, codIdioma);
     }
 
     /**

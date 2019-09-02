@@ -48,19 +48,6 @@ public class PneuNomenclaturaItem {
     }
 
     @NotNull
-    public static PneuNomenclaturaItem createDummy() {
-        return new PneuNomenclaturaItem(
-                1L,
-                3L,
-                5L,
-                112L,
-                "TDI",
-                1L,
-                30338922L,
-                LocalDateTime.now());
-    }
-
-    @NotNull
     public Long getCodDiagrama() {
         return codDiagrama;
     }

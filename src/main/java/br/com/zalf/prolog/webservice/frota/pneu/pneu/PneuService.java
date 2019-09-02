@@ -204,7 +204,8 @@ public class PneuService {
     }
 
     @NotNull
-    public Response insertOrUpdateNomenclatura(final List<PneuNomenclaturaItem> pneuNomenclaturaItem, final String userToken) throws ProLogException {
+    public Response insertOrUpdateNomenclatura(@NotNull final List<PneuNomenclaturaItem> pneuNomenclaturaItem,
+                                               @NotNull final String userToken) throws ProLogException {
         try {
             dao.insertOrUpdateNomenclatura(pneuNomenclaturaItem, userToken);
             return Response.ok("Nomenclatura inserida com sucesso");
@@ -216,5 +217,22 @@ public class PneuService {
 
         }
 
+    }
+
+    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(@NotNull final Long codEmpresa,
+                                                                                      @NotNull final Long codDiagrama,
+                                                                                      @NotNull final Long codIdioma) throws ProLogException {
+        try {
+            return dao.getPneuNomenclaturaItemVisualizacao(
+                    codEmpresa,
+                    codDiagrama,
+                    codIdioma);
+        } catch (final Throwable t) {
+            final String errorMessage = "Erro ao buscar nomenclaturas";
+            Log.e(TAG, errorMessage, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar nomenclaturas, tente novamente");
+        }
     }
 }

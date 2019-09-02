@@ -258,4 +258,8 @@ public interface PneuDao {
      */
     void insertOrUpdateNomenclatura(@NotNull final List <PneuNomenclaturaItem> pneuNomenclaturaItem,
                                     @NotNull final String userToken) throws Throwable;
+
+    List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(@NotNull final Long codEmpresa,
+                                                                               @NotNull final Long codDiagrama,
+                                                                               @NotNull final Long codIdioma) throws Throwable;
 }

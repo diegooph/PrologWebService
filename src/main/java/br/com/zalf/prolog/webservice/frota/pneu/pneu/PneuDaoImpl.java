@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -765,6 +766,42 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         } finally {
             close(conn);
         }
+    }
+
+    @Override
+    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(@NotNull final Long codEmpresa,
+                                                                                      @NotNull final Long codDiagrama,
+                                                                                      @NotNull final Long codIdioma) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<PneuNomenclaturaItemVisualizacao> nomenclaturas = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_NOMENCLATURA_GET_NOMENCLATURA(" +
+                    "F_COD_EMPRESA        := ?," +
+                    "F_COD_DIAGRAMA    := ?," +
+                    "F_COD_IDIOMA := ?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codDiagrama);
+            stmt.setLong(3, codIdioma);
+            rSet = stmt.executeQuery();
+
+            while (rSet.next()) {
+                nomenclaturas.add(createNomenclatura(rSet));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return nomenclaturas;
+    }
+
+    @NotNull
+    private PneuNomenclaturaItemVisualizacao createNomenclatura(@NotNull final ResultSet rSet) throws SQLException {
+        final PneuNomenclaturaItemVisualizacao nomenclatura = new PneuNomenclaturaItemVisualizacao();
+        nomenclatura.setNomenclatura(rSet.getString("NOMENCLATURA"));
+        nomenclatura.setPosicaoProlog(rSet.getInt("POSICAO_PROLOG"));
+        return nomenclatura;
     }
 
     private boolean confereNomenclaturaCompleta(@NotNull final Connection conn,
