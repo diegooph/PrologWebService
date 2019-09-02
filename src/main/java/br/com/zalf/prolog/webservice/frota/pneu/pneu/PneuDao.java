@@ -259,6 +259,14 @@ public interface PneuDao {
     void insertOrUpdateNomenclatura(@NotNull final List <PneuNomenclaturaItem> pneuNomenclaturaItem,
                                     @NotNull final String userToken) throws Throwable;
 
+    /**
+     * Retorna as nomenclaturas de um diagrama - {@link PneuNomenclaturaItemVisualizacao pneuNomenclaturaItemVisualizacao}.
+     *
+     * @param codEmpresa    codigo da empresa.
+     * @param codDiagrama    codigo do diagrama.
+     * @param codIdioma    codigo do idioma - atualmente setado em: -{@link PneuService getPneuNomenclaturaItemVisualizacao}.
+     * @throws Throwable Caso qualquer erro aconteça.
+     */
     List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(@NotNull final Long codEmpresa,
                                                                                @NotNull final Long codDiagrama,
                                                                                @NotNull final Long codIdioma) throws Throwable;

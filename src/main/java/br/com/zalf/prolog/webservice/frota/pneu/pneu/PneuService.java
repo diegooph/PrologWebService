@@ -214,14 +214,13 @@ public class PneuService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir a nomenclatura, tente novamente");
-
         }
-
     }
 
     public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(@NotNull final Long codEmpresa,
-                                                                                      @NotNull final Long codDiagrama,
-                                                                                      @NotNull final Long codIdioma) throws ProLogException {
+                                                                                      @NotNull final Long codDiagrama)
+            throws ProLogException {
+        final Long codIdioma = 1L;
         try {
             return dao.getPneuNomenclaturaItemVisualizacao(
                     codEmpresa,

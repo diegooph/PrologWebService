@@ -214,8 +214,7 @@ public class PneuResource {
     public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
             @QueryParam("codDiagrama") @Required final Long codDiagrama) throws ProLogException {
-        final Long codIdioma = 1L;
-        return service.getPneuNomenclaturaItemVisualizacao(codEmpresa, codDiagrama, codIdioma);
+        return service.getPneuNomenclaturaItemVisualizacao(codEmpresa, codDiagrama);
     }
 
     /**

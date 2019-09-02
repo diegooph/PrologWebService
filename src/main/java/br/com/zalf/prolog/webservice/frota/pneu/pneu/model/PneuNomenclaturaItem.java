@@ -28,7 +28,6 @@ public class PneuNomenclaturaItem {
     @NotNull
     private final LocalDateTime dataHoraCadastro;
 
-
     public PneuNomenclaturaItem(@NotNull final Long codDiagrama,
                                 @NotNull final Long codEmpresa,
                                 @NotNull final Long codUnidade,

@@ -12,7 +12,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -717,18 +716,19 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void insertOrUpdateNomenclatura(@NotNull final List<PneuNomenclaturaItem> pneuNomenclaturaItems,
+    public void insertOrUpdateNomenclatura(@NotNull final List<PneuNomenclaturaItem> pneuNomenclaturaItens,
                                            @NotNull final String userToken) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
-        boolean nomenclaturaCompleta;
-        try {
-            if (nomenclaturaCompleta = confereNomenclaturaCompleta(conn,
-                    pneuNomenclaturaItems.get(pneuNomenclaturaItems.size()).getCodDiagrama(),
-                    pneuNomenclaturaItems.size())) {
-                try {
-                    int linhasParaExecutar = 0;
-                    for (final PneuNomenclaturaItem pneuNomenclaturaItem : pneuNomenclaturaItems) {
+        if (!pneuNomenclaturaItens.isEmpty()) {
+            final int qtdObjetos = pneuNomenclaturaItens.size();
+            final int indexPrimeiroObjeto = 0;
+            try {
+                conn = getConnection();
+                final boolean nomenclaturaCompleta = confereNomenclaturaCompleta(conn, pneuNomenclaturaItens.get(indexPrimeiroObjeto).getCodDiagrama(), qtdObjetos);
+                if (nomenclaturaCompleta) {
+                    try {
+                        int linhasParaExecutar = 0;
                         stmt = conn.prepareStatement("SELECT * FROM FUNC_NOMENCLATURA_INSERE_EDITA_NOMENCLATURA(" +
                                 "F_COD_DIAGRAMA := ?, " +
                                 "F_COD_EMPRESA   := ?, " +
@@ -736,42 +736,45 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                                 "F_NOMENCLATURA:= ?," +
                                 "F_COD_IDIOMA := ?, " +
                                 "F_TOKEN_RESPONSAVEL_INSERCAO := ?," +
-                                "F_DATA_HORA_CADASTR0 := ?;");
-                        final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCodUnidade(pneuNomenclaturaItem.getCodUnidade(), conn);
-                        stmt.setLong(1, pneuNomenclaturaItem.getCodDiagrama());
-                        stmt.setLong(2, pneuNomenclaturaItem.getCodEmpresa());
-                        stmt.setLong(3, pneuNomenclaturaItem.getPosicaoProlog());
-                        stmt.setString(4, pneuNomenclaturaItem.getNomenclatura());
-                        stmt.setLong(5, pneuNomenclaturaItem.getCodIdioma());
-                        stmt.setLong(6, pneuNomenclaturaItem.getCodColaborador());
-                        stmt.setObject(7, pneuNomenclaturaItem.getDataHoraCadastro().atZone(unidadeZoneId).toOffsetDateTime());
-                        stmt.setString(8, TokenCleaner.getOnlyToken(userToken));
-
-                        stmt.addBatch();
-                        linhasParaExecutar++;
+                                "F_DATA_HORA_CADASTR0 := ?);");
+                        for (final PneuNomenclaturaItem pneuNomenclaturaItem : pneuNomenclaturaItens) {
+                            final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCodUnidade(pneuNomenclaturaItem.getCodUnidade(), conn);
+                            stmt.setLong(1, pneuNomenclaturaItem.getCodDiagrama());
+                            stmt.setLong(2, pneuNomenclaturaItem.getCodEmpresa());
+                            stmt.setLong(3, pneuNomenclaturaItem.getPosicaoProlog());
+                            stmt.setString(4, pneuNomenclaturaItem.getNomenclatura());
+                            stmt.setLong(5, pneuNomenclaturaItem.getCodIdioma());
+                            stmt.setString(6, TokenCleaner.getOnlyToken(userToken));
+                            stmt.setObject(7, pneuNomenclaturaItem.getDataHoraCadastro().atZone(unidadeZoneId).toOffsetDateTime());
+                            stmt.addBatch();
+                            linhasParaExecutar++;
+                        }
+                        final int[] batch = stmt.executeBatch();
+                        if (batch.length != linhasParaExecutar) {
+                            throw new SQLException("Não foi possível salvar todos as nomenclaturas");
+                        }
+                        if (batch.length == 0) {
+                            throw new Throwable("Erro ao inserir nomenclatura");
+                        }
+                    } finally {
+                        close(stmt);
                     }
-                    stmt.executeBatch();
-                    if (stmt.executeBatch().length != linhasParaExecutar) {
-                        throw new SQLException("Não foi possível salvar todos as nomenclaturas");
-                    }
-                    if (stmt.executeBatch().length == 0) {
-                        throw new Throwable("Erro ao inserir nomenclatura");
-                    }
-                } finally {
-                    close(stmt);
+                } else {
+                    throw new SQLException("Nomenclatura incompleta");
                 }
-            } else {
-                throw new SQLException("Nomenclatura incompleta");
+            } finally {
+                close(conn, stmt);
             }
-        } finally {
-            close(conn);
+        }else{
+            throw new Throwable("Sem informações de nomenclatura");
         }
     }
 
     @Override
-    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(@NotNull final Long codEmpresa,
-                                                                                      @NotNull final Long codDiagrama,
-                                                                                      @NotNull final Long codIdioma) throws Throwable {
+    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(
+            @NotNull final Long codEmpresa,
+            @NotNull final Long codDiagrama,
+            @NotNull final Long codIdioma) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -810,13 +813,17 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT SELECT * FROM FUNC_GARANTE_PNEU_NOMENCLATURA_COMPLETA(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_GARANTE_PNEU_NOMENCLATURA_COMPLETA(" +
                     "F_COD_DIAGRAMA := ?," +
-                    "F_QTD_OBJETOS := ?);");
+                    "F_QTD_OBJETOS := ?) AS NOMENCLATURA_COMPLETA;");
             stmt.setLong(1, codDiagrama);
             stmt.setInt(2, qtdObjetos);
             rSet = stmt.executeQuery();
-            return rSet.getBoolean(1);
+            if (rSet.next()) {
+                return rSet.getBoolean("NOMENCLATURA_COMPLETA");
+            } else {
+                throw new IllegalStateException("Erro ao verificar se a nomenclatura estava completa");
+            }
         } finally {
             close(stmt, rSet);
         }
