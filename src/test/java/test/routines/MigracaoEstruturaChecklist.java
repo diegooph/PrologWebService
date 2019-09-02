@@ -1,5 +1,6 @@
 package test.routines;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import org.jetbrains.annotations.NotNull;
@@ -7,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +105,29 @@ public final class MigracaoEstruturaChecklist {
         //     END FOR;
         //     VERSAO_ATUAL = 0;
         // END FOR;
+
+        final OffsetDateTime agora = Now.offsetDateTimeUtc();
+        long versaoAtual = 0;
+        final List<MigrationModeloCheck> todosModelos = getTodosModelos(conn);
+        for (final MigrationModeloCheck modelo : todosModelos) {
+            final List<MigrationCheck> checklists = getTodosChecksDoModelo(conn, modelo.getCodigo());
+            MigrationCheck checklistAnterior = null;
+            for (final MigrationCheck checklist : checklists) {
+                if (checklistAnterior == null) {
+                    versaoAtual = criaVersaoModelo(conn, modelo.getCodigo(), agora);
+                    setarVersaoNoChecklistRealizado(conn, checklist.getCodigo(), versaoAtual);
+                } else {
+                    if (perguntasOuAlternativasMudaram(conn, checklistAnterior, checklist)) {
+                        versaoAtual = criaVersaoModelo(conn, modelo.getCodigo(), agora);
+                        setarVersaoNoChecklistRealizado(conn, checklist.getCodigo(), versaoAtual);
+                    } else {
+                        setarVersaoNoChecklistRealizado(conn, checklist.getCodigo(), versaoAtual);
+                    }
+                }
+                checklistAnterior = checklist;
+            }
+            versaoAtual = 0;
+        }
     }
 
     /**
@@ -136,6 +161,93 @@ public final class MigracaoEstruturaChecklist {
             }
         } finally {
             DatabaseConnection.close(stmt);
+        }
+    }
+
+    private void setarVersaoNoChecklistRealizado(@NotNull final Connection conn,
+                                                 @NotNull final Long codChecklist,
+                                                 final long versaoModelo) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_DATA " +
+                    "SET COD_VERSAO_CHECKLIST_MODELO = ? WHERE CODIGO = ?;");
+            stmt.setLong(1, codChecklist);
+            stmt.setLong(2, versaoModelo);
+            if (stmt.executeUpdate() != 1) {
+                throw new IllegalStateException("Erro ao setar versão " + versaoModelo + " no checklist " + codChecklist);
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+    }
+
+    private long criaVersaoModelo(@NotNull final Connection conn,
+                                  @NotNull final Long codModelo,
+                                  @NotNull final OffsetDateTime dataHoraAtual) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("select func_checklist_cria_versao_modelo(" +
+                    "f_cod_modelo      := ?, " +
+                    "f_data_hora_atual := ?) as novo_cod_versao_modelo;");
+            stmt.setLong(1, codModelo);
+            stmt.setObject(2, dataHoraAtual);
+            rSet = stmt.executeQuery();
+            final long codVersaoModelo;
+            if (rSet.next() && (codVersaoModelo = rSet.getLong(1)) > 0) {
+                return codVersaoModelo;
+            } else {
+                throw new IllegalStateException("Erro ao criar nova versão do modelo: " + codModelo);
+            }
+        } finally {
+            DatabaseConnection.close(stmt, rSet);
+        }
+    }
+
+    private boolean perguntasOuAlternativasMudaram(@NotNull final Connection conn,
+                                                   @NotNull final MigrationCheck anterior,
+                                                   @NotNull final MigrationCheck atual) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("with antigo as ( " +
+                    "    SELECT cr.cod_alternativa " +
+                    "    FROM checklist_respostas CR " +
+                    "    WHERE cr.cod_checklist = ? " +
+                    "    order by cr.cod_alternativa " +
+                    "), " +
+                    "     novo as ( " +
+                    "         SELECT cr.cod_alternativa " +
+                    "    FROM checklist_respostas CR " +
+                    "    WHERE cr.cod_checklist = ? " +
+                    "    order by cr.cod_alternativa " +
+                    "     ) " +
+                    " " +
+                    " " +
+                    "select " +
+                    "       coalesce(a.cod_alternativa = n.cod_alternativa, false) as iguais " +
+                    "from antigo a left join novo n on n.cod_alternativa = a .cod_alternativa " +
+                    "group by iguais;");
+            stmt.setLong(1, anterior.getCodigo());
+            stmt.setLong(2, atual.getCodigo());
+            rSet = stmt.executeQuery();
+            // Se fore IGUAIS vai retornar apenas uma linha com valor TRUE.
+            // Se forem PARCIALMENTE IGUAIS vai retornar duas linhas. Uma TRUE e outra FALSE.
+            // Se forem TOTALMENTE DIFERENTES vai retornar uma linha com valor FALSE.
+            if (rSet.next()) {
+                //noinspection RedundantIfStatement
+                if (rSet.isLast() && rSet.getBoolean(1)) {
+                    // São iguais.
+                    return false;
+                } else {
+                    // Parcialmente iguais ou diferentes, então mudaram.
+                    return true;
+                }
+            } else {
+                throw new IllegalStateException("Erro ao buscar todos os modelos de check");
+            }
+        } finally {
+            DatabaseConnection.close(stmt, rSet);
         }
     }
 
@@ -175,7 +287,8 @@ public final class MigracaoEstruturaChecklist {
             stmt = conn.prepareStatement("SELECT " +
                     "CD.CODIGO, " +
                     "CD.COD_UNIDADE FROM CHECKLIST_DATA CD " +
-                    "WHERE CD.COD_CHECKLIST_MODELO = ?;");
+                    "WHERE CD.COD_CHECKLIST_MODELO = ? " +
+                    "ORDER BY CD.DATA_HORA ASC;");
             stmt.setLong(1, codModeloChecklist);
             rSet = stmt.executeQuery();
             final List<MigrationCheck> checks = new ArrayList<>();
