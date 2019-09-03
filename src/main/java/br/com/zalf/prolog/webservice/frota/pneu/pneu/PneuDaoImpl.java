@@ -769,7 +769,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     throw new SQLException("Nomenclatura incompleta");
                 }
             } finally {
-                close(conn, stmt);
+                close(conn);
             }
         }else{
             throw new Throwable("Sem informações de nomenclatura");
