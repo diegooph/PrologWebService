@@ -2,8 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
-
 /**
  * Created on 29/08/19.
  *
@@ -24,9 +22,7 @@ public class PneuNomenclaturaItem {
     @NotNull
     private final Long codIdioma;
     @NotNull
-    private final Long codColaborador;
-    @NotNull
-    private final LocalDateTime dataHoraCadastro;
+    private final String dataHoraCadastro;
 
     public PneuNomenclaturaItem(@NotNull final Long codDiagrama,
                                 @NotNull final Long codEmpresa,
@@ -34,15 +30,13 @@ public class PneuNomenclaturaItem {
                                 @NotNull final Long posicaoProlog,
                                 @NotNull final String nomenclatura,
                                 @NotNull final Long codIdioma,
-                                @NotNull final Long codColaborador,
-                                @NotNull final LocalDateTime dataHoraCadastro) {
+                                @NotNull final String dataHoraCadastro) {
         this.codDiagrama = codDiagrama;
         this.codEmpresa = codEmpresa;
         this.codUnidade = codUnidade;
         this.posicaoProlog = posicaoProlog;
         this.nomenclatura = nomenclatura;
         this.codIdioma = codIdioma;
-        this.codColaborador = codColaborador;
         this.dataHoraCadastro = dataHoraCadastro;
     }
 
@@ -77,12 +71,7 @@ public class PneuNomenclaturaItem {
     }
 
     @NotNull
-    public Long getCodColaborador() {
-        return codColaborador;
-    }
-
-    @NotNull
-    public LocalDateTime getDataHoraCadastro() {
+    public String getDataHoraCadastro() {
         return dataHoraCadastro;
     }
 }

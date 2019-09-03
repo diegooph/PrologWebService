@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -751,7 +752,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                             stmt.setString(4, pneuNomenclaturaItem.getNomenclatura());
                             stmt.setLong(5, pneuNomenclaturaItem.getCodIdioma());
                             stmt.setString(6, TokenCleaner.getOnlyToken(userToken));
-                            stmt.setObject(7, pneuNomenclaturaItem.getDataHoraCadastro().atZone(unidadeZoneId).toOffsetDateTime());
+                            stmt.setObject(7, ProLogDateParser.toLocalDateTime(pneuNomenclaturaItem.getDataHoraCadastro()).atZone(unidadeZoneId).toOffsetDateTime());
                             stmt.addBatch();
                             linhasParaExecutar++;
                         }
