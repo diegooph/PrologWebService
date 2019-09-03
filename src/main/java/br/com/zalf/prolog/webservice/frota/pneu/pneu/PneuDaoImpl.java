@@ -157,7 +157,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             } else {
                 stmt.setLong(14, pneu.getBanda().getModelo().getCodigo());
             }
-            stmt.setString(15, pneu.getDot().trim());
+            if(pneu.getDot() == null){
+                stmt.setString(15, pneu.getDot());
+            } else {
+                stmt.setString(15, pneu.getDot().trim());
+            }
             stmt.setBigDecimal(16, pneu.getValor());
             if (pneu.isPneuNovoNuncaRodado() != null) {
                 stmt.setBoolean(17, pneu.isPneuNovoNuncaRodado());

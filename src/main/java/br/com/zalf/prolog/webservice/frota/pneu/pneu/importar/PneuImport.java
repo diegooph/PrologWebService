@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import com.univocity.parsers.annotations.*;
 import com.univocity.parsers.conversions.EnumSelector;
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
@@ -69,11 +68,12 @@ public final class PneuImport {
     private String dot;
 
     @Parsed(field = "dot")
-    public void setDot(@NotNull final String dot) {
-        if (StringUtils.isNullOrEmpty(dot) || !Pneu.isDotValid(dot)) {
-            throw new IllegalArgumentException("O dot fornecido não é válido: " + dot);
+    public void setDot(final String dot) {
+        if(dot != null){
+            if (StringUtils.isNullOrEmpty(dot) || !Pneu.isDotValid(dot)) {
+                throw new IllegalArgumentException("O dot fornecido não é válido: " + dot);
+            }
         }
-
         this.dot = dot;
     }
 
