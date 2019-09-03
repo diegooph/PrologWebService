@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada.model;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,6 +98,33 @@ public final class ApiMarcacao {
         this.deviceUptimeSincronizacaoMillis = deviceUptimeSincronizacaoMillis;
         this.androidApiVersion = androidApiVersion;
         this.statusAtivo = statusAtivo;
+    }
+
+    @NotNull
+    public static ApiMarcacao getDummy() {
+        return new ApiMarcacao(
+                5L,
+                194753L,
+                194738L,
+                35L,
+                "03383283194",
+                ApiTipoInicioFim.MARCACAO_FIM,
+                Now.localDateTimeUtc(),
+                ApiFonteDataHora.REDE_CELULAR,
+                null,
+                "Esqueci de finalizar antes",
+                new ApiCoordenadasMarcacao("12345", "12345"),
+                Now.localDateTimeUtc(),
+                "XXXXXXXXX",
+                "A23DSJLC43",
+                "Samsung",
+                "A50",
+                78,
+                78,
+                12345,
+                12345,
+                23,
+                true);
     }
 
     @NotNull

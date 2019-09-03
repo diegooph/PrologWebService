@@ -59,6 +59,23 @@ public final class ApiTipoMarcacao {
     }
 
     @NotNull
+    public static ApiTipoMarcacao getDummy() {
+        return new ApiTipoMarcacao(
+                3L,
+                5L,
+                12L,
+                "Descanso",
+                "DESCANSO",
+                Duration.ofMinutes(45L),
+                Duration.ofMinutes(60L),
+                LocalTime.now(),
+                false,
+                true,
+                false,
+                true);
+    }
+
+    @NotNull
     public Long getCodEmpresa() {
         return codEmpresa;
     }

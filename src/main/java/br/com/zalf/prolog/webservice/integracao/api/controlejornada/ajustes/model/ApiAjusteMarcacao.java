@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada.ajustes.model;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,6 +46,19 @@ public final class ApiAjusteMarcacao {
         this.cpfColaboradorAjuste = cpfColaboradorAjuste;
         this.dataHoraRealizacaoAjusteUtc = dataHoraRealizacaoAjusteUtc;
         this.marcacaoAjustada = marcacaoAjustada;
+    }
+
+    @NotNull
+    public static ApiAjusteMarcacao getDummy() {
+        return new ApiAjusteMarcacao(
+                50L,
+                2L,
+                "ESQUECIMENTO",
+                "Colaborador alegou que esqueceu de marcar",
+                ApiAcaoAjusteMarcacao.ADICAO,
+                "03383283194",
+                Now.localDateTimeUtc(),
+                ApiMarcacao.getDummy());
     }
 
     @NotNull
