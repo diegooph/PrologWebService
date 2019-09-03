@@ -1,5 +1,6 @@
 package test.routines;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,8 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class MigracaoEstruturaChecklist {
+    @NotNull
+    private static final String TAG = MigracaoEstruturaChecklist.class.getSimpleName();
 
     public void executaMigracaoCheckist() throws Throwable {
         Connection conn = null;
@@ -43,11 +47,21 @@ public final class MigracaoEstruturaChecklist {
             DatabaseManager.init();
             conn = DatabaseConnection.getConnection();
             conn.setAutoCommit(false);
+            log("************************ Iniciando da execução da migração ************************");
+            log("************************ PASSO 1 - INÍCIO ************************");
             executaPasso1(conn);
+            log("************************ PASSO 1 - FIM ************************");
+            log("************************ PASSO 2 - INÍCIO ************************");
             executaPasso2(conn);
+            log("************************ PASSO 2 - FIM ************************");
+            log("************************ PASSO 3 - INÍCIO ************************");
             executaPasso3(conn);
+            log("************************ PASSO 3 - FIM ************************");
+            log("************************ PASSO 4 - INÍCIO ************************");
             executaPasso4(conn);
+            log("************************ PASSO 4 - FIM ************************");
             conn.commit();
+            log("************************ Fim da execução da migração ************************");
         } catch (final Throwable t) {
             if (conn != null) {
                 try {
@@ -108,23 +122,68 @@ public final class MigracaoEstruturaChecklist {
 
         final OffsetDateTime agora = Now.offsetDateTimeUtc();
         long versaoAtual = 0;
+        boolean teveTrocaVersao = false;
         final List<MigrationModeloCheck> todosModelos = getTodosModelos(conn);
-        for (final MigrationModeloCheck modelo : todosModelos) {
+        log("Modelos de checklist buscados");
+        for (int i = 0; i < todosModelos.size(); i++) {
+            final MigrationModeloCheck modelo = todosModelos.get(i);
+            log(String.format("-> Iterando no modelo (%d / %d): %s", i + 1, todosModelos.size(), modelo.getNome()));
+
             final List<MigrationCheck> checklists = getTodosChecksDoModelo(conn, modelo.getCodigo());
             MigrationCheck checklistAnterior = null;
-            for (final MigrationCheck checklist : checklists) {
+            MigrationCheck primeiroCheckModelo = null;
+            for (int j = 0; j < checklists.size(); j++) {
+                final MigrationCheck checklist = checklists.get(j);
+                log(String.format("--> Iterando no check (%d / %d) do modelo (%d / %d)",
+                        j + 1,
+                        checklists.size(),
+                        i + 1,
+                        todosModelos.size()));
+
+                if (primeiroCheckModelo == null) {
+                    primeiroCheckModelo = checklist;
+                }
+
+                // Verifica se é a primeira iteração.
                 if (checklistAnterior == null) {
-                    versaoAtual = criaVersaoModelo(conn, modelo.getCodigo(), agora);
+                    log(String.format("---> Criando versão 1 do modelo %d e checklist %d",
+                            modelo.getCodigo(),
+                            primeiroCheckModelo.getCodigo()));
+                    versaoAtual = criaVersaoModelo(conn, modelo.getCodigo(), primeiroCheckModelo.getCodigo(), agora);
                     setarVersaoNoChecklistRealizado(conn, checklist.getCodigo(), versaoAtual);
                 } else {
                     if (perguntasOuAlternativasMudaram(conn, checklistAnterior, checklist)) {
-                        versaoAtual = criaVersaoModelo(conn, modelo.getCodigo(), agora);
+                        log(String.format("---> Criando nova versão do modelo %d e checklist %d",
+                                modelo.getCodigo(),
+                                primeiroCheckModelo.getCodigo()));
+
+                        teveTrocaVersao = true;
+                        setarVidaUtilModeloCheck(
+                                conn,
+                                modelo.getCodigo(),
+                                versaoAtual,
+                                primeiroCheckModelo.getDataRealizacao(),
+                                checklist.getDataRealizacao());
+                        versaoAtual = criaVersaoModelo(conn, modelo.getCodigo(), primeiroCheckModelo.getCodigo(), agora);
                         setarVersaoNoChecklistRealizado(conn, checklist.getCodigo(), versaoAtual);
                     } else {
                         setarVersaoNoChecklistRealizado(conn, checklist.getCodigo(), versaoAtual);
                     }
                 }
+
                 checklistAnterior = checklist;
+            }
+
+            // Se não teve troca de versão, temos que setar a vida útil do modelo aqui fora, pois significa que ele
+            // teve apenas uma versão.
+            if (!teveTrocaVersao && primeiroCheckModelo != null) {
+                teveTrocaVersao = false;
+                setarVidaUtilModeloCheck(
+                        conn,
+                        modelo.getCodigo(),
+                        versaoAtual,
+                        primeiroCheckModelo.getDataRealizacao(),
+                        checklistAnterior.getDataRealizacao());
             }
             versaoAtual = 0;
         }
@@ -164,6 +223,30 @@ public final class MigracaoEstruturaChecklist {
         }
     }
 
+    private void setarVidaUtilModeloCheck(@NotNull final Connection conn,
+                                          @NotNull final Long codModelo,
+                                          final long versaoAtual,
+                                          @NotNull final LocalDate dataInicial,
+                                          @NotNull final LocalDate dataFinal) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO CHECK_VIDA_MODELO_AUX (" +
+                    "cod_modelo," +
+                    "cod_modelo_versao," +
+                    "data_inicial," +
+                    "data_final) VALUES (?, ?, ?, ?);");
+            stmt.setLong(1, codModelo);
+            stmt.setLong(2, versaoAtual);
+            stmt.setObject(3, dataInicial);
+            stmt.setObject(4, dataFinal);
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao setar vida útil do modelo de checklist");
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+    }
+
     private void setarVersaoNoChecklistRealizado(@NotNull final Connection conn,
                                                  @NotNull final Long codChecklist,
                                                  final long versaoModelo) throws Throwable {
@@ -183,15 +266,18 @@ public final class MigracaoEstruturaChecklist {
 
     private long criaVersaoModelo(@NotNull final Connection conn,
                                   @NotNull final Long codModelo,
+                                  @NotNull final Long codPrimeiroChecklistVersaoModelo,
                                   @NotNull final OffsetDateTime dataHoraAtual) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("select func_checklist_cria_versao_modelo(" +
-                    "f_cod_modelo      := ?, " +
-                    "f_data_hora_atual := ?) as novo_cod_versao_modelo;");
+            stmt = conn.prepareStatement("select * from func_checklist_cria_versao_modelo(" +
+                    "f_cod_modelo           := ?, " +
+                    "novo_cod_versao_modelo := ?, " +
+                    "f_data_hora_atual      := ?);");
             stmt.setLong(1, codModelo);
-            stmt.setObject(2, dataHoraAtual);
+            stmt.setLong(2, codPrimeiroChecklistVersaoModelo);
+            stmt.setObject(3, dataHoraAtual);
             rSet = stmt.executeQuery();
             final long codVersaoModelo;
             if (rSet.next() && (codVersaoModelo = rSet.getLong(1)) > 0) {
@@ -286,7 +372,9 @@ public final class MigracaoEstruturaChecklist {
         try {
             stmt = conn.prepareStatement("SELECT " +
                     "CD.CODIGO, " +
-                    "CD.COD_UNIDADE FROM CHECKLIST_DATA CD " +
+                    "CD.COD_UNIDADE, " +
+                    "(CD.DATA_HORA AT TIME ZONE TZ_UNIDADE(CD.COD_UNIDADE)) :: DATE" +
+                    "FROM CHECKLIST_DATA CD " +
                     "WHERE CD.COD_CHECKLIST_MODELO = ? " +
                     "ORDER BY CD.DATA_HORA ASC;");
             stmt.setLong(1, codModeloChecklist);
@@ -296,7 +384,8 @@ public final class MigracaoEstruturaChecklist {
                 do {
                     checks.add(new MigrationCheck(
                             rSet.getLong(1),
-                            rSet.getLong(2)));
+                            rSet.getLong(2),
+                            rSet.getObject(3, LocalDate.class)));
                 } while (rSet.next());
             } else {
                 throw new IllegalStateException("Erro ao buscar todos os checklists do modelo: " + codModeloChecklist);
@@ -307,16 +396,24 @@ public final class MigracaoEstruturaChecklist {
         }
     }
 
+    private void log(@NotNull final String message) {
+        Log.d(TAG, message);
+    }
+
     private static class MigrationCheck {
         @NotNull
         private final Long codigo;
         @NotNull
         private final Long codUnidade;
+        @NotNull
+        private final LocalDate dataRealizacao;
 
         private MigrationCheck(@NotNull final Long codigo,
-                               @NotNull final Long codUnidade) {
+                               @NotNull final Long codUnidade,
+                               @NotNull final LocalDate dataRealizacao) {
             this.codigo = codigo;
             this.codUnidade = codUnidade;
+            this.dataRealizacao = dataRealizacao;
         }
 
         @NotNull
@@ -327,6 +424,11 @@ public final class MigracaoEstruturaChecklist {
         @NotNull
         public Long getCodUnidade() {
             return codUnidade;
+        }
+
+        @NotNull
+        public LocalDate getDataRealizacao() {
+            return dataRealizacao;
         }
     }
 
