@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,6 +42,7 @@ public final class MigracaoEstruturaChecklist {
     @NotNull
     private static final String TAG = MigracaoEstruturaChecklist.class.getSimpleName();
 
+    @Test
     public void executaMigracaoCheckist() throws Throwable {
         Connection conn = null;
         try {
@@ -54,12 +56,12 @@ public final class MigracaoEstruturaChecklist {
             log("************************ PASSO 2 - INÍCIO ************************");
             executaPasso2(conn);
             log("************************ PASSO 2 - FIM ************************");
-            log("************************ PASSO 3 - INÍCIO ************************");
-            executaPasso3(conn);
-            log("************************ PASSO 3 - FIM ************************");
-            log("************************ PASSO 4 - INÍCIO ************************");
-            executaPasso4(conn);
-            log("************************ PASSO 4 - FIM ************************");
+//            log("************************ PASSO 3 - INÍCIO ************************");
+//            executaPasso3(conn);
+//            log("************************ PASSO 3 - FIM ************************");
+//            log("************************ PASSO 4 - INÍCIO ************************");
+//            executaPasso4(conn);
+//            log("************************ PASSO 4 - FIM ************************");
             conn.commit();
             log("************************ Fim da execução da migração ************************");
         } catch (final Throwable t) {
@@ -86,7 +88,7 @@ public final class MigracaoEstruturaChecklist {
     private void executaPasso1(@NotNull final Connection conn) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("SELECT FUNC_CRIA_ESTRUTURA_VERSIONAMENTO_MODELO();");
+            stmt = conn.prepareCall("{CALL FUNC_MIGRATION_1_CRIA_ESTRUTURA_VERSIONAMENTO_MODELO()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 1");
             }
@@ -121,6 +123,7 @@ public final class MigracaoEstruturaChecklist {
         // END FOR;
 
         final OffsetDateTime agora = Now.offsetDateTimeUtc();
+        long totalChecksProcessados = 0;
         long versaoAtual = 0;
         boolean teveTrocaVersao = false;
         final List<MigrationModeloCheck> todosModelos = getTodosModelos(conn);
@@ -131,40 +134,50 @@ public final class MigracaoEstruturaChecklist {
 
             final List<MigrationCheck> checklists = getTodosChecksDoModelo(conn, modelo.getCodigo());
             MigrationCheck checklistAnterior = null;
-            MigrationCheck primeiroCheckModelo = null;
+            MigrationCheck primeiroCheckModeloVersao = null;
             for (int j = 0; j < checklists.size(); j++) {
+                totalChecksProcessados++;
                 final MigrationCheck checklist = checklists.get(j);
-                log(String.format("--> Iterando no check (%d / %d) do modelo (%d / %d)",
+                log(String.format("--> Iterando no check (%d / %d) do modelo (%d / %d) -- TOTAL VERSÕES / CHECKS: %d / %d",
                         j + 1,
                         checklists.size(),
                         i + 1,
-                        todosModelos.size()));
-
-                if (primeiroCheckModelo == null) {
-                    primeiroCheckModelo = checklist;
-                }
+                        todosModelos.size(),
+                        versaoAtual,
+                        totalChecksProcessados));
 
                 // Verifica se é a primeira iteração.
                 if (checklistAnterior == null) {
-                    log(String.format("---> Criando versão 1 do modelo %d e checklist %d",
+                    primeiroCheckModeloVersao = checklist;
+                    versaoAtual = criaVersaoModelo(conn, modelo.getCodigo(), primeiroCheckModeloVersao.getCodigo(), agora);
+                    log(String.format("---> Criando versão 1 (%d) do modelo %d e checklist %d",
+                            versaoAtual,
                             modelo.getCodigo(),
-                            primeiroCheckModelo.getCodigo()));
-                    versaoAtual = criaVersaoModelo(conn, modelo.getCodigo(), primeiroCheckModelo.getCodigo(), agora);
+                            primeiroCheckModeloVersao.getCodigo()));
                     setarVersaoNoChecklistRealizado(conn, checklist.getCodigo(), versaoAtual);
                 } else {
                     if (perguntasOuAlternativasMudaram(conn, checklistAnterior, checklist)) {
-                        log(String.format("---> Criando nova versão do modelo %d e checklist %d",
-                                modelo.getCodigo(),
-                                primeiroCheckModelo.getCodigo()));
+                        log(String.format("Versão Criada - Anterior %d e Novo %d",
+                                checklistAnterior.getCodigo(),
+                                checklist.getCodigo()));
+
+
+                        // Sempre que uma versão for criada, o primeiro check da versão precisa ser atualizado.
+                        primeiroCheckModeloVersao = checklist;
 
                         teveTrocaVersao = true;
                         setarVidaUtilModeloCheck(
                                 conn,
                                 modelo.getCodigo(),
                                 versaoAtual,
-                                primeiroCheckModelo.getDataRealizacao(),
+                                primeiroCheckModeloVersao.getDataRealizacao(),
                                 checklist.getDataRealizacao());
-                        versaoAtual = criaVersaoModelo(conn, modelo.getCodigo(), primeiroCheckModelo.getCodigo(), agora);
+                        versaoAtual = criaVersaoModelo(conn, modelo.getCodigo(), primeiroCheckModeloVersao.getCodigo(), agora);
+                        log(String.format("---> Criando nova versão (%d) do modelo %d e checklist %d",
+                                versaoAtual,
+                                modelo.getCodigo(),
+                                primeiroCheckModeloVersao.getCodigo()));
+
                         setarVersaoNoChecklistRealizado(conn, checklist.getCodigo(), versaoAtual);
                     } else {
                         setarVersaoNoChecklistRealizado(conn, checklist.getCodigo(), versaoAtual);
@@ -176,16 +189,33 @@ public final class MigracaoEstruturaChecklist {
 
             // Se não teve troca de versão, temos que setar a vida útil do modelo aqui fora, pois significa que ele
             // teve apenas uma versão.
-            if (!teveTrocaVersao && primeiroCheckModelo != null) {
+            if (!teveTrocaVersao && primeiroCheckModeloVersao != null) {
                 teveTrocaVersao = false;
                 setarVidaUtilModeloCheck(
                         conn,
                         modelo.getCodigo(),
                         versaoAtual,
-                        primeiroCheckModelo.getDataRealizacao(),
+                        primeiroCheckModeloVersao.getDataRealizacao(),
                         checklistAnterior.getDataRealizacao());
             }
             versaoAtual = 0;
+        }
+
+        if (true)
+            throw new IllegalStateException("Aborted!");
+//        log("Ativando as constraints nas tabelas de versão e dependências");
+//        ativarConstraintsTabelasVersao(conn);
+    }
+
+    private void ativarConstraintsTabelasVersao(@NotNull final Connection conn) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareCall("{CALL FUNC_CHECKLIST_ATIVAR_CONSTRAINTS_VERSAO()}");
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao ativar as constraints");
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
         }
     }
 
@@ -254,8 +284,8 @@ public final class MigracaoEstruturaChecklist {
         try {
             stmt = conn.prepareStatement("UPDATE CHECKLIST_DATA " +
                     "SET COD_VERSAO_CHECKLIST_MODELO = ? WHERE CODIGO = ?;");
-            stmt.setLong(1, codChecklist);
-            stmt.setLong(2, versaoModelo);
+            stmt.setLong(1, versaoModelo);
+            stmt.setLong(2, codChecklist);
             if (stmt.executeUpdate() != 1) {
                 throw new IllegalStateException("Erro ao setar versão " + versaoModelo + " no checklist " + codChecklist);
             }
@@ -272,9 +302,9 @@ public final class MigracaoEstruturaChecklist {
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("select * from func_checklist_cria_versao_modelo(" +
-                    "f_cod_modelo           := ?, " +
-                    "novo_cod_versao_modelo := ?, " +
-                    "f_data_hora_atual      := ?);");
+                    "f_cod_modelo                       := ?, " +
+                    "f_cod_primeiro_check_versao_modelo := ?, " +
+                    "f_data_hora_atual                  := ?);");
             stmt.setLong(1, codModelo);
             stmt.setLong(2, codPrimeiroChecklistVersaoModelo);
             stmt.setObject(3, dataHoraAtual);
@@ -345,7 +375,7 @@ public final class MigracaoEstruturaChecklist {
             stmt = conn.prepareStatement("SELECT " +
                     "CM.CODIGO, " +
                     "CM.NOME, " +
-                    "CM.COD_UNIDADE FROM CHECKLIST_MODELO_DATA CM;");
+                    "CM.COD_UNIDADE FROM CHECKLIST_MODELO_DATA CM WHERE CM.CODIGO = 391;");
             rSet = stmt.executeQuery();
             final List<MigrationModeloCheck> modelos = new ArrayList<>();
             if (rSet.next()) {
@@ -373,22 +403,18 @@ public final class MigracaoEstruturaChecklist {
             stmt = conn.prepareStatement("SELECT " +
                     "CD.CODIGO, " +
                     "CD.COD_UNIDADE, " +
-                    "(CD.DATA_HORA AT TIME ZONE TZ_UNIDADE(CD.COD_UNIDADE)) :: DATE" +
+                    "(CD.DATA_HORA AT TIME ZONE TZ_UNIDADE(CD.COD_UNIDADE)) :: DATE " +
                     "FROM CHECKLIST_DATA CD " +
                     "WHERE CD.COD_CHECKLIST_MODELO = ? " +
                     "ORDER BY CD.DATA_HORA ASC;");
             stmt.setLong(1, codModeloChecklist);
             rSet = stmt.executeQuery();
             final List<MigrationCheck> checks = new ArrayList<>();
-            if (rSet.next()) {
-                do {
-                    checks.add(new MigrationCheck(
-                            rSet.getLong(1),
-                            rSet.getLong(2),
-                            rSet.getObject(3, LocalDate.class)));
-                } while (rSet.next());
-            } else {
-                throw new IllegalStateException("Erro ao buscar todos os checklists do modelo: " + codModeloChecklist);
+            while (rSet.next()) {
+                checks.add(new MigrationCheck(
+                        rSet.getLong(1),
+                        rSet.getLong(2),
+                        rSet.getObject(3, LocalDate.class)));
             }
             return checks;
         } finally {
