@@ -721,11 +721,17 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         if (!pneuNomenclaturaItens.isEmpty()) {
-            final int qtdObjetos = pneuNomenclaturaItens.size();
+            final Long posicaoInicialEstepe = 900L;
+            int qtdObjetosValidos = 0;
+            for (final PneuNomenclaturaItem pneuNomenclaturaItensValidos : pneuNomenclaturaItens ){
+                if (pneuNomenclaturaItensValidos.getPosicaoProlog() < posicaoInicialEstepe){
+                    qtdObjetosValidos++;
+                }
+            }
             final int indexPrimeiroObjeto = 0;
             try {
                 conn = getConnection();
-                final boolean nomenclaturaCompleta = confereNomenclaturaCompleta(conn, pneuNomenclaturaItens.get(indexPrimeiroObjeto).getCodDiagrama(), qtdObjetos);
+                final boolean nomenclaturaCompleta = confereNomenclaturaCompleta(conn, pneuNomenclaturaItens.get(indexPrimeiroObjeto).getCodDiagrama(), qtdObjetosValidos);
                 if (nomenclaturaCompleta) {
                     try {
                         int linhasParaExecutar = 0;
