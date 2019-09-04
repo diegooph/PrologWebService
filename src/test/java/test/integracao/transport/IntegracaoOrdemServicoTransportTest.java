@@ -96,8 +96,8 @@ public class IntegracaoOrdemServicoTransportTest extends BaseTest {
             assertNotNull(itemPendenteIntegracaoTransport.getPrioridadeAlternativa());
             assertTrue(
                     itemPendenteIntegracaoTransport.getPrioridadeAlternativa() == PrioridadeAlternativa.BAIXA
-                    || itemPendenteIntegracaoTransport.getPrioridadeAlternativa() == PrioridadeAlternativa.ALTA
-                    || itemPendenteIntegracaoTransport.getPrioridadeAlternativa() == PrioridadeAlternativa.CRITICA);
+                            || itemPendenteIntegracaoTransport.getPrioridadeAlternativa() == PrioridadeAlternativa.ALTA
+                            || itemPendenteIntegracaoTransport.getPrioridadeAlternativa() == PrioridadeAlternativa.CRITICA);
         });
     }
 
@@ -138,18 +138,17 @@ public class IntegracaoOrdemServicoTransportTest extends BaseTest {
 
     @NotNull
     private ItemResolvidoIntegracaoTransport convert(@NotNull final ItemPendenteIntegracaoTransport itemPendente) {
-        final ItemResolvidoIntegracaoTransport item = new ItemResolvidoIntegracaoTransport();
-        item.setCodUnidadeOrdemServico(itemPendente.getCodUnidadeOrdemServico());
-        item.setCodOrdemServico(itemPendente.getCodOrdemServico());
-        item.setCodItemResolvido(itemPendente.getCodItemOrdemServico());
-        item.setCpfColaboradorResolucao("39476386800");
-        item.setPlacaVeiculo(itemPendente.getPlacaVeiculo());
-        item.setKmColetadoVeiculo(itemPendente.getKmAberturaServico() + 100);
-        item.setDuracaoResolucaoItemEmMilissegundos(Duration.ofMinutes(15L).toMillis());
-        item.setFeedbackResolucao("Fechando item através de teste de integração");
-        item.setDataHoraResolvidoProLog(LocalDateTime.now());
-        item.setDataHoraInicioResolucao(LocalDateTime.now().minusDays(3));
-        item.setDataHoraFimResolucao(LocalDateTime.now().minusDays(2));
-        return item;
+        return new ItemResolvidoIntegracaoTransport(
+                itemPendente.getCodUnidadeOrdemServico(),
+                itemPendente.getCodOrdemServico(),
+                itemPendente.getCodItemOrdemServico(),
+                "39476386800",
+                itemPendente.getPlacaVeiculo(),
+                itemPendente.getKmAberturaServico() + 100,
+                Duration.ofMinutes(15L).toMillis(),
+                "Fechando item através de teste de integração",
+                LocalDateTime.now(),
+                LocalDateTime.now().minusDays(3),
+                LocalDateTime.now().minusDays(2));
     }
 }
