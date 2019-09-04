@@ -101,7 +101,8 @@ public final class MigracaoEstruturaChecklistV3 {
      */
     private void executaPasso2(@NotNull final Connection conn) throws Throwable {
         final OffsetDateTime agora = Now.offsetDateTimeUtc();
-        long versaoAtual;
+        long versaoAtual = 0;
+        long totalUltimasVersoes = 0;
         final List<MigrationModeloCheck> todosModelos = getTodosModelos(conn);
         log("Modelos de checklist buscados");
         for (int i = 0; i < todosModelos.size(); i++) {
@@ -124,25 +125,18 @@ public final class MigracaoEstruturaChecklistV3 {
                         todosModelos.size(),
                         versaoAtual));
             }
+
+            criaUltimaVersaoModelo(conn, modelo.getCodigo(), agora);
+            totalUltimasVersoes++;
+            log("Criou última versão modelo: " + versaoAtual);
+            log("*** Ultimas versoes: " + totalUltimasVersoes);
         }
 
-        if (true)
-            throw new IllegalStateException("Aborted!");
+//        if (true)
+//            throw new IllegalStateException("Aborted!");
 
 //        log("Ativando as constraints nas tabelas de versão e dependências");
 //        ativarConstraintsTabelasVersao(conn);
-    }
-
-    private void ativarConstraintsTabelasVersao(@NotNull final Connection conn) throws Throwable {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareCall("{CALL FUNC_CHECKLIST_ATIVAR_CONSTRAINTS_VERSAO()}");
-            if (stmt.executeUpdate() < 0) {
-                throw new IllegalStateException("Erro ao ativar as constraints");
-            }
-        } finally {
-            DatabaseConnection.close(stmt);
-        }
     }
 
     /**
@@ -154,9 +148,14 @@ public final class MigracaoEstruturaChecklistV3 {
     private void executaPasso3(@NotNull final Connection conn) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("SELECT FUNC_MIGRA_DADOS_CHECKLIST_RESPOSTAS();");
+            stmt = conn.prepareCall("{CALL FUNC_MIGRATION_2_MIGRA_ESTRUTURA_RESPOSTAS_NOK()}");
             if (stmt.executeUpdate() < 0) {
-                throw new IllegalStateException("Erro ao executar passo 3");
+                throw new IllegalStateException("Erro ao executar passo 3 - Respostas NOK");
+            }
+
+            stmt = conn.prepareCall("{CALL FUNC_MIGRATION_3_MIGRA_ESTRUTURA_COSI()}");
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao executar passo 3 - COSI");
             }
         } finally {
             DatabaseConnection.close(stmt);
@@ -170,9 +169,44 @@ public final class MigracaoEstruturaChecklistV3 {
     private void executaPasso4(@NotNull final Connection conn) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("SELECT FUNC_MIGRA_FUNCTIONS_VIEWS();");
+            stmt = conn.prepareCall("{CALL FUNC_MIGRATION_4_MIGRA_FUNCTIONS_VIEWS()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 4");
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+    }
+
+    private long criaUltimaVersaoModelo(@NotNull final Connection conn,
+                                        @NotNull final Long codModelo,
+                                        @NotNull final OffsetDateTime dataHoraAtual) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareCall("select * from FUNC_CHECKLIST_CRIA_MODELO_ULTIMA_VERSAO(" +
+                    "F_COD_MODELO      := ?, " +
+                    "F_DATA_HORA_ATUAL := ?) as cod_versao");
+            stmt.setLong(1, codModelo);
+            stmt.setObject(2, dataHoraAtual);
+            rSet = stmt.executeQuery();
+            final long codVersaoModelo;
+            if (rSet.next() && (codVersaoModelo = rSet.getLong(1)) > 0) {
+                return codVersaoModelo;
+            } else {
+                throw new IllegalStateException("Erro ao criar última versão do modelo: " + codModelo);
+            }
+        } finally {
+            DatabaseConnection.close(stmt, rSet);
+        }
+    }
+
+    private void ativarConstraintsTabelasVersao(@NotNull final Connection conn) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareCall("{CALL FUNC_CHECKLIST_ATIVAR_CONSTRAINTS_VERSAO()}");
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao ativar as constraints");
             }
         } finally {
             DatabaseConnection.close(stmt);
@@ -213,18 +247,14 @@ public final class MigracaoEstruturaChecklistV3 {
             stmt = conn.prepareStatement("SELECT " +
                     "CM.CODIGO, " +
                     "CM.NOME, " +
-                    "CM.COD_UNIDADE FROM CHECKLIST_MODELO_DATA CM WHERE CM.CODIGO = 391;");
+                    "CM.COD_UNIDADE FROM CHECKLIST_MODELO_DATA CM order by codigo;");
             rSet = stmt.executeQuery();
             final List<MigrationModeloCheck> modelos = new ArrayList<>();
-            if (rSet.next()) {
-                do {
+            while (rSet.next()) {
                     modelos.add(new MigrationModeloCheck(
                             rSet.getLong(1),
                             rSet.getString(2),
                             rSet.getLong(3)));
-                } while (rSet.next());
-            } else {
-                throw new IllegalStateException("Erro ao buscar todos os modelos de check");
             }
             return modelos;
         } finally {
