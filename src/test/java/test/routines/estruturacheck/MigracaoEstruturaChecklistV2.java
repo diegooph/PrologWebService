@@ -1,4 +1,4 @@
-package test.routines;
+package test.routines.estruturacheck;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -38,9 +38,10 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class MigracaoEstruturaChecklist {
+@Deprecated
+public final class MigracaoEstruturaChecklistV2 {
     @NotNull
-    private static final String TAG = MigracaoEstruturaChecklist.class.getSimpleName();
+    private static final String TAG = MigracaoEstruturaChecklistV2.class.getSimpleName();
 
     @Test
     public void executaMigracaoCheckist() throws Throwable {
