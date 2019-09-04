@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.SqlErrorCodes;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import org.jetbrains.annotations.NotNull;
@@ -235,12 +236,20 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                                     conn,
                                     getCodEmpresaByToken(conn, tokenIntegracao),
                                     pneuTransferencia.getCodPneusTransferidos());
-            final Long codColaborador =
-                    Injection
-                            .provideColaboradorDao()
-                            .getCodColaboradorByCpf(
-                                    conn,
-                                    pneuTransferencia.getCpfColaboradorRealizacaoTransferencia());
+            final Long codColaborador;
+            try {
+                codColaborador =
+                        Injection
+                                .provideColaboradorDao()
+                                .getCodColaboradorByCpf(
+                                        conn,
+                                        pneuTransferencia.getCpfColaboradorRealizacaoTransferencia());
+            } catch (final Throwable t) {
+                throw new GenericException(
+                        String.format(
+                                "Cpf %s não está cadastrado na base de dados do ProLog",
+                                pneuTransferencia.getCpfColaboradorRealizacaoTransferencia()));
+            }
             final Long codProcessoTransferencia =
                     Injection
                             .providePneuTransferenciaDao()
