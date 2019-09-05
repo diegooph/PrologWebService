@@ -2,10 +2,10 @@ Stage
 ==========
 
 ### Refactors
-* Adicionar código auxiliar ao cadastro de tipos de marcação
+* Adicionar código auxiliar ao cadastro de tipos de marcação (PL-2223)
 
 ### Features
-* Adiciona relatório para exportação das marcações
+* Adiciona relatório para exportação das marcações (PL-2223)
 
 Change Log
 ==========

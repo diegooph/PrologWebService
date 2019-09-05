@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
@@ -14,6 +15,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jorn
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDao;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,6 +24,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created by Zart on 28/08/2017.
@@ -369,21 +373,32 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @Override
-    public void getIntervalosExportacaoGenericaCsv(@NotNull final OutputStream out,
-                                                   @NotNull final Long codUnidade,
-                                                   final Long codTipoIntervalo,
-                                                   final Long codColaborador,
-                                                   final boolean apenasAtivos,
-                                                   @NotNull final LocalDate dataInicial,
-                                                   @NotNull final LocalDate dataFinal) throws SQLException, IOException {
+    public void getMarcacoesExportacaoGenericaCsv(@NotNull final OutputStream out,
+                                                  @NotNull final Long codUnidade,
+                                                  @Nullable final Long codTipoIntervalo,
+                                                  @Nullable final Long codColaborador,
+                                                  final boolean apenasMarcacoesAtivas,
+                                                  @NotNull final LocalDate dataInicial,
+                                                  @NotNull final LocalDate dataFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getIntervalosExportacaoGenericaStmt(codUnidade, codTipoIntervalo, codColaborador, apenasAtivos, dataInicial, dataFinal, conn);
+            stmt = getMarcacoesExportacaoGenericaCsv(
+                    conn,
+                    codUnidade,
+                    codTipoIntervalo,
+                    codColaborador,
+                    apenasMarcacoesAtivas,
+                    dataInicial,
+                    dataFinal);
             rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, out);
+            new CsvWriter
+                    .Builder(out)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
         } finally {
             close(conn, stmt, rSet);
         }
@@ -491,35 +506,31 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @NotNull
-    private PreparedStatement getIntervalosExportacaoGenericaStmt(@NotNull final Long codUnidade,
-                                                                  final Long codTipoIntervalo,
-                                                                  final Long codColaborador,
-                                                                  final boolean apenasAtivos,
-                                                                  @NotNull final LocalDate dataInicial,
-                                                                  @NotNull final LocalDate dataFinal,
-                                                                  @NotNull final Connection conn) throws SQLException {
-        Preconditions.checkNotNull(codUnidade);
+    private PreparedStatement getMarcacoesExportacaoGenericaCsv(@NotNull final Connection conn,
+                                                                @NotNull final Long codUnidade,
+                                                                @Nullable final Long codTipoIntervalo,
+                                                                @Nullable final Long codColaborador,
+                                                                final boolean apenasMarcacoesAtivas,
+                                                                @NotNull final LocalDate dataInicial,
+                                                                @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM FUNC_INTERVALO_RELATORIO_EXPORTACAO_GENERICA(?, ?, ?, ?, ?, ?);");
+                "SELECT * FROM FUNC_MARCACAO_RELATORIO_EXPORTACAO_GENERICA(" +
+                        "F_COD_UNIDADE             := ?, " +
+                        "F_COD_TIPO_INTERVALO      := ?, " +
+                        "F_COD_COLABORADOR         := ?, " +
+                        "F_APENAS_MARCACOES_ATIVAS := ?, " +
+                        "F_DATA_INICIAL            := ?, " +
+                        "F_DATA_FINAL              := ?);");
         stmt.setLong(1, codUnidade);
-        stmt.setObject(2, dataInicial);
-        stmt.setObject(3, dataFinal);
-        if (apenasAtivos) {
+        bindValueOrNull(stmt, 2, codTipoIntervalo, SqlType.BIGINT);
+        bindValueOrNull(stmt, 3, codColaborador, SqlType.BIGINT);
+        if (apenasMarcacoesAtivas) {
             stmt.setBoolean(4, true);
         } else {
             stmt.setNull(4, Types.BOOLEAN);
         }
-        if (codColaborador != null) {
-            stmt.setLong(5,codColaborador);
-        } else {
-            stmt.setNull(5, Types.BIGINT);
-        }
-        if (codTipoIntervalo != null) {
-            stmt.setLong(6,codTipoIntervalo);
-        } else {
-            stmt.setNull(6, Types.BIGINT);
-        }
-
+        stmt.setObject(5, dataInicial);
+        stmt.setObject(6, dataFinal);
         return stmt;
     }
 }

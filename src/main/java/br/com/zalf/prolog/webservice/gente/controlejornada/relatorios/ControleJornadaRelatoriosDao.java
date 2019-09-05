@@ -253,22 +253,21 @@ public interface ControleJornadaRelatoriosDao {
     /**
      * Método para gerar um relatório contendo as marcações em um padrão de importação.
      * A function no banco está preparada para não receber os filtros opcionais de colaborador, tipo de intervalo e
-     * apenas ativos
+     * apenas marcações ativas.
      *
-     * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
-     * @param codTipoIntervalo - Código do {@link TipoMarcacao} que os dados serão filtrados.
-     * @param codColaborador   - Código do {@link Colaborador} que os dados serão filtrados.
-     * @param apenasAtivos     - Filtra apenas por marcações ativas.
-     * @param dataInicial      - Data inicial do período de filtro.
-     * @param dataFinal        - Data final do período de filtro.
-     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
-     * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
+     * @param codUnidade            - Código da {@link Unidade unidade} de onde os dados serão filtrados.
+     * @param codTipoIntervalo      - Código do {@link TipoMarcacao tipo de marcação} que os dados serão filtrados.
+     * @param codColaborador        - Código do {@link Colaborador colaborador} que os dados serão filtrados.
+     * @param apenasMarcacoesAtivas - Filtra apenas por marcações ativas.
+     * @param dataInicial           - Data inicial do período de filtro.
+     * @param dataFinal             - Data final do período de filtro.
+     * @throws Throwable            - Se algum erro ocorrer.
      */
-    void getIntervalosExportacaoGenericaCsv(@NotNull final OutputStream out,
-                                            @NotNull final Long codUnidade,
-                                            final Long codTipoIntervalo,
-                                            final Long codColaborador,
-                                            final boolean apenasAtivos,
-                                            @NotNull final LocalDate dataInicial,
-                                            @NotNull final LocalDate dataFinal) throws SQLException, IOException;
+    void getMarcacoesExportacaoGenericaCsv(@NotNull final OutputStream out,
+                                           @NotNull final Long codUnidade,
+                                           final Long codTipoIntervalo,
+                                           final Long codColaborador,
+                                           final boolean apenasMarcacoesAtivas,
+                                           @NotNull final LocalDate dataInicial,
+                                           @NotNull final LocalDate dataFinal) throws Throwable;
 }

@@ -295,29 +295,29 @@ public class ControleJornadaRelatorioService {
     }
 
 
-    public void getIntervalosExportacaoGenericaCsv(@NotNull final OutputStream out,
-                                                @NotNull final Long codUnidade,
-                                                @Nullable final Long codTipoIntervalo,
-                                                @Nullable final Long codColaborador,
-                                                @Nullable final boolean apenasAtivos,
-                                                @NotNull final String dataInicial,
-                                                @NotNull final String dataFinal) {
+    public void getMarcacoesExportacaoGenericaCsv(@NotNull final OutputStream out,
+                                                  @NotNull final Long codUnidade,
+                                                  @Nullable final Long codTipoIntervalo,
+                                                  @Nullable final Long codColaborador,
+                                                  final boolean apenasMarcacoesAtivas,
+                                                  @NotNull final String dataInicial,
+                                                  @NotNull final String dataFinal) {
         try {
-            dao.getIntervalosExportacaoGenericaCsv(
+            dao.getMarcacoesExportacaoGenericaCsv(
                     out,
                     codUnidade,
                     codTipoIntervalo,
                     codColaborador,
-                    apenasAtivos,
+                    apenasMarcacoesAtivas,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException | IOException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório csv para exportação genérica de marcações. \n" +
-                    "codUnidade: %d \n" +
-                    "codTipoIntervalo: %d \n" +
-                    "codColaborador: %d \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, codTipoIntervalo, codColaborador, dataInicial, dataFinal), e);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório csv para exportação genérica de marcações.\n" +
+                    "codUnidade: %d\n" +
+                    "codTipoIntervalo: %d\n" +
+                    "codColaborador: %d\n" +
+                    "dataInicial: %s\n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, codColaborador, dataInicial, dataFinal), t);
         }
     }
 }
