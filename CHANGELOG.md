@@ -1,12 +1,3 @@
-Stage
-==========
-
-### Refactors
-* Adicionar código auxiliar ao cadastro de tipos de marcação (PL-2223)
-
-### Features
-* Adiciona relatório para exportação das marcações (PL-2223)
-
 Change Log
 ==========
 
@@ -15,12 +6,14 @@ Change Log
 
 ### Features
 * Cria funcionalidade de inserção/edição e visualização de nomenclaturas. (PL-2259)
+* Adiciona relatório para exportação das marcações (PL-2223)
 
 ### Refactors
 * Remove provisoriamente validador de placa do veículo no cadastro (foco em internacionalização)
 * Melhora método de busca de um quiz pelo código (PL-2249)
 * Adiciona o separa datas para o filtro de abertura e fechamento no relatório de estratificação de O.S. (PL-2175)
 * Altera os métodos de validação das requisições para diferenciar retornos de login inválido e sem permissão (PL-2267)
+* Adiciona código auxiliar ao cadastro / edição de tipos de marcação (PL-2223)
 
 <a name="v0.1.0"></a>
 ## Version [v0.1.0](https://github.com/luizfp/PrologWebService/compare/v0.0.99...v0.1.0) (2019-08-19)
