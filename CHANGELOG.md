@@ -4,6 +4,9 @@ Change Log
 <a name="v0.1.01"></a>
 ## Version [v0.1.01](https://github.com/luizfp/PrologWebService/compare/v0.1.0...v0.1.01) (release-date) [unreleased]
 
+### Features
+* Cria funcionalidade de inserção/edição e visualização de nomenclaturas. (PL-2259)
+
 ### Refactors
 * Remove provisoriamente validador de placa do veículo no cadastro (foco em internacionalização)
 * Melhora método de busca de um quiz pelo código (PL-2249)
