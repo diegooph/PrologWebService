@@ -145,11 +145,13 @@ public final class MigracaoEstruturaChecklistV3 {
     private void executaPasso3(@NotNull final Connection conn) throws Throwable {
         PreparedStatement stmt = null;
         try {
+            log("Migrando respostas para nova tabela de NOK");
             stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_2_MIGRA_ESTRUTURA_RESPOSTAS_NOK()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 3 - Respostas NOK");
             }
 
+            log("Migrando dados da COSI");
             stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_3_MIGRA_ESTRUTURA_COSI()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 3 - COSI");
