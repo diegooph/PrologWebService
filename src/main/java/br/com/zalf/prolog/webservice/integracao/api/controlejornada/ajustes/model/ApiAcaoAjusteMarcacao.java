@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada.ajustes.model;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,8 +33,6 @@ public enum ApiAcaoAjusteMarcacao {
 
     @NotNull
     public static ApiAcaoAjusteMarcacao fromString(@NotNull final String acaoAjuste) {
-        Preconditions.checkNotNull(acaoAjuste, "tipoMarcacaoAjuste cannot be null!");
-
         for (final ApiAcaoAjusteMarcacao acao : ApiAcaoAjusteMarcacao.values()) {
             if (acaoAjuste.equals(acao.acaoAjuste)) {
                 return acao;

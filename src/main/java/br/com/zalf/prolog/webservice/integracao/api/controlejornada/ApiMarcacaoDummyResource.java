@@ -25,7 +25,7 @@ import java.util.List;
 @Path("/api/marcacoes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class ApiMarcacaoDummyResource {
+public final class ApiMarcacaoDummyResource {
 
     @GET
     @LogIntegracaoRequest

@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ApiAjusteMarcacaoDaoImpl extends DatabaseConnection implements ApiAjusteMarcacaoDao {
+public final class ApiAjusteMarcacaoDaoImpl extends DatabaseConnection implements ApiAjusteMarcacaoDao {
     @NotNull
     @Override
     public List<ApiAjusteMarcacao> getAjustesMarcacaoRealizados(
@@ -28,7 +28,7 @@ public class ApiAjusteMarcacaoDaoImpl extends DatabaseConnection implements ApiA
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT * FROM INTEGRACAO.FUNC_CONTROLE_JORNADA_LISTA_AJUSTES_MARCACOES_REALIZADOS(" +
+                    "SELECT * FROM INTEGRACAO.FUNC_MARCACAO_LISTA_AJUSTES_MARCACOES_REALIZADOS(" +
                             "F_TOKEN_INTEGRACAO := ?," +
                             "F_COD_ULTIMO_AJUSTE_MARCACAO_SINCRONIZADO := ?);");
             stmt.setString(1, tokenIntegracao);

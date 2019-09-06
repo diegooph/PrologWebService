@@ -34,7 +34,7 @@ public class ListagemAjustesMarcacoesTest extends BaseTest {
     }
 
     @Test
-    public void getTiposMarcacoesTest() {
+    public void getAjustesMarcacaoRealizadosTest() {
         final List<ApiAjusteMarcacao> ajustesMarcacaoRealizados =
                 service.getAjustesMarcacaoRealizados(TOKEN_INTEGRACAO, 0L);
         assertThat(ajustesMarcacaoRealizados).isNotNull();
