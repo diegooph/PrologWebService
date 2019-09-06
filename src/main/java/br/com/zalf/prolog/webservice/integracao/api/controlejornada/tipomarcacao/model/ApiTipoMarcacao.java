@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcacao.model;
 
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -22,9 +23,11 @@ public final class ApiTipoMarcacao {
     @NotNull
     private final String icone;
     @NotNull
-    private final Duration tempoRecomendadoEmMinutos;
+    @SerializedName("tempoRecomendadoEmSegundos")
+    private final Duration tempoRecomendado;
     @NotNull
-    private final Duration tempoEstouroEmMinutos;
+    @SerializedName("tempoEstouroEmSegundos")
+    private final Duration tempoEstouro;
     @NotNull
     private final LocalTime horarioSugeridoMarcar;
     private final boolean isTipoJornada;
@@ -37,8 +40,8 @@ public final class ApiTipoMarcacao {
                            @NotNull final Long codigo,
                            @NotNull final String nome,
                            @NotNull final String icone,
-                           @NotNull final Duration tempoRecomendadoEmMinutos,
-                           @NotNull final Duration tempoEstouroEmMinutos,
+                           @NotNull final Duration tempoRecomendado,
+                           @NotNull final Duration tempoEstouro,
                            @NotNull final LocalTime horarioSugeridoMarcar,
                            final boolean isTipoJornada,
                            final boolean descontaJornadaBruta,
@@ -49,8 +52,8 @@ public final class ApiTipoMarcacao {
         this.codigo = codigo;
         this.nome = nome;
         this.icone = icone;
-        this.tempoRecomendadoEmMinutos = tempoRecomendadoEmMinutos;
-        this.tempoEstouroEmMinutos = tempoEstouroEmMinutos;
+        this.tempoRecomendado = tempoRecomendado;
+        this.tempoEstouro = tempoEstouro;
         this.horarioSugeridoMarcar = horarioSugeridoMarcar;
         this.isTipoJornada = isTipoJornada;
         this.descontaJornadaBruta = descontaJornadaBruta;
@@ -101,13 +104,13 @@ public final class ApiTipoMarcacao {
     }
 
     @NotNull
-    public Duration getTempoRecomendadoEmMinutos() {
-        return tempoRecomendadoEmMinutos;
+    public Duration getTempoRecomendado() {
+        return tempoRecomendado;
     }
 
     @NotNull
-    public Duration getTempoEstouroEmMinutos() {
-        return tempoEstouroEmMinutos;
+    public Duration getTempoEstouro() {
+        return tempoEstouro;
     }
 
     @NotNull

@@ -19,14 +19,14 @@ import java.util.List;
 public final class ApiTipoMarcacaoDaoImpl extends DatabaseConnection implements ApiTipoMarcacaoDao {
     @NotNull
     @Override
-    public List<ApiTipoMarcacao> getTipoMarcacoes(@NotNull final String tokenIntegracao,
-                                                  final boolean apenasTiposMarcacoesAtivos) throws Throwable {
+    public List<ApiTipoMarcacao> getTiposMarcacoes(@NotNull final String tokenIntegracao,
+                                                   final boolean apenasTiposMarcacoesAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_CONTROLE_JORNADA_LISTA_TIPOS_MARCACOES(" +
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_MARCACAO_LISTA_TIPOS_MARCACOES(" +
                     "F_TOKEN_INTEGRACAO := ?, " +
                     "F_APENAS_TIPO_MARCACOES_ATIVAS := ?);");
             stmt.setString(1, tokenIntegracao);

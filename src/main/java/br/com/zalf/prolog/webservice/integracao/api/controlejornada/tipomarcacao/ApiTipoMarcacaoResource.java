@@ -35,6 +35,6 @@ public final class ApiTipoMarcacaoResource {
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("apenasTiposMarcacoesAtivos") @Required final boolean apenasTiposMarcacoesAtivos)
             throws ProLogException {
-        return service.getTipoMarcacoes(tokenIntegracao, apenasTiposMarcacoesAtivos);
+        return service.getTiposMarcacoes(tokenIntegracao, apenasTiposMarcacoesAtivos);
     }
 }

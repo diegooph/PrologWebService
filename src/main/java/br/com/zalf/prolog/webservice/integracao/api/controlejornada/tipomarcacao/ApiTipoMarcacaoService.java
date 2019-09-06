@@ -18,21 +18,21 @@ public final class ApiTipoMarcacaoService extends BaseIntegracaoService {
     @NotNull
     private static final String TAG = ApiTipoMarcacaoService.class.getSimpleName();
     @NotNull
-    private ApiTipoMarcacaoDao dao = new ApiTipoMarcacaoDaoImpl();
+    private final ApiTipoMarcacaoDao dao = new ApiTipoMarcacaoDaoImpl();
 
     @NotNull
-    public List<ApiTipoMarcacao> getTipoMarcacoes(final String tokenIntegracao,
-                                                  final boolean apenasTiposMarcacoesAtivos) throws ProLogException {
+    public List<ApiTipoMarcacao> getTiposMarcacoes(final String tokenIntegracao,
+                                                   final boolean apenasTiposMarcacoesAtivos) throws ProLogException {
         try {
             ensureValidToken(tokenIntegracao, TAG);
-            return dao.getTipoMarcacoes(tokenIntegracao, apenasTiposMarcacoesAtivos);
+            return dao.getTiposMarcacoes(tokenIntegracao, apenasTiposMarcacoesAtivos);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar os tipos de marcação\n" +
+            Log.e(TAG, "Erro ao buscar os tipos de marcações\n" +
                     "tokenIntegracao: " + tokenIntegracao + "\n" +
                     "apenasTiposMarcacoesAtivos: " + apenasTiposMarcacoesAtivos, t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar os tipos de marcação");
+                    .map(t, "Erro ao buscar os tipos de marcações");
         }
     }
 }

@@ -24,6 +24,6 @@ public interface ApiTipoMarcacaoDao {
      * @throws Throwable Caso algum erro ocorrer.
      */
     @NotNull
-    List<ApiTipoMarcacao> getTipoMarcacoes(@NotNull final String tokenIntegracao,
-                                           final boolean apenasTiposMarcacoesAtivos) throws Throwable;
+    List<ApiTipoMarcacao> getTiposMarcacoes(@NotNull final String tokenIntegracao,
+                                            final boolean apenasTiposMarcacoesAtivos) throws Throwable;
 }
