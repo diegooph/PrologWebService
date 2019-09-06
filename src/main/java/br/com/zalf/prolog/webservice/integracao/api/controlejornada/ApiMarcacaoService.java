@@ -18,7 +18,7 @@ public final class ApiMarcacaoService extends BaseIntegracaoService {
     @NotNull
     private static final String TAG = ApiMarcacaoService.class.getSimpleName();
     @NotNull
-    private ApiMarcacaoDao dao = new ApiMarcacaoDaoImpl();
+    private final ApiMarcacaoDao dao = new ApiMarcacaoDaoImpl();
 
     @NotNull
     public List<ApiMarcacao> getMarcacoesRealizadas(

@@ -27,7 +27,7 @@ public final class ApiMarcacaoDaoImpl extends DatabaseConnection implements ApiM
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT * FROM INTEGRACAO.FUNC_CONTROLE_JORNADA_LISTA_MARCACOES_REALIZADAS(" +
+                    "SELECT * FROM INTEGRACAO.FUNC_MARCACAO_LISTA_MARCACOES_REALIZADAS(" +
                             "F_TOKEN_INTEGRACAO := ?, " +
                             "F_COD_ULTIMA_MARCACAO_SINCRONIZADA := ?);");
             stmt.setString(1, tokenIntegracao);

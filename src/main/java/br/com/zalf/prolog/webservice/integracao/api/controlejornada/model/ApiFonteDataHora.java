@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada.model;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -33,8 +32,6 @@ public enum ApiFonteDataHora {
 
     @NotNull
     public static ApiFonteDataHora fromString(@NotNull final String fonteDataHora) {
-        Preconditions.checkNotNull(fonteDataHora);
-
         for (final ApiFonteDataHora fonte : ApiFonteDataHora.values()) {
             if (fonte.fonteDataHora.equals(fonteDataHora)) {
                 return fonte;

@@ -34,7 +34,7 @@ public class ListagemMarcacoesTest extends BaseTest {
     }
 
     @Test
-    public void getTiposMarcacoesTest() {
+    public void getMarcacoesRealizadasTest() {
         final List<ApiMarcacao> marcacoesRealizadas =
                 service.getMarcacoesRealizadas(TOKEN_INTEGRACAO, 0L);
         assertThat(marcacoesRealizadas).isNotNull();

@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada.model;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,11 +31,9 @@ public enum ApiTipoInicioFim {
 
     @NotNull
     public static ApiTipoInicioFim fromString(@NotNull final String tipoMarcacao) {
-        Preconditions.checkNotNull(tipoMarcacao);
-
-        for (final ApiTipoInicioFim marcacao : ApiTipoInicioFim.values()) {
-            if (marcacao.tipoMarcacao.equals(tipoMarcacao)) {
-                return marcacao;
+        for (final ApiTipoInicioFim tipo : ApiTipoInicioFim.values()) {
+            if (tipo.tipoMarcacao.equals(tipoMarcacao)) {
+                return tipo;
             }
         }
 

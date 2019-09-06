@@ -36,7 +36,7 @@ public class ListagemTiposMarcacaoTest extends BaseTest {
     @Test
     public void getTiposMarcacoesTest() {
         final List<ApiTipoMarcacao> tipoMarcacoes =
-                service.getTipoMarcacoes(TOKEN_INTEGRACAO, false);
+                service.getTiposMarcacoes(TOKEN_INTEGRACAO, false);
         assertThat(tipoMarcacoes).isNotNull();
         assertThat(tipoMarcacoes).isNotEmpty();
         System.out.println(GsonUtils.getGson().toJson(tipoMarcacoes));

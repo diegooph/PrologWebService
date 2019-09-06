@@ -22,7 +22,7 @@ public interface ApiMarcacaoDao {
      *
      * @param tokenIntegracao               Token da empresa que está buscando as marcações realizadas.
      * @param codUltimaMarcacaoSincronizada Código da última marcação sincronizada. Se este código for ZERO então
-     *                                      listará todas as marcação da empresa.
+     *                                      listará todas as marcações da empresa.
      * @return Uma lista de {@link ApiMarcacao marcações} realizadas pelos colaboradores da empresa.
      * @throws Throwable Se algum erro acontecer.
      */
