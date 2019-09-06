@@ -161,6 +161,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             } else {
                 stmt.setLong(14, pneu.getBanda().getModelo().getCodigo());
             }
+            System.out.println("Em cima do dot");
             if(pneu.getDot() == null){
                 stmt.setString(15, pneu.getDot());
             } else {
