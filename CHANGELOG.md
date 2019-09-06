@@ -15,6 +15,9 @@ Change Log
 * Altera os métodos de validação das requisições para diferenciar retornos de login inválido e sem permissão (PL-2267)
 * Adiciona código auxiliar ao cadastro / edição de tipos de marcação (PL-2223)
 
+### Bug Fixes
+* Corrige bug no Ajuste de Marcações do controle de jornada (PL-2280)
+
 <a name="v0.1.0"></a>
 ## Version [v0.1.0](https://github.com/luizfp/PrologWebService/compare/v0.0.99...v0.1.0) (2019-08-19)
 
