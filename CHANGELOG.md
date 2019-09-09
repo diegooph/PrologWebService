@@ -7,6 +7,7 @@ Change Log
 ### Features
 * Cria funcionalidade de inserção/edição e visualização de nomenclaturas. (PL-2259)
 * Adiciona relatório para exportação das marcações (PL-2223)
+* Cria API do Controle de Jornada (PL-2271)
 
 ### Refactors
 * Remove provisoriamente validador de placa do veículo no cadastro (foco em internacionalização)
