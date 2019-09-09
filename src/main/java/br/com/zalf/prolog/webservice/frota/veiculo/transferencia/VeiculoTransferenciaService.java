@@ -23,7 +23,7 @@ public final class VeiculoTransferenciaService {
     @NotNull
     private static final String TAG = VeiculoTransferenciaService.class.getSimpleName();
     @NotNull
-    private final VeiculoTransferenciaDao dao = Injection.provideVeiculoTransferenciaDaoImpl();
+    private final VeiculoTransferenciaDao dao = Injection.provideVeiculoTransferenciaDao();
 
     @NotNull
     public final ResponseWithCod insertProcessoTransferenciaVeiculo(

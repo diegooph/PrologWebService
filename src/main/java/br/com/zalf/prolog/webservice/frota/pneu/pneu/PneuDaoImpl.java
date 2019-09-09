@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -836,6 +837,34 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             } else {
                 throw new IllegalStateException("Erro ao verificar se a nomenclatura estava completa");
             }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Long> getCodPneuByCodCliente(@NotNull final Connection conn,
+                                             @NotNull final Long codEmpresa,
+                                             @NotNull final List<String> codigoClientePneus) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT " +
+                    "  P.CODIGO AS COD_PNEU " +
+                    "FROM PNEU P " +
+                    "WHERE P.COD_UNIDADE IN (SELECT U.CODIGO " +
+                    "                        FROM UNIDADE U " +
+                    "                        WHERE U.COD_EMPRESA = ?) " +
+                    "      AND P.CODIGO_CLIENTE LIKE ANY(?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, codigoClientePneus));
+            rSet = stmt.executeQuery();
+            final List<Long> codPneus = new ArrayList<>();
+            while (rSet.next()) {
+                codPneus.add(rSet.getLong("COD_PNEU"));
+            }
+            return codPneus;
         } finally {
             close(stmt, rSet);
         }

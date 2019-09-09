@@ -440,7 +440,7 @@ public final class Injection {
     }
 
     @NotNull
-    public static VeiculoTransferenciaDao provideVeiculoTransferenciaDaoImpl() {
+    public static VeiculoTransferenciaDao provideVeiculoTransferenciaDao() {
         return new VeiculoTransferenciaDaoImpl();
     }
 

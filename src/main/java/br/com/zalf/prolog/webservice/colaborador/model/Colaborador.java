@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador.model;
 
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,6 +49,11 @@ public class Colaborador {
 		final String bloco3 = cpf.substring(6, 9);
 		final String bloco4 = cpf.substring(9, 11);
 		return String.format("%s.%s.%s-%s", bloco1, bloco2, bloco3, bloco4);
+	}
+
+	@NotNull
+	public static Long formatCpf(@NotNull final String cpfString) {
+		return Long.valueOf(StringUtils.getOnlyNumbers(cpfString));
 	}
 
 	public Long getCodigo() {

@@ -520,6 +520,33 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @NotNull
+    @Override
+    public Long getCodColaboradorByCpf(@NotNull final Connection conn,
+                                       @NotNull final String cpfColaborador) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT C.CODIGO FROM COLABORADOR C WHERE C.CPF = ?;");
+            stmt.setLong(1, Colaborador.formatCpf(cpfColaborador));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codColaborador = rSet.getLong("CODIGO");
+                if (codColaborador <= 0) {
+                    throw new SQLException("Erro ao buscar código do colaborador:" +
+                            "\ncpfColaborador: " + cpfColaborador + "" +
+                            "\ncodColaborador: " + codColaborador);
+                }
+                return codColaborador;
+            } else {
+                throw new SQLException("Erro ao buscar código do colaborador:\n" +
+                        "cpfColaborador: " + cpfColaborador);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
     private List<Colaborador> internalGetAll(@NotNull final Long codigoFiltro,
                                              final boolean apenasAtivos,
                                              final boolean porUnidade) throws Throwable {
