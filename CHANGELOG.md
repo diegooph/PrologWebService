@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.1.01"></a>
-## Version [v0.1.01](https://github.com/luizfp/PrologWebService/compare/v0.1.0...v0.1.01) (release-date) [unreleased]
+## Version [v0.1.01](https://github.com/luizfp/PrologWebService/compare/v0.1.0...v0.1.01) (2019-09-08)
 
 ### Features
 * Cria funcionalidade de inserção/edição e visualização de nomenclaturas. (PL-2259)
