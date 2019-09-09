@@ -766,7 +766,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 if (codUnidade <= 0) {
                     throw new IllegalStateException(
                             "Código da unidade inválido para a placa:" +
-                            "\nplacaVeiculo: " + placaVeiculo);
+                                    "\nplacaVeiculo: " + placaVeiculo);
                 }
                 return codUnidade;
             } else {
@@ -797,6 +797,33 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 return Optional.of(codPneusAplicados);
             } else {
                 return Optional.empty();
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long getCodVeiculoByPlaca(@NotNull final Connection conn,
+                                     @NotNull final String placaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT V.CODIGO FROM VEICULO V WHERE V.PLACA = ?;");
+            stmt.setString(1, placaVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codVeiculo = rSet.getLong("CODIGO");
+                if (codVeiculo <= 0) {
+                    throw new SQLException("Erro ao buscar código do veículo:" +
+                            "\nplacaVeiculo: " + placaVeiculo + "" +
+                            "\ncodVeiculo: " + codVeiculo);
+                }
+                return codVeiculo;
+            } else {
+                throw new SQLException("Erro ao buscar código do veículo:\n" +
+                        "placaVeiculo: " + placaVeiculo);
             }
         } finally {
             close(stmt, rSet);

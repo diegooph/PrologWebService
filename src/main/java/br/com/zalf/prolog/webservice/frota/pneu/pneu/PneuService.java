@@ -51,7 +51,7 @@ public class PneuService {
         }
     }
 
-    public void update(@NotNull final Pneu pneu, @NotNull final  Long codUnidade, @NotNull final  Long codOriginal) {
+    public void update(@NotNull final Pneu pneu, @NotNull final Long codUnidade, @NotNull final Long codOriginal) {
         try {
             dao.update(pneu, codUnidade, codOriginal);
         } catch (final Throwable throwable) {
@@ -200,6 +200,38 @@ public class PneuService {
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu, e);
             throw new RuntimeException(e);
+        }
+    }
+
+    @NotNull
+    public Response insertOrUpdateNomenclatura(@NotNull final List<PneuNomenclaturaItem> pneuNomenclaturaItem,
+                                               @NotNull final String userToken) throws ProLogException {
+        try {
+            dao.insertOrUpdateNomenclatura(pneuNomenclaturaItem, userToken);
+            return Response.ok("Nomenclatura inserida com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir nomenclatura", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir a nomenclatura, tente novamente");
+        }
+    }
+
+    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(@NotNull final Long codEmpresa,
+                                                                                      @NotNull final Long codDiagrama)
+            throws ProLogException {
+        final Long codIdioma = 1L;
+        try {
+            return dao.getPneuNomenclaturaItemVisualizacao(
+                    codEmpresa,
+                    codDiagrama,
+                    codIdioma);
+        } catch (final Throwable t) {
+            final String errorMessage = "Erro ao buscar nomenclaturas";
+            Log.e(TAG, errorMessage, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar nomenclaturas, tente novamente");
         }
     }
 }

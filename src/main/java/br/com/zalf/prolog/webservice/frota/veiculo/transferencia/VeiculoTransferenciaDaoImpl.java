@@ -21,7 +21,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualiza
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.VeiculoTransferidoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -40,142 +43,37 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
     public Long insertProcessoTranseferenciaVeiculo(
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-
-            // É importante que esta verificação seja executa antes de qualquer outro processamento para inserir uma
-            // Transferência de veículo.
-            // Essa verificação nos garantirá que nenhum dos veículos transferidos está SEM DIAGRAMA aplicado.
-            // Retornamos uma Exception específica para tratar estes casos.
-            final Optional<List<TipoVeiculoDiagrama>> tipoVeiculoSemDiagramas = getVeiculosSemDiagramaAplicado(
-                    conn,
-                    processoTransferenciaVeiculo.getCodVeiculosTransferencia());
-            if (tipoVeiculoSemDiagramas.isPresent()) {
-                throw new VeiculoSemDiagramaException(
-                        "Veículos identificados que não possuem diagrama associado",
-                        tipoVeiculoSemDiagramas.get());
-            }
-
-            // Seta propriedade na connection para verificar constraints entre as tabelas do banco somente na chamada
-            // conn.commit(). Assim temos mais flexibilidade de trabalhar sem sermos interrompidos por vínculos.
-            // https://begriffs.com/posts/2017-08-27-deferrable-sql-constraints.html
-            stmt = conn.prepareStatement("SET CONSTRAINTS ALL DEFERRED;");
-            stmt.execute();
-
-            final OffsetDateTime dataHoraRealizacaoProcesso = Now.offsetDateTimeUtc();
-            stmt = conn.prepareStatement("INSERT INTO VEICULO_TRANSFERENCIA_PROCESSO(" +
-                    "  COD_UNIDADE_ORIGEM," +
-                    "  COD_UNIDADE_DESTINO," +
-                    "  COD_UNIDADE_COLABORADOR," +
-                    "  COD_COLABORADOR_REALIZACAO," +
-                    "  DATA_HORA_TRANSFERENCIA_PROCESSO," +
-                    "  OBSERVACAO)" +
-                    " VALUES (?, ?, (SELECT C.COD_UNIDADE FROM COLABORADOR C WHERE C.CODIGO = ?), ?, ?, ?)" +
-                    " RETURNING CODIGO;");
-            stmt.setLong(1, processoTransferenciaVeiculo.getCodUnidadeOrigem());
-            stmt.setLong(2, processoTransferenciaVeiculo.getCodUnidadeDestino());
-            stmt.setLong(3, processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia());
-            stmt.setLong(4, processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia());
-            stmt.setObject(5, dataHoraRealizacaoProcesso);
-            stmt.setString(6, StringUtils.trimToNull(processoTransferenciaVeiculo.getObservacao()));
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final long codProcessoTransferenciaVeiculo = rSet.getLong("CODIGO");
-                if (codProcessoTransferenciaVeiculo <= 0) {
-                    throw new SQLException("Erro ao inserir processo de transferência de veículo:\n" +
-                            "codProcessoTransferenciaVeiculo: " + codProcessoTransferenciaVeiculo);
-                }
-
-                final Long codUnidadeOrigem = processoTransferenciaVeiculo.getCodUnidadeOrigem();
-                final Long codUnidadeDestino = processoTransferenciaVeiculo.getCodUnidadeDestino();
-                final Long codColaboradorRealizacaoTransferencia =
-                        processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia();
-                final PneuTransferenciaDao pneuTransferenciaDao = Injection.providePneuTransferenciaDao();
-                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                // Transfere cada placa do Processo.
-                for (final Long codVeiculoTransferido : processoTransferenciaVeiculo.getCodVeiculosTransferencia()) {
-                    // Insere informações da transferência da Placa.
-                    final Long codTransferenciaInformacoes =
-                            insertTransferenciaVeiculoInformacoes(
-                                    conn,
-                                    codProcessoTransferenciaVeiculo,
-                                    codVeiculoTransferido);
-
-                    // Deleta os itens de O.S. em aberto do veículo transferido.
-                    deletaItensOrdemServicoChecklistVeiculoTransferido(
+            final Long codProcessoTransferencia =
+                    internalInsertProcessoTranseferenciaVeiculo(
                             conn,
-                            codVeiculoTransferido,
-                            codTransferenciaInformacoes,
-                            dataHoraRealizacaoProcesso);
-
-                    // Transfere o veículo da Unidade Origem para a Unidade Destino.
-                    tranfereVeiculo(conn, codUnidadeOrigem, codUnidadeDestino, codVeiculoTransferido);
-
-                    // Se o veículo tiver pneus, eles também serão transferidos.
-                    final Optional<List<Long>> codPneusAplicadosVeiculo = veiculoDao
-                            .getCodPneusAplicadosVeiculo(conn, codVeiculoTransferido);
-                    if (codPneusAplicadosVeiculo.isPresent()) {
-                        // Deleta os serviços de pneus em aberto do pneu transferido.
-                        // TODO: Esse FOR aqui, dentro da func ou utilizar um batch?
-                        for (final Long codPneu : codPneusAplicadosVeiculo.get()) {
-                            deletaServicosPneusTransferido(
-                                    conn,
-                                    codVeiculoTransferido,
-                                    codPneu,
-                                    codTransferenciaInformacoes,
-                                    dataHoraRealizacaoProcesso);
-                        }
-
-                        // Transfere os pneus aplicados na placa da Unidade Origem para a Unidade Destino.
-                        final Long codProcessoTransferenciaPneu = pneuTransferenciaDao.insertTransferencia(
-                                conn,
-                                VeiculoTransferenciaConverter.toPneuTransferenciaRealizacao(
-                                        codUnidadeOrigem,
-                                        codUnidadeDestino,
-                                        codColaboradorRealizacaoTransferencia,
-                                        codPneusAplicadosVeiculo.get()),
-                                dataHoraRealizacaoProcesso,
-                                true);
-
-                        // Atualiza o vínculo entre os pneus transferidos e o veículo transferido.
-                        atualizaVinculoPneuVeiculo(
-                                conn,
-                                codUnidadeOrigem,
-                                codUnidadeDestino,
-                                codVeiculoTransferido,
-                                codPneusAplicadosVeiculo.get());
-
-                        // Insere vínculo entre a Transferência do veículo com a Transferência dos Pneus.
-                        insereVinculoTransferenciaVeiculoPneu(
-                                conn,
-                                codTransferenciaInformacoes,
-                                codProcessoTransferenciaPneu);
-                    }
-                }
-
-                // Listener irá atualizar a versão dos dados do checklist offline para as unidades envolvidas no
-                // processo.
-                checklistOfflineListener.onVeiculosTransferidos(
-                        conn,
-                        processoTransferenciaVeiculo.getCodUnidadeOrigem(),
-                        processoTransferenciaVeiculo.getCodUnidadeDestino());
-                conn.commit();
-                return codProcessoTransferenciaVeiculo;
-            } else {
-                throw new SQLException("Não foi possível salvar processo de transferência de veículo");
-            }
+                            processoTransferenciaVeiculo,
+                            checklistOfflineListener);
+            conn.commit();
+            return codProcessoTransferencia;
         } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
             }
             throw t;
         } finally {
-            close(conn, stmt, rSet);
+            close(conn);
         }
+    }
+
+    @NotNull
+    @Override
+    public Long insertProcessoTranseferenciaVeiculo(
+            @NotNull final Connection conn,
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return internalInsertProcessoTranseferenciaVeiculo(
+                conn,
+                processoTransferenciaVeiculo,
+                checklistOfflineListener);
     }
 
     @NotNull
@@ -350,6 +248,139 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             return detalhesVeiculoTransferido;
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private Long internalInsertProcessoTranseferenciaVeiculo(
+            @NotNull final Connection conn,
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            // É importante que esta verificação seja executa antes de qualquer outro processamento para inserir uma
+            // Transferência de veículo.
+            // Essa verificação nos garantirá que nenhum dos veículos transferidos está SEM DIAGRAMA aplicado.
+            // Retornamos uma Exception específica para tratar estes casos.
+            final Optional<List<TipoVeiculoDiagrama>> tipoVeiculoSemDiagramas = getVeiculosSemDiagramaAplicado(
+                    conn,
+                    processoTransferenciaVeiculo.getCodVeiculosTransferencia());
+            if (tipoVeiculoSemDiagramas.isPresent()) {
+                throw new VeiculoSemDiagramaException(
+                        "Veículos identificados que não possuem diagrama associado",
+                        tipoVeiculoSemDiagramas.get());
+            }
+
+            // Seta propriedade na connection para verificar constraints entre as tabelas do banco somente na chamada
+            // conn.commit(). Assim temos mais flexibilidade de trabalhar sem sermos interrompidos por vínculos.
+            // https://begriffs.com/posts/2017-08-27-deferrable-sql-constraints.html
+            stmt = conn.prepareStatement("SET CONSTRAINTS ALL DEFERRED;");
+            stmt.execute();
+
+            final OffsetDateTime dataHoraRealizacaoProcesso = Now.offsetDateTimeUtc();
+            stmt = conn.prepareStatement("INSERT INTO VEICULO_TRANSFERENCIA_PROCESSO(" +
+                    "  COD_UNIDADE_ORIGEM," +
+                    "  COD_UNIDADE_DESTINO," +
+                    "  COD_UNIDADE_COLABORADOR," +
+                    "  COD_COLABORADOR_REALIZACAO," +
+                    "  DATA_HORA_TRANSFERENCIA_PROCESSO," +
+                    "  OBSERVACAO)" +
+                    " VALUES (?, ?, (SELECT C.COD_UNIDADE FROM COLABORADOR C WHERE C.CODIGO = ?), ?, ?, ?)" +
+                    " RETURNING CODIGO;");
+            stmt.setLong(1, processoTransferenciaVeiculo.getCodUnidadeOrigem());
+            stmt.setLong(2, processoTransferenciaVeiculo.getCodUnidadeDestino());
+            stmt.setLong(3, processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia());
+            stmt.setLong(4, processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia());
+            stmt.setObject(5, dataHoraRealizacaoProcesso);
+            stmt.setString(6, StringUtils.trimToNull(processoTransferenciaVeiculo.getObservacao()));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codProcessoTransferenciaVeiculo = rSet.getLong("CODIGO");
+                if (codProcessoTransferenciaVeiculo <= 0) {
+                    throw new SQLException("Erro ao inserir processo de transferência de veículo:\n" +
+                            "codProcessoTransferenciaVeiculo: " + codProcessoTransferenciaVeiculo);
+                }
+
+                final Long codUnidadeOrigem = processoTransferenciaVeiculo.getCodUnidadeOrigem();
+                final Long codUnidadeDestino = processoTransferenciaVeiculo.getCodUnidadeDestino();
+                final Long codColaboradorRealizacaoTransferencia =
+                        processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia();
+                final PneuTransferenciaDao pneuTransferenciaDao = Injection.providePneuTransferenciaDao();
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+                // Transfere cada placa do Processo.
+                for (final Long codVeiculoTransferido : processoTransferenciaVeiculo.getCodVeiculosTransferencia()) {
+                    // Insere informações da transferência da Placa.
+                    final Long codTransferenciaInformacoes =
+                            insertTransferenciaVeiculoInformacoes(
+                                    conn,
+                                    codProcessoTransferenciaVeiculo,
+                                    codVeiculoTransferido);
+
+                    // Deleta os itens de O.S. em aberto do veículo transferido.
+                    deletaItensOrdemServicoChecklistVeiculoTransferido(
+                            conn,
+                            codVeiculoTransferido,
+                            codTransferenciaInformacoes,
+                            dataHoraRealizacaoProcesso);
+
+                    // Transfere o veículo da Unidade Origem para a Unidade Destino.
+                    tranfereVeiculo(conn, codUnidadeOrigem, codUnidadeDestino, codVeiculoTransferido);
+
+                    // Se o veículo tiver pneus, eles também serão transferidos.
+                    final Optional<List<Long>> codPneusAplicadosVeiculo = veiculoDao
+                            .getCodPneusAplicadosVeiculo(conn, codVeiculoTransferido);
+                    if (codPneusAplicadosVeiculo.isPresent()) {
+                        // Deleta os serviços de pneus em aberto do pneu transferido.
+                        // TODO: Esse FOR aqui, dentro da func ou utilizar um batch?
+                        for (final Long codPneu : codPneusAplicadosVeiculo.get()) {
+                            deletaServicosPneusTransferido(
+                                    conn,
+                                    codVeiculoTransferido,
+                                    codPneu,
+                                    codTransferenciaInformacoes,
+                                    dataHoraRealizacaoProcesso);
+                        }
+
+                        // Transfere os pneus aplicados na placa da Unidade Origem para a Unidade Destino.
+                        final Long codProcessoTransferenciaPneu = pneuTransferenciaDao.insertTransferencia(
+                                conn,
+                                VeiculoTransferenciaConverter.toPneuTransferenciaRealizacao(
+                                        codUnidadeOrigem,
+                                        codUnidadeDestino,
+                                        codColaboradorRealizacaoTransferencia,
+                                        codPneusAplicadosVeiculo.get()),
+                                dataHoraRealizacaoProcesso,
+                                true);
+
+                        // Atualiza o vínculo entre os pneus transferidos e o veículo transferido.
+                        atualizaVinculoPneuVeiculo(
+                                conn,
+                                codUnidadeOrigem,
+                                codUnidadeDestino,
+                                codVeiculoTransferido,
+                                codPneusAplicadosVeiculo.get());
+
+                        // Insere vínculo entre a Transferência do veículo com a Transferência dos Pneus.
+                        insereVinculoTransferenciaVeiculoPneu(
+                                conn,
+                                codTransferenciaInformacoes,
+                                codProcessoTransferenciaPneu);
+                    }
+                }
+
+                // Listener irá atualizar a versão dos dados do checklist offline para as unidades envolvidas no
+                // processo.
+                checklistOfflineListener.onVeiculosTransferidos(
+                        conn,
+                        processoTransferenciaVeiculo.getCodUnidadeOrigem(),
+                        processoTransferenciaVeiculo.getCodUnidadeDestino());
+                return codProcessoTransferenciaVeiculo;
+            } else {
+                throw new SQLException("Não foi possível salvar processo de transferência de veículo");
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 

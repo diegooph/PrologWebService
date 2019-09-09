@@ -51,12 +51,11 @@ public interface ChecklistDao {
      * Busca um checklist pelo seu código único.
      *
      * @param codChecklist codigo do checklist a ser buscado.
-     * @param userToken    token do usuário que está realizando a busca.
      * @return um checklist
      * @throws SQLException caso não consiga buscar o checklist no banco de dados.
      */
     @NotNull
-    Checklist getByCod(@NotNull final Long codChecklist, @NotNull final String userToken) throws SQLException;
+    Checklist getByCod(@NotNull final Long codChecklist) throws SQLException;
 
     /**
      * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
@@ -151,6 +150,21 @@ public interface ChecklistDao {
      */
     boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
+    /**
+     * Método responsável por buscar o 'status das alternativas' de um modelo de checklist. O Status da alternativa
+     * consiste, neste contexto, nas informações de Ordens de Serviço Abertas para cada alternativa.
+     * O método recebe como parâmetro o {@code codModelo código do modelo} a qual as alternativas serão analisadas e
+     * também a {@code placaVeiculo placa do veículo} que será utilizada como base para saber se tem algum serviço
+     * pendente.
+     * Para cada alternativa do modelo, a método irá verificar se existe algum serviço para ser realizado na placa com
+     * o mesmo código de alternativa.
+     *
+     * @param conn         Conexão com o bando para buscar os dados.
+     * @param codModelo    Código do modelo de checklist para analisar as alternativas.
+     * @param placaVeiculo Placa do veículo para buscar itens em aberto.
+     * @return Um dicionário de informações listando o código das anternativas e qual as informações referentes.
+     * @throws Throwable Se algum erro ocorrer.
+     */
     @NotNull
     Map<Long, AlternativaChecklistStatus> getItensStatus(@NotNull final Connection conn,
                                                          @NotNull final Long codModelo,

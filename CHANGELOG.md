@@ -1,6 +1,24 @@
 Change Log
 ==========
 
+<a name="v0.1.01"></a>
+## Version [v0.1.01](https://github.com/luizfp/PrologWebService/compare/v0.1.0...v0.1.01) (2019-09-08)
+
+### Features
+* Cria funcionalidade de inserção/edição e visualização de nomenclaturas. (PL-2259)
+* Adiciona relatório para exportação das marcações (PL-2223)
+* Cria API do Controle de Jornada (PL-2271)
+
+### Refactors
+* Remove provisoriamente validador de placa do veículo no cadastro (foco em internacionalização)
+* Melhora método de busca de um quiz pelo código (PL-2249)
+* Adiciona o separa datas para o filtro de abertura e fechamento no relatório de estratificação de O.S. (PL-2175)
+* Altera os métodos de validação das requisições para diferenciar retornos de login inválido e sem permissão (PL-2267)
+* Adiciona código auxiliar ao cadastro / edição de tipos de marcação (PL-2223)
+
+### Bug Fixes
+* Corrige bug no Ajuste de Marcações do controle de jornada (PL-2280)
+
 <a name="v0.1.0"></a>
 ## Version [v0.1.0](https://github.com/luizfp/PrologWebService/compare/v0.0.99...v0.1.0) (2019-08-19)
 
