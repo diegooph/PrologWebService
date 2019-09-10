@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.frota.pneu.pneu;
+package br.com.zalf.prolog.webservice.frota.pneu.nomenclatura;
 
 import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuNomenclaturaItemVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaItemVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 

@@ -58,6 +58,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaDao;
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
@@ -187,6 +189,11 @@ public final class Injection {
     @NotNull
     public static PneuDao providePneuDao() {
         return new PneuDaoImpl();
+    }
+
+    @NotNull
+    public static PneuNomenclaturaDao providePneuNomenclaturaDao() {
+        return new PneuNomenclaturaDaoImpl();
     }
 
     @NotNull
