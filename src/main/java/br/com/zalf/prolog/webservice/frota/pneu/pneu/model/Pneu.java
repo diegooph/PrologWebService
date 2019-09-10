@@ -490,10 +490,9 @@ public abstract class Pneu {
 
             final Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, ano);
-            final int maxWeeksInYear = calendar.getActualMaximum(Calendar.WEEK_OF_YEAR);
-            Log.d(TAG, "Semanas no ano " + ano + ": " + maxWeeksInYear);
+            Log.d(TAG, "Semanas no ano " + ano + ": " + 53);
 
-            if (semanaAno <= maxWeeksInYear) {
+            if (semanaAno <= 53) {
                 return true;
             }
 
