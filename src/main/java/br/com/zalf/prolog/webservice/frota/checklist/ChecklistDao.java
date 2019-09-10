@@ -156,7 +156,7 @@ public interface ChecklistDao {
      * O método recebe como parâmetro o {@code codModelo código do modelo} a qual as alternativas serão analisadas e
      * também a {@code placaVeiculo placa do veículo} que será utilizada como base para saber se tem algum serviço
      * pendente.
-     * Para cada alternativa do modelo, a método irá verificar se existe algum serviço para ser realizado na placa com
+     * Para cada alternativa do modelo, o método irá verificar se existe algum serviço para ser realizado na placa com
      * o mesmo código de alternativa.
      *
      * @param conn         Conexão com o bando para buscar os dados.
