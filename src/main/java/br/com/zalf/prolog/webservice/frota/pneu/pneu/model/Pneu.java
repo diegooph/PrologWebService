@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
@@ -485,17 +484,9 @@ public abstract class Pneu {
             // caracteres para o ano.
             final int ano = Integer.parseInt(dot.substring(2, 4)) + 2000;
 
-            Log.d(TAG, "Semana ano: " + semanaAno);
             Log.d(TAG, "Ano: " + ano);
 
-            final Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, ano);
-            Log.d(TAG, "Semanas no ano " + ano + ": " + 53);
-
-            if (semanaAno <= 53) {
-                return true;
-            }
-
+            return semanaAno <= 53;
         } catch (Exception ex) {
             Log.e(TAG, "Erro ao validar o DOT: " + dot, ex);
         }
