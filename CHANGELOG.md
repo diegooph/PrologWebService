@@ -4,6 +4,8 @@ Change Log
 <a name="v1.0.0"></a>
 ## Version [v1.0.0](https://github.com/luizfp/PrologWebService/compare/v0.1.01...v1.0.0) (release-date) [unreleased]
 
+### Refactors
+* Modifica quantidade máxima de semanas para 53 no valor do DOT. (PL-2214)
 
 <a name="v0.1.01"></a>
 ## Version [v0.1.01](https://github.com/luizfp/PrologWebService/compare/v0.1.0...v0.1.01) (2019-09-08)
