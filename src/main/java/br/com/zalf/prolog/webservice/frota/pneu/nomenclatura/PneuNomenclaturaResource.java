@@ -8,9 +8,14 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaItem;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaItemVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -18,6 +23,14 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
+@Path("/pneus-nomenclaturas")
+@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@AppVersionCodeHandler(
+        implementation = DefaultAppVersionCodeHandler.class,
+        targetVersionCode = 64,
+        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class PneuNomenclaturaResource {
     private PneuNomenclaturaService service = new PneuNomenclaturaService();
 
@@ -26,7 +39,7 @@ public class PneuNomenclaturaResource {
     @Secured(permissions = {
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
-    @Path("/nomenclaturas-post")
+    @Path("/post")
     public Response insertOrUpdateNomenclatura(@Required final List<PneuNomenclaturaItem> pneuNomenclaturaItem,
                                                @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
         return service.insertOrUpdateNomenclatura(pneuNomenclaturaItem, userToken);
@@ -37,7 +50,7 @@ public class PneuNomenclaturaResource {
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/nomenclaturas-get")
+    @Path("/get")
     public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
             @QueryParam("codDiagrama") @Required final Long codDiagrama) throws ProLogException {

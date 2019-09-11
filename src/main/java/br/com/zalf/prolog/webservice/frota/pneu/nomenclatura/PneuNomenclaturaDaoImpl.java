@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,15 +51,16 @@ public class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
                                 "F_POSICAO_PROLOG  := ?, " +
                                 "F_NOMENCLATURA:= ?," +
                                 "F_TOKEN_RESPONSAVEL_INSERCAO := ?," +
-                                "F_DATA_HORA_CADASTR0 := ?);");
+                                "F_DATA_HORA_CADASTRO := ?);");
                         for (final PneuNomenclaturaItem pneuNomenclaturaItem : pneuNomenclaturaItens) {
                             final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCodUnidade(pneuNomenclaturaItem.getCodUnidade(), conn);
+                            final LocalDateTime dataHoraCadastro = Now.localDateTimeUtc();
                             stmt.setLong(1, pneuNomenclaturaItem.getCodDiagrama());
                             stmt.setLong(2, pneuNomenclaturaItem.getCodEmpresa());
                             stmt.setLong(3, pneuNomenclaturaItem.getPosicaoProlog());
                             stmt.setString(4, pneuNomenclaturaItem.getNomenclatura());
                             stmt.setString(5, userToken);
-                            stmt.setObject(6, Now.localDateTimeUtc());
+                            stmt.setObject(6, dataHoraCadastro.atZone(unidadeZoneId).toOffsetDateTime());
                             stmt.addBatch();
                             linhasParaExecutar++;
                         }
@@ -95,11 +97,10 @@ public class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_NOMENCLATURA_GET_NOMENCLATURA(" +
                     "F_COD_EMPRESA        := ?," +
-                    "F_COD_DIAGRAMA    := ?;");
+                    "F_COD_DIAGRAMA    := ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codDiagrama);
             rSet = stmt.executeQuery();
-
             while (rSet.next()) {
                 nomenclaturas.add(createNomenclatura(rSet));
             }
