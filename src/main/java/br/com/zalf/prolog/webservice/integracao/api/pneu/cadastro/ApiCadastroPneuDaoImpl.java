@@ -66,7 +66,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     stmt.setDouble(6, pneuCargaInicial.getPressaoCorretaPneu());
                     stmt.setInt(7, pneuCargaInicial.getVidaAtualPneu());
                     stmt.setInt(8, pneuCargaInicial.getVidaTotalPneu());
-                    stmt.setString(9, pneuCargaInicial.getDotPneu());
+                    bindValueOrNull(stmt, 9, pneuCargaInicial.getDotPneu(), SqlType.VARCHAR);
                     stmt.setBigDecimal(10, pneuCargaInicial.getValorPneu());
                     stmt.setBoolean(11, pneuCargaInicial.getPneuNovoNuncaRodado());
                     if (pneuCargaInicial.getCodModeloBanda() == null) {
@@ -160,7 +160,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setDouble(6, pneuCadastro.getPressaoCorretaPneu());
             stmt.setInt(7, pneuCadastro.getVidaAtualPneu());
             stmt.setInt(8, pneuCadastro.getVidaTotalPneu());
-            stmt.setString(9, pneuCadastro.getDotPneu());
+            bindValueOrNull(stmt, 9, pneuCadastro.getDotPneu(), SqlType.VARCHAR);
             stmt.setBigDecimal(10, pneuCadastro.getValorPneu());
             stmt.setBoolean(11, pneuCadastro.getPneuNovoNuncaRodado());
             bindValueOrNull(stmt, 12, pneuCadastro.getCodModeloBanda(), SqlType.BIGINT);
