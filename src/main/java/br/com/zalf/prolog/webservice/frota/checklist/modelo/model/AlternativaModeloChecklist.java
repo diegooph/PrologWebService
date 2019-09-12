@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class AlternativaModeloChecklist {
     private Long codigo;
+    private Long codigoFixo;
     private String descricao;
     private boolean tipoOutros;
     private int ordemExibicao;
@@ -43,6 +44,19 @@ public abstract class AlternativaModeloChecklist {
 
     public void setCodigo(final Long codigo) {
         this.codigo = codigo;
+    }
+
+    public Long getCodigoFixo() {
+        return codigoFixo;
+    }
+
+    public void setCodigoFixo(Long codigoFixo) {
+        this.codigoFixo = codigoFixo;
+    }
+
+    @NotNull
+    public String getTipo() {
+        return tipo;
     }
 
     public String getDescricao() {

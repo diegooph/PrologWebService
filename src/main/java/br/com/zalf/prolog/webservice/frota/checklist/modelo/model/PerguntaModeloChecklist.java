@@ -16,6 +16,7 @@ import java.util.List;
  */
 public abstract class PerguntaModeloChecklist {
     private Long codigo;
+    private Long codigoFixo;
     private String descricao;
     private Long codImagem;
     private String urlImagem;
@@ -46,6 +47,14 @@ public abstract class PerguntaModeloChecklist {
 
     public void setCodigo(final Long codigo) {
         this.codigo = codigo;
+    }
+
+    public Long getCodigoFixo() {
+        return codigoFixo;
+    }
+
+    public void setCodigoFixo(Long codigoFixo) {
+        this.codigoFixo = codigoFixo;
     }
 
     public String getDescricao() {

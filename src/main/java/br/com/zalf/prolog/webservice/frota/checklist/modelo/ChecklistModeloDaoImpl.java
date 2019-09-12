@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
@@ -9,12 +10,8 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AlternativaAlteracaoDescricao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaAlteracaoDescricao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.*;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.VeiculoChecklistSelecao;
@@ -114,39 +111,27 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            atualizaModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
-            if (modeloChecklist.isCriarNovaVersao()) {
-                // Os seguintes casos de alteração de um modelo irão impactar na criação de uma nova versão:
-                // • Pergunta CRIADA;
-                // • Pergunta DELETADA;
-                // • Pergunta infos (tipo de escolha) ALTERADA;
-                // • Pergunta descrição ALTERADA MUDANDO CONTEXTO;
-                // • Alternativa CRIADA;
-                // • Alternativa DELETADA;
-                // • Alternativa infos (prioridade, abre ou não O.S.) ALTERADA;
-                // • Alternativa descrição ALTERADA MUDANDO CONTEXTO;
-                final Long novaVersaoModelo = criarNovaVersaoModelo(conn, modeloChecklist, userToken);
-                insertModeloPerguntas(conn, modeloChecklist, novaVersaoModelo);
+
+            final AnaliseMudancaModeloChecklist analiseModelo = realizaAnaliseMudancaModeloChecklist(
+                    conn,
+                    codModelo,
+                    modeloChecklist);
+
+            if (analiseModelo.isAlgoMudouNoModelo()) {
+                atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
+                if (analiseModelo.isDeveCriarNovaVersaoModelo()) {
+                    criaNovaVersaoModelo(conn, codUnidade, codModelo, modeloChecklist, analiseModelo, userToken);
+                } else {
+                    for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntasNovaVersao()) {
+                        atualizaPerguntaModeloChecklist(conn, codModelo, pergunta);
+                        for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
+                            atualizaAlternativaModeloChecklist(conn, codModelo, alternativa);
+                        }
+                    }
+                }
             } else {
-                // Os únicos casos cobertos por esse else são esses:
-                // • Pergunta descrição ALTERADA **NÃO** MUDANDO CONTEXTO;
-                // • Pergunta ordem exibição ALTERADA;
-                // • Alternativa descrição ALTERADA **NÃO** MUDANDO CONTEXTO;
-                // • Alternativa ordem exibição ALTERADA;
-                if (modeloChecklist.getPerguntasAlteracaoDescricao() != null) {
-                    atualizaPerguntasModeloChecklist(
-                            conn,
-                            modeloChecklist.getCodUnidade(),
-                            modeloChecklist.getCodModelo(),
-                            modeloChecklist.getPerguntasAlteracaoDescricao());
-                }
-                if (modeloChecklist.getAlternativasAlteracaoDescricao() != null) {
-                    atualizarAlternativasModeloChecklist(
-                            conn,
-                            modeloChecklist.getCodUnidade(),
-                            modeloChecklist.getCodModelo(),
-                            modeloChecklist.getAlternativasAlteracaoDescricao());
-                }
+                // Nada a fazer, só retornarmos.
+                conn.commit();
             }
 
             // Notificamos o Listener que ouve atualização no modelo de checklist.
@@ -159,6 +144,139 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             throw t;
         } finally {
             close(conn);
+        }
+    }
+
+    private void criaNovaVersaoModelo(@NotNull final Connection conn,
+                                      @NotNull final Long codUnidade,
+                                      @NotNull final Long codModelo,
+                                      @NotNull final ModeloChecklistEdicao modeloChecklist,
+                                      @NotNull final AnaliseMudancaModeloChecklist analiseModelo,
+                                      @NotNull final String userToken) throws Throwable {
+        // 1 -> Geramos o novo código de versão do modelo.
+        final Long novaVersaoModelo = geraNovoCodigoVersaoModelo(conn, modeloChecklist, userToken);
+
+        // 2 ->
+        for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntasNovaVersao()) {
+            final AnaliseItemModeloChecklist analisePergunta = analiseModelo.getPergunta(pergunta.getCodigo());
+            if (analisePergunta.isItemNovo()) {
+                final Long codPergunta = insertPergunta(
+                        conn,
+                        modeloChecklist.getCodUnidade(),
+                        modeloChecklist.getCodModelo(),
+                        novaVersaoModelo,
+                        pergunta,
+                        false);
+                for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
+                    insertAlternativaChecklist(
+                            conn,
+                            codUnidade,
+                            codModelo,
+                            novaVersaoModelo,
+                            codPergunta,
+                            alternativa,
+                            false);
+                }
+            } else if (analisePergunta.isItemMudouContexto()) {
+                final Long codPergunta = insertPergunta(
+                        conn,
+                        modeloChecklist.getCodUnidade(),
+                        modeloChecklist.getCodModelo(),
+                        novaVersaoModelo,
+                        pergunta,
+                        true);
+                for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
+                    final AnaliseItemModeloChecklist analiseAlternativa =
+                            analiseModelo.getAlternativa(alternativa.getCodigo());
+                    if (analiseAlternativa.isItemNovo()) {
+                        insertAlternativaChecklist(
+                                conn,
+                                codUnidade,
+                                codModelo,
+                                novaVersaoModelo,
+                                codPergunta,
+                                alternativa,
+                                false);
+                    } else if (analiseAlternativa.isItemMudouContexto()) {
+                        insertAlternativaChecklist(
+                                conn,
+                                codUnidade,
+                                codModelo,
+                                novaVersaoModelo,
+                                codPergunta,
+                                alternativa,
+                                true);
+                    } else {
+                        atualizaAlternativaModeloChecklist(conn, codModelo, alternativa);
+                    }
+                }
+            } else {
+                atualizaPerguntaModeloChecklist(conn, codModelo, pergunta);
+            }
+        }
+    }
+
+    @NotNull
+    private AnaliseMudancaModeloChecklist realizaAnaliseMudancaModeloChecklist(
+            @NotNull final Connection conn,
+            @NotNull final Long codModelo,
+            @NotNull final ModeloChecklistEdicao modeloChecklist)
+            throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_ANALISA_MUDANCAS_MODELO(" +
+                    "F_COD_MODELO                  := ?," +
+                    "F_COD_VERSAO_MODELO           := ?," +
+                    "F_COD_CARGOS                  := ?," +
+                    "F_COD_TIPOS_VEICULOS          := ?," +
+                    "F_PERGUNTAS_ALTERNATIVAS_JSON := ?);");
+            stmt.setLong(1, codModelo);
+            stmt.setLong(2, modeloChecklist.getCodVersaoModelo());
+            stmt.setObject(3, modeloChecklist.getCargosLiberados());
+            stmt.setObject(4, modeloChecklist.getTiposVeiculoLiberados());
+            stmt.setString(5, GsonUtils.getGson().toJson(modeloChecklist.getPerguntasNovaVersao()));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final boolean algoMudouNoModelo = rSet.getBoolean("ALGO_MUDOU_NO_MODELO");
+                final boolean deveCriarNovaVersaoModelo = rSet.getBoolean("DEVE_CRIAR_NOVA_VERSAO_MODELO");
+                if (deveCriarNovaVersaoModelo) {
+                    final Map<Long, AnaliseItemModeloChecklist> analisePerguntas = new HashMap<>();
+                    final Map<Long, AnaliseItemModeloChecklist> analiseAlternativas = new HashMap<>();
+                    do {
+                        if (rSet.getBoolean("ITEM_TIPO_PERGUNTA")) {
+                            analisePerguntas.put(
+                                    rSet.getLong("CODIGO_ITEM"),
+                                    new AnaliseItemModeloChecklist(
+                                            rSet.getLong("CODIGO_ITEM"),
+                                            rSet.getBoolean("ITEM_NOVO"),
+                                            rSet.getBoolean("ITEM_MUDOU_CONTEXTO")));
+                        } else {
+                            analiseAlternativas.put(
+                                    rSet.getLong("CODIGO_ITEM"),
+                                    new AnaliseItemModeloChecklist(
+                                            rSet.getLong("CODIGO_ITEM"),
+                                            rSet.getBoolean("ITEM_NOVO"),
+                                            rSet.getBoolean("ITEM_MUDOU_CONTEXTO")));
+                        }
+                    } while (rSet.next());
+                    return new AnaliseMudancaModeloChecklist(
+                            algoMudouNoModelo,
+                            true,
+                            analisePerguntas,
+                            analiseAlternativas);
+                } else {
+                    return new AnaliseMudancaModeloChecklist(
+                            algoMudouNoModelo,
+                            false,
+                            null,
+                            null);
+                }
+            } else {
+                throw new IllegalStateException("Erro ao análise mudanças no modelo de checklist: " + codModelo);
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 
@@ -512,19 +630,19 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         }
     }
 
-    private void atualizaModeloChecklist(@NotNull final Connection conn,
-                                         @NotNull final Long codUnidade,
-                                         @NotNull final Long codModelo,
-                                         @NotNull final ModeloChecklistEdicao modeloChecklist) throws SQLException {
+    private void atualizaModeloChecklistInfosGerais(@NotNull final Connection conn,
+                                                    @NotNull final Long codUnidade,
+                                                    @NotNull final Long codModelo,
+                                                    @NotNull final ModeloChecklistEdicao modeloChecklist)
+            throws SQLException {
         PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_UPDATE_MODELO_CHECKLIST(" +
+            stmt = conn.prepareCall("{CALL FUNC_CHECKLIST_UPDATE_MODELO_CHECKLIST_INFOS(" +
                     "F_COD_UNIDADE        := ?," +
                     "F_COD_MODELO         := ?," +
                     "F_NOME_MODELO        := ?," +
                     "F_COD_CARGOS         := ?," +
-                    "F_COD_TIPOS_VEICULOS := ?);");
+                    "F_COD_TIPOS_VEICULOS := ?)}");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             stmt.setString(3, modeloChecklist.getNome());
@@ -536,20 +654,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     conn,
                     SqlType.BIGINT,
                     modeloChecklist.getTiposVeiculoLiberados()));
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                if (!rSet.getBoolean(1)) {
-                    throw new SQLException("Erro ao atualizar as informações gerais do modelo de checklist: "
-                            + "unidade: " + codUnidade
-                            + "modelo: " + codModelo);
-                }
-            } else {
-                throw new SQLException("Erro ao atualizar as informações gerais do modelo de checklist: "
-                        + "unidade: " + codUnidade
-                        + "modelo: " + codModelo);
-            }
+            stmt.execute();
         } finally {
-            close(stmt, rSet);
+            close(stmt);
         }
     }
 
@@ -712,20 +819,47 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         }
     }
 
-    private void insertModeloPerguntas(@NotNull final Connection conn,
-                                       @NotNull final ModeloChecklistEdicao modeloChecklist,
-                                       @NotNull final Long codVersaoModelo) throws Throwable {
-        if (modeloChecklist.getPerguntasNovaVersao() == null) {
-            throw new IllegalStateException("Perguntas não podem ser nulas");
-        }
-
-        for (final PerguntaModeloChecklist pergunta : modeloChecklist.getPerguntasNovaVersao()) {
-            insertPerguntaAlternativaModeloChecklist(
-                    conn,
-                    modeloChecklist.getCodUnidade(),
-                    modeloChecklist.getCodModelo(),
-                    codVersaoModelo,
-                    pergunta);
+    @NotNull
+    private Long insertPergunta(@NotNull final Connection conn,
+                                @NotNull final Long codUnidade,
+                                @NotNull final Long codModelo,
+                                @NotNull final Long codVersaoModelo,
+                                @NotNull final PerguntaModeloChecklist pergunta,
+                                final boolean usarMesmoCodigoFixo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            if (usarMesmoCodigoFixo) {
+                stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
+                        + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, ORDEM, PERGUNTA, COD_IMAGEM, "
+                        + "STATUS_ATIVO, SINGLE_CHOICE, CODIGO_FIXO_PERGUNTA) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
+            } else {
+                stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
+                        + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, ORDEM, PERGUNTA, COD_IMAGEM, "
+                        + "STATUS_ATIVO, SINGLE_CHOICE) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
+            }
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModelo);
+            stmt.setLong(3, codVersaoModelo);
+            stmt.setInt(4, pergunta.getOrdemExibicao());
+            stmt.setString(5, pergunta.getDescricao());
+            bindValueOrNull(stmt, 6, pergunta.getCodImagem(), SqlType.BIGINT);
+            stmt.setBoolean(7, true);
+            stmt.setBoolean(8, pergunta.isSingleChoice());
+            if (usarMesmoCodigoFixo) {
+                stmt.setLong(9, pergunta.getCodigoFixo());
+            }
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Erro ao inserir a pergunta do checklist:\n"
+                        + "unidade: " + codUnidade + "\n"
+                        + "modelo: " + codModelo);
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 
@@ -776,7 +910,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                             @NotNull final Long codModelo,
                                             @NotNull final Long codVersaoModelo,
                                             @NotNull final Long codPergunta,
-                                            @NotNull final AlternativaModeloChecklist alternativa) throws SQLException {
+                                            @NotNull final AlternativaModeloChecklist alternativa,
+                                            final boolean usarMesmoCodigoFixo) throws SQLException {
         // Garante que alternativas do TIPO_OUTROS tenham setado o texto "Outros".
         if (alternativa.isTipoOutros()) {
             alternativa.setDescricao("Outros");
@@ -784,10 +919,17 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
 
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
-                    + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, COD_PERGUNTA, ALTERNATIVA, PRIORIDADE, ORDEM, "
-                    + "STATUS_ATIVO, ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            if (usarMesmoCodigoFixo) {
+                stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
+                        + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, COD_PERGUNTA, ALTERNATIVA, PRIORIDADE, ORDEM, "
+                        + "STATUS_ATIVO, ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            } else {
+                stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
+                        + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, COD_PERGUNTA, ALTERNATIVA, PRIORIDADE, ORDEM, "
+                        + "STATUS_ATIVO, ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, CODIGO_FIXO_ALTERNATIVA) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            }
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             stmt.setLong(3, codVersaoModelo);
@@ -798,6 +940,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setBoolean(8, true);
             stmt.setBoolean(9, alternativa.isTipoOutros());
             stmt.setBoolean(10, alternativa.isDeveAbrirOrdemServico());
+            if (usarMesmoCodigoFixo) {
+                stmt.setLong(11, alternativa.getCodigoFixo());
+            }
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inserir a alternativa da pergunta: " + codPergunta);
             }
@@ -837,59 +982,48 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         return perguntas;
     }
 
-    private void atualizaPerguntasModeloChecklist(
+    private void atualizaPerguntaModeloChecklist(
             @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
-            @NotNull final List<PerguntaAlteracaoDescricao> perguntas) throws Throwable {
+            @NotNull final PerguntaModeloChecklistEdicao pergunta) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            for (final PerguntaAlteracaoDescricao pergunta : perguntas) {
-                stmt = conn.prepareStatement("UPDATE CHECKLIST_PERGUNTAS " +
-                        "SET PERGUNTA = ?, ORDEM = ? " +
-                        "WHERE COD_UNIDADE = ? AND COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
-                stmt.setString(1, pergunta.getNovaDescricao());
-                // TODO:
-                stmt.setInt(2, 0);
-                stmt.setLong(3, codUnidade);
-                stmt.setLong(4, codModelo);
-                stmt.setLong(5, pergunta.getCodigo());
-                if (stmt.executeUpdate() == 0) {
-                    throw new SQLException("Não foi possível atualizar a pergunta: " + pergunta.getCodigo());
-                }
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_PERGUNTAS " +
+                    "SET PERGUNTA = ?, ORDEM = ?, SINGLE_CHOICE = ?, COD_IMAGEM = ? " +
+                    "WHERE COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
+            stmt.setString(1, pergunta.getDescricao());
+            stmt.setInt(2, pergunta.getOrdemExibicao());
+            stmt.setBoolean(2, pergunta.isSingleChoice());
+            stmt.setLong(4, pergunta.getCodImagem());
+            stmt.setLong(5, codModelo);
+            stmt.setLong(6, pergunta.getCodigo());
+            if (stmt.executeUpdate() <= 0) {
+                throw new SQLException("Não foi possível atualizar a pergunta: " + pergunta.getCodigo());
             }
         } finally {
             close(stmt);
         }
     }
 
-    private void atualizarAlternativasModeloChecklist(
+    private void atualizaAlternativaModeloChecklist(
             @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
-            @NotNull final List<AlternativaAlteracaoDescricao> alternativas) throws SQLException {
+            @NotNull final AlternativaModeloChecklist alternativa) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            for (final AlternativaAlteracaoDescricao alternativa : alternativas) {
-                stmt = conn.prepareStatement("UPDATE CHECKLIST_ALTERNATIVA_PERGUNTA " +
-                        "SET" +
-                        "  ALTERNATIVA = ?," +
-                        "  ORDEM = ?" +
-                        "WHERE COD_UNIDADE = ?" +
-                        "      AND COD_CHECKLIST_MODELO = ?" +
-                        "      AND CODIGO = ?;");
-                stmt.setString(1, alternativa.getNovaDescricao());
-                // TODO:
-                stmt.setInt(2, 0);
-                stmt.setLong(3, codUnidade);
-                stmt.setLong(4, codModelo);
-                stmt.setLong(5, alternativa.getCodigo());
-                if (stmt.executeUpdate() <= 0) {
-                    throw new SQLException("Não foi possível atualizar a alternativa:\n" +
-                            "codUnidade: " + codUnidade + "\n" +
-                            "codModelo: " + codModelo + "\n" +
-                            "codigo: " + alternativa.getCodigo());
-                }
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ALTERNATIVA_PERGUNTA " +
+                    "SET ALTERNATIVA = ?, ORDEM = ?, PRIORIDADE = ?, DEVE_ABRIR_ORDEM_SERVICO = ? " +
+                    "WHERE COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
+            stmt.setString(1, alternativa.getDescricao());
+            stmt.setInt(2, alternativa.getOrdemExibicao());
+            stmt.setString(3, alternativa.getPrioridade().asString());
+            stmt.setBoolean(4, alternativa.isDeveAbrirOrdemServico());
+            stmt.setLong(5, codModelo);
+            stmt.setLong(6, alternativa.getCodigo());
+            if (stmt.executeUpdate() <= 0) {
+                throw new SQLException("Não foi possível atualizar a alternativa:\n" +
+                        "codModelo: " + codModelo + "\n" +
+                        "codigo: " + alternativa.getCodigo());
             }
         } finally {
             close(stmt);
@@ -897,9 +1031,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     }
 
     @NotNull
-    private Long criarNovaVersaoModelo(@NotNull final Connection conn,
-                                       @NotNull final ModeloChecklistEdicao modeloChecklist,
-                                       @NotNull final String userToken) throws Throwable {
+    private Long geraNovoCodigoVersaoModelo(@NotNull final Connection conn,
+                                            @NotNull final ModeloChecklistEdicao modeloChecklist,
+                                            @NotNull final String userToken) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
