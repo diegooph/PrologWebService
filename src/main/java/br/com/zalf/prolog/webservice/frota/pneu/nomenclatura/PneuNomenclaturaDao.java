@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.nomenclatura;
 
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaCadastro;
 import org.jetbrains.annotations.NotNull;
-import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaItem;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaItemVisualizacao;
 
 import java.util.List;
@@ -13,25 +13,26 @@ import java.util.List;
  */
 public interface PneuNomenclaturaDao {
 
-
     /**
-     * Insere ou atualiza as informações de uma {@link PneuNomenclaturaItem pneuNomenclaturaItem}.
+     * Insere ou atualiza as informações de nomenclatura.
      *
-     * @param pneuNomenclaturaItem    Lista de objetos contendo as informações para a pneuNomenclaturaItem.
-     * @param userToken o token do usuário que fez a requisição.
+     * @param pneuNomenclaturaCadastro Objeto contendo as informações de nomenclatura da empresa.
+     * @param userToken                o token do usuário que fez a requisição.
      * @throws Throwable Caso qualquer erro aconteça.
      */
-    void insertOrUpdateNomenclatura(@NotNull final List<PneuNomenclaturaItem> pneuNomenclaturaItem,
+    void insertOrUpdateNomenclatura(@NotNull final PneuNomenclaturaCadastro pneuNomenclaturaCadastro,
                                     @NotNull final String userToken) throws Throwable;
 
     /**
      * Retorna as nomenclaturas de um diagrama - {@link PneuNomenclaturaItemVisualizacao pneuNomenclaturaItemVisualizacao}.
      *
-     * @param codEmpresa    codigo da empresa.
-     * @param codDiagrama    codigo do diagrama.
+     * @param codEmpresa  codigo da empresa.
+     * @param codDiagrama codigo do diagrama.
      * @throws Throwable Caso qualquer erro aconteça.
      */
+    @NotNull
     List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(@NotNull final Long codEmpresa,
-                                                                               @NotNull final Long codDiagrama) throws Throwable;
+                                                                               @NotNull final Long codDiagrama)
+            throws Throwable;
 
 }

@@ -7,34 +7,24 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuNomenclaturaItemVisualizacao {
+public final class PneuNomenclaturaItemVisualizacao {
+    @NotNull
+    private final String nomenclatura;
+    private final int posicaoProlog;
 
-    private String nomenclatura;
-    private int posicaoProlog;
-
-    public PneuNomenclaturaItemVisualizacao() {
-
-    }
-
-    public PneuNomenclaturaItemVisualizacao(String nomenclatura, int posicaoProlog) {
+    public PneuNomenclaturaItemVisualizacao(@NotNull final String nomenclatura,
+                                            final int posicaoProlog) {
         this.nomenclatura = nomenclatura;
         this.posicaoProlog = posicaoProlog;
     }
 
+    @NotNull
     public String getNomenclatura() {
         return nomenclatura;
     }
 
-    public void setNomenclatura(final String nomenclatura) {
-        this.nomenclatura = nomenclatura;
-    }
-
     public int getPosicaoProlog() {
         return posicaoProlog;
-    }
-
-    public void setPosicaoProlog(int posicaoProlog) {
-        this.posicaoProlog = posicaoProlog;
     }
 
     @NotNull
