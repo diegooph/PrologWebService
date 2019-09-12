@@ -71,7 +71,7 @@ public final class PneuImport {
     @Parsed(field = "dot")
     public void setDot(@Nullable final String dot) {
         if(dot != null){
-            if (StringUtils.isNullOrEmpty(dot) || !Pneu.isDotValid(dot)) {
+            if (!Pneu.isDotValid(dot)) {
                 throw new IllegalArgumentException("O dot fornecido não é válido: " + dot);
             }
         }
