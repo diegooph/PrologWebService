@@ -28,7 +28,7 @@ import java.util.List;
 @ResourceDebugOnly
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class DummyPneuResource extends DummyData {
+public final class DummyPneuNomenclaturaResource extends DummyData {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
