@@ -471,7 +471,7 @@ public abstract class Pneu {
         }
     }
 
-    public static boolean isDotValid(@Nullable final String dot) {
+    public static boolean isDotValid(@NotNull final String dot) {
         //noinspection ConstantConditions
         if (dot.length() != DOT_LENGTH || !StringUtils.isIntegerValuePositive(dot)) {
             return false;
