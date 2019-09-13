@@ -128,6 +128,8 @@ import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRel
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDao;
 import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDaoImpl;
+import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
+import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDao;
@@ -164,6 +166,10 @@ public final class Injection {
     @NotNull
     public static VeiculoDao provideVeiculoDao() {
         return new VeiculoDaoImpl();
+    }
+
+    public static VeiculoConferenciaDao provideVeiculoConferenciaDao() {
+        return new VeiculoConferenciaDaoImpl();
     }
 
     @NotNull
@@ -542,4 +548,6 @@ public final class Injection {
     private static PneuSqlExceptionTranslator providePneuSqlExceptionTranslator() {
         return new PneuSqlExceptionTranslator();
     }
+
+
 }
