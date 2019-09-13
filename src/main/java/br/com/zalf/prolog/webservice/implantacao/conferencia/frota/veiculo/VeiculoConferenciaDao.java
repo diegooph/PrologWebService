@@ -12,14 +12,14 @@ import java.io.OutputStream;
 public interface VeiculoConferenciaDao {
 
     /**
-     * Método para retornar a conferência da planilha de import de veículos em CSV.
+     * Método para retornar a conferência da planilha de import de veículos.
      *
      * @param out          Streaming onde os dados serão escritos.
      * @param codUnidade   Código da unidade para a qual as informações serão conferidas.
      * @param jsonPlanilha Informações da planilha de import de veículos em formato Json.
      * @throws Throwable Se algum erro ocorrer.
      */
-    void getVerificacaoPlanilhaImportVeiculoCsv(@NotNull final OutputStream out,
-                                                @NotNull final Long codUnidade,
-                                                @NotNull final String jsonPlanilha) throws Throwable;
+    void getVerificacaoPlanilhaImportVeiculo(@NotNull final OutputStream out,
+                                             @NotNull final Long codUnidade,
+                                             @NotNull final String jsonPlanilha) throws Throwable;
 }

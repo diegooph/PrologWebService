@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.implantacao.ImplantacaoImportTokensValidator;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,14 +30,16 @@ public final class VeiculoConferenciaResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/upload-planilha-import")
-    public StreamingOutput getVerificacaoPlanilhaImportVeiculoCsv(
-            @HeaderParam(ImplantacaoImportTokensValidator.HEADER_PARAM) @Required final String tokenImplantacao,
+    public StreamingOutput getVerificacaoPlanilhaImportVeiculo(
+            @HeaderParam(ImplantacaoImportTokensValidator.HEADER_PARAM) final String tokenImplantacao,
             @QueryParam("codUnidade") @Required final Long codUnidade,
-            @FormDataParam("file") @Required final InputStream fileInputStream) throws ProLogException {
-        return outputStream -> service.getVerificacaoPlanilhaImportVeiculoCsv(
+            @FormDataParam("file") @Required final InputStream fileInputStream,
+            @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) throws ProLogException {
+        return outputStream -> service.getVerificacaoPlanilhaImportVeiculo(
                 tokenImplantacao,
                 outputStream,
                 codUnidade,
-                fileInputStream);
+                fileInputStream,
+                fileDetail);
     }
 }

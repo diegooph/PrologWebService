@@ -25,7 +25,9 @@ public final class VeiculoPlanilhaReader {
         throw new IllegalStateException(VeiculoPlanilhaReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    /** @noinspection Duplicates*/
+    /**
+     * @noinspection Duplicates
+     */
     @NotNull
     public static List<VeiculoPlanilha> readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
@@ -85,7 +87,6 @@ public final class VeiculoPlanilhaReader {
         if (!StringUtils.isNullOrEmpty(linha[5])) {
             item.setDiagrama(linha[5]);
         }
-
         return item;
     }
 }
