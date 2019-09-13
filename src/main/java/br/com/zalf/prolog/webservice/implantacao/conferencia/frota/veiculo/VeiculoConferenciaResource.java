@@ -31,7 +31,7 @@ public final class VeiculoConferenciaResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/upload-planilha-import")
     public StreamingOutput getVerificacaoPlanilhaImportVeiculo(
-            @HeaderParam(ImplantacaoImportTokensValidator.HEADER_PARAM) final String tokenImplantacao,
+            @HeaderParam(ImplantacaoImportTokensValidator.HEADER_PARAM) @Required final String tokenImplantacao,
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @FormDataParam("file") @Required final InputStream fileInputStream,
             @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) throws ProLogException {
