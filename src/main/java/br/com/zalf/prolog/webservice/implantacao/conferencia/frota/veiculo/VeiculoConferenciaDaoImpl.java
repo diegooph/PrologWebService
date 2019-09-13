@@ -17,22 +17,23 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
+public final class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
 
     @Override
     public void getVerificacaoPlanilhaImportVeiculoCsv(@NotNull final OutputStream out,
-                                          @NotNull final Long codUnidade,
-                                          @NotNull final String jsonPlanilha) throws Throwable {
+                                                       @NotNull final Long codUnidade,
+                                                       @NotNull final String jsonPlanilha) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_CONFERE_PLANILHA_IMPORTACAO(?,?)");
-            PGobject json = new PGobject();
-            json.setType("json");
+            stmt.setLong(1, codUnidade);
+
+            final PGobject json = new PGobject();
+            json.setType("jsonb");
             json.setValue(jsonPlanilha);
-            stmt.setLong(1, 5);
             stmt.setObject(2, json);
             rSet = stmt.executeQuery();
             new CsvWriter

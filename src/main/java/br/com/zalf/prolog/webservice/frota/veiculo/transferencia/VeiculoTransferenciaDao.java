@@ -126,4 +126,15 @@ public interface VeiculoTransferenciaDao {
     @NotNull
     DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(@NotNull final Long codProcessoTransferencia,
                                                              @NotNull final Long codVeiculo) throws Throwable;
+
+    /**
+     * Método utilizado para buscar a informação se a empresa possui fechamento automático de Ordens de Serviço quando
+     * transfere veículos entre unidades.
+     *
+     * @param codEmpresa Código da empresa que será verificada.
+     * @return <code>True</code> caso empresa realiza o fechamento automático de Ordens de Serviços na transferência de
+     * veículos, <code>False</code> caso contrário.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    boolean possuiFechamentoAutomaticoOrdemServico(@NotNull final Long codEmpresa) throws Throwable;
 }

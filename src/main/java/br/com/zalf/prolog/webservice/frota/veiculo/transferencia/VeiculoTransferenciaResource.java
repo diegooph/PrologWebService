@@ -78,4 +78,13 @@ public final class VeiculoTransferenciaResource {
             @PathParam("codVeiculo") @Required final Long codVeiculo) throws ProLogException {
         return service.getDetalhesVeiculoTransferido(codProcessoTransferencia, codVeiculo);
     }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/fechar-ordens-servicos-automaticamente")
+    public boolean possuiFechamentoAutomaticoOrdemServico(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
+        return service.possuiFechamentoAutomaticoOrdemServico(codEmpresa);
+    }
+
 }
