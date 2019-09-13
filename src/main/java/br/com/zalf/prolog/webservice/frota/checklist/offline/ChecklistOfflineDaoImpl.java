@@ -341,7 +341,28 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(" +
+                    "F_COD_UNIDADE_CHECKLIST              := ?," +
+                    "F_COD_MODELO_CHECKLIST               := ?," +
+                    "F_DATA_HORA_REALIZACAO               := ?," +
+                    "F_COD_COLABORADOR                    := ?," +
+                    "F_COD_VEICULO                        := ?," +
+                    "F_PLACA_VEICULO                      := ?," +
+                    "F_TIPO_CHECKLIST                     := ?," +
+                    "F_KM_COLETADO                        := ?," +
+                    "F_TEMPO_REALIZACAO                   := ?," +
+                    "F_DATA_HORA_SINCRONIZACAO            := ?," +
+                    "F_FONTE_DATA_HORA_REALIZACAO         := ?," +
+                    "F_VERSAO_APP_MOMENTO_REALIZACAO      := ?," +
+                    "F_VERSAO_APP_MOMENTO_SINCRONIZACAO   := ?," +
+                    "F_DEVICE_ID                          := ?," +
+                    "F_DEVICE_IMEI                        := ?," +
+                    "F_DEVICE_UPTIME_REALIZACAO_MILLIS    := ?," +
+                    "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS := ?," +
+                    "F_TOTAL_PERGUNTAS_OK                 := ?," +
+                    "F_TOTAL_PERGUNTAS_NOK                := ?," +
+                    "F_TOTAL_ALTERNATIVAS_OK              := ?," +
+                    "F_TOTAL_ALTERNATIVAS_NOK             := ?) " +
                     "AS CODIGO;");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
             stmt.setLong(1, checklist.getCodUnidade());
@@ -361,6 +382,10 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             stmt.setString(15, checklist.getDeviceImei());
             stmt.setLong(16, checklist.getDeviceUptimeRealizacaoMillis());
             stmt.setLong(17, checklist.getDeviceUptimeSincronizacaoMillis());
+            stmt.setInt(18, checklist.getQtdPerguntasOk());
+            stmt.setInt(19, checklist.getQtdPerguntasNok());
+            stmt.setInt(20, checklist.getQtdAlternativasOk());
+            stmt.setInt(21, checklist.getQtdAlternativasNok());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codChecklistInserido = rSet.getLong("CODIGO");

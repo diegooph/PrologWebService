@@ -295,7 +295,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @NotNull
     @Override
     public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
-        return checklistDao.getByCod(codChecklist, userToken);
+        return checklistDao.getByCod(codChecklist);
     }
 
     @NotNull

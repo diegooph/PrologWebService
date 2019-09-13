@@ -69,8 +69,8 @@ public final class ErrorBodyHandler {
      */
     @NotNull
     public static String getErrorMessage(final int httpStatusCode, @NotNull final ProLogError proLogError) {
-        // Se for um ERRO 500 então retornamos a mensagem padrão.
-        if (httpStatusCode == javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+        // Se for um ERRO 500 ou >500 então retornamos a mensagem padrão.
+        if (httpStatusCode >= javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
             return DEFAULT_MESSAGE_FOR_INTERNAL_SERVER_ERROR;
         }
         return proLogError.getMessage();

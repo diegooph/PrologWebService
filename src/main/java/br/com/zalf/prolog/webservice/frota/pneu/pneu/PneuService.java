@@ -51,7 +51,7 @@ public class PneuService {
         }
     }
 
-    public void update(@NotNull final Pneu pneu, @NotNull final  Long codUnidade, @NotNull final  Long codOriginal) {
+    public void update(@NotNull final Pneu pneu, @NotNull final Long codUnidade, @NotNull final Long codOriginal) {
         try {
             dao.update(pneu, codUnidade, codOriginal);
         } catch (final Throwable throwable) {

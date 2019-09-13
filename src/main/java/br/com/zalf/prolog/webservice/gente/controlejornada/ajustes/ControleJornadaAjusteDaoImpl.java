@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.MarcacaoAjuste;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
@@ -17,7 +18,6 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.histori
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.inconsistencias.MarcacaoInconsistencia;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.inconsistencias.TipoInconsistenciaMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
-import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaDao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -147,6 +147,12 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                     .insereMarcacaoInicioOuFim(conn, codigos.getCodMarcacaoFim(), TipoInicioFim.MARCACAO_FIM);
             controleIntervaloDao
                     .insereVinculoInicioFim(conn, codigos.getCodMarcacaoInicio(), codigos.getCodMarcacaoFim());
+            insereInformacoesAjusteMarcacao(
+                    conn,
+                    codigos.getCodMarcacaoInicio(),
+                    tokenResponsavelAjuste,
+                    marcacaoAjuste,
+                    null);
             insereInformacoesAjusteMarcacao(
                     conn,
                     codigos.getCodMarcacaoFim(),

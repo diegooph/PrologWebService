@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChanged
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -157,4 +158,17 @@ public interface ColaboradorDao {
      * @throws SQLException caso aconteça algum erro na consulta.
      */
     boolean colaboradorTemAcessoFuncao(@NotNull final Long cpf, final int codPilar, final int codFuncaoProLog) throws SQLException;
+
+    /**
+     * Método utilizado para buscar, unicamente, o código de um colaborador. O método utiliza o {@code cpfColaborador}
+     * para identificar qual código irá retornar.
+     *
+     * @param conn           Conexão com o banco de dados que será utilizada para buscar o código.
+     * @param cpfColaborador Cpf que será utilizado para buscar o código do colaborador.
+     * @return O código único de identificação do colaborador no sistema.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    Long getCodColaboradorByCpf(@NotNull final Connection conn,
+                                @NotNull final String cpfColaborador) throws Throwable;
 }

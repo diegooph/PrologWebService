@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quiz;
 
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.Quiz;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -10,9 +10,13 @@ import java.util.List;
  */
 public interface QuizDao {
 
-    boolean insert (Quiz quiz) throws SQLException;
+    boolean insert(@NotNull final Quiz quiz) throws Throwable;
 
-    List<Quiz> getRealizadosByColaborador(Long cpf, int limit, int offset) throws SQLException;
+    @NotNull
+    List<Quiz> getRealizadosByColaborador(@NotNull final Long cpf,
+                                          final int limit,
+                                          final int offset) throws Throwable;
 
-    Quiz getByCod(Long codUnidade, Long codQuiz, Long codModeloQuiz) throws Throwable;
+    @NotNull
+    Quiz getByCod(@NotNull final Long codQuiz) throws Throwable;
 }

@@ -69,6 +69,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
+            // É preciso calcular antes do insert pois as informações de quantidade de ok/nok são inseridas.
+            checklist.calculaQtdOkOrNok();
             stmt = conn.prepareStatement("INSERT INTO CHECKLIST(" +
                     "  COD_UNIDADE, " +
                     "  COD_CHECKLIST_MODELO, " +
@@ -80,8 +82,12 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     "  TIPO, " +
                     "  KM_VEICULO, " +
                     "  TEMPO_REALIZACAO," +
-                    "  FOI_OFFLINE) " +
-                    "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "  FOI_OFFLINE," +
+                    "  TOTAL_PERGUNTAS_OK," +
+                    "  TOTAL_PERGUNTAS_NOK," +
+                    "  TOTAL_ALTERNATIVAS_OK," +
+                    "  TOTAL_ALTERNATIVAS_NOK) " +
+                    "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                     "RETURNING CODIGO, COD_UNIDADE;");
             stmt.setString(1, checklist.getPlacaVeiculo());
             stmt.setLong(2, checklist.getCodModelo());
@@ -94,6 +100,10 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(9, checklist.getKmAtualVeiculo());
             stmt.setLong(10, checklist.getTempoRealizacaoCheckInMillis());
             stmt.setBoolean(11, false);
+            stmt.setInt(12, checklist.getQtdItensOk());
+            stmt.setInt(13, checklist.getQtdItensNok());
+            stmt.setInt(14, checklist.getQtdAlternativasOk());
+            stmt.setInt(15, checklist.getQtdAlternativasNok());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 checklist.setCodigo(rSet.getLong("CODIGO"));
@@ -117,7 +127,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
     @NotNull
     @Override
-    public Checklist getByCod(@NotNull final Long codChecklist, @NotNull final String userToken) throws SQLException {
+    public Checklist getByCod(@NotNull final Long codChecklist) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

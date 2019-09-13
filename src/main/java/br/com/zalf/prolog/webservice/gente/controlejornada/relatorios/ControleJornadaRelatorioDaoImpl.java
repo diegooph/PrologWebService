@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
@@ -14,6 +15,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jorn
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDao;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,6 +24,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created by Zart on 28/08/2017.
@@ -368,6 +372,38 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
         }
     }
 
+    @Override
+    public void getMarcacoesExportacaoGenericaCsv(@NotNull final OutputStream out,
+                                                  @NotNull final Long codUnidade,
+                                                  @Nullable final Long codTipoIntervalo,
+                                                  @Nullable final Long codColaborador,
+                                                  final boolean apenasMarcacoesAtivas,
+                                                  @NotNull final LocalDate dataInicial,
+                                                  @NotNull final LocalDate dataFinal) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getMarcacoesExportacaoGenericaCsv(
+                    conn,
+                    codUnidade,
+                    codTipoIntervalo,
+                    codColaborador,
+                    apenasMarcacoesAtivas,
+                    dataInicial,
+                    dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(out)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     private PreparedStatement getTotalTempoByTipoIntervaloStmt(@NotNull final Connection conn,
                                                                @NotNull final Long codUnidade,
                                                                @NotNull final String codTipoIntervalo,
@@ -466,6 +502,35 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
         stmt.setObject(3, dataInicial);
         stmt.setObject(4, dataFinal);
         stmt.setString(5, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getMarcacoesExportacaoGenericaCsv(@NotNull final Connection conn,
+                                                                @NotNull final Long codUnidade,
+                                                                @Nullable final Long codTipoIntervalo,
+                                                                @Nullable final Long codColaborador,
+                                                                final boolean apenasMarcacoesAtivas,
+                                                                @NotNull final LocalDate dataInicial,
+                                                                @NotNull final LocalDate dataFinal) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_MARCACAO_RELATORIO_EXPORTACAO_GENERICA(" +
+                        "F_COD_UNIDADE             := ?, " +
+                        "F_COD_TIPO_INTERVALO      := ?, " +
+                        "F_COD_COLABORADOR         := ?, " +
+                        "F_APENAS_MARCACOES_ATIVAS := ?, " +
+                        "F_DATA_INICIAL            := ?, " +
+                        "F_DATA_FINAL              := ?);");
+        stmt.setLong(1, codUnidade);
+        bindValueOrNull(stmt, 2, codTipoIntervalo, SqlType.BIGINT);
+        bindValueOrNull(stmt, 3, codColaborador, SqlType.BIGINT);
+        if (apenasMarcacoesAtivas) {
+            stmt.setBoolean(4, true);
+        } else {
+            stmt.setNull(4, Types.BOOLEAN);
+        }
+        stmt.setObject(5, dataInicial);
+        stmt.setObject(6, dataFinal);
         return stmt;
     }
 }

@@ -345,7 +345,27 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_MARCACAO_INSERT_MARCACAO_JORNADA(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) AS CODIGO;");
+                    "FROM FUNC_MARCACAO_INSERT_MARCACAO_JORNADA(" +
+                    "F_COD_UNIDADE                        := ?, " +
+                    "F_COD_TIPO_INTERVALO                 := ?, " +
+                    "F_CPF_COLABORADOR                    := ?, " +
+                    "F_DATA_HORA                          := ?, " +
+                    "F_TIPO_MARCACAO                      := ?, " +
+                    "F_FONTE_DATA_HORA                    := ?, " +
+                    "F_JUSTIFICATIVA_TEMPO_RECOMENDADO    := ?, " +
+                    "F_JUSTIFICATIVA_ESTOURO              := ?, " +
+                    "F_LATITUDE_MARCACAO                  := ?, " +
+                    "F_LONGITUDE_MARCACAO                 := ?, " +
+                    "F_DATA_HORA_SINCRONIZACAO            := ?, " +
+                    "F_VERSAO_APP_MOMENTO_MARCACAO        := ?, " +
+                    "F_VERSAO_APP_MOMENTO_SINCRONIZACAO   := ?, " +
+                    "F_DEVICE_ID                          := ?, " +
+                    "F_DEVICE_IMEI                        := ?, " +
+                    "F_DEVICE_UPTIME_REALIZACAO_MILLIS    := ?, " +
+                    "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS := ?, " +
+                    "F_ANDROID_API_VERSION                := ?, " +
+                    "F_MARCA_DEVICE                       := ?, " +
+                    "F_MODELO_DEVICE                      := ?) AS CODIGO;");
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);
@@ -359,9 +379,16 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
             final Localizacao localizacao = intervaloMarcacao.getLocalizacaoMarcacao();
             bindValueOrNull(stmt, 9, localizacao != null ? localizacao.getLatitude() : null, SqlType.VARCHAR);
             bindValueOrNull(stmt, 10, localizacao != null ? localizacao.getLongitude() : null, SqlType.VARCHAR);
-            stmt.setTimestamp(11, Now.timestampUtc());
+            stmt.setObject(11, Now.offsetDateTimeUtc());
             bindValueOrNull(stmt, 12, intervaloMarcacao.getVersaoAppMomentoMarcacao(), SqlType.INTEGER);
             bindValueOrNull(stmt, 13, intervaloMarcacao.getVersaoAppMomentoSincronizacao(), SqlType.INTEGER);
+            stmt.setString(14, intervaloMarcacao.getDeviceId());
+            stmt.setString(15, intervaloMarcacao.getDeviceImei());
+            stmt.setLong(16, intervaloMarcacao.getDeviceUptimeRealizacaoMarcacaoMillis());
+            stmt.setLong(17, intervaloMarcacao.getDeviceUptimeSincronizacaoMarcacaoMillis());
+            stmt.setInt(18, intervaloMarcacao.getAndroidApiVersion());
+            stmt.setString(19, intervaloMarcacao.getMarcaDevice());
+            stmt.setString(20, intervaloMarcacao.getModeloDevice());
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.getLong("CODIGO") > 0) {
                 return rSet.getLong("CODIGO");

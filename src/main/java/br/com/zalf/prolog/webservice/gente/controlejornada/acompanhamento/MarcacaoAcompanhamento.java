@@ -29,6 +29,20 @@ public final class MarcacaoAcompanhamento {
     @Nullable
     private final Integer versaoAppMomentoSincronizacao;
     private final boolean foiAjustado;
+    @Nullable
+    private final String deviceImei;
+    private final boolean deviceReconhecido;
+    /**
+     * A marca do aparelho. Exemplo: Asus, Motorola e etc.
+     */
+    @Nullable
+    private String marcaDevice;
+
+    /**
+     * O modelo do aparelho. Exemplo: ASUS_Z01KD, Moto G6 e etc.
+     */
+    @Nullable
+    private String modeloDevice;
 
     public MarcacaoAcompanhamento(@NotNull final Long codigo,
                                   @NotNull final LocalDateTime dataHoraMarcacao,
@@ -37,7 +51,11 @@ public final class MarcacaoAcompanhamento {
                                   @Nullable final Localizacao localizacaoMarcacao,
                                   @Nullable final Integer versaoAppMomentoMarcacao,
                                   @Nullable final Integer versaoAppMomentoSincronizacao,
-                                  final boolean foiAjustado) {
+                                  final boolean foiAjustado,
+                                  @Nullable final String deviceImei,
+                                  final boolean deviceReconhecido,
+                                  @Nullable final String marcaDevice,
+                                  @Nullable final String modeloDevice) {
         this.codigo = codigo;
         this.dataHoraMarcacao = dataHoraMarcacao;
         this.fonteDataHora = fonteDataHora;
@@ -46,6 +64,10 @@ public final class MarcacaoAcompanhamento {
         this.versaoAppMomentoMarcacao = versaoAppMomentoMarcacao;
         this.versaoAppMomentoSincronizacao = versaoAppMomentoSincronizacao;
         this.foiAjustado = foiAjustado;
+        this.deviceImei = deviceImei;
+        this.deviceReconhecido = deviceReconhecido;
+        this.marcaDevice = marcaDevice;
+        this.modeloDevice = modeloDevice;
     }
 
     @NotNull
@@ -58,7 +80,11 @@ public final class MarcacaoAcompanhamento {
                 new Localizacao("-27.6403877", "-48.6827399"),
                 60,
                 61,
-                true);
+                true,
+                "123456789123456",
+                true,
+                "ASUS",
+                "Zenfone 4");
     }
 
     @NotNull
@@ -99,4 +125,15 @@ public final class MarcacaoAcompanhamento {
     public boolean isFoiAjustado() {
         return foiAjustado;
     }
+
+    @Nullable
+    public String getDeviceImei() { return deviceImei; }
+
+    public boolean isDeviceReconhecido() { return deviceReconhecido; }
+
+    @Nullable
+    public String getMarcaDevice() { return marcaDevice; }
+
+    @Nullable
+    public String getModeloDevice() { return modeloDevice; }
 }
