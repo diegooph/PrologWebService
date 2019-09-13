@@ -22,7 +22,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final  class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
+public final class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
     private static final int EXECUTE_BATCH_SUCCESS = 0;
 
     @Override
