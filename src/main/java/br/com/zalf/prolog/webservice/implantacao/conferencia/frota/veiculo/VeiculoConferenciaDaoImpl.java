@@ -28,7 +28,7 @@ public final class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_CONFERE_PLANILHA_IMPORTACAO(" +
+            stmt = conn.prepareStatement("SELECT * FROM IMPLANTACAO.FUNC_VEICULO_CONFERE_PLANILHA_IMPORTACAO(" +
                     "F_COD_UNIDADE   := ?," +
                     "F_JSON_VEICULOS := ?);");
             stmt.setLong(1, codUnidade);
