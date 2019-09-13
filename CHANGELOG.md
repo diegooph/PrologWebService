@@ -4,6 +4,9 @@ Change Log
 <a name="v1.0.0"></a>
 ## Version [v1.0.0](https://github.com/luizfp/PrologWebService/compare/v0.1.01...v1.0.0) (release-date) [unreleased]
 
+### Features
+* Cria estrutura para verificar planilha de import de veículo. (PL-2189)
+
 ### Refactors
 * Modifica quantidade máxima de semanas para 53 no valor do DOT. (PL-2214)
 * Permite que o valor do DOT seja inserido como null. (PL-2218)
