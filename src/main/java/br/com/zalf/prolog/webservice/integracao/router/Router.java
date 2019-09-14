@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOffli
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
@@ -396,6 +397,37 @@ public abstract class Router implements OperacoesIntegradas {
             getSistema().resolverItens(itensResolucao);
         } else {
             integradorProLog.resolverItens(itensResolucao);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().insert(pneu, codUnidade);
+        } else {
+            return integradorProLog.insert(pneu, codUnidade);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().insert(pneus);
+        } else {
+            return integradorProLog.insert(pneus);
+        }
+    }
+
+    @Override
+    public void update(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final Long codOriginalPneu) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().update(pneu, codUnidade, codOriginalPneu);
+        } else {
+            integradorProLog.update(pneu, codUnidade, codOriginalPneu);
         }
     }
 

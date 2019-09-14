@@ -19,6 +19,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -44,6 +46,7 @@ import java.util.Optional;
  */
 public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
     private VeiculoDao veiculoDao;
+    private PneuDao pneuDao;
     private TipoVeiculoDao tipoVeiculoDao;
     private ChecklistDao checklistDao;
     private ChecklistModeloDao checklistModeloDao;
@@ -56,6 +59,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     private IntegradorProLog(@NotNull final String userToken,
                              VeiculoDao veiculoDao,
+                             PneuDao pneuDao,
                              TipoVeiculoDao tipoVeiculoDao,
                              ChecklistDao checklistDao,
                              ChecklistModeloDao checklistModeloDao,
@@ -65,6 +69,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                              IntegracaoDao integracaoDao) {
         this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.veiculoDao = veiculoDao;
+        this.pneuDao = pneuDao;
         this.tipoVeiculoDao = tipoVeiculoDao;
         this.checklistDao = checklistDao;
         this.checklistModeloDao = checklistModeloDao;
@@ -79,6 +84,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return new IntegradorProLog(
                 userToken,
                 Injection.provideVeiculoDao(),
+                Injection.providePneuDao(),
                 Injection.provideTipoVeiculoDao(),
                 Injection.provideChecklistDao(),
                 Injection.provideChecklistModeloDao(),
@@ -375,8 +381,28 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         ordemServicoDao.resolverItens(itensResolucao);
     }
 
+    @NotNull
+    @Override
+    public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
+        return pneuDao.insert(pneu, codUnidade);
+    }
+
+    @NotNull
+    @Override
+    public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
+        return pneuDao.insert(pneus);
+    }
+
+    @Override
+    public void update(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final Long codOriginalPneu) throws Throwable {
+        pneuDao.update(pneu, codUnidade, codOriginalPneu);
+    }
+
     public static final class Builder {
         private VeiculoDao veiculoDao;
+        private PneuDao pneuDao;
         private TipoVeiculoDao tipoVeiculoDao;
         private ChecklistDao checklistDao;
         private ChecklistModeloDao checklistModeloDao;
@@ -392,6 +418,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
         public Builder withVeiculoDao(VeiculoDao veiculoDao) {
             this.veiculoDao = veiculoDao;
+            return this;
+        }
+
+        public Builder withPneuDao(PneuDao pneuDao) {
+            this.pneuDao = pneuDao;
             return this;
         }
 
@@ -434,6 +465,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return new IntegradorProLog(
                     userToken,
                     veiculoDao,
+                    pneuDao,
                     tipoVeiculoDao,
                     checklistDao,
                     checklistModeloDao,

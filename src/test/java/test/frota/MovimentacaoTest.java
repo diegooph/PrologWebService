@@ -65,8 +65,8 @@ public class MovimentacaoTest extends BaseTest {
         PneuAnalise pneuAnalise = null;
         for (final Pneu pneu : pneusAnalise) {
             if (pneu.getCodigo() == COD_PNEU_TESTE) {
-                 pneuAnalise = (PneuAnalise) pneu;
-                 break;
+                pneuAnalise = (PneuAnalise) pneu;
+                break;
             }
         }
         Assert.assertNotNull(pneuAnalise);
@@ -107,7 +107,7 @@ public class MovimentacaoTest extends BaseTest {
         pneu.setDot("1310");
         pneu.setValor(new BigDecimal(2250));
         pneu.getBanda().setValor(new BigDecimal(399));
-        final AbstractResponse response = pneuService.insert(pneu, 5L);
+        final AbstractResponse response = pneuService.insert(TOKEN_COLABORADOR, 5L, pneu);
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getStatus());
     }
