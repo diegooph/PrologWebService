@@ -41,6 +41,38 @@ public abstract class Sistema implements OperacoesIntegradas {
         this.userToken = checkNotNull(userToken, "userToken não pode ser nulo!");
     }
 
+    @Override
+    public boolean insert(
+            @NotNull final Long codUnidade,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return getIntegradorProLog().insert(codUnidade, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public boolean update(
+            @NotNull final String placaOriginal,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return getIntegradorProLog().update(placaOriginal, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public void updateStatus(
+            @NotNull final Long codUnidade,
+            @NotNull final String placa,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        getIntegradorProLog().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public boolean delete(
+            @NotNull final String placa,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return getIntegradorProLog().delete(placa, checklistOfflineListener);
+    }
+
     @NotNull
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws

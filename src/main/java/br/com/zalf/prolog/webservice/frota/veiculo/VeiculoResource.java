@@ -34,43 +34,37 @@ public final class VeiculoResource {
     @POST
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
     @Path("/{codUnidade}")
-    public Response insert(@PathParam("codUnidade") @Required final Long codUnidade,
-                           @Required final Veiculo veiculo) throws Throwable {
-        service.insert(codUnidade, veiculo);
-        return Response.ok("Veículo inserido com sucesso");
+    public Response insert(@HeaderParam("Authorization") @Required final String userToken,
+                           @PathParam("codUnidade") @Required final Long codUnidade,
+                           @Required final Veiculo veiculo) throws ProLogException {
+        return service.insert(userToken, codUnidade, veiculo);
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
     @Path("/{placaOriginal}")
-    public Response update(@PathParam("placaOriginal") @Required final String placaOriginal,
+    public Response update(@HeaderParam("Authorization") @Required final String userToken,
+                           @PathParam("placaOriginal") @Required final String placaOriginal,
                            @Required final Veiculo veiculo) throws ProLogException {
-        service.update(placaOriginal, veiculo);
-        return Response.ok("Veículo atualizado com sucesso");
+        return service.update(userToken, placaOriginal, veiculo);
     }
 
     @PUT
     @Path("/{codUnidade}/{placa}/status")
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
-    public Response updateStatus(@PathParam("codUnidade") @Required Long codUnidade,
-                                 @PathParam("placa") @Required String placa,
-                                 Veiculo veiculo) {
-        if (service.updateStatus(codUnidade, placa, veiculo)) {
-            return Response.ok("Colaborador atualizado com sucesso");
-        } else {
-            return Response.error("Erro ao atualizar o colaborador");
-        }
+    public Response updateStatus(@HeaderParam("Authorization") @Required final String userToken,
+                                 @PathParam("codUnidade") @Required final Long codUnidade,
+                                 @PathParam("placa") @Required final String placa,
+                                 @Required final Veiculo veiculo) throws ProLogException {
+        return service.updateStatus(userToken, codUnidade, placa, veiculo);
     }
 
     @DELETE
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
     @Path("/{placa}")
-    public Response delete(@PathParam("placa") String placa) {
-        if (service.delete(placa)) {
-            return Response.ok("Veículo deletado com sucesso.");
-        } else {
-            return Response.error("Erro ao deletar o veículo.");
-        }
+    public Response delete(@HeaderParam("Authorization") @Required final String userToken,
+                           @PathParam("placa") @Required final String placa) throws ProLogException {
+        return service.delete(userToken, placa);
     }
 
     @POST

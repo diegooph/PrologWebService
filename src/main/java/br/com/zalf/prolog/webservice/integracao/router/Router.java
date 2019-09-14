@@ -63,6 +63,54 @@ public abstract class Router implements OperacoesIntegradas {
         this.recursoIntegrado = checkNotNull(recursoIntegrado, "recursoIntegrado não pode ser null!");
     }
 
+    @Override
+    public boolean insert(
+            @NotNull final Long codUnidade,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().insert(codUnidade, veiculo, checklistOfflineListener);
+        } else {
+            return integradorProLog.insert(codUnidade, veiculo, checklistOfflineListener);
+        }
+    }
+
+    @Override
+    public boolean update(
+            @NotNull final String placaOriginal,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().update(placaOriginal, veiculo, checklistOfflineListener);
+        } else {
+            return integradorProLog.update(placaOriginal, veiculo, checklistOfflineListener);
+        }
+    }
+
+    @Override
+    public void updateStatus(
+            @NotNull final Long codUnidade,
+            @NotNull final String placa,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+        } else {
+            integradorProLog.updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+        }
+    }
+
+    @Override
+    public boolean delete(
+            @NotNull final String placa,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().delete(placa, checklistOfflineListener);
+        } else {
+            return integradorProLog.delete(placa, checklistOfflineListener);
+        }
+    }
+
     @NotNull
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws

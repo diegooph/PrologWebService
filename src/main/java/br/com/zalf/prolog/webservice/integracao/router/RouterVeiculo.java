@@ -12,7 +12,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class RouterVeiculo extends Router {
 
-    public static RouterVeiculo create(@NotNull VeiculoDao veiculoDao, @NotNull String userToken) {
+    public static RouterVeiculo create(@NotNull final VeiculoDao veiculoDao,
+                                       @NotNull final String userToken) {
         return new RouterVeiculo(
                 Injection.provideIntegracaoDao(),
                 new IntegradorProLog.Builder(userToken)
@@ -22,10 +23,10 @@ public final class RouterVeiculo extends Router {
                 RecursoIntegrado.VEICULOS);
     }
 
-    private RouterVeiculo(@NotNull IntegracaoDao integracaoDao,
-                           @NotNull IntegradorProLog integradorProLog,
-                           @NotNull String userToken,
-                           @NotNull RecursoIntegrado recursoIntegrado) {
+    private RouterVeiculo(@NotNull final IntegracaoDao integracaoDao,
+                          @NotNull final IntegradorProLog integradorProLog,
+                          @NotNull final String userToken,
+                          @NotNull final RecursoIntegrado recursoIntegrado) {
         super(integracaoDao, integradorProLog, userToken, recursoIntegrado);
     }
 }

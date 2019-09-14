@@ -1,10 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -68,48 +72,79 @@ public final class VeiculoService {
         }
     }
 
-    public void update(String placaOriginal, Veiculo veiculo) throws ProLogException {
+    @NotNull
+    public Response update(@NotNull final String userToken,
+                           @NotNull final String placaOriginal,
+                           @NotNull final Veiculo veiculo) throws ProLogException {
         try {
-            dao.update(placaOriginal, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
-        } catch (Throwable e) {
-            Log.e(TAG, String.format("Erro ao atualizar o veículo.\nplacaOriginal: %s", placaOriginal), e);
+            RouterVeiculo
+                    .create(dao, userToken)
+                    .update(placaOriginal, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
+            return Response.ok("Veículo atualizado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao atualizar o veículo.\nplacaOriginal: %s", placaOriginal), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(e, "Erro ao atualizar veículo, tente novamente");
+                    .map(t, "Erro ao atualizar veículo, tente novamente");
         }
     }
 
-    public boolean updateStatus(Long codUnidade, String placa, Veiculo veiculo) {
+    @NotNull
+    public Response updateStatus(@NotNull final String userToken,
+                                 @NotNull final Long codUnidade,
+                                 @NotNull final String placa,
+                                 @NotNull final Veiculo veiculo) throws ProLogException {
         try {
-            dao.updateStatus(codUnidade, placa, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
-            return true;
-        } catch (Throwable e) {
-            Log.e(TAG, String.format("Erro ao atualizar o status do veículo %s", placa), e);
-            return false;
+            RouterVeiculo
+                    .create(dao, userToken)
+                    .updateStatus(codUnidade, placa, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
+            return Response.ok("Status do veículo atualizado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao atualizar o status do veículo:\n" +
+                    "userToken: %s\n" +
+                    "codUnidade: %s\n" +
+                    "placa: %s", userToken, codUnidade, placa), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível atualizar o status do veículo");
         }
     }
 
-    public boolean delete(String placa) {
+    @NotNull
+    public Response delete(@NotNull final String userToken,
+                           @NotNull final String placa) throws ProLogException {
         try {
-            return dao.delete(placa, Injection.provideDadosChecklistOfflineChangedListener());
-        } catch (Throwable e) {
-            Log.e(TAG, String.format("Erro ao deletar o veículo. \n" +
-                    "placa: %s", placa), e);
-            return false;
+            RouterVeiculo
+                    .create(dao, userToken)
+                    .delete(placa, Injection.provideDadosChecklistOfflineChangedListener());
+            return Response.ok("Veículo deletado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao deletar o veículo\n" +
+                    "userToken: %s" +
+                    "placa: %s", userToken, placa), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível inativar o veículo");
         }
     }
 
-    public void insert(Long codUnidade, Veiculo veiculo) throws ProLogException {
+    @NotNull
+    public Response insert(@NotNull final String userToken,
+                           @NotNull final Long codUnidade,
+                           @NotNull final Veiculo veiculo) throws ProLogException {
         try {
             VeiculoValidator.validacaoAtributosVeiculo(veiculo);
-            dao.insert(codUnidade, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
-        } catch (Throwable e) {
-            final String errorMessage = "Erro ao inserir o veículo";
+            RouterVeiculo
+                    .create(dao, userToken)
+                    .insert(codUnidade, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
+            return Response.ok("Veículo inserido com sucesso");
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
-                    "Unidade: %d", codUnidade), e);
+                    "userToken: %s" +
+                    "codUnidade: %d", userToken, codUnidade), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(e, errorMessage);
+                    .map(t, "Erro ao inserir o veículo, tente novamente");
         }
     }
 

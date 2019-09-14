@@ -174,12 +174,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
-        return tipoVeiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
-    }
-
-    @NotNull
-    @Override
     public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
         return veiculoDao.getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
@@ -188,6 +182,44 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
         return veiculoDao.getVeiculoByPlaca(placa, withPneus);
+    }
+
+    @Override
+    public boolean insert(
+            @NotNull final Long codUnidade,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return veiculoDao.insert(codUnidade, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public boolean update(
+            @NotNull final String placaOriginal,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return veiculoDao.update(placaOriginal, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public void updateStatus(
+            @NotNull final Long codUnidade,
+            @NotNull final String placa,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        veiculoDao.updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public boolean delete(
+            @NotNull final String placa,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return veiculoDao.delete(placa, checklistOfflineListener);
+    }
+
+    @NotNull
+    @Override
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
+        return tipoVeiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
     }
 
     @NotNull
