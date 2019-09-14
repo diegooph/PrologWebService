@@ -14,6 +14,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
@@ -417,6 +419,26 @@ public abstract class Router implements OperacoesIntegradas {
             return getSistema().insert(pneus);
         } else {
             return integradorProLog.insert(pneus);
+        }
+    }
+
+    @NotNull
+    @Override
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
+                                                    @NotNull final String placaVeiculo) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getVeiculoAberturaServico(codServico, placaVeiculo);
+        } else {
+            return integradorProLog.getVeiculoAberturaServico(codServico, placaVeiculo);
+        }
+    }
+
+    @Override
+    public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().fechaServico(codUnidade, servico);
+        } else {
+            integradorProLog.fechaServico(codUnidade, servico);
         }
     }
 
