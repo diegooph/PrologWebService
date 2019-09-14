@@ -43,8 +43,8 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
                     "F_POSICAO_VEICULO_PNEU_APLICADO := ?, " +
                     "F_TOKEN_INTEGRACAO := ?) AS COD_PNEU_PROLOG;");
             for (final ApiPneuAlteracaoStatus pneuAlteracaoStatus : pneusAtualizacaoStatus) {
-                stmt.setLong(1, pneuAlteracaoStatus.getCodigoPneuSistemaIntegrado());
-                stmt.setString(2, pneuAlteracaoStatus.getCodigoPneuCliente());
+                stmt.setLong(1, pneuAlteracaoStatus.getCodigoSistemaIntegrado());
+                stmt.setString(2, pneuAlteracaoStatus.getCodigoCliente());
                 stmt.setLong(3, pneuAlteracaoStatus.getCodUnidadePneu());
                 stmt.setString(4, pneuAlteracaoStatus.getCpfColaboradorAlteracaoStatus());
                 stmt.setObject(5, pneuAlteracaoStatus.getDataHoraAlteracaoStatusUtc());
