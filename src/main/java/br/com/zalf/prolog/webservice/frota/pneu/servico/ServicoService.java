@@ -73,7 +73,7 @@ public class ServicoService {
                     "codUnidade: %d", userToken, codUnidade), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir o conserto de um item");
+                    .map(t, "Erro ao realizar o conserto de um item");
         }
     }
 
@@ -175,7 +175,7 @@ public class ServicoService {
             Log.e(TAG, message, t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar dados par afechamento de serviço");
+                    .map(t, "Erro ao buscar dados para fechamento de serviço");
         }
     }
 }
