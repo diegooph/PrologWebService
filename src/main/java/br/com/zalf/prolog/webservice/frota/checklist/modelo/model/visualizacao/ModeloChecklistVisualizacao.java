@@ -12,6 +12,8 @@ import java.util.List;
  */
 public final class ModeloChecklistVisualizacao {
     private Long codigo;
+    // TODO:
+    private Long codVersaoModelo = 20L;
     private Long codUnidade;
     private String nome;
     private List<TipoVeiculo> tiposVeiculoLiberados;

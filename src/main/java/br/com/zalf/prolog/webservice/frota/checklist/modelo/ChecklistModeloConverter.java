@@ -60,6 +60,8 @@ public final class ChecklistModeloConverter {
         pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
         pergunta.setCodImagem(rSet.getLong("COD_IMAGEM"));
         pergunta.setUrlImagem(rSet.getString("URL_IMAGEM"));
+        // TODO:
+        pergunta.setCodigoFixo(100L);
         return pergunta;
     }
 
@@ -72,6 +74,8 @@ public final class ChecklistModeloConverter {
         alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE")));
         alternativa.setTipoOutros(rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"));
         alternativa.setDeveAbrirOrdemServico(rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"));
+        // TODO:
+        alternativa.setCodigoFixo(200L);
         return alternativa;
     }
 
