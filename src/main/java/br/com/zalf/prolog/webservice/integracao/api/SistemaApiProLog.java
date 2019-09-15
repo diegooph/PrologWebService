@@ -84,7 +84,7 @@ public final class SistemaApiProLog extends Sistema {
         if (getSistemaApiProLog().isServicoMovimentacao(codServico)) {
             throw new BloqueadoIntegracaoException(
                     "O fechamento de serviço de movimentação está sendo integrado e ainda não está disponível.\n" +
-                            "Para este mommento, utilize o seu sistema para movimentar os pneus.");
+                            "Por enquanto, utilize o seu sistema para movimentar os pneus.");
         }
         return getIntegradorProLog().getVeiculoAberturaServico(codServico, placaVeiculo);
     }
@@ -94,7 +94,7 @@ public final class SistemaApiProLog extends Sistema {
         if (servico.getTipoServico().equals(TipoServico.MOVIMENTACAO)) {
             throw new BloqueadoIntegracaoException(
                     "O fechamento de serviço de movimentação está sendo integrado e ainda não está disponível.\n" +
-                            "Para este mommento, utilize o seu sistema para movimentar os pneus.");
+                            "Por enquanto, utilize o seu sistema para movimentar os pneus.");
         }
         getIntegradorProLog().fechaServico(codUnidade, servico);
     }
