@@ -2,9 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
@@ -37,25 +35,30 @@ public class PneuResource {
     @POST
     @Secured
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public List<Long> insert(@FormDataParam("file") InputStream fileInputStream) throws ProLogException {
-        return service.insert(fileInputStream);
+    public List<Long> insert(
+            @HeaderParam("Authorization") @Required final String userToken,
+            @FormDataParam("file") @Required final InputStream fileInputStream) throws ProLogException {
+        return service.insert(userToken, fileInputStream);
     }
 
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Path("/{codUnidade}")
-    public AbstractResponse insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade) throws Throwable {
-        return service.insert(pneu, codUnidade);
+    public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
+                                   @PathParam("codUnidade") @Required final Long codUnidade,
+                                   @Required final Pneu pneu) throws ProLogException {
+        return service.insert(userToken, codUnidade, pneu);
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/{codUnidade}/{codPneuOriginal}")
-    public Response update(Pneu pneu,
-                           @PathParam("codUnidade") Long codUnidade,
-                           @PathParam("codPneuOriginal") Long codOriginalPneu) {
-        service.update(pneu, codUnidade, codOriginalPneu);
-        return Response.ok("Pneu atualizado com sucesso");
+    public Response update(
+            @HeaderParam("Authorization") @Required final String userToken,
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codPneuOriginal") @Required final Long codOriginalPneu,
+            @Required final Pneu pneu) throws ProLogException {
+        return service.update(userToken, codUnidade, codOriginalPneu, pneu);
     }
 
     @POST
@@ -192,29 +195,6 @@ public class PneuResource {
                                                @QueryParam("urlFotoPneu") @Required final String urlFotoPneu) {
         service.marcarFotoComoSincronizada(codPneu, urlFotoPneu);
         return Response.ok("Foto marcada como sincronizada com sucesso");
-    }
-
-    @POST
-    @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR})
-    @Path("/nomenclaturas-post")
-    public Response insertOrUpdateNomenclatura(@Required final List<PneuNomenclaturaItem> pneuNomenclaturaItem,
-                                               @HeaderParam("Authorization") @Required final String userToken) throws ProLogException {
-        return service.insertOrUpdateNomenclatura(pneuNomenclaturaItem, userToken);
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR,
-            Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/nomenclaturas-get")
-    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(
-            @QueryParam("codEmpresa") @Required final Long codEmpresa,
-            @QueryParam("codDiagrama") @Required final Long codDiagrama) throws ProLogException {
-        return service.getPneuNomenclaturaItemVisualizacao(codEmpresa, codDiagrama);
     }
 
     /**

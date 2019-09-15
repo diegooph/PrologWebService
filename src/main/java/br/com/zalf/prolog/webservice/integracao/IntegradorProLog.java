@@ -19,7 +19,12 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -44,11 +49,13 @@ import java.util.Optional;
  */
 public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
     private VeiculoDao veiculoDao;
+    private PneuDao pneuDao;
     private TipoVeiculoDao tipoVeiculoDao;
     private ChecklistDao checklistDao;
     private ChecklistModeloDao checklistModeloDao;
     private OrdemServicoDao ordemServicoDao;
     private AfericaoDao afericaoDao;
+    private ServicoDao afericaoServicoDao;
     private ColaboradorDao colaboradorDao;
     private IntegracaoDao integracaoDao;
     @NotNull
@@ -56,20 +63,24 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     private IntegradorProLog(@NotNull final String userToken,
                              VeiculoDao veiculoDao,
+                             PneuDao pneuDao,
                              TipoVeiculoDao tipoVeiculoDao,
                              ChecklistDao checklistDao,
                              ChecklistModeloDao checklistModeloDao,
                              OrdemServicoDao ordemServicoDao,
                              AfericaoDao afericaoDao,
+                             ServicoDao afericaoServicoDao,
                              ColaboradorDao colaboradorDao,
                              IntegracaoDao integracaoDao) {
         this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.veiculoDao = veiculoDao;
+        this.pneuDao = pneuDao;
         this.tipoVeiculoDao = tipoVeiculoDao;
         this.checklistDao = checklistDao;
         this.checklistModeloDao = checklistModeloDao;
         this.ordemServicoDao = ordemServicoDao;
         this.afericaoDao = afericaoDao;
+        this.afericaoServicoDao = afericaoServicoDao;
         this.colaboradorDao = colaboradorDao;
         this.integracaoDao = integracaoDao;
     }
@@ -79,11 +90,13 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return new IntegradorProLog(
                 userToken,
                 Injection.provideVeiculoDao(),
+                Injection.providePneuDao(),
                 Injection.provideTipoVeiculoDao(),
                 Injection.provideChecklistDao(),
                 Injection.provideChecklistModeloDao(),
                 Injection.provideOrdemServicoDao(),
                 Injection.provideAfericaoDao(),
+                Injection.provideServicoDao(),
                 Injection.provideColaboradorDao(),
                 Injection.provideIntegracaoDao());
     }
@@ -174,12 +187,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
-        return tipoVeiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
-    }
-
-    @NotNull
-    @Override
     public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
         return veiculoDao.getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
@@ -188,6 +195,44 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
         return veiculoDao.getVeiculoByPlaca(placa, withPneus);
+    }
+
+    @Override
+    public boolean insert(
+            @NotNull final Long codUnidade,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return veiculoDao.insert(codUnidade, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public boolean update(
+            @NotNull final String placaOriginal,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return veiculoDao.update(placaOriginal, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public void updateStatus(
+            @NotNull final Long codUnidade,
+            @NotNull final String placa,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        veiculoDao.updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public boolean delete(
+            @NotNull final String placa,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return veiculoDao.delete(placa, checklistOfflineListener);
+    }
+
+    @NotNull
+    @Override
+    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
+        return tipoVeiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
     }
 
     @NotNull
@@ -343,13 +388,46 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         ordemServicoDao.resolverItens(itensResolucao);
     }
 
+    @NotNull
+    @Override
+    public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
+        return pneuDao.insert(pneu, codUnidade);
+    }
+
+    @NotNull
+    @Override
+    public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
+        return pneuDao.insert(pneus);
+    }
+
+    @Override
+    public void update(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final Long codOriginalPneu) throws Throwable {
+        pneuDao.update(pneu, codUnidade, codOriginalPneu);
+    }
+
+    @NotNull
+    @Override
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
+                                                    @NotNull final String placaVeiculo) throws Throwable {
+        return afericaoServicoDao.getVeiculoAberturaServico(codServico, placaVeiculo);
+    }
+
+    @Override
+    public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
+        afericaoServicoDao.fechaServico(servico, codUnidade);
+    }
+
     public static final class Builder {
         private VeiculoDao veiculoDao;
+        private PneuDao pneuDao;
         private TipoVeiculoDao tipoVeiculoDao;
         private ChecklistDao checklistDao;
         private ChecklistModeloDao checklistModeloDao;
         private OrdemServicoDao ordemServicoDao;
         private AfericaoDao afericaoDao;
+        private ServicoDao afericaoServicoDao;
         private ColaboradorDao colaboradorDao;
         private IntegracaoDao integracaoDao;
         private final String userToken;
@@ -360,6 +438,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
         public Builder withVeiculoDao(VeiculoDao veiculoDao) {
             this.veiculoDao = veiculoDao;
+            return this;
+        }
+
+        public Builder withPneuDao(PneuDao pneuDao) {
+            this.pneuDao = pneuDao;
             return this;
         }
 
@@ -388,6 +471,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return this;
         }
 
+        public Builder withAfericaoServicoDao(ServicoDao afericaoServicoDao) {
+            this.afericaoServicoDao = afericaoServicoDao;
+            return this;
+        }
+
         public Builder withColaboradorDao(ColaboradorDao colaboradorDao) {
             this.colaboradorDao = colaboradorDao;
             return this;
@@ -402,11 +490,13 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return new IntegradorProLog(
                     userToken,
                     veiculoDao,
+                    pneuDao,
                     tipoVeiculoDao,
                     checklistDao,
                     checklistModeloDao,
                     ordemServicoDao,
                     afericaoDao,
+                    afericaoServicoDao,
                     colaboradorDao,
                     integracaoDao);
         }

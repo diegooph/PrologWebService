@@ -14,9 +14,13 @@ import java.time.LocalDateTime;
  */
 public final class ApiPneuAlteracaoStatusVeiculo extends ApiPneuAlteracaoStatus {
     @NotNull
-    private final String placaVeiculoPneuAplicado;
+    private String placaVeiculoPneuAplicado;
     @NotNull
-    private final Integer posicaoVeiculoPneuAplicado;
+    private Integer posicaoVeiculoPneuAplicado;
+
+    public ApiPneuAlteracaoStatusVeiculo() {
+        super(ApiStatusPneu.EM_USO);
+    }
 
     public ApiPneuAlteracaoStatusVeiculo(@NotNull final Long codigoPneuSistemaIntegrado,
                                          @NotNull final String codigoPneuCliente,

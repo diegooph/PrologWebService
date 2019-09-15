@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.SqlErrorCodes;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import org.jetbrains.annotations.NotNull;
@@ -65,7 +66,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     stmt.setDouble(6, pneuCargaInicial.getPressaoCorretaPneu());
                     stmt.setInt(7, pneuCargaInicial.getVidaAtualPneu());
                     stmt.setInt(8, pneuCargaInicial.getVidaTotalPneu());
-                    stmt.setString(9, pneuCargaInicial.getDotPneu());
+                    bindValueOrNull(stmt, 9, pneuCargaInicial.getDotPneu(), SqlType.VARCHAR);
                     stmt.setBigDecimal(10, pneuCargaInicial.getValorPneu());
                     stmt.setBoolean(11, pneuCargaInicial.getPneuNovoNuncaRodado());
                     if (pneuCargaInicial.getCodModeloBanda() == null) {
@@ -159,7 +160,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setDouble(6, pneuCadastro.getPressaoCorretaPneu());
             stmt.setInt(7, pneuCadastro.getVidaAtualPneu());
             stmt.setInt(8, pneuCadastro.getVidaTotalPneu());
-            stmt.setString(9, pneuCadastro.getDotPneu());
+            bindValueOrNull(stmt, 9, pneuCadastro.getDotPneu(), SqlType.VARCHAR);
             stmt.setBigDecimal(10, pneuCadastro.getValorPneu());
             stmt.setBoolean(11, pneuCadastro.getPneuNovoNuncaRodado());
             bindValueOrNull(stmt, 12, pneuCadastro.getCodModeloBanda(), SqlType.BIGINT);
@@ -202,7 +203,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setString(2, pneuEdicao.getNovoCodigoCliente());
             stmt.setLong(3, pneuEdicao.getNovoCodModeloPneu());
             stmt.setLong(4, pneuEdicao.getNovoCodDimensaoPneu());
-            stmt.setString(5, pneuEdicao.getNovoDotPneu());
+            bindValueOrNull(stmt, 5, pneuEdicao.getNovoDotPneu(), SqlType.VARCHAR);
             stmt.setBigDecimal(6, pneuEdicao.getNovoValorPneu());
             bindValueOrNull(stmt, 7, pneuEdicao.getNovoCodModeloBanda(), SqlType.BIGINT);
             bindValueOrNull(stmt, 8, pneuEdicao.getNovoValorBandaPneu(), SqlType.REAL);
@@ -235,12 +236,20 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                                     conn,
                                     getCodEmpresaByToken(conn, tokenIntegracao),
                                     pneuTransferencia.getCodPneusTransferidos());
-            final Long codColaborador =
-                    Injection
-                            .provideColaboradorDao()
-                            .getCodColaboradorByCpf(
-                                    conn,
-                                    pneuTransferencia.getCpfColaboradorRealizacaoTransferencia());
+            final Long codColaborador;
+            try {
+                codColaborador =
+                        Injection
+                                .provideColaboradorDao()
+                                .getCodColaboradorByCpf(
+                                        conn,
+                                        pneuTransferencia.getCpfColaboradorRealizacaoTransferencia());
+            } catch (final Throwable t) {
+                throw new GenericException(
+                        String.format(
+                                "Cpf %s não está cadastrado na base de dados do ProLog",
+                                pneuTransferencia.getCpfColaboradorRealizacaoTransferencia()));
+            }
             final Long codProcessoTransferencia =
                     Injection
                             .providePneuTransferenciaDao()

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
@@ -29,6 +30,8 @@ public final class ApiPneuService extends BaseIntegracaoService {
             dao.atualizaStatusPneus(tokenIntegracao, pneusAtualizacaoStatus);
             return new SuccessResponseIntegracao("Pneus atualizados com sucesso");
         } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível atualizar o status dos pneus:\n" +
+                    "tokenIntegracao: " + tokenIntegracao, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível atualizar o status dos pneus");

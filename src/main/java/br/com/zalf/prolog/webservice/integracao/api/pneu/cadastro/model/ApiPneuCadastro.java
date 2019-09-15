@@ -27,7 +27,7 @@ public final class ApiPneuCadastro {
     private final Integer vidaAtualPneu;
     @NotNull
     private final Integer vidaTotalPneu;
-    @NotNull
+    @Nullable
     private final String dotPneu;
     @NotNull
     private final BigDecimal valorPneu;
@@ -46,7 +46,7 @@ public final class ApiPneuCadastro {
                            @NotNull final Double pressaoCorretaPneu,
                            @NotNull final Integer vidaAtualPneu,
                            @NotNull final Integer vidaTotalPneu,
-                           @NotNull final String dotPneu,
+                           @Nullable final String dotPneu,
                            @NotNull final BigDecimal valorPneu,
                            @NotNull final Boolean pneuNovoNuncaRodado,
                            @Nullable final Long codModeloBanda,
@@ -124,7 +124,7 @@ public final class ApiPneuCadastro {
         return vidaTotalPneu;
     }
 
-    @NotNull
+    @Nullable
     public String getDotPneu() {
         return dotPneu;
     }

@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.integracao.router.RouterAfericaoServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -55,14 +58,22 @@ public class ServicoService {
         }
     }
 
-    public boolean fechaServico(Servico servico, Long codUnidade) {
+    @NotNull
+    public Response fechaServico(@NotNull final String userToken,
+                                 @NotNull final Long codUnidade,
+                                 @NotNull final Servico servico) throws ProLogException {
         try {
-            dao.fechaServico(servico, codUnidade);
-            return true;
-        } catch (Throwable e) {
-            Log.e(TAG, String.format("Erro ao inserir o conserto de um item. \n," +
-                    "Unidade: %d \n", codUnidade), e);
-            return false;
+            RouterAfericaoServico
+                    .create(dao, userToken)
+                    .fechaServico(codUnidade, servico);
+            return Response.ok("Serviço consertado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao inserir o conserto de um item\n" +
+                    "userToken: %s\n" +
+                    "codUnidade: %d", userToken, codUnidade), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao realizar o conserto de um item");
         }
     }
 
@@ -149,15 +160,22 @@ public class ServicoService {
     }
 
     @NotNull
-    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo) {
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final String userToken,
+                                                    @NotNull final Long codServico,
+                                                    @NotNull final String placaVeiculo) throws ProLogException {
         try {
-            return dao.getVeiculoAberturaServico(codServico, placaVeiculo);
-        } catch (SQLException e) {
-            final String message = String.format("Erro ao buscar o veículo para um serviço. \n" +
-                    "Serviço: %d \n" +
-                    "Veículo: %s \n", codServico, placaVeiculo);
-            Log.e(TAG, message, e);
-            throw new RuntimeException(message);
+            return RouterAfericaoServico
+                    .create(dao, userToken)
+                    .getVeiculoAberturaServico(codServico, placaVeiculo);
+        } catch (final Throwable t) {
+            final String message = String.format("Erro ao buscar o veículo para um serviço.\n" +
+                    "userToken: %s\n" +
+                    "Serviço: %d\n" +
+                    "Veículo: %s\n", userToken, codServico, placaVeiculo);
+            Log.e(TAG, message, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar dados para fechamento de serviço");
         }
     }
 }

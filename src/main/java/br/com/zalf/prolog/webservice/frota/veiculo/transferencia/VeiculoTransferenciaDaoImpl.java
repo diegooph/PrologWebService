@@ -575,4 +575,29 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             close(stmt);
         }
     }
+
+    public boolean possuiFechamentoAutomaticoOrdemServico(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT COD_EMPRESA " +
+                    "FROM VEICULO_TRANSFERENCIA_EMPRESA_BLOQUEADA_FECHAMENTO_OS " +
+                    "WHERE COD_EMPRESA = ?) AS EMPRESA_FECHA_OS_AUTOMATICAMENTE");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                // Negamos o retono pois, se o código da empresa estiver nessa tabela, ela não fecha automaticamente
+                // ordens de serviços ao transferir veículos entre unidades.
+                return !rSet.getBoolean("EMPRESA_FECHA_OS_AUTOMATICAMENTE");
+            } else {
+                throw new SQLException("Erro ao identificar se empresa fecha ordem de serviço de forma automática " +
+                        "ao transferir veículos entre unidades:\n" +
+                        "codEmpresa: " + codEmpresa);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

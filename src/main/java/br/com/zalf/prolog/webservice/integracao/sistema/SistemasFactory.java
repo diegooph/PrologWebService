@@ -1,14 +1,15 @@
 package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.api.SistemaApiProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.SistemaGlobusPiccolotur;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.GlobusPiccoloturRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.ProtheusRodalogRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.SistemaProtheusRodalog;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.SistemaRodoparHorizonte;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.transport.SistemaTransportTranslecchi;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,6 +57,8 @@ public final class SistemasFactory {
                         integradorProLog,
                         sistemaKey,
                         userToken);
+            case API_PROLOG:
+                return new SistemaApiProLog(integradorProLog, sistemaKey, userToken);
             default:
                 throw new IllegalStateException("Nenhum sistema encontrado com a chave: " + sistemaKey.getKey());
         }

@@ -1,9 +1,11 @@
-package br.com.zalf.prolog.webservice.frota.pneu.pneu;
+package br.com.zalf.prolog.webservice.frota.pneu.nomenclatura;
 
 import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuNomenclaturaItemVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaCadastro;
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaItemCadastro;
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaItemVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 
@@ -26,17 +28,28 @@ import java.util.List;
 @ResourceDebugOnly
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class DummyPneuResource extends DummyData {
+public final class DummyPneuNomenclaturaResource extends DummyData {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/pneus-nomenclaturas")
-    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItem() {
+    @Path("/pneus-nomenclaturas-visualizacao")
+    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao() {
         final List<PneuNomenclaturaItemVisualizacao> pneuNomenclaturaItem = new ArrayList<>();
         for (int i = 0; i < 15; i++) {
             pneuNomenclaturaItem.add(PneuNomenclaturaItemVisualizacao.createDummy(i));
         }
         return pneuNomenclaturaItem;
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/pneus-nomenclaturas-cadastro")
+    public PneuNomenclaturaCadastro getPneuNomenclaturaCadastro() {
+        final List<PneuNomenclaturaItemCadastro> itens = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            itens.add(PneuNomenclaturaItemCadastro.createDummy(i));
+        }
+       return PneuNomenclaturaCadastro.createDummy(itens);
     }
 }
 

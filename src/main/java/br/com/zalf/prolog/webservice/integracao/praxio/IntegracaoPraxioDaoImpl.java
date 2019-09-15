@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.AfericaoIntegracaoPraxioConverter;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.CadastroVeiculoIntegracaoPraxioConverter;
@@ -125,12 +126,20 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                     Injection
                             .provideVeiculoDao()
                             .getCodVeiculoByPlaca(conn, veiculoTransferenciaPraxio.getPlacaTransferida());
-            final Long codColaborador =
-                    Injection
-                            .provideColaboradorDao()
-                            .getCodColaboradorByCpf(
-                                    conn,
-                                    veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia());
+            final Long codColaborador;
+            try {
+                codColaborador =
+                        Injection
+                                .provideColaboradorDao()
+                                .getCodColaboradorByCpf(
+                                        conn,
+                                        veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia());
+            } catch (final Throwable t) {
+                throw new GenericException(
+                        String.format(
+                                "Cpf %s não está cadastrado na base de dados do ProLog",
+                                veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia()));
+            }
             Injection
                     .provideVeiculoTransferenciaDao()
                     .insertProcessoTranseferenciaVeiculo(

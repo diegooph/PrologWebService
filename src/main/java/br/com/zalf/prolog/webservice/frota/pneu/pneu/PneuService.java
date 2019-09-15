@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.integracao.router.RouterPneu;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
@@ -25,41 +26,59 @@ public class PneuService {
     private static final String TAG = PneuService.class.getSimpleName();
     private final PneuDao dao = Injection.providePneuDao();
 
-    public AbstractResponse insert(Pneu pneu, Long codUnidade) throws ProLogException {
+    @NotNull
+    public AbstractResponse insert(@NotNull final String userToken,
+                                   @NotNull final Long codUnidade,
+                                   @NotNull final Pneu pneu) throws ProLogException {
         try {
             PneuValidator.validacaoAtributosPneu(pneu, codUnidade);
-            return ResponseWithCod.ok("Pneu inserido com sucesso", dao.insert(pneu, codUnidade));
-        } catch (Throwable e) {
-            final String errorMessage = "Erro ao inserir o pneu";
-            Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
+            return ResponseWithCod.ok(
+                    "Pneu inserido com sucesso",
+                    RouterPneu
+                            .create(dao, userToken)
+                            .insert(pneu, codUnidade));
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir pneu:" +
+                    "\nuserToken: " + userToken +
+                    "\ncodUnidade: " + codUnidade, t);
             throw Injection
                     .providePneuExceptionHandler()
-                    .map(e, errorMessage);
+                    .map(t, "Erro ao inserir o pneu, tente novamente");
         }
     }
 
     @NotNull
-    public List<Long> insert(@NotNull final InputStream fileInputStream) throws ProLogException {
+    public List<Long> insert(@NotNull final String userToken,
+                             @NotNull final InputStream fileInputStream) throws ProLogException {
         try {
-            return dao.insert(PneuImportReader.readFromCsv(fileInputStream));
-        } catch (final Throwable throwable) {
-            final String errorMessage = "Erro ao inserir pneus -- " + throwable.getMessage();
-            Log.e(TAG, errorMessage, throwable);
+            return RouterPneu
+                    .create(dao, userToken)
+                    .insert(PneuImportReader.readFromCsv(fileInputStream));
+        } catch (final Throwable t) {
+            final String errorMessage = "Erro ao inserir pneus -- " + t.getMessage();
+            Log.e(TAG, errorMessage, t);
             throw Injection
                     .providePneuExceptionHandler()
-                    .map(throwable, errorMessage);
+                    .map(t, errorMessage);
         }
     }
 
-    public void update(@NotNull final Pneu pneu, @NotNull final Long codUnidade, @NotNull final Long codOriginal) {
+    @NotNull
+    public Response update(@NotNull final String userToken,
+                           @NotNull final Long codUnidade,
+                           @NotNull final Long codOriginal,
+                           @NotNull final Pneu pneu) throws ProLogException {
         try {
-            dao.update(pneu, codUnidade, codOriginal);
-        } catch (final Throwable throwable) {
+            RouterPneu
+                    .create(dao, userToken)
+                    .update(pneu, codUnidade, codOriginal);
+            return Response.ok("Pneu atualizado com sucesso");
+        } catch (final Throwable t) {
             final String errorMessage = "Erro ao atualizar pneu: " + codOriginal;
-            Log.e(TAG, errorMessage, throwable);
+            Log.e(TAG, errorMessage, t);
             throw Injection
                     .providePneuExceptionHandler()
-                    .map(throwable, errorMessage);
+                    .map(t, errorMessage);
         }
     }
 
@@ -200,38 +219,6 @@ public class PneuService {
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu, e);
             throw new RuntimeException(e);
-        }
-    }
-
-    @NotNull
-    public Response insertOrUpdateNomenclatura(@NotNull final List<PneuNomenclaturaItem> pneuNomenclaturaItem,
-                                               @NotNull final String userToken) throws ProLogException {
-        try {
-            dao.insertOrUpdateNomenclatura(pneuNomenclaturaItem, userToken);
-            return Response.ok("Nomenclatura inserida com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao inserir nomenclatura", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir a nomenclatura, tente novamente");
-        }
-    }
-
-    public List<PneuNomenclaturaItemVisualizacao> getPneuNomenclaturaItemVisualizacao(@NotNull final Long codEmpresa,
-                                                                                      @NotNull final Long codDiagrama)
-            throws ProLogException {
-        final Long codIdioma = 1L;
-        try {
-            return dao.getPneuNomenclaturaItemVisualizacao(
-                    codEmpresa,
-                    codDiagrama,
-                    codIdioma);
-        } catch (final Throwable t) {
-            final String errorMessage = "Erro ao buscar nomenclaturas";
-            Log.e(TAG, errorMessage, t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar nomenclaturas, tente novamente");
         }
     }
 }

@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+<a name="v1.0.0"></a>
+## Version [v1.0.0](https://github.com/luizfp/PrologWebService/compare/v0.1.01...v1.0.0) (2019-09-15)
+
+### Features
+* Cria estrutura para verificar planilha de import de veículo. (PL-2189)
+* Cria resource para monitorarmos se o WS está rodando
+* Cria integração do ProLog com a Praxio (PL-2126)
+
+### Refactors
+* Modifica quantidade máxima de semanas para 53 no valor do DOT. (PL-2214)
+* Permite que o valor do DOT seja inserido como null. (PL-2218)
+
 <a name="v0.1.01"></a>
 ## Version [v0.1.01](https://github.com/luizfp/PrologWebService/compare/v0.1.0...v0.1.01) (2019-09-08)
 
