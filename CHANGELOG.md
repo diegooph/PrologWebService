@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Cria estrutura para verificar planilha de import de veículo. (PL-2189)
+* Cria resource para monitorarmos se o WS está rodando
 
 ### Refactors
 * Modifica quantidade máxima de semanas para 53 no valor do DOT. (PL-2214)
