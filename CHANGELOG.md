@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.0"></a>
-## Version [v1.0.0](https://github.com/luizfp/PrologWebService/compare/v0.1.01...v1.0.0) (release-date) [unreleased]
+## Version [v1.0.0](https://github.com/luizfp/PrologWebService/compare/v0.1.01...v1.0.0) (2019-09-15)
 
 ### Features
 * Cria estrutura para verificar planilha de import de veículo. (PL-2189)
