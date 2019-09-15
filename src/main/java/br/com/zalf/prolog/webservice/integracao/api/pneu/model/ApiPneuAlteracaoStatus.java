@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.model;
 
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,35 +15,40 @@ import java.time.LocalDateTime;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public abstract class ApiPneuAlteracaoStatus {
+    @Exclude
     @NotNull
     private final ApiStatusPneu statusPneu;
     @NotNull
-    private final Long codigoPneuSistemaIntegrado;
+    private Long codigoSistemaIntegrado;
     @NotNull
-    private final String codigoPneuCliente;
+    private String codigoCliente;
     @NotNull
-    private final Long codUnidadePneu;
+    private Long codUnidadePneu;
     @NotNull
-    private final String cpfColaboradorAlteracaoStatus;
+    private String cpfColaboradorAlteracaoStatus;
     @NotNull
-    private final LocalDateTime dataHoraAlteracaoStatusUtc;
-    private final boolean trocouDeBanda;
+    private LocalDateTime dataHoraAlteracaoStatusUtc;
+    private boolean trocouDeBanda;
     @Nullable
-    private final Long codNovoModeloBanda;
+    private Long codNovoModeloBanda;
     @Nullable
-    private final BigDecimal valorNovaBandaPneu;
+    private BigDecimal valorNovaBandaPneu;
+
+    public ApiPneuAlteracaoStatus(@NotNull final ApiStatusPneu statusPneu) {
+        this.statusPneu = statusPneu;
+    }
 
     public ApiPneuAlteracaoStatus(@NotNull final ApiStatusPneu statusPneu,
-                                  @NotNull final Long codigoPneuSistemaIntegrado,
-                                  @NotNull final String codigoPneuCliente,
+                                  @NotNull final Long codigoSistemaIntegrado,
+                                  @NotNull final String codigoCliente,
                                   @NotNull final Long codUnidadePneu,
                                   @NotNull final String cpfColaboradorAlteracaoStatus,
                                   @NotNull final LocalDateTime dataHoraAlteracaoStatusUtc,
                                   final boolean trocouDeBanda,
                                   @Nullable final Long codNovoModeloBanda,
                                   @Nullable final BigDecimal valorNovaBandaPneu) {
-        this.codigoPneuSistemaIntegrado = codigoPneuSistemaIntegrado;
-        this.codigoPneuCliente = codigoPneuCliente;
+        this.codigoSistemaIntegrado = codigoSistemaIntegrado;
+        this.codigoCliente = codigoCliente;
         this.codUnidadePneu = codUnidadePneu;
         this.cpfColaboradorAlteracaoStatus = cpfColaboradorAlteracaoStatus;
         this.dataHoraAlteracaoStatusUtc = dataHoraAlteracaoStatusUtc;
@@ -52,18 +59,28 @@ public abstract class ApiPneuAlteracaoStatus {
     }
 
     @NotNull
+    public static RuntimeTypeAdapterFactory<ApiPneuAlteracaoStatus> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(ApiPneuAlteracaoStatus.class, "statusPneu")
+                .registerSubtype(ApiPneuAlteracaoStatusAnalise.class, ApiStatusPneu.ANALISE.asString())
+                .registerSubtype(ApiPneuAlteracaoStatusDescarte.class, ApiStatusPneu.DESCARTE.asString())
+                .registerSubtype(ApiPneuAlteracaoStatusEstoque.class, ApiStatusPneu.ESTOQUE.asString())
+                .registerSubtype(ApiPneuAlteracaoStatusVeiculo.class, ApiStatusPneu.EM_USO.asString());
+    }
+
+    @NotNull
     public ApiStatusPneu getStatusPneu() {
         return statusPneu;
     }
 
     @NotNull
-    public Long getCodigoPneuSistemaIntegrado() {
-        return codigoPneuSistemaIntegrado;
+    public Long getCodigoSistemaIntegrado() {
+        return codigoSistemaIntegrado;
     }
 
     @NotNull
-    public String getCodigoPneuCliente() {
-        return codigoPneuCliente;
+    public String getCodigoCliente() {
+        return codigoCliente;
     }
 
     @NotNull

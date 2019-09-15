@@ -19,7 +19,7 @@ public final class ApiPneuEdicao {
     private final Long novoCodModeloPneu;
     @NotNull
     private final Long novoCodDimensaoPneu;
-    @NotNull
+    @Nullable
     private final String novoDotPneu;
     @NotNull
     private final BigDecimal novoValorPneu;
@@ -32,7 +32,7 @@ public final class ApiPneuEdicao {
                          @NotNull final String novoCodigoCliente,
                          @NotNull final Long novoCodModeloPneu,
                          @NotNull final Long novoCodDimensaoPneu,
-                         @NotNull final String novoDotPneu,
+                         @Nullable final String novoDotPneu,
                          @NotNull final BigDecimal novoValorPneu,
                          @Nullable final Long novoCodModeloBanda,
                          @Nullable final BigDecimal novoValorBandaPneu) {
@@ -79,7 +79,7 @@ public final class ApiPneuEdicao {
         return novoCodDimensaoPneu;
     }
 
-    @NotNull
+    @Nullable
     public String getNovoDotPneu() {
         return novoDotPneu;
     }

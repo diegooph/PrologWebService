@@ -35,25 +35,30 @@ public class PneuResource {
     @POST
     @Secured
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public List<Long> insert(@FormDataParam("file") InputStream fileInputStream) throws ProLogException {
-        return service.insert(fileInputStream);
+    public List<Long> insert(
+            @HeaderParam("Authorization") @Required final String userToken,
+            @FormDataParam("file") @Required final InputStream fileInputStream) throws ProLogException {
+        return service.insert(userToken, fileInputStream);
     }
 
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Path("/{codUnidade}")
-    public AbstractResponse insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade) throws Throwable {
-        return service.insert(pneu, codUnidade);
+    public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
+                                   @PathParam("codUnidade") @Required final Long codUnidade,
+                                   @Required final Pneu pneu) throws ProLogException {
+        return service.insert(userToken, codUnidade, pneu);
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/{codUnidade}/{codPneuOriginal}")
-    public Response update(Pneu pneu,
-                           @PathParam("codUnidade") Long codUnidade,
-                           @PathParam("codPneuOriginal") Long codOriginalPneu) {
-        service.update(pneu, codUnidade, codOriginalPneu);
-        return Response.ok("Pneu atualizado com sucesso");
+    public Response update(
+            @HeaderParam("Authorization") @Required final String userToken,
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codPneuOriginal") @Required final Long codOriginalPneu,
+            @Required final Pneu pneu) throws ProLogException {
+        return service.update(userToken, codUnidade, codOriginalPneu, pneu);
     }
 
     @POST

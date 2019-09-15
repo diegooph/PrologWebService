@@ -13,6 +13,10 @@ import java.time.LocalDateTime;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ApiPneuAlteracaoStatusDescarte extends ApiPneuAlteracaoStatus {
+    public ApiPneuAlteracaoStatusDescarte() {
+        super(ApiStatusPneu.DESCARTE);
+    }
+
     public ApiPneuAlteracaoStatusDescarte(@NotNull final Long codigoPneuSistemaIntegrado,
                                           @NotNull final String codigoPneuCliente,
                                           @NotNull final Long codUnidadePneu,

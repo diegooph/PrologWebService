@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
@@ -28,6 +29,8 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
             ensureValidToken(tokenIntegracao, TAG);
             return dao.inserirCargaInicialPneu(tokenIntegracao, pneusCargaInicial);
         } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível processar a carga inicial de pneus:\n" +
+                    "tokenIntegracao: " + tokenIntegracao, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível processar a carga inicial de pneus no Sistema ProLog");
@@ -43,6 +46,8 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
                     "Pneu cadastrado com sucesso no Sistema ProLog",
                     dao.inserirPneuCadastro(tokenIntegracao, pneuCadastro));
         } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível cadastrar o pneu:\n" +
+                    "tokenIntegracao: " + tokenIntegracao, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível cadastrar o pneu no Sistema ProLog");
@@ -58,6 +63,8 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
                     "Pneu atualizado com sucesso no Sistema ProLog",
                     dao.atualizarPneuEdicao(tokenIntegracao, pneuEdicao));
         } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível atualizar o pneu:\n" +
+                    "tokenIntegracao: " + tokenIntegracao, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível atualizar o pneu no Sistema ProLog");
@@ -73,6 +80,8 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
                     "Transferência de pneus realizada com sucesso no Sistema ProLog",
                     dao.transferirPneu(tokenIntegracao, pneuTransferencia));
         } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível realizar a transferência de pneus:\n" +
+                    "tokenIntegracao: " + tokenIntegracao, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível realizar a transferência de pneus no Sistema ProLog");
