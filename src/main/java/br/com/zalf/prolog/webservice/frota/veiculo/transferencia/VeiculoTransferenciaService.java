@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.AvisoDelecaoTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
@@ -109,15 +110,16 @@ public final class VeiculoTransferenciaService {
         }
     }
 
-    public boolean possuiFechamentoAutomaticoOrdemServico(@NotNull final Long codEmpresa) throws ProLogException {
+    @NotNull
+    public AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(@NotNull final Long codEmpresa) {
         try {
-            return dao.possuiFechamentoAutomaticoOrdemServico(codEmpresa);
+            return dao.buscaAvisoDelecaoAutomaticaPorTransferencia(codEmpresa);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao verificar se empresa tem fechamento automático de " +
+            Log.e(TAG, "Erro ao verificar se empresa tem deleção automática de " +
                     "Ordens de Serviço habilitado:\ncodEmpresa: " + codEmpresa, t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao verificar se empresa tem fechamento automático de " +
+                    .map(t, "Erro ao verificar se empresa tem deleção automática de " +
                             "Ordens de Serviço habilitado, tente novamente");
         }
     }

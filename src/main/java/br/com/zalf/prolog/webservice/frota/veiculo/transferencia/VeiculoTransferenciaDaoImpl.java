@@ -13,7 +13,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.TipoVeicu
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoSemDiagramaException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoTransferenciaConverter;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.AvisoDelecaoTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.StatusDelecaoTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.PneuVeiculoTransferido;
@@ -246,6 +248,37 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                 throw new IllegalStateException("Nenhum dado retornado no ResultSet para processamento.");
             }
             return detalhesVeiculoTransferido;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    public AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(@NotNull final Long codEmpresa)
+            throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT " +
+                    "COD_EMPRESA, " +
+                    "BLOQUEAR_DELECAO_OS_CHECKLIST, " +
+                    "BLOQUEAR_DELECAO_SERVICOS_PNEU, " +
+                    "AVISO_BLOQUEIO_TELA_TRANSFERENCIA " +
+                    "FROM VEICULO_TRANSFERENCIA_BLOQUEIO_DELECAO_OS " +
+                    "WHERE COD_EMPRESA = ?;");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return new AvisoDelecaoTransferenciaVeiculo(
+                        StatusDelecaoTransferenciaVeiculo.create(
+                                rSet.getBoolean("BLOQUEAR_DELECAO_OS_CHECKLIST"),
+                                rSet.getBoolean("BLOQUEAR_DELECAO_SERVICOS_PNEU")),
+                        rSet.getString("AVISO_BLOQUEIO_TELA_TRANSFERENCIA"));
+            } else {
+                throw new IllegalStateException("Aviso de transferência não encontrado para a empresa: " + codEmpresa);
+            }
         } finally {
             close(conn, stmt, rSet);
         }
@@ -573,31 +606,6 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             }
         } finally {
             close(stmt);
-        }
-    }
-
-    public boolean possuiFechamentoAutomaticoOrdemServico(@NotNull final Long codEmpresa) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT EXISTS(SELECT COD_EMPRESA " +
-                    "FROM VEICULO_TRANSFERENCIA_EMPRESA_BLOQUEADA_FECHAMENTO_OS " +
-                    "WHERE COD_EMPRESA = ?) AS EMPRESA_FECHA_OS_AUTOMATICAMENTE");
-            stmt.setLong(1, codEmpresa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                // Negamos o retono pois, se o código da empresa estiver nessa tabela, ela não fecha automaticamente
-                // ordens de serviços ao transferir veículos entre unidades.
-                return !rSet.getBoolean("EMPRESA_FECHA_OS_AUTOMATICAMENTE");
-            } else {
-                throw new SQLException("Erro ao identificar se empresa fecha ordem de serviço de forma automática " +
-                        "ao transferir veículos entre unidades:\n" +
-                        "codEmpresa: " + codEmpresa);
-            }
-        } finally {
-            close(conn, stmt, rSet);
         }
     }
 }
