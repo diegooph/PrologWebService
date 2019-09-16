@@ -420,7 +420,11 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         final ChecklistModeloDao checklistModeloDaoImpl = Injection.provideChecklistModeloDao();
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         holder.setCodigoModeloChecklist(codModelo);
-        holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidadeModelo, codModelo));
+        // TODO: O código da versão precisa vir pelo Service.
+        holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(
+                codUnidadeModelo,
+                codModelo,
+                ChecklistMigracaoEstruturaSuporte.getCodVersaoAtualModeloChecklist(codModelo)));
         holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));
         return holder;
     }

@@ -7,10 +7,9 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -155,23 +154,5 @@ public final class ChecklistModeloResource {
             @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) throws ProLogException {
         Preconditions.checkNotNull(codEmpresa, "Código da empresa não pode ser null!");
         return service.insertImagem(codEmpresa, fileInputStream, fileDetail);
-    }
-
-    //
-    // Métodos depreciados.
-    //
-    @GET
-    @Consumes({MediaType.MULTIPART_FORM_DATA})
-    @Secured(permissions = {
-            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
-            Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR,
-            Pilares.Frota.Checklist.REALIZAR})
-    @Path("/perguntas/{codUnidade}/{codModelo}")
-    @Deprecated
-    public List<PerguntaRespostaChecklist> getPerguntas(
-            @PathParam("codUnidade") @Required final Long codUnidade,
-            @PathParam("codModelo") @Required final Long codModelo) throws ProLogException {
-        return service.getPerguntas(codUnidade, codModelo);
     }
 }

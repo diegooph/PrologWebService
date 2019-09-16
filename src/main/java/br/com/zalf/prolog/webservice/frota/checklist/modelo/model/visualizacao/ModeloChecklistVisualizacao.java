@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -11,73 +12,76 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ModeloChecklistVisualizacao {
-    private Long codigo;
-    // TODO:
-    private Long codVersaoModelo = 20L;
-    private Long codUnidade;
-    private String nome;
-    private List<TipoVeiculo> tiposVeiculoLiberados;
-    private List<Cargo> cargosLiberados;
-    private List<PerguntaModeloChecklistVisualizacao> perguntas;
-    private boolean ativo;
+    @NotNull
+    private final Long codigo;
+    @NotNull
+    private final Long codVersaoModelo;
+    @NotNull
+    private final Long codUnidade;
+    @NotNull
+    private final String nome;
+    @NotNull
+    private final List<TipoVeiculo> tiposVeiculoLiberados;
+    @NotNull
+    private final List<Cargo> cargosLiberados;
+    @NotNull
+    private final List<PerguntaModeloChecklistVisualizacao> perguntas;
+    private final boolean ativo;
 
-    public ModeloChecklistVisualizacao() {
-
+    public ModeloChecklistVisualizacao(@NotNull final Long codigo,
+                                       @NotNull final Long codVersaoModelo,
+                                       @NotNull final Long codUnidade,
+                                       @NotNull final String nome,
+                                       @NotNull final List<TipoVeiculo> tiposVeiculoLiberados,
+                                       @NotNull final List<Cargo> cargosLiberados,
+                                       @NotNull final List<PerguntaModeloChecklistVisualizacao> perguntas,
+                                       final boolean ativo) {
+        this.codigo = codigo;
+        this.codVersaoModelo = codVersaoModelo;
+        this.codUnidade = codUnidade;
+        this.nome = nome;
+        this.tiposVeiculoLiberados = tiposVeiculoLiberados;
+        this.cargosLiberados = cargosLiberados;
+        this.perguntas = perguntas;
+        this.ativo = ativo;
     }
 
+    @NotNull
     public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(final Long codigo) {
-        this.codigo = codigo;
+    @NotNull
+    public Long getCodVersaoModelo() {
+        return codVersaoModelo;
     }
 
+    @NotNull
     public Long getCodUnidade() {
         return codUnidade;
     }
 
-    public void setCodUnidade(final Long codUnidade) {
-        this.codUnidade = codUnidade;
-    }
-
+    @NotNull
     public String getNome() {
         return nome;
     }
 
-    public void setNome(final String nome) {
-        this.nome = nome;
-    }
-
+    @NotNull
     public List<TipoVeiculo> getTiposVeiculoLiberados() {
         return tiposVeiculoLiberados;
     }
 
-    public void setTiposVeiculoLiberados(final List<TipoVeiculo> tiposVeiculoLiberados) {
-        this.tiposVeiculoLiberados = tiposVeiculoLiberados;
-    }
-
+    @NotNull
     public List<Cargo> getCargosLiberados() {
         return cargosLiberados;
     }
 
-    public void setCargosLiberados(final List<Cargo> cargosLiberados) {
-        this.cargosLiberados = cargosLiberados;
-    }
-
+    @NotNull
     public List<PerguntaModeloChecklistVisualizacao> getPerguntas() {
         return perguntas;
     }
 
-    public void setPerguntas(final List<PerguntaModeloChecklistVisualizacao> perguntas) {
-        this.perguntas = perguntas;
-    }
-
     public boolean isAtivo() {
         return ativo;
-    }
-
-    public void setAtivo(final boolean ativo) {
-        this.ativo = ativo;
     }
 }

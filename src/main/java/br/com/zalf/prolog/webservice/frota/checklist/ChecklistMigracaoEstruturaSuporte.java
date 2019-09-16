@@ -31,6 +31,18 @@ public final class ChecklistMigracaoEstruturaSuporte {
     private static final int VERSION_CODE_APP_NOVA_ESTRUTURA = 83;
 
     @NotNull
+    public static Long getCodVersaoAtualModeloChecklist(@NotNull final Long codModelo)
+            throws SQLException {
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            return internalGetCodVersaoAtualModeloChecklist(conn, codModelo);
+        } finally {
+            DatabaseConnection.close(conn);
+        }
+    }
+
+    @NotNull
     public static List<ModeloChecklistSelecao> toEstruturaNovaSelecaoModelo(
             @NotNull final Map<ModeloChecklist, List<String>> map) {
         final List<ModeloChecklistSelecao> modelos = new ArrayList<>(map.size());
@@ -81,6 +93,27 @@ public final class ChecklistMigracaoEstruturaSuporte {
                                                         @NotNull final Checklist checklist) throws Throwable {
         final List<ChecklistJson> checklistJson = createChecklistJson(checklist);
         return interalEncontraCodVersaoModeloChecklist(conn, checklist.getCodModelo(), checklistJson);
+    }
+
+    @NotNull
+    private static Long internalGetCodVersaoAtualModeloChecklist(@NotNull final Connection conn,
+                                                                 @NotNull final Long codModelo) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT CM.COD_VERSAO_ATUAL " +
+                    "FROM CHECKLIST_MODELO_DATA CM WHERE CM.CODIGO = ?;");
+            stmt.setLong(1, codModelo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("COD_VERSAO_ATUAL");
+            } else {
+                throw new SQLException("Erro ao buscar versão atual do modelo de checklist para o modelo: "
+                        + codModelo);
+            }
+        } finally {
+            DatabaseConnection.close(stmt, rSet);
+        }
     }
 
     @NotNull

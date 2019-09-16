@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.VeiculoChecklistSelecao;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -51,6 +53,36 @@ public final class ChecklistModeloConverter {
     }
 
     @NotNull
+    public static List<PerguntaModeloChecklistVisualizacao> createPerguntaAlternativaModeloChecklist(
+            @NotNull final ResultSet rSet) throws SQLException {
+        final List<PerguntaModeloChecklistVisualizacao> perguntas = new ArrayList<>();
+        List<AlternativaModeloChecklist> alternativas = new ArrayList<>();
+        PerguntaModeloChecklistVisualizacao pergunta = new PerguntaModeloChecklistVisualizacao();
+        AlternativaModeloChecklistVisualizacao alternativa;
+        if (rSet.first()) {
+            pergunta = ChecklistModeloConverter.createPerguntaModeloChecklist(rSet);
+            alternativa = ChecklistModeloConverter.createAlternativaModeloChecklist(rSet);
+            alternativas.add(alternativa);
+        }
+        while (rSet.next()) {
+            if (rSet.getLong("COD_PERGUNTA") == pergunta.getCodigo()) {
+                alternativa = ChecklistModeloConverter.createAlternativaModeloChecklist(rSet);
+                alternativas.add(alternativa);
+            } else {
+                pergunta.setAlternativas(alternativas);
+                perguntas.add(pergunta);
+                alternativas = new ArrayList<>();
+                pergunta = ChecklistModeloConverter.createPerguntaModeloChecklist(rSet);
+                alternativa = ChecklistModeloConverter.createAlternativaModeloChecklist(rSet);
+                alternativas.add(alternativa);
+            }
+        }
+        pergunta.setAlternativas(alternativas);
+        perguntas.add(pergunta);
+        return perguntas;
+    }
+
+    @NotNull
     public static PerguntaModeloChecklistVisualizacao createPerguntaModeloChecklist(
             @NotNull final ResultSet rSet) throws SQLException {
         final PerguntaModeloChecklistVisualizacao pergunta = new PerguntaModeloChecklistVisualizacao();
@@ -60,8 +92,7 @@ public final class ChecklistModeloConverter {
         pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
         pergunta.setCodImagem(rSet.getLong("COD_IMAGEM"));
         pergunta.setUrlImagem(rSet.getString("URL_IMAGEM"));
-        // TODO:
-        pergunta.setCodigoFixo(100L);
+        pergunta.setCodigoFixo(rSet.getLong("CODIGO_FIXO_PERGUNTA"));
         return pergunta;
     }
 
@@ -74,8 +105,7 @@ public final class ChecklistModeloConverter {
         alternativa.setPrioridade(PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE")));
         alternativa.setTipoOutros(rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"));
         alternativa.setDeveAbrirOrdemServico(rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"));
-        // TODO:
-        alternativa.setCodigoFixo(200L);
+        alternativa.setCodigoFixo(rSet.getLong("CODIGO_FIXO_ALTERNATIVA"));
         return alternativa;
     }
 
