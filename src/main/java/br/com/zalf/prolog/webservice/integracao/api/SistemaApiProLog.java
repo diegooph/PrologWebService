@@ -6,12 +6,15 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -75,6 +78,22 @@ public final class SistemaApiProLog extends Sistema {
                        @NotNull final Long codUnidade,
                        @NotNull final Long codOriginalPneu) throws Throwable {
         throw new BloqueadoIntegracaoException("Para atualizar os dados do pneu utilize o seu sistema de gestão");
+    }
+
+    @NotNull
+    @Override
+    public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
+                                    @NotNull final OffsetDateTime dataHoraSincronizacao,
+                                    final boolean isTransferenciaFromVeiculo) throws Throwable {
+        throw new BloqueadoIntegracaoException("Para transferir pneus utilize o seu sistema de gestão");
+    }
+
+    @NotNull
+    @Override
+    public Long insertProcessoTranseferenciaVeiculo(
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
+        throw new BloqueadoIntegracaoException("Para transferir veículos utilize o seu sistema de gestão");
     }
 
     @NotNull

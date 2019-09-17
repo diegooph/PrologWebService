@@ -12,6 +12,8 @@ public interface OperacoesIntegradas extends
         OperacoesIntegradasChecklist,
         OperacoesIntegradasChecklistOrdemServico,
         OperacoesIntegradasVeiculo,
+        OperacoesIntegradasVeiculoTransferencia,
         OperacoesIntegradasPneu,
+        OperacoesIntegradasPneuTransferencia,
         OperacoesIntegradasAfericaoServico {
 }

@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizaca
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculoTransferencia;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -27,13 +28,16 @@ public final class VeiculoTransferenciaService {
 
     @NotNull
     public final ResponseWithCod insertProcessoTransferenciaVeiculo(
-            final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
+            @NotNull final String userToken,
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
         try {
             return ResponseWithCod.ok(
                     "Processo de transferência realizado com sucesso",
-                    dao.insertProcessoTranseferenciaVeiculo(
-                            processoTransferenciaVeiculo,
-                            Injection.provideDadosChecklistOfflineChangedListener()));
+                    RouterVeiculoTransferencia
+                            .create(dao, userToken)
+                            .insertProcessoTranseferenciaVeiculo(
+                                    processoTransferenciaVeiculo,
+                                    Injection.provideDadosChecklistOfflineChangedListener()));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao realizar processo de transferência:", t);
             throw Injection
