@@ -171,6 +171,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
         }
 
         return new ProcessoTransferenciaVeiculoRealizacao(
+                3L,
                 COD_UNIDADE,
                 COD_UNIDADE_DESTINO,
                 COD_COLABORADOR,

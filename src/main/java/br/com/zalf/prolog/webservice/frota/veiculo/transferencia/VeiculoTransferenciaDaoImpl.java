@@ -257,17 +257,23 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
     public AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(@NotNull final Long codEmpresa)
             throws Throwable {
         Connection conn = null;
+        try {
+            conn = getConnection();
+            return internalBuscaAvisoDelecaoAutomaticaPorTransferencia(conn, codEmpresa);
+        } finally {
+            close(conn);
+        }
+    }
+
+    @NotNull
+    private AvisoDelecaoTransferenciaVeiculo internalBuscaAvisoDelecaoAutomaticaPorTransferencia(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "COD_EMPRESA, " +
-                    "BLOQUEAR_DELECAO_OS_CHECKLIST, " +
-                    "BLOQUEAR_DELECAO_SERVICOS_PNEU, " +
-                    "AVISO_BLOQUEIO_TELA_TRANSFERENCIA " +
-                    "FROM VEICULO_TRANSFERENCIA_BLOQUEIO_DELECAO_OS " +
-                    "WHERE COD_EMPRESA = ?;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_TRANSFERENCIA_BUSCA_AVISO_BLOQUEIO(" +
+                    "F_COD_EMPRESA := ?);");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -280,7 +286,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                 throw new IllegalStateException("Aviso de transferência não encontrado para a empresa: " + codEmpresa);
             }
         } finally {
-            close(conn, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -341,6 +347,11 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                         processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia();
                 final PneuTransferenciaDao pneuTransferenciaDao = Injection.providePneuTransferenciaDao();
                 final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+
+                final AvisoDelecaoTransferenciaVeiculo avisoDelecao = internalBuscaAvisoDelecaoAutomaticaPorTransferencia(
+                        conn,
+                        processoTransferenciaVeiculo.getCodEmpresa());
+
                 // Transfere cada placa do Processo.
                 for (final Long codVeiculoTransferido : processoTransferenciaVeiculo.getCodVeiculosTransferencia()) {
                     // Insere informações da transferência da Placa.
@@ -350,12 +361,14 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                                     codProcessoTransferenciaVeiculo,
                                     codVeiculoTransferido);
 
-                    // Deleta os itens de O.S. em aberto do veículo transferido.
-                    deletaItensOrdemServicoChecklistVeiculoTransferido(
-                            conn,
-                            codVeiculoTransferido,
-                            codTransferenciaInformacoes,
-                            dataHoraRealizacaoProcesso);
+                    if (avisoDelecao.deveDeletarItensOrdemServicoChecklist()) {
+                        // Deleta os itens de O.S. em aberto do veículo transferido.
+                        deletaItensOrdemServicoChecklistVeiculoTransferido(
+                                conn,
+                                codVeiculoTransferido,
+                                codTransferenciaInformacoes,
+                                dataHoraRealizacaoProcesso);
+                    }
 
                     // Transfere o veículo da Unidade Origem para a Unidade Destino.
                     tranfereVeiculo(conn, codUnidadeOrigem, codUnidadeDestino, codVeiculoTransferido);
@@ -364,15 +377,18 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                     final Optional<List<Long>> codPneusAplicadosVeiculo = veiculoDao
                             .getCodPneusAplicadosVeiculo(conn, codVeiculoTransferido);
                     if (codPneusAplicadosVeiculo.isPresent()) {
-                        // Deleta os serviços de pneus em aberto do pneu transferido.
-                        // TODO: Esse FOR aqui, dentro da func ou utilizar um batch?
-                        for (final Long codPneu : codPneusAplicadosVeiculo.get()) {
-                            deletaServicosPneusTransferido(
-                                    conn,
-                                    codVeiculoTransferido,
-                                    codPneu,
-                                    codTransferenciaInformacoes,
-                                    dataHoraRealizacaoProcesso);
+
+                        if (avisoDelecao.deveDeletarServicosPneus()) {
+                            // Deleta os serviços de pneus em aberto do pneu transferido.
+                            // TODO: Esse FOR aqui, dentro da func ou utilizar um batch?
+                            for (final Long codPneu : codPneusAplicadosVeiculo.get()) {
+                                deletaServicosPneusTransferido(
+                                        conn,
+                                        codVeiculoTransferido,
+                                        codPneu,
+                                        codTransferenciaInformacoes,
+                                        dataHoraRealizacaoProcesso);
+                            }
                         }
 
                         // Transfere os pneus aplicados na placa da Unidade Origem para a Unidade Destino.

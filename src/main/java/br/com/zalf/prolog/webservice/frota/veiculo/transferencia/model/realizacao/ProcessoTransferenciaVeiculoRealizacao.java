@@ -13,6 +13,11 @@ import java.util.List;
  */
 public final class ProcessoTransferenciaVeiculoRealizacao {
     /**
+     * Código da Empresa onde a transferência ocorreu.
+     */
+    @NotNull
+    private final Long codEmpresa;
+    /**
      * Código da Unidade onde o Veículo está alocado.
      */
     @NotNull
@@ -38,11 +43,13 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
     @Nullable
     private final String observacao;
 
-    public ProcessoTransferenciaVeiculoRealizacao(@NotNull final Long codUnidadeOrigem,
+    public ProcessoTransferenciaVeiculoRealizacao(@NotNull final Long codEmpresa,
+                                                  @NotNull final Long codUnidadeOrigem,
                                                   @NotNull final Long codUnidadeDestino,
                                                   @NotNull final Long codColaboradorRealizacaoTransferencia,
                                                   @NotNull final List<Long> codVeiculosTransferencia,
                                                   @Nullable final String observacao) {
+        this.codEmpresa = codEmpresa;
         this.codUnidadeOrigem = codUnidadeOrigem;
         this.codUnidadeDestino = codUnidadeDestino;
         this.codColaboradorRealizacaoTransferencia = codColaboradorRealizacaoTransferencia;
@@ -57,11 +64,17 @@ public final class ProcessoTransferenciaVeiculoRealizacao {
             veiculosTransferencia.add((long) i);
         }
         return new ProcessoTransferenciaVeiculoRealizacao(
+                5L,
                 10L,
                 15L,
                 1272L,
                 veiculosTransferencia,
                 "Estes veiculos estão sendo transferidos");
+    }
+
+    @NotNull
+    public Long getCodEmpresa() {
+        return codEmpresa;
     }
 
     @NotNull

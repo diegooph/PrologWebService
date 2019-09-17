@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -60,4 +61,16 @@ public interface IntegracaoDao {
      */
     @NotNull
     String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable;
+
+    /**
+     * Busca o código da empresa vinculado ao {@code tokenIntegracao} fornecido.
+     *
+     * @param conn Connection que será utilizada na requisição.
+     * @param tokenIntegracao Um token de integração.
+     * @return O código da empresa.
+     * @throws Throwable Caso ocorra algum problema na busca do token.
+     */
+    @NotNull
+    Long getCodEmpresaByTokenIntegracao(@NotNull final Connection conn,
+                                        @NotNull final String tokenIntegracao) throws Throwable;
 }
