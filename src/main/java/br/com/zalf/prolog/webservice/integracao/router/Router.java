@@ -119,17 +119,17 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Long insertProcessoTranseferenciaVeiculo(
+    public Long insertProcessoTransferenciaVeiculo(
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
         if (getSistema() != null) {
             return getSistema()
-                    .insertProcessoTranseferenciaVeiculo(
+                    .insertProcessoTransferenciaVeiculo(
                             processoTransferenciaVeiculo,
                             dadosChecklistOfflineChangedListener);
         } else {
             return integradorProLog
-                    .insertProcessoTranseferenciaVeiculo(
+                    .insertProcessoTransferenciaVeiculo(
                             processoTransferenciaVeiculo,
                             dadosChecklistOfflineChangedListener);
         }

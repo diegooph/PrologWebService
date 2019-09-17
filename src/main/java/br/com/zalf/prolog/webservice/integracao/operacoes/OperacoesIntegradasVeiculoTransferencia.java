@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface OperacoesIntegradasVeiculoTransferencia {
     @NotNull
-    Long insertProcessoTranseferenciaVeiculo(
+    Long insertProcessoTransferenciaVeiculo(
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable;
 }

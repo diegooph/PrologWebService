@@ -244,11 +244,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Long insertProcessoTranseferenciaVeiculo(
+    public Long insertProcessoTransferenciaVeiculo(
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
         return veiculoTransferenciaDao
-                .insertProcessoTranseferenciaVeiculo(
+                .insertProcessoTransferenciaVeiculo(
                         processoTransferenciaVeiculo,
                         dadosChecklistOfflineChangedListener);
     }

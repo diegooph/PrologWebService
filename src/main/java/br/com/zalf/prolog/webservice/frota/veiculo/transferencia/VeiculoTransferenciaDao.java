@@ -38,7 +38,7 @@ public interface VeiculoTransferenciaDao {
      * @throws Throwable Se algum erro ocorrer ao realizar o processo de transferência.
      */
     @NotNull
-    Long insertProcessoTranseferenciaVeiculo(
+    Long insertProcessoTransferenciaVeiculo(
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable;
 
@@ -62,7 +62,7 @@ public interface VeiculoTransferenciaDao {
      * @throws Throwable Se algum erro ocorrer ao realizar o processo de transferência.
      */
     @NotNull
-    Long insertProcessoTranseferenciaVeiculo(
+    Long insertProcessoTransferenciaVeiculo(
             @NotNull final Connection conn,
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable;

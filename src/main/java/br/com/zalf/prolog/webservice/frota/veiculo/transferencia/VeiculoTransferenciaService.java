@@ -35,7 +35,7 @@ public final class VeiculoTransferenciaService {
                     "Processo de transferência realizado com sucesso",
                     RouterVeiculoTransferencia
                             .create(dao, userToken)
-                            .insertProcessoTranseferenciaVeiculo(
+                            .insertProcessoTransferenciaVeiculo(
                                     processoTransferenciaVeiculo,
                                     Injection.provideDadosChecklistOfflineChangedListener()));
         } catch (final Throwable t) {

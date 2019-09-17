@@ -40,7 +40,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
 
     @NotNull
     @Override
-    public Long insertProcessoTranseferenciaVeiculo(
+    public Long insertProcessoTransferenciaVeiculo(
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
@@ -66,7 +66,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
 
     @NotNull
     @Override
-    public Long insertProcessoTranseferenciaVeiculo(
+    public Long insertProcessoTransferenciaVeiculo(
             @NotNull final Connection conn,
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {

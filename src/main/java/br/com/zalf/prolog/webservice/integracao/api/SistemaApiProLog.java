@@ -90,7 +90,7 @@ public final class SistemaApiProLog extends Sistema {
 
     @NotNull
     @Override
-    public Long insertProcessoTranseferenciaVeiculo(
+    public Long insertProcessoTransferenciaVeiculo(
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
         throw new BloqueadoIntegracaoException("Para transferir veículos utilize o seu sistema de gestão");

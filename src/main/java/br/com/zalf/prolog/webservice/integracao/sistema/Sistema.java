@@ -81,11 +81,11 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Long insertProcessoTranseferenciaVeiculo(
+    public Long insertProcessoTransferenciaVeiculo(
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
         return getIntegradorProLog()
-                .insertProcessoTranseferenciaVeiculo(
+                .insertProcessoTransferenciaVeiculo(
                         processoTransferenciaVeiculo,
                         dadosChecklistOfflineChangedListener);
     }
