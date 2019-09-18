@@ -25,11 +25,15 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDao;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.google.common.annotations.VisibleForTesting;
@@ -37,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,7 +54,9 @@ import java.util.Optional;
  */
 public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
     private VeiculoDao veiculoDao;
+    private VeiculoTransferenciaDao veiculoTransferenciaDao;
     private PneuDao pneuDao;
+    private final PneuTransferenciaDao pneuTransferenciaDao;
     private TipoVeiculoDao tipoVeiculoDao;
     private ChecklistDao checklistDao;
     private ChecklistModeloDao checklistModeloDao;
@@ -63,7 +70,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     private IntegradorProLog(@NotNull final String userToken,
                              VeiculoDao veiculoDao,
+                             VeiculoTransferenciaDao veiculoTransferenciaDao,
                              PneuDao pneuDao,
+                             PneuTransferenciaDao pneuTransferenciaDao,
                              TipoVeiculoDao tipoVeiculoDao,
                              ChecklistDao checklistDao,
                              ChecklistModeloDao checklistModeloDao,
@@ -74,7 +83,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                              IntegracaoDao integracaoDao) {
         this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.veiculoDao = veiculoDao;
+        this.veiculoTransferenciaDao = veiculoTransferenciaDao;
         this.pneuDao = pneuDao;
+        this.pneuTransferenciaDao = pneuTransferenciaDao;
         this.tipoVeiculoDao = tipoVeiculoDao;
         this.checklistDao = checklistDao;
         this.checklistModeloDao = checklistModeloDao;
@@ -90,7 +101,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return new IntegradorProLog(
                 userToken,
                 Injection.provideVeiculoDao(),
+                Injection.provideVeiculoTransferenciaDao(),
                 Injection.providePneuDao(),
+                Injection.providePneuTransferenciaDao(),
                 Injection.provideTipoVeiculoDao(),
                 Injection.provideChecklistDao(),
                 Injection.provideChecklistModeloDao(),
@@ -227,6 +240,17 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             @NotNull final String placa,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         return veiculoDao.delete(placa, checklistOfflineListener);
+    }
+
+    @NotNull
+    @Override
+    public Long insertProcessoTransferenciaVeiculo(
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
+        return veiculoTransferenciaDao
+                .insertProcessoTransferenciaVeiculo(
+                        processoTransferenciaVeiculo,
+                        dadosChecklistOfflineChangedListener);
     }
 
     @NotNull
@@ -409,6 +433,15 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
+    public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
+                                    @NotNull final OffsetDateTime dataHoraSincronizacao,
+                                    final boolean isTransferenciaFromVeiculo) throws Throwable {
+        return pneuTransferenciaDao
+                .insertTransferencia(pneuTransferenciaRealizacao, dataHoraSincronizacao, isTransferenciaFromVeiculo);
+    }
+
+    @NotNull
+    @Override
     public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
                                                     @NotNull final String placaVeiculo) throws Throwable {
         return afericaoServicoDao.getVeiculoAberturaServico(codServico, placaVeiculo);
@@ -421,7 +454,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     public static final class Builder {
         private VeiculoDao veiculoDao;
+        private VeiculoTransferenciaDao veiculoTransferenciaDao;
         private PneuDao pneuDao;
+        private PneuTransferenciaDao pneuTransferenciaDao;
         private TipoVeiculoDao tipoVeiculoDao;
         private ChecklistDao checklistDao;
         private ChecklistModeloDao checklistModeloDao;
@@ -441,8 +476,18 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return this;
         }
 
+        public Builder withVeiculoTransferenciaDao(VeiculoTransferenciaDao veiculoTransferenciaDao) {
+            this.veiculoTransferenciaDao = veiculoTransferenciaDao;
+            return this;
+        }
+
         public Builder withPneuDao(PneuDao pneuDao) {
             this.pneuDao = pneuDao;
+            return this;
+        }
+
+        public Builder withPneuTransferenciaDao(PneuTransferenciaDao pneuTransferenciaDao) {
+            this.pneuTransferenciaDao = pneuTransferenciaDao;
             return this;
         }
 
@@ -490,7 +535,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return new IntegradorProLog(
                     userToken,
                     veiculoDao,
+                    veiculoTransferenciaDao,
                     pneuDao,
+                    pneuTransferenciaDao,
                     tipoVeiculoDao,
                     checklistDao,
                     checklistModeloDao,

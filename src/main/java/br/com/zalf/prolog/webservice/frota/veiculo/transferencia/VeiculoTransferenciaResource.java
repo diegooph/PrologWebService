@@ -37,8 +37,9 @@ public final class VeiculoTransferenciaResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     public ResponseWithCod insertProcessoTransferenciaVeiculo(
+            @HeaderParam("Authorization") @Required final String userToken,
             @Required final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
-        return service.insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo);
+        return service.insertProcessoTransferenciaVeiculo(userToken, processoTransferenciaVeiculo);
     }
 
     @GET

@@ -146,7 +146,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             }
             Injection
                     .provideVeiculoTransferenciaDao()
-                    .insertProcessoTranseferenciaVeiculo(
+                    .insertProcessoTransferenciaVeiculo(
                             conn,
                             CadastroVeiculoIntegracaoPraxioConverter
                                     .convert(codEmpresa, codColaborador, codVeiculo, veiculoTransferenciaPraxio),
