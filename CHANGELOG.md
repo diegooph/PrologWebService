@@ -7,6 +7,7 @@ Change Log
 ### Features
 * Bloqueia funcionalidades de cadastro/edição de pneus e veículos, movimentação e 
 transferências no ProLog (PL-2296)
+* Fecha serviços de pneus automaticamente ao atualizar o status do pneu (PL-2302)
 
 <a name="v1.0.0"></a>
 ## Version [v1.0.0](https://github.com/luizfp/PrologWebService/compare/v0.1.01...v1.0.0) (2019-09-15)
