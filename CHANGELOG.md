@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.1"></a>
-## Version [v1.0.1](https://github.com/luizfp/PrologWebService/compare/v1.0.0...v1.0.1) (release-date) [unreleased]
+## Version [v1.0.1](https://github.com/luizfp/PrologWebService/compare/v1.0.0...v1.0.1) (2019-09-18)
 
 ### Features
 * Bloqueia funcionalidades de cadastro/edição de pneus e veículos, movimentação e transferências no ProLog (PL-2296)
