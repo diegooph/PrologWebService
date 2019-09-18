@@ -76,61 +76,44 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < itensResolvidos.size(); i++) {
             final ItemResolvidoIntegracaoTransport itemResolvido = itensResolvidos.get(i);
-            if (itemResolvido.getCodUnidadeOrdemServico() == null
-                    || itemResolvido.getCodUnidadeOrdemServico() <= 0) {
+            if (itemResolvido.getCodUnidadeOrdemServico() <= 0) {
                 throw new GenericException(String.format(
                         "O 'codUnidadeOrdemServico = %d' deve ser um número positivo e não nulo.",
                         itemResolvido.getCodUnidadeOrdemServico()));
             }
-            if (itemResolvido.getCodOrdemServico() == null
-                    || itemResolvido.getCodOrdemServico() <= 0) {
+            if (itemResolvido.getCodOrdemServico() <= 0) {
                 throw new GenericException(String.format(
                         "O 'codOrdemServico = %d' deve ser um número positivo e não nulo.",
                         itemResolvido.getCodOrdemServico()));
             }
-            if (itemResolvido.getCodItemResolvido() == null
-                    || itemResolvido.getCodItemResolvido() <= 0) {
+            if (itemResolvido.getCodItemResolvido() <= 0) {
                 throw new GenericException(String.format(
                         "O 'codItemResolvido = %d' deve ser um número positivo e não nulo.",
                         itemResolvido.getCodItemResolvido()));
             }
-            if (itemResolvido.getCpfColaboradorResolucao() == null
-                    || itemResolvido.getCpfColaboradorResolucao().isEmpty()) {
+            if (itemResolvido.getCpfColaboradorResolucao().isEmpty()) {
                 throw new GenericException(String.format(
                         "O 'cpfColaboradoResolucao = %s' não pode ser vazio ou nulo.",
                         itemResolvido.getCpfColaboradorResolucao()));
             }
-            if (itemResolvido.getPlacaVeiculo() == null
-                    || itemResolvido.getPlacaVeiculo().isEmpty()) {
+            if (itemResolvido.getPlacaVeiculo().isEmpty()) {
                 throw new GenericException(String.format(
                         "A 'placaVeiculo = %s' não pode ser vazio ou nulo.",
                         itemResolvido.getPlacaVeiculo()));
             }
-            if (itemResolvido.getKmColetadoVeiculo() == null
-                    || itemResolvido.getKmColetadoVeiculo() < 0) {
+            if (itemResolvido.getKmColetadoVeiculo() < 0) {
                 throw new GenericException(String.format(
                         "O 'kmColetadoVeiculo = %d' deve ser um número positivo e não nulo.",
                         itemResolvido.getKmColetadoVeiculo()));
             }
-            if (itemResolvido.getDuracaoResolucaoItemEmMilissegundos() == null
-                    || itemResolvido.getDuracaoResolucaoItemEmMilissegundos() < 0) {
+            if (itemResolvido.getDuracaoResolucaoItemEmMilissegundos() < 0) {
                 throw new GenericException(
                         "A 'duracaoResolucaoItemEmMilissegundos' deve ser um número positivo e não nulo.");
             }
-            if (itemResolvido.getFeedbackResolucao() == null ||
-                    itemResolvido.getFeedbackResolucao().isEmpty()) {
+            if (itemResolvido.getFeedbackResolucao().isEmpty()) {
                 throw new GenericException(String.format(
                         "O 'feedbackResolucao = %s' não pode ser vazio ou nulo.",
                         itemResolvido.getFeedbackResolucao()));
-            }
-            if (itemResolvido.getDataHoraResolvidoProLog() == null) {
-                throw new GenericException("A 'dataHoraResolvidoProLog' não pode ser nula.");
-            }
-            if (itemResolvido.getDataHoraInicioResolucao() == null) {
-                throw new GenericException("A 'dataHoraInicioResolucao' não pode ser nula.");
-            }
-            if (itemResolvido.getDataHoraFimResolucao() == null) {
-                throw new GenericException("A 'dataHoraFimResolucao' não pode ser nula.");
             }
             if (itemResolvido.getDataHoraInicioResolucao().isAfter(itemResolvido.getDataHoraFimResolucao())) {
                 final String msg = String.format(

@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.listagem.PneuTransferenciaListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.visualizacao.PneuTransferenciaProcessoVisualizacao;
+import br.com.zalf.prolog.webservice.integracao.router.RouterPneuTransferencia;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
@@ -26,20 +27,23 @@ public final class PneuTransferenciaService {
 
     @NotNull
     ResponseWithCod insertTransferencia(
-            final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
+            @NotNull final String userToken,
+            @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
         try {
             final OffsetDateTime dataHoraSincronizacao = Now.offsetDateTimeUtc();
             return ResponseWithCod.ok(
                     "Transferência realizada com sucesso",
-                    dao.insertTransferencia(
-                            pneuTransferenciaRealizacao,
-                            dataHoraSincronizacao,
-                            false));
-        } catch (Throwable e) {
-            Log.e(TAG, "Erro ao realizar a transferência", e);
+                    RouterPneuTransferencia
+                            .create(dao, userToken)
+                            .insertTransferencia(
+                                    pneuTransferenciaRealizacao,
+                                    dataHoraSincronizacao,
+                                    false));
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao realizar a transferência", t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(e, "Erro ao realizar a transferência, tente novamente");
+                    .map(t, "Erro ao realizar a transferência, tente novamente");
         }
     }
 

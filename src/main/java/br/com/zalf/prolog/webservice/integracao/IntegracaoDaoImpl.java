@@ -106,4 +106,27 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         throw new IllegalStateException(
                 "Nenhum token encontrado para o código da unidade do ProLog: " + codUnidadeProLog);
     }
+
+    @NotNull
+    @Override
+    public Long getCodEmpresaByTokenIntegracao(@NotNull final Connection conn,
+                                               @NotNull String tokenIntegracao) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT TI.COD_EMPRESA " +
+                    "FROM INTEGRACAO.TOKEN_INTEGRACAO TI " +
+                    "WHERE TI.TOKEN_INTEGRACAO = ?;");
+            stmt.setString(1, tokenIntegracao);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("COD_EMPRESA");
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+
+        throw new IllegalStateException(
+                "Erro ao buscar cod_empresa a partir de token da integração: " + tokenIntegracao);
+    }
 }

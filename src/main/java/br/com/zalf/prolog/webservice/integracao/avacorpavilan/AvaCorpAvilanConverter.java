@@ -264,6 +264,7 @@ public final class AvaCorpAvilanConverter {
             final AlternativaChecklist alternativa = new AlternativaChecklist();
             alternativa.setOrdemExibicao(respostaOk.getCodigoResposta());
             alternativa.setCodigo(respostaNok.getCodigoResposta());
+            alternativa.setPrioridade(PrioridadeAlternativa.BAIXA);
             alternativa.setTipo(Alternativa.TIPO_OUTROS);
             alternativa.setAlternativa("Outros");
             alternativas.add(alternativa);

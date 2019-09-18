@@ -16,8 +16,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
@@ -29,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -111,6 +114,24 @@ public abstract class Router implements OperacoesIntegradas {
             return getSistema().delete(placa, checklistOfflineListener);
         } else {
             return integradorProLog.delete(placa, checklistOfflineListener);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long insertProcessoTransferenciaVeiculo(
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema()
+                    .insertProcessoTransferenciaVeiculo(
+                            processoTransferenciaVeiculo,
+                            dadosChecklistOfflineChangedListener);
+        } else {
+            return integradorProLog
+                    .insertProcessoTransferenciaVeiculo(
+                            processoTransferenciaVeiculo,
+                            dadosChecklistOfflineChangedListener);
         }
     }
 
@@ -434,15 +455,6 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
-        if (getSistema() != null) {
-            getSistema().fechaServico(codUnidade, servico);
-        } else {
-            integradorProLog.fechaServico(codUnidade, servico);
-        }
-    }
-
-    @Override
     public void update(@NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final Long codOriginalPneu) throws Throwable {
@@ -450,6 +462,35 @@ public abstract class Router implements OperacoesIntegradas {
             getSistema().update(pneu, codUnidade, codOriginalPneu);
         } else {
             integradorProLog.update(pneu, codUnidade, codOriginalPneu);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
+                                    @NotNull final OffsetDateTime dataHoraSincronizacao,
+                                    final boolean isTransferenciaFromVeiculo) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema()
+                    .insertTransferencia(
+                            pneuTransferenciaRealizacao,
+                            dataHoraSincronizacao,
+                            isTransferenciaFromVeiculo);
+        } else {
+            return integradorProLog
+                    .insertTransferencia(
+                            pneuTransferenciaRealizacao,
+                            dataHoraSincronizacao,
+                            isTransferenciaFromVeiculo);
+        }
+    }
+
+    @Override
+    public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().fechaServico(codUnidade, servico);
+        } else {
+            integradorProLog.fechaServico(codUnidade, servico);
         }
     }
 

@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.commons.gson;
 
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import com.google.gson.Gson;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -19,8 +22,10 @@ import java.lang.reflect.Type;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>, MessageBodyReader<Object> {
-
+    @NotNull
     private static final String UTF_8 = "UTF-8";
+    @NotNull
+    private static final String TAG = GsonMessageBodyHandler.class.getSimpleName();
 
     private Gson getGson() {
         return GsonUtils.getGson();
@@ -50,6 +55,12 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>, 
                 jsonType = genericType;
             }
             return getGson().fromJson(streamReader, jsonType);
+        } catch (final Throwable t) {
+            Log.e(TAG, "A requisição recebida está mal formatada e não pôde ser processada pelo ProLog", t);
+            throw new GenericException(
+                    "A requisição recebida está mal formatada e não pôde ser processada pelo ProLog",
+                    "Recebemos uma requisição mal formatada" ,
+                    t);
         } finally {
             streamReader.close();
         }

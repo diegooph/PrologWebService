@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu;
 
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
@@ -29,6 +30,7 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
+            removePneusAplicados(conn, pneusAtualizacaoStatus);
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_ATUALIZA_STATUS_PNEU_PROLOG(" +
                     "F_COD_PNEU_SISTEMA_INTEGRADO := ?, " +
                     "F_CODIGO_PNEU_CLIENTE := ?, " +
@@ -74,6 +76,24 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
             }
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    private void removePneusAplicados(
+            @NotNull final Connection conn,
+            @NotNull final List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            final List<Long> codSistemaIntegradoPneus =
+                    ApiPneuAlteracaoStatus.getCodigoSistemaIntegradoPneus(pneusAtualizacaoStatus);
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_REMOVE_VINCULO_PNEU_PLACA_POSICAO(" +
+                    "F_COD_SISTEMA_INTEGRADO_PNEUS := ?)");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codSistemaIntegradoPneus));
+            if (!stmt.execute()) {
+                throw new SQLException("Não foi possível remover os vínculos dos pneus com os veículos");
+            }
+        } finally {
+            close(stmt);
         }
     }
 }

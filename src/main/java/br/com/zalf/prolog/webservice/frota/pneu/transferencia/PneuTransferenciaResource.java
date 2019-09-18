@@ -34,8 +34,9 @@ public final class PneuTransferenciaResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     public ResponseWithCod transferencia(
+            @HeaderParam("Authorization") @Required final String userToken,
             @Required final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
-        return service.insertTransferencia(pneuTransferenciaRealizacao);
+        return service.insertTransferencia(userToken, pneuTransferenciaRealizacao);
     }
 
     @GET

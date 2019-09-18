@@ -64,7 +64,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
         assertThat(processoRealizacao.getCodVeiculosTransferencia()).hasSize(veiculos.size());
 
         // Insere processo de Transferência.
-        final ResponseWithCod response = service.insertProcessoTransferenciaVeiculo(processoRealizacao);
+        final ResponseWithCod response = service.insertProcessoTransferenciaVeiculo(USER_TOKEN, processoRealizacao);
 
         assertThat(response).isNotNull();
         assertThat(response.getCodigo()).isNotNull();
@@ -129,7 +129,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
 //        assertThat(processo).isNotNull();
 //        assertThat(processo.getVeiculosTransferencia()).hasSize(2);
 
-        final ResponseWithCod response = service.insertProcessoTransferenciaVeiculo(processo);
+        final ResponseWithCod response = service.insertProcessoTransferenciaVeiculo(USER_TOKEN, processo);
 
         assertThat(response).isNotNull();
         assertThat(response.getCodigo()).isNotNull();
@@ -171,6 +171,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
         }
 
         return new ProcessoTransferenciaVeiculoRealizacao(
+                3L,
                 COD_UNIDADE,
                 COD_UNIDADE_DESTINO,
                 COD_COLABORADOR,

@@ -13,7 +13,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.TipoVeicu
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoSemDiagramaException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoTransferenciaConverter;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.AvisoDelecaoTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.StatusDelecaoTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.PneuVeiculoTransferido;
@@ -40,7 +42,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
 
     @NotNull
     @Override
-    public Long insertProcessoTranseferenciaVeiculo(
+    public Long insertProcessoTransferenciaVeiculo(
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         Connection conn = null;
@@ -66,7 +68,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
 
     @NotNull
     @Override
-    public Long insertProcessoTranseferenciaVeiculo(
+    public Long insertProcessoTransferenciaVeiculo(
             @NotNull final Connection conn,
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
@@ -252,6 +254,43 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
+    public AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(@NotNull final Long codEmpresa)
+            throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return internalBuscaAvisoDelecaoAutomaticaPorTransferencia(conn, codEmpresa);
+        } finally {
+            close(conn);
+        }
+    }
+
+    @NotNull
+    private AvisoDelecaoTransferenciaVeiculo internalBuscaAvisoDelecaoAutomaticaPorTransferencia(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_TRANSFERENCIA_BUSCA_AVISO_BLOQUEIO(" +
+                    "F_COD_EMPRESA := ?);");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return new AvisoDelecaoTransferenciaVeiculo(
+                        StatusDelecaoTransferenciaVeiculo.create(
+                                rSet.getBoolean("BLOQUEAR_DELECAO_OS_CHECKLIST"),
+                                rSet.getBoolean("BLOQUEAR_DELECAO_SERVICOS_PNEU")),
+                        rSet.getString("AVISO_BLOQUEIO_TELA_TRANSFERENCIA"));
+            } else {
+                throw new IllegalStateException("Aviso de transferência não encontrado para a empresa: " + codEmpresa);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
     private Long internalInsertProcessoTranseferenciaVeiculo(
             @NotNull final Connection conn,
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
@@ -308,6 +347,11 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                         processoTransferenciaVeiculo.getCodColaboradorRealizacaoTransferencia();
                 final PneuTransferenciaDao pneuTransferenciaDao = Injection.providePneuTransferenciaDao();
                 final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+
+                final AvisoDelecaoTransferenciaVeiculo avisoDelecao = internalBuscaAvisoDelecaoAutomaticaPorTransferencia(
+                        conn,
+                        processoTransferenciaVeiculo.getCodEmpresa());
+
                 // Transfere cada placa do Processo.
                 for (final Long codVeiculoTransferido : processoTransferenciaVeiculo.getCodVeiculosTransferencia()) {
                     // Insere informações da transferência da Placa.
@@ -317,12 +361,14 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                                     codProcessoTransferenciaVeiculo,
                                     codVeiculoTransferido);
 
-                    // Deleta os itens de O.S. em aberto do veículo transferido.
-                    deletaItensOrdemServicoChecklistVeiculoTransferido(
-                            conn,
-                            codVeiculoTransferido,
-                            codTransferenciaInformacoes,
-                            dataHoraRealizacaoProcesso);
+                    if (avisoDelecao.deveDeletarItensOrdemServicoChecklist()) {
+                        // Deleta os itens de O.S. em aberto do veículo transferido.
+                        deletaItensOrdemServicoChecklistVeiculoTransferido(
+                                conn,
+                                codVeiculoTransferido,
+                                codTransferenciaInformacoes,
+                                dataHoraRealizacaoProcesso);
+                    }
 
                     // Transfere o veículo da Unidade Origem para a Unidade Destino.
                     tranfereVeiculo(conn, codUnidadeOrigem, codUnidadeDestino, codVeiculoTransferido);
@@ -331,15 +377,18 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
                     final Optional<List<Long>> codPneusAplicadosVeiculo = veiculoDao
                             .getCodPneusAplicadosVeiculo(conn, codVeiculoTransferido);
                     if (codPneusAplicadosVeiculo.isPresent()) {
-                        // Deleta os serviços de pneus em aberto do pneu transferido.
-                        // TODO: Esse FOR aqui, dentro da func ou utilizar um batch?
-                        for (final Long codPneu : codPneusAplicadosVeiculo.get()) {
-                            deletaServicosPneusTransferido(
-                                    conn,
-                                    codVeiculoTransferido,
-                                    codPneu,
-                                    codTransferenciaInformacoes,
-                                    dataHoraRealizacaoProcesso);
+
+                        if (avisoDelecao.deveDeletarServicosPneus()) {
+                            // Deleta os serviços de pneus em aberto do pneu transferido.
+                            // TODO: Esse FOR aqui, dentro da func ou utilizar um batch?
+                            for (final Long codPneu : codPneusAplicadosVeiculo.get()) {
+                                deletaServicosPneusTransferido(
+                                        conn,
+                                        codVeiculoTransferido,
+                                        codPneu,
+                                        codTransferenciaInformacoes,
+                                        dataHoraRealizacaoProcesso);
+                            }
                         }
 
                         // Transfere os pneus aplicados na placa da Unidade Origem para a Unidade Destino.
@@ -573,31 +622,6 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             }
         } finally {
             close(stmt);
-        }
-    }
-
-    public boolean possuiFechamentoAutomaticoOrdemServico(@NotNull final Long codEmpresa) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT EXISTS(SELECT COD_EMPRESA " +
-                    "FROM VEICULO_TRANSFERENCIA_EMPRESA_BLOQUEADA_FECHAMENTO_OS " +
-                    "WHERE COD_EMPRESA = ?) AS EMPRESA_FECHA_OS_AUTOMATICAMENTE");
-            stmt.setLong(1, codEmpresa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                // Negamos o retono pois, se o código da empresa estiver nessa tabela, ela não fecha automaticamente
-                // ordens de serviços ao transferir veículos entre unidades.
-                return !rSet.getBoolean("EMPRESA_FECHA_OS_AUTOMATICAMENTE");
-            } else {
-                throw new SQLException("Erro ao identificar se empresa fecha ordem de serviço de forma automática " +
-                        "ao transferir veículos entre unidades:\n" +
-                        "codEmpresa: " + codEmpresa);
-            }
-        } finally {
-            close(conn, stmt, rSet);
         }
     }
 }
