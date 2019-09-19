@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.log;
 
-import br.com.zalf.prolog.webservice.integracao.logger.LogRequisicao;
+import br.com.zalf.prolog.webservice.integracao.logger.RequestLog;
+import br.com.zalf.prolog.webservice.integracao.logger.ResponseLog;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 
@@ -22,15 +24,16 @@ public interface LogDao {
     boolean insert(@NotNull final String log, @NotNull final String identificador) throws SQLException;
 
     /**
-     * Método utilizado para registrar no banco de dados, ações pertinentes à acessos aos
-     * métodos disponibilizados pelo ProLog para parceiros, via integração.
-     * <p>
-     * As informações para serem salvas podem visualizadas no objeto {@link LogRequisicao log}.
+     * Método utilizado para salvar as informações referentes às comunicações entre os sistemas integrados.
+     * Esse método salva todas as informações recebidas através de requests, como também todas as informações devolvidas
+     * através de responses.
      *
-     * @param tokenRequisicao Token utilizado na requisição.
-     * @param logRequisicao   Objeto que contém as informações a serem armazenadas.
-     * @throws Throwable Se ocorrer algum problema ao salvar os dados.
+     * @param tokenRequisicao Token da empresa que realizou a requisição.
+     * @param requestLog      Objeto que contém as informações capturadas da requisição.
+     * @param responseLog     Objeto que contém as informações enviadas como resposta da integração.
+     * @throws Throwable Se algum erro ocorrer no processo de salvar os dados.
      */
-    void insertRequestLog(@NotNull final String tokenRequisicao,
-                          @NotNull final LogRequisicao logRequisicao) throws Throwable;
+    void insertRequestResponseLog(@NotNull final String tokenRequisicao,
+                                  @NotNull final RequestLog requestLog,
+                                  @Nullable final ResponseLog responseLog) throws Throwable;
 }
