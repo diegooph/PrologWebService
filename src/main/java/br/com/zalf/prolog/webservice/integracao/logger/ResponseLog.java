@@ -43,7 +43,7 @@ public final class ResponseLog {
 
     @NotNull
     public static String toJson(@NotNull final ResponseLog responseLog) {
-        return GsonUtils.getGson().toJson(responseLog.toString());
+        return GsonUtils.getGson().toJson(responseLog);
     }
 
     @Nullable
