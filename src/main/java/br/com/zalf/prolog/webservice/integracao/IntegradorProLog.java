@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OrdemServicoDao;
@@ -244,13 +245,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 offset);
     }
 
+    @NotNull
     @Override
-    public void insertModeloChecklist(
+    public ResultInsertModeloChecklist insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
             final boolean statusAtivo,
             @NotNull final String userToken) throws Throwable {
-        checklistModeloDao.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
+        return checklistModeloDao.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
     }
 
     @Override

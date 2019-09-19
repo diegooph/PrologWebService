@@ -12,12 +12,13 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AnaliseItemModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AnaliseMudancaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.VeiculoChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
@@ -41,8 +42,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
 
     }
 
+    @NotNull
     @Override
-    public void insertModeloChecklist(
+    public ResultInsertModeloChecklist insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
             final boolean statusAtivo,
@@ -89,6 +91,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                 // Devemos notificar que uma inserção de modelo de checklist foi realizada.
                 checklistOfflineListener.onInsertModeloChecklist(conn, codModeloChecklistInserido);
                 conn.commit();
+                return new ResultInsertModeloChecklist(
+                        codModeloChecklistInserido,
+                        codVersaoModeloChecklist);
             } else {
                 throw new SQLException("Não foi possível inserir o modelo de checklist para a unidade: "
                         + modeloChecklist.getCodUnidade());
@@ -816,7 +821,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                        @NotNull final ModeloChecklistInsercao modeloChecklist,
                                        @NotNull final Long codModelo,
                                        @NotNull final Long codVersaoModelo) throws Throwable {
-        for (final PerguntaModeloChecklist pergunta : modeloChecklist.getPerguntas()) {
+        for (final PerguntaModeloChecklistInsercao pergunta : modeloChecklist.getPerguntas()) {
             insertPerguntaAlternativaModeloChecklist(
                     conn,
                     modeloChecklist.getCodUnidade(),
@@ -831,7 +836,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                 @NotNull final Long codUnidade,
                                 @NotNull final Long codModelo,
                                 @NotNull final Long codVersaoModelo,
-                                @NotNull final PerguntaModeloChecklist pergunta,
+                                @NotNull final PerguntaModeloChecklistEdicao pergunta,
                                 final boolean usarMesmoCodigoFixo) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -875,7 +880,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final Long codVersaoModelo,
-            @NotNull final PerguntaModeloChecklist pergunta) throws SQLException {
+            @NotNull final PerguntaModeloChecklistInsercao pergunta) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -892,11 +897,10 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setBoolean(8, pergunta.isSingleChoice());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                pergunta.setCodigo(rSet.getLong("CODIGO"));
-
                 // Se nenhuma alternativa tiver sido criada, a lista será nula e precisamos instanciá-la.
                 if (pergunta.getAlternativas() == null) {
-                    pergunta.setAlternativas(new ArrayList<>());
+                    // TODO:
+//                    pergunta.setAlternativas(new ArrayList<>());
                 }
 
                 for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
@@ -905,7 +909,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                             codUnidade,
                             codModelo,
                             codVersaoModelo,
-                            pergunta.getCodigo(),
+                            rSet.getLong("CODIGO"),
                             alternativa,
                             false);
                 }
@@ -928,7 +932,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                             final boolean usarMesmoCodigoFixo) throws SQLException {
         // Garante que alternativas do TIPO_OUTROS tenham setado o texto "Outros".
         if (alternativa.isTipoOutros()) {
-            alternativa.setDescricao("Outros");
+            // TODO:
+//            alternativa.setDescricao("Outros");
         }
 
         PreparedStatement stmt = null;

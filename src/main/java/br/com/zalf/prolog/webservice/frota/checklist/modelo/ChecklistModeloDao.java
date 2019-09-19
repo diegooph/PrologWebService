@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaCheckli
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
@@ -32,9 +33,11 @@ public interface ChecklistModeloDao {
      *                                 inativo. É utilizado a inserção com <code>statusAtivo = false</code> para as
      *                                 integrações onde é necessário uma parametrização com tabelas DE-PARA.
      * @param userToken                O token do usuário que fez a requisição.
+     * @return Um objeto contendo o código do modelo de checklist inserido e o código da versão do modelo.
      * @throws Throwable Caso ocorrer algum erro ao salvar os dados.
      */
-    void insertModeloChecklist(
+    @NotNull
+    ResultInsertModeloChecklist insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
             final boolean statusAtivo,

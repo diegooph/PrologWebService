@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklis
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterModeloChecklist;
@@ -34,17 +35,18 @@ public final class ChecklistModeloService {
     private final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
 
     @NotNull
-    Response insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
-                                   @NotNull final String userToken) throws ProLogException {
+    public ResultInsertModeloChecklist insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
+                                                             @NotNull final String userToken) throws ProLogException {
         try {
-            RouterModeloChecklist
+            ChecklistModeloValidator.validaModelo(modeloChecklist);
+
+            return RouterModeloChecklist
                     .create(dao, userToken)
                     .insertModeloChecklist(
                             modeloChecklist,
                             Injection.provideDadosChecklistOfflineChangedListener(),
                             true,
                             TokenCleaner.getOnlyToken(userToken));
-            return Response.ok("Modelo de checklist inserido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir modelo de checklist", t);
             throw Injection
@@ -54,10 +56,10 @@ public final class ChecklistModeloService {
     }
 
     @NotNull
-    Response updateModeloChecklist(final Long codUnidade,
-                                   final Long codModelo,
-                                   final ModeloChecklistEdicao modeloChecklist,
-                                   final String userToken) throws ProLogException {
+    public Response updateModeloChecklist(final Long codUnidade,
+                                          final Long codModelo,
+                                          final ModeloChecklistEdicao modeloChecklist,
+                                          final String userToken) throws ProLogException {
         try {
             RouterModeloChecklist
                     .create(dao, userToken)
@@ -91,8 +93,8 @@ public final class ChecklistModeloService {
     }
 
     @NotNull
-    ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
-                                                   @NotNull final Long codModelo) throws ProLogException {
+    public ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
+                                                          @NotNull final Long codModelo) throws ProLogException {
         try {
             return dao.getModeloChecklist(codUnidade, codModelo);
         } catch (final Throwable t) {

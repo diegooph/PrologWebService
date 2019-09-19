@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarol
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
@@ -199,16 +200,17 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public void insertModeloChecklist(
+    public ResultInsertModeloChecklist insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
             final boolean statusAtivo,
             @NotNull final String userToken) throws Throwable {
         if (getSistema() != null) {
-            getSistema().insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
+            return getSistema().insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
         } else {
-            integradorProLog.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
+            return integradorProLog.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
         }
     }
 

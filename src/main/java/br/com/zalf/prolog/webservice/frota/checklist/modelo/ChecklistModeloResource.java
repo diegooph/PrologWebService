@@ -10,6 +10,8 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResponseInsertModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -36,10 +38,11 @@ public final class ChecklistModeloResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    public Response insertModeloChecklist(
+    public ResponseInsertModeloChecklist insertModeloChecklist(
             @HeaderParam("Authorization") @Required final String token,
             @Required final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
-        return service.insertModeloChecklist(modeloChecklist, token);
+        final ResultInsertModeloChecklist result = service.insertModeloChecklist(modeloChecklist, token);
+        return ResponseInsertModeloChecklist.ok(result, "Modelo de checklist inserido com sucesso");
     }
 
     @PUT
