@@ -13,14 +13,20 @@ import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOffli
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -40,6 +46,49 @@ public abstract class Sistema implements OperacoesIntegradas {
         this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser nulo!");
         this.sistemaKey = checkNotNull(sistemaKey, "sistemaKey não pode ser nulo!");
         this.userToken = checkNotNull(userToken, "userToken não pode ser nulo!");
+    }
+
+    @Override
+    public boolean insert(
+            @NotNull final Long codUnidade,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return getIntegradorProLog().insert(codUnidade, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public boolean update(
+            @NotNull final String placaOriginal,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return getIntegradorProLog().update(placaOriginal, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public void updateStatus(
+            @NotNull final Long codUnidade,
+            @NotNull final String placa,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        getIntegradorProLog().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public boolean delete(
+            @NotNull final String placa,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return getIntegradorProLog().delete(placa, checklistOfflineListener);
+    }
+
+    @NotNull
+    @Override
+    public Long insertProcessoTransferenciaVeiculo(
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
+        return getIntegradorProLog()
+                .insertProcessoTransferenciaVeiculo(
+                        processoTransferenciaVeiculo,
+                        dadosChecklistOfflineChangedListener);
     }
 
     @NotNull
@@ -227,6 +276,46 @@ public abstract class Sistema implements OperacoesIntegradas {
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
         getIntegradorProLog().resolverItens(itensResolucao);
+    }
+
+    @NotNull
+    @Override
+    public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
+        return getIntegradorProLog().insert(pneu, codUnidade);
+    }
+
+    @NotNull
+    @Override
+    public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
+        return getIntegradorProLog().insert(pneus);
+    }
+
+    @Override
+    public void update(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final Long codOriginalPneu) throws Throwable {
+        getIntegradorProLog().update(pneu, codUnidade, codOriginalPneu);
+    }
+
+    @NotNull
+    @Override
+    public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
+                                    @NotNull final OffsetDateTime dataHoraSincronizacao,
+                                    final boolean isTransferenciaFromVeiculo) throws Throwable {
+        return getIntegradorProLog()
+                .insertTransferencia(pneuTransferenciaRealizacao, dataHoraSincronizacao, isTransferenciaFromVeiculo);
+    }
+
+    @NotNull
+    @Override
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
+                                                    @NotNull final String placaVeiculo) throws Throwable {
+        return getIntegradorProLog().getVeiculoAberturaServico(codServico, placaVeiculo);
+    }
+
+    @Override
+    public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
+        getIntegradorProLog().fechaServico(codUnidade, servico);
     }
 
     @NotNull

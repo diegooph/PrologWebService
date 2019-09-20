@@ -107,7 +107,7 @@ public final class ChecklistInsercao {
      */
     @NotNull
     @Exclude
-    private final ChecklistInsercaoMetadata cachedMetadata;
+    private ChecklistInsercaoMetadata cachedMetadata;
 
     @Nullable
     private Checklist checklistAntigo;
@@ -253,18 +253,22 @@ public final class ChecklistInsercao {
     }
 
     public int getQtdPerguntasOk() {
+        ensureMetadataCreated();
         return cachedMetadata.getQtdPerguntasOk();
     }
 
     public int getQtdPerguntasNok() {
+        ensureMetadataCreated();
         return cachedMetadata.getQtdPerguntasNok();
     }
 
     public int getQtdAlternativasOk() {
+        ensureMetadataCreated();
         return cachedMetadata.getQtdAlternativasOk();
     }
 
     public int getQtdAlternativasNok() {
+        ensureMetadataCreated();
         return cachedMetadata.getQtdAlternativasNok();
     }
 
@@ -369,6 +373,13 @@ public final class ChecklistInsercao {
             // Antes de retornar, calcula as quantidades.
             checklistAntigo.calculaQtdOkOrNok();
             return checklistAntigo;
+        }
+    }
+
+    private void ensureMetadataCreated() {
+        //noinspection ConstantConditions
+        if (cachedMetadata == null) {
+            cachedMetadata = createMetadata();
         }
     }
 

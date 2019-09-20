@@ -44,6 +44,9 @@ public class TipoMarcacao {
     @Nullable
     private FormulaCalculoJornada formulaCalculoJornada;
 
+    @Nullable
+    private String codigoAuxiliar;
+
     public TipoMarcacao() {
 
     }
@@ -144,6 +147,11 @@ public class TipoMarcacao {
     public void setFormulaCalculoJornada(@Nullable final FormulaCalculoJornada formulaCalculoJornada) {
         this.formulaCalculoJornada = formulaCalculoJornada;
     }
+
+    @Nullable
+    public String getCodigoAuxiliar() { return codigoAuxiliar; }
+
+    public void setCodigoAuxiliar(@Nullable String codigoAuxiliar) { this.codigoAuxiliar = codigoAuxiliar; }
 
     @Override
     public boolean equals(Object obj) {

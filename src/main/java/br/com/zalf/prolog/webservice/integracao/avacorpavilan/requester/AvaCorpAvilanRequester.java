@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * Created by luiz on 24/07/17.
  */
 public interface AvaCorpAvilanRequester extends Requester {
+
     ArrayOfVeiculo getVeiculosAtivos(@NotNull final String cpf,
                                      @NotNull final String dataNascimento) throws Exception;
 
@@ -91,7 +92,7 @@ public interface AvaCorpAvilanRequester extends Requester {
                                       final int codUnidadeAvilan,
                                       @NotNull final String dataInicial,
                                       @NotNull final String dataFinal,
-                                      @NotNull final boolean itensCriticosRetroativos,
+                                      final boolean itensCriticosRetroativos,
                                       @NotNull final String cpf,
                                       @NotNull final String dataNascimento) throws Exception;
 }

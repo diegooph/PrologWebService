@@ -5,11 +5,10 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaCheckli
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.*;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.*;
 import org.jetbrains.annotations.NotNull;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +32,12 @@ public final class GlobusPiccoloturConverter {
             for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
                 // Uma alternativa selecionada quer dizer uma alternativa NOK
                 if (alternativa.selected) {
+                    // O Map irá conter todas as alternativas do modelo (ativas e inativas) isso garante que nunca
+                    // retornará null em um get.
                     final AlternativaChecklistStatus alternativaChecklistStatus =
                             alternativasStatus.get(alternativa.getCodigo());
-
-                    if (!alternativaChecklistStatus.isTemItemOsPendente()) {
+                    if (!alternativaChecklistStatus.isTemItemOsPendente()
+                            && alternativaChecklistStatus.isDeveAbrirOrdemServico()) {
                         final String descricao = alternativa.isTipoOutros()
                                 ? alternativa.getRespostaOutros()
                                 : alternativa.getAlternativa();
@@ -54,9 +55,6 @@ public final class GlobusPiccoloturConverter {
                         alternativasNok));
             }
         }
-        if (perguntasNok.isEmpty()) {
-            throw new IllegalStateException("");
-        }
         return new ChecklistItensNokGlobus(
                 codUnidadeProLog,
                 codChecklistProLog,
@@ -70,7 +68,7 @@ public final class GlobusPiccoloturConverter {
 
     @NotNull
     public static OrdemDeServicoCorretivaPrologVO convert(
-            @NotNull final ChecklistItensNokGlobus checklistItensNokGlobus) throws DatatypeConfigurationException {
+            @NotNull final ChecklistItensNokGlobus checklistItensNokGlobus) throws Throwable {
         final ObjectFactory factory = new ObjectFactory();
         final OrdemDeServicoCorretivaPrologVO osGlobus = new OrdemDeServicoCorretivaPrologVO();
         osGlobus.setCodUnidadeChecklist(checklistItensNokGlobus.getCodUnidadeChecklist().intValue());
@@ -82,7 +80,7 @@ public final class GlobusPiccoloturConverter {
         osGlobus.setDataHoraRealizacaoUtc(
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(
                         checklistItensNokGlobus.getDataHoraRealizacaoUtc().toString()));
-        osGlobus.setUsuario("MANAGER");
+        osGlobus.setUsuario(GlobusPiccoloturConstants.USUARIO_PROLOG_INTEGRACAO);
         osGlobus.setListaPerguntasNokVO(convertPerguntas(factory, checklistItensNokGlobus.getPerguntasNok()));
         return osGlobus;
     }

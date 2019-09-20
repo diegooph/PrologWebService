@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -295,5 +294,25 @@ public interface VeiculoDao {
     Optional<List<Long>> getCodPneusAplicadosVeiculo(@NotNull final Connection conn,
                                                      @NotNull final Long codVeiculo) throws Throwable;
 
+    /**
+     * Método utilizado para buscar o código da unidade a qual a placa está associada.
+     *
+     * @param conn         Conexão utilizada para realizar busca no bando de dados.
+     * @param placaVeiculo Placa do veículo para buscar a unidade.
+     * @return O código da unidade onde o veículo está situado.
+     * @throws Throwable Se algum erro ocorrer.
+     */
     Long getCodUnidadeByPlaca(@NotNull final Connection conn, @NotNull final String placaVeiculo) throws Throwable;
+
+    /**
+     * Método utilizado para buscar o código de um veículo utilizando como base a {@code placaVeiculo}.
+     *
+     * @param conn         Conexão que será utilizada para buscar o código do veículo.
+     * @param placaVeiculo Placa que será utilizada para identificar o código.
+     * @return O código único de identificação do veículo no sistema.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    Long getCodVeiculoByPlaca(@NotNull final Connection conn,
+                              @NotNull final String placaVeiculo) throws Throwable;
 }

@@ -100,15 +100,19 @@ public class OrdemServicoRelatorioResource {
                                             @QueryParam("placa") String placa,
                                             @QueryParam("statusOs") String statusOs,
                                             @QueryParam("statusItem") String statusItem,
-                                            @QueryParam("dataInicial") String dataInicial,
-                                            @QueryParam("dataFinal") String dataFinal) {
+                                            @QueryParam("dataInicialAbertura") String dataInicialAbertura,
+                                            @QueryParam("dataFinalAbertura") String dataFinalAbertura,
+                                            @QueryParam("dataInicialResolucao") String dataInicialResolucao,
+                                            @QueryParam("dataFinalResolucao") String dataFinalResolucao) {
         return service.getEstratificacaoOsReport(
                 codUnidades,
                 placa,
                 statusOs,
                 statusItem,
-                dataInicial,
-                dataFinal);
+                dataInicialAbertura,
+                dataFinalAbertura,
+                dataInicialResolucao,
+                dataFinalResolucao);
     }
 
     @GET
@@ -118,15 +122,19 @@ public class OrdemServicoRelatorioResource {
                                                   @QueryParam("placa") String placa,
                                                   @QueryParam("statusOs") String statusOs,
                                                   @QueryParam("statusItem") String statusItem,
-                                                  @QueryParam("dataInicial") String dataInicial,
-                                                  @QueryParam("dataFinal") String dataFinal) {
+                                                  @QueryParam("dataInicialAbertura") String dataInicialAbertura,
+                                                  @QueryParam("dataFinalAbertura") String dataFinalAbertura,
+                                                  @QueryParam("dataInicialResolucao") String dataInicialResolucao,
+                                                  @QueryParam("dataFinalResolucao") String dataFinalResolucao) {
         return outputStream -> service.getEstratificacaoOsCsv(
                 outputStream,
                 codUnidades,
                 placa,
                 statusOs,
                 statusItem,
-                dataInicial,
-                dataFinal);
+                dataInicialAbertura,
+                dataFinalAbertura,
+                dataInicialResolucao,
+                dataFinalResolucao);
     }
 }

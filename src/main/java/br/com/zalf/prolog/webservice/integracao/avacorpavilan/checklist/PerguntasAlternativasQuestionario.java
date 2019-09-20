@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvacorpAvilanRequestStatus;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -33,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
     "mensagem",
     "veiculoQuestoes"
 })
-public class PerguntasAlternativasQuestionario {
+public class PerguntasAlternativasQuestionario implements AvacorpAvilanRequestStatus {
 
     protected boolean sucesso;
     protected String mensagem;

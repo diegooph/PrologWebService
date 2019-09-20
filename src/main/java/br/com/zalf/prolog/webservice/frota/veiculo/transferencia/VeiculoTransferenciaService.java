@@ -6,10 +6,12 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.AvisoDelecaoTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculoTransferencia;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -23,17 +25,20 @@ public final class VeiculoTransferenciaService {
     @NotNull
     private static final String TAG = VeiculoTransferenciaService.class.getSimpleName();
     @NotNull
-    private final VeiculoTransferenciaDao dao = Injection.provideVeiculoTransferenciaDaoImpl();
+    private final VeiculoTransferenciaDao dao = Injection.provideVeiculoTransferenciaDao();
 
     @NotNull
     public final ResponseWithCod insertProcessoTransferenciaVeiculo(
-            final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
+            @NotNull final String userToken,
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
         try {
             return ResponseWithCod.ok(
                     "Processo de transferência realizado com sucesso",
-                    dao.insertProcessoTranseferenciaVeiculo(
-                            processoTransferenciaVeiculo,
-                            Injection.provideDadosChecklistOfflineChangedListener()));
+                    RouterVeiculoTransferencia
+                            .create(dao, userToken)
+                            .insertProcessoTransferenciaVeiculo(
+                                    processoTransferenciaVeiculo,
+                                    Injection.provideDadosChecklistOfflineChangedListener()));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao realizar processo de transferência:", t);
             throw Injection
@@ -108,4 +113,19 @@ public final class VeiculoTransferenciaService {
                     .map(t, "Erro ao buscar detalhes da placa transferida, tente novamente");
         }
     }
+
+    @NotNull
+    public AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(@NotNull final Long codEmpresa) {
+        try {
+            return dao.buscaAvisoDelecaoAutomaticaPorTransferencia(codEmpresa);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao verificar se empresa tem deleção automática de " +
+                    "Ordens de Serviço habilitado:\ncodEmpresa: " + codEmpresa, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao verificar se empresa tem deleção automática de " +
+                            "Ordens de Serviço habilitado, tente novamente");
+        }
+    }
+
 }

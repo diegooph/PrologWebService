@@ -159,6 +159,14 @@ public class ColaboradorService {
             loginHolder.setColaborador(dao.getByCpf(loginRequest.getCpf(), true));
             final Colaborador colaborador = loginHolder.getColaborador();
 
+            // Em agosto de 2019 foi desenvolvido a funcionalidade de gestão de dispositivos móveis no ProLog e o
+            // Pilar GERAL foi criado contendo essa funcionalidade. O aplicativo Android não estava preparado para um
+            // novo pilar e impedia o login caso qualquer pilar diferente do 1, 2, 3 e 4 fosse enviado.
+            // Esse comportamento do app também foi alterado em agosto/19, porém, para manter compatibilidade com apps
+            // antigos, nós removemos o Pilar GERAL para não quebrar o login.
+            // ATENÇÃO: devemos deixar essa remoção acontecendo por, pelo menos, 1 ano.
+            colaborador.getVisao().removePilar(Pilares.GERAL);
+
             // Se usuário tem acesso aos relatos, precisamos também setar essas informações no LoginHolder.
             if (colaborador.getVisao().hasAccessToFunction(Pilares.Seguranca.Relato.REALIZAR)) {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());

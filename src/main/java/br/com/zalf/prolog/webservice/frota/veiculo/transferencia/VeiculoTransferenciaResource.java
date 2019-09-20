@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.AvisoDelecaoTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
@@ -36,8 +37,9 @@ public final class VeiculoTransferenciaResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     public ResponseWithCod insertProcessoTransferenciaVeiculo(
+            @HeaderParam("Authorization") @Required final String userToken,
             @Required final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo) throws ProLogException {
-        return service.insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo);
+        return service.insertProcessoTransferenciaVeiculo(userToken, processoTransferenciaVeiculo);
     }
 
     @GET
@@ -78,4 +80,13 @@ public final class VeiculoTransferenciaResource {
             @PathParam("codVeiculo") @Required final Long codVeiculo) throws ProLogException {
         return service.getDetalhesVeiculoTransferido(codProcessoTransferencia, codVeiculo);
     }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/aviso-transferencia")
+    public AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa) {
+        return service.buscaAvisoDelecaoAutomaticaPorTransferencia(codEmpresa);
+    }
+
 }

@@ -28,7 +28,7 @@ public final class ProtheusRodalogRestClient {
         retrofit = new Retrofit.Builder()
                 .client(provideOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
-                .baseUrl("http://131.161.40.131:8087/rest/")
+                .baseUrl("http://131.161.40.130:8091/rest/")
                 .build();
     }
 

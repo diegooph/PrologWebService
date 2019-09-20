@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -157,7 +158,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             } else {
                 stmt.setLong(14, pneu.getBanda().getModelo().getCodigo());
             }
-            stmt.setString(15, pneu.getDot().trim());
+            if(pneu.getDot() == null){
+                stmt.setString(15, pneu.getDot());
+            } else {
+                stmt.setString(15, pneu.getDot().trim());
+            }
             stmt.setBigDecimal(16, pneu.getValor());
             if (pneu.isPneuNovoNuncaRodado() != null) {
                 stmt.setBoolean(17, pneu.isPneuNovoNuncaRodado());
@@ -709,6 +714,34 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Long> getCodPneuByCodCliente(@NotNull final Connection conn,
+                                             @NotNull final Long codEmpresa,
+                                             @NotNull final List<String> codigoClientePneus) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT " +
+                    "  P.CODIGO AS COD_PNEU " +
+                    "FROM PNEU P " +
+                    "WHERE P.COD_UNIDADE IN (SELECT U.CODIGO " +
+                    "                        FROM UNIDADE U " +
+                    "                        WHERE U.COD_EMPRESA = ?) " +
+                    "      AND P.CODIGO_CLIENTE LIKE ANY(?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, codigoClientePneus));
+            rSet = stmt.executeQuery();
+            final List<Long> codPneus = new ArrayList<>();
+            while (rSet.next()) {
+                codPneus.add(rSet.getLong("COD_PNEU"));
+            }
+            return codPneus;
+        } finally {
+            close(stmt, rSet);
         }
     }
 

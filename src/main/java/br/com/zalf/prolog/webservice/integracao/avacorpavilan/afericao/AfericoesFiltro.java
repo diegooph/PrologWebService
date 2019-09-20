@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvacorpAvilanRequestStatus;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -33,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
     "mensagem",
     "afericoes"
 })
-public class AfericoesFiltro {
+public class AfericoesFiltro implements AvacorpAvilanRequestStatus {
 
     protected boolean sucesso;
     protected String mensagem;

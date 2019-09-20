@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.integracao.api.error.ApiGenericException;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -11,126 +12,125 @@ import java.time.LocalDateTime;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ItemResolvidoIntegracaoTransport {
-    private Long codUnidadeOrdemServico;
-    private Long codOrdemServico;
-    private Long codItemResolvido;
-    private String cpfColaboradorResolucao;
+    @NotNull
+    private final Long codUnidadeOrdemServico;
+    @NotNull
+    private final Long codOrdemServico;
+    @NotNull
+    private final Long codItemResolvido;
+    @NotNull
+    private final String cpfColaboradorResolucao;
     /**
      * Placa do {@link Veiculo} a qual o item resolvido pertence.
      */
-    private String placaVeiculo;
-    private Long kmColetadoVeiculo;
-    private Long duracaoResolucaoItemEmMilissegundos;
-    private String feedbackResolucao;
-    private LocalDateTime dataHoraResolvidoProLog;
-    private LocalDateTime dataHoraInicioResolucao;
-    private LocalDateTime dataHoraFimResolucao;
+    @NotNull
+    private final String placaVeiculo;
+    @NotNull
+    private final Long kmColetadoVeiculo;
+    @NotNull
+    private final Long duracaoResolucaoItemEmMilissegundos;
+    @NotNull
+    private final String feedbackResolucao;
+    @NotNull
+    private final LocalDateTime dataHoraResolvidoProLog;
+    @NotNull
+    private final LocalDateTime dataHoraInicioResolucao;
+    @NotNull
+    private final LocalDateTime dataHoraFimResolucao;
 
-    public ItemResolvidoIntegracaoTransport() {
+    public ItemResolvidoIntegracaoTransport(
+            @NotNull final Long codUnidadeOrdemServico,
+            @NotNull final Long codOrdemServico,
+            @NotNull final Long codItemResolvido,
+            @NotNull final String cpfColaboradorResolucao,
+            @NotNull final String placaVeiculo,
+            @NotNull final Long kmColetadoVeiculo,
+            @NotNull final Long duracaoResolucaoItemEmMilissegundos,
+            @NotNull final String feedbackResolucao,
+            @NotNull final LocalDateTime dataHoraResolvidoProLog,
+            @NotNull final LocalDateTime dataHoraInicioResolucao,
+            @NotNull final LocalDateTime dataHoraFimResolucao) {
+        this.codUnidadeOrdemServico = codUnidadeOrdemServico;
+        this.codOrdemServico = codOrdemServico;
+        this.codItemResolvido = codItemResolvido;
+        this.cpfColaboradorResolucao = cpfColaboradorResolucao;
+        this.placaVeiculo = placaVeiculo;
+        this.kmColetadoVeiculo = kmColetadoVeiculo;
+        this.duracaoResolucaoItemEmMilissegundos = duracaoResolucaoItemEmMilissegundos;
+        this.feedbackResolucao = feedbackResolucao;
+        this.dataHoraResolvidoProLog = dataHoraResolvidoProLog;
+        this.dataHoraInicioResolucao = dataHoraInicioResolucao;
+        this.dataHoraFimResolucao = dataHoraFimResolucao;
     }
 
     @NotNull
     public static ItemResolvidoIntegracaoTransport getDummy() {
-        final ItemResolvidoIntegracaoTransport item = new ItemResolvidoIntegracaoTransport();
-        item.setCodUnidadeOrdemServico(5L);
-        item.setCodOrdemServico(94L);
-        item.setCodItemResolvido(106851L);
-        item.setCpfColaboradorResolucao("03383283194");
-        item.setPlacaVeiculo("PRO0001");
-        item.setKmColetadoVeiculo(90051L);
-        item.setDuracaoResolucaoItemEmMilissegundos(900000L);
-        item.setFeedbackResolucao("Item foi consertado.");
-        item.setDataHoraResolvidoProLog(LocalDateTime.now());
-        item.setDataHoraInicioResolucao(LocalDateTime.now());
-        item.setDataHoraFimResolucao(LocalDateTime.now());
-        return item;
+        return new ItemResolvidoIntegracaoTransport(
+                5L,
+                94L,
+                106851L,
+                "03383283194",
+                "PRO0001",
+                90051L,
+                900000L,
+                "Item foi consertado.",
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                LocalDateTime.now());
     }
 
+    @NotNull(value = "O código da unidade não pode estar vazio", exception = ApiGenericException.class)
     public Long getCodUnidadeOrdemServico() {
         return codUnidadeOrdemServico;
     }
 
-    public void setCodUnidadeOrdemServico(final Long codUnidadeOrdemServico) {
-        this.codUnidadeOrdemServico = codUnidadeOrdemServico;
-    }
-
+    @NotNull(value = "O código da Ordem de Serviço não pode estar vazio", exception = ApiGenericException.class)
     public Long getCodOrdemServico() {
         return codOrdemServico;
     }
 
-    public void setCodOrdemServico(final Long codOrdemServico) {
-        this.codOrdemServico = codOrdemServico;
-    }
-
+    @NotNull(value = "O código do Item Resolvido não pode estar vazio", exception = ApiGenericException.class)
     public Long getCodItemResolvido() {
         return codItemResolvido;
     }
 
-    public void setCodItemResolvido(final Long codItemResolvido) {
-        this.codItemResolvido = codItemResolvido;
-    }
-
+    @NotNull(value = "O CPF do colaborador não pode estar vazio", exception = ApiGenericException.class)
     public String getCpfColaboradorResolucao() {
         return cpfColaboradorResolucao;
     }
 
-    public void setCpfColaboradorResolucao(final String cpfColaboradorResolucao) {
-        this.cpfColaboradorResolucao = cpfColaboradorResolucao;
-    }
-
+    @NotNull(value = "A placa do veículo não pode estar vazia", exception = ApiGenericException.class)
     public String getPlacaVeiculo() {
         return placaVeiculo;
     }
 
-    public void setPlacaVeiculo(final String placaVeiculo) {
-        this.placaVeiculo = placaVeiculo;
-    }
-
+    @NotNull(value = "O KM do veículo não pode estar vazio", exception = ApiGenericException.class)
     public Long getKmColetadoVeiculo() {
         return kmColetadoVeiculo;
     }
 
-    public void setKmColetadoVeiculo(final Long kmColetadoVeiculo) {
-        this.kmColetadoVeiculo = kmColetadoVeiculo;
-    }
-
+    @NotNull(value = "A duração do conserto não pode estar vazia", exception = ApiGenericException.class)
     public Long getDuracaoResolucaoItemEmMilissegundos() {
         return duracaoResolucaoItemEmMilissegundos;
     }
 
-    public void setDuracaoResolucaoItemEmMilissegundos(final Long duracaoResolucaoItemEmMilissegundos) {
-        this.duracaoResolucaoItemEmMilissegundos = duracaoResolucaoItemEmMilissegundos;
-    }
-
+    @NotNull(value = "O feedback do conserto não pode estar vazio", exception = ApiGenericException.class)
     public String getFeedbackResolucao() {
         return feedbackResolucao;
     }
 
-    public void setFeedbackResolucao(final String feedbackResolucao) {
-        this.feedbackResolucao = feedbackResolucao;
-    }
-
+    @NotNull(value = "A data e hora do conserto não pode estar vazio", exception = ApiGenericException.class)
     public LocalDateTime getDataHoraResolvidoProLog() {
         return dataHoraResolvidoProLog;
     }
 
-    public void setDataHoraResolvidoProLog(final LocalDateTime dataHoraResolvidoProLog) {
-        this.dataHoraResolvidoProLog = dataHoraResolvidoProLog;
-    }
-
+    @NotNull(value = "A data e hora do início do conserto não pode estar vazio", exception = ApiGenericException.class)
     public LocalDateTime getDataHoraInicioResolucao() {
         return dataHoraInicioResolucao;
     }
 
-    public void setDataHoraInicioResolucao(final LocalDateTime dataHoraInicioResolucao) {
-        this.dataHoraInicioResolucao = dataHoraInicioResolucao;
-    }
-
+    @NotNull(value = "A data e hora do fim do conserto não pode estar vazio", exception = ApiGenericException.class)
     public LocalDateTime getDataHoraFimResolucao() {
         return dataHoraFimResolucao;
-    }
-
-    public void setDataHoraFimResolucao(final LocalDateTime dataHoraFimResolucao) {
-        this.dataHoraFimResolucao = dataHoraFimResolucao;
     }
 }

@@ -36,6 +36,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.inconsi
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.ResponseIntervalo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItem;
 import com.google.gson.Gson;
@@ -132,6 +133,8 @@ public final class GsonUtils {
         builder.registerTypeAdapterFactory(OrdemServicoVisualizacao.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(ItemOrdemServicoVisualizacao.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(ChecklistOfflineSupport.provideTypeAdapterFactory());
+
+        builder.registerTypeAdapterFactory(ApiPneuAlteracaoStatus.provideTypeAdapterFactory());
 
         sGson = builder.create();
     }

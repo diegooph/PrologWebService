@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
+import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.StatusSecured;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -64,13 +65,14 @@ public interface AutenticacaoDao {
      *                                  as permissões passadas no array no mínimo uma.
      * @param apenasUsuariosAtivos      Indica se devemos considerar na verificação apenas usuário
      *                                  que estão ativados no sistema (STATUS_ATIVO = true).
-     * @return Verdadeiro se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário falso.
-     * @throws SQLException Caso não seja possível consultar as permissões no banco de dados.
+     * @return Objeto {@link StatusSecured StatusSecured} com o estado atual da validação do token e permissões.
+     * @throws Throwable Caso ocorra algum erro.
      */
-    boolean userHasPermission(@NotNull final String token,
-                              @NotNull final int[] permissions,
-                              final boolean needsToHaveAllPermissions,
-                              final boolean apenasUsuariosAtivos) throws SQLException;
+    @NotNull
+    StatusSecured userHasPermission(@NotNull final String token,
+                                    @NotNull final int[] permissions,
+                                    final boolean needsToHaveAllPermissions,
+                                    final boolean apenasUsuariosAtivos) throws Throwable;
 
     /**
      * Verifica se o usuário tem as permissões necessárias para acessar determinada função.
@@ -82,12 +84,13 @@ public interface AutenticacaoDao {
      *                                  as permissões passadas no array ou mínimo uma.
      * @param apenasUsuariosAtivos      Indica se devemos considerar na verificação apenas usuário
      *                                  que estão ativados no sistema (STATUS_ATIVO = true).
-     * @return Verdadeiro se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário falso.
-     * @throws SQLException Caso não seja possível consultar as permissões no banco de dados.
+     * @return Objeto {@link StatusSecured StatusSecured} com o estado atual da validação do token e permissões.
+     * @throws Throwable Caso ocorra algum erro.
      */
-    boolean userHasPermission(final long cpf,
-                              @NotNull final LocalDate dataNascimento,
-                              @NotNull int[] permissions,
-                              final boolean needsToHaveAllPermissions,
-                              final boolean apenasUsuariosAtivos) throws SQLException;
+    @NotNull
+    StatusSecured userHasPermission(final long cpf,
+                                    @NotNull final LocalDate dataNascimento,
+                                    @NotNull int[] permissions,
+                                    final boolean needsToHaveAllPermissions,
+                                    final boolean apenasUsuariosAtivos) throws Throwable;
 }

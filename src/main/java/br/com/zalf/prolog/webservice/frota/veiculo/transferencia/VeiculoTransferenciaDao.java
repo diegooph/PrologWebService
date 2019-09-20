@@ -2,12 +2,14 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.AvisoDelecaoTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,7 +30,7 @@ public interface VeiculoTransferenciaDao {
      * <p>
      * O processo de transferência de placas também transfere os pneus que estão aplicados na placa.
      *
-     * @param processoTransferenciaVeiculo Objeto que contém as placas que serão transferidas.
+     * @param processoTransferenciaVeiculo         Objeto que contém as placas que serão transferidas.
      * @param dadosChecklistOfflineChangedListener Listener para informarmos quando os veículos forem transferidos
      *                                             assim a versão dos dados será incrementada na unidade de origem e
      *                                             destino. Desde que as unidades já possuam uma versão criada,
@@ -37,7 +39,32 @@ public interface VeiculoTransferenciaDao {
      * @throws Throwable Se algum erro ocorrer ao realizar o processo de transferência.
      */
     @NotNull
-    Long insertProcessoTranseferenciaVeiculo(
+    Long insertProcessoTransferenciaVeiculo(
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable;
+
+    /**
+     * Este método realiza a transferência de placas, e pneus aplicados, entre unidades de uma mesma empresa.
+     * <p>
+     * Um {@link ProcessoTransferenciaVeiculoRealizacao processo de transferência} pode conter a transferência de várias
+     * placas de uma unidade de origem para outra unidade de destino. Origem e destino não podem ser iguais.
+     * Não é possível transferir placas de diferentes unidades para um único destino. O processo deve incluir sempre,
+     * somente duas unidades, a origem e a destino.
+     * <p>
+     * O processo de transferência de placas também transfere os pneus que estão aplicados na placa.
+     *
+     * @param conn                                 Conexão que será utilizada para realizar as operações no banco de dados.
+     * @param processoTransferenciaVeiculo         Objeto que contém as placas que serão transferidas.
+     * @param dadosChecklistOfflineChangedListener Listener para informarmos quando os veículos forem transferidos
+     *                                             assim a versão dos dados será incrementada na unidade de origem e
+     *                                             destino. Desde que as unidades já possuam uma versão criada,
+     *                                             do contrário, nada será feito.
+     * @return Código do processo de transferência que foi inserido.
+     * @throws Throwable Se algum erro ocorrer ao realizar o processo de transferência.
+     */
+    @NotNull
+    Long insertProcessoTransferenciaVeiculo(
+            @NotNull final Connection conn,
             @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
             @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable;
 
@@ -100,4 +127,16 @@ public interface VeiculoTransferenciaDao {
     @NotNull
     DetalhesVeiculoTransferido getDetalhesVeiculoTransferido(@NotNull final Long codProcessoTransferencia,
                                                              @NotNull final Long codVeiculo) throws Throwable;
+
+    /**
+     * Método utilizado para buscar o aviso que deve ser exibido para cada empresa na tela de realização de
+     * transferência de veículos.
+     *
+     * @param codEmpresa Código da empresa que será verificada.
+     * @return Um objeto contendo o status da empresa e a mensagem que deverá ser exibida.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(@NotNull final Long codEmpresa)
+            throws Throwable;
 }

@@ -106,10 +106,8 @@ final class ProtheusRodalogConverter {
         for (final PneuAfericaoProtheusRodalog pneuRodalog : pneusVeiculo) {
             pneus.add(convertPneu(pneuRodalog));
         }
-
         // Ordena lista pelas posições do ProLog.
         pneus.sort(Pneu.POSICAO_PNEU_COMPARATOR);
-
         return pneus;
     }
 

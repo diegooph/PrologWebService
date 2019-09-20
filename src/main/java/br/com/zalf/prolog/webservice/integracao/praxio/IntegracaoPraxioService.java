@@ -6,16 +6,22 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
+import br.com.zalf.prolog.webservice.integracao.agendador.AgendadorService;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ItemOSAbertaGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.ItemResolvidoGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.OrdemServicoAbertaGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoEdicaoPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoTransferenciaPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistParaSincronizar;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemOSAbertaGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 /**
  * Created on 12/12/18.
@@ -27,6 +33,108 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     private static final String TAG = IntegracaoPraxioService.class.getSimpleName();
     @NotNull
     private final IntegracaoPraxioDao dao = new IntegracaoPraxioDaoImpl();
+
+    @NotNull
+    SuccessResponseIntegracao validateTokenIntegracao(final String tokenIntegracao) {
+        // Esse método é utilizado para a parametrização do sistema parceiro. Lá ao inserir o token que será utilizado
+        // o Sistema realiza uma requisição afim de validar se o token é de fato o que será utilizado para autenticar
+        // os métodos integrados.
+        try {
+            ensureValidToken(tokenIntegracao, TAG);
+            return new SuccessResponseIntegracao("Token está autorizado a realizar requisições");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao validar o token na integração", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao validar o token na integração");
+        }
+    }
+
+    @NotNull
+    public SuccessResponseIntegracao inserirVeiculoPraxio(
+            final String tokenIntegracao,
+            final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
+        try {
+            ensureValidToken(tokenIntegracao, TAG);
+            dao.inserirVeiculoCadastroPraxio(tokenIntegracao, veiculoCadastroPraxio);
+            return new SuccessResponseIntegracao("Veículo inserido no ProLog com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir veículo do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir veículo no ProLog");
+        }
+    }
+
+    @NotNull
+    public SuccessResponseIntegracao atualizarVeiculoPraxio(
+            final String tokenIntegracao,
+            final Long codUnidadeVeiculoAntesEdicao,
+            final String placaVeiculoAntesEdicao,
+            final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
+        try {
+            if (codUnidadeVeiculoAntesEdicao == null) {
+                throw new GenericException("O código da Unidade deve ser fornecido");
+            }
+            if (placaVeiculoAntesEdicao == null || placaVeiculoAntesEdicao.isEmpty()) {
+                throw new GenericException("A placa antes da edição deve ser fornecida");
+            }
+            ensureValidToken(tokenIntegracao, TAG);
+            dao.atualizarVeiculoPraxio(
+                    tokenIntegracao,
+                    codUnidadeVeiculoAntesEdicao,
+                    placaVeiculoAntesEdicao,
+                    veiculoEdicaoPraxio);
+            return new SuccessResponseIntegracao("Veículo atualizado no ProLog com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar veículo do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar veículo no ProLog");
+        }
+    }
+
+    @NotNull
+    public SuccessResponseIntegracao transferirVeiculoPraxio(
+            final String tokenIntegracao,
+            final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws ProLogException {
+        try {
+            ensureValidToken(tokenIntegracao, TAG);
+            dao.transferirVeiculoPraxio(tokenIntegracao, veiculoTransferenciaPraxio);
+            return new SuccessResponseIntegracao("Veículo do Globus transferido com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao realizar transferências de veículos do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao realizar transferências de veículos do Globus no ProLog");
+        }
+    }
+
+    @NotNull
+    public SuccessResponseIntegracao ativarDesativarVeiculoPraxio(final String tokenIntegracao,
+                                                                  final String placaVeiculo,
+                                                                  final Boolean veiculoAtivo) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um token deve ser fornecido");
+            }
+            if (placaVeiculo == null) {
+                throw new GenericException("A placa do veículo deve ser fornecida");
+            }
+            if (veiculoAtivo == null) {
+                throw new GenericException("A informação para ativar ou desativar o veículo não foi fornecida");
+            }
+            ensureValidToken(tokenIntegracao, TAG);
+            dao.ativarDesativarVeiculoPraxio(tokenIntegracao, placaVeiculo, veiculoAtivo);
+            return new SuccessResponseIntegracao(
+                    "Veículo foi " + (veiculoAtivo ? "ativado" : "desativado") + " com sucesso no ProLog");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao ativar/desativar o veículo do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao ativar/desativar o veículo do Globus no ProLog");
+        }
+    }
 
     @NotNull
     public List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(final String tokenIntegracao,
@@ -62,6 +170,8 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             }
             ensureValidToken(tokenIntegracao, TAG);
             dao.inserirOrdensServicoGlobus(tokenIntegracao, ordensServicoAbertas);
+            // Ao receber uma O.S sincronizada, disparamos a sincronia do próximo checklist.
+            sincronizaProximoChecklist();
             return new SuccessResponseIntegracao("Ordens de Serviços Abertas foram inseridas no ProLog");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir as Ordens de Serviços Abertas no banco de dados do ProLog", t);
@@ -94,7 +204,102 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     }
 
     @NotNull
-    List<MedicaoIntegracaoPraxio> getDummy() {
+    public ChecklistParaSincronizar getCodChecklistParaSincronizar() {
+        try {
+            return dao.getCodChecklistParaSincronizar();
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar código de checklist para sincronizar", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar código de checklist para sincronizar");
+        }
+    }
+
+    private void sincronizaProximoChecklist() {
+        // Não queremos que o processo de nova sincronia trave o fim do processo de inserção de um Nova O.S.
+        Executors.newSingleThreadExecutor().execute(() -> new AgendadorService().sincronizaChecklists());
+    }
+
+////----------------------------------------------------------------------------------------------------------------////
+////---------------------------------- DUMMY MÉTODOS ---------------------------------------------------------------////
+////----------------------------------------------------------------------------------------------------------------////
+
+    @NotNull
+    SuccessResponseIntegracao inserirVeiculoCadastroPraxioDummy(
+            final String tokenIntegracao,
+            final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+                throw new GenericException("O Token fornecido é inválido");
+            }
+            validateVeiculoCadastro(veiculoCadastroPraxio);
+            return new SuccessResponseIntegracao("Veículo do Globus inserido no ProLog com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir o veículo do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir o veículo do Globus no ProLog");
+        }
+    }
+
+    @NotNull
+    SuccessResponseIntegracao atualizarVeiculoPraxioDummy(
+            final String tokenIntegracao,
+            final Long codUnidadeVeiculoAntesEdicao,
+            final String placaVeiculoAntesEdicao,
+            final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (codUnidadeVeiculoAntesEdicao == null) {
+                throw new GenericException("A propriedade 'codUnidadeVeiculoAntesEdicao' deve ser fornecida");
+            }
+            if (placaVeiculoAntesEdicao == null
+                    || placaVeiculoAntesEdicao.isEmpty()
+                    || placaVeiculoAntesEdicao.length() > 7) {
+                throw new GenericException(
+                        "A propriedade 'placaVeiculoAntesEdicao' deve ser fornecida e ter 7 caracteres");
+            }
+            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+                throw new GenericException("O Token fornecido é inválido");
+            }
+            validateVeiculoEdicao(veiculoEdicaoPraxio);
+            return new SuccessResponseIntegracao("Veículo do Globus atualizado no ProLog com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o veículo do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o veículo do Globus no ProLog");
+        }
+    }
+
+    @NotNull
+    SuccessResponseIntegracao transferirVeiculoPraxioDummy(
+            final String tokenIntegracao,
+            final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+                throw new GenericException("O Token fornecido é inválido");
+            }
+            validateTransferenciaVeiculoPraxio(veiculoTransferenciaPraxio);
+            return new SuccessResponseIntegracao("Veículo do Globus transferido com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao realizar transferências de veículos do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao realizar transferências de veículos do Globus no ProLog");
+        }
+    }
+
+    @NotNull
+    List<MedicaoIntegracaoPraxio> getAfericoesRealizadasDummy() {
         final List<MedicaoIntegracaoPraxio> afericoes = new ArrayList<>();
         afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaSulcoPressao());
         afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaSulco());
@@ -117,7 +322,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             if (ordensServicoAbertas == null || ordensServicoAbertas.isEmpty()) {
                 throw new GenericException("Nenhuma informação de O.S. aberta foi recebida");
             }
-            validateOrdemsServico(ordensServicoAbertas);
+            validateOrdensServico(ordensServicoAbertas);
             return new SuccessResponseIntegracao("Ordens de Serviços Abertas foram inseridas no ProLog");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir as Ordens de Serviços Abertas no banco de dados do ProLog", t);
@@ -152,7 +357,60 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
         }
     }
 
-    private void validateOrdemsServico(
+    private void validateVeiculoCadastro(
+            @NotNull final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
+        if (veiculoCadastroPraxio.getCodUnidadeAlocado() <= 0) {
+            throw new GenericException("A propriedade 'codUnidadeAlocado' deve ser um número positivo");
+        }
+        if (veiculoCadastroPraxio.getPlacaVeiculo().isEmpty()
+                || veiculoCadastroPraxio.getPlacaVeiculo().length() > 7) {
+            throw new GenericException(
+                    "A propriedade 'placaVeiculo' não pode ser vazia nem conter mais que 7 caracteres");
+        }
+        if (veiculoCadastroPraxio.getKmAtualVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'kmAtualVeiculo' deve ser um número positivo maior que zero");
+        }
+        if (veiculoCadastroPraxio.getCodModeloVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'codModeloVeiculo' deve ser um número positivo");
+        }
+        if (veiculoCadastroPraxio.getCodTipoVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'codTipoVeiculo' deve ser um número positivo");
+        }
+    }
+
+    private void validateVeiculoEdicao(@NotNull final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
+        if (veiculoEdicaoPraxio.getNovoKmVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'kmAtualVeiculo' deve ser um número positivo maior que zero");
+        }
+        if (veiculoEdicaoPraxio.getNovoCodModeloVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'codModeloVeiculo' deve ser um número positivo");
+        }
+        if (veiculoEdicaoPraxio.getNovoCodTipoVeiculo() <= 0) {
+            throw new GenericException("A propriedade 'codTipoVeiculo' deve ser um número positivo");
+        }
+    }
+
+    private void validateTransferenciaVeiculoPraxio(
+            @NotNull final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) {
+        if (veiculoTransferenciaPraxio.getCodUnidadeOrigem() <= 0) {
+            throw new GenericException("A propriedade 'codUnidadeOrigem' deve ser um número positivo");
+        }
+        if (veiculoTransferenciaPraxio.getCodUnidadeDestino() <= 0) {
+            throw new GenericException("A propriedade 'codUnidadeDestino' deve ser um número positivo");
+        }
+        if (veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia().isEmpty()
+                || veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia().length() > 11) {
+            throw new GenericException("A propriedade 'cpfColaboradorRealizacaoTransferencia' " +
+                    "não pode ser vazio ou ter mais que 11 caracteres");
+        }
+        if (veiculoTransferenciaPraxio.getPlacaTransferida().isEmpty()
+                || veiculoTransferenciaPraxio.getPlacaTransferida().length() > 7) {
+            throw new GenericException(
+                    "A propriedade 'placaTransferida' não pode ser vazia nem conter mais que 7 caracteres");
+        }
+    }
+
+    private void validateOrdensServico(
             @NotNull final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws ProLogException {
         for (final OrdemServicoAbertaGlobus ordemServico : ordensServicoAbertas) {
             if (ordemServico.getCodOsGlobus() <= 0) {

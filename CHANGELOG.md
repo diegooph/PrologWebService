@@ -1,9 +1,71 @@
 Change Log
 ==========
 
-<a name="v0.0.99"></a>
-## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (release-date) [unreleased]
+<a name="v1.0.2"></a>
+## Version [v1.0.2](https://github.com/luizfp/PrologWebService/compare/v1.0.1...v1.0.2) (release-date) [unreleased]
 
+
+<a name="v1.0.1"></a>
+## Version [v1.0.1](https://github.com/luizfp/PrologWebService/compare/v1.0.0...v1.0.1) (2019-09-18)
+
+### Features
+* Bloqueia funcionalidades de cadastro/edição de pneus e veículos, movimentação e transferências no ProLog (PL-2296)
+* Fecha serviços de pneus automaticamente ao atualizar o status do pneu na integração com Praxio (PL-2302)
+
+### Refactors
+* Seta prioridades das alternativas do check na integração com Avilan como BAIXA (PL-2304)
+* Melhora mensagens de erro na integração com a Translecchi (PL-2284)
+
+<a name="v1.0.0"></a>
+## Version [v1.0.0](https://github.com/luizfp/PrologWebService/compare/v0.1.01...v1.0.0) (2019-09-15)
+
+### Features
+* Cria estrutura para verificar planilha de import de veículo. (PL-2189)
+* Cria resource para monitorarmos se o WS está rodando
+* Cria integração do ProLog com a Praxio (PL-2126)
+
+### Refactors
+* Modifica quantidade máxima de semanas para 53 no valor do DOT. (PL-2214)
+* Permite que o valor do DOT seja inserido como null. (PL-2218)
+
+<a name="v0.1.01"></a>
+## Version [v0.1.01](https://github.com/luizfp/PrologWebService/compare/v0.1.0...v0.1.01) (2019-09-08)
+
+### Features
+* Cria funcionalidade de inserção/edição e visualização de nomenclaturas. (PL-2259)
+* Adiciona relatório para exportação das marcações (PL-2223)
+* Cria API do Controle de Jornada (PL-2271)
+
+### Refactors
+* Remove provisoriamente validador de placa do veículo no cadastro (foco em internacionalização)
+* Melhora método de busca de um quiz pelo código (PL-2249)
+* Adiciona o separa datas para o filtro de abertura e fechamento no relatório de estratificação de O.S. (PL-2175)
+* Altera os métodos de validação das requisições para diferenciar retornos de login inválido e sem permissão (PL-2267)
+* Adiciona código auxiliar ao cadastro / edição de tipos de marcação (PL-2223)
+
+### Bug Fixes
+* Corrige bug no Ajuste de Marcações do controle de jornada (PL-2280)
+
+<a name="v0.1.0"></a>
+## Version [v0.1.0](https://github.com/luizfp/PrologWebService/compare/v0.0.99...v0.1.0) (2019-08-19)
+
+### Refactors
+* Melhora tratamento de erros na busca de checklists
+
+### Bug Fixes
+* Corrige busca de checklists na integração com Avilan
+
+<a name="v0.0.99"></a>
+## Version [v0.0.99](https://github.com/luizfp/PrologWebService/compare/v0.0.98...v0.0.99) (2019-08-18)
+
+### Features
+* Adiciona a gestão de dispositivos móveis por empresa (PL-2150)
+
+### Refactors
+* Altera inserção de checklist para salvar quantidade de perguntas e alternativas OK e NOK (PL-2118)
+* Melhora tratamento de erros na integração com Avilan (PL-2210)
+* Remove pilar GERAL da visão ao logar pelo app (PL-2187)
+* Adiciona os registros de IMEI nas telas de listagem e gestão de marcações (PL-2152) 
 
 <a name="v0.0.98"></a>
 ## Version [v0.0.98](https://github.com/luizfp/PrologWebService/compare/v0.0.97...v0.0.98) (2019-07-16)
