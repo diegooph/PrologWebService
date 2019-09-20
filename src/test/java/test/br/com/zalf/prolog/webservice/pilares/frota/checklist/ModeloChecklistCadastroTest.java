@@ -1,4 +1,4 @@
-package test.frota.checklist;
+package test.br.com.zalf.prolog.webservice.pilares.frota.checklist;
 
 import br.com.zalf.prolog.webservice.BaseTest;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
