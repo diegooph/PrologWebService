@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao;
 
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +12,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class PerguntaModeloChecklistEdicao {
+public final class PerguntaModeloChecklistEdicao extends PerguntaModeloChecklist {
     @NotNull
     private final Long codigo;
     @NotNull
@@ -23,7 +24,7 @@ public final class PerguntaModeloChecklistEdicao {
     private final int ordemExibicao;
     private final boolean singleChoice;
     @NotNull
-    private final List<AlternativaModeloChecklist> alternativas;
+    private final List<AlternativaModeloChecklistEdicao> alternativas;
 
     public PerguntaModeloChecklistEdicao(@NotNull final Long codigo,
                                          @NotNull final Long codigoFixo,
@@ -31,7 +32,7 @@ public final class PerguntaModeloChecklistEdicao {
                                          @Nullable final Long codImagem,
                                          final int ordemExibicao,
                                          final boolean singleChoice,
-                                         @NotNull final List<AlternativaModeloChecklist> alternativas) {
+                                         @NotNull final List<AlternativaModeloChecklistEdicao> alternativas) {
         this.codigo = codigo;
         this.codigoFixo = codigoFixo;
         this.descricao = descricao;
@@ -42,35 +43,49 @@ public final class PerguntaModeloChecklistEdicao {
     }
 
     @NotNull
+    @Override
     public Long getCodigo() {
         return codigo;
     }
 
     @NotNull
+    @Override
     public Long getCodigoFixo() {
         return codigoFixo;
     }
 
     @NotNull
+    @Override
     public String getDescricao() {
         return descricao;
     }
 
     @Nullable
+    @Override
     public Long getCodImagem() {
         return codImagem;
     }
 
+    @Nullable
+    @Override
+    public String getUrlImagem() {
+        throw new UnsupportedOperationException(PerguntaModeloChecklistEdicao.class.getSimpleName() + " não tem UrlImagem");
+    }
+
+    @Override
     public int getOrdemExibicao() {
         return ordemExibicao;
     }
 
+    @Override
     public boolean isSingleChoice() {
         return singleChoice;
     }
 
+    @SuppressWarnings("unchecked")
     @NotNull
+    @Override
     public List<AlternativaModeloChecklist> getAlternativas() {
-        return alternativas;
+        return (List<AlternativaModeloChecklist>) (List<?>) alternativas;
     }
 }

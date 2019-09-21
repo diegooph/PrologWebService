@@ -13,7 +13,7 @@ import java.util.List;
  */
 public final class ModeloChecklistVisualizacao {
     @NotNull
-    private final Long codigo;
+    private final Long codModelo;
     @NotNull
     private final Long codVersaoModelo;
     @NotNull
@@ -28,7 +28,7 @@ public final class ModeloChecklistVisualizacao {
     private final List<PerguntaModeloChecklistVisualizacao> perguntas;
     private final boolean ativo;
 
-    public ModeloChecklistVisualizacao(@NotNull final Long codigo,
+    public ModeloChecklistVisualizacao(@NotNull final Long codModelo,
                                        @NotNull final Long codVersaoModelo,
                                        @NotNull final Long codUnidade,
                                        @NotNull final String nome,
@@ -36,7 +36,7 @@ public final class ModeloChecklistVisualizacao {
                                        @NotNull final List<Cargo> cargosLiberados,
                                        @NotNull final List<PerguntaModeloChecklistVisualizacao> perguntas,
                                        final boolean ativo) {
-        this.codigo = codigo;
+        this.codModelo = codModelo;
         this.codVersaoModelo = codVersaoModelo;
         this.codUnidade = codUnidade;
         this.nome = nome;
@@ -47,8 +47,8 @@ public final class ModeloChecklistVisualizacao {
     }
 
     @NotNull
-    public Long getCodigo() {
-        return codigo;
+    public Long getCodModelo() {
+        return codModelo;
     }
 
     @NotNull

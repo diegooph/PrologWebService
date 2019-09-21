@@ -1,10 +1,15 @@
 package test.br.com.zalf.prolog.webservice;
 
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import com.google.gson.stream.JsonReader;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
 
+import java.io.File;
+import java.io.FileReader;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,6 +35,27 @@ public abstract class BaseTest {
     @After
     public void destroy() {
         // Do nothing.
+    }
+
+    @NotNull
+    protected <T> T readJsonResource(@NotNull final Class currentTestClass,
+                                     @NotNull final String resourceName,
+                                     @NotNull final Class<T> jsonType) {
+        final URL resource = currentTestClass.getResource(resourceName);
+        if (resource == null) {
+            throw new IllegalArgumentException("Resource not found with name: " + resourceName);
+        }
+
+        try {
+            return GsonUtils
+                    .getGson()
+                    .fromJson(
+                            new JsonReader(
+                                    new FileReader(
+                                            new File(resource.toURI()))), jsonType);
+        } catch (final Throwable t) {
+            throw new RuntimeException("Error to parse JSON resource", t);
+        }
     }
 
     @NotNull

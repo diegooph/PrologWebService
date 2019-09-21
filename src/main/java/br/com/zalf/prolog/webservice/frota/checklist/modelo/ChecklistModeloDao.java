@@ -85,7 +85,7 @@ public interface ChecklistModeloDao {
 
     /**
      * Busca um {@link ModeloChecklistVisualizacao modelo de checklist} através do
-     * {@link ModeloChecklistVisualizacao#getCodigo()} e {@link Unidade#getCodigo()}.
+     * {@link ModeloChecklistVisualizacao#getCodModelo()} e {@link Unidade#getCodigo()}.
      *
      * @param codUnidade Código da unidade.
      * @param codModelo  Código do modelo do checklist.

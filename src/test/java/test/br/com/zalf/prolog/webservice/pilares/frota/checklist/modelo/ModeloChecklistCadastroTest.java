@@ -1,6 +1,5 @@
-package test.br.com.zalf.prolog.webservice.pilares.frota.checklist;
+package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.modelo;
 
-import br.com.zalf.prolog.webservice.BaseTest;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
@@ -13,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.Resul
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
 import org.junit.Test;
+import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -144,7 +144,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
         // 5 - Deve conter duas perguntas e ser da versão 1.
         assertThat(modeloBuscado).isNotNull();
         assertThat(modeloBuscado.getPerguntas()).hasSize(1);
-        assertThat(modeloBuscado.getCodigo()).isEqualTo(result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado.getCodModelo()).isEqualTo(result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado.getCodVersaoModelo()).isEqualTo(result.getCodVersaoModeloChecklistInserido());
 
         // 6 - A pergunta deve ter uma alternativa do tipo_outros com a descrição 'Outros'.
@@ -240,7 +240,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
         assertThat(modeloBuscado.getPerguntas()).hasSize(2);
         assertThat(modeloBuscado.getCodUnidade()).isEqualTo(codUnidade);
         assertThat(modeloBuscado.getNome()).isEqualTo(nomeModelo);
-        assertThat(modeloBuscado.getCodigo()).isEqualTo(result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado.getCodModelo()).isEqualTo(result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado.getCodVersaoModelo()).isEqualTo(result.getCodVersaoModeloChecklistInserido());
 
         // Cada pergunta deve ter apenas uma alternativa do tipo_outros.

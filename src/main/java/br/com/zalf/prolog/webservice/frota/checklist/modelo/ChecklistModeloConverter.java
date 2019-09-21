@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.VeiculoChecklistSelecao;
@@ -59,7 +58,7 @@ public final class ChecklistModeloConverter {
             @NotNull final ResultSet rSet) throws SQLException {
         if (rSet.next()) {
             final List<PerguntaModeloChecklistVisualizacao> perguntas = new ArrayList<>();
-            List<AlternativaModeloChecklist> alternativas = new ArrayList<>();
+            List<AlternativaModeloChecklistVisualizacao> alternativas = new ArrayList<>();
             PerguntaModeloChecklistVisualizacao pergunta = null;
             do {
                 if (pergunta == null) {
@@ -86,7 +85,7 @@ public final class ChecklistModeloConverter {
     @NotNull
     public static PerguntaModeloChecklistVisualizacao createPerguntaModeloChecklist(
             @NotNull final ResultSet rSet,
-            @NotNull final List<AlternativaModeloChecklist> alternativas) throws SQLException {
+            @NotNull final List<AlternativaModeloChecklistVisualizacao> alternativas) throws SQLException {
         return new PerguntaModeloChecklistVisualizacao(
                 rSet.getLong("COD_PERGUNTA"),
                 rSet.getLong("CODIGO_FIXO_PERGUNTA"),

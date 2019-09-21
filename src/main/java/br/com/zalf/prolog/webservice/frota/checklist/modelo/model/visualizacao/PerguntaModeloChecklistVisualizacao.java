@@ -26,7 +26,7 @@ public final class PerguntaModeloChecklistVisualizacao extends PerguntaModeloChe
     private final int ordemExibicao;
     private final boolean singleChoice;
     @NotNull
-    private final List<AlternativaModeloChecklist> alternativas;
+    private final List<AlternativaModeloChecklistVisualizacao> alternativas;
 
     public PerguntaModeloChecklistVisualizacao(@NotNull final Long codigo,
                                                @NotNull final Long codigoFixo,
@@ -35,7 +35,7 @@ public final class PerguntaModeloChecklistVisualizacao extends PerguntaModeloChe
                                                @Nullable final String urlImagem,
                                                final int ordemExibicao,
                                                final boolean singleChoice,
-                                               @NotNull final List<AlternativaModeloChecklist> alternativas) {
+                                               @NotNull final List<AlternativaModeloChecklistVisualizacao> alternativas) {
         this.codigo = codigo;
         this.codigoFixo = codigoFixo;
         this.descricao = descricao;
@@ -86,9 +86,10 @@ public final class PerguntaModeloChecklistVisualizacao extends PerguntaModeloChe
         return singleChoice;
     }
 
+    @SuppressWarnings("unchecked")
     @NotNull
     @Override
     public List<AlternativaModeloChecklist> getAlternativas() {
-        return alternativas;
+        return (List<AlternativaModeloChecklist>) (List<?>) alternativas;
     }
 }
