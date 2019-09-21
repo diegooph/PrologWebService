@@ -231,7 +231,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     }
 
     @Test
-    public void caso3_atualizaOsTiposDeVeiculos_deveFuncionar() {
+    public void caso3_atualizaOsTiposDeVeiculo_deveFuncionar() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
 
@@ -291,7 +291,106 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         buscado
                 .getCargosLiberados()
                 .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        // Agora temos apena um tipo de veículo, não mais dois.
+        // Agora temos apena um tipo de veículo liberado, não mais dois.
+        assertThat(editado.getTiposVeiculoLiberados()).hasSize(1);
+        assertThat(buscado.getTiposVeiculoLiberados()).hasSize(1);
+        buscado
+                .getTiposVeiculoLiberados()
+                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertThat(editado.getPerguntas()).hasSize(2);
+        assertThat(buscado.getPerguntas()).hasSize(2);
+        {
+            // P1.
+            final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
+            final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
+            ensureAllAttributesEqual(p1Antes, p1Depois, 4);
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
+        }
+
+        {
+            // P2.
+            final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
+            final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
+            ensureAllAttributesEqual(p2Antes, p2Depois, 3);
+            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
+            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
+            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
+        }
+    }
+
+    @Test
+    public void caso4_atualizaOsCargosEOsTiposDeVeiculo_deveFuncionar() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado).isNotNull();
+
+        // 4, 5 - Então, alteramos os cargos e os tipos de veículo vinculados e atualizamos novamente o modelo.
+        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
+                GsonUtils.getGson(),
+                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+
+        // Buscamos um outro código de cargo da mesma empresa que o modelo pertence e que ainda não esteja vinculado.
+        final Long codNovoCargo = new CargoService()
+                .getTodosCargosEmpresa(COD_EMPRESA)
+                .stream()
+                .map(CargoListagemEmpresa::getCodigo)
+                .filter(c -> !BASE.getCargosLiberados().contains(c))
+                .limit(1)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Empresa não possui outro cargo além dos já vinculados ao modelo"));
+        final List<Long> cargos = Collections.singletonList(codNovoCargo);
+
+        // Buscamos um outro código de tipo de veículo da mesma empresa que o modelo pertence e que ainda não esteja
+        // vinculado.
+        final Long codNovoTipoVeiculo = new TipoVeiculoService()
+                .getTiposVeiculosByEmpresa(token, COD_EMPRESA)
+                .stream()
+                .map(TipoVeiculo::getCodigo)
+                .filter(c -> !BASE.getTiposVeiculoLiberados().contains(c))
+                .limit(1)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Empresa não possui outro tipo de veículo além dos já vinculados ao modelo"));
+        final List<Long> tiposVeiculo = Collections.singletonList(codNovoTipoVeiculo);
+
+        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                modeloBuscado.getCodVersaoModelo(),
+                modeloBuscado.getNome(),
+                tiposVeiculo,
+                cargos,
+                perguntas,
+                modeloBuscado.isAtivo());
+        service.updateModeloChecklist(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                editado,
+                token);
+
+        // 6, 7 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
+        final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(editado.getNome()).isEqualTo(buscado.getNome());
+        assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
+        assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
+        assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
+        // Agora temos apena um cargo liberado, não mais dois.
+        assertThat(editado.getCargosLiberados()).hasSize(1);
+        assertThat(buscado.getCargosLiberados()).hasSize(1);
+        buscado
+                .getCargosLiberados()
+                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
+        // Agora temos apena um tipo de veículo liberado, não mais dois.
         assertThat(editado.getTiposVeiculoLiberados()).hasSize(1);
         assertThat(buscado.getTiposVeiculoLiberados()).hasSize(1);
         buscado
