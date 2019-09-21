@@ -1013,7 +1013,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setString(1, pergunta.getDescricao());
             stmt.setInt(2, pergunta.getOrdemExibicao());
             stmt.setBoolean(3, pergunta.isSingleChoice());
-            stmt.setLong(4, pergunta.getCodImagem());
+            bindValueOrNull(stmt, 4, pergunta.getCodImagem(), SqlType.BIGINT);
             stmt.setLong(5, codModelo);
             stmt.setLong(6, pergunta.getCodigo());
             if (stmt.executeUpdate() <= 0) {
