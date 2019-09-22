@@ -562,7 +562,93 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     public void caso6_removeUmaAlternativaDaP1_deveMudarVersaoModeloECodigoFixoPergunta() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
 
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado).isNotNull();
+
+        // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
+        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
+                GsonUtils.getGson(),
+                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<Long> cargos = modeloBuscado
+                .getCargosLiberados()
+                .stream()
+                .map(Cargo::getCodigo)
+                .collect(Collectors.toList());
+        final List<Long> tiposVeiculo = modeloBuscado
+                .getTiposVeiculoLiberados()
+                .stream()
+                .map(TipoVeiculo::getCodigo)
+                .collect(Collectors.toList());
+
+        // Removemos a alternativa 'Fora de foco' da P1.
+        perguntas.get(0).getAlternativas().remove(0);
+
+        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                modeloBuscado.getCodVersaoModelo(),
+                modeloBuscado.getNome(),
+                tiposVeiculo,
+                cargos,
+                perguntas,
+                modeloBuscado.isAtivo());
+        service.updateModeloChecklist(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                editado,
+                token);
+
+        // 6, 7 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
+        final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(editado.getNome()).isEqualTo(buscado.getNome());
+        assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
+        assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
+        // Versão do modelo tem que ter aumentado.
+        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
+        buscado
+                .getCargosLiberados()
+                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
+        buscado
+                .getTiposVeiculoLiberados()
+                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertThat(editado.getPerguntas()).hasSize(2);
+        assertThat(buscado.getPerguntas()).hasSize(2);
+        {
+            // P1.
+            final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
+            final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
+
+            // Garante que a alternativa 'Fora de foco' não está mais presente.
+            p1Depois.getAlternativas()
+                    .stream()
+                    .filter(p -> p.getDescricao().equals("Fora de foco"))
+                    .findAny()
+                    .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
+
+            ensureAllAttributesEqual(p1Antes, p1Depois, 3, false, false);
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
+        }
+
+        {
+            // P2.
+            final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
+            final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
+            ensureAllAttributesEqual(p2Antes, p2Depois, 3);
+            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
+            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
+            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
+        }
     }
 
     @Test
@@ -659,6 +745,30 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 a.isTipoOutros(),
                 a.getOrdemExibicao(),
                 a.isDeveAbrirOrdemServico());
+    }
+
+    private void ensureAllAttributesEqual(@NotNull final PerguntaModeloChecklist antes,
+                                          @NotNull final PerguntaModeloChecklist depois,
+                                          final int qtdAlternativas,
+                                          final boolean mesmoCodigoFixo,
+                                          final boolean mesmoCodigoVariavel) {
+        assertThat(antes).isNotSameInstanceAs(depois);
+        if (mesmoCodigoVariavel) {
+            assertThat(antes.getCodigo()).isEqualTo(depois.getCodigo());
+        } else {
+            assertThat(antes.getCodigo()).isLessThan(depois.getCodigo());
+        }
+        if (mesmoCodigoFixo) {
+            assertThat(antes.getCodigoFixo()).isEqualTo(depois.getCodigoFixo());
+        } else {
+            assertThat(antes.getCodigoFixo()).isLessThan(depois.getCodigoFixo());
+        }
+        assertThat(antes.getDescricao()).isEqualTo(depois.getDescricao());
+        assertThat(antes.getCodImagem()).isEqualTo(depois.getCodImagem());
+        assertThat(antes.getOrdemExibicao()).isEqualTo(depois.getOrdemExibicao());
+        assertThat(antes.isSingleChoice()).isEqualTo(depois.isSingleChoice());
+        assertThat(antes.getAlternativas()).hasSize(qtdAlternativas);
+        assertThat(depois.getAlternativas()).hasSize(qtdAlternativas);
     }
 
     private void ensureAllAttributesEqual(@NotNull final PerguntaModeloChecklist antes,
