@@ -1574,6 +1574,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // P1.
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
+            assertThat(modeloBuscado.getPerguntas().get(0).isSingleChoice()).isFalse();
             assertThat(p1Depois.isSingleChoice()).isTrue();
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
             ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
@@ -1595,7 +1596,108 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     public void caso18_alteraA1ParaNaoAbrirOS_deveMudarVersaoModeloECodigoFixoA1() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
 
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado).isNotNull();
+
+        // 4, 5 - Alteramos o texto da P1 mudando o contexto.
+        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
+                GsonUtils.getGson(),
+                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        // A1.
+        final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
+        final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
+        p1.getAlternativas().set(
+                0,
+                new AlternativaModeloChecklistEdicaoAtualiza(
+                        a1.getCodigo(),
+                        a1.getCodigoFixo(),
+                        a1.getDescricao(),
+                        a1.getPrioridade(),
+                        a1.isTipoOutros(),
+                        a1.getOrdemExibicao(),
+                        false));
+        perguntas.set(
+                0,
+                // P1 é substituída agora sendo single_choice..
+                new PerguntaModeloChecklistEdicaoAtualiza(
+                        p1.getCodigo(),
+                        p1.getCodigoFixo(),
+                        p1.getDescricao(),
+                        p1.getCodImagem(),
+                        p1.getOrdemExibicao(),
+                        p1.isSingleChoice(),
+                        p1.getAlternativas()));
+
+        final List<Long> cargos = modeloBuscado
+                .getCargosLiberados()
+                .stream()
+                .map(Cargo::getCodigo)
+                .collect(Collectors.toList());
+        final List<Long> tiposVeiculo = modeloBuscado
+                .getTiposVeiculoLiberados()
+                .stream()
+                .map(TipoVeiculo::getCodigo)
+                .collect(Collectors.toList());
+        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                modeloBuscado.getCodVersaoModelo(),
+                modeloBuscado.getNome(),
+                tiposVeiculo,
+                cargos,
+                perguntas,
+                modeloBuscado.isAtivo());
+        service.updateModeloChecklist(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                editado,
+                token);
+
+        // 6, 7 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
+        final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(editado.getNome()).isEqualTo(buscado.getNome());
+        assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
+        assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
+        assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
+        buscado
+                .getCargosLiberados()
+                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
+        buscado
+                .getTiposVeiculoLiberados()
+                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertThat(editado.getPerguntas()).hasSize(2);
+        assertThat(buscado.getPerguntas()).hasSize(2);
+        {
+            // P1.
+            final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
+            final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
+            assertThat(modeloBuscado.getPerguntas().get(0).getAlternativas().get(0).isDeveAbrirOrdemServico()).isTrue();
+            assertThat(p1Depois.getAlternativas().get(0).isDeveAbrirOrdemServico()).isFalse();
+            ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
+            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
+        }
+
+        {
+            // P2.
+            final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
+            final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
+            ensureAllAttributesEqual(p2Antes, p2Depois, 3);
+            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
+            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
+            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
+        }
     }
 
     @Test
