@@ -975,9 +975,50 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 token);
     }
 
-    @Test
+    @Test(expected = ProLogException.class)
     public void caso11_removeTodasAlternativasP1_deveDarErro() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
 
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado).isNotNull();
+
+        // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
+        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
+                GsonUtils.getGson(),
+                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<Long> cargos = modeloBuscado
+                .getCargosLiberados()
+                .stream()
+                .map(Cargo::getCodigo)
+                .collect(Collectors.toList());
+        final List<Long> tiposVeiculo = modeloBuscado
+                .getTiposVeiculoLiberados()
+                .stream()
+                .map(TipoVeiculo::getCodigo)
+                .collect(Collectors.toList());
+
+        // Removemos todas as alternativas da pergunta P1.
+        perguntas.get(0).getAlternativas().clear();
+
+        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                modeloBuscado.getCodVersaoModelo(),
+                modeloBuscado.getNome(),
+                tiposVeiculo,
+                cargos,
+                perguntas,
+                modeloBuscado.isAtivo());
+        service.updateModeloChecklist(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                editado,
+                token);
     }
 
     @Test
