@@ -420,6 +420,81 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         }
     }
 
+    @Test
+    public void caso5_atualizaOsTextosDeTodasPerguntasEAlternativasSemMudarContexto_deveFuncionarMantendoAVersao() {
+
+    }
+
+    @Test
+    public void caso6_removeUmaAlternativaDaP1_deveMudarVersaoModeloECodigoFixoPergunta() {
+
+    }
+
+    @Test
+    public void caso7_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP1_deveMudarVersaoModeloECodigoFixoDaP1() {
+
+    }
+
+    @Test
+    public void caso8_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP2_deveMudarVersaoModeloECodigoFixoDasPerguntas() {
+
+    }
+
+    @Test
+    public void caso9_removeP1_deveMudarVersaoModelo() {
+
+    }
+
+    @Test
+    public void caso10_removeP1EP2_deveDarErro() {
+
+    }
+
+    @Test
+    public void caso11_removeTodasAlternativasP1_deveDarErro() {
+
+    }
+
+    @Test
+    public void caso12_removeAlternativaTipoOutrosDaP2_deveDarErro() {
+
+    }
+
+    @Test
+    public void caso13_alteraTextoDaP1MudandoContexto_deveMudarVersaoModeloECodigoFixoDaP1() {
+
+    }
+
+    @Test
+    public void caso14_alteraContextoDaP1_alteraP2MantendoContexto_deveMudarVersaoModeloECodigoFixoDaP1EManterDaP2() {
+
+    }
+
+    @Test
+    public void caso15_alteraContextoDaA1_deletaA2_deveMudarVersaoModelo_CodigoFixoP1Diferente_CodigoFixoA1Diferente() {
+
+    }
+
+    @Test
+    public void caso16_alteraContextoA1_adicionaAlternativaP1_deveMudarVersaoModeloCodigoFixoP1DiferenteCodigoFixoA1Diferente() {
+
+    }
+
+    @Test
+    public void caso17_alteraP1ParaSingleChoice_deveMudarVersaoModeloECodigoFixoP1() {
+
+    }
+
+    @Test
+    public void caso18_alteraA1ParaNaoAbrirOS_deveMudarVersaoModeloECodigoFixoA1() {
+
+    }
+
+    @Test
+    public void caso19_alteraA1ParaPrioridadeBaixa_deveMudarVersaoModeloECodigoFixoA1() {
+
+    }
+
     private void ensureAllAttributesEqual(@NotNull final PerguntaModeloChecklist antes,
                                           @NotNull final PerguntaModeloChecklist depois,
                                           final int qtdAlternativas) {
@@ -449,7 +524,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     @NotNull
     private static List<PerguntaModeloChecklistEdicao> jsonToCollection(@NotNull final Gson gson,
                                                                         @NotNull final String json) {
-        final Type type = new TypeToken<List<PerguntaModeloChecklistEdicao>>(){}.getType();
+        final Type type = new TypeToken<List<PerguntaModeloChecklistEdicao>>() {
+        }.getType();
         return gson.fromJson(json, type);
     }
 }
