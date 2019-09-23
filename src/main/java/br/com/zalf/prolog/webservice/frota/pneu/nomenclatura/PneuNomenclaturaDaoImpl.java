@@ -65,7 +65,7 @@ public final class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
                     .of(batchResult)
                     .allMatch(result -> result == EXECUTE_BATCH_SUCCESS);
             if (!tudoOk || batchResult.length != nomenclaturas.size()) {
-                throw new IllegalStateException("Erro ao salvar as nomenclaturas da empresa: "
+                throw new IllegalStateException("Erro ao cadastradar as nomenclaturas da empresa: "
                         + pneuNomenclaturaCadastro.getCodEmpresa());
             }
             conn.commit();
