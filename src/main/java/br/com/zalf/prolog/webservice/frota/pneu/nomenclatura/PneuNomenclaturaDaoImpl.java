@@ -39,6 +39,7 @@ public final class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
             garanteNomenclaturaCompleta(conn, pneuNomenclaturaCadastro.getCodDiagrama(), posicoesNaoEstepes);
 
             // Antes de inserir, deleta a nomenclatura cadastrada dos estepes.
+            // Fazemos isso pois a nomenclatura para estepes pode ser removida no Sistema Web.
             deletaNomenclaturaEstepes(conn,
                                       pneuNomenclaturaCadastro.getCodEmpresa(),
                                       pneuNomenclaturaCadastro.getCodDiagrama());

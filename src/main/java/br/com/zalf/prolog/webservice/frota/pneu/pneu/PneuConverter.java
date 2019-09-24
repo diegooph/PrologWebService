@@ -26,7 +26,7 @@ public final class PneuConverter {
     public static Pneu createPneuCompleto(@NotNull final ResultSet rSet,
                                           @NotNull final PneuTipo pneuTipo) throws SQLException {
         final Pneu pneu = pneuTipo.createNew();
-        pneu.setCodigo(rSet.getLong("COD_PNEU"));
+        pneu.setCodigo(rSet.getLong("CODIGO"));
         pneu.setCodigoCliente(rSet.getString("CODIGO_CLIENTE"));
         pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
         pneu.setDot(rSet.getString("DOT"));
