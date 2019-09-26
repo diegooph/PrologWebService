@@ -6,6 +6,7 @@ Change Log
 
 ### Refactors
 * Altera bloqueador de requisições do App para ignorar requisições do Afere Fácil da Praxio (PL-2207)
+* Cria funcionalidade de inserção/edição de nomenclatura (PL-2259)
 
 <a name="v1.0.1"></a>
 ## Version [v1.0.1](https://github.com/luizfp/PrologWebService/compare/v1.0.0...v1.0.1) (2019-09-18)
