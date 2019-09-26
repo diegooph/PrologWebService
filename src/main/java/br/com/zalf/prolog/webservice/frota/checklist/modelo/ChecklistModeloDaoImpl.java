@@ -302,12 +302,14 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_UPDATE_STATUS_MODELO(?,?,?);");
+            stmt = conn.prepareCall("{CALL FUNC_CHECKLIST_UPDATE_STATUS_MODELO(" +
+                    "F_COD_UNIDADE  := ?," +
+                    "F_COD_MODELO   := ?," +
+                    "F_STATUS_ATIVO := ?)}");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             stmt.setBoolean(3, statusAtivo);
             stmt.execute();
-
         } finally {
             close(conn, stmt);
         }
