@@ -18,6 +18,7 @@ Change Log
 ### Refactors
 * Seta prioridades das alternativas do check na integração com Avilan como BAIXA (PL-2304)
 * Melhora mensagens de erro na integração com a Translecchi (PL-2284)
+* Modifica método updateStatusAtivo do checklist, impossibilitando a ativação de modelos com mesmo nome. 
 
 <a name="v1.0.0"></a>
 ## Version [v1.0.0](https://github.com/luizfp/PrologWebService/compare/v0.1.01...v1.0.0) (2019-09-15)
