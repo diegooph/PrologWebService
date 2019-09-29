@@ -42,6 +42,11 @@ public final class AppVersionCodeHandlerDelegator implements ContainerRequestFil
         }
         // Se chegou até aqui sabemos que a requisição partiu do App Android.
 
+        if (requestContext.getHeaders().containsKey(ProLogCustomHeaders.AppVersionAndroid.AFERE_FACIL_APP_VERSION)) {
+            Log.d(TAG, "Requisição veio do Afere Fácil, iremos ignorar");
+            return;
+        }
+
         final Class<?> resourceClass = resourceInfo.getResourceClass();
         final Method resourceMethod = resourceInfo.getResourceMethod();
         final AppVersionCodeHandler methodAnnot = resourceMethod.getAnnotation(AppVersionCodeHandler.class);
@@ -57,7 +62,7 @@ public final class AppVersionCodeHandlerDelegator implements ContainerRequestFil
         }
 
         final String versionCodeString = requestContext
-                .getHeaderString(ProLogCustomHeaders.APP_VERSION_ANDROID_APP);
+                .getHeaderString(ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION);
 
         final VersionNotPresentAction notPresentAction = annotation.actionIfVersionNotPresent();
         try {

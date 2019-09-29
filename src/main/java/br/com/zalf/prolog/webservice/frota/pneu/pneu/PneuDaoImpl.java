@@ -22,58 +22,6 @@ import java.util.List;
 public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     public static final String TAG = PneuDaoImpl.class.getSimpleName();
 
-    private static final String BASE_QUERY_BUSCA_PNEU = "SELECT " +
-            "  MP.NOME                                    AS NOME_MARCA_PNEU, " +
-            "  MP.CODIGO                                  AS COD_MARCA_PNEU, " +
-            "  P.CODIGO, " +
-            "  P.CODIGO_CLIENTE, " +
-            "  U.CODIGO                                   AS COD_UNIDADE_ALOCADO, " +
-            "  R.CODIGO                                   AS COD_REGIONAL_ALOCADO, " +
-            "  P.PRESSAO_ATUAL, " +
-            "  P.VIDA_ATUAL, " +
-            "  P.VIDA_TOTAL, " +
-            "  P.PNEU_NOVO_NUNCA_RODADO, " +
-            "  MOP.NOME                                   AS NOME_MODELO_PNEU, " +
-            "  MOP.CODIGO                                 AS COD_MODELO_PNEU, " +
-            "  MOP.QT_SULCOS                              AS QT_SULCOS_MODELO_PNEU, " +
-            "  MOP.ALTURA_SULCOS                          AS ALTURA_SULCOS_MODELO_PNEU, " +
-            "  PD.ALTURA, " +
-            "  PD.LARGURA, " +
-            "  PD.ARO, " +
-            "  PD.CODIGO                                  AS COD_DIMENSAO, " +
-            "  P.PRESSAO_RECOMENDADA, " +
-            "  P.ALTURA_SULCO_CENTRAL_INTERNO, " +
-            "  P.ALTURA_SULCO_CENTRAL_EXTERNO, " +
-            "  P.ALTURA_SULCO_INTERNO, " +
-            "  P.ALTURA_SULCO_EXTERNO, " +
-            "  P.STATUS, " +
-            "  P.DOT, " +
-            "  P.VALOR, " +
-            "  MOB.CODIGO                                  AS COD_MODELO_BANDA, " +
-            "  MOB.NOME                                    AS NOME_MODELO_BANDA, " +
-            "  MOB.QT_SULCOS                               AS QT_SULCOS_MODELO_BANDA, " +
-            "  MOB.ALTURA_SULCOS                           AS ALTURA_SULCOS_MODELO_BANDA, " +
-            "  MAB.CODIGO                                  AS COD_MARCA_BANDA, " +
-            "  MAB.NOME                                    AS NOME_MARCA_BANDA, " +
-            "  PVV.VALOR                                   AS VALOR_BANDA, " +
-            "  PO.POSICAO_PROLOG                           AS POSICAO_PNEU, " +
-            "  COALESCE(PONU.NOMENCLATURA :: TEXT, '-')    AS POSICAO_APLICADO_CLIENTE, " +
-            "  VEI.codigo                                  AS COD_VEICULO_APLICADO, " +
-            "  VEI.placa                                   AS PLACA_APLICADO " +
-            "FROM PNEU P " +
-            "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " +
-            "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " +
-            "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO " +
-            "JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE " +
-            "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
-            "LEFT JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO AND VP.COD_UNIDADE = P.COD_UNIDADE " +
-            "LEFT JOIN VEICULO VEI ON VEI.PLACA = VP.PLACA " +
-            "LEFT JOIN PNEU_ORDEM PO ON VP.POSICAO = PO.POSICAO_PROLOG " +
-            "LEFT JOIN MODELO_BANDA MOB ON MOB.CODIGO = P.COD_MODELO_BANDA AND MOB.COD_EMPRESA = U.COD_EMPRESA " +
-            "LEFT JOIN MARCA_BANDA MAB ON MAB.CODIGO = MOB.COD_MARCA AND MAB.COD_EMPRESA = MOB.COD_EMPRESA " +
-            "LEFT JOIN PNEU_VALOR_VIDA PVV ON PVV.COD_PNEU = P.CODIGO AND PVV.VIDA = P.VIDA_ATUAL " +
-            "LEFT JOIN PNEU_ORDEM_NOMENCLATURA_UNIDADE PONU ON PONU.COD_UNIDADE = VEI.COD_UNIDADE AND PONU.COD_TIPO_VEICULO = VEI.COD_TIPO AND PONU.POSICAO_PROLOG = VP.POSICAO ";
-
     public PneuDaoImpl() {
 
     }
@@ -158,7 +106,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             } else {
                 stmt.setLong(14, pneu.getBanda().getModelo().getCodigo());
             }
-            if(pneu.getDot() == null){
+            if (pneu.getDot() == null) {
                 stmt.setString(15, pneu.getDot());
             } else {
                 stmt.setString(15, pneu.getDot().trim());
@@ -250,9 +198,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         List<Pneu> listPneu = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(BASE_QUERY_BUSCA_PNEU +
-                    "WHERE VP.PLACA = ? " +
-                    "ORDER BY PO.ORDEM_EXIBICAO ASC;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_PNEU_BY_PLACA(F_PLACA := ?);");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {

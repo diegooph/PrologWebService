@@ -23,7 +23,7 @@ public class RelatoResource {
     @POST
     @Secured(permissions = Pilares.Seguranca.Relato.REALIZAR)
     public Response insert(Relato relato,
-                           @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) Integer versaoApp) {
+                           @HeaderParam(ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) Integer versaoApp) {
         if (service.insert(relato, versaoApp)) {
             return Response.ok("Relato inserido com sucesso");
         } else {
