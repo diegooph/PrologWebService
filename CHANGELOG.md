@@ -1,12 +1,18 @@
 Change Log
 ==========
 
+<a name="v1.0.3"></a>
+## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (release-date) [unreleased]
+
+
 <a name="v1.0.2"></a>
 ## Version [v1.0.2](https://github.com/luizfp/PrologWebService/compare/v1.0.1...v1.0.2) (2019-09-29)
 
+### Features
+* Cria funcionalidade de inserção/edição de nomenclatura (PL-2259)
+
 ### Refactors
 * Altera bloqueador de requisições do App para ignorar requisições do Afere Fácil da Praxio (PL-2207)
-* Cria funcionalidade de inserção/edição de nomenclatura (PL-2259)
 * Altera estrutura de checklist para não salvar nomes iguais (PL-2140)
 
 <a name="v1.0.1"></a>
