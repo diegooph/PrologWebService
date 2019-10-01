@@ -8,6 +8,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 21/08/19.
@@ -66,6 +68,16 @@ public abstract class ApiPneuAlteracaoStatus {
                 .registerSubtype(ApiPneuAlteracaoStatusDescarte.class, ApiStatusPneu.DESCARTE.asString())
                 .registerSubtype(ApiPneuAlteracaoStatusEstoque.class, ApiStatusPneu.ESTOQUE.asString())
                 .registerSubtype(ApiPneuAlteracaoStatusVeiculo.class, ApiStatusPneu.EM_USO.asString());
+    }
+
+    @NotNull
+    public static List<Long> getCodigoSistemaIntegradoPneus(
+            @NotNull final List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) {
+        final List<Long> codigoSistemaIntegradoPneus = new ArrayList<>();
+        pneusAtualizacaoStatus.forEach(
+                apiPneuAlteracaoStatus ->
+                        codigoSistemaIntegradoPneus.add(apiPneuAlteracaoStatus.getCodigoSistemaIntegrado()));
+        return codigoSistemaIntegradoPneus;
     }
 
     @NotNull

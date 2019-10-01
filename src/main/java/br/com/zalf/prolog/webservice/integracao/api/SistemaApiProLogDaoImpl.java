@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -22,8 +23,10 @@ public final class SistemaApiProLogDaoImpl extends DatabaseConnection implements
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_PNEU_AFERICAO_SERVICO_TIPO_SERVICO(F_COD_SERVICO := ?) AS IS_MOVIMENTACAO");
+                    "FROM FUNC_AFERICAO_SERVICO_IS_TIPO_SERVICO(F_COD_SERVICO := ?, " +
+                    "F_TIPO_SERVICO_PNEU := ?) AS IS_MOVIMENTACAO");
             stmt.setLong(1, codServico);
+            stmt.setString(2, TipoServico.MOVIMENTACAO.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getBoolean("IS_MOVIMENTACAO");
