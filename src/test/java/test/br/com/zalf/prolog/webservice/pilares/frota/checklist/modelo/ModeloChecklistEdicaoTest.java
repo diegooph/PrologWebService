@@ -67,7 +67,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     @Test
     public void caso1_atualizaSemAlterarNada_deveFuncionar() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -77,28 +77,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -113,12 +95,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -126,10 +104,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
             ensureAllAttributesEqual(p1Antes, p1Depois, 4);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
         }
 
         {
@@ -137,16 +111,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso2_atualizaOsCargos_deveFuncionar() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -156,9 +127,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, alteramos os cargos vinculados e atualizamos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
 
         // Buscamos um outro código de cargo da mesma empresa que o modelo pertence e que ainda não esteja vinculado.
         final Long codNovoCargo = new CargoService()
@@ -171,21 +140,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 .orElseThrow(() -> new RuntimeException("Empresa não possui outro cargo além dos já vinculados ao modelo"));
         final List<Long> cargos = Collections.singletonList(codNovoCargo);
 
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
 
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -203,12 +160,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         // Agora temos apena um cargo liberado, não mais dois.
         assertThat(editado.getCargosLiberados()).hasSize(1);
         assertThat(buscado.getCargosLiberados()).hasSize(1);
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -216,10 +169,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
             ensureAllAttributesEqual(p1Antes, p1Depois, 4);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
         }
 
         {
@@ -227,16 +176,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso3_atualizaOsTiposDeVeiculo_deveFuncionar() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -246,15 +192,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, alteramos os tipos de veículos vinculados e atualizamos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
 
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
 
         // Buscamos um outro código de tipo de veículo da mesma empresa que o modelo pertence e que ainda não esteja
         // vinculado.
@@ -268,15 +208,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 .orElseThrow(() -> new RuntimeException("Empresa não possui outro tipo de veículo além dos já vinculados ao modelo"));
         final List<Long> tiposVeiculo = Collections.singletonList(codNovoTipoVeiculo);
 
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -291,15 +223,11 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
         // Agora temos apena um tipo de veículo liberado, não mais dois.
         assertThat(editado.getTiposVeiculoLiberados()).hasSize(1);
         assertThat(buscado.getTiposVeiculoLiberados()).hasSize(1);
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -307,10 +235,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
             ensureAllAttributesEqual(p1Antes, p1Depois, 4);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
         }
 
         {
@@ -318,16 +242,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso4_atualizaOsCargosEOsTiposDeVeiculo_deveFuncionar() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -337,9 +258,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, alteramos os cargos e os tipos de veículo vinculados e atualizamos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
 
         // Buscamos um outro código de cargo da mesma empresa que o modelo pertence e que ainda não esteja vinculado.
         final Long codNovoCargo = new CargoService()
@@ -364,15 +283,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 .orElseThrow(() -> new RuntimeException("Empresa não possui outro tipo de veículo além dos já vinculados ao modelo"));
         final List<Long> tiposVeiculo = Collections.singletonList(codNovoTipoVeiculo);
 
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -390,15 +301,11 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         // Agora temos apena um cargo liberado, não mais dois.
         assertThat(editado.getCargosLiberados()).hasSize(1);
         assertThat(buscado.getCargosLiberados()).hasSize(1);
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
         // Agora temos apena um tipo de veículo liberado, não mais dois.
         assertThat(editado.getTiposVeiculoLiberados()).hasSize(1);
         assertThat(buscado.getTiposVeiculoLiberados()).hasSize(1);
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -406,10 +313,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
             ensureAllAttributesEqual(p1Antes, p1Depois, 4);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
         }
 
         {
@@ -417,16 +320,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso5_atualizaOsTextosDeTodasPerguntasEAlternativasSemMudarContexto_deveFuncionarMantendoAVersao() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -451,11 +351,11 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             alternativas.add(
                     copyFrom((AlternativaModeloChecklistVisualizacao) p1.getAlternativas().get(1),
                             "Lâmpada queimada",
-                            "Forá de  FÓCO "));
+                            "  LAMPADAS QUEIMAHDA"));
             alternativas.add(
                     copyFrom((AlternativaModeloChecklistVisualizacao) p1.getAlternativas().get(2),
                             "Lanterna quebrada",
-                            "Forá de  FÓCO "));
+                            "Lanterna quebada"));
             alternativas.add(
                     copyFrom((AlternativaModeloChecklistVisualizacao) p1.getAlternativas().get(3),
                             "Outros",
@@ -497,32 +397,16 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         }
 
 
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
                 editado,
                 token);
 
-        // 6, 7 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
+        // 6, 7, 8, 9 - Por último, buscamos novamente o modelo e fazemos as comparações necessárias.
         final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
                 COD_UNIDADE,
                 result.getCodModeloChecklistInserido());
@@ -530,12 +414,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -543,10 +423,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
             ensureAllAttributesEqual(p1Antes, p1Depois, 4);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
         }
 
         {
@@ -554,16 +430,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso6_removeUmaAlternativaDaP1_deveMudarVersaoModeloECodigoFixoPergunta() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -573,53 +446,31 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
 
         // Removemos a alternativa 'Fora de foco' da P1.
         perguntas.get(0).getAlternativas().remove(0);
 
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
                 editado,
                 token);
 
-        // 6, 7 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
+        // 6 - Por último, buscamos novamente o modelo e fazemos as comparações necessárias.
         final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
                 COD_UNIDADE,
                 result.getCodModeloChecklistInserido());
         assertThat(editado.getNome()).isEqualTo(buscado.getNome());
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
-        // Versão do modelo tem que ter aumentado.
+        // 7 - Versão do modelo tem que ter aumentado.
         assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -627,17 +478,15 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // Garante que a alternativa 'Fora de foco' não está mais presente.
+            // 8 - Já garante que o código fixo e varíavel mudaram.
+            ensureAllAttributesEqual(p1Antes, p1Depois, 3, false, false);
+
+            // 9 - Garante que a alternativa 'Fora de foco' não está mais presente.
             p1Depois.getAlternativas()
                     .stream()
                     .filter(p -> p.getDescricao().equals("Fora de foco"))
                     .findAny()
                     .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
-
-            ensureAllAttributesEqual(p1Antes, p1Depois, 3, false, false);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
         }
 
         {
@@ -645,16 +494,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso7_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP1_deveMudarVersaoModeloECodigoFixoDaP1() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -664,19 +510,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
 
         // Removemos a alternativa 'Fora de foco' da P1 e adicionamos 'Piscando sozinho'.
         perguntas.get(0).getAlternativas().remove(0);
@@ -689,36 +525,24 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         1,
                         true));
 
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
                 editado,
                 token);
 
-        // 6, 7 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
+        // 6, 7 - Por último, buscamos novamente o modelo e fazemos as comparações necessárias.
         final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
                 COD_UNIDADE,
                 result.getCodModeloChecklistInserido());
         assertThat(editado.getNome()).isEqualTo(buscado.getNome());
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
-        // Versão do modelo tem que ter aumentado.
+        // 8 - Versão do modelo tem que ter aumentado.
         assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -726,19 +550,24 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // Garante que a alternativa 'Fora de foco' não está mais presente.
+            // 9 - Já garante que o código fixo e varíavel mudaram.
+            // TODO: A comparação da alternativa no índice 0 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
+            ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
+
+            // 10 - Garante que a alternativa 'Fora de foco' não está mais presente.
             p1Depois.getAlternativas()
                     .stream()
                     .filter(p -> p.getDescricao().equals("Fora de foco"))
                     .findAny()
                     .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
 
-            ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
-            // TODO: Essa comparação da alternativa no índice 0 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
+            // 11 - Garante que a nova alternativa está presente.
+            p1Depois.getAlternativas()
+                    .stream()
+                    .filter(p -> p.getDescricao().equals("Piscando Sozinho"))
+                    .limit(1)
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Alterantiva 'Piscando Sozinho' não encontrada"));
         }
 
         {
@@ -746,16 +575,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso8_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP2_deveMudarVersaoModeloECodigoFixoDasPerguntas() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -765,19 +591,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
 
         // Removemos a alternativa 'Fora de foco' da P1 e adicionamos 'Rasgado' na P2.
         perguntas.get(0).getAlternativas().remove(0);
@@ -789,15 +605,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         4,
                         true));
 
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -813,12 +621,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         // Versão do modelo tem que ter aumentado.
         assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -834,29 +638,22 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
 
             ensureAllAttributesEqual(p1Antes, p1Depois, 3, false, false);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
         }
 
         {
             // P2.
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
+            // TODO: A comparação da alternativa no índice 3 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
             ensureAllAttributesEqual(p2Antes, p2Depois, 4, false, false);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
-            // TODO: Essa comparação da alternativa no índice 3 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
             assertThat(p2Depois.getDescricao()).isEqualTo("Rasgado");
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(3), p2Depois.getAlternativas().get(3));
         }
     }
 
     @Test
     public void caso9_removeP1_deveMudarVersaoModelo() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -866,32 +663,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
 
         // Removemos a pergunta P1 (Farol).
         perguntas.remove(0);
 
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -907,12 +686,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         // Versão do modelo tem que ter aumentado.
         assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(1);
         assertThat(buscado.getPerguntas()).hasSize(1);
         {
@@ -921,16 +696,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             assertThat(p2Depois.getDescricao()).isEqualTo("Cinto de segurança");
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test(expected = ProLogException.class)
     public void caso10_removeP1EP2_deveDarErro() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -940,34 +712,16 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
 
         // Removemos a pergunta P1 (Farol).
         perguntas.remove(0);
         // Removemos a pergunta P2 (Cinto de segurança).
         perguntas.remove(1);
 
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -978,7 +732,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     @Test(expected = ProLogException.class)
     public void caso11_removeTodasAlternativasP1_deveDarErro() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -988,32 +742,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
 
         // Removemos todas as alternativas da pergunta P1.
         perguntas.get(0).getAlternativas().clear();
 
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -1024,7 +760,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     @Test(expected = ProLogException.class)
     public void caso12_removeAlternativaTipoOutrosDaP2_deveDarErro() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -1034,32 +770,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
 
         // Removemos a alternativa tipo_outros da P2.
         perguntas.get(1).getAlternativas().remove(2);
 
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -1070,7 +788,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     @Test
     public void caso13_alteraTextoDaP1MudandoContexto_deveMudarVersaoModeloECodigoFixoDaP1() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -1080,9 +798,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Alteramos o texto da P1 mudando o contexto.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // P1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
         final String novaDescricaoP1 = "Extintor de incêndio";
@@ -1095,25 +811,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         "Farol",
                         novaDescricaoP1));
 
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -1128,12 +828,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -1142,10 +838,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
             assertThat(p1Depois.getDescricao()).isEqualTo(novaDescricaoP1);
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
         }
 
         {
@@ -1153,16 +845,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso14_alteraContextoDaP1_alteraP2MantendoContexto_deveMudarVersaoModeloECodigoFixoDaP1EManterDaP2() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -1172,9 +861,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Alteramos o texto da P1 mudando o contexto.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
 
         final String novaDescricaoP1 = "Extintor de incêndio";
         {
@@ -1204,25 +891,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                             novaDescricaoP2));
         }
 
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -1237,12 +908,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -1251,10 +918,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
             assertThat(p1Depois.getDescricao()).isEqualTo(novaDescricaoP1);
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
         }
 
         {
@@ -1263,16 +926,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             assertThat(p2Depois.getDescricao()).isEqualTo(novaDescricaoP2);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso15_alteraContextoDaA1_deletaA2_deveMudarVersaoModelo_CodigoFixoP1Diferente_CodigoFixoA1Diferente() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -1282,9 +942,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Alteramos o texto da P1 mudando o contexto.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
 
         // A1 - Altera por uma com novo contexto.
         final String novaDescricaoA1 = "Desfocado";
@@ -1299,25 +957,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         // A2 - Remove a alternativa A2 (Lâmpada queimada).
         perguntas.get(0).getAlternativas().remove(1);
 
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -1332,12 +974,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -1363,9 +1001,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             assertThat(p1Depois.getAlternativas().get(0)).isEqualTo(novaDescricaoA1);
 
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
         }
 
         {
@@ -1373,16 +1008,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso16_alteraContextoA1_adicionaAlternativaP1_deveMudarVersaoModeloCodigoFixoP1DiferenteCodigoFixoA1Diferente() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -1392,9 +1024,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Alteramos o texto da P1 mudando o contexto.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
 
         // A1 - Altera por uma com novo contexto.
         final String novaDescricaoA1 = "Desfocado";
@@ -1415,25 +1045,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         5,
                         true));
 
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -1448,12 +1062,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -1478,14 +1088,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // Garante que a alternativa A1 possui a nova descrição.
             assertThat(p1Depois.getAlternativas().get(0)).isEqualTo(novaDescricaoA1);
 
+            // TODO: A comparação da alternativa no índice 4 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
-            // TODO: Essa comparação da alternativa no índice 4 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
             assertThat(p1Depois.getDescricao()).isEqualTo("Piscando sozinho");
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(4), p1Depois.getAlternativas().get(4));
         }
 
         {
@@ -1493,16 +1098,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso17_alteraP1ParaSingleChoice_deveMudarVersaoModeloECodigoFixoP1() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -1512,9 +1114,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Alteramos o texto da P1 mudando o contexto.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // P1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
         perguntas.set(
@@ -1529,25 +1129,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         true,
                         p1.getAlternativas()));
 
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -1562,12 +1146,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -1577,10 +1157,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             assertThat(modeloBuscado.getPerguntas().get(0).isSingleChoice()).isFalse();
             assertThat(p1Depois.isSingleChoice()).isTrue();
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
         }
 
         {
@@ -1588,16 +1164,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso18_alteraA1ParaNaoAbrirOS_deveMudarVersaoModeloECodigoFixoA1() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -1607,9 +1180,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Alteramos o texto da P1 mudando o contexto.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // A1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
         final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
@@ -1624,25 +1195,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a1.getOrdemExibicao(),
                         false));
 
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -1657,12 +1212,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -1672,10 +1223,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             assertThat(modeloBuscado.getPerguntas().get(0).getAlternativas().get(0).isDeveAbrirOrdemServico()).isTrue();
             assertThat(p1Depois.getAlternativas().get(0).isDeveAbrirOrdemServico()).isFalse();
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
         }
 
         {
@@ -1683,16 +1230,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
     @Test
     public void caso19_alteraA1ParaPrioridadeBaixa_deveMudarVersaoModeloECodigoFixoA1() {
         // 1, 2 - Insere o modelo base.
-        final ResultInsertModeloChecklist result = service.insertModeloChecklist(BASE, token);
+        final ResultInsertModeloChecklist result = insertModeloBase();
 
         // 3 - Então buscamos o modelo inserido.
         // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
@@ -1702,9 +1246,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(modeloBuscado).isNotNull();
 
         // 4, 5 - Alteramos o texto da P1 mudando o contexto.
-        final List<PerguntaModeloChecklistEdicao> perguntas = jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // A1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
         final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
@@ -1719,25 +1261,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a1.getOrdemExibicao(),
                         a1.isDeveAbrirOrdemServico()));
 
-        final List<Long> cargos = modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-        final List<Long> tiposVeiculo = modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
-        final ModeloChecklistEdicao editado = new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
@@ -1752,12 +1278,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
-        buscado
-                .getCargosLiberados()
-                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
-        buscado
-                .getTiposVeiculoLiberados()
-                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
+        assertCodCargosIguais(editado, buscado);
+        assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
@@ -1767,10 +1289,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             assertThat(modeloBuscado.getPerguntas().get(0).getAlternativas().get(0).getPrioridade()).isEqualTo(PrioridadeAlternativa.CRITICA);
             assertThat(p1Depois.getAlternativas().get(0).getPrioridade()).isEqualTo(PrioridadeAlternativa.BAIXA);
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(0), p1Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(1), p1Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(2), p1Depois.getAlternativas().get(2));
-            ensureAllAttributesEqual(p1Antes.getAlternativas().get(3), p1Depois.getAlternativas().get(3));
         }
 
         {
@@ -1778,9 +1296,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(0), p2Depois.getAlternativas().get(0));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(1), p2Depois.getAlternativas().get(1));
-            ensureAllAttributesEqual(p2Antes.getAlternativas().get(2), p2Depois.getAlternativas().get(2));
         }
     }
 
@@ -1837,6 +1352,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(antes.isSingleChoice()).isEqualTo(depois.isSingleChoice());
         assertThat(antes.getAlternativas()).hasSize(qtdAlternativas);
         assertThat(depois.getAlternativas()).hasSize(qtdAlternativas);
+
+        for (int i = 0; i < qtdAlternativas; i++) {
+            ensureAllAttributesEqual(antes.getAlternativas().get(i), depois.getAlternativas().get(i));
+        }
     }
 
     private void ensureAllAttributesEqual(@NotNull final PerguntaModeloChecklist antes,
@@ -1851,6 +1370,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(antes.isSingleChoice()).isEqualTo(depois.isSingleChoice());
         assertThat(antes.getAlternativas()).hasSize(qtdAlternativas);
         assertThat(depois.getAlternativas()).hasSize(qtdAlternativas);
+
+        for (int i = 0; i < qtdAlternativas; i++) {
+            ensureAllAttributesEqual(antes.getAlternativas().get(i), depois.getAlternativas().get(i));
+        }
     }
 
     private void ensureAllAttributesEqual(@NotNull final AlternativaModeloChecklist antes,
@@ -1871,5 +1394,67 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         final Type type = new TypeToken<List<PerguntaModeloChecklistEdicao>>() {
         }.getType();
         return gson.fromJson(json, type);
+    }
+
+    @NotNull
+    private ResultInsertModeloChecklist insertModeloBase() {
+        return service.insertModeloChecklist(BASE, token);
+    }
+
+    @NotNull
+    private List<PerguntaModeloChecklistEdicao> toPerguntasEdicao(
+            @NotNull final ModeloChecklistVisualizacao modeloBuscado) {
+        return jsonToCollection(
+                GsonUtils.getGson(),
+                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+    }
+
+    @NotNull
+    private List<Long> getCodigosTiposVeiculos(@NotNull final ModeloChecklistVisualizacao modeloBuscado) {
+        return modeloBuscado
+                .getTiposVeiculoLiberados()
+                .stream()
+                .map(TipoVeiculo::getCodigo)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private List<Long> getCodigosCargos(@NotNull final ModeloChecklistVisualizacao modeloBuscado) {
+        return modeloBuscado
+                .getCargosLiberados()
+                .stream()
+                .map(Cargo::getCodigo)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private ModeloChecklistEdicao createModeloEdicao(
+            @NotNull final ModeloChecklistVisualizacao modeloBuscado,
+            @NotNull final List<PerguntaModeloChecklistEdicao> perguntas,
+            @NotNull final List<Long> cargos,
+            @NotNull final List<Long> tiposVeiculo) {
+        return new ModeloChecklistEdicao(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                modeloBuscado.getCodVersaoModelo(),
+                modeloBuscado.getNome(),
+                tiposVeiculo,
+                cargos,
+                perguntas,
+                modeloBuscado.isAtivo());
+    }
+
+    private void assertCodCargosIguais(@NotNull final ModeloChecklistEdicao editado,
+                                       @NotNull final ModeloChecklistVisualizacao buscado) {
+        buscado
+                .getCargosLiberados()
+                .forEach(c -> assertThat(editado.getCargosLiberados()).contains(c.getCodigo()));
+    }
+
+    private void assertCodTiposVeiculosIguais(@NotNull final ModeloChecklistEdicao editado,
+                                              @NotNull final ModeloChecklistVisualizacao buscado) {
+        buscado
+                .getTiposVeiculoLiberados()
+                .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
     }
 }
