@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.log;
 
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -11,10 +12,12 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 public final class LogDaoImpl extends DatabaseConnection implements LogDao {
+
     @Override
     public boolean insert(@NotNull final String log, @NotNull final String identificador) throws SQLException {
         Connection conn = null;
@@ -50,13 +53,13 @@ public final class LogDaoImpl extends DatabaseConnection implements LogDao {
                     2,
                     responseLog == null ? null : responseLog.getStatusCode(),
                     SqlType.INTEGER);
-            stmt.setString(3, RequestLog.toJson(requestLog));
-            bindValueOrNull(
-                    stmt,
-                    4,
-                    responseLog == null ? null : ResponseLog.toJson(responseLog),
-                    SqlType.VARCHAR);
-            stmt.setObject(5, Now.localDateTimeUtc());
+            stmt.setObject(3, PostgresUtils.toJsonb(RequestLog.toJson(requestLog)));
+            if (responseLog == null) {
+                stmt.setNull(4, Types.NULL);
+            } else {
+                stmt.setObject(4, PostgresUtils.toJsonb(ResponseLog.toJson(responseLog)));
+            }
+            stmt.setObject(5, Now.offsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(conn, stmt);

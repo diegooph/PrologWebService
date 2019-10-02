@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.jetbrains.annotations.NotNull;
@@ -71,7 +72,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
             requestLog = (RequestLog) requestContext.getProperty(REQUEST_OBJECT);
         }
         if (requestLog == null || tokenIntegracao == null) {
-            // Se não há um Objeto de Request ou não temos um token, não tem necessidade de salvar uma responsta avulsa.
+            // Se não há um Objeto de Request ou não temos um token, não tem necessidade de salvar uma resposta avulsa.
             return;
         }
 
@@ -104,10 +105,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
     @Nullable
     private String getTokenIntegracao(@NotNull final ContainerRequestContext requestContext) {
         final String tokenHeader = requestContext.getHeaderString(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO);
-        if (tokenHeader == null || tokenHeader.isEmpty()) {
-            return null;
-        }
-        return tokenHeader.trim();
+        return StringUtils.trimToNull(tokenHeader);
     }
 
     @Nullable
