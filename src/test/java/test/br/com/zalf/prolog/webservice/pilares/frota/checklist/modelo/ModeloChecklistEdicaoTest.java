@@ -335,7 +335,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
+        // 4, 5 - Então, atualizamos os textos de todas as perguntas e alternativas e aí atualizamos.
         assertThat(modeloBuscado.getPerguntas()).hasSize(2);
         final List<PerguntaModeloChecklistEdicao> perguntas = new ArrayList<>(2);
         {
@@ -445,7 +445,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
+        // 4, 5 - Então, removemos uma alternativa da P1 e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -509,7 +509,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
+        // 4, 5 - Então, removemos uma alternativa da P1 e adicionamos outra na P1, aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -590,13 +590,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
+        // 4, 5 - Então, removemos uma alternativa de uma pergunta e adicionamos outra em outra pergunta, aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
 
         // Removemos a alternativa 'Fora de foco' da P1 e adicionamos 'Rasgado' na P2.
         perguntas.get(0).getAlternativas().remove(0);
+        // P2 é 'Cinto de Segurança' e possui 3 alternativas.
         perguntas.get(1).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Rasgado",
@@ -612,14 +613,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 editado,
                 token);
 
-        // 6, 7 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
+        // 6, 7 - Por último, buscamos novamente o modelo e fazemos as comparações necessárias.
         final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
                 COD_UNIDADE,
                 result.getCodModeloChecklistInserido());
         assertThat(editado.getNome()).isEqualTo(buscado.getNome());
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
-        // Versão do modelo tem que ter aumentado.
+        // 8 - Versão do modelo tem que ter aumentado.
         assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
         assertCodCargosIguais(editado, buscado);
         assertCodTiposVeiculosIguais(editado, buscado);
@@ -630,23 +631,35 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // Garante que a alternativa 'Fora de foco' não está mais presente.
+            // 9 - Compara P1 garantindo que o código fixo e variável mudaram.
+            ensureAllAttributesEqual(p1Antes, p1Depois, 3, false, false);
+
+            // 10 - Garante que a alternativa 'Fora de foco' não está mais presente.
             p1Depois.getAlternativas()
                     .stream()
                     .filter(p -> p.getDescricao().equals("Fora de foco"))
                     .findAny()
                     .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
 
-            ensureAllAttributesEqual(p1Antes, p1Depois, 3, false, false);
+
         }
 
         {
             // P2.
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
+
+            // 11 - Compara P1 garantindo que o código fixo e variável mudaram.
             // TODO: A comparação da alternativa no índice 3 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
             ensureAllAttributesEqual(p2Antes, p2Depois, 4, false, false);
-            assertThat(p2Depois.getDescricao()).isEqualTo("Rasgado");
+
+            // 12 - Garante que a nova alternativa está presente.
+            p2Depois.getAlternativas()
+                    .stream()
+                    .filter(p -> p.getDescricao().equals("Rasgado"))
+                    .limit(1)
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Alterantiva 'Rasgado' não encontrada"));
         }
     }
 
@@ -662,7 +675,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
+        // 4, 5 - Então, removemos a P1 e atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -677,17 +690,19 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 editado,
                 token);
 
-        // 6, 7 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
+        // 6 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
         final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
                 COD_UNIDADE,
                 result.getCodModeloChecklistInserido());
         assertThat(editado.getNome()).isEqualTo(buscado.getNome());
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
-        // Versão do modelo tem que ter aumentado.
+        // 7 - Versão do modelo tem que ter aumentado.
         assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
         assertCodCargosIguais(editado, buscado);
         assertCodTiposVeiculosIguais(editado, buscado);
+
+        // 8, 9 - Garante que temos apenas uma pergunta.
         assertThat(editado.getPerguntas()).hasSize(1);
         assertThat(buscado.getPerguntas()).hasSize(1);
         {
@@ -711,7 +726,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
+        // 4, 5 - Então, removemos a P1 e P2 e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -741,7 +756,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
+        // 4, 5 - Então, removemos todas as alternativas da P1 e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -769,7 +784,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Então, sem alterar nada, inserimos novamente o modelo.
+        // 4, 5 - Então, removemos a alternativa tipo_outros da P2 e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -797,7 +812,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Alteramos o texto da P1 mudando o contexto.
+        // 4, 5 - Alteramos o texto da P1 mudando o contexto e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // P1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
@@ -820,14 +835,15 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 editado,
                 token);
 
-        // 6, 7 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
+        // 6 - Por último, buscamos novamente o modelo e comparamos com o base.
         final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
                 COD_UNIDADE,
                 result.getCodModeloChecklistInserido());
         assertThat(editado.getNome()).isEqualTo(buscado.getNome());
         assertThat(editado.getCodUnidade()).isEqualTo(buscado.getCodUnidade());
         assertThat(editado.getCodModelo()).isEqualTo(buscado.getCodModelo());
-        assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
+        // 7 - Versão do modelo tem que ter aumentado.
+        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
         assertCodCargosIguais(editado, buscado);
         assertCodTiposVeiculosIguais(editado, buscado);
         assertThat(editado.getPerguntas()).hasSize(2);
@@ -836,8 +852,11 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // P1.
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
-            assertThat(p1Depois.getDescricao()).isEqualTo(novaDescricaoP1);
+            // 8 - Compara P1 garantindo que o código fixo e variável mudaram.
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
+
+            // 9 - Garante que a descrição foi atualizada para a nova.
+            assertThat(p1Depois.getDescricao()).isEqualTo(novaDescricaoP1);
         }
 
         {
@@ -860,7 +879,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Alteramos o texto da P1 mudando o contexto.
+        // 4, 5, 6 - Alteramos o texto da P1 mudando o contexto e o da P2 mantendo e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
 
         final String novaDescricaoP1 = "Extintor de incêndio";
@@ -941,7 +960,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Alteramos o texto da P1 mudando o contexto.
+        // 4, 5 - Alteramos o texto da P1 mudando o contexto, deletamos a P2 e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
 
         // A1 - Altera por uma com novo contexto.
@@ -1023,7 +1042,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Alteramos o texto da P1 mudando o contexto.
+        // 4, 5 - Alteramos o texto da A1 mudando o contexto, adicionamos uma alternativa na P1 e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
 
         // A1 - Altera por uma com novo contexto.
@@ -1113,7 +1132,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Alteramos o texto da P1 mudando o contexto.
+        // 4, 5 - Alteramos P1 para single_choice e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // P1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
@@ -1179,7 +1198,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Alteramos o texto da P1 mudando o contexto.
+        // 4, 5 - Alteramos P1 para não abrir OS e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // A1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
@@ -1245,7 +1264,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(modeloBuscado).isNotNull();
 
-        // 4, 5 - Alteramos o texto da P1 mudando o contexto.
+        // 4, 5 - Alteramos P1 para prioridade baixa e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // A1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
