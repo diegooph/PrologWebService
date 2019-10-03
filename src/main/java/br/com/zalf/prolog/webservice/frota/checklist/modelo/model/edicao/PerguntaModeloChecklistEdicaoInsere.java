@@ -19,13 +19,13 @@ public final class PerguntaModeloChecklistEdicaoInsere extends PerguntaModeloChe
     private final int ordemExibicao;
     private final boolean singleChoice;
     @NotNull
-    private final List<AlternativaModeloChecklist> alternativas;
+    private final List<AlternativaModeloChecklistEdicao> alternativas;
 
     public PerguntaModeloChecklistEdicaoInsere(@NotNull final String descricao,
                                                @Nullable final Long codImagem,
                                                final int ordemExibicao,
                                                final boolean singleChoice,
-                                               @NotNull final List<AlternativaModeloChecklist> alternativas) {
+                                               @NotNull final List<AlternativaModeloChecklistEdicao> alternativas) {
         this.descricao = descricao;
         this.codImagem = codImagem;
         this.ordemExibicao = ordemExibicao;
@@ -72,6 +72,7 @@ public final class PerguntaModeloChecklistEdicaoInsere extends PerguntaModeloChe
     @NotNull
     @Override
     public List<AlternativaModeloChecklist> getAlternativas() {
-        return alternativas;
+        //noinspection unchecked
+        return (List<AlternativaModeloChecklist>) (List<?>) alternativas;
     }
 }

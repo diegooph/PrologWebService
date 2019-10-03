@@ -8,10 +8,7 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AlternativaEdicaoDeserializer;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AlternativaModeloChecklistEdicao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaEdicaoDeserializer;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResponseInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.ChecklistOfflineSupport;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoListagem;
@@ -68,8 +65,8 @@ public final class GsonUtils {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
                 .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
                 .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-                .registerTypeAdapter(PerguntaModeloChecklistEdicao.class, new PerguntaEdicaoDeserializer())
-                .registerTypeAdapter(AlternativaModeloChecklistEdicao.class, new AlternativaEdicaoDeserializer())
+                .registerTypeAdapter(PerguntaModeloChecklistEdicao.class, new PergundaEdicaoSerializerDeserializer())
+                .registerTypeAdapter(AlternativaModeloChecklistEdicao.class, new AlternativaEdicaoSerializerDeserializer())
                 .registerTypeAdapter(Color.class, new ColorSerializer())
                 .setExclusionStrategies(new AnnotationExclusionStrategy())
                 .setLenient()

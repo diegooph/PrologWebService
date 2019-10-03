@@ -5,11 +5,26 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 
 /**
- * Created on 2019-09-22
+ * Created on 2019-10-03
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class AlternativaEdicaoDeserializer implements JsonDeserializer<AlternativaModeloChecklistEdicao> {
+public final class AlternativaEdicaoSerializerDeserializer implements
+        JsonSerializer<AlternativaModeloChecklistEdicao>,
+        JsonDeserializer<AlternativaModeloChecklistEdicao> {
+
+    @Override
+    public JsonElement serialize(final AlternativaModeloChecklistEdicao src,
+                                 final Type typeOfSrc,
+                                 final JsonSerializationContext context) {
+        if (src instanceof AlternativaModeloChecklistEdicaoAtualiza) {
+            return context.serialize(src, AlternativaModeloChecklistEdicaoAtualiza.class);
+        } else if (src instanceof AlternativaModeloChecklistEdicaoInsere) {
+            return context.serialize(src, AlternativaModeloChecklistEdicaoInsere.class);
+        } else {
+            throw new IllegalStateException("Erro ao deserializar alternativa");
+        }
+    }
 
     @Override
     public AlternativaModeloChecklistEdicao deserialize(
