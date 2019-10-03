@@ -23,7 +23,7 @@ public final class PerguntaModeloChecklistEdicaoAtualiza extends PerguntaModeloC
     private final int ordemExibicao;
     private final boolean singleChoice;
     @NotNull
-    private final List<AlternativaModeloChecklist> alternativas;
+    private final List<AlternativaModeloChecklistEdicao> alternativas;
 
     public PerguntaModeloChecklistEdicaoAtualiza(@NotNull final Long codigo,
                                                  @NotNull final Long codigoFixo,
@@ -31,7 +31,7 @@ public final class PerguntaModeloChecklistEdicaoAtualiza extends PerguntaModeloC
                                                  @Nullable final Long codImagem,
                                                  final int ordemExibicao,
                                                  final boolean singleChoice,
-                                                 @NotNull final List<AlternativaModeloChecklist> alternativas) {
+                                                 @NotNull final List<AlternativaModeloChecklistEdicao> alternativas) {
         this.codigo = codigo;
         this.codigoFixo = codigoFixo;
         this.descricao = descricao;
@@ -78,6 +78,7 @@ public final class PerguntaModeloChecklistEdicaoAtualiza extends PerguntaModeloC
     @NotNull
     @Override
     public List<AlternativaModeloChecklist> getAlternativas() {
-        return alternativas;
+        //noinspection unchecked
+        return (List<AlternativaModeloChecklist>) (List<?>) alternativas;
     }
 }
