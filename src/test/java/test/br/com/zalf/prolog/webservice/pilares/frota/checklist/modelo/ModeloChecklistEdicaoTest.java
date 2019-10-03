@@ -801,6 +801,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("Muda contexto da P1, aumenta versão")
     public void caso13_alteraTextoDaP1MudandoContexto_deveMudarVersaoModeloECodigoFixoDaP1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
@@ -816,7 +817,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // P1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
-        final String novaDescricaoP1 = "Extintor de incêndio";
         perguntas.set(
                 0,
                 // P1 é substituída com uma nova descrição.
@@ -824,7 +824,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         p1,
                         p1.getAlternativas(),
                         "Farol",
-                        novaDescricaoP1));
+                        "Extintor de incêndio"));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -856,7 +856,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
 
             // 9 - Garante que a descrição foi atualizada para a nova.
-            assertThat(p1Depois.getDescricao()).isEqualTo(novaDescricaoP1);
+            assertThat(p1Depois.getDescricao()).isEqualTo("Extintor de incêndio");
         }
 
         {
