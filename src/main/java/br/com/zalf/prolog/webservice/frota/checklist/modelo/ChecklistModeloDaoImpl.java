@@ -125,9 +125,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
 
             if (analiseModelo.isAlgoMudouNoModelo()) {
                 atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
+
                 if (analiseModelo.isDeveCriarNovaVersaoModelo()) {
+
                     criaNovaVersaoModelo(conn, modeloChecklist, analiseModelo, userToken);
                 } else {
+
                     for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
                         atualizaPerguntaModeloChecklist(conn, codModelo, pergunta);
                         for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
@@ -512,31 +515,16 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         // mudado de contexto. Alternativas deletadas nem serão recebidas.
                         final AnaliseItemModeloChecklist analiseAlternativa =
                                 analiseModelo.getAlternativa(alternativa.getCodigo());
-                        if (analiseAlternativa.isItemNovo()) {
-                            // 3.2.1.1 -> Código fixo não existe, então não mantém.
-                            insertAlternativaChecklist(
-                                    conn,
-                                    modeloChecklist.getCodUnidade(),
-                                    modeloChecklist.getCodModelo(),
-                                    novaVersaoModelo,
-                                    codPergunta,
-                                    alternativa,
-                                    false);
-                        } else if (analiseAlternativa.isItemMudouContexto()) {
-                            // 2.2.1.2 -> Se alternativa mudou de contexto, troca o código fixo.
-                            insertAlternativaChecklist(
-                                    conn,
-                                    modeloChecklist.getCodUnidade(),
-                                    modeloChecklist.getCodModelo(),
-                                    novaVersaoModelo,
-                                    codPergunta,
-                                    alternativa,
-                                    false);
-                        } else {
-                            // 2.2.1.3 -> Nesse caso, a alternativa pode ou não ter mudado, mas manteve seu contexto,
-                            // então podemos apenas atualizar as informações com segurança.
-                            atualizaAlternativaModeloChecklist(conn, modeloChecklist.getCodModelo(), alternativa);
-                        }
+
+
+                        insertAlternativaChecklist(
+                                conn,
+                                modeloChecklist.getCodUnidade(),
+                                modeloChecklist.getCodModelo(),
+                                novaVersaoModelo,
+                                codPergunta,
+                                alternativa,
+                                !analiseAlternativa.isItemMudouContexto());
                     }
                 } else {
                     // 2.3 -> Nesse caso, a pergunta pode ou não ter mudado, mas manteve seu contexto,
@@ -577,6 +565,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final boolean algoMudouNoModelo = rSet.getBoolean("ALGO_MUDOU_NO_MODELO");
+                final boolean algoMudouNoContexto = rSet.getBoolean("ALGO_MUDOU_NO_CONTEXTO");
                 final boolean deveCriarNovaVersaoModelo = rSet.getBoolean("DEVE_CRIAR_NOVA_VERSAO_MODELO");
                 if (deveCriarNovaVersaoModelo) {
                     final Map<Long, AnaliseItemModeloChecklist> analisePerguntas = new HashMap<>();
@@ -600,12 +589,14 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     } while (rSet.next());
                     return new AnaliseMudancaModeloChecklist(
                             algoMudouNoModelo,
+                            algoMudouNoContexto,
                             true,
                             analisePerguntas,
                             analiseAlternativas);
                 } else {
                     return new AnaliseMudancaModeloChecklist(
                             algoMudouNoModelo,
+                            algoMudouNoContexto,
                             false,
                             null,
                             null);

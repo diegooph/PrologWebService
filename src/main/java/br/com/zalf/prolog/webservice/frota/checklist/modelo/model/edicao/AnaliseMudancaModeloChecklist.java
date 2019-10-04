@@ -12,6 +12,7 @@ import java.util.Map;
  */
 public final class AnaliseMudancaModeloChecklist {
     private final boolean algoMudouNoModelo;
+    private final boolean algoMudouNoContexto;
     private final boolean deveCriarNovaVersaoModelo;
     @Nullable
     private final Map<Long, AnaliseItemModeloChecklist> analisePerguntas;
@@ -20,10 +21,12 @@ public final class AnaliseMudancaModeloChecklist {
 
     public AnaliseMudancaModeloChecklist(
             final boolean algoMudouNoModelo,
+            final boolean algoMudouNoContexto,
             final boolean deveCriarNovaVersaoModelo,
             @Nullable final Map<Long, AnaliseItemModeloChecklist> analisePerguntas,
             @Nullable final Map<Long, AnaliseItemModeloChecklist> analiseAlternativas) {
         this.algoMudouNoModelo = algoMudouNoModelo;
+        this.algoMudouNoContexto = algoMudouNoContexto;
         this.deveCriarNovaVersaoModelo = deveCriarNovaVersaoModelo;
         this.analisePerguntas = analisePerguntas;
         this.analiseAlternativas = analiseAlternativas;
@@ -32,6 +35,8 @@ public final class AnaliseMudancaModeloChecklist {
     public boolean isAlgoMudouNoModelo() {
         return algoMudouNoModelo;
     }
+
+    public boolean isAlgoMudouNoContexto() { return algoMudouNoContexto; }
 
     public boolean isDeveCriarNovaVersaoModelo() {
         return deveCriarNovaVersaoModelo;
