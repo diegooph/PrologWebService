@@ -7,10 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -33,11 +30,11 @@ public final class VeiculoResource {
 
     @POST
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
-    @Path("/{codUnidade}")
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/")
     public Response insert(@HeaderParam("Authorization") @Required final String userToken,
-                           @PathParam("codUnidade") @Required final Long codUnidade,
-                           @Required final Veiculo veiculo) throws ProLogException {
-        return service.insert(userToken, codUnidade, veiculo);
+                           @Required final VeiculoCadastro veiculo) throws ProLogException {
+        return service.insert(userToken, veiculo);
     }
 
     @PUT

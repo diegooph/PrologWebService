@@ -30,6 +30,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.P
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
@@ -212,10 +213,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @Override
     public boolean insert(
-            @NotNull final Long codUnidade,
-            @NotNull final Veiculo veiculo,
+            @NotNull final VeiculoCadastro veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        return veiculoDao.insert(codUnidade, veiculo, checklistOfflineListener);
+        return veiculoDao.insert(veiculo, checklistOfflineListener);
     }
 
     @Override

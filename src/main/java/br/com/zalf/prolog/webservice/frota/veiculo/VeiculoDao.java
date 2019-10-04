@@ -2,10 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,15 +21,13 @@ public interface VeiculoDao {
     /**
      * Insere um novo veículo no banco de dados.
      *
-     * @param codUnidade               Código da Unidade a qual esse veículo será inserido.
      * @param veiculo                  Objeto contencod as informações do veículo a serem inseridas.
      * @param checklistOfflineListener Listener utilizado para notificar sobre atualizações de veículos
      *                                 no contexto de realização de checklist offline.
      * @return <code>TRUE</code> se operação for bem sucedida, <code>FALSE</code> caso contrário.
      * @throws Throwable Se algum erro ocorrer ao salvar as informações.
      */
-    boolean insert(@NotNull final Long codUnidade,
-                   @NotNull final Veiculo veiculo,
+    boolean insert(@NotNull final VeiculoCadastro veiculo,
                    @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**

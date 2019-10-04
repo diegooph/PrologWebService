@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## Stage
+
+### Refactors
+* Altera insert de veículo para utilizar novo objeto e salvar cod_empresa (PL-2276)
+
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (release-date) [unreleased]
 
