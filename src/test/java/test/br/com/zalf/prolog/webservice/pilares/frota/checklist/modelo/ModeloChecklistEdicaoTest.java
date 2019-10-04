@@ -1022,18 +1022,19 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // P1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
-        // TODO:
-//        perguntas.set(
-//                0,
-//                // P1 é substituída agora sendo single_choice..
-//                new PerguntaModeloChecklistEdicaoAtualiza(
-//                        p1.getCodigo(),
-//                        p1.getCodigoFixo(),
-//                        p1.getDescricao(),
-//                        p1.getCodImagem(),
-//                        p1.getOrdemExibicao(),
-//                        true,
-//                        p1.getAlternativas()));
+
+
+        perguntas.set(
+                0,
+                // P1 é substituída agora sendo single_choice..
+                new PerguntaModeloChecklistEdicaoAtualiza(
+                        p1.getCodigo(),
+                        p1.getCodigoFixo(),
+                        p1.getDescricao(),
+                        p1.getCodImagem(),
+                        p1.getOrdemExibicao(),
+                        true,
+                        toAlternativaAtualiza(p1.getAlternativas())));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1184,6 +1185,27 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // 10 - Está como prioridade BAIXA.
             assertThat(p1Depois.getAlternativas().get(0).getPrioridade()).isEqualTo(PrioridadeAlternativa.BAIXA);
         }
+    }
+
+    @NotNull
+    private List<AlternativaModeloChecklistEdicao> toAlternativaAtualiza(
+            @NotNull final List<AlternativaModeloChecklist> alternativas) {
+        // Força o cast para garantir que é do tipo Visualização.
+        @SuppressWarnings("unchecked")
+        final List<AlternativaModeloChecklistVisualizacao> visu =
+                (List<AlternativaModeloChecklistVisualizacao>) (List<?>) alternativas;
+
+        final List<AlternativaModeloChecklistEdicao> novas = new ArrayList<>(alternativas.size());
+        visu.forEach(a -> novas.add(
+                new AlternativaModeloChecklistEdicaoAtualiza(
+                        a.getCodigo(),
+                        a.getCodigoFixo(),
+                        a.getDescricao(),
+                        a.getPrioridade(),
+                        a.isTipoOutros(),
+                        a.getOrdemExibicao(),
+                        a.isDeveAbrirOrdemServico())));
+        return novas;
     }
 
     // TODO: Talvez faça mais sentido (KISS) remover esse método. Usado apenas em 3 lugares mascara que usamos sempre
