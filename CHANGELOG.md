@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## Stage
+
+### Features
+* Cria testes para validar criação e edição de modelos de checklist (PL-2305)
+
 <a name="v1.0.2"></a>
 ## Version [v1.0.2](https://github.com/luizfp/PrologWebService/compare/v1.0.1...v1.0.2) (release-date) [unreleased]
 
