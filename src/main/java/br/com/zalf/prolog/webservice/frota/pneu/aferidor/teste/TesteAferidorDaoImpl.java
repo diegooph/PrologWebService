@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste.model.ProcedimentoTesteAferidor;
 import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste.model.TesteAferidorExecutado;
@@ -48,17 +49,19 @@ public final class TesteAferidorDaoImpl extends DatabaseConnection implements Te
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM AFERIDOR.FUNC_AFERIDOR_INSERE_TESTE(" +
-                    "?," +
-                    "?," +
-                    "?) RETURNING CODIGO;");
+                stmt = conn.prepareStatement("SELECT * FROM AFERIDOR.FUNC_AFERIDOR_INSERE_TESTE(" +
+                    "F_COD_COLABORADOR_EXECUCAO :=?," +
+                    "F_DATA_HORA_EXECUCAO       :=?," +
+                    "F_NOME_DISPOSITIVO         :=?," +
+                    "F_COMANDOS_EXECUTADOS      :=?);");
             stmt.setLong(1, teste.getCodColaboradorExecucao());
-            stmt.setString(2, teste.getDispositivo());
+            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setString(3, teste.getNomeDispositivo());
             final String json = GsonUtils.getGson().toJson(teste.getComandosExecutados());
-            stmt.setObject(3, PostgresUtils.toJsonb(json));
+            stmt.setObject(4, PostgresUtils.toJsonb(json));
             rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.getLong("CODIGO") != 0) {
-                return rSet.getLong("CODIGO");
+            if (rSet.next() && rSet.getLong(1) != 0) {
+                return rSet.getLong(1);
             } else {
                 throw new IllegalStateException("Erro ao salvar testes executados do aferidor");
             }

@@ -13,15 +13,15 @@ public final class TesteAferidorExecutado {
     @NotNull
     private final Long codColaboradorExecucao;
     @NotNull
-    private final String dispositivo;
+    private final String nomeDispositivo;
     @NotNull
     private final List<ComandoExecutadoTeste> comandosExecutados;
 
     public TesteAferidorExecutado(@NotNull final Long codColaboradorExecucao,
-                                  @NotNull final String dispositivo,
+                                  @NotNull final String nomeDispositivo,
                                   @NotNull final List<ComandoExecutadoTeste> comandosExecutados) {
         this.codColaboradorExecucao = codColaboradorExecucao;
-        this.dispositivo = dispositivo;
+        this.nomeDispositivo = nomeDispositivo;
         this.comandosExecutados = comandosExecutados;
     }
 
@@ -31,8 +31,8 @@ public final class TesteAferidorExecutado {
     }
 
     @NotNull
-    public String getDispositivo() {
-        return dispositivo;
+    public String getNomeDispositivo() {
+        return nomeDispositivo;
     }
 
     @NotNull

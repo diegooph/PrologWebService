@@ -44,7 +44,6 @@ public final class TesteAferidorResource {
     @Path("/procedimento-teste")
     @UsedBy(platforms = Platform.ANDROID)
     public ResponseWithCod insereTeste(@Required final TesteAferidorExecutado teste) {
-        return service.
-                insereTeste(teste);
+        return service.insereTeste(teste);
     }
 }
