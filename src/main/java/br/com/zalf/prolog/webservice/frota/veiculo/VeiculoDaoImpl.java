@@ -38,13 +38,13 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt = conn.prepareStatement("INSERT INTO VEICULO (PLACA, COD_EMPRESA, COD_UNIDADE, KM, STATUS_ATIVO," +
                     " COD_TIPO, COD_MODELO, COD_UNIDADE_CADASTRO) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
-            stmt.setString(1, veiculo.getPlaca().toUpperCase());
+            stmt.setString(1, veiculo.getPlacaVeiculo().toUpperCase());
             stmt.setLong(2, veiculo.getCodEmpresaAlocado());
             stmt.setLong(3, veiculo.getCodUnidadeAlocado());
-            stmt.setLong(4, veiculo.getKmAtual());
+            stmt.setLong(4, veiculo.getKmAtualVeiculo());
             stmt.setBoolean(5, true);
             stmt.setLong(6, veiculo.getCodTipoVeiculo());
-            stmt.setLong(7, veiculo.getCodModelo());
+            stmt.setLong(7, veiculo.getCodModeloVeiculo());
             stmt.setLong(8, veiculo.getCodUnidadeAlocado());
             rSet = stmt.executeQuery();
             if (rSet.next()) {

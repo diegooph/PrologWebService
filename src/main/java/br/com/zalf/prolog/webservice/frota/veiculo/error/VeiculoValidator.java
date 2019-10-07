@@ -15,10 +15,10 @@ public class VeiculoValidator {
 
     public static void validacaoAtributosVeiculo(@NotNull final VeiculoCadastro veiculo) throws GenericException {
         try {
-            validacaoPlaca(veiculo.getPlaca());
-            validacaoKmAtual(veiculo.getKmAtual());
-            validacaoMarca(veiculo.getCodMarca());
-            validacaoModelo(veiculo.getCodModelo());
+            validacaoPlaca(veiculo.getPlacaVeiculo());
+            validacaoKmAtual(veiculo.getKmAtualVeiculo());
+            validacaoMarca(veiculo.getCodMarcaVeiculo());
+            validacaoModelo(veiculo.getCodModeloVeiculo());
             validacaoTipo(veiculo.getCodTipoVeiculo());
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);

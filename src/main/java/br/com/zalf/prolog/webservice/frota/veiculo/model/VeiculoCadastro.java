@@ -13,29 +13,29 @@ public final class VeiculoCadastro {
     @NotNull
     private final Long codUnidadeAlocado;
     @NotNull
-    private final String placa;
+    private final String placaVeiculo;
     @NotNull
-    private final Long codMarca;
+    private final Long codMarcaVeiculo;
     @NotNull
-    private final Long codModelo;
+    private final Long codModeloVeiculo;
     @NotNull
     private final Long codTipoVeiculo;
-    private final long kmAtual;
+    private final long kmAtualVeiculo;
 
     public VeiculoCadastro(@NotNull final Long codEmpresaAlocado,
                            @NotNull final Long codUnidadeAlocado,
-                           @NotNull final String placa,
-                           @NotNull final Long codMarca,
-                           @NotNull final Long codModelo,
+                           @NotNull final String placaVeiculo,
+                           @NotNull final Long codMarcaVeiculo,
+                           @NotNull final Long codModeloVeiculo,
                            @NotNull final Long codTipoVeiculo,
-                           final long kmAtual) {
+                           final long kmAtualVeiculo) {
         this.codEmpresaAlocado = codEmpresaAlocado;
         this.codUnidadeAlocado = codUnidadeAlocado;
-        this.placa = placa;
-        this.codMarca = codMarca;
-        this.codModelo = codModelo;
+        this.placaVeiculo = placaVeiculo;
+        this.codMarcaVeiculo = codMarcaVeiculo;
+        this.codModeloVeiculo = codModeloVeiculo;
         this.codTipoVeiculo = codTipoVeiculo;
-        this.kmAtual = kmAtual;
+        this.kmAtualVeiculo = kmAtualVeiculo;
     }
 
     @NotNull
@@ -49,18 +49,18 @@ public final class VeiculoCadastro {
     }
 
     @NotNull
-    public String getPlaca() {
-        return placa;
+    public String getPlacaVeiculo() {
+        return placaVeiculo;
     }
 
     @NotNull
-    public Long getCodMarca() {
-        return codMarca;
+    public Long getCodMarcaVeiculo() {
+        return codMarcaVeiculo;
     }
 
     @NotNull
-    public Long getCodModelo() {
-        return codModelo;
+    public Long getCodModeloVeiculo() {
+        return codModeloVeiculo;
     }
 
     @NotNull
@@ -68,7 +68,7 @@ public final class VeiculoCadastro {
         return codTipoVeiculo;
     }
 
-    public long getKmAtual() {
-        return kmAtual;
+    public long getKmAtualVeiculo() {
+        return kmAtualVeiculo;
     }
 }
