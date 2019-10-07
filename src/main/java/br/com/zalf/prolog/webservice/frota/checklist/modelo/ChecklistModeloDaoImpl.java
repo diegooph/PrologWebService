@@ -529,7 +529,39 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                 } else {
                     // 2.3 -> Nesse caso, a pergunta pode ou não ter mudado, mas manteve seu contexto,
                     // então podemos apenas atualizar as informações com segurança.
-                    atualizaPerguntaModeloChecklist(conn, modeloChecklist.getCodModelo(), pergunta);
+                    final Long codPergunta = insertPergunta(
+                            conn,
+                            modeloChecklist.getCodUnidade(),
+                            modeloChecklist.getCodModelo(),
+                            novaVersaoModelo,
+                            pergunta,
+                            true);
+
+                    for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
+
+                        if (alternativa instanceof AlternativaModeloChecklistEdicaoInsere) {
+                            insertAlternativaChecklist(
+                                    conn,
+                                    modeloChecklist.getCodUnidade(),
+                                    modeloChecklist.getCodModelo(),
+                                    novaVersaoModelo,
+                                    codPergunta,
+                                    alternativa,
+                                    false);
+                        }else{
+                            final AnaliseItemModeloChecklist analiseAlternativa =
+                                    analiseModelo.getAlternativa(alternativa.getCodigo());
+
+                            insertAlternativaChecklist(
+                                    conn,
+                                    modeloChecklist.getCodUnidade(),
+                                    modeloChecklist.getCodModelo(),
+                                    novaVersaoModelo,
+                                    codPergunta,
+                                    alternativa,
+                                    !analiseAlternativa.isItemMudouContexto());
+                        }
+                    }
                 }
             }
         }
