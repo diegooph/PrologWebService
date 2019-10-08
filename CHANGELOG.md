@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## Stage
+
+### Features
+* Cria funcionalidade de testes do aferidor (PL-2343)
+
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (release-date) [unreleased]
 
