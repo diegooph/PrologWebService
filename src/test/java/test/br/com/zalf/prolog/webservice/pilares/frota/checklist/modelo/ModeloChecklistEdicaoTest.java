@@ -827,7 +827,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // P2.
             final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
             perguntas.set(
-                    0,
+                    1,
                     // P2 é substituída com uma nova descrição mantendo contexto.
                     copyFrom(
                             p2,
@@ -867,7 +867,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             // 10 - O código fixo da pergunta P2 tem que ser o mesmo.
-            ensureAllAttributesEqual(p2Antes, p2Depois, 3);
+            ensureAllAttributesEqual(p2Antes, p2Depois, 3, true, false);
             // 11 - Garante o texto atualizado.
             assertThat(p2Depois.getDescricao()).isEqualTo("  Cinto  di  SEGURANSA ");
         }
@@ -923,7 +923,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
             // 9, 10 - Garante código fixo diferente. // TODO: 10 ainda não OK!
-            ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
+            ensureAllAttributesEqual(p1Antes, p1Depois, 3, true, false);
 
             // 11 - Garante que a alternativa 'Lâmpada queimada' não está mais presente.
             p1Depois.getAlternativas()
@@ -940,7 +940,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
 
             // 12 - Garante que a alternativa A1 possui a nova descrição.
-            assertThat(p1Depois.getAlternativas().get(0)).isEqualTo("Desfocado");
+            assertThat(p1Depois.getAlternativas().get(0).getDescricao()).isEqualTo("Desfocado");
         }
     }
 
@@ -1001,7 +1001,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
             // 9, 10 - Garante código fixo diferente. // TODO: 10 ainda não OK!
             // TODO: A comparação da alternativa no índice 4 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
-            ensureAllAttributesEqual(p1Antes, p1Depois, 5, false, false);
+            ensureAllAttributesEqual(p1Antes, p1Depois, 5, true, false);
 
             // 11 - Garante que a alternativa A5 está presente.
             final AlternativaModeloChecklist a5 = p1Depois.getAlternativas().get(4);
@@ -1019,7 +1019,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
 
             // 12 - Garante que a alternativa A1 possui a nova descrição.
-            assertThat(p1Depois.getAlternativas().get(0)).isEqualTo("Desfocado");
+            assertThat(p1Depois.getAlternativas().get(0).getDescricao()).isEqualTo("Desfocado");
 
             assertThat(p1Depois.getDescricao()).isEqualTo("Piscando sozinho");
         }
