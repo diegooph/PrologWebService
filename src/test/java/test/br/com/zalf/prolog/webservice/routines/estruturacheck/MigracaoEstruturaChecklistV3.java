@@ -64,6 +64,12 @@ public final class MigracaoEstruturaChecklistV3 {
             log("************************ PASSO 5 - INÍCIO ************************");
             executaPasso5(conn);
             log("************************ PASSO 5 - FIM ************************");
+            log("************************ PASSO 6 - INÍCIO ************************");
+            executaPasso6(conn);
+            log("************************ PASSO 6 - FIM ************************");
+            log("************************ PASSO 7 - INÍCIO ************************");
+            executaPasso7(conn);
+            log("************************ PASSO 7 - FIM ************************");
             conn.commit();
             log("************************ Fim da execução da migração ************************");
         } catch (final Throwable t) {
@@ -181,6 +187,7 @@ public final class MigracaoEstruturaChecklistV3 {
     private void executaPasso5(@NotNull final Connection conn) throws Throwable {
         PreparedStatement stmt = null;
         try {
+            log("Corrigindo modelos");
             stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_5_CORRIGE_MODELO()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 4");
@@ -197,9 +204,23 @@ public final class MigracaoEstruturaChecklistV3 {
     private void executaPasso6(@NotNull final Connection conn) throws Throwable {
         PreparedStatement stmt = null;
         try {
+            log("Migrando functions e views");
             stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_6_MIGRA_FUNCTIONS_VIEWS()}");
             if (stmt.executeUpdate() < 0) {
-                throw new IllegalStateException("Erro ao executar passo 4");
+                throw new IllegalStateException("Erro ao executar passo 6");
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+    }
+
+    private void executaPasso7(@NotNull final Connection conn) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            log("Migrando mudanças na Dao de modelos");
+            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_7_MUDANCAS_DAO_MODELOS_CHECK()}");
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao executar passo 7");
             }
         } finally {
             DatabaseConnection.close(stmt);
