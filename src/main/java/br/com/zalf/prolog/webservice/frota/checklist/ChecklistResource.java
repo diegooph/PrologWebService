@@ -156,9 +156,14 @@ public final class ChecklistResource {
         return service.getRegionaisUnidadesSelecao(codColaborador);
     }
 
+    /**
+     * @deprecated at 2019-10-09. Use
+     * {@link ChecklistModeloResource#getModeloChecklistRealizacao(Long, Long, String, String, String)} instead.
+     */
     @GET
     @Path("/novo/{codUnidadeModelo}/{codModelo}/{placa}/saida")
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+    @Deprecated
     public NovoChecklistHolder getNovoChecklistSaida(
             @PathParam("codUnidadeModelo") Long codUnidadeModelo,
             @PathParam("codModelo") Long codModelo,
@@ -174,9 +179,14 @@ public final class ChecklistResource {
                         userToken));
     }
 
+    /**
+     * @deprecated at 2019-10-09. Use
+     * {@link ChecklistModeloResource#getModeloChecklistRealizacao(Long, Long, String, String, String)} instead.
+     */
     @GET
     @Path("/novo/{codUnidadeModelo}/{codModelo}/{placa}/retorno")
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+    @Deprecated
     public NovoChecklistHolder getNovoChecklistRetorno(
             @PathParam("codUnidadeModelo") Long codUnidadeModelo,
             @PathParam("codModelo") Long codModelo,
