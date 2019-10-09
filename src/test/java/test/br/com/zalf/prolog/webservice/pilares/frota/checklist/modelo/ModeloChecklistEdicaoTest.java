@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.cargo.CargoService;
 import br.com.zalf.prolog.webservice.cargo.model.CargoListagemEmpresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
@@ -105,6 +106,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
             ensureAllAttributesEqual(p1Antes, p1Depois, 4);
+
+            for (int i = 0; i < 4; i++) {
+                ensureAllAttributesEqual(p1Antes.getAlternativas().get(i), p1Depois.getAlternativas().get(i));
+            }
         }
 
         {
@@ -112,6 +117,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
+
+            for (int i = 0; i < 3; i++) {
+                ensureAllAttributesEqual(p2Antes.getAlternativas().get(i), p2Depois.getAlternativas().get(i));
+            }
         }
     }
 
@@ -305,9 +314,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                             "Lanterna quebada"));
             alternativas.add(
                     copyFrom((AlternativaModeloChecklistVisualizacao) p1.getAlternativas().get(3),
-                            "Outros",
+                            "Outros (Opção padrão)",
                             // A tipo_outros não alteramos.
-                            "Outros"));
+                            "Outros (Opção padrão)"));
 
             perguntas.add(new PerguntaModeloChecklistEdicaoAtualiza(
                     p1.getCodigo(),
@@ -335,14 +344,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                             " SENSORR   nao FuNSiOnAa "));
             alternativas.add(
                     copyFrom((AlternativaModeloChecklistVisualizacao) p2.getAlternativas().get(2),
-                            "Outros",
+                            "Outros (Opção padrão)",
                             // A tipo_outros não alteramos.
-                            "Outros"));
+                            "Outros (Opção padrão)"));
 
             perguntas.add(new PerguntaModeloChecklistEdicaoAtualiza(
                     p2.getCodigo(),
                     p2.getCodigoFixo(),
-                    "Sinto   di SeGURANCA  ",
+                    "cinto   di SeGURANCA  ",
                     p2.getCodImagem(),
                     p2.getOrdemExibicao(),
                     p2.isSingleChoice(),
@@ -371,6 +380,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
             ensureAllAttributesEqual(p1Antes, p1Depois, 4);
+
+            for (int i = 0; i < 4; i++) {
+                ensureAllAttributesEqual(p1Antes.getAlternativas().get(i), p1Depois.getAlternativas().get(i));
+            }
         }
 
         {
@@ -378,6 +391,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
             ensureAllAttributesEqual(p2Antes, p2Depois, 3);
+
+            for (int i = 0; i < 3; i++) {
+                ensureAllAttributesEqual(p2Antes.getAlternativas().get(i), p2Depois.getAlternativas().get(i));
+            }
         }
     }
 
@@ -423,7 +440,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
             // 8 - Já garante que o código fixo e varíavel mudaram.
-            ensureAllAttributesEqual(p1Antes, p1Depois, 3, false, false);
+            ensureAllAttributesEqual(p1Antes, p1Depois, 3, true, false);
 
             // 9 - Garante que a alternativa 'Fora de foco' não está mais presente.
             p1Depois.getAlternativas()
@@ -485,7 +502,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
             // 9 - Já garante que o código fixo e varíavel mudaram.
             // TODO: A comparação da alternativa no índice 0 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
-            ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
+            ensureAllAttributesEqual(p1Antes, p1Depois, 4, true, false);
 
             // 10 - Garante que a alternativa 'Fora de foco' não está mais presente.
             p1Depois.getAlternativas()
@@ -497,7 +514,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // 11 - Garante que a nova alternativa está presente.
             p1Depois.getAlternativas()
                     .stream()
-                    .filter(p -> p.getDescricao().equals("Piscando Sozinho"))
+                    .filter(p -> p.getDescricao().equals("Piscando sozinho"))
                     .limit(1)
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("Alterantiva 'Piscando Sozinho' não encontrada"));
@@ -554,7 +571,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
             // 9 - Compara P1 garantindo que o código fixo e variável mudaram.
-            ensureAllAttributesEqual(p1Antes, p1Depois, 3, false, false);
+            ensureAllAttributesEqual(p1Antes, p1Depois, 3, true, false);
 
             // 10 - Garante que a alternativa 'Fora de foco' não está mais presente.
             p1Depois.getAlternativas()
@@ -573,7 +590,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
             // 11 - Compara P1 garantindo que o código fixo e variável mudaram.
             // TODO: A comparação da alternativa no índice 3 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
-            ensureAllAttributesEqual(p2Antes, p2Depois, 4, false, false);
+            ensureAllAttributesEqual(p2Antes, p2Depois, 4, true, false);
 
             // 12 - Garante que a nova alternativa está presente.
             p2Depois.getAlternativas()
@@ -625,10 +642,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(buscado.getPerguntas()).hasSize(1);
         {
             // P2.
-            final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
-            final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
+            final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(0);
+            final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(0);
             assertThat(p2Depois.getDescricao()).isEqualTo("Cinto de segurança");
-            ensureAllAttributesEqual(p2Antes, p2Depois, 3);
+            ensureAllAttributesEqual(p2Antes, p2Depois, 3, true, false);
+            for (int i = 0; i < 3; i++) {
+                ensureAllAttributesEqual(p2Antes.getAlternativas().get(i), p2Depois.getAlternativas().get(i));
+            }
         }
     }
 
@@ -1247,7 +1267,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 COD_UNIDADE,
                 result.getCodModeloChecklistInserido());
         // 7 - Versão tem que ter aumentado.
-        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
+        assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
             // P1.
@@ -1255,7 +1275,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
             // 8, 9 - Código fixo mudou.
-            assertThat(p1Depois.getCodigoFixo()).isGreaterThan(p1Antes.getCodigoFixo());
+            assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
             assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
                     .isEqualTo(p1Antes.getAlternativas().get(0).getCodigoFixo());
             assertThat(p1Depois.getAlternativas().get(2).getCodigoFixo())
@@ -1393,10 +1413,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(antes.isSingleChoice()).isEqualTo(depois.isSingleChoice());
         assertThat(antes.getAlternativas()).hasSize(qtdAlternativas);
         assertThat(depois.getAlternativas()).hasSize(qtdAlternativas);
-
-        for (int i = 0; i < qtdAlternativas; i++) {
-            ensureAllAttributesEqual(antes.getAlternativas().get(i), depois.getAlternativas().get(i));
-        }
     }
 
     private void ensureAllAttributesEqual(@NotNull final PerguntaModeloChecklist antes,
@@ -1411,10 +1427,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(antes.isSingleChoice()).isEqualTo(depois.isSingleChoice());
         assertThat(antes.getAlternativas()).hasSize(qtdAlternativas);
         assertThat(depois.getAlternativas()).hasSize(qtdAlternativas);
-
-        for (int i = 0; i < qtdAlternativas; i++) {
-            ensureAllAttributesEqual(antes.getAlternativas().get(i), depois.getAlternativas().get(i));
-        }
     }
 
     private void ensureAllAttributesEqual(@NotNull final AlternativaModeloChecklist antes,

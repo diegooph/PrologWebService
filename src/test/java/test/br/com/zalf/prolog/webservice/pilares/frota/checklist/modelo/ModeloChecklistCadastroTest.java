@@ -26,7 +26,7 @@ import static com.google.common.truth.Truth.assertThat;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class ModeloChecklistCadastroTest extends BaseTest {
-    private static final String DEFAULT_DESCRICAO_TIPO_OUTROS = "Outros";
+    private static final String DEFAULT_DESCRICAO_TIPO_OUTROS = "Outros (Opção padrão)";
     private static final String CPF_TOKEN = "03383283194";
     private ChecklistModeloService service;
     private String token;
@@ -255,7 +255,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
             {
                 final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
                 assertThat(a1.isTipoOutros()).isTrue();
-                assertThat(a1.getDescricao()).isEqualTo("Outros");
+                assertThat(a1.getDescricao()).isEqualTo("Outros (Opção padrão)");
                 assertThat(a1.isDeveAbrirOrdemServico()).isTrue();
                 assertThat(a1.getPrioridade()).isEqualTo(PrioridadeAlternativa.CRITICA);
                 assertThat(a1.getOrdemExibicao()).isEqualTo(1);
@@ -282,7 +282,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
             {
                 final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
                 assertThat(b1.isTipoOutros()).isTrue();
-                assertThat(b1.getDescricao()).isEqualTo("Outros");
+                assertThat(b1.getDescricao()).isEqualTo("Outros (Opção padrão)");
                 assertThat(b1.isDeveAbrirOrdemServico()).isFalse();
                 assertThat(b1.getPrioridade()).isEqualTo(PrioridadeAlternativa.BAIXA);
                 assertThat(b1.getOrdemExibicao()).isEqualTo(1);
