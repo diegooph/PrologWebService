@@ -647,7 +647,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             assertThat(p2Depois.getDescricao()).isEqualTo("Cinto de segurança");
             ensureAllAttributesEqual(p2Antes, p2Depois, 3, true, false);
             for (int i = 0; i < 3; i++) {
-                ensureAllAttributesEqual(p2Antes.getAlternativas().get(i), p2Depois.getAlternativas().get(i));
+                ensureAllAttributesEqual(p2Antes.getAlternativas().get(i), p2Depois.getAlternativas().get(i), true, false);
             }
         }
     }
@@ -1434,6 +1434,28 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(antes).isNotSameInstanceAs(depois);
         assertThat(antes.getCodigo()).isEqualTo(depois.getCodigo());
         assertThat(antes.getCodigoFixo()).isEqualTo(depois.getCodigoFixo());
+        assertThat(antes.getDescricao()).isEqualTo(depois.getDescricao());
+        assertThat(antes.getPrioridade()).isEqualTo(depois.getPrioridade());
+        assertThat(antes.isTipoOutros()).isEqualTo(depois.isTipoOutros());
+        assertThat(antes.getOrdemExibicao()).isEqualTo(depois.getOrdemExibicao());
+        assertThat(antes.isDeveAbrirOrdemServico()).isEqualTo(depois.isDeveAbrirOrdemServico());
+    }
+
+    //ESTE MÉTODO TORNA OPCIONAL A VALIDAÇÃO DOS CÓDIGOS DE ALTERNATIVAS
+    private void ensureAllAttributesEqual(@NotNull final AlternativaModeloChecklist antes,
+                                          @NotNull final AlternativaModeloChecklist depois,
+                                          final boolean mesmoCodigoFixo,
+                                          final boolean mesmoCodigoVariavel) {
+        assertThat(antes).isNotSameInstanceAs(depois);
+
+        if(mesmoCodigoVariavel){
+            assertThat(antes.getCodigo()).isEqualTo(depois.getCodigo());
+        }
+
+        if(mesmoCodigoFixo){
+            assertThat(antes.getCodigoFixo()).isEqualTo(depois.getCodigoFixo());
+        }
+
         assertThat(antes.getDescricao()).isEqualTo(depois.getDescricao());
         assertThat(antes.getPrioridade()).isEqualTo(depois.getPrioridade());
         assertThat(antes.isTipoOutros()).isEqualTo(depois.isTipoOutros());
