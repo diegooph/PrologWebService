@@ -6,6 +6,10 @@ Change Log
 ### Features
 * Cria testes para validar criação e edição de modelos de checklist (PL-2305)
 
+### Refactors
+* Os método de busca de modelos de checklist para seleção foi recriado com novos objetos (PL-2228)
+* Os métodos de início de um novo checklist foram recriados com novos objetos (PL-2228)
+
 <a name="v1.0.2"></a>
 ## Version [v1.0.2](https://github.com/luizfp/PrologWebService/compare/v1.0.1...v1.0.2) (release-date) [unreleased]
 
