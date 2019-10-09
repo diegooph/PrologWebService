@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao;
 
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,7 +12,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class PerguntaModeloChecklistInsercao {
+public final class PerguntaModeloChecklistInsercao extends PerguntaModeloChecklist {
     @NotNull
     private final String descricao;
     @Nullable
@@ -34,25 +36,49 @@ public final class PerguntaModeloChecklistInsercao {
     }
 
     @NotNull
+    @Override
+    public Long getCodigo() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Long getCodigoFixo() {
+        return null;
+    }
+
+    @NotNull
+    @Override
     public String getDescricao() {
         return descricao;
     }
 
     @Nullable
+    @Override
     public Long getCodImagem() {
         return codImagem;
     }
 
+    @Nullable
+    @Override
+    public String getUrlImagem() {
+        return null;
+    }
+
+    @Override
     public int getOrdemExibicao() {
         return ordemExibicao;
     }
 
+    @Override
     public boolean isSingleChoice() {
         return singleChoice;
     }
 
     @NotNull
-    public List<AlternativaModeloChecklistInsercao> getAlternativas() {
-        return alternativas;
+    @Override
+    public List<AlternativaModeloChecklist> getAlternativas() {
+        //noinspection unchecked
+        return (List<AlternativaModeloChecklist>) (List<?>) alternativas;
     }
 }
