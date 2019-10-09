@@ -61,6 +61,8 @@ public final class ChecklistModeloService {
                                           final ModeloChecklistEdicao modeloChecklist,
                                           final String userToken) throws ProLogException {
         try {
+            ChecklistModeloValidator.validaModelo(modeloChecklist);
+
             RouterModeloChecklist
                     .create(dao, userToken)
                     .updateModeloChecklist(
