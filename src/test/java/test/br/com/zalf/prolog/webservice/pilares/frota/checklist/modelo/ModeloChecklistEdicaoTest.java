@@ -673,7 +673,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         // Removemos a pergunta P1 (Farol).
         perguntas.remove(0);
         // Removemos a pergunta P2 (Cinto de segurança).
-        perguntas.remove(1);
+        perguntas.remove(0);
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
