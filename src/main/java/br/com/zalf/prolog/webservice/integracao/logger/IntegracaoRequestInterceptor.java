@@ -35,7 +35,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
     @NotNull
     private static final String TAG = IntegracaoRequestInterceptor.class.getSimpleName();
     @NotNull
-    private static final String REQUEST_OBJECT = "extra::request_object";
+    private static final String REQUEST_OBJECT = RequestLog.class.getPackage().getName();
     private static final int STATUS_OK = 200;
 
     @Override
@@ -175,7 +175,10 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
     }
 
     private boolean isJson(@NotNull final ContainerRequestContext requestContext) {
-        if (requestContext.getMethod().equals(HttpMethod.GET)) {
+        if (requestContext.getMethod().equals(HttpMethod.GET)
+                || requestContext.getMethod().equals(HttpMethod.PUT)
+                || requestContext.getMethod().equals(HttpMethod.POST)
+                || requestContext.getMethod().equals(HttpMethod.DELETE)) {
             return true;
         }
         return requestContext.getMediaType().toString().contains("application/json");
