@@ -35,7 +35,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
     @NotNull
     private static final String TAG = IntegracaoRequestInterceptor.class.getSimpleName();
     @NotNull
-    private static final String REQUEST_OBJECT = RequestLog.class.getPackage().getName();
+    private static final String REQUEST_OBJECT = RequestLog.class.getName() + ".request_object";
     private static final int STATUS_OK = 200;
 
     @Override
