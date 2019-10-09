@@ -55,13 +55,13 @@ public final class PerguntaRealizacaoChecklist {
     @NotNull
     private final List<AlternativaRealizacaoChecklist> alternativas;
 
-    PerguntaRealizacaoChecklist(@NotNull final Long codigo,
-                                @NotNull final String descricao,
-                                @Nullable final Long codImagem,
-                                @Nullable final String urlImagem,
-                                final int ordemExibicao,
-                                final boolean singleChoice,
-                                @NotNull final List<AlternativaRealizacaoChecklist> alternativas) {
+    public PerguntaRealizacaoChecklist(@NotNull final Long codigo,
+                                       @NotNull final String descricao,
+                                       @Nullable final Long codImagem,
+                                       @Nullable final String urlImagem,
+                                       final int ordemExibicao,
+                                       final boolean singleChoice,
+                                       @NotNull final List<AlternativaRealizacaoChecklist> alternativas) {
         this.codigo = codigo;
         this.descricao = descricao;
         this.codImagem = codImagem;

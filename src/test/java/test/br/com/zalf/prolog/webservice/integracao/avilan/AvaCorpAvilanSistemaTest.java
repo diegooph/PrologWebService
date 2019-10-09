@@ -2,8 +2,8 @@ package test.br.com.zalf.prolog.webservice.integracao.avilan;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistMigracaoEstruturaSuporte;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
@@ -19,7 +19,8 @@ import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static test.br.com.zalf.prolog.webservice.integracao.avilan.AvaCorpAvilanConstants.*;
+import static test.br.com.zalf.prolog.webservice.integracao.avilan.AvaCorpAvilanConstants.DEFAULT_TIMEOUT_MILLIS;
+import static test.br.com.zalf.prolog.webservice.integracao.avilan.AvaCorpAvilanConstants.PROLOG_TOKEN;
 
 /**
  * Created by luiz on 01/08/17.
@@ -89,12 +90,12 @@ public class AvaCorpAvilanSistemaTest {
         assertTrue(!placas.isEmpty());
 
 
-        assertNotNull(sistema.getNovoChecklistHolder(
-                0L,
+        assertNotNull(sistema.getModeloChecklistRealizacao(
                 modeloChecklist.getCodigo(),
+                -1L,
                 /* Já que deve existir pelo menos um veículo, pegamos o primeiro da lista */
                 placas.get(0),
-                Checklist.TIPO_SAIDA));
+                TipoChecklist.SAIDA));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Throwable.class)

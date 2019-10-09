@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
@@ -103,7 +104,8 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 		if (codUnidade.equals(4L) || codUnidade.equals(3L) || codUnidade.equals(2L)) {
 			throw new IllegalStateException("É preciso atualizar o aplicativo para usar a nova versão do checklist");
 		}
-		return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
+
+		throw new GenericException("Atualize o aplicativo para utilizar a nova versão do checklist");
 	}
 
 	/**

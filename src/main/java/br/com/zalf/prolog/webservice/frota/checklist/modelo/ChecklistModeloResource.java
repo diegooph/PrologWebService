@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloC
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResponseInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -113,6 +114,18 @@ public final class ChecklistModeloResource {
             @QueryParam("codCargo") @Required final Long codCargo,
             @HeaderParam("Authorization") final String userToken) {
         return service.getModelosSelecaoRealizacao(codUnidade, codCargo, userToken);
+    }
+
+    @GET
+    @Path("/realizacao")
+    @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+    public ModeloChecklistRealizacao getModeloChecklistRealizacao(
+            @QueryParam("codModeloChecklist") @Required final Long codModeloChecklist,
+            @QueryParam("codVeiculo") @Required final Long codVeiculo,
+            @QueryParam("placaVeiculo") @Required final String placaVeiculo,
+            @QueryParam("tipoChecklist") @Required final String tipoChecklist,
+            @HeaderParam("Authorization") @Required final String userToken) {
+        return service.getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist, userToken);
     }
 
     //

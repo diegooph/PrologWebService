@@ -22,6 +22,18 @@ public final class ModeloChecklistRealizacao {
     @NotNull
     private final Long codVersaoModelo;
 
+    /**
+     * Valor alfanumérico que representa o nome do modelo do checklist. Identificador para o usuário.
+     */
+    @NotNull
+    private final String nomeModelo;
+
+    /**
+     * Código da unidade a qual o modelo de checklist está vinculado.
+     */
+    @NotNull
+    private final Long codUnidadeModelo;
+
     @NotNull
     private final VeiculoChecklistRealizacao veiculoRealizacao;
 
@@ -31,10 +43,14 @@ public final class ModeloChecklistRealizacao {
 
     public ModeloChecklistRealizacao(@NotNull final Long codModelo,
                                      @NotNull final Long codVersaoModelo,
+                                     @NotNull final String nomeModelo,
+                                     @NotNull final Long codUnidadeModelo,
                                      @NotNull final VeiculoChecklistRealizacao veiculoRealizacao,
                                      @NotNull final List<PerguntaRealizacaoChecklist> perguntas) {
         this.codModelo = codModelo;
         this.codVersaoModelo = codVersaoModelo;
+        this.nomeModelo = nomeModelo;
+        this.codUnidadeModelo = codUnidadeModelo;
         this.veiculoRealizacao = veiculoRealizacao;
         this.perguntas = perguntas;
     }
@@ -47,6 +63,14 @@ public final class ModeloChecklistRealizacao {
     @NotNull
     public Long getCodVersaoModelo() {
         return codVersaoModelo;
+    }
+
+    public String getNomeModelo() {
+        return nomeModelo;
+    }
+
+    public Long getCodUnidadeModelo() {
+        return codUnidadeModelo;
     }
 
     @NotNull

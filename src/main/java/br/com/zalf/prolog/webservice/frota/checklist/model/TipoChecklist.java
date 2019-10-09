@@ -22,9 +22,29 @@ public enum TipoChecklist {
     }
 
     @NotNull
+    public String asString() {
+        return String.valueOf(tipo);
+    }
+
+    @NotNull
     public static TipoChecklist fromChar(final char text) throws IllegalArgumentException {
         for (final TipoChecklist tipo : TipoChecklist.values()) {
             if (text == tipo.tipo) {
+                return tipo;
+            }
+        }
+
+        throw new IllegalArgumentException("Nenhum enum com esse valor encontrado: " + text);
+    }
+
+    @NotNull
+    public static TipoChecklist fromString(final String text) throws IllegalArgumentException {
+        if (text == null || text.length() != 1) {
+            throw new IllegalArgumentException("Nenhum enum com esse valor encontrado: " + text);
+        }
+
+        for (final TipoChecklist tipo : TipoChecklist.values()) {
+            if (text.charAt(0) == tipo.tipo) {
                 return tipo;
             }
         }

@@ -4,12 +4,13 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
@@ -326,14 +327,15 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidadeModelo,
-                                                      @NotNull Long codModelo,
-                                                      @NotNull String placaVeiculo,
-                                                      char tipoChecklist) throws Exception {
+    public ModeloChecklistRealizacao getModeloChecklistRealizacao(
+            final @NotNull Long codModeloChecklist,
+            final @NotNull Long codVeiculo,
+            final @NotNull String placaVeiculo,
+            final @NotNull TipoChecklist tipoChecklist) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getNovoChecklistHolder(codUnidadeModelo, codModelo, placaVeiculo, tipoChecklist);
+            return getSistema().getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
         } else {
-            return integradorProLog.getNovoChecklistHolder(codUnidadeModelo, codModelo, placaVeiculo, tipoChecklist);
+            return integradorProLog.getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
         }
     }
 

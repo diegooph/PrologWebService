@@ -6,10 +6,12 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
@@ -177,4 +179,10 @@ public interface ChecklistModeloDao {
     @NotNull
     List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
                                                              @NotNull final Long codCargo) throws Throwable;
+
+    @NotNull
+    ModeloChecklistRealizacao getModeloChecklistRealizacao(final @NotNull Long codModeloChecklist,
+                                                           final @NotNull Long codVeiculo,
+                                                           final @NotNull String placaVeiculo,
+                                                           final @NotNull TipoChecklist tipoChecklist) throws Throwable;
 }

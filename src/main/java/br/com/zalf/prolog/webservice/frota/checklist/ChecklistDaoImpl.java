@@ -11,15 +11,12 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.ChecklistOfflineConverter;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -411,22 +408,6 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         } finally {
             close(conn, stmt, rSet);
         }
-    }
-
-    @Override
-    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidadeModelo, Long codModelo, String placa, char
-            tipoChecklis) throws SQLException {
-        final NovoChecklistHolder holder = new NovoChecklistHolder();
-        final ChecklistModeloDao checklistModeloDaoImpl = Injection.provideChecklistModeloDao();
-        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        holder.setCodigoModeloChecklist(codModelo);
-        // TODO: O código da versão precisa vir pelo Service.
-        holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(
-                codUnidadeModelo,
-                codModelo,
-                ChecklistMigracaoEstruturaSuporte.getCodVersaoAtualModeloChecklist(codModelo)));
-        holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));
-        return holder;
     }
 
     @NotNull

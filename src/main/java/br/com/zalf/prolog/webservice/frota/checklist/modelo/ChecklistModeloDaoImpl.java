@@ -10,14 +10,14 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.VeiculoChecklistSelecao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
@@ -468,6 +468,67 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         }
     }
 
+    @NotNull
+    @Override
+    public ModeloChecklistRealizacao getModeloChecklistRealizacao(
+            final @NotNull Long codModeloChecklist,
+            final @NotNull Long codVeiculo,
+            final @NotNull String placaVeiculo,
+            final @NotNull TipoChecklist tipoChecklist) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_MODELO_REALIZACAO(" +
+                    "F_COD_MODELO_CHECKLIST   := ?," +
+                    "F_COD_VEICULO_REALIZACAO := ?);");
+            stmt.setLong(1, codModeloChecklist);
+            stmt.setLong(2, codVeiculo);
+            rSet = stmt.executeQuery();
+            ModeloChecklistRealizacao modelo = null;
+            PerguntaRealizacaoChecklist pergunta = null;
+            List<PerguntaRealizacaoChecklist> perguntas = new ArrayList<>();
+            List<AlternativaRealizacaoChecklist> alternativas = new ArrayList<>();
+            if (rSet.next()) {
+                //noinspection ConstantConditions
+                if (perguntas.isEmpty() && alternativas.isEmpty()) {
+                    // Estamos na primeira linha.
+                    // Precisamos inicializar o modelo com as primeiras informações do resultSet.
+                    alternativas.add(ChecklistModeloConverter.createAlternativaRealizacaoChecklist(rSet));
+                    pergunta = ChecklistModeloConverter.createPerguntaRealizacaoChecklist(rSet, alternativas);
+                    perguntas.add(pergunta);
+                    modelo = ChecklistModeloConverter.createModeloChecklistRealizacao(
+                            rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST"),
+                            rSet.getLong("COD_MODELO_CHECKLIST"),
+                            rSet.getLong("COD_VERSAO_MODELO_CHECKLIST"),
+                            rSet.getString("NOME_MODELO_CHECKLIST"),
+                            ChecklistModeloConverter.createVeiculoChecklistRealizacao(codVeiculo, placaVeiculo, rSet),
+                            perguntas);
+                } else {
+                    if (pergunta != null
+                            && pergunta.getCodigo().equals(rSet.getLong("COD_PERGUNTA"))) {
+                        // Mesma pergunta.
+                        // Precisamos processar apenas a nova alternativa.
+                        alternativas.add(ChecklistModeloConverter.createAlternativaRealizacaoChecklist(rSet));
+                    } else {
+                        // Trocou de pergunta.
+                        // Precisamos criar a nova pergunta e adicionar a ela a nova alternativa;
+                        alternativas = new ArrayList<>();
+                        alternativas.add(ChecklistModeloConverter.createAlternativaRealizacaoChecklist(rSet));
+                        pergunta = ChecklistModeloConverter.createPerguntaRealizacaoChecklist(rSet, alternativas);
+                        perguntas.add(pergunta);
+                    }
+                }
+            } else {
+                throw new IllegalStateException("Modelo de checklist não encontrado para o código: " + codModeloChecklist);
+            }
+            return modelo;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     private void criaNovaVersaoModelo(@NotNull final Connection conn,
                                       @NotNull final ModeloChecklistEdicao modeloChecklist,
                                       @NotNull final AnaliseMudancaModeloChecklist analiseModelo,
@@ -659,7 +720,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setLong(2, codModelo);
             stmt.setLong(3, codVersaoModelo);
             rSet = stmt.executeQuery();
-            return ChecklistModeloConverter.createPerguntaAlternativaModeloChecklist(rSet);
+            return ChecklistModeloConverter.createPerguntaAlternativaModeloChecklistVisualizacao(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -723,7 +784,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     "    ON CGI.COD_IMAGEM = CPP.COD_IMAGEM " +
                     "ORDER BY CPP.ORDEM, CPP.PERGUNTA, CAPP.ORDEM;");
             rSet = stmt.executeQuery();
-            return ChecklistModeloConverter.createPerguntaAlternativaModeloChecklist(rSet);
+            return ChecklistModeloConverter.createPerguntaAlternativaModeloChecklistVisualizacao(rSet);
         } finally {
             close(stmt, rSet);
         }

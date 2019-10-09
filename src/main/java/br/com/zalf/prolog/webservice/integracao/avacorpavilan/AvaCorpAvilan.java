@@ -6,9 +6,10 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracao
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -133,25 +134,26 @@ public final class AvaCorpAvilan extends Sistema {
                         getDataNascimento())));
     }
 
-    @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidadeModelo,
-                                                      @NotNull Long codModelo,
-                                                      @NotNull String placaVeiculo,
-                                                      char tipoChecklist) throws Exception {
+    public @NotNull ModeloChecklistRealizacao getModeloChecklistRealizacao(
+            final @NotNull Long codModeloChecklist,
+            final @NotNull Long codVeiculo,
+            final @NotNull String placaVeiculo,
+            final @NotNull TipoChecklist tipoChecklist) throws Throwable {
         final ArrayOfVeiculoQuestao questoesVeiculo = requester.getQuestoesVeiculo(
-                Math.toIntExact(codModelo),
+                Math.toIntExact(codModeloChecklist),
                 placaVeiculo,
-                AvacorpAvilanTipoChecklist.fromTipoProLog(tipoChecklist),
+                AvacorpAvilanTipoChecklist.fromTipoProLog(tipoChecklist.asChar()),
                 getCpf(),
                 getDataNascimento());
         final Map<Long, String> mapCodPerguntUrlImagem =
-                getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModelo);
+                getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModeloChecklist);
 
-        return AvaCorpAvilanConverter.convert(
+        return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaRealizacaoModelo(
+                AvaCorpAvilanConverter.convert(
                 questoesVeiculo,
                 mapCodPerguntUrlImagem,
-                placaVeiculo);
+                placaVeiculo));
     }
 
     @NotNull

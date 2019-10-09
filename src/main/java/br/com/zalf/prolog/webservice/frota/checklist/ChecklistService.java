@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
@@ -51,24 +50,6 @@ public final class ChecklistService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar unidades, tente novamente");
-        }
-    }
-
-    @NotNull
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull final Long codUnidadeModelo,
-                                                      @NotNull final Long codModelo,
-                                                      @NotNull final String placa,
-                                                      final char tipoChecklist,
-                                                      @NotNull final String userToken) {
-        try {
-            return RouterChecklists
-                    .create(dao, userToken)
-                    .getNovoChecklistHolder(codUnidadeModelo, codModelo, placa, tipoChecklist);
-        } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao buscar o NovoChecklistHolder", throwable);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(throwable, "Erro ao iniciar checklist, tente novamente");
         }
     }
 
