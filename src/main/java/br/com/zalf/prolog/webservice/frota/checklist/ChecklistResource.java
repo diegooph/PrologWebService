@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
@@ -163,7 +164,14 @@ public final class ChecklistResource {
             @PathParam("codModelo") Long codModelo,
             @PathParam("placa") String placa,
             @HeaderParam("Authorization") String userToken) {
-        return service.getNovoChecklistHolder(codUnidadeModelo, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
+        // Esse método já está redirecionando para o novo Service.
+        return ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaRealizacaoModelo(
+                new ChecklistModeloService().getModeloChecklistRealizacao(
+                        codModelo,
+                        ChecklistMigracaoEstruturaSuporte.getCodVeiculoByPlaca(placa),
+                        placa,
+                        TipoChecklist.SAIDA.asString(),
+                        userToken));
     }
 
     @GET
@@ -174,7 +182,14 @@ public final class ChecklistResource {
             @PathParam("codModelo") Long codModelo,
             @PathParam("placa") String placa,
             @HeaderParam("Authorization") String userToken) {
-        return service.getNovoChecklistHolder(codUnidadeModelo, codModelo, placa, Checklist.TIPO_RETORNO, userToken);
+        // Esse método já está redirecionando para o novo Service.
+        return ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaRealizacaoModelo(
+                new ChecklistModeloService().getModeloChecklistRealizacao(
+                        codModelo,
+                        ChecklistMigracaoEstruturaSuporte.getCodVeiculoByPlaca(placa),
+                        placa,
+                        TipoChecklist.RETORNO.asString(),
+                        userToken));
     }
 
     /**

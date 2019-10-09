@@ -2,11 +2,14 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.VeiculoChecklistSelecao;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ChecklistMigracaoEstruturaSuporte {
+    private static final String TAG = ChecklistMigracaoEstruturaSuporte.class.getSimpleName();
     private static final int VERSION_CODE_APP_NOVA_ESTRUTURA = 83;
 
     @NotNull
@@ -40,6 +44,18 @@ public final class ChecklistMigracaoEstruturaSuporte {
         } finally {
             DatabaseConnection.close(conn);
         }
+    }
+
+    @NotNull
+    public static ModeloChecklistRealizacao toEstruturaNovaRealizacaoModelo(@NotNull final NovoChecklistHolder novo) {
+        // TODO: Implementar converter.
+        return null;
+    }
+
+    @NotNull
+    public static NovoChecklistHolder toEstruturaAntigaRealizacaoModelo(@NotNull final ModeloChecklistRealizacao modelo) {
+        // TODO: Implementar converter.
+        return null;
     }
 
     @NotNull
@@ -79,6 +95,30 @@ public final class ChecklistMigracaoEstruturaSuporte {
             map.put(modeloOld, placas);
         });
         return map;
+    }
+
+    @NotNull
+    public static Long getCodVeiculoByPlaca(@NotNull final String placa) {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            // Como a placa ainda é PK, a busca só pela placa já basta.
+            stmt = conn.prepareStatement("SELECT VD.CODIGO FROM VEICULO_DATA VD WHERE VD.PLACA = ?;");
+            stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("COD");
+            } else {
+                throw new RuntimeException();
+            }
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar código do veículo pela placa: " + placa);
+            throw new RuntimeException(throwable);
+        } finally {
+            DatabaseConnection.close(conn, stmt, rSet);
+        }
     }
 
     @NotNull

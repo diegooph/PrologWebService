@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import org.jetbrains.annotations.NotNull;
@@ -97,21 +96,6 @@ public interface ChecklistDao {
      */
     @NotNull
     FiltroRegionalUnidadeChecklist getRegionaisUnidadesSelecao(@NotNull final Long codColaborador) throws Throwable;
-
-    /**
-     * busca um novo checklist de perguntas
-     *
-     * @param codUnidadeModelo código da unidade do modelo de checklist.
-     * @param codModelo        código do modelo
-     * @param placa            placa do veículo
-     * @param tipoChecklist    o tipo do {@link Checklist checklist} sendo realizado
-     * @return retorno um novo checklist
-     * @throws SQLException caso ocorrer erro no banco
-     */
-    NovoChecklistHolder getNovoChecklistHolder(Long codUnidadeModelo,
-                                               Long codModelo,
-                                               String placa,
-                                               char tipoChecklist) throws SQLException;
 
     /**
      * Método utilizado para buscar o {@link DeprecatedFarolChecklist} contendo todas as placas e as informações

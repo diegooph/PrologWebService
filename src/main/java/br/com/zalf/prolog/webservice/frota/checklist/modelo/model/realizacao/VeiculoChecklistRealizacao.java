@@ -21,23 +21,15 @@ public final class VeiculoChecklistRealizacao {
     private final String placaVeiculo;
 
     /**
-     * Código de identificação do tipo de veículo a qual a {@code placaVeiculo placa} pertence.
-     */
-    @NotNull
-    private final Long codTipoVeiculo;
-
-    /**
      * Quilometragem que o veículo possui atualmente. Entendemos este valor como a quilometragem mais recente.
      */
     private final long kmAtualVeiculo;
 
     public VeiculoChecklistRealizacao(@NotNull final Long codVeiculo,
                                       @NotNull final String placaVeiculo,
-                                      @NotNull final Long codTipoVeiculo,
                                       final long kmAtualVeiculo) {
         this.codVeiculo = codVeiculo;
         this.placaVeiculo = placaVeiculo;
-        this.codTipoVeiculo = codTipoVeiculo;
         this.kmAtualVeiculo = kmAtualVeiculo;
     }
 
@@ -49,11 +41,6 @@ public final class VeiculoChecklistRealizacao {
     @NotNull
     public String getPlacaVeiculo() {
         return placaVeiculo;
-    }
-
-    @NotNull
-    public Long getCodTipoVeiculo() {
-        return codTipoVeiculo;
     }
 
     public long getKmAtualVeiculo() {

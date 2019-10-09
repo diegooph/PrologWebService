@@ -6,8 +6,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.VeiculoChecklistSelecao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.AlternativaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -54,7 +53,61 @@ public final class ChecklistModeloConverter {
     }
 
     @NotNull
-    public static List<PerguntaModeloChecklistVisualizacao> createPerguntaAlternativaModeloChecklist(
+    public static VeiculoChecklistRealizacao createVeiculoChecklistRealizacao(
+            @NotNull final Long codVeiculo,
+            @NotNull final String placaVeiculo,
+            @NotNull final ResultSet rSet) throws Throwable {
+        return new VeiculoChecklistRealizacao(
+                codVeiculo,
+                placaVeiculo,
+                rSet.getLong("KM_ATUAL_VEICULO_REALIZACAO"));
+    }
+
+    @NotNull
+    public static AlternativaRealizacaoChecklist createAlternativaRealizacaoChecklist(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new AlternativaRealizacaoChecklist(
+                rSet.getLong("COD_ALTERNATIVA"),
+                rSet.getString("DESCRICAO_ALTERNATIVA"),
+                rSet.getBoolean("TIPO_OUTROS"),
+                rSet.getInt("ALTERNATIVA_ORDEM_EXIBICAO"),
+                PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
+    }
+
+    @NotNull
+    public static PerguntaRealizacaoChecklist createPerguntaRealizacaoChecklist(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<AlternativaRealizacaoChecklist> alternativas) throws SQLException {
+        return new PerguntaRealizacaoChecklist(
+                rSet.getLong("COD_PERGUNTA"),
+                rSet.getString("DESCRICAO_PERGUNTA"),
+                rSet.getLong("COD_IMAGEM"),
+                rSet.getString("URL_IMAGEM"),
+                rSet.getInt("PERGUNTA_ORDEM_EXIBICAO"),
+                rSet.getBoolean("SINGLE_CHOICE"),
+                alternativas);
+    }
+
+
+    @NotNull
+    public static ModeloChecklistRealizacao createModeloChecklistRealizacao(
+            @NotNull final Long codUnidadeModeloChecklist,
+            @NotNull final Long codModeloCheklist,
+            @NotNull final Long codVersaoModeloChecklist,
+            @NotNull final String nomeModeloChecklist,
+            @NotNull final VeiculoChecklistRealizacao veiculo,
+            @NotNull final List<PerguntaRealizacaoChecklist> perguntas) {
+        return new ModeloChecklistRealizacao(
+                codModeloCheklist,
+                codVersaoModeloChecklist,
+                nomeModeloChecklist,
+                codUnidadeModeloChecklist,
+                veiculo,
+                perguntas);
+    }
+
+    @NotNull
+    public static List<PerguntaModeloChecklistVisualizacao> createPerguntaAlternativaModeloChecklistVisualizacao(
             @NotNull final ResultSet rSet) throws SQLException {
         if (rSet.next()) {
             final List<PerguntaModeloChecklistVisualizacao> perguntas = new ArrayList<>();
@@ -62,16 +115,16 @@ public final class ChecklistModeloConverter {
             PerguntaModeloChecklistVisualizacao pergunta = null;
             do {
                 if (pergunta == null) {
-                    pergunta = createPerguntaModeloChecklist(rSet, alternativas);
-                    alternativas.add(createAlternativaModeloChecklist(rSet));
+                    pergunta = createPerguntaModeloChecklistVisualizacao(rSet, alternativas);
+                    alternativas.add(createAlternativaModeloChecklistVisualizacao(rSet));
                 } else {
                     if (pergunta.getCodigo() == rSet.getLong("COD_PERGUNTA")) {
-                        alternativas.add(createAlternativaModeloChecklist(rSet));
+                        alternativas.add(createAlternativaModeloChecklistVisualizacao(rSet));
                     } else {
                         perguntas.add(pergunta);
                         alternativas = new ArrayList<>();
-                        alternativas.add(createAlternativaModeloChecklist(rSet));
-                        pergunta = createPerguntaModeloChecklist(rSet, alternativas);
+                        alternativas.add(createAlternativaModeloChecklistVisualizacao(rSet));
+                        pergunta = createPerguntaModeloChecklistVisualizacao(rSet, alternativas);
                     }
                 }
             } while (rSet.next());
@@ -83,7 +136,7 @@ public final class ChecklistModeloConverter {
     }
 
     @NotNull
-    public static PerguntaModeloChecklistVisualizacao createPerguntaModeloChecklist(
+    public static PerguntaModeloChecklistVisualizacao createPerguntaModeloChecklistVisualizacao(
             @NotNull final ResultSet rSet,
             @NotNull final List<AlternativaModeloChecklistVisualizacao> alternativas) throws SQLException {
         return new PerguntaModeloChecklistVisualizacao(
@@ -98,7 +151,7 @@ public final class ChecklistModeloConverter {
     }
 
     @NotNull
-    public static AlternativaModeloChecklistVisualizacao createAlternativaModeloChecklist(
+    public static AlternativaModeloChecklistVisualizacao createAlternativaModeloChecklistVisualizacao(
             @NotNull final ResultSet rSet) throws SQLException {
         return new AlternativaModeloChecklistVisualizacao(
                 rSet.getLong("COD_ALTERNATIVA"),
