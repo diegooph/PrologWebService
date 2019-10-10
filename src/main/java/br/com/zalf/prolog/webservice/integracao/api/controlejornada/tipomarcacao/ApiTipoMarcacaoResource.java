@@ -29,7 +29,6 @@ public final class ApiTipoMarcacaoResource {
 
     @GET
     @LogIntegracaoRequest
-    @Path("/")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiTipoMarcacao> getTipoMarcacoes(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,

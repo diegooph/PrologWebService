@@ -28,9 +28,8 @@ public final class JustificativaAjusteResource {
     private final JustificativaAjusteService service = new JustificativaAjusteService();
 
     @GET
+    @Secured
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured()
-    @Path("/")
     public List<JustificativaAjuste> getJustificativasAjuste(@QueryParam("codEmpresa") @Required final Long codEmpresa,
                                                              @QueryParam("ativas") @Optional final Boolean ativas)
             throws ProLogException {
@@ -38,9 +37,8 @@ public final class JustificativaAjusteResource {
     }
 
     @POST
+    @Secured
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured()
-    @Path("/")
     public AbstractResponse insertJustificativaAjuste(
             @HeaderParam("Authorization") String userToken,
             @NotNull final JustificativaAjuste justificativaAjuste) throws ProLogException {
