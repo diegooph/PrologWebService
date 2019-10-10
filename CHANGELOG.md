@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Stage
+
+### Features
+* Cria estrutura de pesquisa de NPS (PL-2350)
+
+
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (release-date) [unreleased]
 
