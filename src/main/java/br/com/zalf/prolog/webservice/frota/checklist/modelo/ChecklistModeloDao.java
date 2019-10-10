@@ -176,6 +176,18 @@ public interface ChecklistModeloDao {
     @NotNull
     Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws Throwable;
 
+    /**
+     * Busca os modelos de checklist disponíveis para seleção (e posterior realização) em uma unidade. É buscado
+     * apenas os modelos que o cargo do colaborador que faz a requisição tem acesso (através do <code>codCargo</code>).
+     *
+     * Além disso, serão buscados apenas modelos que tenham tipos de veículos vinculados e que esses tipos tenham, pelo
+     * menos, uma placa vinculada e não deletada.
+     *
+     * @param codUnidade O código da unidade da qual buscar os modelos de checklist.
+     * @param codCargo O código do cargo do usuário que irá realizar o checklist.
+     * @return Os modelos de checklist disponíveis para realização.
+     * @throws Throwable Caso algum erro ocorrer.
+     */
     @NotNull
     List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
                                                              @NotNull final Long codCargo) throws Throwable;
