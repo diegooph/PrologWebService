@@ -1,23 +1,28 @@
 package br.com.zalf.prolog.webservice.integracao.logger;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.server.ContainerRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created on 13/12/18.
@@ -26,118 +31,154 @@ import java.util.Arrays;
  */
 @LogIntegracaoRequest
 @Provider
-public final class IntegracaoRequestInterceptor implements ContainerRequestFilter {
-    @Context
-    private ResourceInfo resourceInfo;
-
-    @Context
-    private HttpServletRequest servletRequest;
+public final class IntegracaoRequestInterceptor implements ContainerRequestFilter, ContainerResponseFilter {
+    @NotNull
+    private static final String TAG = IntegracaoRequestInterceptor.class.getSimpleName();
+    @NotNull
+    private static final String REQUEST_OBJECT = RequestLog.class.getName() + ".request_object";
+    private static final int STATUS_OK = 200;
 
     @Override
-    public void filter(final ContainerRequestContext requestContext) throws IOException {
-        if (requestContext == null)
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+        if (requestContext == null) {
             return;
+        }
 
         try {
             if (isJson(requestContext)) {
-                final String tokenRequisicao = getTokenRequisicao(requestContext);
-                final LogRequisicao logRequisicao = createLogRequisicao(requestContext);
-                if (!logRequisicao.isEmpty()) {
-                    Injection.provideLogDao().insertRequestLog(tokenRequisicao, logRequisicao);
-                }
+                final RequestLog requestLog = new RequestLog(
+                        getHeaders(requestContext),
+                        getPath(requestContext),
+                        requestContext.getMethod(),
+                        readBody(requestContext));
+                // Setamos o nosso objeto nas propriedades do Request para recuperar no contexto do Response.
+                requestContext.setProperty(REQUEST_OBJECT, requestLog);
             }
-        } catch (Throwable throwable) {
-            // TODO - :shushing_face: Não aconteceu nada!
+        } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível extrair informações do RequestContext", t);
         }
     }
 
-    @NotNull
-    private String getTokenRequisicao(@NotNull final ContainerRequestContext requestContext) {
+    @Override
+    public void filter(ContainerRequestContext requestContext,
+                       ContainerResponseContext responseContext) throws IOException {
+        if (requestContext == null) {
+            return;
+        }
+
+        final String tokenIntegracao = getTokenIntegracao(requestContext);
+        RequestLog requestLog = null;
+        if (requestContext.getProperty(REQUEST_OBJECT) instanceof RequestLog) {
+            requestLog = (RequestLog) requestContext.getProperty(REQUEST_OBJECT);
+        }
+        if (requestLog == null || tokenIntegracao == null) {
+            // Se não há um Objeto de Request ou não temos um token, não tem necessidade de salvar uma resposta avulsa.
+            return;
+        }
+
+        ResponseLog responseLog = null;
+        if (responseContext != null) {
+            try {
+                if (isJson(responseContext)) {
+                    final boolean isError = responseContext.getStatus() != STATUS_OK;
+                    responseLog = new ResponseLog(
+                            getHeaders(responseContext),
+                            getAnnotations(responseContext),
+                            getEntityType(responseContext),
+                            isError,
+                            responseContext.getStatus(),
+                            isError ? null : readBody(responseContext),
+                            isError ? readBody(responseContext) : null);
+                }
+            } catch (final Throwable t) {
+                Log.e(TAG, "Não foi possível extrair informações do ResponseContext", t);
+            }
+        }
+
+        try {
+            Injection.provideLogDao().insertRequestResponseLog(tokenIntegracao, requestLog, responseLog);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir log de requisição no banco de dados", t);
+        }
+    }
+
+    @Nullable
+    private String getTokenIntegracao(@NotNull final ContainerRequestContext requestContext) {
         final String tokenHeader = requestContext.getHeaderString(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO);
-        if (tokenHeader == null) {
-            throw new IllegalStateException("Não é possível ler o token da requisição");
+        return StringUtils.trimToNull(tokenHeader);
+    }
+
+    @Nullable
+    private String getEntityType(@NotNull final ContainerResponseContext responseContext) {
+        if (responseContext.getEntityType() == null) {
+            return null;
         }
-        return tokenHeader.trim();
-    }
-
-    @NotNull
-    private LogRequisicao createLogRequisicao(
-            @NotNull final ContainerRequestContext requestContext) throws IOException {
-        final LogRequisicao logRequisicao = new LogRequisicao();
-        logRequisicao.setClassResource(getFullClassDescription());
-        logRequisicao.setMethodResource(getFullMethodDescription());
-        logRequisicao.setHttpMethod(requestContext.getMethod());
-        logRequisicao.setUrlAcesso(getFullUrlAcesso(requestContext));
-        logRequisicao.setHeaders(getFullHeaders(requestContext));
-        logRequisicao.setPathParamns(getFullPathParameters(requestContext));
-        logRequisicao.setQueryParamns(getFullQueryParameters(requestContext));
-        logRequisicao.setBodyRequest(readBody(requestContext));
-        logRequisicao.setDataHoraRequisicao(LocalDateTime.now());
-        return logRequisicao;
+        return responseContext.getEntityType().getTypeName();
     }
 
     @Nullable
-    private String getFullClassDescription() {
-        if (resourceInfo == null || resourceInfo.getResourceClass() == null)
+    private String getAnnotations(@NotNull final ContainerResponseContext responseContext) {
+        if (responseContext.getEntityAnnotations() == null) {
+            return null;
+        }
+        return Arrays.toString(responseContext.getEntityAnnotations());
+    }
+
+    @Nullable
+    private String getPath(@NotNull final ContainerRequestContext requestContext) {
+        final URI requestUri = ((ContainerRequest) requestContext).getRequestUri();
+        if (requestUri == null) {
+            return null;
+        }
+        return requestUri.toString();
+    }
+
+    @Nullable
+    private Map<String, String> getHeaders(@NotNull final ContainerResponseContext responseContext) {
+        if (responseContext.getHeaders() == null)
             return null;
 
-        return resourceInfo.getResourceClass().getName();
+        final Map<String, String> headers = new HashMap<>();
+        responseContext.getHeaders().forEach((s, objects) -> headers.put(s, objects.toString()));
+        return headers;
     }
 
     @Nullable
-    private String getFullMethodDescription() {
-        if (resourceInfo == null || resourceInfo.getResourceMethod() == null)
-            return null;
-        final String returnType = resourceInfo.getResourceMethod().getGenericReturnType().getTypeName();
-        final String signature = resourceInfo.getResourceMethod().getName();
-        final String parameters = Arrays.toString(resourceInfo.getResourceMethod().getGenericParameterTypes());
-        return returnType.concat(" ").concat(signature).concat("(").concat(parameters).concat(");");
-    }
-
-    @Nullable
-    private String getFullUrlAcesso(@NotNull final ContainerRequestContext requestContext) {
-        if (requestContext.getUriInfo() == null || requestContext.getUriInfo().getAbsolutePath() == null)
-            return null;
-
-        return requestContext.getUriInfo().getAbsolutePath().toString();
-    }
-
-    @Nullable
-    private String getFullHeaders(@NotNull final ContainerRequestContext requestContext) {
+    private Map<String, String> getHeaders(@NotNull final ContainerRequestContext requestContext) {
         if (requestContext.getHeaders() == null)
             return null;
 
-        return requestContext.getHeaders().toString();
-    }
-
-    @Nullable
-    private String getFullPathParameters(@NotNull final ContainerRequestContext requestContext) {
-        if (requestContext.getUriInfo() == null || requestContext.getUriInfo().getQueryParameters() == null)
-            return null;
-
-        final String pathParameters = requestContext.getUriInfo().getPathParameters().toString();
-        return pathParameters.isEmpty() || pathParameters.equals("{}") ? "" : pathParameters;
-    }
-
-    @Nullable
-    private String getFullQueryParameters(@NotNull final ContainerRequestContext requestContext) {
-        if (requestContext.getUriInfo() == null || requestContext.getUriInfo().getPathParameters() == null)
-            return null;
-
-        final String queryParameters = requestContext.getUriInfo().getQueryParameters().toString();
-        return queryParameters.isEmpty() || queryParameters.equals("{}") ? "" : queryParameters;
+        final Map<String, String> headers = new HashMap<>();
+        requestContext.getHeaders().forEach((s, objects) -> headers.put(s, objects.toString()));
+        return headers;
     }
 
     @NotNull
-    private String readBody(@NotNull final ContainerRequestContext requestContext) throws IOException {
-        final String body = IOUtils.toString(requestContext.getEntityStream(), StandardCharsets.UTF_8);
-        final InputStream in = IOUtils.toInputStream(body, StandardCharsets.UTF_8);
-        requestContext.setEntityStream(in);
-        return body;
+    private String readBody(@NotNull final ContainerResponseContext responseContext) {
+        return GsonUtils.getGson().toJson(responseContext.getEntity());
+    }
+
+    @Nullable
+    private String readBody(@NotNull final ContainerRequestContext requestContext) {
+        try {
+            final String body = IOUtils.toString(requestContext.getEntityStream(), StandardCharsets.UTF_8);
+            final InputStream in = IOUtils.toInputStream(body, StandardCharsets.UTF_8);
+            requestContext.setEntityStream(in);
+            return body;
+        } catch (final IOException io) {
+            return null;
+        }
+    }
+
+    private boolean isJson(@NotNull final ContainerResponseContext responseContext) {
+        return responseContext.getMediaType().toString().contains("application/json");
     }
 
     private boolean isJson(@NotNull final ContainerRequestContext requestContext) {
-        if (requestContext.getMethod().equals(HttpMethod.GET)) {
+        if (requestContext.getMethod().equals(HttpMethod.GET)
+                || requestContext.getMethod().equals(HttpMethod.PUT)
+                || requestContext.getMethod().equals(HttpMethod.POST)
+                || requestContext.getMethod().equals(HttpMethod.DELETE)) {
             return true;
         }
         return requestContext.getMediaType().toString().contains("application/json");

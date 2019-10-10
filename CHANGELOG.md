@@ -1,5 +1,9 @@
 Change Log
 ==========
+## Stage
+
+### Features
+* Cria estrutura para salvar requisições e respostas das integrações. (PL-2306)
 
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (release-date) [unreleased]
