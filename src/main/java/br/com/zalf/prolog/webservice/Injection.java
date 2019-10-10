@@ -38,12 +38,12 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHand
 import br.com.zalf.prolog.webservice.errorhandling.sql.ProLogSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.VersaoDadosChecklistOfflineAtualizador;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.VersaoDadosChecklistOfflineAtualizador;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.OrdemServicoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.OrdemServicoRelatorioDaoImpl;
@@ -54,6 +54,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.Configurac
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.ConfiguracaoAfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios.AfericaoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios.AfericaoRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste.TesteAferidorDao;
+import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste.TesteAferidorDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDao;
@@ -482,10 +484,14 @@ public final class Injection {
         return new ColaboradorRelatorioDaoImpl();
     }
 
-
     @NotNull
     public static DispositivoMovelDao provideDispositivoMovelDao() {
         return new DispositivoMovelDaoImpl();
+    }
+
+    @NotNull
+    public static TesteAferidorDao provideTesteAferidorDao() {
+        return new TesteAferidorDaoImpl();
     }
 
     // ================================================
