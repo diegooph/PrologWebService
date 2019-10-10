@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.AvisoDelecaoTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
@@ -128,13 +129,14 @@ public interface VeiculoTransferenciaDao {
                                                              @NotNull final Long codVeiculo) throws Throwable;
 
     /**
-     * Método utilizado para buscar a informação se a empresa possui fechamento automático de Ordens de Serviço quando
-     * transfere veículos entre unidades.
+     * Método utilizado para buscar o aviso que deve ser exibido para cada empresa na tela de realização de
+     * transferência de veículos.
      *
      * @param codEmpresa Código da empresa que será verificada.
-     * @return <code>True</code> caso empresa realiza o fechamento automático de Ordens de Serviços na transferência de
-     * veículos, <code>False</code> caso contrário.
+     * @return Um objeto contendo o status da empresa e a mensagem que deverá ser exibida.
      * @throws Throwable Se algum erro ocorrer.
      */
-    boolean possuiFechamentoAutomaticoOrdemServico(@NotNull final Long codEmpresa) throws Throwable;
+    @NotNull
+    AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(@NotNull final Long codEmpresa)
+            throws Throwable;
 }

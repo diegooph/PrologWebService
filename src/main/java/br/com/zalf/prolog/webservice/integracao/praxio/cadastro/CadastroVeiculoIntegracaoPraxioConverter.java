@@ -18,10 +18,12 @@ public final class CadastroVeiculoIntegracaoPraxioConverter {
     }
 
     public static ProcessoTransferenciaVeiculoRealizacao convert(
+            @NotNull final Long codEmpresa,
             @NotNull final Long codColaborador,
             @NotNull final Long codVeiculo,
             @NotNull final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) {
         return new ProcessoTransferenciaVeiculoRealizacao(
+                codEmpresa,
                 veiculoTransferenciaPraxio.getCodUnidadeOrigem(),
                 veiculoTransferenciaPraxio.getCodUnidadeDestino(),
                 codColaborador,

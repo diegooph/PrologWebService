@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.AvisoDelecaoTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.VeiculoSelecaoTransferencia;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
@@ -82,10 +83,10 @@ public final class VeiculoTransferenciaResource {
 
     @GET
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/fechar-ordens-servicos-automaticamente")
-    public boolean possuiFechamentoAutomaticoOrdemServico(
-            @QueryParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
-        return service.possuiFechamentoAutomaticoOrdemServico(codEmpresa);
+    @Path("/aviso-transferencia")
+    public AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa) {
+        return service.buscaAvisoDelecaoAutomaticaPorTransferencia(codEmpresa);
     }
 
 }

@@ -126,6 +126,10 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                     Injection
                             .provideVeiculoDao()
                             .getCodVeiculoByPlaca(conn, veiculoTransferenciaPraxio.getPlacaTransferida());
+            final Long codEmpresa =
+                    Injection
+                            .provideIntegracaoDao()
+                            .getCodEmpresaByTokenIntegracao(conn, tokenIntegracao);
             final Long codColaborador;
             try {
                 codColaborador =
@@ -145,7 +149,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                     .insertProcessoTransferenciaVeiculo(
                             conn,
                             CadastroVeiculoIntegracaoPraxioConverter
-                                    .convert(codColaborador, codVeiculo, veiculoTransferenciaPraxio),
+                                    .convert(codEmpresa, codColaborador, codVeiculo, veiculoTransferenciaPraxio),
                             Injection.provideDadosChecklistOfflineChangedListener());
             conn.commit();
         } catch (final Throwable t) {
