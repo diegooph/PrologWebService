@@ -14,6 +14,8 @@ import br.com.zalf.prolog.webservice.colaborador.relatorios.ColaboradorRelatorio
 import br.com.zalf.prolog.webservice.colaborador.relatorios.ColaboradorRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.contato.EntreEmContatoDao;
 import br.com.zalf.prolog.webservice.contato.EntreEmContatoDaoImpl;
+import br.com.zalf.prolog.webservice.cs.nps.PesquisaNpsDao;
+import br.com.zalf.prolog.webservice.cs.nps.PesquisaNpsDaoImpl;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDaoImpl;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
@@ -38,12 +40,12 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHand
 import br.com.zalf.prolog.webservice.errorhandling.sql.ProLogSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.VersaoDadosChecklistOfflineAtualizador;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.VersaoDadosChecklistOfflineAtualizador;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.OrdemServicoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.OrdemServicoRelatorioDaoImpl;
@@ -482,10 +484,14 @@ public final class Injection {
         return new ColaboradorRelatorioDaoImpl();
     }
 
-
     @NotNull
     public static DispositivoMovelDao provideDispositivoMovelDao() {
         return new DispositivoMovelDaoImpl();
+    }
+
+    @NotNull
+    public static PesquisaNpsDao providePesquisaNpsDao() {
+        return new PesquisaNpsDaoImpl();
     }
 
     // ================================================
