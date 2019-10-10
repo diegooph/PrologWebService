@@ -15,22 +15,35 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface AfericaoDao {
-
-    @Nullable
+    /**
+     * Insere uma aferição.
+     *
+     * @param conn             Conexão que será utilizada para inserir a aferição.
+     * @param codUnidade       Código da unidade onde a Aferição foi realizada.
+     * @param afericao         Objeto contendo as medidas capturadas no processo de aferição
+     * @param deveAbrirServico Flag indicando se é preciso abrir ordem de serviço.
+     * @return Código da aferição inserida.
+     * @throws Throwable Se ocorrer erro na inserção.
+     */
+    @NotNull
     Long insert(@NotNull final Connection conn,
                 @NotNull final Long codUnidade,
-                @NotNull final Afericao afericao) throws Throwable;
+                @NotNull final Afericao afericao,
+                final boolean deveAbrirServico) throws Throwable;
 
     /**
      * Insere uma aferição lincada com o código da unidade.
      *
-     * @param afericao   A {@link Afericao} contendo os dados da realização.
-     * @param codUnidade Código da {@link Unidade}.
+     * @param afericao         A {@link Afericao} contendo os dados da realização.
+     * @param codUnidade       Código da {@link Unidade}.
+     * @param deveAbrirServico Flag indicando se é preciso abrir ordem de serviço.
      * @return Código da aferição inserida.
      * @throws Throwable Se ocorrer erro no banco.
      */
-    @Nullable
-    Long insert(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable;
+    @NotNull
+    Long insert(@NotNull final Long codUnidade,
+                @NotNull final Afericao afericao,
+                final boolean deveAbrirServico) throws Throwable;
 
     /**
      * Busca objeto contendo informações necessárias para se iniciar uma aferição do {@link Veiculo}.

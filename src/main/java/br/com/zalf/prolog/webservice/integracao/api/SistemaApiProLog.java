@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.api;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
@@ -106,6 +107,15 @@ public final class SistemaApiProLog extends Sistema {
                             "Por enquanto, utilize o seu sistema para movimentar os pneus.");
         }
         return getIntegradorProLog().getVeiculoAberturaServico(codServico, placaVeiculo);
+    }
+
+    @NotNull
+    @Override
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                                        @NotNull final Afericao afericao,
+                                        final boolean deveAbrirServico) throws Throwable {
+        // Neste cenário, a flag deveAbrirServico é setada como false pois não queremos serviços
+        return getIntegradorProLog().insertAfericao(codUnidade, afericao, false);
     }
 
     @Override

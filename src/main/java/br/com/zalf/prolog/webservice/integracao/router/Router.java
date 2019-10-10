@@ -221,13 +221,15 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insertAfericao(codUnidade, afericao);
+            return getSistema().insertAfericao(codUnidade, afericao, deveAbrirServico);
         } else {
-            return integradorProLog.insertAfericao(codUnidade, afericao);
+            return integradorProLog.insertAfericao(codUnidade, afericao, deveAbrirServico);
         }
     }
 
