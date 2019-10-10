@@ -124,13 +124,11 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     modeloChecklist);
 
             if (analiseModelo.isAlgoMudouNoModelo()) {
-                atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
-
                 if (analiseModelo.isDeveCriarNovaVersaoModelo()) {
 
                     criaNovaVersaoModelo(conn, modeloChecklist, analiseModelo, userToken);
                 } else {
-
+                    atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
                     for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
                         atualizaPerguntaModeloChecklist(conn, codModelo, pergunta);
                         for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
@@ -139,6 +137,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     }
                 }
             } else {
+                atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
                 // Nada a fazer, só retornarmos.
                 conn.commit();
             }

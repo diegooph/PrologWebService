@@ -1021,7 +1021,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // 12 - Garante que a alternativa A1 possui a nova descrição.
             assertThat(p1Depois.getAlternativas().get(0).getDescricao()).isEqualTo("Desfocado");
 
-            assertThat(p1Depois.getDescricao()).isEqualTo("Piscando sozinho");
+            assertThat(p1Depois.getDescricao()).isEqualTo("Farol");
         }
     }
 
@@ -1080,7 +1080,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // 8, 9 - Código fixo mudou.
             assertThat(p1Depois.getCodigoFixo()).isGreaterThan(p1Antes.getCodigoFixo());
             assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
-                    .isGreaterThan(p1Antes.getAlternativas().get(0).getCodigoFixo());
+                    .isEqualTo(p1Antes.getAlternativas().get(0).getCodigoFixo());
 
             // 10 - Está single_choice.
             assertThat(p1Depois.isSingleChoice()).isTrue();
@@ -1103,7 +1103,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         // 4, 5 - Alteramos P1 para não abrir OS e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // A1.
-        final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
+        final PerguntaModeloChecklistEdicao p1 = perguntas.get(0);
         final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
         p1.getAlternativas().set(
                 0,
@@ -1138,7 +1138,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
             // 8, 9 - Código fixo mudou.
-            assertThat(p1Depois.getCodigoFixo()).isGreaterThan(p1Antes.getCodigoFixo());
+            assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
             assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
                     .isGreaterThan(p1Antes.getAlternativas().get(0).getCodigoFixo());
 
@@ -1163,7 +1163,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         // 4, 5 - Alteramos A1 para prioridade baixa e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         // A1.
-        final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
+        final PerguntaModeloChecklistEdicao p1 = perguntas.get(0);
         final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
         p1.getAlternativas().set(
                 0,
@@ -1198,7 +1198,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
             // 8, 9 - Código fixo mudou.
-            assertThat(p1Depois.getCodigoFixo()).isGreaterThan(p1Antes.getCodigoFixo());
+            assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
             assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
                     .isGreaterThan(p1Antes.getAlternativas().get(0).getCodigoFixo());
 
@@ -1222,12 +1222,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
         // 4, 5 - Alteramos A1 para prioridade baixa e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
-        final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
+        final PerguntaModeloChecklistEdicao p1 = perguntas.get(0);
+        AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
+        AlternativaModeloChecklist a3 = p1.getAlternativas().get(2);
+
         {
             // A1 (Fora de foco).
-            final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
             p1.getAlternativas().set(
-                    0,
+                    2,
                     new AlternativaModeloChecklistEdicaoAtualiza(
                             a1.getCodigo(),
                             a1.getCodigoFixo(),
@@ -1239,9 +1241,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         }
         {
             // A3 (Lanterna quebrada).
-            final AlternativaModeloChecklist a3 = p1.getAlternativas().get(2);
             p1.getAlternativas().set(
-                    2,
+                    0,
                     new AlternativaModeloChecklistEdicaoAtualiza(
                             a3.getCodigo(),
                             a3.getCodigoFixo(),
