@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class TesteAferidorService {
+    @NotNull
     private static final String TAG = TesteAferidorService.class.getSimpleName();
     @NotNull
     private final TesteAferidorDao dao = Injection.provideTesteAferidorDao();

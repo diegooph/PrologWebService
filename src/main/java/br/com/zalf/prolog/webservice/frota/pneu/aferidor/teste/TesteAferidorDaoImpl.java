@@ -19,7 +19,6 @@ import java.util.Arrays;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class TesteAferidorDaoImpl extends DatabaseConnection implements TesteAferidorDao {
-
     @NotNull
     @Override
     public ProcedimentoTesteAferidor getProcedimentoTeste() throws Throwable {
@@ -31,8 +30,8 @@ public final class TesteAferidorDaoImpl extends DatabaseConnection implements Te
             stmt = conn.prepareStatement("SELECT * FROM AFERIDOR.FUNC_AFERIDOR_GET_PROCEDIMENTO_TESTE();");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final String[] array = (String[]) rSet.getArray(1).getArray();
-                return new ProcedimentoTesteAferidor(Arrays.asList(array));
+                final String[] comandos = (String[]) rSet.getArray(1).getArray();
+                return new ProcedimentoTesteAferidor(Arrays.asList(comandos));
             } else {
                 throw new IllegalStateException("Nenhum procedimento de teste do aferidor encontrado");
             }

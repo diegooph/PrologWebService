@@ -10,9 +10,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public interface TesteAferidorDao {
-
     /**
-     * Busca o procedimento de teste que será executado no equipamente de aferição através do aplicativo.
+     * Busca o procedimento de teste que será executado no equipamento de aferição através do aplicativo.
      *
      * @return O procedimento de teste que deverá ser executado.
      * @throws Throwable Caso algum erro ocorrer.

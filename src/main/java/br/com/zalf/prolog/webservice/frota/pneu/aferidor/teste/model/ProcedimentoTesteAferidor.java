@@ -10,7 +10,6 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ProcedimentoTesteAferidor {
-
     @NotNull
     private final List<String> comandosExecucao;
 
