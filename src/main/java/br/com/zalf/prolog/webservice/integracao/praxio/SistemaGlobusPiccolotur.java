@@ -41,7 +41,9 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklistNew) throws Throwable {
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklistNew,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         Connection conn = null;
         try {
@@ -51,7 +53,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
             // Insere checklist na base de dados do ProLog
             final Long codChecklistProLog = Injection
                     .provideChecklistDao()
-                    .insert(conn, checklistNew, false);
+                    .insert(conn, checklistNew, foiOffline, false);
 
             // TODO: o fluxo da integração continua usando o objeto antigo.
             final Checklist checklist = checklistNew.getChecklistAntigo();

@@ -361,8 +361,10 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklist) throws Exception {
-        return checklistDao.insert(checklist);
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
+        return checklistDao.insert(checklist, foiOffline, deveAbrirOs);
     }
 
     @NotNull

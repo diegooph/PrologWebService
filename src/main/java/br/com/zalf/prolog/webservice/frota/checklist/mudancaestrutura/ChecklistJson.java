@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist;
+package br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;

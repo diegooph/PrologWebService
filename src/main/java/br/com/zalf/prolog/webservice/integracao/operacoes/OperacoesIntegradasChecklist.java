@@ -47,7 +47,9 @@ interface OperacoesIntegradasChecklist {
                                                            final @NotNull TipoChecklist tipoChecklist) throws Throwable;
 
     @NotNull
-    Long insertChecklist(@NotNull final ChecklistInsercao checklist) throws Throwable;
+    Long insertChecklist(@NotNull final ChecklistInsercao checklist,
+                         final boolean foiOffline,
+                         final boolean deveAbrirOs) throws Throwable;
 
     @NotNull
     Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception;

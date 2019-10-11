@@ -109,6 +109,11 @@ public final class ChecklistInsercao {
     @Exclude
     private ChecklistInsercaoMetadata cachedMetadata;
 
+    /**
+     * Irá existir temporariamente, pois as integrações ainda usam os objetos antigos. Assim, como já criamos esse
+     * objeto no Resource, podemos armazená-lo aqui evitando de realizaar uma nova conversão quando uma integração
+     * precisar.
+     */
     @Nullable
     private Checklist checklistAntigo;
 
@@ -390,9 +395,11 @@ public final class ChecklistInsercao {
         int qtdAlternativasOk = 0;
         int qtdAlternativasNok = 0;
         boolean perguntaTeveAlternativasNok = false;
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < respostas.size(); i++) {
             final ChecklistResposta checklistResposta = respostas.get(i);
             final List<ChecklistAlternativaResposta> alternativasRespostas = checklistResposta.getAlternativasRespostas();
+            //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < alternativasRespostas.size(); j++) {
                 final ChecklistAlternativaResposta alternativaResposta = alternativasRespostas.get(j);
                 if (alternativaResposta.isAlternativaSelecionada()) {

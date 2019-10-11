@@ -16,7 +16,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarol
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.model.ChecklistOfflineConverter;
+import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -40,18 +40,21 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     @Override
     public Long insert(@NotNull final Connection conn,
                        @NotNull final ChecklistInsercao checklist,
+                       final boolean foiOffline,
                        final boolean deveAbrirOs) throws Throwable {
-        return internalInsertChecklist(conn, checklist, deveAbrirOs);
+        return internalInsertChecklist(conn, checklist, foiOffline, deveAbrirOs);
     }
 
     @NotNull
     @Override
-    public Long insert(@NotNull final ChecklistInsercao checklist) throws SQLException {
+    public Long insert(@NotNull final ChecklistInsercao checklist,
+                       final boolean foiOffline,
+                       final boolean deveAbrirOs) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final Long codChecklist = internalInsertChecklist(conn, checklist, true);
+            final Long codChecklist = internalInsertChecklist(conn, checklist, foiOffline, deveAbrirOs);
             conn.commit();
             return codChecklist;
         } catch (final Throwable t) {
@@ -59,9 +62,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                 conn.rollback();
             }
 
-            // Como esse método ainda não está refatorado para retornar um Throwable, encapsulamos o retorno em uma
-            // SQLException.
-            throw new SQLException(t);
+            throw t;
         } finally {
             close(conn);
         }
@@ -70,6 +71,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     @NotNull
     private Long internalInsertChecklist(@NotNull final Connection conn,
                                          @NotNull final ChecklistInsercao checklist,
+                                         final boolean foiOffline,
                                          final boolean deveAbrirOs) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -103,6 +105,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     "F_DEVICE_IMEI                        := ?," +
                     "F_DEVICE_UPTIME_REALIZACAO_MILLIS    := ?," +
                     "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS := ?," +
+                    "F_FOI_OFFLINE                        := ?," +
                     "F_TOTAL_PERGUNTAS_OK                 := ?," +
                     "F_TOTAL_PERGUNTAS_NOK                := ?," +
                     "F_TOTAL_ALTERNATIVAS_OK              := ?," +
@@ -111,7 +114,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
             stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
-            bindValueOrNull(stmt, 3, checklist.getCodVersaoModeloChecklist(), SqlType.BIGINT);
+            stmt.setLong(3, checklist.getCodVersaoModeloChecklist());
             stmt.setObject(4, checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime());
             stmt.setLong(5, checklist.getCodColaborador());
             stmt.setLong(6, checklist.getCodVeiculo());
@@ -127,10 +130,11 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setString(16, checklist.getDeviceImei());
             stmt.setLong(17, checklist.getDeviceUptimeRealizacaoMillis());
             stmt.setLong(18, checklist.getDeviceUptimeSincronizacaoMillis());
-            stmt.setInt(19, checklist.getQtdPerguntasOk());
-            stmt.setInt(20, checklist.getQtdPerguntasNok());
-            stmt.setInt(21, checklist.getQtdAlternativasOk());
-            stmt.setInt(22, checklist.getQtdAlternativasNok());
+            stmt.setBoolean(19, foiOffline);
+            stmt.setInt(20, checklist.getQtdPerguntasOk());
+            stmt.setInt(21, checklist.getQtdPerguntasNok());
+            stmt.setInt(22, checklist.getQtdAlternativasOk());
+            stmt.setInt(23, checklist.getQtdAlternativasNok());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codChecklistInserido = rSet.getLong("CODIGO");
@@ -150,11 +154,9 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                 if (deveAbrirOs) {
                     Injection
                             .provideOrdemServicoDao()
-                            .processaChecklistRealizado(
-                                    conn,
-                                    checklist.getCodUnidade(),
-                                    ChecklistOfflineConverter.toChecklist(codChecklistInserido, checklist));
+                            .processaChecklistRealizado(conn, codChecklistInserido, checklist);
                 }
+
                 return codChecklistInserido;
             } else {
                 throw new SQLException("Erro ao salvar checklist");

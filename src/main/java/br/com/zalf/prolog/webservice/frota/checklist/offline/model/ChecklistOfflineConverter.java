@@ -2,10 +2,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,17 +22,6 @@ public final class ChecklistOfflineConverter {
 
     private ChecklistOfflineConverter() {
         throw new IllegalStateException(ChecklistOfflineConverter.class.getSimpleName() + " cannot be instantiated!");
-    }
-
-    @NotNull
-    public static Checklist toChecklist(@NotNull final Long codChecklistInserido,
-                                        @NotNull final ChecklistInsercao checklistInsercao) {
-        final Checklist checklist = new Checklist();
-        checklist.setCodModelo(checklistInsercao.getCodModelo());
-        checklist.setCodigo(codChecklistInserido);
-        checklist.setPlacaVeiculo(checklistInsercao.getPlacaVeiculo());
-        checklist.setListRespostas(toPerguntasRespostas(checklistInsercao.getRespostas()));
-        return checklist;
     }
 
     @NotNull

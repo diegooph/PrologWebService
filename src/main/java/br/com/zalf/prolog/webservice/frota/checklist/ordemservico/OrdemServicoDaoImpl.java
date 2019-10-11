@@ -8,8 +8,10 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.AlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
@@ -44,8 +46,8 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
 
     @Override
     public void processaChecklistRealizado(@NotNull final Connection conn,
-                                           @NotNull final Long codUnidade,
-                                           @NotNull final Checklist checklist) throws Throwable {
+                                           @NotNull final Long codChecklistInserido,
+                                           @NotNull final ChecklistInsercao checklist) throws Throwable {
         final Map<Long, AlternativaAberturaOrdemServico> alternativasOrdemServico =
                 createAlternativasAberturaOrdemServico(
                         conn,
@@ -63,13 +65,16 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             // Se uma nova O.S. tiver que ser aberta, conterá o código dela. Lembrando que um checklist pode abrir,
             // NO MÁXIMO, uma Ordem de Serviço.
             Long codOrdemServico = null;
-            final List<PerguntaRespostaChecklist> respostas = checklist.getListRespostas();
-            for (final PerguntaRespostaChecklist resposta : respostas) {
-                for (final AlternativaChecklist alternativaResposta : resposta.getAlternativasResposta()) {
+            final Long codUnidade = checklist.getCodUnidade();
+            final List<ChecklistResposta> respostas = checklist.getRespostas();
+            for (final ChecklistResposta resposta : respostas) {
+                final List<ChecklistAlternativaResposta> alternativas = resposta.getAlternativasRespostas();
+                for (final ChecklistAlternativaResposta alternativaResposta : alternativas) {
                     final AlternativaAberturaOrdemServico alternativaOrdemServico =
-                            alternativasOrdemServico.get(alternativaResposta.getCodigo());
+                            alternativasOrdemServico.get(alternativaResposta.getCodAlternativa());
 
-                    if (alternativaResposta.isSelected() && alternativaOrdemServico.isDeveAbrirOrdemServico()) {
+                    if (alternativaResposta.isAlternativaSelecionada()
+                            && alternativaOrdemServico.isDeveAbrirOrdemServico()) {
                         if (alternativaOrdemServico.jaTemItemPendente()) {
                             // Incrementa apontamentos.
                             stmtQtdApontamentos.setLong(
@@ -79,12 +84,12 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                             stmtQtdApontamentos.addBatch();
                         } else {
                             if (codOrdemServico == null) {
-                                codOrdemServico = criarOrdemServico(conn, codUnidade, checklist.getCodigo());
+                                codOrdemServico = criarOrdemServico(conn, codUnidade, codChecklistInserido);
                             }
                             stmtCriacaoItens.setLong(1, codUnidade);
                             stmtCriacaoItens.setLong(2, codOrdemServico);
-                            stmtCriacaoItens.setLong(3, resposta.getCodigo());
-                            stmtCriacaoItens.setLong(4, alternativaResposta.getCodigo());
+                            stmtCriacaoItens.setLong(3, resposta.getCodPergunta());
+                            stmtCriacaoItens.setLong(4, alternativaResposta.getCodAlternativa());
                             stmtCriacaoItens.setString(5, StatusItemOrdemServico.PENDENTE.asString());
                             stmtCriacaoItens.addBatch();
                         }

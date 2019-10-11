@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoListagem;
@@ -30,13 +30,12 @@ public interface OrdemServicoDao {
      * de apontamento para itens já existentes e ainda pendentes.
      *
      * @param conn       Conexão com o banco atualmente aberta.
-     * @param codUnidade O código da unidade onde o checklist foi realizado.
      * @param checklist  O checklist que foi realizado.
      * @throws Throwable Se ocorrer algum erro no processamento das informações.
      */
     void processaChecklistRealizado(@NotNull final Connection conn,
-                                    @NotNull final Long codUnidade,
-                                    @NotNull final Checklist checklist) throws Throwable;
+                                    @NotNull final Long codChecklistInserido,
+                                    @NotNull final ChecklistInsercao checklist) throws Throwable;
 
     /**
      * Método utilizado para buscar a Listagem de Ordens de Serviços.

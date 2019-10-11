@@ -334,6 +334,6 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
     @NotNull
     private Long internalInsertChecklist(@NotNull final Connection conn,
                                          @NotNull final ChecklistInsercao checklist) throws Throwable {
-       return Injection.provideChecklistDao().insert(conn, checklist, true);
+       return Injection.provideChecklistDao().insert(conn, checklist, true, true);
     }
 }

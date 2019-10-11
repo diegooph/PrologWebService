@@ -216,8 +216,10 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklist) throws Throwable {
-        return getIntegradorProLog().insertChecklist(checklist);
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
+        return getIntegradorProLog().insertChecklist(checklist, foiOffline, deveAbrirOs);
     }
 
     @NotNull

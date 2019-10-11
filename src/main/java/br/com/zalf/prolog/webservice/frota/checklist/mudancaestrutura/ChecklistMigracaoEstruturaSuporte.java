@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist;
+package br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
@@ -164,6 +164,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
+            // Se a versão do modelo não for encontrada, será retornado 1.
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_ENCONTRA_VERSAO_MODELO(" +
                     "F_COD_MODELO_CHECKLIST   := ?, " +
                     "F_PERGUNTAS_ALTERNATIVAS := ?) AS COD_VERSAO;");

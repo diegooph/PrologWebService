@@ -26,6 +26,7 @@ public interface ChecklistDao {
      *
      * @param conn        Conexão que será utilizada para inserir o checklist.
      * @param checklist   Um checklist respondido pelo usuário.
+     * @param foiOffline  Indica se esse checklist foi realizado de forma offline.
      * @param deveAbrirOs Valor que indica se o checklist deve abrir Ordem de Serviço ou não.
      * @return código do checklist recém inserido.
      * @throws SQLException caso não seja possível inserir o checklist no banco de dados
@@ -33,6 +34,7 @@ public interface ChecklistDao {
     @NotNull
     Long insert(@NotNull final Connection conn,
                 @NotNull final ChecklistInsercao checklist,
+                final boolean foiOffline,
                 final boolean deveAbrirOs) throws Throwable;
 
     /**
@@ -40,11 +42,15 @@ public interface ChecklistDao {
      * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS.
      *
      * @param checklist um checklist
+     * @param foiOffline  Indica se esse checklist foi realizado de forma offline.
+     * @param deveAbrirOs Valor que indica se o checklist deve abrir Ordem de Serviço ou não.
      * @return código do checklist recém inserido
      * @throws SQLException caso não seja possível inserir o checklist no banco de dados
      */
     @NotNull
-    Long insert(@NotNull final ChecklistInsercao checklist) throws SQLException;
+    Long insert(@NotNull final ChecklistInsercao checklist,
+                final boolean foiOffline,
+                final boolean deveAbrirOs) throws Throwable;
 
     /**
      * Busca um checklist pelo seu código único.

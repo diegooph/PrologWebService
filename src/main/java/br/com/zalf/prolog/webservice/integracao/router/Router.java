@@ -341,11 +341,13 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklist) throws Throwable {
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insertChecklist(checklist);
+            return getSistema().insertChecklist(checklist, foiOffline, deveAbrirOs);
         } else {
-            return integradorProLog.insertChecklist(checklist);
+            return integradorProLog.insertChecklist(checklist, foiOffline, deveAbrirOs);
         }
     }
 
