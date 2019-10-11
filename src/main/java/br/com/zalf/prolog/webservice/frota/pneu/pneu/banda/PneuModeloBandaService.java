@@ -21,18 +21,32 @@ public final class PneuModeloBandaService {
     @NotNull
     private final PneuModeloBandaDao dao = Injection.providePneuModeloBandaDao();
 
-    public List<PneuMarcaBandas> getMarcaModeloBanda(Long codEmpresa) throws ProLogException {
+    public List<PneuMarcaBandas> listagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws ProLogException {
         try {
-            return dao.getMarcaModeloBanda(codEmpresa);
+            return dao.listagemMarcasModelosBandas(codEmpresa);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar marcas de banda da empresa: " + codEmpresa, t);
+            Log.e(TAG, "Erro ao buscar listagem de marcas e modelos de banda: " + codEmpresa, t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar marcas de banda");
+                    .map(t, "Erro ao buscar listagem de marcas e modelos de banda");
         }
     }
 
-    public AbstractResponse insertMarcaBanda(PneuMarcaBandas marca, Long codEmpresa) throws ProLogException {
+    public PneuMarcaBanda getMarcaModeloBanda(@NotNull final Long codModelo) throws ProLogException {
+        try {
+            return dao.getMarcaModeloBanda(codModelo);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar marca e modelo de banda da empresa: " + codModelo, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar marca e modelo de banda");
+        }
+
+
+    }
+
+    public AbstractResponse insertMarcaBanda(@NotNull final PneuMarcaBandas marca,
+                                             @NotNull final Long codEmpresa) throws ProLogException {
         try {
             return ResponseWithCod.ok("Marca inserida com sucesso", dao.insertMarcaBanda(marca, codEmpresa));
         } catch (final Throwable t) {
@@ -43,7 +57,8 @@ public final class PneuModeloBandaService {
         }
     }
 
-    public boolean updateMarcaBanda(PneuMarcaBandas marca, Long codEmpresa) throws ProLogException {
+    public boolean updateMarcaBanda(@NotNull final PneuMarcaBandas marca,
+                                    @NotNull final Long codEmpresa) throws ProLogException {
         try {
             return dao.updateMarcaBanda(marca, codEmpresa);
         } catch (final Throwable t) {

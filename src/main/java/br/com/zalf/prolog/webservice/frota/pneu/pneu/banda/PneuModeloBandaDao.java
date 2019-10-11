@@ -21,7 +21,16 @@ public interface PneuModeloBandaDao {
      * @return uma lista de marcas contendo os modelos de cada uma
      * @throws SQLException caso não seja possivel realizar a busca
      */
-    List<PneuMarcaBandas> getMarcaModeloBanda(Long codEmpresa) throws Throwable;
+    List<PneuMarcaBandas> listagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws Throwable;
+
+    /**
+     * Busca a marca e um modelo de banda específico
+     *
+     * @param codModelo código do modelo de uma banda
+     * @return uma objeto contendo a marca e o modelo de uma banda
+     * @throws SQLException caso não seja possivel realizar a busca
+     */
+    PneuMarcaBanda getMarcaModeloBanda(@NotNull final Long codModelo) throws Throwable;
 
     /**
      * Insere uma nova marca de banda
@@ -31,7 +40,8 @@ public interface PneuModeloBandaDao {
      * @return código gerado pelo BD para a nova banda inserida
      * @throws SQLException
      */
-    Long insertMarcaBanda(PneuMarcaBandas marca, Long codEmpresa) throws Throwable;
+    Long insertMarcaBanda(@NotNull final PneuMarcaBandas marca,
+                          @NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * Atualiza o nome de uma marca
@@ -41,7 +51,8 @@ public interface PneuModeloBandaDao {
      * @return
      * @throws SQLException
      */
-    boolean updateMarcaBanda(PneuMarcaBandas marca, Long codEmpresa) throws Throwable;
+    boolean updateMarcaBanda(@NotNull final PneuMarcaBandas marca,
+                             @NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * Insere um novo modelo de banda

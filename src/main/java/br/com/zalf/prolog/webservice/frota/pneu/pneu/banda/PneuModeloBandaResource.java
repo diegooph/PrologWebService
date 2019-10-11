@@ -35,8 +35,21 @@ public final class PneuModeloBandaResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/bandas/marcas/{codEmpresa}")
-    public List<PneuMarcaBandas> getMarcaModeloBanda(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.getMarcaModeloBanda(codEmpresa);
+    public List<PneuMarcaBandas> listagemMarcasModelosBandas(@PathParam("codEmpresa") Long codEmpresa) {
+        return service.listagemMarcasModelosBandas(codEmpresa);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.Pneu.VISUALIZAR})
+    @Path("/bandas/marca-modelo/{codModelo}")
+    public PneuMarcaBanda getMarcaModeloBanda(@PathParam("codModelo") Long codModelo) {
+        return service.getMarcaModeloBanda(codModelo);
     }
 
     @POST
@@ -85,7 +98,7 @@ public final class PneuModeloBandaResource {
     }
 
     /**
-     * @deprecated Use {@link #getMarcaModeloBanda(Long)} instead.
+     * @deprecated Use {@link #listagemMarcasModelosBandas(Long)} instead.
      */
     @GET
     @Secured(permissions = {
@@ -98,6 +111,6 @@ public final class PneuModeloBandaResource {
     @Path("/bandas/{codEmpresa}")
     @Deprecated
     public List<PneuMarcaBandas> DEPRECATED_GET_MARCA_MODELO_BANDA(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.getMarcaModeloBanda(codEmpresa);
+        return service.listagemMarcasModelosBandas(codEmpresa);
     }
 }

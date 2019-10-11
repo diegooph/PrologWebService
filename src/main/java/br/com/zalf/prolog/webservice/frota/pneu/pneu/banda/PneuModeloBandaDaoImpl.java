@@ -22,7 +22,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
 
     @Override
-    public List<PneuMarcaBandas> getMarcaModeloBanda(Long codEmpresa) throws Throwable {
+    public List<PneuMarcaBandas> listagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -47,7 +47,34 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
     }
 
     @Override
-    public Long insertMarcaBanda(PneuMarcaBandas marca, Long codEmpresa) throws Throwable {
+    public PneuMarcaBanda getMarcaModeloBanda(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_MODELO_BANDA(" +
+                    "F_COD_MODELO_BANDA := ? )");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+
+            if (rSet.next()) {
+                final PneuMarcaBanda marca = new PneuMarcaBanda();
+                marca.setCodigo(rSet.getLong("COD_MARCA_BANDA"));
+                marca.setNome(rSet.getString("NOME_MARCA_BANDA"));
+                marca.setModelo(PneuBandaConverter.createModeloBanda(rSet));
+                return marca;
+            }else{
+                throw new SQLException("Erro ao buscar marca e modelo de banda");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Long insertMarcaBanda(@NotNull final PneuMarcaBandas marca,
+                                 @NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -69,9 +96,9 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
         }
     }
 
-
     @Override
-    public boolean updateMarcaBanda(PneuMarcaBandas marca, Long codEmpresa) throws Throwable {
+    public boolean updateMarcaBanda(@NotNull final PneuMarcaBandas marca,
+                                    @NotNull final  Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
