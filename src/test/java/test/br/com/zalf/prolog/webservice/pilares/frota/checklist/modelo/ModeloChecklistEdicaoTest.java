@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.cargo.CargoService;
 import br.com.zalf.prolog.webservice.cargo.model.CargoListagemEmpresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
@@ -21,6 +20,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +35,10 @@ import java.util.stream.Collectors;
 import static com.google.common.truth.Truth.assertThat;
 
 /**
+ * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
+ * CHECKLIST_MODELO:
+ * > drop index checklist_modelo_data_nome_index;
+ *
  * Created on 2019-09-19
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -215,6 +219,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         // Agora temos apena um tipo de veículo liberado, não mais dois.
         assertThat(editado.getTiposVeiculoLiberados()).hasSize(1);
         assertThat(buscado.getTiposVeiculoLiberados()).hasSize(1);
+        assertCodTiposVeiculosIguais(editado, buscado);
     }
 
     @Test
@@ -314,9 +319,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                             "Lanterna quebada"));
             alternativas.add(
                     copyFrom((AlternativaModeloChecklistVisualizacao) p1.getAlternativas().get(3),
-                            "Outros (Opção padrão)",
+                            "Outros",
                             // A tipo_outros não alteramos.
-                            "Outros (Opção padrão)"));
+                            "Outros"));
 
             perguntas.add(new PerguntaModeloChecklistEdicaoAtualiza(
                     p1.getCodigo(),
@@ -344,9 +349,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                             " SENSORR   nao FuNSiOnAa "));
             alternativas.add(
                     copyFrom((AlternativaModeloChecklistVisualizacao) p2.getAlternativas().get(2),
-                            "Outros (Opção padrão)",
+                            "Outros",
                             // A tipo_outros não alteramos.
-                            "Outros (Opção padrão)"));
+                            "Outros"));
 
             perguntas.add(new PerguntaModeloChecklistEdicaoAtualiza(
                     p2.getCodigo(),
@@ -357,7 +362,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     p2.isSingleChoice(),
                     alternativas));
         }
-
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -439,7 +443,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8 - Já garante que o código fixo e varíavel mudaram.
+            // 8 - Código fixo se mantém e variável troca.
+            // Código fixa da pergunta não muda por alterações nas alternativas, mesmo uma remoção.
             ensureAllAttributesEqual(p1Antes, p1Depois, 3, true, false);
 
             // 9 - Garante que a alternativa 'Fora de foco' não está mais presente.
@@ -500,24 +505,20 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 9 - Já garante que o código fixo e varíavel mudaram.
-            // TODO: A comparação da alternativa no índice 0 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
+            // 9 - Código fixo igual, variável troca.
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, true, false);
 
             // 10 - Garante que a alternativa 'Fora de foco' não está mais presente.
-            p1Depois.getAlternativas()
-                    .stream()
-                    .filter(p -> p.getDescricao().equals("Fora de foco"))
-                    .findAny()
-                    .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
+            Assertions
+                    .assertThat(p1Depois.getAlternativas())
+                    .extracting("descricao")
+                    .doesNotContain("Fora de foco");
 
             // 11 - Garante que a nova alternativa está presente.
-            p1Depois.getAlternativas()
-                    .stream()
-                    .filter(p -> p.getDescricao().equals("Piscando sozinho"))
-                    .limit(1)
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Alterantiva 'Piscando Sozinho' não encontrada"));
+            Assertions
+                    .assertThat(p1Depois.getAlternativas())
+                    .extracting("descricao")
+                    .contains("Piscando sozinho");
         }
     }
 
@@ -570,17 +571,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 9 - Compara P1 garantindo que o código fixo e variável mudaram.
+            // 9 - Código fixo igual, variável troca.
             ensureAllAttributesEqual(p1Antes, p1Depois, 3, true, false);
 
             // 10 - Garante que a alternativa 'Fora de foco' não está mais presente.
-            p1Depois.getAlternativas()
-                    .stream()
-                    .filter(p -> p.getDescricao().equals("Fora de foco"))
-                    .findAny()
-                    .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
-
-
+            Assertions
+                    .assertThat(p1Depois.getAlternativas())
+                    .extracting("descricao")
+                    .doesNotContain("Fora de foco");
         }
 
         {
@@ -588,17 +586,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
 
-            // 11 - Compara P1 garantindo que o código fixo e variável mudaram.
-            // TODO: A comparação da alternativa no índice 3 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
+            // 11 - Código fixo igual, variável troca.
             ensureAllAttributesEqual(p2Antes, p2Depois, 4, true, false);
 
             // 12 - Garante que a nova alternativa está presente.
-            p2Depois.getAlternativas()
-                    .stream()
-                    .filter(p -> p.getDescricao().equals("Rasgado"))
-                    .limit(1)
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Alterantiva 'Rasgado' não encontrada"));
+            Assertions
+                    .assertThat(p2Depois.getAlternativas())
+                    .extracting("descricao")
+                    .contains("Rasgado");
         }
     }
 
@@ -645,7 +640,9 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(0);
             assertThat(p2Depois.getDescricao()).isEqualTo("Cinto de segurança");
+
             ensureAllAttributesEqual(p2Antes, p2Depois, 3, true, false);
+
             for (int i = 0; i < 3; i++) {
                 ensureAllAttributesEqual(p2Antes.getAlternativas().get(i), p2Depois.getAlternativas().get(i), true, false);
             }
@@ -866,7 +863,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // P2.
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
-            // 10 - O código fixo da pergunta P2 tem que ser o mesmo.
+            // 10 - O código fixo da pergunta P2 tem que ser o mesmo, variável mudou.
             ensureAllAttributesEqual(p2Antes, p2Depois, 3, true, false);
             // 11 - Garante o texto atualizado.
             assertThat(p2Depois.getDescricao()).isEqualTo("  Cinto  di  SEGURANSA ");
@@ -922,22 +919,20 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 9, 10 - Garante código fixo diferente. // TODO: 10 ainda não OK!
+            // 9, 10 - Garante código fixo igual e variável diferente.
             ensureAllAttributesEqual(p1Antes, p1Depois, 3, true, false);
 
             // 11 - Garante que a alternativa 'Lâmpada queimada' não está mais presente.
-            p1Depois.getAlternativas()
-                    .stream()
-                    .filter(p -> p.getDescricao().equals("Lâmpada queimada"))
-                    .findAny()
-                    .ifPresent(a -> {throw new RuntimeException("Alternativa 'Lâmpada queimada' deletada ainda está presente");});
+            Assertions
+                    .assertThat(p1Depois.getAlternativas())
+                    .extracting("descricao")
+                    .contains("Lâmpada queimada");
 
             // 12 - Garante que a alternativa 'Fora de foco' não está mais presente.
-            p1Depois.getAlternativas()
-                    .stream()
-                    .filter(p -> p.getDescricao().equals("Fora de foco"))
-                    .findAny()
-                    .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
+            Assertions
+                    .assertThat(p1Depois.getAlternativas())
+                    .extracting("descricao")
+                    .contains("Fora de foco");
 
             // 12 - Garante que a alternativa A1 possui a nova descrição.
             assertThat(p1Depois.getAlternativas().get(0).getDescricao()).isEqualTo("Desfocado");
@@ -999,8 +994,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 9, 10 - Garante código fixo diferente. // TODO: 10 ainda não OK!
-            // TODO: A comparação da alternativa no índice 4 deve dar erro por ela não conter 'codigo' e 'codigoFixo'.
+            // 9, 10 - Garante código fixo igual e variável diferente.
             ensureAllAttributesEqual(p1Antes, p1Depois, 5, true, false);
 
             // 11 - Garante que a alternativa A5 está presente.
@@ -1012,11 +1006,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             assertThat(a5.isDeveAbrirOrdemServico()).isTrue();
 
             // 12 - Garante que a alternativa 'Fora de foco' não está mais presente.
-            p1Depois.getAlternativas()
-                    .stream()
-                    .filter(p -> p.getDescricao().equals("Fora de foco"))
-                    .findAny()
-                    .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
+            Assertions
+                    .assertThat(p1Depois.getAlternativas())
+                    .extracting("descricao")
+                    .doesNotContain("Fora de foco");
 
             // 12 - Garante que a alternativa A1 possui a nova descrição.
             assertThat(p1Depois.getAlternativas().get(0).getDescricao()).isEqualTo("Desfocado");
@@ -1078,9 +1071,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
             // 8, 9 - Código fixo mudou.
-            assertThat(p1Depois.getCodigoFixo()).isGreaterThan(p1Antes.getCodigoFixo());
-            assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
-                    .isEqualTo(p1Antes.getAlternativas().get(0).getCodigoFixo());
+            ensureAllAttributesEqual(p1Antes, p1Depois, 5, false, false);
 
             // 10 - Está single_choice.
             assertThat(p1Depois.isSingleChoice()).isTrue();
@@ -1137,7 +1128,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8, 9 - Código fixo mudou.
+            // 8, 9 - Código fixo da pergunta igual da A1 diferente.
             assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
             assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
                     .isGreaterThan(p1Antes.getAlternativas().get(0).getCodigoFixo());
@@ -1197,7 +1188,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8, 9 - Código fixo mudou.
+            // 8, 9 - Código fixo da pergunta igual, da alternativa mudou.
             assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
             assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
                     .isGreaterThan(p1Antes.getAlternativas().get(0).getCodigoFixo());
@@ -1209,7 +1200,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera ordem de exibição da A1 com a A3, mantém versão")
-    public void caso20_alteraOrdemExibicaoA1ComA3_deveMudarVersaoModeloECodigoFixoA1EA3() {
+    public void caso20_alteraOrdemExibicaoA1ComA3_deveMudarVersaoModeloEManterCodigoFixo() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1223,36 +1214,31 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         // 4, 5 - Alteramos A1 para prioridade baixa e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         final PerguntaModeloChecklistEdicao p1 = perguntas.get(0);
-        AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
-        AlternativaModeloChecklist a3 = p1.getAlternativas().get(2);
+        final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
+        final AlternativaModeloChecklist a3 = p1.getAlternativas().get(2);
 
-        {
-            // A1 (Fora de foco).
-            p1.getAlternativas().set(
-                    2,
-                    new AlternativaModeloChecklistEdicaoAtualiza(
-                            a1.getCodigo(),
-                            a1.getCodigoFixo(),
-                            a1.getDescricao(),
-                            a1.getPrioridade(),
-                            a1.isTipoOutros(),
-                            3,
-                            a1.isDeveAbrirOrdemServico()));
-        }
-        {
-            // A3 (Lanterna quebrada).
-            p1.getAlternativas().set(
-                    0,
-                    new AlternativaModeloChecklistEdicaoAtualiza(
-                            a3.getCodigo(),
-                            a3.getCodigoFixo(),
-                            a3.getDescricao(),
-                            a3.getPrioridade(),
-                            a3.isTipoOutros(),
-                            1,
-                            a3.isDeveAbrirOrdemServico()));
-        }
-
+        // A1 (Fora de foco).
+        p1.getAlternativas().set(
+                2,
+                new AlternativaModeloChecklistEdicaoAtualiza(
+                        a1.getCodigo(),
+                        a1.getCodigoFixo(),
+                        a1.getDescricao(),
+                        a1.getPrioridade(),
+                        a1.isTipoOutros(),
+                        3,
+                        a1.isDeveAbrirOrdemServico()));
+        // A3 (Lanterna quebrada).
+        p1.getAlternativas().set(
+                0,
+                new AlternativaModeloChecklistEdicaoAtualiza(
+                        a3.getCodigo(),
+                        a3.getCodigoFixo(),
+                        a3.getDescricao(),
+                        a3.getPrioridade(),
+                        a3.isTipoOutros(),
+                        1,
+                        a3.isDeveAbrirOrdemServico()));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1275,7 +1261,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8, 9 - Código fixo mudou.
+            // 8, 9 - Código fixo da pergunta e da alternativa se mantiveram.
             assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
             assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
                     .isEqualTo(p1Antes.getAlternativas().get(0).getCodigoFixo());

@@ -22,7 +22,7 @@ public class ProdutividadeRelatorioTest extends BaseTest {
     public void testGetProdutividadeColaboradorRelatorio() throws SQLException {
         final ProdutividadeRelatorioDao dao = Injection.provideProdutividadeRelatorioDao();
         final List<ProdutividadeColaboradorRelatorio> relatorio =
-                dao.getRelatorioProdutividadeColaborador(COD_UNIDADE, "03383283194", DATA_INICIAL, DATA_FINAL);
+                dao.getRelatorioProdutividadeColaborador(5L, "03383283194", DATA_INICIAL, DATA_FINAL);
 
         System.out.println(relatorio.toString());
     }

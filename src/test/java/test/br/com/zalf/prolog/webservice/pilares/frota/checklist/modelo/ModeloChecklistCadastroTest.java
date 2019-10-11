@@ -21,6 +21,10 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 
 /**
+ * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
+ * CHECKLIST_MODELO:
+ * > drop index checklist_modelo_data_nome_index;
+ *
  * Created on 2019-09-19
  *
  * @author Luiz Felipe (https://github.com/luizfp)

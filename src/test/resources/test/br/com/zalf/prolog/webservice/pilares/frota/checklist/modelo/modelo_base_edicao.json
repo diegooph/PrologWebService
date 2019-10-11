@@ -32,7 +32,7 @@
           "deveAbrirOrdemServico": true
         },
         {
-          "descricao": "Outros (Opção padrão)",
+          "descricao": "Outros",
           "prioridade": "BAIXA",
           "tipoOutros": true,
           "ordemExibicao": 4,
@@ -60,7 +60,7 @@
           "deveAbrirOrdemServico": true
         },
         {
-          "descricao": "Outros (Opção padrão)",
+          "descricao": "Outros",
           "prioridade": "BAIXA",
           "tipoOutros": true,
           "ordemExibicao": 3,

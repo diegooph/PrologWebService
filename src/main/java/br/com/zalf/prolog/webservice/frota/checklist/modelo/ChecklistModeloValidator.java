@@ -16,7 +16,7 @@ import java.util.List;
  */
 public final class ChecklistModeloValidator {
     //TODO ENCONTRAR A MELHOR FORMA DE LIDAR COM A STRING PADRÃO DA ALTERNATIVA OUTROS
-    private static final String DEFAULT_DESCRICAO_TIPO_OUTROS = "Outros (Opção padrão)";
+    private static final String DEFAULT_DESCRICAO_TIPO_OUTROS = "Outros";
 
     private ChecklistModeloValidator() {
         throw new IllegalStateException(ChecklistModeloValidator.class.getSimpleName() + " cannot be instantiated!");

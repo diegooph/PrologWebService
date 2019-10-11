@@ -22,7 +22,6 @@ import java.time.LocalDate;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public abstract class BaseTest {
-    protected static Long COD_UNIDADE = 5L;
     protected static String USER_TOKEN = "TOKEN";
     protected static LocalDate DATA_INICIAL = LocalDate.parse("2018-03-18");
     protected static LocalDate DATA_FINAL = LocalDate.parse("2018-04-19");
