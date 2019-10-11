@@ -234,7 +234,11 @@ public class AvaCorpAvilanConverterTest {
 
         final Map<Long, String> mapCodPerguntUrlImagem = new AvaCorpAvilanDaoImpl().getMapeamentoCodPerguntaUrlImagem(codQuestionario);
 
-        final NovoChecklistHolder novoChecklistHolder = AvaCorpAvilanConverter.convert(veiculosQuestoes, mapCodPerguntUrlImagem, veiculoUtilizado);
+        final NovoChecklistHolder novoChecklistHolder = AvaCorpAvilanConverter.convert(
+                veiculosQuestoes,
+                5L,
+                mapCodPerguntUrlImagem,
+                veiculoUtilizado);
         assertNotNull(novoChecklistHolder);
         assertNotNull(novoChecklistHolder.getVeiculo());
         assertNotNull(novoChecklistHolder.getListPerguntas());
@@ -288,6 +292,7 @@ public class AvaCorpAvilanConverterTest {
         final Map<Long, String> mapCodPerguntUrlImagem = new AvaCorpAvilanDaoImpl().getMapeamentoCodPerguntaUrlImagem((long) codigoQuestionarioModelo);
         final NovoChecklistHolder holder = AvaCorpAvilanConverter.convert(
                 arrayOfVeiculoQuestao,
+                5L,
                 mapCodPerguntUrlImagem,
                 veiculoUtilizado);
         assertNotNull(holder);
@@ -307,7 +312,7 @@ public class AvaCorpAvilanConverterTest {
         checklist.setTempoRealizacaoCheckInMillis(tempoRealizacaoMillis);
         checklist.setKmAtualVeiculo(kmVeiculo);
         checklist.setPlacaVeiculo(veiculoUtilizado);
-        assertTrue(holder.getCodigoModeloChecklist().equals(checklist.getCodModelo()));
+        assertEquals(holder.getCodigoModeloChecklist(), checklist.getCodModelo());
         // Não precisamos setar o tipo pois o ERP da Avilan não lida com essa informação. Ele seta automaticamente
         // o tipo do checklist
 //        checklist.setTipo();

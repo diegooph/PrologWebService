@@ -134,8 +134,9 @@ public final class AvaCorpAvilan extends Sistema {
                         getDataNascimento())));
     }
 
+    @NotNull
     @Override
-    public @NotNull ModeloChecklistRealizacao getModeloChecklistRealizacao(
+    public  ModeloChecklistRealizacao getModeloChecklistRealizacao(
             final @NotNull Long codModeloChecklist,
             final @NotNull Long codVeiculo,
             final @NotNull String placaVeiculo,
@@ -151,9 +152,10 @@ public final class AvaCorpAvilan extends Sistema {
 
         return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaRealizacaoModelo(
                 AvaCorpAvilanConverter.convert(
-                questoesVeiculo,
-                mapCodPerguntUrlImagem,
-                placaVeiculo));
+                        questoesVeiculo,
+                        getCodUnidade(),
+                        mapCodPerguntUrlImagem,
+                        placaVeiculo));
     }
 
     @NotNull

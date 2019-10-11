@@ -4,14 +4,15 @@ import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.VeiculoChecklistSelecao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,14 +49,80 @@ public final class ChecklistMigracaoEstruturaSuporte {
 
     @NotNull
     public static ModeloChecklistRealizacao toEstruturaNovaRealizacaoModelo(@NotNull final NovoChecklistHolder novo) {
-        // TODO: Implementar converter.
-        return null;
+        final VeiculoChecklistRealizacao veiculo = new VeiculoChecklistRealizacao(
+                // Atualmente, só é usado na integração com a Avilan, então não temos código do veículo.
+                // De qualquer modo, mantemos o if, vai que acabe sendo usado em outro local depois que tenha o código.
+                novo.getVeiculo().getCodigo() != null ? novo.getVeiculo().getCodigo() : -1L,
+                novo.getVeiculo().getPlaca(),
+                novo.getVeiculo().getKmAtual());
+
+        final List<PerguntaRealizacaoChecklist> perguntas = new ArrayList<>();
+        for (final PerguntaRespostaChecklist pAntiga : novo.getListPerguntas()) {
+            final List<AlternativaRealizacaoChecklist> alternativas = pAntiga
+                    .getAlternativasResposta()
+                    .stream()
+                    .map(a -> new AlternativaRealizacaoChecklist(
+                            a.getCodigo(),
+                            a.getAlternativa(),
+                            a.isTipoOutros(),
+                            a.getOrdemExibicao(),
+                            a.getPrioridade()))
+                    .collect(Collectors.toList());
+            perguntas.add(new PerguntaRealizacaoChecklist(
+                    pAntiga.getCodigo(),
+                    pAntiga.getPergunta(),
+                    pAntiga.getCodImagem(),
+                    pAntiga.getUrl(),
+                    pAntiga.getOrdemExibicao(),
+                    pAntiga.isSingleChoice(),
+                    alternativas));
+        }
+
+        return new ModeloChecklistRealizacao(
+                novo.getCodigoModeloChecklist(),
+                -1L,
+                novo.getNomeModeloChecklist() != null ? novo.getNomeModeloChecklist() : "",
+                novo.getCodUnidaedModeloChecklist() != null ? novo.getCodUnidaedModeloChecklist() : -1L,
+                veiculo,
+                perguntas);
     }
 
     @NotNull
     public static NovoChecklistHolder toEstruturaAntigaRealizacaoModelo(@NotNull final ModeloChecklistRealizacao modelo) {
-        // TODO: Implementar converter.
-        return null;
+        final Veiculo veiculo = new Veiculo();
+        veiculo.setCodigo(modelo.getVeiculoRealizacao().getCodVeiculo());
+        veiculo.setPlaca(modelo.getVeiculoRealizacao().getPlacaVeiculo());
+        veiculo.setKmAtual(modelo.getVeiculoRealizacao().getKmAtualVeiculo());
+
+        final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
+        for (final PerguntaRealizacaoChecklist pAntiga : modelo.getPerguntas()) {
+            final List<AlternativaChecklist> alternativas = pAntiga
+                    .getAlternativas()
+                    .stream()
+                    .map(a -> AlternativaChecklist.create(
+                            a.getCodigo(),
+                            a.getDescricao(),
+                            a.isTipoOutros(),
+                            a.getOrdemExibicao(),
+                            a.getPrioridade()))
+                    .collect(Collectors.toList());
+            perguntas.add(PerguntaRespostaChecklist.create(
+                    pAntiga.getCodigo(),
+                    pAntiga.getDescricao(),
+                    pAntiga.getCodImagem(),
+                    pAntiga.getUrlImagem(),
+                    pAntiga.getOrdemExibicao(),
+                    pAntiga.isSingleChoice(),
+                    alternativas));
+        }
+
+        final NovoChecklistHolder novo = new NovoChecklistHolder();
+        novo.setCodUnidaedModeloChecklist(modelo.getCodUnidadeModelo());
+        novo.setCodigoModeloChecklist(modelo.getCodModelo());
+        novo.setNomeModeloChecklist(modelo.getNomeModelo());
+        novo.setVeiculo(veiculo);
+        novo.setListPerguntas(perguntas);
+        return novo;
     }
 
     @NotNull

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Zalf on 07/01/17.
@@ -18,6 +19,23 @@ public class AlternativaChecklist extends Alternativa {
 
     public AlternativaChecklist() {
 
+    }
+
+    @NotNull
+    public static AlternativaChecklist create(@NotNull final Long codigo,
+                                              @NotNull final String descricao,
+                                              final boolean tipoOutros,
+                                              final int ordemExibicao,
+                                              @NotNull final PrioridadeAlternativa prioridade) {
+        final AlternativaChecklist a = new AlternativaChecklist();
+        a.codigo = codigo;
+        a.alternativa = descricao;
+        if (tipoOutros) {
+            a.tipo = TIPO_OUTROS;
+        }
+        a.ordemExibicao = ordemExibicao;
+        a.prioridade = prioridade;
+        return a;
     }
 
     public PrioridadeAlternativa getPrioridade() {

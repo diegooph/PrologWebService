@@ -208,6 +208,7 @@ public final class AvaCorpAvilanConverter {
 
     @VisibleForTesting
     public static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculosQuestoes,
+                                              Long codUnidade,
                                               Map<Long, String> mapCodPerguntUrlImagem,
                                               String placaVeiculo) {
         checkNotNull(veiculosQuestoes, "veiculosQuestoes não pode ser null!");
@@ -215,6 +216,7 @@ public final class AvaCorpAvilanConverter {
         checkNotNull(placaVeiculo, "placaVeiculo não pode ser null!");
 
         final NovoChecklistHolder novoChecklistHolder = new NovoChecklistHolder();
+        novoChecklistHolder.setCodUnidaedModeloChecklist(codUnidade);
 
         // Seta informações Veículo.
         final Veiculo veiculo = new Veiculo();
@@ -234,9 +236,10 @@ public final class AvaCorpAvilanConverter {
         final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
         final ArrayOfQuestao arrayOfQuestao = veiculoQuestao.getQuestoes();
         for (final Questao questao : arrayOfQuestao.getQuestao()) {
-            // Todas as questões em uma mesma lista possuem o mesmo código de avaliação.
+            // Todas as questões em uma mesma lista possuem o mesmo código de avaliação e nome.
             // Deixamos setar para cada iteração porque assim é mais fácil.
             novoChecklistHolder.setCodigoModeloChecklist((long) questao.getCodigoAvaliacao());
+            novoChecklistHolder.setNomeModeloChecklist(questao.getDescricao());
 
             final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
             pergunta.setCodigo((long) questao.getSequenciaQuestao());

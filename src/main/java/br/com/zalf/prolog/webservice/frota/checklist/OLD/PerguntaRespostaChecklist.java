@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Pergunta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -25,6 +27,25 @@ public class PerguntaRespostaChecklist extends Pergunta {
 
     public PerguntaRespostaChecklist() {
 
+    }
+
+    @NotNull
+    public static PerguntaRespostaChecklist create(@NotNull final Long codigo,
+                                                   @NotNull final String descricao,
+                                                   @Nullable final Long codImagem,
+                                                   @Nullable final String urlImagem,
+                                                   final int ordemExibicao,
+                                                   final boolean singleChoice,
+                                                   @NotNull final List<AlternativaChecklist> alternativas) {
+        final PerguntaRespostaChecklist p = new PerguntaRespostaChecklist();
+        p.setCodigo(codigo);
+        p.setPergunta(descricao);
+        p.codImagem = codImagem;
+        p.url = urlImagem;
+        p.ordemExibicao = ordemExibicao;
+        p.singleChoice = singleChoice;
+        p.alternativasResposta = alternativas;
+        return p;
     }
 
     /**
