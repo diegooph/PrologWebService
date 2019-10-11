@@ -3,8 +3,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 
 /**
- * Created by Zart on 02/06/2017.
+ * @deprecated em 2019-10-11 por conta da criação de objetos específicos para o crud de bandas e modelos de pneu.
+ * Esse objeto precisa ser refatorado.
  */
+@Deprecated
 public class ModeloPneu extends Modelo {
     public static final String TIPO_MODELO_PNEU = "MODELO_PNEU";
     private int quantidadeSulcos;

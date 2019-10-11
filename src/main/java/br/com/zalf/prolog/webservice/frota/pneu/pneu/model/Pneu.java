@@ -50,13 +50,16 @@ public abstract class Pneu {
      */
     private Long codigo;
 
+    @Deprecated
     private Marca marca;
+    @Deprecated
     private ModeloPneu modelo;
     private BigDecimal valor;
 
     /**
      * Pneu só tem banda após ser recapado pela primeira vez, ou seja, vida > 1.
      */
+    @Deprecated
     private Banda banda;
     private Dimensao dimensao;
     private double pressaoCorreta;
@@ -181,11 +184,12 @@ public abstract class Pneu {
         this.pneuNovoNuncaRodado = pneuNovoNuncaRodado;
     }
 
+    @Deprecated
     public Banda getBanda() {
         return banda;
     }
 
-    public void setBanda(Banda banda) {
+    public void setBanda(@Deprecated Banda banda) {
         this.banda = banda;
     }
 
@@ -222,19 +226,22 @@ public abstract class Pneu {
         this.codigo = codigo;
     }
 
+    @Deprecated
     public ModeloPneu getModelo() {
         return modelo;
     }
 
-    public void setModelo(ModeloPneu modelo) {
+    public void setModelo(@Deprecated ModeloPneu modelo) {
         this.modelo = modelo;
     }
 
+    @Deprecated
     public Marca getMarca() {
         return marca;
     }
 
-    public void setMarca(Marca marca) {
+    @Deprecated
+    public void setMarca(@Deprecated Marca marca) {
         this.marca = marca;
     }
 

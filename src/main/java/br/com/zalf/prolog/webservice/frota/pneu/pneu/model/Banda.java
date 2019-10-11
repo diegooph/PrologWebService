@@ -5,8 +5,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import java.math.BigDecimal;
 
 /**
- * Created by Zart on 04/04/17.
+ * @deprecated em 2019-10-11 por conta da criação de objetos específicos para o crud de bandas e modelos de pneu.
+ * Esse objeto precisa ser refatorado.
  */
+@Deprecated
 public class Banda {
 
     private Marca marca;

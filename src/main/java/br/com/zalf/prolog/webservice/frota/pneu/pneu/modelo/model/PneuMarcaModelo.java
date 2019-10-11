@@ -1,19 +1,19 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.model;
+package br.com.zalf.prolog.webservice.frota.pneu.pneu.modelo.model;
 
 import java.util.List;
 
 /**
- * @deprecated em 2019-10-11 por conta da criação de objetos específicos para o crud de bandas e modelos de pneu.
- * Esse objeto precisa ser refatorado.
+ * Created on 27/09/19.
+ *
+ * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Deprecated
-public class Marca {
+public final class PneuMarcaModelo {
 
     private long codigo;
     private String nome;
-    private List<Modelo> modelos;
+    private List<PneuModeloVisualizacao> modelos;
 
-    public Marca() {
+    public PneuMarcaModelo() {
     }
 
     public long getCodigo() {
@@ -32,11 +32,11 @@ public class Marca {
         this.nome = nome;
     }
 
-    public List<Modelo> getModelos() {
+    public List<PneuModeloVisualizacao> getModelos() {
         return modelos;
     }
 
-    public void setModelos(List<Modelo> modelos) {
+    public void setModelos(List<PneuModeloVisualizacao> modelos) {
         this.modelos = modelos;
     }
 

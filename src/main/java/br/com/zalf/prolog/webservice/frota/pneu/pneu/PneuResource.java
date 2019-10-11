@@ -4,9 +4,8 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
@@ -61,14 +60,6 @@ public class PneuResource {
         return service.update(userToken, codUnidade, codOriginalPneu, pneu);
     }
 
-    @POST
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
-    @Path("/modelo/{codEmpresa}/{codMarca}")
-    public AbstractResponse insertModeloPneu(ModeloPneu modelo, @PathParam("codEmpresa") Long codEmpresa, @PathParam
-            ("codMarca") Long codMarca) {
-        return service.insertModeloPneu(modelo, codEmpresa, codMarca);
-    }
-
     @GET
     @Secured(permissions = {
             Pilares.Frota.Pneu.VISUALIZAR,
@@ -90,20 +81,6 @@ public class PneuResource {
 
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/marcaModelos/{codEmpresa}")
-    public List<Marca> getMarcaModeloPneuByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.getMarcaModeloPneuByCodEmpresa(codEmpresa);
-    }
-
-    @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/modelos/{codModelo}")
-    public Modelo getModeloPneu(@PathParam("codModelo") Long codModelo) {
-        return service.getModeloPneu(codModelo);
-    }
-
-    @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/dimensao")
     public List<PneuComum.Dimensao> getDimensoes() {
         return service.getDimensoes();
@@ -117,66 +94,6 @@ public class PneuResource {
             return Response.ok("Pneus vinculados com sucesso.");
         } else {
             return Response.error("Erro ao víncular os pneus ao veículo");
-        }
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR,
-            Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/bandas/marcas/{codEmpresa}")
-    public List<Marca> getMarcaModeloBanda(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.getMarcaModeloBanda(codEmpresa);
-    }
-
-    @POST
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR})
-    @Path("/bandas/marcas/{codEmpresa}")
-    public AbstractResponse insertMarcaBanda(Marca marca, @PathParam("codEmpresa") Long codEmpresa) {
-        return service.insertMarcaBanda(marca, codEmpresa);
-    }
-
-    @POST
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR})
-    @Path("/bandas/modelos/{codEmpresa}/{codMarcaBanda}")
-    public AbstractResponse insertModeloBanda(ModeloBanda modelo, @PathParam("codMarcaBanda") Long codMarcaBanda,
-                                              @PathParam("codEmpresa") Long codEmpresa) {
-        return service.insertModeloBanda(modelo, codMarcaBanda, codEmpresa);
-    }
-
-    @PUT
-    @Secured
-    @Path("bandas/marcas/{codEmpresa}")
-    public Response updateMarcaBanda(Marca marca, @PathParam("codEmpresa") Long codEmpresa) {
-        if (service.updateMarcaBanda(marca, codEmpresa)) {
-            return Response.ok("Marca atualizada com sucesso");
-        } else {
-            return Response.error("Erro ao atualizar a marca");
-        }
-    }
-
-    @PUT
-    @Secured
-    @Path("bandas/modelos")
-    public Response updateModeloBanda(Modelo modelo) {
-        if (service.updateModeloBanda(modelo)) {
-            return Response.ok("Modelo de banda atualizado com sucesso");
-        } else {
-            return Response.error("Erro ao atualizar o modelo de banda");
         }
     }
 
@@ -195,23 +112,6 @@ public class PneuResource {
                                                @QueryParam("urlFotoPneu") @Required final String urlFotoPneu) {
         service.marcarFotoComoSincronizada(codPneu, urlFotoPneu);
         return Response.ok("Foto marcada como sincronizada com sucesso");
-    }
-
-    /**
-     * @deprecated Use {@link #getMarcaModeloBanda(Long)} instead.
-     */
-    @GET
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR,
-            Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/bandas/{codEmpresa}")
-    @Deprecated
-    public List<Marca> DEPRECATED_GET_MARCA_MODELO_BANDA(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.getMarcaModeloBanda(codEmpresa);
     }
 
     /**
