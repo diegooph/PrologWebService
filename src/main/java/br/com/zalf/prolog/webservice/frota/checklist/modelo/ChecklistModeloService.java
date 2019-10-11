@@ -236,7 +236,12 @@ public final class ChecklistModeloService {
                             placaVeiculo,
                             TipoChecklist.fromString(tipoChecklist));
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao buscar modelo de checklist para realização", throwable);
+            final String errorMessage = String.format("Erro ao buscar modelo de checklist para realização.\n" +
+                    "codModeloChecklist: %d\n" +
+                    "codVeiculo: %d\n" +
+                    "placaVeiculo: %s\n" +
+                    "tipoChecklist: %s\n", codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
+            Log.e(TAG, errorMessage, throwable);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao iniciar checklist, tente novamente");
