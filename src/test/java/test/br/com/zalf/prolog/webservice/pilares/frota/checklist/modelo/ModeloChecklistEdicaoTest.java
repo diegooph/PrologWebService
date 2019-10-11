@@ -1433,6 +1433,58 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         }
     }
 
+    @Test
+    @DisplayName("Remove última pergunta, aumenta versão")
+    public void caso23_removeUltimaPergunta_deveMudarVersaoModelo() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = insertModeloBase();
+
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado).isNotNull();
+
+        // 4, 5 - Então, removemos a P1 e atualizamos.
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+
+        // Removemos a última pergunta (Cinto de segurança).
+        perguntas.remove(perguntas.size() - 1);
+
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
+        service.updateModeloChecklist(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                editado,
+                token);
+
+        // 6 - Por último, buscamos novamente o modelo e comparamos com o base. Tudo deve bater.
+        final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        // 7 - Versão do modelo tem que ter aumentado.
+        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
+
+        // 8, 9 - Garante que temos apenas uma pergunta.
+        assertThat(editado.getPerguntas()).hasSize(1);
+        assertThat(buscado.getPerguntas()).hasSize(1);
+        {
+            // P1.
+            final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
+            final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
+            assertThat(p1Depois.getDescricao()).isEqualTo("Farol");
+
+            ensureAllAttributesEqual(p1Antes, p1Depois, 4, true, false);
+
+            for (int i = 0; i < 4; i++) {
+                ensureAllAttributesEqual(p1Antes.getAlternativas().get(i), p1Depois.getAlternativas().get(i), true, false);
+            }
+        }
+    }
+
     // TODO: Talvez faça mais sentido (KISS) remover esse método. Usado apenas em 3 lugares mascara que usamos sempre
     // uma AlternativaModeloChecklistEdicaoAtualiza.
     @NotNull
