@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
@@ -97,20 +96,6 @@ public interface ChecklistModeloDao {
     @NotNull
     ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
                                                    @NotNull final Long codModelo) throws Throwable;
-
-    /**
-     * Busca as {@link PerguntaRespostaChecklist perguntas} que compoẽm o checklist.
-     *
-     * @param codUnidadeModelo Código da {@link Unidade unidade} do modelo.
-     * @param codModelo        Código do modelo.
-     * @param codVersaoModelo  Código da versão do modelo.
-     * @return Lista de {@link PerguntaRespostaChecklist perguntas}.
-     * @throws SQLException Se ocorrer erro na execução.
-     */
-    @NotNull
-    List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidadeModelo,
-                                                 @NotNull final Long codModelo,
-                                                 @NotNull final Long codVersaoModelo) throws SQLException;
 
     /**
      * Marca um {@link ModeloChecklistVisualizacao} como ativo ou inativo.

@@ -240,58 +240,6 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         }
     }
 
-    @NotNull
-    @Override
-    @Deprecated
-    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidadeModelo,
-                                                        @NotNull final Long codModelo,
-                                                        @NotNull final Long codVersaoModelo) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                            "  CP.CODIGO                   AS COD_PERGUNTA," +
-                            "  CGI.COD_IMAGEM              AS COD_IMAGEM," +
-                            "  CGI.URL_IMAGEM              AS URL_IMAGEM," +
-                            "  CP.PERGUNTA                 AS PERGUNTA," +
-                            "  CP.ORDEM                    AS ORDEM_PERGUNTA," +
-                            "  CP.SINGLE_CHOICE            AS SINGLE_CHOICE," +
-                            "  CAP.CODIGO                  AS COD_ALTERNATIVA," +
-                            "  CAP.ALTERNATIVA             AS ALTERNATIVA," +
-                            "  CAP.PRIORIDADE              AS PRIORIDADE," +
-                            "  CAP.ORDEM                   AS ORDEM_ALTERNATIVA," +
-                            "  CAP.ALTERNATIVA_TIPO_OUTROS AS ALTERNATIVA_TIPO_OUTROS " +
-                            "FROM CHECKLIST_PERGUNTAS CP " +
-                            "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP " +
-                            "    ON CP.CODIGO = CAP.COD_PERGUNTA " +
-                            "       AND CAP.COD_UNIDADE = CP.COD_UNIDADE " +
-                            "       AND CAP.COD_CHECKLIST_MODELO = CP.COD_CHECKLIST_MODELO " +
-                            "       AND CAP.COD_VERSAO_CHECKLIST_MODELO = CP.COD_VERSAO_CHECKLIST_MODELO" +
-                            "       AND CAP.STATUS_ATIVO = TRUE " +
-                            "  LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
-                            "    ON CGI.COD_IMAGEM = CP.COD_IMAGEM " +
-                            "WHERE CP.COD_UNIDADE = ? " +
-                            "      AND CP.COD_CHECKLIST_MODELO = ?" +
-                            "      AND CP.COD_VERSAO_CHECKLIST_MODELO = ?" +
-                            "      AND CAP.COD_VERSAO_CHECKLIST_MODELO = ?" +
-                            "      AND CP.STATUS_ATIVO = TRUE " +
-                            "      AND CAP.STATUS_ATIVO = TRUE " +
-                            "ORDER BY CP.ORDEM, Cp.PERGUNTA, CAP.ORDEM;",
-                    ResultSet.TYPE_SCROLL_SENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-            stmt.setLong(1, codUnidadeModelo);
-            stmt.setLong(2, codModelo);
-            stmt.setLong(3, codVersaoModelo);
-            stmt.setLong(4, codVersaoModelo);
-            rSet = stmt.executeQuery();
-            return createPerguntasAlternativas(rSet);
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
     @Override
     public void updateStatusAtivo(
             @NotNull final Long codUnidade,
