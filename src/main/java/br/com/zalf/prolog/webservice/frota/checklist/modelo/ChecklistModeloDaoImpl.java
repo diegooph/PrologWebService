@@ -440,25 +440,25 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             rSet = stmt.executeQuery();
             ModeloChecklistSelecao modeloSelecao = null;
             if (rSet.next()) {
-                final List<ModeloChecklistSelecao> dispositivos = new ArrayList<>();
+                final List<ModeloChecklistSelecao> modelos = new ArrayList<>();
                 List<VeiculoChecklistSelecao> veiculosSelecao = new ArrayList<>();
                 do {
                     if (modeloSelecao == null) {
                         modeloSelecao = ChecklistModeloConverter.createModeloChecklistSelecao(rSet, veiculosSelecao);
                         veiculosSelecao.add(ChecklistModeloConverter.createVeiculoChecklistSelecao(rSet));
                     } else {
-                        if (modeloSelecao.getCodModelo() == rSet.getLong("COD_MODELO")) {
+                        if (modeloSelecao.getCodModelo().equals(rSet.getLong("COD_MODELO"))) {
                             veiculosSelecao.add(ChecklistModeloConverter.createVeiculoChecklistSelecao(rSet));
                         } else {
-                            dispositivos.add(modeloSelecao);
+                            modelos.add(modeloSelecao);
                             veiculosSelecao = new ArrayList<>();
                             veiculosSelecao.add(ChecklistModeloConverter.createVeiculoChecklistSelecao(rSet));
                             modeloSelecao = ChecklistModeloConverter.createModeloChecklistSelecao(rSet, veiculosSelecao);
                         }
                     }
                 } while (rSet.next());
-                dispositivos.add(modeloSelecao);
-                return dispositivos;
+                modelos.add(modeloSelecao);
+                return modelos;
             } else {
                 return Collections.emptyList();
             }
@@ -490,39 +490,36 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             List<PerguntaRealizacaoChecklist> perguntas = new ArrayList<>();
             List<AlternativaRealizacaoChecklist> alternativas = new ArrayList<>();
             if (rSet.next()) {
-                //noinspection ConstantConditions
-                if (perguntas.isEmpty() && alternativas.isEmpty()) {
-                    // Estamos na primeira linha.
-                    // Precisamos inicializar o modelo com as primeiras informações do resultSet.
-                    alternativas.add(ChecklistModeloConverter.createAlternativaRealizacaoChecklist(rSet));
-                    pergunta = ChecklistModeloConverter.createPerguntaRealizacaoChecklist(rSet, alternativas);
-                    perguntas.add(pergunta);
-                    modelo = ChecklistModeloConverter.createModeloChecklistRealizacao(
-                            rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST"),
-                            rSet.getLong("COD_MODELO_CHECKLIST"),
-                            rSet.getLong("COD_VERSAO_MODELO_CHECKLIST"),
-                            rSet.getString("NOME_MODELO_CHECKLIST"),
-                            ChecklistModeloConverter.createVeiculoChecklistRealizacao(codVeiculo, placaVeiculo, rSet),
-                            perguntas);
-                } else {
-                    if (pergunta != null
-                            && pergunta.getCodigo().equals(rSet.getLong("COD_PERGUNTA"))) {
-                        // Mesma pergunta.
-                        // Precisamos processar apenas a nova alternativa.
-                        alternativas.add(ChecklistModeloConverter.createAlternativaRealizacaoChecklist(rSet));
-                    } else {
-                        // Trocou de pergunta.
-                        // Precisamos criar a nova pergunta e adicionar a ela a nova alternativa;
-                        alternativas = new ArrayList<>();
-                        alternativas.add(ChecklistModeloConverter.createAlternativaRealizacaoChecklist(rSet));
+                do {
+                    if (pergunta == null) {
+                        modelo = ChecklistModeloConverter.createModeloChecklistRealizacao(
+                                rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST"),
+                                rSet.getLong("COD_MODELO_CHECKLIST"),
+                                rSet.getLong("COD_VERSAO_MODELO_CHECKLIST"),
+                                rSet.getString("NOME_MODELO_CHECKLIST"),
+                                ChecklistModeloConverter.createVeiculoChecklistRealizacao(codVeiculo, placaVeiculo, rSet),
+                                perguntas);
                         pergunta = ChecklistModeloConverter.createPerguntaRealizacaoChecklist(rSet, alternativas);
+                        alternativas.add(ChecklistModeloConverter.createAlternativaRealizacaoChecklist(rSet));
                         perguntas.add(pergunta);
+                    } else {
+                        if (pergunta.getCodigo().equals(rSet.getLong("COD_PERGUNTA"))) {
+                            // Mesma pergunta.
+                            // Precisamos processar apenas a nova alternativa.
+                            alternativas.add(ChecklistModeloConverter.createAlternativaRealizacaoChecklist(rSet));
+                        } else {
+                            // Trocou de pergunta.
+                            alternativas = new ArrayList<>();
+                            alternativas.add(ChecklistModeloConverter.createAlternativaRealizacaoChecklist(rSet));
+                            pergunta = ChecklistModeloConverter.createPerguntaRealizacaoChecklist(rSet, alternativas);
+                            perguntas.add(pergunta);
+                        }
                     }
-                }
+                } while (rSet.next());
+                return modelo;
             } else {
                 throw new IllegalStateException("Modelo de checklist não encontrado para o código: " + codModeloChecklist);
             }
-            return modelo;
         } finally {
             close(conn, stmt, rSet);
         }

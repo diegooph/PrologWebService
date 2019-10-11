@@ -39,18 +39,18 @@ public final class AlternativaRealizacaoChecklist {
      * para ser resolvido.
      */
     @NotNull
-    private final PrioridadeAlternativa prioridadeAlternativa;
+    private final PrioridadeAlternativa prioridade;
 
     public AlternativaRealizacaoChecklist(@NotNull final Long codigo,
                                           @NotNull final String descricao,
                                           final boolean tipoOutros,
                                           final int ordemExibicao,
-                                          @NotNull final PrioridadeAlternativa prioridadeAlternativa) {
+                                          @NotNull final PrioridadeAlternativa prioridade) {
         this.codigo = codigo;
         this.descricao = descricao;
         this.tipoOutros = tipoOutros;
         this.ordemExibicao = ordemExibicao;
-        this.prioridadeAlternativa = prioridadeAlternativa;
+        this.prioridade = prioridade;
     }
 
     @NotNull
@@ -72,7 +72,7 @@ public final class AlternativaRealizacaoChecklist {
     }
 
     @NotNull
-    public PrioridadeAlternativa getPrioridadeAlternativa() {
-        return prioridadeAlternativa;
+    public PrioridadeAlternativa getPrioridade() {
+        return prioridade;
     }
 }

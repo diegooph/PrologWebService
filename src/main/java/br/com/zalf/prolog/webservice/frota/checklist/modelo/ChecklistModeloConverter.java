@@ -81,7 +81,7 @@ public final class ChecklistModeloConverter {
         return new PerguntaRealizacaoChecklist(
                 rSet.getLong("COD_PERGUNTA"),
                 rSet.getString("DESCRICAO_PERGUNTA"),
-                rSet.getLong("COD_IMAGEM"),
+                NullIf.equalOrLess(rSet.getLong("COD_IMAGEM"), 0),
                 rSet.getString("URL_IMAGEM"),
                 rSet.getInt("PERGUNTA_ORDEM_EXIBICAO"),
                 rSet.getBoolean("SINGLE_CHOICE"),

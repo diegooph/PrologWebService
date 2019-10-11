@@ -77,20 +77,22 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
         {
             // P2.
             final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
+
             // B1.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "Outros",
-                    PrioridadeAlternativa.BAIXA,
-                    true,
-                    1,
-                    false));
-            // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "B2",
                     PrioridadeAlternativa.ALTA,
                     false,
-                    2,
+                    1,
                     true));
+
+            // B2
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "Outros",
+                    PrioridadeAlternativa.BAIXA,
+                    true,
+                    2,
+                    false));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
@@ -131,7 +133,6 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
         assertThat(modelo.getVeiculoRealizacao().getCodVeiculo()).isEqualTo(veiculo.getCodigo());
         assertThat(modelo.getVeiculoRealizacao().getPlacaVeiculo()).isEqualTo(veiculo.getPlaca());
 
-        // TODO: Está retornando apenas uma pergunta.
         assertThat(modelo.getPerguntas()).hasSize(2);
         {
             // P1.
@@ -141,6 +142,8 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
             assertThat(p1)
                     .isEqualToIgnoringGivenFields(
                             perguntas.get(0),
+                            "codigo",
+                            "urlImagem",
                             "alternativas");
 
             assertThat(p1.getAlternativas()).hasSize(1);
@@ -150,17 +153,21 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
             assertThat(a1)
                     .isEqualToIgnoringGivenFields(
                             perguntas.get(0).getAlternativas().get(0),
-                            "deveAbrirOrdemServico");
+                            "deveAbrirOrdemServico",
+                            "codigo");
         }
 
         {
             // P2.
-            final PerguntaRealizacaoChecklist p2 = modelo.getPerguntas().get(0);
+            final PerguntaRealizacaoChecklist p2 = modelo.getPerguntas().get(1);
             assertThat(p2).isNotNull();
-            assertThat(p2).hasNoNullFieldsOrProperties();
+            // Essa pergunta não tem imagem.
+            assertThat(p2).hasNoNullFieldsOrPropertiesExcept("codImagem", "urlImagem");
             assertThat(p2)
                     .isEqualToIgnoringGivenFields(
                             perguntas.get(1),
+                            "codigo",
+                            "urlImagem",
                             "alternativas");
 
             assertThat(p2.getAlternativas()).hasSize(2);
@@ -171,16 +178,18 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
                 assertThat(b1)
                         .isEqualToIgnoringGivenFields(
                                 perguntas.get(1).getAlternativas().get(0),
-                                "deveAbrirOrdemServico");
+                                "deveAbrirOrdemServico",
+                                "codigo");
             }
             {
-                final AlternativaRealizacaoChecklist b2 = p2.getAlternativas().get(0);
+                final AlternativaRealizacaoChecklist b2 = p2.getAlternativas().get(1);
                 assertThat(b2).isNotNull();
                 assertThat(b2).hasNoNullFieldsOrProperties();
                 assertThat(b2)
                         .isEqualToIgnoringGivenFields(
                                 perguntas.get(1).getAlternativas().get(1),
-                                "deveAbrirOrdemServico");
+                                "deveAbrirOrdemServico",
+                                "codigo");
             }
         }
     }
