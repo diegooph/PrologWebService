@@ -9,6 +9,8 @@ Change Log
 ### Refactors
 * Os método de busca de modelos de checklist para seleção foi recriado com novos objetos (PL-2228)
 * Os métodos de início de um novo checklist foram recriados com novos objetos (PL-2228)
+* Altera métodos de insert de checklist online e offline para novos objetos e estrutura (PL-2227)
+* Altera integração com Avilan e com Piccolotur para utilizar novo objeto de checklist (PL-2227)
 
 <a name="v1.0.2"></a>
 ## Version [v1.0.2](https://github.com/luizfp/PrologWebService/compare/v1.0.1...v1.0.2) (release-date) [unreleased]
