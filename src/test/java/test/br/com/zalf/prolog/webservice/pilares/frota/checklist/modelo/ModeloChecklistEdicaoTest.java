@@ -1335,6 +1335,104 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         return novas;
     }
 
+    @Test
+    @DisplayName("Altera ordem de exibição da P1 com a P2, mantém versão")
+    public void caso22_alteraOrdemExibicaoP1comP2_deveMudarVersaoModeloEManterCodigoFixo() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = insertModeloBase();
+
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado).isNotNull();
+
+        // 4, 5 - Alteramos A1 para prioridade baixa e aí atualizamos.
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        final PerguntaModeloChecklistEdicao p1 = perguntas.get(0);
+        final PerguntaModeloChecklistEdicao p2 = perguntas.get(1);
+        perguntas.set(0,
+                new PerguntaModeloChecklistEdicaoAtualiza(
+                        p2.getCodigo(),
+                        p2.getCodigoFixo(),
+                        p2.getDescricao(),
+                        p2.getCodImagem(),
+                        1,
+                        p2.isSingleChoice(),
+                        p2.getAlternativas()
+                                .stream()
+                                .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
+                                        a.getCodigo(),
+                                        a.getCodigoFixo(),
+                                        a.getDescricao(),
+                                        a.getPrioridade(),
+                                        a.isTipoOutros(),
+                                        a.getOrdemExibicao(),
+                                        a.isDeveAbrirOrdemServico()))
+                                .collect(Collectors.toList())));
+        perguntas.set(1,
+                new PerguntaModeloChecklistEdicaoAtualiza(
+                        p1.getCodigo(),
+                        p1.getCodigoFixo(),
+                        p1.getDescricao(),
+                        p1.getCodImagem(),
+                        2,
+                        p1.isSingleChoice(),
+                        p1.getAlternativas()
+                                .stream()
+                                .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
+                                        a.getCodigo(),
+                                        a.getCodigoFixo(),
+                                        a.getDescricao(),
+                                        a.getPrioridade(),
+                                        a.isTipoOutros(),
+                                        a.getOrdemExibicao(),
+                                        a.isDeveAbrirOrdemServico()))
+                                .collect(Collectors.toList())));
+
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
+        service.updateModeloChecklist(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                editado,
+                token);
+
+        // 6 - Por último, buscamos novamente o modelo e comparamos.
+        final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        // 7 - Versão tem que ter aumentado.
+        assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
+        assertThat(buscado.getPerguntas()).hasSize(2);
+        {
+            // P1.
+            final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
+            final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
+
+            // Código fixo da pergunta se manteve.
+            assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
+
+            // 'Cinto de segurança' está com ordem de exibição 1.
+            assertThat(p1Depois.getDescricao()).isEqualTo("Cinto de segurança");
+            assertThat(p1Depois.getOrdemExibicao()).isEqualTo(1);
+        }
+        {
+            // P2.
+            final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
+            final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
+
+            // Código fixo da pergunta se manteve.
+            assertThat(p2Depois.getCodigoFixo()).isEqualTo(p2Antes.getCodigoFixo());
+
+            // 'Farol' está com ordem de exibição 2.
+            assertThat(p2Depois.getDescricao()).isEqualTo("Farol");
+            assertThat(p2Depois.getOrdemExibicao()).isEqualTo(2);
+        }
+    }
+
     // TODO: Talvez faça mais sentido (KISS) remover esse método. Usado apenas em 3 lugares mascara que usamos sempre
     // uma AlternativaModeloChecklistEdicaoAtualiza.
     @NotNull
