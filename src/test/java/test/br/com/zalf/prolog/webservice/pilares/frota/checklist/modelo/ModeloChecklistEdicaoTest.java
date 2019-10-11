@@ -1336,7 +1336,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Altera ordem de exibição da P1 com a P2, mantém versão")
+    @DisplayName("Altera ordem de exibição da P1 com a P2, muda versão")
     public void caso22_alteraOrdemExibicaoP1comP2_deveMudarVersaoModeloEManterCodigoFixo() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
@@ -1405,7 +1405,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 COD_UNIDADE,
                 result.getCodModeloChecklistInserido());
         // 7 - Versão tem que ter aumentado.
-        assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
+        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
         assertThat(buscado.getPerguntas()).hasSize(2);
         {
             // P1.
