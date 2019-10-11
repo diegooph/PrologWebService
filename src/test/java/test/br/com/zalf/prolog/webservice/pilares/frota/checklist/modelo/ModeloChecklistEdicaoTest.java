@@ -926,13 +926,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             Assertions
                     .assertThat(p1Depois.getAlternativas())
                     .extracting("descricao")
-                    .contains("Lâmpada queimada");
+                    .doesNotContain("Lâmpada queimada");
 
             // 12 - Garante que a alternativa 'Fora de foco' não está mais presente.
             Assertions
                     .assertThat(p1Depois.getAlternativas())
                     .extracting("descricao")
-                    .contains("Fora de foco");
+                    .doesNotContain("Fora de foco");
 
             // 12 - Garante que a alternativa A1 possui a nova descrição.
             assertThat(p1Depois.getAlternativas().get(0).getDescricao()).isEqualTo("Desfocado");
@@ -1071,7 +1071,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
             // 8, 9 - Código fixo mudou.
-            ensureAllAttributesEqual(p1Antes, p1Depois, 5, false, false);
+            ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
 
             // 10 - Está single_choice.
             assertThat(p1Depois.isSingleChoice()).isTrue();
