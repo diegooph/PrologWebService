@@ -23,7 +23,6 @@ public final class EntreEmContatoResource {
     private final EntreEmContatoService service = new EntreEmContatoService();
 
     @POST
-    @Path("/")
     public AbstractResponse insert(@NotNull final MensagemContato contato) throws ProLogException {
         return service.insertNovoContato(contato);
     }

@@ -14,6 +14,8 @@ import br.com.zalf.prolog.webservice.colaborador.relatorios.ColaboradorRelatorio
 import br.com.zalf.prolog.webservice.colaborador.relatorios.ColaboradorRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.contato.EntreEmContatoDao;
 import br.com.zalf.prolog.webservice.contato.EntreEmContatoDaoImpl;
+import br.com.zalf.prolog.webservice.cs.nps.PesquisaNpsDao;
+import br.com.zalf.prolog.webservice.cs.nps.PesquisaNpsDaoImpl;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDaoImpl;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
@@ -492,6 +494,11 @@ public final class Injection {
     @NotNull
     public static TesteAferidorDao provideTesteAferidorDao() {
         return new TesteAferidorDaoImpl();
+    }
+
+    @NotNull
+    public static PesquisaNpsDao providePesquisaNpsDao() {
+        return new PesquisaNpsDaoImpl();
     }
 
     // ================================================
