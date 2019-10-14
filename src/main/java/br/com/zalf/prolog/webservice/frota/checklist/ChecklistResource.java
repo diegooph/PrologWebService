@@ -38,7 +38,7 @@ public final class ChecklistResource {
     @POST
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
-                                   @HeaderParam(ProLogCustomHeaders.APP_VERSION_ANDROID_APP) Integer versaoApp,
+                                   @HeaderParam(ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) Integer versaoApp,
                                    @Required final String checklistJson) throws ProLogException {
         final ChecklistInsercao checklistNew;
         // Convertemos o JSON dependendo da versão do App.
