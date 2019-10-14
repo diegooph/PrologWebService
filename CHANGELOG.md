@@ -4,6 +4,7 @@ Change Log
 ## Stage
 
 ### Features
+* Cria estrutura de pesquisa de NPS (PL-2350)
 * Cria testes para validar criação e edição de modelos de checklist (PL-2305)
 
 ### Refactors
@@ -12,9 +13,22 @@ Change Log
 * Altera métodos de insert de checklist online e offline para novos objetos e estrutura (PL-2227)
 * Altera integração com Avilan e com Piccolotur para utilizar novo objeto de checklist (PL-2227)
 
-<a name="v1.0.2"></a>
-## Version [v1.0.2](https://github.com/luizfp/PrologWebService/compare/v1.0.1...v1.0.2) (release-date) [unreleased]
+<a name="v1.0.3"></a>
+## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (release-date) [unreleased]
 
+### Features
+* Cria estrutura para salvar requisições e respostas das integrações. (PL-2306)
+* Cria funcionalidade de testes do aferidor (PL-2343)
+
+<a name="v1.0.2"></a>
+## Version [v1.0.2](https://github.com/luizfp/PrologWebService/compare/v1.0.1...v1.0.2) (2019-09-29)
+
+### Features
+* Cria funcionalidade de inserção/edição de nomenclatura (PL-2259)
+
+### Refactors
+* Altera bloqueador de requisições do App para ignorar requisições do Afere Fácil da Praxio (PL-2207)
+* Altera estrutura de checklist para não salvar nomes iguais (PL-2140)
 
 <a name="v1.0.1"></a>
 ## Version [v1.0.1](https://github.com/luizfp/PrologWebService/compare/v1.0.0...v1.0.1) (2019-09-18)
@@ -26,6 +40,7 @@ Change Log
 ### Refactors
 * Seta prioridades das alternativas do check na integração com Avilan como BAIXA (PL-2304)
 * Melhora mensagens de erro na integração com a Translecchi (PL-2284)
+* Modifica método updateStatusAtivo do checklist, impossibilitando a ativação de modelos com mesmo nome. 
 
 <a name="v1.0.0"></a>
 ## Version [v1.0.0](https://github.com/luizfp/PrologWebService/compare/v0.1.01...v1.0.0) (2019-09-15)

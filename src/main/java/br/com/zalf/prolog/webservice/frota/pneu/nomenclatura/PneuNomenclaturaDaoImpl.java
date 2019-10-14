@@ -38,6 +38,12 @@ public final class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
             final int[] posicoesNaoEstepes = pneuNomenclaturaCadastro.getPosicoesNaoEstepes();
             garanteNomenclaturaCompleta(conn, pneuNomenclaturaCadastro.getCodDiagrama(), posicoesNaoEstepes);
 
+            // Antes de inserir, deleta a nomenclatura cadastrada dos estepes.
+            // Fazemos isso pois a nomenclatura para estepes pode ser removida no Sistema Web.
+            deletaNomenclaturaEstepes(conn,
+                                      pneuNomenclaturaCadastro.getCodEmpresa(),
+                                      pneuNomenclaturaCadastro.getCodDiagrama());
+
             stmt = conn.prepareCall("{CALL FUNC_PNEU_NOMENCLATURA_INSERE_EDITA_NOMENCLATURA(" +
                     "F_COD_EMPRESA                := ?, " +
                     "F_COD_DIAGRAMA               := ?, " +
@@ -60,7 +66,7 @@ public final class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
                     .of(batchResult)
                     .allMatch(result -> result == EXECUTE_BATCH_SUCCESS);
             if (!tudoOk || batchResult.length != nomenclaturas.size()) {
-                throw new IllegalStateException("Erro ao salvar as nomenclaturas da empresa: "
+                throw new IllegalStateException("Erro ao cadastrar as nomenclaturas da empresa: "
                         + pneuNomenclaturaCadastro.getCodEmpresa());
             }
             conn.commit();
@@ -110,6 +116,22 @@ public final class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
                     "F_POSICOES_PROLOG := ?)}");
             stmt.setLong(1, codDiagrama);
             stmt.setObject(2, posicoesProLog);
+            stmt.execute();
+        } finally {
+            close(stmt);
+        }
+    }
+
+    private void deletaNomenclaturaEstepes(@NotNull final Connection conn,
+                                           @NotNull final Long codEmpresa,
+                                           @NotNull final Long codDiagrama) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareCall("{CALL FUNC_PNEU_NOMENCLATURA_DELETA_ESTEPES(" +
+                    "F_COD_EMPRESA  := ?," +
+                    "F_COD_DIAGRAMA := ?)}");
+            stmt.setLong(1, codEmpresa);
+            stmt.setObject(2, codDiagrama);
             stmt.execute();
         } finally {
             close(stmt);

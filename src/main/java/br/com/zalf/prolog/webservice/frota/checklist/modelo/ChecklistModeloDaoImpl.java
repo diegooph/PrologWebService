@@ -250,26 +250,14 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE CHECKLIST_MODELO " +
-                    "SET STATUS_ATIVO = ? " +
-                    "WHERE COD_UNIDADE  = ? AND CODIGO = ?;");
-            stmt.setBoolean(1, statusAtivo);
-            stmt.setLong(2, codUnidade);
-            stmt.setLong(3, codModelo);
-            if (stmt.executeUpdate() != 0) {
-                checklistOfflineListener.onUpdateStatusModeloChecklist(conn, codModelo);
-                conn.commit();
-            } else {
-                throw new SQLException("Erro ao atualizar o status do modelo de checklist:\n"
-                        + "codUnidade: " + codUnidade + "\n"
-                        + "codModelo: " + codModelo);
-            }
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
+            stmt = conn.prepareCall("{CALL FUNC_CHECKLIST_UPDATE_STATUS_MODELO(" +
+                    "F_COD_UNIDADE  := ?," +
+                    "F_COD_MODELO   := ?," +
+                    "F_STATUS_ATIVO := ?)}");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModelo);
+            stmt.setBoolean(3, statusAtivo);
+            stmt.execute();
         } finally {
             close(conn, stmt);
         }

@@ -33,10 +33,10 @@ public final class PneuNomenclaturaService {
             dao.insertOrUpdateNomenclatura(pneuNomenclaturaCadastro, TokenCleaner.getOnlyToken(userToken));
             return Response.ok("Nomenclaturas cadastradas com sucesso");
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao inserir nomenclaturas", t);
+            Log.e(TAG, "Erro ao cadastrar nomenclaturas", t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir a nomenclaturas, tente novamente");
+                    .map(t, "Erro ao cadastrar a nomenclaturas, tente novamente");
         }
     }
 

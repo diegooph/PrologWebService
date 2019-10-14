@@ -17,9 +17,14 @@ public final class ProLogCustomHeaders {
     @NotNull
     public static final String VERSAO_DADOS_INTERVALO = IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO;
     @NotNull
-    public static final String APP_VERSION_ANDROID_APP = "ProLog-Android-App-Version";
-    @NotNull
     public static final String HEADER_TOKEN_INTEGRACAO = "ProLog-Token-Integracao";
     @NotNull
     public static final String HEADER_TOKEN_AGENDADOR = "ProLog-Token-Agendador";
+
+    public final class AppVersionAndroid {
+        @NotNull
+        public static final String AFERE_FACIL_APP_VERSION = "Praxio-AfereFacil-Android-App-Version";
+        @NotNull
+        public static final String PROLOG_APP_VERSION = "ProLog-Android-App-Version";
+    }
 }
