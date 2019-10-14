@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloC
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -14,55 +15,68 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ChecklistModeloValidator {
-    //TODO ENCONTRAR A MELHOR FORMA DE LIDAR COM A STRING PADRÃO DA ALTERNATIVA OUTROS
-    private static final String DEFAULT_DESCRICAO_TIPO_OUTROS = "Outros";
+final class ChecklistModeloValidator {
+    private static final String DEFAULT_DESCRICAO_TIPO_OUTROS_BACKEND = "Outros";
+    private static final String DEFAULT_DESCRICAO_TIPO_OUTROS_WEB = "Outros (Opção padrão)";
 
     private ChecklistModeloValidator() {
         throw new IllegalStateException(ChecklistModeloValidator.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static void validaModelo(@NotNull final ModeloChecklistInsercao modelo) {
-        if (modelo.getPerguntas().isEmpty()) {
-            throw new GenericException(String.format("O modelo '%s' não pode ser salvo sem perguntas", modelo.getNome()));
-        }
-
+    static void validaModelo(@NotNull final ModeloChecklistInsercao modelo) {
         //noinspection unchecked
-        internalValidate((List<PerguntaModeloChecklist>) (List<?>) modelo.getPerguntas());
+        internalValidate(modelo.getNome(), (List<PerguntaModeloChecklist>) (List<?>) modelo.getPerguntas());
     }
 
-    public static void validaModelo(@NotNull final ModeloChecklistEdicao modelo) {
-        if (modelo.getPerguntas().isEmpty()) {
-            throw new GenericException(String.format("O modelo '%s' não pode ser salvo sem perguntas", modelo.getNome()));
-        }
-
+    static void validaModelo(@NotNull final ModeloChecklistEdicao modelo) {
         //noinspection unchecked
-        internalValidate((List<PerguntaModeloChecklist>) (List<?>) modelo.getPerguntas());
+        internalValidate(modelo.getNome(), (List<PerguntaModeloChecklist>) (List<?>) modelo.getPerguntas());
     }
 
-    private static void internalValidate(@NotNull final List<PerguntaModeloChecklist> perguntas) {
+    private static void internalValidate(@NotNull final String nomeModelo,
+                                         @NotNull final List<PerguntaModeloChecklist> perguntas) {
+        // Verifica se temos perguntas no modelo.
+        if (perguntas.isEmpty()) {
+            throw new GenericException(String.format("O modelo '%s' não pode ser salvo sem perguntas", nomeModelo));
+        }
+
         for (final PerguntaModeloChecklist p : perguntas) {
+            // Verifica se a pergunta tem alternativas.
             if (p.getAlternativas().isEmpty()) {
                 throw new GenericException(String.format("A pergunta '%s' está sem alternativas", p.getDescricao()));
             }
 
+            // Verifica se a pergunta tem uma, e apenas uma, alternativa do tipo_outros.
             final long totalTipoOutros = p
                     .getAlternativas()
                     .stream()
                     .filter(AlternativaModeloChecklist::isTipoOutros)
                     .count();
             if (totalTipoOutros != 1) {
-                throw new GenericException("Toda pergunta deve ter uma alternativa 'Outros' com digitação livre");
+                throw new GenericException(String.format(
+                        "Toda pergunta deve ter uma alternativa '%s' com digitação livre",
+                        DEFAULT_DESCRICAO_TIPO_OUTROS_WEB));
             }
 
+            // Verifica se a alternativa do tipo_outros contém a descrição padrão dessa alternativa aceita pelo ProLog.
             final boolean tipoOutrosSemDescricaoPadrao = p.getAlternativas()
                     .stream()
                     .anyMatch(a ->
-                            a.isTipoOutros() && !a.getDescricao().equals(DEFAULT_DESCRICAO_TIPO_OUTROS));
+                            a.isTipoOutros() && !a.getDescricao().equals(DEFAULT_DESCRICAO_TIPO_OUTROS_BACKEND));
             if (tipoOutrosSemDescricaoPadrao) {
                 throw new GenericException(String.format(
                         "A alternativa que requer a digitação do usuário precisa ter o nome '%s'",
-                        DEFAULT_DESCRICAO_TIPO_OUTROS));
+                        DEFAULT_DESCRICAO_TIPO_OUTROS_WEB));
+            }
+
+            // Verifica se a alternativa do tipo_outros está por último na pergunta.
+            p.getAlternativas().sort(Comparator.comparing(AlternativaModeloChecklist::getOrdemExibicao));
+            if (!p.getAlternativas().get(p.getAlternativas().size() - 1).isTipoOutros()) {
+                throw new GenericException(
+                        String.format(
+                                "A alternativa '%s' da pergunta '%s' deve ser a última",
+                                DEFAULT_DESCRICAO_TIPO_OUTROS_WEB,
+                                p.getDescricao()));
             }
         }
     }
