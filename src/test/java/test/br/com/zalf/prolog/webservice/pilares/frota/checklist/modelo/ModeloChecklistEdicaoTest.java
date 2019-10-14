@@ -22,8 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.lang.reflect.Type;
@@ -33,6 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
@@ -43,8 +43,8 @@ import static com.google.common.truth.Truth.assertThat;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class ModeloChecklistEdicaoTest extends BaseTest {
-    private static final String DEFAULT_DESCRICAO_TIPO_OUTROS = "Outros";
     private static final String CPF_TOKEN = "03383283194";
     private static final Long COD_EMPRESA = 3L;
     private static final Long COD_UNIDADE = 5L;
@@ -53,7 +53,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     // Mesmo não sendo uma constante, usamos maiúsculo para facilitar a diferenciação nos testes.
     private ModeloChecklistInsercao BASE;
 
-    @Override
+    @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
         token = getValidToken(CPF_TOKEN);
@@ -64,7 +64,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 ModeloChecklistInsercao.class);
     }
 
-    @Override
+    @AfterAll
     public void destroy() {
         DatabaseManager.finish();
         service = null;
@@ -542,14 +542,24 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
         // Removemos a alternativa 'Fora de foco' da P1 e adicionamos 'Rasgado' na P2.
         perguntas.get(0).getAlternativas().remove(0);
+
         // P2 é 'Cinto de Segurança' e possui 3 alternativas.
+        // A tipo_outros tem que ser realocada para a última posição.
+        final AlternativaModeloChecklist outros = perguntas.get(1).getAlternativas().remove(2);
         perguntas.get(1).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Rasgado",
                         PrioridadeAlternativa.BAIXA,
                         false,
-                        4,
+                        3,
                         true));
+        perguntas.get(1).getAlternativas().add(
+                new AlternativaModeloChecklistEdicaoInsere(
+                        "Outros",
+                        outros.getPrioridade(),
+                        true,
+                        4,
+                        outros.isDeveAbrirOrdemServico()));
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
@@ -649,7 +659,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         }
     }
 
-    @Test(expected = ProLogException.class)
+    @Test
     @DisplayName("Remove P1 e P2, dá erro")
     public void caso10_removeP1EP2_deveDarErro() {
         // 1, 2 - Insere o modelo base.
@@ -673,14 +683,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         perguntas.remove(0);
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
-        service.updateModeloChecklist(
+        assertThrows(ProLogException.class, () -> service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
                 editado,
-                token);
+                token));
     }
 
-    @Test(expected = ProLogException.class)
+    @Test
     @DisplayName("Remove todas as alternativas da P1, dá erro")
     public void caso11_removeTodasAlternativasP1_deveDarErro() {
         // 1, 2 - Insere o modelo base.
@@ -702,14 +712,14 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         perguntas.get(0).getAlternativas().clear();
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
-        service.updateModeloChecklist(
+        assertThrows(ProLogException.class, () -> service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
                 editado,
-                token);
+                token));
     }
 
-    @Test(expected = ProLogException.class)
+    @Test
     @DisplayName("Remove alternativa tipo_outros da P2, dá erro")
     public void caso12_removeAlternativaTipoOutrosDaP2_deveDarErro() {
         // 1, 2 - Insere o modelo base.
@@ -731,11 +741,11 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         perguntas.get(1).getAlternativas().remove(2);
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
-        service.updateModeloChecklist(
+        assertThrows(ProLogException.class, () -> service.updateModeloChecklist(
                 modeloBuscado.getCodUnidade(),
                 modeloBuscado.getCodModelo(),
                 editado,
-                token);
+                token));
     }
 
     @Test
@@ -964,14 +974,23 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         (AlternativaModeloChecklistVisualizacao) a1,
                         "Fora de foco",
                         "Desfocado"));
-        // P1 - Adiciona nova alternativa.
+        // P1 - Adiciona nova alternativa - P1 já tem 4.
+        // A tipo_outros tem que ser realocada para a última posição.
+        final AlternativaModeloChecklist outros = perguntas.get(0).getAlternativas().remove(3);
         perguntas.get(0).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Piscando sozinho",
                         PrioridadeAlternativa.BAIXA,
                         false,
-                        5,
+                        4,
                         true));
+        perguntas.get(0).getAlternativas().add(
+                new AlternativaModeloChecklistEdicaoInsere(
+                        "Outros",
+                        outros.getPrioridade(),
+                        true,
+                        5,
+                        outros.isDeveAbrirOrdemServico()));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -998,11 +1017,11 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             ensureAllAttributesEqual(p1Antes, p1Depois, 5, true, false);
 
             // 11 - Garante que a alternativa A5 está presente.
-            final AlternativaModeloChecklist a5 = p1Depois.getAlternativas().get(4);
+            final AlternativaModeloChecklist a5 = p1Depois.getAlternativas().get(3);
             assertThat(a5.getDescricao()).isEqualTo("Piscando sozinho");
             assertThat(a5.getPrioridade()).isEqualTo(PrioridadeAlternativa.BAIXA);
             assertThat(a5.isTipoOutros()).isFalse();
-            assertThat(a5.getOrdemExibicao()).isEqualTo(5);
+            assertThat(a5.getOrdemExibicao()).isEqualTo(4);
             assertThat(a5.isDeveAbrirOrdemServico()).isTrue();
 
             // 12 - Garante que a alternativa 'Fora de foco' não está mais presente.
