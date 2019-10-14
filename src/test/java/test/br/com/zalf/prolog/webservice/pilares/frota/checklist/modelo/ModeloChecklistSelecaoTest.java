@@ -9,8 +9,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.Pergu
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class ModeloChecklistSelecaoTest extends BaseTest {
     private static final String CPF_TOKEN = "03383283194";
     private static final Long COD_CARGO = 951L;
@@ -35,14 +35,14 @@ public final class ModeloChecklistSelecaoTest extends BaseTest {
     private ChecklistModeloService service;
     private String token;
 
-    @Override
+    @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
         token = getValidToken(CPF_TOKEN);
         service = new ChecklistModeloService();
     }
 
-    @Override
+    @AfterAll
     public void destroy() {
         DatabaseManager.finish();
         service = null;
