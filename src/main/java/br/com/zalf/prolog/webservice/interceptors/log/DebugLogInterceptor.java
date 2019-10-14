@@ -6,6 +6,8 @@ import org.apache.commons.io.IOUtils;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
@@ -16,8 +18,10 @@ import java.nio.charset.StandardCharsets;
 @DebugLog
 @Provider
 public final class DebugLogInterceptor implements ContainerRequestFilter {
-
     private static final String TAG = DebugLogInterceptor.class.getSimpleName();
+
+    @Context
+    ResourceInfo resourceInfo;
 
     @Override
     public void filter(ContainerRequestContext request) throws IOException {
@@ -25,6 +29,8 @@ public final class DebugLogInterceptor implements ContainerRequestFilter {
             return;
 
         Log.d(TAG, "--> " + request.getMethod() + " " + request.getUriInfo().getPath());
+        Log.d(TAG, "Class Name: " + resourceInfo.getResourceClass().getName());
+        Log.d(TAG, "Method Name: " + resourceInfo.getResourceMethod().getName());
         printQueryParameters(request);
         printHeaders(request);
         final String sizeBody = request.getLength() >= 0 ? " (" + request.getLength() + "-byte body)" : "";
