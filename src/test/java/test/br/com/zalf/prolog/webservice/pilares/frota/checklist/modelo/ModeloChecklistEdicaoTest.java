@@ -1333,27 +1333,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
     }
 
-    @NotNull
-    private List<AlternativaModeloChecklistEdicao> toAlternativaAtualiza(
-            @NotNull final List<AlternativaModeloChecklist> alternativas) {
-        // Força o cast para garantir que é do tipo Visualização.
-        @SuppressWarnings("unchecked")
-        final List<AlternativaModeloChecklistVisualizacao> visu =
-                (List<AlternativaModeloChecklistVisualizacao>) (List<?>) alternativas;
-
-        final List<AlternativaModeloChecklistEdicao> novas = new ArrayList<>(alternativas.size());
-        visu.forEach(a -> novas.add(
-                new AlternativaModeloChecklistEdicaoAtualiza(
-                        a.getCodigo(),
-                        a.getCodigoFixo(),
-                        a.getDescricao(),
-                        a.getPrioridade(),
-                        a.isTipoOutros(),
-                        a.getOrdemExibicao(),
-                        a.isDeveAbrirOrdemServico())));
-        return novas;
-    }
-
     @Test
     @DisplayName("Altera ordem de exibição da P1 com a P2, muda versão")
     public void caso22_alteraOrdemExibicaoP1comP2_deveMudarVersaoModeloEManterCodigoFixo() {
@@ -1502,6 +1481,88 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 ensureAllAttributesEqual(p1Antes.getAlternativas().get(i), p1Depois.getAlternativas().get(i), true, false);
             }
         }
+    }
+
+    @Test
+    @DisplayName("Altera imagem da P1, aumenta versão")
+    public void caso24_alteraImagemP1_deveMudarVersaoModeloECodigoFixoP1() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = insertModeloBase();
+
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado).isNotNull();
+
+        // 4, 5 - Alteramos P1 para single_choice e aí atualizamos.
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+        // P1.
+        final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
+
+
+        perguntas.set(
+                0,
+                // P1 é substituída agora com outra imagem..
+                new PerguntaModeloChecklistEdicaoAtualiza(
+                        p1.getCodigo(),
+                        p1.getCodigoFixo(),
+                        p1.getDescricao(),
+                        2L,
+                        p1.getOrdemExibicao(),
+                        p1.isSingleChoice(),
+                        toAlternativaAtualiza(p1.getAlternativas())));
+
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
+        service.updateModeloChecklist(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                editado,
+                token);
+
+        // 6 - Por último, buscamos novamente o modelo e comparamos.
+        final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        // 7 - Versão tem que ter aumentado.
+        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
+        assertThat(buscado.getPerguntas()).hasSize(2);
+        {
+            // P1.
+            final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
+            final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
+
+            // 8, 9 - Código fixo mudou.
+            ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
+
+            // 10 - Está com outra imagem.
+            assertThat(p1Depois.getCodImagem()).isEqualTo(2L);
+            assertThat(modeloBuscado.getPerguntas().get(0).getCodImagem()).isNotEqualTo(2L);
+        }
+    }
+
+    @NotNull
+    private List<AlternativaModeloChecklistEdicao> toAlternativaAtualiza(
+            @NotNull final List<AlternativaModeloChecklist> alternativas) {
+        // Força o cast para garantir que é do tipo Visualização.
+        @SuppressWarnings("unchecked")
+        final List<AlternativaModeloChecklistVisualizacao> visu =
+                (List<AlternativaModeloChecklistVisualizacao>) (List<?>) alternativas;
+
+        final List<AlternativaModeloChecklistEdicao> novas = new ArrayList<>(alternativas.size());
+        visu.forEach(a -> novas.add(
+                new AlternativaModeloChecklistEdicaoAtualiza(
+                        a.getCodigo(),
+                        a.getCodigoFixo(),
+                        a.getDescricao(),
+                        a.getPrioridade(),
+                        a.isTipoOutros(),
+                        a.getOrdemExibicao(),
+                        a.isDeveAbrirOrdemServico())));
+        return novas;
     }
 
     // TODO: Talvez faça mais sentido (KISS) remover esse método. Usado apenas em 3 lugares mascara que usamos sempre
