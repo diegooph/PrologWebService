@@ -53,7 +53,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
     }
 
     @Test
-    public void caso1_insertDePerguntaSemAlternativaTipoOutros_deveDarErro() {
+    void caso1_insertDePerguntaSemAlternativaTipoOutros_deveDarErro() {
         // 1, 2, 3 - Criamos duas perguntas, a segunda sem alternativa tipo_outros.
         final List<PerguntaModeloChecklistInsercao> perguntas = new ArrayList<>();
         {
@@ -95,7 +95,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
     }
 
     @Test
-    public void caso2_insertSemPerguntas_deveDarErro() {
+    void caso2_insertSemPerguntas_deveDarErro() {
         // 1 - Primeiro criamos um modelo sem perguntas.
         final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
                 "Teste",
@@ -110,7 +110,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
     }
 
     @Test
-    public void caso3_insertAlternativaTipoOutrosComDescricaoForaDoPadrao_deveDarErro() {
+    void caso3_insertAlternativaTipoOutrosComDescricaoForaDoPadrao_deveDarErro() {
         // 1, 2 - Criamos uma perguntas com uma alternativa tipo_outros tendo descrição fora do padrão.
         final List<PerguntaModeloChecklistInsercao> perguntas = new ArrayList<>();
         {
@@ -142,7 +142,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
     }
 
     @Test
-    public void caso4_insertDeUmModeloCompleto_deveInserirEBaterAsInformacoes() {
+    void caso4_insertDeUmModeloCompleto_deveInserirEBaterAsInformacoes() {
         // 1, 2, 3 - Criamos duas perguntas, a segunda sem alternativa tipo_outros.
         final List<PerguntaModeloChecklistInsercao> perguntas = new ArrayList<>();
         {

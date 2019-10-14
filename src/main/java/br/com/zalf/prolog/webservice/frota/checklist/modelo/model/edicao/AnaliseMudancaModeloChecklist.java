@@ -44,11 +44,19 @@ public final class AnaliseMudancaModeloChecklist {
 
     @NotNull
     public AnaliseItemModeloChecklist getPergunta(@NotNull final Long codPergunta) {
+        if (analisePerguntas == null) {
+            throw new IllegalStateException("analisePerguntas == null!");
+        }
+
         return analisePerguntas.get(codPergunta);
     }
 
     @NotNull
     public AnaliseItemModeloChecklist getAlternativa(@NotNull final Long codAlternativa) {
+        if (analiseAlternativas == null) {
+            throw new IllegalStateException("analiseAlternativas == null!");
+        }
+
         return analiseAlternativas.get(codAlternativa);
     }
 }
