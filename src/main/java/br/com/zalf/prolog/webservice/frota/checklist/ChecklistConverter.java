@@ -57,6 +57,7 @@ public final class ChecklistConverter {
         final Checklist checklist = new Checklist();
         checklist.setCodigo(rSet.getLong("COD_CHECKLIST"));
         checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
+        checklist.setCodVersaoModeloChecklist(rSet.getLong("COD_VERSAO_CHECKLIST_MODELO"));
         checklist.setColaborador(createColaborador(rSet));
         checklist.setData(rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class));
         checklist.setDataHoraImportadoProLog(rSet.getObject("DATA_HORA_IMPORTADO_PROLOG", LocalDateTime.class));
@@ -329,12 +330,10 @@ public final class ChecklistConverter {
         alternativa.setOrdemExibicao(rSet.getInt("ORDEM_ALTERNATIVA"));
         if (alternativa.getAlternativa().equals("Outros")) {
             alternativa.setTipo(AlternativaChecklist.TIPO_OUTROS);
-            alternativa.setRespostaOutros(rSet.getString("RESPOSTA"));
         }
         return alternativa;
     }
 
-    // remonta as alternativas de uma Pergunta
     private static void setRespostaAlternativa(@NotNull final AlternativaChecklist alternativa,
                                                @NotNull final ResultSet rSet) throws SQLException {
         if (rSet.getString("RESPOSTA").equals("NOK")) {
