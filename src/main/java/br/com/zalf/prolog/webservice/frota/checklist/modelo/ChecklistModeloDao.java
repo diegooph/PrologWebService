@@ -119,6 +119,17 @@ public interface ChecklistModeloDao {
     List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws Throwable;
 
     /**
+     * Método que insere uma imagem na {@link Galeria} da {@link Empresa}.
+     *
+     * @param codEmpresa   Código da empresa a qual devemos inserir a imagem.
+     * @param imagemProLog Imagem que deve ser inserida.
+     * @return Código da imagem que foi inserida.
+     * @throws SQLException Caso algum erro na query ocorrer.
+     */
+    @NotNull
+    Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws Throwable;
+
+    /**
      * Busca a URLs das imagens das perguntas.
      *
      * @param codUnidade Código da {@link Unidade}.
@@ -149,17 +160,6 @@ public interface ChecklistModeloDao {
      */
     @NotNull
     Galeria getGaleriaImagensEmpresa(@NotNull final Long codEmpresa) throws Throwable;
-
-    /**
-     * Método que insere uma imagem na {@link Galeria} da {@link Empresa}.
-     *
-     * @param codEmpresa   Código da empresa a qual devemos inserir a imagem.
-     * @param imagemProLog Imagem que deve ser inserida.
-     * @return Código da imagem que foi inserida.
-     * @throws SQLException Caso algum erro na query ocorrer.
-     */
-    @NotNull
-    Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws Throwable;
 
     /**
      * Busca os modelos de checklist disponíveis para seleção (e posterior realização) em uma unidade. É buscado

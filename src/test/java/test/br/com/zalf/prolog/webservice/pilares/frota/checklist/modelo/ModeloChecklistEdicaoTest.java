@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
  * CHECKLIST_MODELO:
  * > drop index checklist_modelo_data_nome_index;
- *
+ * <p>
  * Created on 2019-09-19
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -72,7 +72,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Atualiza o modelo sem alterar nada, tudo fica igual")
-    public void caso1_atualizaSemAlterarNada_deveManterTudoIgual() {
+    void caso1_atualizaSemAlterarNada_deveManterTudoIgual() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -130,7 +130,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera os cargos liberados, mantém a versão")
-    public void caso2_atualizaOsCargos_deveFuncionar() {
+    void caso2_atualizaOsCargos_deveFuncionar() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -176,7 +176,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera os tipos de veículos liberados, mantém a versão")
-    public void caso3_atualizaOsTiposDeVeiculo_deveFuncionar() {
+    void caso3_atualizaOsTiposDeVeiculo_deveFuncionar() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -224,7 +224,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera os cargos e os tipos de veículos liberados, mantém a versão")
-    public void caso4_atualizaOsCargosEOsTiposDeVeiculo_deveFuncionar() {
+    void caso4_atualizaOsCargosEOsTiposDeVeiculo_deveFuncionar() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -285,7 +285,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera descrição de todas as perguntas e alternativas mantendo o contexto, mantém a versão")
-    public void caso5_atualizaOsTextosDeTodasPerguntasEAlternativasSemMudarContexto_deveFuncionarMantendoAVersao() {
+    void caso5_atualizaOsTextosDeTodasPerguntasEAlternativasSemMudarContexto_deveFuncionarMantendoAVersao() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -404,7 +404,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Remove uma alternativa da P1, aumenta a versão")
-    public void caso6_removeUmaAlternativaDaP1_deveMudarVersaoModeloECodigoFixoPergunta() {
+    void caso6_removeUmaAlternativaDaP1_deveMudarVersaoModeloECodigoFixoPergunta() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -452,13 +452,15 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     .stream()
                     .filter(p -> p.getDescricao().equals("Fora de foco"))
                     .findAny()
-                    .ifPresent(a -> {throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");});
+                    .ifPresent(a -> {
+                        throw new RuntimeException("Alternativa 'Fora de foco' deletada ainda está presente");
+                    });
         }
     }
 
     @Test
     @DisplayName("Remove uma alternativa da P1 e adiciona outra, aumenta a versão")
-    public void caso7_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP1_deveMudarVersaoModeloECodigoFixoDaP1() {
+    void caso7_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP1_deveMudarVersaoModeloECodigoFixoDaP1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -524,7 +526,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Remove uma alternativa da P1 e adiciona outra na P2, aumenta a versão")
-    public void caso8_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP2_deveMudarVersaoModeloECodigoFixoDasPerguntas() {
+    void caso8_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP2_deveMudarVersaoModeloECodigoFixoDasPerguntas() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -609,7 +611,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Remove P1, aumenta versão")
-    public void caso9_removeP1_deveMudarVersaoModelo() {
+    void caso9_removeP1_deveMudarVersaoModelo() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -661,7 +663,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Remove P1 e P2, dá erro")
-    public void caso10_removeP1EP2_deveDarErro() {
+    void caso10_removeP1EP2_deveDarErro() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -692,7 +694,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Remove todas as alternativas da P1, dá erro")
-    public void caso11_removeTodasAlternativasP1_deveDarErro() {
+    void caso11_removeTodasAlternativasP1_deveDarErro() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -721,7 +723,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Remove alternativa tipo_outros da P2, dá erro")
-    public void caso12_removeAlternativaTipoOutrosDaP2_deveDarErro() {
+    void caso12_removeAlternativaTipoOutrosDaP2_deveDarErro() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -750,7 +752,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Muda contexto da P1, aumenta versão")
-    public void caso13_alteraTextoDaP1MudandoContexto_deveMudarVersaoModeloECodigoFixoDaP1() {
+    void caso13_alteraTextoDaP1MudandoContexto_deveMudarVersaoModeloECodigoFixoDaP1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -804,7 +806,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Muda contexto da P1 e altera P2 mantendo contexto, aumenta versão")
-    public void caso14_alteraContextoDaP1_alteraP2MantendoContexto_deveMudarVersaoModeloECodigoFixoDaP1EManterDaP2() {
+    void caso14_alteraContextoDaP1_alteraP2MantendoContexto_deveMudarVersaoModeloECodigoFixoDaP1EManterDaP2() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -882,7 +884,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Muda contexto da A1 e deleta A2, aumenta versão")
-    public void caso15_alteraContextoDaA1_deletaA2_deveMudarVersaoModelo_CodigoFixoP1Diferente_CodigoFixoA1Diferente() {
+    void caso15_alteraContextoDaA1_deletaA2_deveMudarVersaoModelo_CodigoFixoP1Diferente_CodigoFixoA1Diferente() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -951,7 +953,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Muda contexto da A1 e adiciona alternativa na P1, aumenta versão")
-    public void caso16_alteraContextoA1_adicionaAlternativaP1_deveMudarVersaoModeloCodigoFixoP1DiferenteCodigoFixoA1Diferente() {
+    void caso16_alteraContextoA1_adicionaAlternativaP1_deveMudarVersaoModeloCodigoFixoP1DiferenteCodigoFixoA1Diferente() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1039,7 +1041,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera P1 para single_choice, aumenta versão")
-    public void caso17_alteraP1ParaSingleChoice_deveMudarVersaoModeloECodigoFixoP1() {
+    void caso17_alteraP1ParaSingleChoice_deveMudarVersaoModeloECodigoFixoP1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1099,7 +1101,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera A1 para não abrir OS, aumenta versão")
-    public void caso18_alteraA1ParaNaoAbrirOS_deveMudarVersaoModeloECodigoFixoA1() {
+    void caso18_alteraA1ParaNaoAbrirOS_deveMudarVersaoModeloECodigoFixoA1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1159,7 +1161,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera A1 para prioridade BAIXA, aumenta versão")
-    public void caso19_alteraA1ParaPrioridadeBaixa_deveMudarVersaoModeloECodigoFixoA1() {
+    void caso19_alteraA1ParaPrioridadeBaixa_deveMudarVersaoModeloECodigoFixoA1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1219,7 +1221,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera ordem de exibição da A1 com a A3, mantém versão")
-    public void caso20_alteraOrdemExibicaoA1ComA3_deveMudarVersaoModeloEManterCodigoFixo() {
+    void caso20_alteraOrdemExibicaoA1ComA3_deveMudarVersaoModeloEManterCodigoFixo() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1299,7 +1301,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Atualiza o nome do modelo, mantém a versão")
-    public void caso21_atualizaNomeDoModelo_deveManterVersao() {
+    void caso21_atualizaNomeDoModelo_deveManterVersao() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1335,7 +1337,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera ordem de exibição da P1 com a P2, muda versão")
-    public void caso22_alteraOrdemExibicaoP1comP2_deveMudarVersaoModeloEManterCodigoFixo() {
+    void caso22_alteraOrdemExibicaoP1comP2_deveMudarVersaoModeloEManterCodigoFixo() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1433,7 +1435,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Remove última pergunta, aumenta versão")
-    public void caso23_removeUltimaPergunta_deveMudarVersaoModelo() {
+    void caso23_removeUltimaPergunta_deveMudarVersaoModelo() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1485,7 +1487,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera imagem da P1, aumenta versão")
-    public void caso24_alteraImagemP1_deveMudarVersaoModeloECodigoFixoP1() {
+    void caso24_alteraImagemP1_deveMudarVersaoModeloECodigoFixoP1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1548,8 +1550,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     private List<AlternativaModeloChecklistEdicao> toAlternativaAtualiza(
             @NotNull final List<AlternativaModeloChecklist> alternativas) {
         // Força o cast para garantir que é do tipo Visualização.
-        @SuppressWarnings("unchecked")
-        final List<AlternativaModeloChecklistVisualizacao> visu =
+        @SuppressWarnings("unchecked") final List<AlternativaModeloChecklistVisualizacao> visu =
                 (List<AlternativaModeloChecklistVisualizacao>) (List<?>) alternativas;
 
         final List<AlternativaModeloChecklistEdicao> novas = new ArrayList<>(alternativas.size());
@@ -1665,11 +1666,11 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                           final boolean mesmoCodigoVariavel) {
         assertThat(antes).isNotSameInstanceAs(depois);
 
-        if(mesmoCodigoVariavel){
+        if (mesmoCodigoVariavel) {
             assertThat(antes.getCodigo()).isEqualTo(depois.getCodigo());
         }
 
-        if(mesmoCodigoFixo){
+        if (mesmoCodigoFixo) {
             assertThat(antes.getCodigoFixo()).isEqualTo(depois.getCodigoFixo());
         }
 
