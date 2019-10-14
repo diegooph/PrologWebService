@@ -20,7 +20,10 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.Pergu
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.util.ArrayList;
@@ -43,19 +46,20 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class ChecklistRealizacaoTest extends BaseTest {
     private static final String CPF_TOKEN = "03383283194";
     private ChecklistModeloService service;
     private String token;
 
-    @Override
+    @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
         token = getValidToken(CPF_TOKEN);
         service = new ChecklistModeloService();
     }
 
-    @Override
+    @AfterAll
     public void destroy() {
         DatabaseManager.finish();
         service = null;
@@ -70,7 +74,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
             // A1.
             alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "A2",
+                    "A1",
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
@@ -97,7 +101,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
             // B1.
             alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "B2",
+                    "B1",
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
@@ -190,8 +194,8 @@ public final class ChecklistRealizacaoTest extends BaseTest {
 
         final ChecklistInsercao insercao = new ChecklistInsercao(
                 5L,
-                1L,
-                1L,
+                result.getCodModeloChecklistInserido(),
+                result.getCodVersaoModeloChecklistInserido(),
                 2272L,
                 CPF_TOKEN,
                 3195L,
@@ -200,7 +204,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 112,
                 10000,
                 respostas,
-                ProLogDateParser.toLocalDateTime("2019-10-314T09:35:10"),
+                ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 80,
                 83,
@@ -218,19 +222,18 @@ public final class ChecklistRealizacaoTest extends BaseTest {
 
             assertThat(checklist).isNotNull();
             assertThat(checklist.getCodigo()).isEqualTo(codChecklistInserido);
-            assertThat(checklist.getCodModelo()).isEqualTo(1L);
-            assertThat(checklist.getCodVersaoModeloChecklist()).isEqualTo(1L);
-            assertThat(checklist.getColaborador().getCodigo()).isEqualTo(2272L);
+            assertThat(checklist.getCodModelo()).isEqualTo(result.getCodModeloChecklistInserido());
+            assertThat(checklist.getCodVersaoModeloChecklist()).isEqualTo(result.getCodVersaoModeloChecklistInserido());
             assertThat(checklist.getColaborador().getCpf()).isEqualTo(Long.parseLong(CPF_TOKEN));
             assertThat(checklist.getPlacaVeiculo()).isEqualTo("PRO0001");
             assertThat(checklist.getTipo()).isEqualTo(TipoChecklist.SAIDA.asChar());
             assertThat(checklist.getKmAtualVeiculo()).isEqualTo(112);
             assertThat(checklist.getTempoRealizacaoCheckInMillis()).isEqualTo(10000);
-            assertThat(checklist.getData()).isEqualTo(ProLogDateParser.toLocalDateTime("2019-10-314T09:35:10"));
+            assertThat(checklist.getData()).isEqualTo(ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"));
             assertThat(checklist.getQtdItensOk()).isEqualTo(0);
             assertThat(checklist.getQtdItensNok()).isEqualTo(2);
             assertThat(checklist.getQtdAlternativasOk()).isEqualTo(1);
-            assertThat(checklist.getQtdAlternativasNok()).isEqualTo(4);
+            assertThat(checklist.getQtdAlternativasNok()).isEqualTo(3);
             {
                 // Compara a P1.
                 final PerguntaRespostaChecklist p1 = checklist.getListRespostas().get(0);
