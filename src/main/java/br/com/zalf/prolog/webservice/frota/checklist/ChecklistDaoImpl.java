@@ -176,12 +176,12 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         try {
             stmt = conn.prepareStatement(
                     "SELECT * FROM FUNC_CHECKLIST_INSERT_RESPOSTAS_CHECKLIST(" +
-                            "F_COD_UNIDADE_CHECKLIST       := ?" +
-                            "F_COD_MODELO_CHECKLIST        := ?" +
-                            "F_COD_VERSAO_MODELO_CHECKLIST := ?" +
-                            "F_COD_CHECKLIST               := ?" +
-                            "F_COD_PERGUNTA                := ?" +
-                            "F_COD_ALTERNATIVA             := ?" +
+                            "F_COD_UNIDADE_CHECKLIST       := ?," +
+                            "F_COD_MODELO_CHECKLIST        := ?," +
+                            "F_COD_VERSAO_MODELO_CHECKLIST := ?," +
+                            "F_COD_CHECKLIST               := ?," +
+                            "F_COD_PERGUNTA                := ?," +
+                            "F_COD_ALTERNATIVA             := ?," +
                             "F_RESPOSTA_OUTROS             := ?);");
             stmt.setLong(1, codUnidadeChecklist);
             stmt.setLong(2, codModeloChecklist);
@@ -194,7 +194,9 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                         stmt.setLong(5, resposta.getCodPergunta());
                         stmt.setLong(6, alternativa.getCodAlternativa());
                         if (alternativa.isTipoOutros()) {
-                            stmt.setString(7, alternativa.getRespostaTipoOutros());
+                            stmt.setString(7, StringUtils.trimToNull(alternativa.getRespostaTipoOutros()));
+                        } else {
+                            stmt.setNull(7, SqlType.TEXT.asIntTypeJava());
                         }
                         stmt.addBatch();
                         linhasParaExecutar++;
