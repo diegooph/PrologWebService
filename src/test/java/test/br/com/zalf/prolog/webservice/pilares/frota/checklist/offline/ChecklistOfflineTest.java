@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineService;
@@ -187,103 +186,103 @@ public class ChecklistOfflineTest extends BaseTest {
 
     @NotNull
     private ChecklistResposta createRespostaNokTipOutros() {
-        final ChecklistResposta resposta = new ChecklistResposta();
+//        final ChecklistResposta resposta = new ChecklistResposta();
         // RESPOSTA NOK
-        resposta.setCodPergunta(1122L);
-        final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-        ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
-        alternativa.setCodAlternativa(372L);
-        alternativa.setAlternativaSelecionada(false);
-        alternativa.setTipoOutros(false);
-        alternativa.setRespostaTipoOutros(null);
-
-        alternativas.add(alternativa);
-        alternativa = new ChecklistAlternativaResposta();
-
-        alternativa.setCodAlternativa(373L);
-        alternativa.setAlternativaSelecionada(false);
-        alternativa.setTipoOutros(false);
-        alternativa.setRespostaTipoOutros(null);
-
-        alternativas.add(alternativa);
-        alternativa = new ChecklistAlternativaResposta();
-
-        alternativa.setCodAlternativa(397L);
-        alternativa.setAlternativaSelecionada(true);
-        alternativa.setTipoOutros(true);
-        alternativa.setRespostaTipoOutros("TESTE TIPO OUTROS NA RESPOSTA");
-
-        alternativas.add(alternativa);
-        resposta.setAlternativasRespostas(alternativas);
-        return resposta;
+//        resposta.setCodPergunta(1122L);
+//        final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+//
+//        ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
+//        alternativa.setCodAlternativa(372L);
+//        alternativa.setAlternativaSelecionada(false);
+//        alternativa.setTipoOutros(false);
+//        alternativa.setRespostaTipoOutros(null);
+//
+//        alternativas.add(alternativa);
+//        alternativa = new ChecklistAlternativaResposta();
+//
+//        alternativa.setCodAlternativa(373L);
+//        alternativa.setAlternativaSelecionada(false);
+//        alternativa.setTipoOutros(false);
+//        alternativa.setRespostaTipoOutros(null);
+//
+//        alternativas.add(alternativa);
+//        alternativa = new ChecklistAlternativaResposta();
+//
+//        alternativa.setCodAlternativa(397L);
+//        alternativa.setAlternativaSelecionada(true);
+//        alternativa.setTipoOutros(true);
+//        alternativa.setRespostaTipoOutros("TESTE TIPO OUTROS NA RESPOSTA");
+//
+//        alternativas.add(alternativa);
+//        resposta.setAlternativasRespostas(alternativas);
+        return null;
     }
 
     @NotNull
     private ChecklistResposta createRespostaNok() {
-        final ChecklistResposta resposta = new ChecklistResposta();
+//        final ChecklistResposta resposta = new ChecklistResposta();
         // RESPOSTA NOK
-        resposta.setCodPergunta(1121L);
-        final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-        ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
-        alternativa.setCodAlternativa(322L);
-        alternativa.setAlternativaSelecionada(false);
-        alternativa.setTipoOutros(false);
-        alternativa.setRespostaTipoOutros(null);
-
-        alternativas.add(alternativa);
-        alternativa = new ChecklistAlternativaResposta();
-
-        alternativa.setCodAlternativa(327L);
-        alternativa.setAlternativaSelecionada(true);
-        alternativa.setTipoOutros(false);
-        alternativa.setRespostaTipoOutros(null);
-
-        alternativas.add(alternativa);
-        alternativa = new ChecklistAlternativaResposta();
-
-        alternativa.setCodAlternativa(361L);
-        alternativa.setAlternativaSelecionada(false);
-        alternativa.setTipoOutros(true);
-        alternativa.setRespostaTipoOutros(null);
-
-        alternativas.add(alternativa);
-        resposta.setAlternativasRespostas(alternativas);
-        return resposta;
+//        resposta.setCodPergunta(1121L);
+//        final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+//
+//        ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
+//        alternativa.setCodAlternativa(322L);
+//        alternativa.setAlternativaSelecionada(false);
+//        alternativa.setTipoOutros(false);
+//        alternativa.setRespostaTipoOutros(null);
+//
+//        alternativas.add(alternativa);
+//        alternativa = new ChecklistAlternativaResposta();
+//
+//        alternativa.setCodAlternativa(327L);
+//        alternativa.setAlternativaSelecionada(true);
+//        alternativa.setTipoOutros(false);
+//        alternativa.setRespostaTipoOutros(null);
+//
+//        alternativas.add(alternativa);
+//        alternativa = new ChecklistAlternativaResposta();
+//
+//        alternativa.setCodAlternativa(361L);
+//        alternativa.setAlternativaSelecionada(false);
+//        alternativa.setTipoOutros(true);
+//        alternativa.setRespostaTipoOutros(null);
+//
+//        alternativas.add(alternativa);
+//        resposta.setAlternativasRespostas(alternativas);
+        return null;
     }
 
     @NotNull
     private ChecklistResposta createRespostaOk() {
-        final ChecklistResposta resposta = new ChecklistResposta();
-        // RESPOSTA OK
-        resposta.setCodPergunta(1120L);
-        final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-        ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
-        alternativa.setCodAlternativa(319L);
-        alternativa.setAlternativaSelecionada(false);
-        alternativa.setTipoOutros(false);
-        alternativa.setRespostaTipoOutros(null);
-
-        alternativas.add(alternativa);
-        alternativa = new ChecklistAlternativaResposta();
-
-        alternativa.setCodAlternativa(320L);
-        alternativa.setAlternativaSelecionada(false);
-        alternativa.setTipoOutros(false);
-        alternativa.setRespostaTipoOutros(null);
-
-        alternativas.add(alternativa);
-        alternativa = new ChecklistAlternativaResposta();
-
-        alternativa.setCodAlternativa(321L);
-        alternativa.setAlternativaSelecionada(false);
-        alternativa.setTipoOutros(true);
-        alternativa.setRespostaTipoOutros(null);
-
-        alternativas.add(alternativa);
-        resposta.setAlternativasRespostas(alternativas);
-        return resposta;
+//        final ChecklistResposta resposta = new ChecklistResposta();
+//        // RESPOSTA OK
+//        resposta.setCodPergunta(1120L);
+//        final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+//
+//        ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
+//        alternativa.setCodAlternativa(319L);
+//        alternativa.setAlternativaSelecionada(false);
+//        alternativa.setTipoOutros(false);
+//        alternativa.setRespostaTipoOutros(null);
+//
+//        alternativas.add(alternativa);
+//        alternativa = new ChecklistAlternativaResposta();
+//
+//        alternativa.setCodAlternativa(320L);
+//        alternativa.setAlternativaSelecionada(false);
+//        alternativa.setTipoOutros(false);
+//        alternativa.setRespostaTipoOutros(null);
+//
+//        alternativas.add(alternativa);
+//        alternativa = new ChecklistAlternativaResposta();
+//
+//        alternativa.setCodAlternativa(321L);
+//        alternativa.setAlternativaSelecionada(false);
+//        alternativa.setTipoOutros(true);
+//        alternativa.setRespostaTipoOutros(null);
+//
+//        alternativas.add(alternativa);
+//        resposta.setAlternativasRespostas(alternativas);
+        return null;
     }
 }

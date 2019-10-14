@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model.insercao;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -8,26 +10,24 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ChecklistResposta {
-    private Long codPergunta;
-    private List<ChecklistAlternativaResposta> alternativasRespostas;
+    @NotNull
+    private final Long codPergunta;
+    @NotNull
+    private final List<ChecklistAlternativaResposta> alternativasRespostas;
 
-    public ChecklistResposta() {
-
+    public ChecklistResposta(@NotNull final Long codPergunta,
+                             @NotNull final List<ChecklistAlternativaResposta> alternativasRespostas) {
+        this.codPergunta = codPergunta;
+        this.alternativasRespostas = alternativasRespostas;
     }
 
+    @NotNull
     public Long getCodPergunta() {
         return codPergunta;
     }
 
-    public void setCodPergunta(final Long codPergunta) {
-        this.codPergunta = codPergunta;
-    }
-
+    @NotNull
     public List<ChecklistAlternativaResposta> getAlternativasRespostas() {
         return alternativasRespostas;
-    }
-
-    public void setAlternativasRespostas(final List<ChecklistAlternativaResposta> alternativasRespostas) {
-        this.alternativasRespostas = alternativasRespostas;
     }
 }

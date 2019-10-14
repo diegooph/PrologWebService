@@ -9,56 +9,39 @@ import org.jetbrains.annotations.Nullable;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ChecklistAlternativaResposta {
-    private Long codAlternativa;
-    private boolean alternativaSelecionada;
-    private boolean tipoOutros;
+    @NotNull
+    private final Long codAlternativa;
+    private final boolean alternativaSelecionada;
+    private final boolean tipoOutros;
     @Nullable
-    private String respostaTipoOutros;
+    private final String respostaTipoOutros;
 
-    public ChecklistAlternativaResposta() {
 
+    public ChecklistAlternativaResposta(@NotNull final Long codAlternativa,
+                                        final boolean alternativaSelecionada,
+                                        final boolean tipoOutros,
+                                        @Nullable final String respostaTipoOutros) {
+        this.codAlternativa = codAlternativa;
+        this.alternativaSelecionada = alternativaSelecionada;
+        this.tipoOutros = tipoOutros;
+        this.respostaTipoOutros = respostaTipoOutros;
     }
 
+    @NotNull
     public Long getCodAlternativa() {
         return codAlternativa;
-    }
-
-    public void setCodAlternativa(final Long codAlternativa) {
-        this.codAlternativa = codAlternativa;
     }
 
     public boolean isAlternativaSelecionada() {
         return alternativaSelecionada;
     }
 
-    public void setAlternativaSelecionada(final boolean alternativaSelecionada) {
-        this.alternativaSelecionada = alternativaSelecionada;
-    }
-
     public boolean isTipoOutros() {
         return tipoOutros;
-    }
-
-    public void setTipoOutros(final boolean tipoOutros) {
-        this.tipoOutros = tipoOutros;
     }
 
     @Nullable
     public String getRespostaTipoOutros() {
         return respostaTipoOutros;
-    }
-
-    public void setRespostaTipoOutros(@Nullable final String respostaTipoOutros) {
-        this.respostaTipoOutros = respostaTipoOutros;
-    }
-
-    @NotNull
-    public String getDescricaoAlternativaOk() {
-        return "OK";
-    }
-
-    @NotNull
-    public String getDescricaoAlternativaNok() {
-        return "NOK";
     }
 }

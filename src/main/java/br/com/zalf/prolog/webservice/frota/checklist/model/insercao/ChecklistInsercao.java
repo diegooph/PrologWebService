@@ -311,20 +311,17 @@ public final class ChecklistInsercao {
         final List<ChecklistResposta> respostas = new ArrayList<>();
         antigas
                 .forEach(respostaAntiga -> {
-                    final ChecklistResposta resposta = new ChecklistResposta();
-                    resposta.setCodPergunta(respostaAntiga.getCodigo());
                     final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+                    final ChecklistResposta resposta = new ChecklistResposta(respostaAntiga.getCodigo(), alternativas);
                     respostaAntiga
                             .getAlternativasResposta()
                             .forEach(alternativaAntiga -> {
-                                final ChecklistAlternativaResposta alternativa = new ChecklistAlternativaResposta();
-                                alternativa.setCodAlternativa(alternativaAntiga.getCodigo());
-                                alternativa.setAlternativaSelecionada(alternativaAntiga.isSelected());
-                                alternativa.setTipoOutros(alternativaAntiga.isTipoOutros());
-                                alternativa.setRespostaTipoOutros(alternativaAntiga.getRespostaOutros());
-                                alternativas.add(alternativa);
+                                alternativas.add(new ChecklistAlternativaResposta(
+                                        alternativaAntiga.getCodigo(),
+                                        alternativaAntiga.isSelected(),
+                                        alternativaAntiga.isTipoOutros(),
+                                        alternativaAntiga.getRespostaOutros()));
                             });
-                    resposta.setAlternativasRespostas(alternativas);
                     respostas.add(resposta);
                 });
         return respostas;
