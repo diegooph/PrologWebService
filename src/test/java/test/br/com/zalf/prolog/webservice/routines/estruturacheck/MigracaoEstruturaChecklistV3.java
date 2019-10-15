@@ -70,6 +70,12 @@ public final class MigracaoEstruturaChecklistV3 {
             log("************************ PASSO 7 - INÍCIO ************************");
             executaPasso7(conn);
             log("************************ PASSO 7 - FIM ************************");
+            log("************************ PASSO 8 - INÍCIO ************************");
+            executaPasso8(conn);
+            log("************************ PASSO 8 - FIM ************************");
+            log("************************ PASSO 9 - INÍCIO ************************");
+            executaPasso9(conn);
+            log("************************ PASSO 9 - FIM ************************");
             conn.commit();
             log("************************ Fim da execução da migração ************************");
         } catch (final Throwable t) {
@@ -221,6 +227,32 @@ public final class MigracaoEstruturaChecklistV3 {
             stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_7_MUDANCAS_DAO_MODELOS_CHECK()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 7");
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+    }
+
+    private void executaPasso8(@NotNull final Connection conn) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            log("Migrando mudanças para possibilitar realização de checklist");
+            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_8_WS_REALIZACAO_CHECKLIST()}");
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao executar passo 8");
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+    }
+
+    private void executaPasso9(@NotNull final Connection conn) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            log("Criando novos indexes");
+            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_9_CRIACAO_INDEXES()}");
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao executar passo 9");
             }
         } finally {
             DatabaseConnection.close(stmt);
