@@ -15,7 +15,7 @@ public final class PerguntaModeloChecklistEdicaoAtualiza extends PerguntaModeloC
     @NotNull
     private final Long codigo;
     @NotNull
-    private final Long codigoFixo;
+    private final Long codigoContexto;
     @NotNull
     private final String descricao;
     @Nullable
@@ -26,14 +26,14 @@ public final class PerguntaModeloChecklistEdicaoAtualiza extends PerguntaModeloC
     private final List<AlternativaModeloChecklistEdicao> alternativas;
 
     public PerguntaModeloChecklistEdicaoAtualiza(@NotNull final Long codigo,
-                                                 @NotNull final Long codigoFixo,
+                                                 @NotNull final Long codigoContexto,
                                                  @NotNull final String descricao,
                                                  @Nullable final Long codImagem,
                                                  final int ordemExibicao,
                                                  final boolean singleChoice,
                                                  @NotNull final List<AlternativaModeloChecklistEdicao> alternativas) {
         this.codigo = codigo;
-        this.codigoFixo = codigoFixo;
+        this.codigoContexto = codigoContexto;
         this.descricao = descricao;
         this.codImagem = codImagem;
         this.ordemExibicao = ordemExibicao;
@@ -49,8 +49,8 @@ public final class PerguntaModeloChecklistEdicaoAtualiza extends PerguntaModeloC
 
     @NotNull
     @Override
-    public Long getCodigoFixo() {
-        return codigoFixo;
+    public Long getCodigoContexto() {
+        return codigoContexto;
     }
 
     @NotNull

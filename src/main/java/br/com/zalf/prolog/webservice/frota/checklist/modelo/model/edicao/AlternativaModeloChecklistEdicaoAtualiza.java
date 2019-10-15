@@ -12,7 +12,7 @@ public final class AlternativaModeloChecklistEdicaoAtualiza extends AlternativaM
     @NotNull
     private final Long codigo;
     @NotNull
-    private final Long codigoFixo;
+    private final Long codigoContexto;
     @NotNull
     private final String descricao;
     @NotNull
@@ -22,14 +22,14 @@ public final class AlternativaModeloChecklistEdicaoAtualiza extends AlternativaM
     private final boolean deveAbrirOrdemServico;
 
     public AlternativaModeloChecklistEdicaoAtualiza(@NotNull final Long codigo,
-                                                    @NotNull final Long codigoFixo,
+                                                    @NotNull final Long codigoContexto,
                                                     @NotNull final String descricao,
                                                     @NotNull final PrioridadeAlternativa prioridade,
                                                     final boolean tipoOutros,
                                                     final int ordemExibicao,
                                                     final boolean deveAbrirOrdemServico) {
         this.codigo = codigo;
-        this.codigoFixo = codigoFixo;
+        this.codigoContexto = codigoContexto;
         this.descricao = descricao;
         this.prioridade = prioridade;
         this.tipoOutros = tipoOutros;
@@ -45,8 +45,8 @@ public final class AlternativaModeloChecklistEdicaoAtualiza extends AlternativaM
 
     @Override
     @NotNull
-    public Long getCodigoFixo() {
-        return codigoFixo;
+    public Long getCodigoContexto() {
+        return codigoContexto;
     }
 
     @Override

@@ -43,7 +43,7 @@ public final class PerguntaModeloChecklistInsercao extends PerguntaModeloCheckli
 
     @NotNull
     @Override
-    public Long getCodigoFixo() {
+    public Long getCodigoContexto() {
         return null;
     }
 

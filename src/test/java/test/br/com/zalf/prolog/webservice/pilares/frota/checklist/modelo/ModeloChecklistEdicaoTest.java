@@ -325,7 +325,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
             perguntas.add(new PerguntaModeloChecklistEdicaoAtualiza(
                     p1.getCodigo(),
-                    p1.getCodigoFixo(),
+                    p1.getCodigoContexto(),
                     "FáROLL",
                     p1.getCodImagem(),
                     p1.getOrdemExibicao(),
@@ -355,7 +355,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
             perguntas.add(new PerguntaModeloChecklistEdicaoAtualiza(
                     p2.getCodigo(),
-                    p2.getCodigoFixo(),
+                    p2.getCodigoContexto(),
                     "cinto   di SeGURANCA  ",
                     p2.getCodImagem(),
                     p2.getOrdemExibicao(),
@@ -404,7 +404,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Remove uma alternativa da P1, aumenta a versão")
-    void caso6_removeUmaAlternativaDaP1_deveMudarVersaoModeloECodigoFixoPergunta() {
+    void caso6_removeUmaAlternativaDaP1_deveMudarVersaoModeloECodigoContextoPergunta() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -443,7 +443,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8 - Código fixo se mantém e variável troca.
+            // 8 - Código contexto se mantém e variável troca.
             // Código fixa da pergunta não muda por alterações nas alternativas, mesmo uma remoção.
             ensureAllAttributesEqual(p1Antes, p1Depois, 3, true, false);
 
@@ -460,7 +460,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Remove uma alternativa da P1 e adiciona outra, aumenta a versão")
-    void caso7_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP1_deveMudarVersaoModeloECodigoFixoDaP1() {
+    void caso7_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP1_deveMudarVersaoModeloECodigoContextoDaP1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -507,7 +507,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 9 - Código fixo igual, variável troca.
+            // 9 - Código contexto igual, variável troca.
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, true, false);
 
             // 10 - Garante que a alternativa 'Fora de foco' não está mais presente.
@@ -526,7 +526,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Remove uma alternativa da P1 e adiciona outra na P2, aumenta a versão")
-    void caso8_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP2_deveMudarVersaoModeloECodigoFixoDasPerguntas() {
+    void caso8_removeUmaAlternativaDaP1AdicionaOutraAlternativaNaP2_deveMudarVersaoModeloECodigoContextoDasPerguntas() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -583,7 +583,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 9 - Código fixo igual, variável troca.
+            // 9 - Código contexto igual, variável troca.
             ensureAllAttributesEqual(p1Antes, p1Depois, 3, true, false);
 
             // 10 - Garante que a alternativa 'Fora de foco' não está mais presente.
@@ -598,7 +598,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
 
-            // 11 - Código fixo igual, variável troca.
+            // 11 - Código contexto igual, variável troca.
             ensureAllAttributesEqual(p2Antes, p2Depois, 4, true, false);
 
             // 12 - Garante que a nova alternativa está presente.
@@ -752,7 +752,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Muda contexto da P1, aumenta versão")
-    void caso13_alteraTextoDaP1MudandoContexto_deveMudarVersaoModeloECodigoFixoDaP1() {
+    void caso13_alteraTextoDaP1MudandoContexto_deveMudarVersaoModeloECodigoContextoDaP1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -796,7 +796,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // P1.
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
-            // 8 - Compara P1 garantindo que o código fixo e variável mudaram.
+            // 8 - Compara P1 garantindo que o código contexto e variável mudaram.
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
 
             // 9 - Garante que a descrição foi atualizada para a nova.
@@ -806,7 +806,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Muda contexto da P1 e altera P2 mantendo contexto, aumenta versão")
-    void caso14_alteraContextoDaP1_alteraP2MantendoContexto_deveMudarVersaoModeloECodigoFixoDaP1EManterDaP2() {
+    void caso14_alteraContextoDaP1_alteraP2MantendoContexto_deveMudarVersaoModeloECodigoContextoDaP1EManterDaP2() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -865,7 +865,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // P1.
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
-            // 9 - O código fixo da pergunta P1 tem que estar diferente.
+            // 9 - O código contexto da pergunta P1 tem que estar diferente.
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
             // 11 - Garante o texto atualizado.
             assertThat(p1Depois.getDescricao()).isEqualTo("Extintor de incêndio");
@@ -875,7 +875,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // P2.
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
-            // 10 - O código fixo da pergunta P2 tem que ser o mesmo, variável mudou.
+            // 10 - O código contexto da pergunta P2 tem que ser o mesmo, variável mudou.
             ensureAllAttributesEqual(p2Antes, p2Depois, 3, true, false);
             // 11 - Garante o texto atualizado.
             assertThat(p2Depois.getDescricao()).isEqualTo("  Cinto  di  SEGURANSA ");
@@ -884,7 +884,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Muda contexto da A1 e deleta A2, aumenta versão")
-    void caso15_alteraContextoDaA1_deletaA2_deveMudarVersaoModelo_CodigoFixoP1Diferente_CodigoFixoA1Diferente() {
+    void caso15_alteraContextoDaA1_deletaA2_deveMudarVersaoModelo_CodigoContextoP1Diferente_CodigoContextoA1Diferente() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -931,7 +931,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 9, 10 - Garante código fixo igual e variável diferente.
+            // 9, 10 - Garante código contexto igual e variável diferente.
             ensureAllAttributesEqual(p1Antes, p1Depois, 3, true, false);
 
             // 11 - Garante que a alternativa 'Lâmpada queimada' não está mais presente.
@@ -953,7 +953,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Muda contexto da A1 e adiciona alternativa na P1, aumenta versão")
-    void caso16_alteraContextoA1_adicionaAlternativaP1_deveMudarVersaoModeloCodigoFixoP1DiferenteCodigoFixoA1Diferente() {
+    void caso16_alteraContextoA1_adicionaAlternativaP1_deveMudarVersaoModeloCodigoContextoP1DiferenteCodigoContextoA1Diferente() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1015,7 +1015,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 9, 10 - Garante código fixo igual e variável diferente.
+            // 9, 10 - Garante código contexto igual e variável diferente.
             ensureAllAttributesEqual(p1Antes, p1Depois, 5, true, false);
 
             // 11 - Garante que a alternativa A5 está presente.
@@ -1041,7 +1041,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera P1 para single_choice, aumenta versão")
-    void caso17_alteraP1ParaSingleChoice_deveMudarVersaoModeloECodigoFixoP1() {
+    void caso17_alteraP1ParaSingleChoice_deveMudarVersaoModeloECodigoContextoP1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1063,7 +1063,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 // P1 é substituída agora sendo single_choice..
                 new PerguntaModeloChecklistEdicaoAtualiza(
                         p1.getCodigo(),
-                        p1.getCodigoFixo(),
+                        p1.getCodigoContexto(),
                         p1.getDescricao(),
                         p1.getCodImagem(),
                         p1.getOrdemExibicao(),
@@ -1091,7 +1091,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8, 9 - Código fixo mudou.
+            // 8, 9 - Código contexto mudou.
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
 
             // 10 - Está single_choice.
@@ -1101,7 +1101,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera A1 para não abrir OS, aumenta versão")
-    void caso18_alteraA1ParaNaoAbrirOS_deveMudarVersaoModeloECodigoFixoA1() {
+    void caso18_alteraA1ParaNaoAbrirOS_deveMudarVersaoModeloECodigoContextoA1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1121,7 +1121,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 0,
                 new AlternativaModeloChecklistEdicaoAtualiza(
                         a1.getCodigo(),
-                        a1.getCodigoFixo(),
+                        a1.getCodigoContexto(),
                         a1.getDescricao(),
                         a1.getPrioridade(),
                         a1.isTipoOutros(),
@@ -1149,10 +1149,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8, 9 - Código fixo da pergunta igual da A1 diferente.
-            assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
-            assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
-                    .isGreaterThan(p1Antes.getAlternativas().get(0).getCodigoFixo());
+            // 8, 9 - Código contexto da pergunta igual da A1 diferente.
+            assertThat(p1Depois.getCodigoContexto()).isEqualTo(p1Antes.getCodigoContexto());
+            assertThat(p1Depois.getAlternativas().get(0).getCodigoContexto())
+                    .isGreaterThan(p1Antes.getAlternativas().get(0).getCodigoContexto());
 
             // 10 - Está como não deve abrir OS.
             assertThat(p1Depois.getAlternativas().get(0).isDeveAbrirOrdemServico()).isFalse();
@@ -1161,7 +1161,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera A1 para prioridade BAIXA, aumenta versão")
-    void caso19_alteraA1ParaPrioridadeBaixa_deveMudarVersaoModeloECodigoFixoA1() {
+    void caso19_alteraA1ParaPrioridadeBaixa_deveMudarVersaoModeloECodigoContextoA1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1181,7 +1181,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 0,
                 new AlternativaModeloChecklistEdicaoAtualiza(
                         a1.getCodigo(),
-                        a1.getCodigoFixo(),
+                        a1.getCodigoContexto(),
                         a1.getDescricao(),
                         PrioridadeAlternativa.BAIXA,
                         a1.isTipoOutros(),
@@ -1209,10 +1209,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8, 9 - Código fixo da pergunta igual, da alternativa mudou.
-            assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
-            assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
-                    .isGreaterThan(p1Antes.getAlternativas().get(0).getCodigoFixo());
+            // 8, 9 - Código contexto da pergunta igual, da alternativa mudou.
+            assertThat(p1Depois.getCodigoContexto()).isEqualTo(p1Antes.getCodigoContexto());
+            assertThat(p1Depois.getAlternativas().get(0).getCodigoContexto())
+                    .isGreaterThan(p1Antes.getAlternativas().get(0).getCodigoContexto());
 
             // 10 - Está como prioridade BAIXA.
             assertThat(p1Depois.getAlternativas().get(0).getPrioridade()).isEqualTo(PrioridadeAlternativa.BAIXA);
@@ -1221,7 +1221,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera ordem de exibição da A1 com a A3, mantém versão")
-    void caso20_alteraOrdemExibicaoA1ComA3_deveMudarVersaoModeloEManterCodigoFixo() {
+    void caso20_alteraOrdemExibicaoA1ComA3_deveMudarVersaoModeloEManterCodigoContexto() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1243,7 +1243,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 2,
                 new AlternativaModeloChecklistEdicaoAtualiza(
                         a1.getCodigo(),
-                        a1.getCodigoFixo(),
+                        a1.getCodigoContexto(),
                         a1.getDescricao(),
                         a1.getPrioridade(),
                         a1.isTipoOutros(),
@@ -1254,7 +1254,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 0,
                 new AlternativaModeloChecklistEdicaoAtualiza(
                         a3.getCodigo(),
-                        a3.getCodigoFixo(),
+                        a3.getCodigoContexto(),
                         a3.getDescricao(),
                         a3.getPrioridade(),
                         a3.isTipoOutros(),
@@ -1282,12 +1282,12 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8, 9 - Código fixo da pergunta e da alternativa se mantiveram.
-            assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
-            assertThat(p1Depois.getAlternativas().get(0).getCodigoFixo())
-                    .isEqualTo(p1Antes.getAlternativas().get(0).getCodigoFixo());
-            assertThat(p1Depois.getAlternativas().get(2).getCodigoFixo())
-                    .isEqualTo(p1Antes.getAlternativas().get(2).getCodigoFixo());
+            // 8, 9 - Código contexto da pergunta e da alternativa se mantiveram.
+            assertThat(p1Depois.getCodigoContexto()).isEqualTo(p1Antes.getCodigoContexto());
+            assertThat(p1Depois.getAlternativas().get(0).getCodigoContexto())
+                    .isEqualTo(p1Antes.getAlternativas().get(0).getCodigoContexto());
+            assertThat(p1Depois.getAlternativas().get(2).getCodigoContexto())
+                    .isEqualTo(p1Antes.getAlternativas().get(2).getCodigoContexto());
 
             // 10 - 'Fora de foco' está com ordem de exibição 3.
             assertThat(p1Depois.getAlternativas().get(2).getDescricao()).isEqualTo("Fora de foco");
@@ -1337,7 +1337,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera ordem de exibição da P1 com a P2, muda versão")
-    void caso22_alteraOrdemExibicaoP1comP2_deveMudarVersaoModeloEManterCodigoFixo() {
+    void caso22_alteraOrdemExibicaoP1comP2_deveMudarVersaoModeloEManterCodigoContexto() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1355,7 +1355,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         perguntas.set(0,
                 new PerguntaModeloChecklistEdicaoAtualiza(
                         p2.getCodigo(),
-                        p2.getCodigoFixo(),
+                        p2.getCodigoContexto(),
                         p2.getDescricao(),
                         p2.getCodImagem(),
                         1,
@@ -1364,7 +1364,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                 .stream()
                                 .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
                                         a.getCodigo(),
-                                        a.getCodigoFixo(),
+                                        a.getCodigoContexto(),
                                         a.getDescricao(),
                                         a.getPrioridade(),
                                         a.isTipoOutros(),
@@ -1374,7 +1374,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         perguntas.set(1,
                 new PerguntaModeloChecklistEdicaoAtualiza(
                         p1.getCodigo(),
-                        p1.getCodigoFixo(),
+                        p1.getCodigoContexto(),
                         p1.getDescricao(),
                         p1.getCodImagem(),
                         2,
@@ -1383,7 +1383,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                 .stream()
                                 .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
                                         a.getCodigo(),
-                                        a.getCodigoFixo(),
+                                        a.getCodigoContexto(),
                                         a.getDescricao(),
                                         a.getPrioridade(),
                                         a.isTipoOutros(),
@@ -1412,8 +1412,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // Código fixo da pergunta se manteve.
-            assertThat(p1Depois.getCodigoFixo()).isEqualTo(p1Antes.getCodigoFixo());
+            // Código contexto da pergunta se manteve.
+            assertThat(p1Depois.getCodigoContexto()).isEqualTo(p1Antes.getCodigoContexto());
 
             // 'Cinto de segurança' está com ordem de exibição 1.
             assertThat(p1Depois.getDescricao()).isEqualTo("Cinto de segurança");
@@ -1424,8 +1424,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p2Antes = editado.getPerguntas().get(1);
             final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
 
-            // Código fixo da pergunta se manteve.
-            assertThat(p2Depois.getCodigoFixo()).isEqualTo(p2Antes.getCodigoFixo());
+            // Código contexto da pergunta se manteve.
+            assertThat(p2Depois.getCodigoContexto()).isEqualTo(p2Antes.getCodigoContexto());
 
             // 'Farol' está com ordem de exibição 2.
             assertThat(p2Depois.getDescricao()).isEqualTo("Farol");
@@ -1487,7 +1487,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera imagem da P1, aumenta versão")
-    void caso24_alteraImagemP1_deveMudarVersaoModeloECodigoFixoP1() {
+    void caso24_alteraImagemP1_deveMudarVersaoModeloECodigoContextoP1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1509,7 +1509,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 // P1 é substituída agora com outra imagem..
                 new PerguntaModeloChecklistEdicaoAtualiza(
                         p1.getCodigo(),
-                        p1.getCodigoFixo(),
+                        p1.getCodigoContexto(),
                         p1.getDescricao(),
                         2L,
                         p1.getOrdemExibicao(),
@@ -1537,7 +1537,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8, 9 - Código fixo mudou.
+            // 8, 9 - Código contexto mudou.
             ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
 
             // 10 - Está com outra imagem.
@@ -1557,7 +1557,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         visu.forEach(a -> novas.add(
                 new AlternativaModeloChecklistEdicaoAtualiza(
                         a.getCodigo(),
-                        a.getCodigoFixo(),
+                        a.getCodigoContexto(),
                         a.getDescricao(),
                         a.getPrioridade(),
                         a.isTipoOutros(),
@@ -1577,7 +1577,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         for (final AlternativaModeloChecklist a : p.getAlternativas()) {
             alternativas.add(new AlternativaModeloChecklistEdicaoAtualiza(
                     a.getCodigo(),
-                    a.getCodigoFixo(),
+                    a.getCodigoContexto(),
                     a.getDescricao(),
                     a.getPrioridade(),
                     a.isTipoOutros(),
@@ -1586,7 +1586,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         }
         return new PerguntaModeloChecklistEdicaoAtualiza(
                 p.getCodigo(),
-                p.getCodigoFixo(),
+                p.getCodigoContexto(),
                 novaDescricao,
                 p.getCodImagem(),
                 p.getOrdemExibicao(),
@@ -1601,7 +1601,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(a.getDescricao()).isEqualTo(descricaoAtual);
         return new AlternativaModeloChecklistEdicaoAtualiza(
                 a.getCodigo(),
-                a.getCodigoFixo(),
+                a.getCodigoContexto(),
                 novaDescricao,
                 a.getPrioridade(),
                 a.isTipoOutros(),
@@ -1612,7 +1612,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     private void ensureAllAttributesEqual(@NotNull final PerguntaModeloChecklist antes,
                                           @NotNull final PerguntaModeloChecklist depois,
                                           final int qtdAlternativas,
-                                          final boolean mesmoCodigoFixo,
+                                          final boolean mesmoCodigoContexto,
                                           final boolean mesmoCodigoVariavel) {
         assertThat(antes).isNotSameInstanceAs(depois);
         if (mesmoCodigoVariavel) {
@@ -1620,10 +1620,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         } else {
             assertThat(antes.getCodigo()).isLessThan(depois.getCodigo());
         }
-        if (mesmoCodigoFixo) {
-            assertThat(antes.getCodigoFixo()).isEqualTo(depois.getCodigoFixo());
+        if (mesmoCodigoContexto) {
+            assertThat(antes.getCodigoContexto()).isEqualTo(depois.getCodigoContexto());
         } else {
-            assertThat(antes.getCodigoFixo()).isLessThan(depois.getCodigoFixo());
+            assertThat(antes.getCodigoContexto()).isLessThan(depois.getCodigoContexto());
         }
         assertThat(antes.getDescricao()).isEqualTo(depois.getDescricao());
         assertThat(antes.getCodImagem()).isEqualTo(depois.getCodImagem());
@@ -1638,7 +1638,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                           final int qtdAlternativas) {
         assertThat(antes).isNotSameInstanceAs(depois);
         assertThat(antes.getCodigo()).isEqualTo(depois.getCodigo());
-        assertThat(antes.getCodigoFixo()).isEqualTo(depois.getCodigoFixo());
+        assertThat(antes.getCodigoContexto()).isEqualTo(depois.getCodigoContexto());
         assertThat(antes.getDescricao()).isEqualTo(depois.getDescricao());
         assertThat(antes.getCodImagem()).isEqualTo(depois.getCodImagem());
         assertThat(antes.getOrdemExibicao()).isEqualTo(depois.getOrdemExibicao());
@@ -1651,7 +1651,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                           @NotNull final AlternativaModeloChecklist depois) {
         assertThat(antes).isNotSameInstanceAs(depois);
         assertThat(antes.getCodigo()).isEqualTo(depois.getCodigo());
-        assertThat(antes.getCodigoFixo()).isEqualTo(depois.getCodigoFixo());
+        assertThat(antes.getCodigoContexto()).isEqualTo(depois.getCodigoContexto());
         assertThat(antes.getDescricao()).isEqualTo(depois.getDescricao());
         assertThat(antes.getPrioridade()).isEqualTo(depois.getPrioridade());
         assertThat(antes.isTipoOutros()).isEqualTo(depois.isTipoOutros());
@@ -1662,7 +1662,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     //ESTE MÉTODO TORNA OPCIONAL A VALIDAÇÃO DOS CÓDIGOS DE ALTERNATIVAS
     private void ensureAllAttributesEqual(@NotNull final AlternativaModeloChecklist antes,
                                           @NotNull final AlternativaModeloChecklist depois,
-                                          final boolean mesmoCodigoFixo,
+                                          final boolean mesmoCodigoContexto,
                                           final boolean mesmoCodigoVariavel) {
         assertThat(antes).isNotSameInstanceAs(depois);
 
@@ -1670,8 +1670,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             assertThat(antes.getCodigo()).isEqualTo(depois.getCodigo());
         }
 
-        if (mesmoCodigoFixo) {
-            assertThat(antes.getCodigoFixo()).isEqualTo(depois.getCodigoFixo());
+        if (mesmoCodigoContexto) {
+            assertThat(antes.getCodigoContexto()).isEqualTo(depois.getCodigoContexto());
         }
 
         assertThat(antes.getDescricao()).isEqualTo(depois.getDescricao());

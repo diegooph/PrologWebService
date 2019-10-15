@@ -42,9 +42,9 @@ public final class PerguntaModeloChecklistEdicaoInsere extends PerguntaModeloChe
 
     @NotNull
     @Override
-    public Long getCodigoFixo() {
+    public Long getCodigoContexto() {
         throw new UnsupportedOperationException(PerguntaModeloChecklistEdicaoInsere.class.getSimpleName()
-                + " não tem codigoFixo");
+                + " não tem codigoContexto");
     }
 
     @NotNull

@@ -12,7 +12,7 @@ public abstract class AlternativaModeloChecklist {
     @NotNull
     public abstract Long getCodigo();
     @NotNull
-    public abstract Long getCodigoFixo();
+    public abstract Long getCodigoContexto();
     @NotNull
     public abstract String getDescricao();
     @NotNull

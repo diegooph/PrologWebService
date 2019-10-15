@@ -141,7 +141,7 @@ public final class ChecklistModeloConverter {
             @NotNull final List<AlternativaModeloChecklistVisualizacao> alternativas) throws SQLException {
         return new PerguntaModeloChecklistVisualizacao(
                 rSet.getLong("COD_PERGUNTA"),
-                rSet.getLong("CODIGO_FIXO_PERGUNTA"),
+                rSet.getLong("COD_CONTEXTO_PERGUNTA"),
                 rSet.getString("PERGUNTA"),
                 NullIf.equalOrLess(rSet.getLong("COD_IMAGEM"), 0),
                 rSet.getString("URL_IMAGEM"),
@@ -155,7 +155,7 @@ public final class ChecklistModeloConverter {
             @NotNull final ResultSet rSet) throws SQLException {
         return new AlternativaModeloChecklistVisualizacao(
                 rSet.getLong("COD_ALTERNATIVA"),
-                rSet.getLong("CODIGO_FIXO_ALTERNATIVA"),
+                rSet.getLong("COD_CONTEXTO_ALTERNATIVA"),
                 rSet.getString("ALTERNATIVA"),
                 PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE")),
                 rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"),

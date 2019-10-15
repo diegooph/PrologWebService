@@ -16,7 +16,7 @@ public final class PerguntaModeloChecklistVisualizacao extends PerguntaModeloChe
     @NotNull
     private final Long codigo;
     @NotNull
-    private final Long codigoFixo;
+    private final Long codigoContexto;
     @NotNull
     private final String descricao;
     @Nullable
@@ -29,7 +29,7 @@ public final class PerguntaModeloChecklistVisualizacao extends PerguntaModeloChe
     private final List<AlternativaModeloChecklistVisualizacao> alternativas;
 
     public PerguntaModeloChecklistVisualizacao(@NotNull final Long codigo,
-                                               @NotNull final Long codigoFixo,
+                                               @NotNull final Long codigoContexto,
                                                @NotNull final String descricao,
                                                @Nullable final Long codImagem,
                                                @Nullable final String urlImagem,
@@ -37,7 +37,7 @@ public final class PerguntaModeloChecklistVisualizacao extends PerguntaModeloChe
                                                final boolean singleChoice,
                                                @NotNull final List<AlternativaModeloChecklistVisualizacao> alternativas) {
         this.codigo = codigo;
-        this.codigoFixo = codigoFixo;
+        this.codigoContexto = codigoContexto;
         this.descricao = descricao;
         this.codImagem = codImagem;
         this.urlImagem = urlImagem;
@@ -54,8 +54,8 @@ public final class PerguntaModeloChecklistVisualizacao extends PerguntaModeloChe
 
     @NotNull
     @Override
-    public Long getCodigoFixo() {
-        return codigoFixo;
+    public Long getCodigoContexto() {
+        return codigoContexto;
     }
 
     @NotNull

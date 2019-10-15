@@ -38,8 +38,8 @@ public final class AlternativaModeloChecklistInsercao extends AlternativaModeloC
 
     @NotNull
     @Override
-    public Long getCodigoFixo() {
-        throw new UnsupportedOperationException("Uma alternativa de inserção não tem código fixo");
+    public Long getCodigoContexto() {
+        throw new UnsupportedOperationException("Uma alternativa de inserção não tem código contexto");
     }
 
     @NotNull

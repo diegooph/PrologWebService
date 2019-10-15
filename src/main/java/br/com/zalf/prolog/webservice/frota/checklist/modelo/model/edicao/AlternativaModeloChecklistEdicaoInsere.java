@@ -38,9 +38,9 @@ public final class AlternativaModeloChecklistEdicaoInsere extends AlternativaMod
 
     @NotNull
     @Override
-    public Long getCodigoFixo() {
+    public Long getCodigoContexto() {
         throw new UnsupportedOperationException(AlternativaModeloChecklistEdicaoInsere.class.getSimpleName()
-                + " não tem codigoFixo");
+                + " não tem codigoContexto");
     }
 
     @Override

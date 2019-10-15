@@ -33,16 +33,16 @@ public final class PergundaEdicaoSerializerDeserializer implements
             final JsonDeserializationContext context) throws JsonParseException {
         final JsonObject jsonObject = json.getAsJsonObject();
         final JsonElement codigo = jsonObject.get("codigo");
-        final JsonElement codigoFixo = jsonObject.get("codigoFixo");
-        if (codigo != null && codigoFixo != null) {
+        final JsonElement codigoContexto = jsonObject.get("codigoContexto");
+        if (codigo != null && codigoContexto != null) {
             return context.deserialize(json, PerguntaModeloChecklistEdicaoAtualiza.class);
-        } else if (codigo == null && codigoFixo == null) {
+        } else if (codigo == null && codigoContexto == null) {
             return context.deserialize(json, PerguntaModeloChecklistEdicaoInsere.class);
         } else {
             throw new IllegalStateException(
-                    String.format("Erro ao deserializar pergunta\ncodigo = %d; codigoFixo = %d;",
+                    String.format("Erro ao deserializar pergunta\ncodigo = %d; codigoContexto = %d;",
                             codigo != null ? codigo.getAsLong() : null,
-                            codigoFixo != null ? codigoFixo.getAsLong() : null));
+                            codigoContexto != null ? codigoContexto.getAsLong() : null));
         }
     }
 }

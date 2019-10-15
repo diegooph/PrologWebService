@@ -800,7 +800,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                             @NotNull final Long codModelo,
                                             @NotNull final Long codVersaoModelo,
                                             @NotNull final PerguntaModeloChecklistEdicao pergunta,
-                                            final boolean usarMesmoCodigoFixo) throws Throwable {
+                                            final boolean usarMesmoCodigoContexto) throws Throwable {
         return internalInsertPerguntas(
                 conn,
                 codUnidade,
@@ -810,8 +810,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                 pergunta.getCodImagem(),
                 pergunta.getOrdemExibicao(),
                 pergunta.isSingleChoice(),
-                usarMesmoCodigoFixo,
-                pergunta.getCodigoFixo());
+                usarMesmoCodigoContexto,
+                pergunta.getCodigoContexto());
     }
 
     @NotNull
@@ -831,7 +831,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             if (usarMesmoCodigoDeContexto) {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
                         + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, ORDEM, PERGUNTA, COD_IMAGEM, "
-                        + "SINGLE_CHOICE, CODIGO_FIXO_PERGUNTA) "
+                        + "SINGLE_CHOICE, CODIGO_CONTEXTO) "
                         + "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
             } else {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
@@ -873,7 +873,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             if (usarMesmoCodigoDeContexto) {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
                         + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, COD_PERGUNTA, ALTERNATIVA, PRIORIDADE, ORDEM, "
-                        + "ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, CODIGO_FIXO_ALTERNATIVA) "
+                        + "ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, CODIGO_CONTEXTO) "
                         + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             } else {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
@@ -891,7 +891,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setBoolean(8, alternativa.isTipoOutros());
             stmt.setBoolean(9, alternativa.isDeveAbrirOrdemServico());
             if (usarMesmoCodigoDeContexto) {
-                stmt.setLong(10, alternativa.getCodigoFixo());
+                stmt.setLong(10, alternativa.getCodigoContexto());
             }
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inserir a alternativa da pergunta: " + codPergunta);

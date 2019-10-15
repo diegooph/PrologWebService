@@ -29,7 +29,7 @@ import java.util.List;
  * 3 -> [BD] Iremos migrar o restante da estrutura do checklist e a COSI:
  *      • Criar tabela para salvar apenas as respostas NOK
  *      • Migrar dados da CHECKLIST_RESPOSTAS para a CHECKLIST_RESPOSTAS_NOK
- *      • Criar novas colunas de código fixo e preencher na COSI
+ *      • Criar novas colunas de código contexto e preencher na COSI
  *
  * 4 -> [BD] Iremos criar/recriar functions/views necessárias:
  *      • Tudo que precisou ser refatorado por conta de mudanças na estrutura, será alterado aqui
@@ -224,7 +224,7 @@ public final class MigracaoEstruturaChecklistV2 {
      * 3 -> [BD] Iremos migrar o restante da estrutura do checklist e a COSI:
      *      • Criar tabela para salvar apenas as respostas NOK
      *      • Migrar dados da CHECKLIST_RESPOSTAS para a CHECKLIST_RESPOSTAS_NOK
-     *      • Criar novas colunas de código fixo e preencher na COSI
+     *      • Criar novas colunas de código contexto e preencher na COSI
      */
     private void executaPasso3(@NotNull final Connection conn) throws Throwable {
         PreparedStatement stmt = null;
