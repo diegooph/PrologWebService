@@ -117,25 +117,25 @@ public final class ChecklistInsercao {
     @Nullable
     private Checklist checklistAntigo;
 
-    public ChecklistInsercao(@NotNull final Long codUnidade,
-                             @NotNull final Long codModelo,
-                             @NotNull final Long codVersaoModeloChecklist,
-                             @NotNull final Long codColaborador,
-                             @NotNull final String cpfColaborador,
-                             @NotNull final Long codVeiculo,
-                             @NotNull final String placaVeiculo,
-                             @NotNull final TipoChecklist tipo,
+    public ChecklistInsercao(@NotNull  final Long codUnidade,
+                             @NotNull  final Long codModelo,
+                             @Nullable final Long codVersaoModeloChecklist,
+                             @NotNull  final Long codColaborador,
+                             @NotNull  final String cpfColaborador,
+                             @NotNull  final Long codVeiculo,
+                             @NotNull  final String placaVeiculo,
+                             @NotNull  final TipoChecklist tipo,
                              final long kmColetadoVeiculo,
                              final long tempoRealizacaoCheckInMillis,
-                             @NotNull final List<ChecklistResposta> respostas,
-                             @NotNull final LocalDateTime dataHoraRealizacao,
-                             @NotNull final FonteDataHora fonteDataHoraRealizacao,
-                             @NotNull final Integer versaoAppMomentoRealizacao,
-                             @NotNull final Integer versaoAppMomentoSincronizacao,
+                             @NotNull  final List<ChecklistResposta> respostas,
+                             @NotNull  final LocalDateTime dataHoraRealizacao,
+                             @NotNull  final FonteDataHora fonteDataHoraRealizacao,
+                             @NotNull  final Integer versaoAppMomentoRealizacao,
+                             @NotNull  final Integer versaoAppMomentoSincronizacao,
                              @Nullable final String deviceId,
                              @Nullable final String deviceImei,
-                             final long deviceUptimeRealizacaoMillis,
-                             final long deviceUptimeSincronizacaoMillis) {
+                             final     long deviceUptimeRealizacaoMillis,
+                             final     long deviceUptimeSincronizacaoMillis) {
         this.codUnidade = codUnidade;
         this.codModelo = codModelo;
         this.codVersaoModeloChecklist = codVersaoModeloChecklist;
@@ -168,12 +168,8 @@ public final class ChecklistInsercao {
         return codModelo;
     }
 
-    @NotNull
+    @Nullable
     public Long getCodVersaoModeloChecklist() {
-        if (codVersaoModeloChecklist == null) {
-            throw new IllegalStateException("Código da versão do modelo não pode ser null!");
-        }
-
         return codVersaoModeloChecklist;
     }
 

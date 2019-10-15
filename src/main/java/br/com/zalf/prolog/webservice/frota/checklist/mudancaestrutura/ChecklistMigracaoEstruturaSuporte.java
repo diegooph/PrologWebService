@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
@@ -236,7 +237,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
                     "F_COD_MODELO_CHECKLIST   := ?, " +
                     "F_PERGUNTAS_ALTERNATIVAS := ?) AS COD_VERSAO;");
             stmt.setLong(1, codModeloChecklist);
-            stmt.setString(2, GsonUtils.getGson().toJson(checklistJson));
+            stmt.setObject(2, PostgresUtils.toJsonb(GsonUtils.getGson().toJson(checklistJson)));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("COD_VERSAO");
