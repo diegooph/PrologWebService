@@ -6,6 +6,7 @@ Change Log
 ### Refactors
 * Bloqueia abertura de Serviços de Pneus na integração com a Praxio (PLI-37)
 * Mostra serviços fechados automaticamente por integração (PLI-37)
+* Bloqueia movimentações diferentes de ESTOQUE -> DESCARTE para clientes Afere Fácil (PLI-38)
 
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (release-date) [unreleased]
