@@ -2,8 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu.banda.model;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.math.BigDecimal;
-
 /**
  * Created on 01/10/19.
  *
@@ -12,35 +10,24 @@ import java.math.BigDecimal;
 public class PneuModeloBandaVisualizacao {
 
     @NotNull
-    private Long codigo;
+    private final Long codigo;
 
     @NotNull
-    private String nome;
+    private final String nome;
 
-    private int quantidadeSulcos;
+    private final int quantidadeSulcos;
 
     @NotNull
-    private Double alturaSulcos;
-
-    private BigDecimal valorBanda;
+    private final Double alturaSulcos;
 
     public PneuModeloBandaVisualizacao(@NotNull final Long codigo,
                                        @NotNull final String nome,
                                        final int quantidadeSulcos,
-                                       @NotNull final Double alturaSulcos,
-                                       final BigDecimal valorBanda) {
+                                       @NotNull final Double alturaSulcos) {
         this.codigo = codigo;
         this.nome = nome;
         this.quantidadeSulcos = quantidadeSulcos;
         this.alturaSulcos = alturaSulcos;
-        this.valorBanda = valorBanda;
-    }
-
-    public PneuModeloBandaVisualizacao() {
-    }
-
-    public void setQuantidadeSulcos(final int quantidadeSulcos) {
-        this.quantidadeSulcos = quantidadeSulcos;
     }
 
     public Long getCodigo() {
@@ -57,16 +44,5 @@ public class PneuModeloBandaVisualizacao {
 
     public Double getAlturaSulcos() {
         return alturaSulcos;
-    }
-
-    public void setCodigo(@NotNull final Long codModeloPneu) {
-    }
-
-    public BigDecimal getValorBanda() {
-        return valorBanda;
-    }
-
-    public void setValorBanda(BigDecimal valorBanda) {
-        this.valorBanda = valorBanda;
     }
 }

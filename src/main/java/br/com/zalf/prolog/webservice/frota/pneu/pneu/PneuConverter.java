@@ -110,8 +110,8 @@ public final class PneuConverter {
     private static Banda createBanda(@NotNull final Pneu pneu, @NotNull final ResultSet rSet) throws SQLException {
         if (rSet.getString("COD_MODELO_BANDA") != null) {
             final Banda banda = new Banda();
-            banda.setModelo(createModeloBanda(rSet));
             banda.setMarca(createMarcaBanda(rSet));
+            banda.setModelo(createModeloBanda(rSet));
             banda.setValor(rSet.getBigDecimal("VALOR_BANDA"));
             return banda;
         } else if (rSet.getInt("VIDA_ATUAL") == 1) {

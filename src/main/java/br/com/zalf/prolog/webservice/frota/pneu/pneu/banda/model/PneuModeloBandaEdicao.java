@@ -25,7 +25,7 @@ public final class PneuModeloBandaEdicao {
                                  @NotNull final Long codigo,
                                  @NotNull final Long codMarca,
                                  @NotNull final String nome,
-                                 @NotNull final int quantidadeSulcos,
+                                 final int quantidadeSulcos,
                                  @NotNull final Double alturaSulcos) {
         this.codEmpresa = codEmpresa;
         this.codigo = codigo;

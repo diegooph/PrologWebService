@@ -34,10 +34,10 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                final PneuMarcaBandas marca = new PneuMarcaBandas();
-                marca.setCodigo(rSet.getLong("CODIGO"));
-                marca.setNome(rSet.getString("NOME"));
-                marca.setModelos(getModelosBanda(conn, codEmpresa, marca.getCodigo()));
+                final PneuMarcaBandas marca = new PneuMarcaBandas(
+                        rSet.getLong("CODIGO"),
+                        rSet.getString("NOME"),
+                        getModelosBanda(conn, codEmpresa, rSet.getLong("CODIGO")));
                 marcas.add(marca);
             }
         } finally {
@@ -59,10 +59,10 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             rSet = stmt.executeQuery();
 
             if (rSet.next()) {
-                final PneuMarcaBanda marca = new PneuMarcaBanda();
-                marca.setCodigo(rSet.getLong("COD_MARCA_BANDA"));
-                marca.setNome(rSet.getString("NOME_MARCA_BANDA"));
-                marca.setModelo(PneuBandaConverter.createModeloBanda(rSet));
+                final PneuMarcaBanda marca = new PneuMarcaBanda(
+                        rSet.getLong("COD_MARCA_BANDA"),
+                        rSet.getString("NOME_MARCA_BANDA"),
+                        PneuBandaConverter.createModeloBanda(rSet));
                 return marca;
             }else{
                 throw new SQLException("Erro ao buscar marca e modelo de banda");
@@ -138,8 +138,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
                         rSet.getLong("CODIGO"),
                         rSet.getString("NOME"),
                         rSet.getInt("QT_SULCOS"),
-                        rSet.getDouble("ALTURA_SULCOS"),
-                        null);
+                        rSet.getDouble("ALTURA_SULCOS"));
                 modelos.add(pneuModeloBanda);
             }
         } finally {

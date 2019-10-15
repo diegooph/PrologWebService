@@ -1,11 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.banda;
 
-import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.banda.model.PneuMarcaBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.banda.model.PneuModeloBandaVisualizacao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +20,6 @@ public class PneuBandaConverter {
                 rSet.getLong("COD_MODELO_BANDA"),
                 rSet.getString("NOME_MODELO_BANDA"),
                 rSet.getInt("QT_SULCOS_MODELO_BANDA"),
-                rSet.getDouble("ALTURA_SULCOS_MODELO_BANDA"),
-                null);
+                rSet.getDouble("ALTURA_SULCOS_MODELO_BANDA"));
     }
 }

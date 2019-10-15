@@ -37,10 +37,6 @@ public final class PneuModeloVisualizacao {
         this.alturaSulcos = alturaSulcos;
     }
 
-
-    public PneuModeloVisualizacao() {
-    }
-
     public void setQuantidadeSulcos(final int quantidadeSulcos) {
         this.quantidadeSulcos = quantidadeSulcos;
     }

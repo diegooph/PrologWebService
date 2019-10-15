@@ -19,10 +19,6 @@ public final class PneuModeloInsercao {
     @NotNull
     private Double alturaSulcos;
 
-    public PneuModeloInsercao() {
-
-    }
-
     public PneuModeloInsercao(@NotNull final Long codEmpresa,
                                    @NotNull final Long codMarca,
                                    @NotNull final String nome,
@@ -33,9 +29,6 @@ public final class PneuModeloInsercao {
         this.nome = nome;
         this.quantidadeSulcos = quantidadeSulcos;
         this.alturaSulcos = alturaSulcos;
-    }
-
-    public void setQuantidadeSulcos(int quantidadeSulcos) {
     }
 
     @NotNull

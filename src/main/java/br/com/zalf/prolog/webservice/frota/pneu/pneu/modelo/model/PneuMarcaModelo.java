@@ -9,18 +9,18 @@ import java.util.List;
  */
 public final class PneuMarcaModelo {
 
-    private long codigo;
+    private Long codigo;
     private String nome;
     private List<PneuModeloVisualizacao> modelos;
 
     public PneuMarcaModelo() {
     }
 
-    public long getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(long codigo) {
+    public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
