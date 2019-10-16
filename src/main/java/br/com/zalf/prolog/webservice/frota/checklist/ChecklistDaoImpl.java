@@ -78,8 +78,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         try {
 
             // Isso é necessário pois apps antigos não tem a versão do modelo de checklist e portanto nós não recebemos
-            // ela. Nessa etapa, com base nas perguntas e alternativas recebidas, iremos tentar adivinhar qual a versão
-            // com fall back para 1 se não for encontrada.
+            // ela. Nessa etapa buscamos o código da versão do modelo com base no código de uma alternativa
             if (!ChecklistMigracaoEstruturaSuporte.isAppNovaEstruturaChecklist(checklist)) {
                 checklist.setCodVersaoModeloChecklist(ChecklistMigracaoEstruturaSuporte
                         .encontraCodVersaoModeloChecklist(conn, checklist));
