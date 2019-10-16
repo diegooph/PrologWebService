@@ -23,7 +23,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public final class PneuModeloDaoImpl implements PneuModeloDao {
 
     @Override
-    public List<PneuMarcaModelo> getMarcaModeloPneuByCodEmpresa(Long codEmpresa) throws Throwable {
+    public List<PneuMarcaModelo> listagemMarcasModelosPneu(Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -35,8 +35,10 @@ public final class PneuModeloDaoImpl implements PneuModeloDao {
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                final PneuMarcaModelo marca = PneuModeloConverter.createMarcaPneu(rSet);
-                marca.setModelos(getModelosPneu(conn, codEmpresa, marca.getCodigo()));
+                final PneuMarcaModelo marca = new PneuMarcaModelo(
+                        rSet.getLong("COD_MARCA_PNEU"),
+                        rSet.getString("NOME_MARCA_PNEU"),
+                        getModelosPneu(conn, codEmpresa, rSet.getLong("COD_MARCA_PNEU")));
                 marcas.add(marca);
             }
         } finally {

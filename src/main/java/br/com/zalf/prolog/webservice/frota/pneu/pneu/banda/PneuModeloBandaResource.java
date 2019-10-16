@@ -67,7 +67,7 @@ public final class PneuModeloBandaResource {
     @PUT
     @Secured
     @Path("bandas/marcas/{codEmpresa}")
-    public Response updateMarcaBanda(PneuMarcaBandas marca, @PathParam("codEmpresa") Long codEmpresa)  {
+    public Response updateMarcaBanda(PneuMarcaBandas marca, @PathParam("codEmpresa") Long codEmpresa) {
         if (service.updateMarcaBanda(marca, codEmpresa)) {
             return Response.ok("Marca atualizada com sucesso");
         } else {

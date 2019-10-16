@@ -32,9 +32,9 @@ public final class PneuModeloResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/marcaModelos/{codEmpresa}")
-    public List<PneuMarcaModelo> getMarcaModeloPneuByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa)
+    public List<PneuMarcaModelo> listagemMarcasModelosPneu(@PathParam("codEmpresa") Long codEmpresa)
             throws ProLogException {
-        return service.getMarcaModeloPneuByCodEmpresa(codEmpresa);
+        return service.listagemMarcasModelosPneu(codEmpresa);
     }
 
     @POST

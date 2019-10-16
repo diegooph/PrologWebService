@@ -64,7 +64,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
                         rSet.getString("NOME_MARCA_BANDA"),
                         PneuBandaConverter.createModeloBanda(rSet));
                 return marca;
-            }else{
+            } else {
                 throw new SQLException("Erro ao buscar marca e modelo de banda");
             }
         } finally {
@@ -88,7 +88,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
-            }else{
+            } else {
                 throw new SQLException("Erro ao inserir marca de banda");
             }
         } finally {
@@ -98,7 +98,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
 
     @Override
     public boolean updateMarcaBanda(@NotNull final PneuMarcaBandas marca,
-                                    @NotNull final  Long codEmpresa) throws Throwable {
+                                    @NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -168,7 +168,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
-            }else{
+            } else {
                 throw new Throwable("Erro ao inserir modelo de banda");
             }
         } finally {
@@ -200,7 +200,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
-            }else{
+            } else {
                 throw new Throwable("Erro ao atualizar o modelo de banda");
             }
         } finally {

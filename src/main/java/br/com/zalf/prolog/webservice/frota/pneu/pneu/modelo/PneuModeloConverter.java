@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.modelo;
 
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.modelo.model.PneuMarcaModelo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.modelo.model.PneuModeloVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,15 +15,6 @@ public final class PneuModeloConverter {
 
     private PneuModeloConverter() {
         throw new IllegalStateException(PneuModeloConverter.class.getSimpleName() + " cannot be instantiated!");
-    }
-
-
-    @NotNull
-    public static PneuMarcaModelo createMarcaPneu(@NotNull final ResultSet rSet) throws SQLException {
-        final PneuMarcaModelo marca = new PneuMarcaModelo();
-        marca.setCodigo(rSet.getLong("COD_MARCA_PNEU"));
-        marca.setNome(rSet.getString("NOME_MARCA_PNEU"));
-        return marca;
     }
 
     @NotNull

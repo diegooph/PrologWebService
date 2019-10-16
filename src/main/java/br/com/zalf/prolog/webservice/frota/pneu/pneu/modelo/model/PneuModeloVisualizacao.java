@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.modelo.model;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 26/09/19.
@@ -10,22 +9,18 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class PneuModeloVisualizacao {
 
-    //Nullable por conta das integrações.
-    @Nullable
-    private Long codMarca;
     @NotNull
-    private Long codigo;
-
+    private final Long codMarca;
     @NotNull
-    private String nome;
-
-    private int quantidadeSulcos;
-
+    private final Long codigo;
     @NotNull
-    private Double alturaSulcos;
+    private final String nome;
+    private final int quantidadeSulcos;
+    @NotNull
+    private final Double alturaSulcos;
 
 
-    public PneuModeloVisualizacao(@Nullable final Long codMarca,
+    public PneuModeloVisualizacao(@NotNull final Long codMarca,
                                   @NotNull final Long codigo,
                                   @NotNull final String nome,
                                   final int quantidadeSulcos,
@@ -35,10 +30,6 @@ public final class PneuModeloVisualizacao {
         this.nome = nome;
         this.quantidadeSulcos = quantidadeSulcos;
         this.alturaSulcos = alturaSulcos;
-    }
-
-    public void setQuantidadeSulcos(final int quantidadeSulcos) {
-        this.quantidadeSulcos = quantidadeSulcos;
     }
 
     public Long getCodMarca() {
@@ -59,8 +50,5 @@ public final class PneuModeloVisualizacao {
 
     public Double getAlturaSulcos() {
         return alturaSulcos;
-    }
-
-    public void setCodigo(@NotNull final Long codModeloPneu) {
     }
 }

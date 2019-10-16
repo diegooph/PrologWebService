@@ -22,7 +22,7 @@ public interface PneuModeloDao {
      * @return uma lista de marcas
      * @throws Throwable caso ocorra erro no banco
      */
-    List<PneuMarcaModelo> getMarcaModeloPneuByCodEmpresa(Long codEmpresa) throws Throwable;
+    List<PneuMarcaModelo> listagemMarcasModelosPneu(Long codEmpresa) throws Throwable;
 
     /**
      * insere um modelo de pneu

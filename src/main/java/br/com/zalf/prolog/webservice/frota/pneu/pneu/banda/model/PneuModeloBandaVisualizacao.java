@@ -11,12 +11,9 @@ public class PneuModeloBandaVisualizacao {
 
     @NotNull
     private final Long codigo;
-
     @NotNull
     private final String nome;
-
     private final int quantidadeSulcos;
-
     @NotNull
     private final Double alturaSulcos;
 

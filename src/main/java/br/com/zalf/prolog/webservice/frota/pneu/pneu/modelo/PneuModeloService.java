@@ -25,9 +25,9 @@ public final class PneuModeloService {
     private final PneuModeloDao dao = Injection.providePneuModeloDao();
 
 
-    public List<PneuMarcaModelo> getMarcaModeloPneuByCodEmpresa(Long codEmpresa) throws ProLogException {
+    public List<PneuMarcaModelo> listagemMarcasModelosPneu(Long codEmpresa) throws ProLogException {
         try {
-            return dao.getMarcaModeloPneuByCodEmpresa(codEmpresa);
+            return dao.listagemMarcasModelosPneu(codEmpresa);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar as marcas de pneu da empresa: " + codEmpresa, t);
             throw Injection
@@ -36,11 +36,13 @@ public final class PneuModeloService {
         }
     }
 
-    public AbstractResponse insertModeloPneu(@NotNull final PneuModeloInsercao pneuModeloInsercao) throws ProLogException {
+    public AbstractResponse insertModeloPneu(@NotNull final PneuModeloInsercao pneuModeloInsercao)
+            throws ProLogException {
         try {
             return ResponseWithCod.ok("Modelo inserido com sucesso", dao.insertModeloPneu(pneuModeloInsercao));
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao inserir modelo de pneu. Empresa: " + pneuModeloInsercao.getCodEmpresa() + " Marca: " + pneuModeloInsercao.getCodMarca(), t);
+            Log.e(TAG, "Erro ao inserir modelo de pneu. Empresa: " + pneuModeloInsercao.getCodEmpresa() +
+                    " Marca: " + pneuModeloInsercao.getCodMarca(), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir modelo de pneu, tente novamente");

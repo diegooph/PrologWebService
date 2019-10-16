@@ -9,21 +9,21 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class PneuModeloInsercao {
     @NotNull
-    private Long codEmpresa;
+    private final Long codEmpresa;
     @NotNull
-    private Long codMarca;
+    private final Long codMarca;
     @NotNull
-    private String nome;
+    private final String nome;
 
-    private int quantidadeSulcos;
+    private final int quantidadeSulcos;
     @NotNull
-    private Double alturaSulcos;
+    private final Double alturaSulcos;
 
     public PneuModeloInsercao(@NotNull final Long codEmpresa,
-                                   @NotNull final Long codMarca,
-                                   @NotNull final String nome,
-                                   final int quantidadeSulcos,
-                                   @NotNull final Double alturaSulcos) {
+                              @NotNull final Long codMarca,
+                              @NotNull final String nome,
+                              final int quantidadeSulcos,
+                              @NotNull final Double alturaSulcos) {
         this.codEmpresa = codEmpresa;
         this.codMarca = codMarca;
         this.nome = nome;

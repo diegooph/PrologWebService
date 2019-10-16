@@ -11,10 +11,8 @@ public class PneuMarcaBanda {
 
     @NotNull
     private final Long codigo;
-
     @NotNull
     private final String nome;
-
     @NotNull
     private final PneuModeloBandaVisualizacao modelo;
 
