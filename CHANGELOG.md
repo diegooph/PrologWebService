@@ -1,18 +1,13 @@
 Change Log
 ==========
 
-## Stage
-
-### Features
-* Cria estrutura de pesquisa de NPS (PL-2350)
-
-
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (release-date) [unreleased]
 
 ### Features
 * Cria estrutura para salvar requisições e respostas das integrações. (PL-2306)
 * Cria funcionalidade de testes do aferidor (PL-2343)
+* Cria estrutura de pesquisa de NPS (PL-2350)
 
 <a name="v1.0.2"></a>
 ## Version [v1.0.2](https://github.com/luizfp/PrologWebService/compare/v1.0.1...v1.0.2) (2019-09-29)
