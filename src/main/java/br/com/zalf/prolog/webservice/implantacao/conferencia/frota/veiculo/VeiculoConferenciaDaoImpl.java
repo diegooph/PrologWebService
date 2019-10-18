@@ -20,19 +20,19 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public final class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
 
     @Override
-    public void getVerificacaoPlanilhaImportVeiculo(@NotNull final OutputStream out,
-                                                    @NotNull final Long codUnidade,
-                                                    @NotNull final String jsonPlanilha) throws Throwable {
+    public void importPlanilhaVeiculos(@NotNull final OutputStream out,
+                                       @NotNull final Long codUnidade,
+                                       @NotNull final String jsonPlanilha) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
+
             stmt = conn.prepareStatement("SELECT * FROM IMPLANTACAO.FUNC_VEICULO_CONFERE_PLANILHA_IMPORTACAO(" +
                     "F_COD_UNIDADE   := ?," +
                     "F_JSON_VEICULOS := ?);");
             stmt.setLong(1, codUnidade);
-
             final PGobject json = new PGobject();
             json.setType("jsonb");
             json.setValue(jsonPlanilha);

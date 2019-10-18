@@ -71,7 +71,7 @@ public final class VeiculoConferenciaService {
         try {
             final List<VeiculoPlanilha> veiculoPlanilha = VeiculoPlanilhaReader.readListFromCsvFilePath(file);
             String jsonPlanilha = GsonUtils.getGson().toJson(veiculoPlanilha);
-            dao.getVerificacaoPlanilhaImportVeiculo(out, codUnidade, jsonPlanilha);
+            dao.importPlanilhaVeiculos(out, codUnidade, jsonPlanilha);
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection

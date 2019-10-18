@@ -19,7 +19,7 @@ public interface VeiculoConferenciaDao {
      * @param jsonPlanilha Informações da planilha de import de veículos em formato Json.
      * @throws Throwable Se algum erro ocorrer.
      */
-    void getVerificacaoPlanilhaImportVeiculo(@NotNull final OutputStream out,
-                                             @NotNull final Long codUnidade,
-                                             @NotNull final String jsonPlanilha) throws Throwable;
+    void importPlanilhaVeiculos(@NotNull final OutputStream out,
+                                @NotNull final Long codUnidade,
+                                @NotNull final String jsonPlanilha) throws Throwable;
 }
