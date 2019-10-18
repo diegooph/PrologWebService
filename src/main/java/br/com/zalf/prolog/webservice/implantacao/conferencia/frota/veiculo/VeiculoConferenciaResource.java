@@ -32,13 +32,17 @@ public final class VeiculoConferenciaResource {
     @Path("/upload-planilha-import")
     public StreamingOutput getVerificacaoPlanilhaImportVeiculo(
             @HeaderParam(ImplantacaoImportTokensValidator.HEADER_PARAM) @Required final String tokenImplantacao,
+            @HeaderParam("usuario") @Required final String usuario,
+            @QueryParam("codEmpresa") @Required final Long codEmpresa,
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @FormDataParam("file") @Required final InputStream fileInputStream,
             @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) throws ProLogException {
         return outputStream -> service.getVerificacaoPlanilhaImportVeiculo(
                 tokenImplantacao,
                 outputStream,
+                codEmpresa,
                 codUnidade,
+                usuario,
                 fileInputStream,
                 fileDetail);
     }

@@ -27,16 +27,18 @@ public final class VeiculoConferenciaService {
     @NotNull
     private final VeiculoConferenciaDao dao = Injection.provideVeiculoConferenciaDao();
 
-    void getVerificacaoPlanilhaImportVeiculo(@NotNull final String token,
+    void getVerificacaoPlanilhaImportVeiculo(@NotNull final String tokenImplantacao,
                                              @NotNull final OutputStream out,
+                                             @NotNull final Long codEmpresa,
                                              @NotNull final Long codUnidade,
+                                             @NotNull final String usuario,
                                              @NotNull final InputStream fileInputStream,
                                              @NotNull final FormDataContentDisposition fileDetail) {
         try {
-            ImplantacaoImportTokensValidator.validateTokenFor(ImplantacaoImportTokens.IMPORT_VEICULO, token);
+            ImplantacaoImportTokensValidator.validateTokenFor(ImplantacaoImportTokens.IMPORT_VEICULO, tokenImplantacao);
 
             final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
-            readAndInsertImport(out, codUnidade, file);
+            readAndInsertImport(out, codEmpresa, codUnidade, usuario, file);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao verificar planilha de import de veiculos", throwable);
             throw new RuntimeException(throwable);
@@ -66,12 +68,14 @@ public final class VeiculoConferenciaService {
     }
 
     private void readAndInsertImport(@NotNull final OutputStream out,
+                                     @NotNull final Long codEmpresa,
                                      @NotNull final Long codUnidade,
+                                     @NotNull final String usuario,
                                      @NotNull final File file) throws ProLogException {
         try {
             final List<VeiculoPlanilha> veiculoPlanilha = VeiculoPlanilhaReader.readListFromCsvFilePath(file);
             String jsonPlanilha = GsonUtils.getGson().toJson(veiculoPlanilha);
-            dao.importPlanilhaVeiculos(out, codUnidade, jsonPlanilha);
+            dao.importPlanilhaVeiculos(out, codEmpresa, codUnidade, usuario, jsonPlanilha);
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection

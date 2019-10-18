@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoDadosTabelaImport;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
@@ -20,6 +21,8 @@ public interface VeiculoConferenciaDao {
      * @throws Throwable Se algum erro ocorrer.
      */
     void importPlanilhaVeiculos(@NotNull final OutputStream out,
+                                @NotNull final Long codEmpresa,
                                 @NotNull final Long codUnidade,
+                                @NotNull final String usuario,
                                 @NotNull final String jsonPlanilha) throws Throwable;
 }
