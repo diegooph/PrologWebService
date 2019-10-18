@@ -80,9 +80,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setString(5, afericao.getTipoMedicaoColetadaAfericao().asString());
             stmt.setString(6, afericao.getTipoProcessoColetaAfericao().asString());
 
-            // Só devemos abrir serviços com base nas medidas coletadas, se for uma AfericaPlaca.
-            // Caso contrário iremos apenas inserir os valores coletados.
-            boolean temServicos = false;
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                 stmt.setString(7, afericaoPlaca.getVeiculo().getPlaca());
@@ -92,7 +89,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                 afericaoPlaca.getVeiculo().getPlaca(),
                                 afericaoPlaca.getKmMomentoAfericao(),
                                 conn);
-                temServicos = true;
             } else {
                 stmt.setNull(7, Types.VARCHAR);
                 stmt.setNull(8, Types.BIGINT);
@@ -102,7 +98,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             if (rSet.next()) {
                 codAfericao = rSet.getLong("CODIGO");
                 afericao.setCodigo(codAfericao);
-                insertValores(conn, codUnidade, afericao, deveAbrirServico, temServicos);
+                insertValores(conn, codUnidade, afericao, deveAbrirServico, afericao instanceof AfericaoPlaca);
             }
 
             if (codAfericao != null && codAfericao != 0) {
@@ -598,7 +594,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                @NotNull final Long codUnidade,
                                @NotNull final Afericao afericao,
                                final boolean deveAbrirServico,
-                               final boolean temServicos) throws Throwable {
+                               final boolean afericaoPlaca) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final ServicoDao servicoDao = Injection.provideServicoDao();
         final Restricao restricao = getRestricaoByCodUnidade(conn, codUnidade);
@@ -650,7 +646,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
             // Se não devemos abrir serviços para as medições coletadas,
             // então podemos encerrar o processo aqui.
-            if (!deveAbrirServico || !temServicos) {
+            if (!deveAbrirServico || !afericaoPlaca) {
                 return;
             }
 
