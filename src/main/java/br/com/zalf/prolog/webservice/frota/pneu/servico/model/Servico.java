@@ -45,7 +45,7 @@ public abstract class Servico {
     private boolean fechadoAutomaticamenteIntegracao;
 
     /**
-     * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos.
+     * Armazena o tempo que o colaborador levou para realizar esse serviço, em milissegundos.
      */
     private long tempoRealizacaoServicoInMillis;
 
