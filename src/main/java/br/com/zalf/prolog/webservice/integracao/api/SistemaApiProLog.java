@@ -138,7 +138,7 @@ public final class SistemaApiProLog extends Sistema {
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
-            if (!movimentacao.isFromDestinoToOrigem(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE)) {
+            if (!movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE)) {
                 throw new BloqueadoIntegracaoException("É permitido apenas movimentações do ESTOQUE para o DESCARTE.\n" +
                         "As demais movimentações ainda estão sendo integradas.");
             }

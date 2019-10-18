@@ -633,7 +633,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                     @NotNull final Long codUnidade,
                                     @NotNull final Long codProcessoMovimentacao,
                                     @NotNull final Movimentacao movimentacao) throws Throwable {
-        if (movimentacao.isFromDestinoToOrigem(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
+        if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
             Log.d(TAG, "O pneu " + movimentacao.getPneu().getCodigo()
                     + " está sendo movido dentro do mesmo veículo, não é preciso fechar seus serviços");
             return;
