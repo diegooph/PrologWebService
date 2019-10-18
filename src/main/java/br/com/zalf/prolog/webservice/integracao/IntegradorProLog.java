@@ -19,6 +19,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -56,13 +58,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private VeiculoDao veiculoDao;
     private VeiculoTransferenciaDao veiculoTransferenciaDao;
     private PneuDao pneuDao;
-    private final PneuTransferenciaDao pneuTransferenciaDao;
+    private PneuTransferenciaDao pneuTransferenciaDao;
     private TipoVeiculoDao tipoVeiculoDao;
     private ChecklistDao checklistDao;
     private ChecklistModeloDao checklistModeloDao;
     private OrdemServicoDao ordemServicoDao;
     private AfericaoDao afericaoDao;
     private ServicoDao afericaoServicoDao;
+    private MovimentacaoDao movimentacaoDao;
     private ColaboradorDao colaboradorDao;
     private IntegracaoDao integracaoDao;
     @NotNull
@@ -79,6 +82,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                              OrdemServicoDao ordemServicoDao,
                              AfericaoDao afericaoDao,
                              ServicoDao afericaoServicoDao,
+                             MovimentacaoDao movimentacaoDao,
                              ColaboradorDao colaboradorDao,
                              IntegracaoDao integracaoDao) {
         this.userToken = TokenCleaner.getOnlyToken(userToken);
@@ -92,6 +96,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         this.ordemServicoDao = ordemServicoDao;
         this.afericaoDao = afericaoDao;
         this.afericaoServicoDao = afericaoServicoDao;
+        this.movimentacaoDao = movimentacaoDao;
         this.colaboradorDao = colaboradorDao;
         this.integracaoDao = integracaoDao;
     }
@@ -110,6 +115,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 Injection.provideOrdemServicoDao(),
                 Injection.provideAfericaoDao(),
                 Injection.provideServicoDao(),
+                Injection.provideMovimentacaoDao(),
                 Injection.provideColaboradorDao(),
                 Injection.provideIntegracaoDao());
     }
@@ -288,10 +294,12 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
-        return afericaoDao.insert(codUnidade, afericao);
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        return afericaoDao.insert(codUnidade, afericao, deveAbrirServico);
     }
 
     @NotNull
@@ -452,6 +460,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         afericaoServicoDao.fechaServico(servico, codUnidade);
     }
 
+    @NotNull
+    @Override
+    public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       final boolean fecharServicosAutomaticamente) throws Throwable {
+        return movimentacaoDao.insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+    }
+
     public static final class Builder {
         private VeiculoDao veiculoDao;
         private VeiculoTransferenciaDao veiculoTransferenciaDao;
@@ -463,6 +479,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         private OrdemServicoDao ordemServicoDao;
         private AfericaoDao afericaoDao;
         private ServicoDao afericaoServicoDao;
+        private MovimentacaoDao movimentacaoDao;
         private ColaboradorDao colaboradorDao;
         private IntegracaoDao integracaoDao;
         private final String userToken;
@@ -521,6 +538,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return this;
         }
 
+        public Builder withMovimentacaoDao(MovimentacaoDao movimentacaoDao) {
+            this.movimentacaoDao = movimentacaoDao;
+            return this;
+        }
+
         public Builder withColaboradorDao(ColaboradorDao colaboradorDao) {
             this.colaboradorDao = colaboradorDao;
             return this;
@@ -544,6 +566,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                     ordemServicoDao,
                     afericaoDao,
                     afericaoServicoDao,
+                    movimentacaoDao,
                     colaboradorDao,
                     integracaoDao);
         }

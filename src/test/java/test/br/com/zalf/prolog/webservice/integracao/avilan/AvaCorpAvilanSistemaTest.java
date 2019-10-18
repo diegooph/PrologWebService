@@ -58,7 +58,7 @@ public class AvaCorpAvilanSistemaTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Exception.class)
     public void testInsertAfericao() throws Throwable {
-        sistema.insertAfericao(0L, new AfericaoPlaca());
+        sistema.insertAfericao(0L, new AfericaoPlaca(), true);
     }
 
     @Test

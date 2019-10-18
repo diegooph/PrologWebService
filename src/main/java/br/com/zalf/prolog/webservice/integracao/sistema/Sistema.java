@@ -11,7 +11,9 @@ import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOffli
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
@@ -152,10 +154,12 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
-        return getIntegradorProLog().insertAfericao(codUnidade, afericao);
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        return getIntegradorProLog().insertAfericao(codUnidade, afericao, deveAbrirServico);
     }
 
     @NotNull
@@ -314,6 +318,14 @@ public abstract class Sistema implements OperacoesIntegradas {
     @Override
     public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
         getIntegradorProLog().fechaServico(codUnidade, servico);
+    }
+
+    @NotNull
+    @Override
+    public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       final boolean fecharServicosAutomaticamente) throws Throwable {
+        return getIntegradorProLog().insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
     }
 
     @NotNull

@@ -63,7 +63,7 @@ public class Movimentacao {
         return this.destino.getTipo().equals(destino);
     }
 
-    public boolean isFromDestinoToOrigem(@NotNull final OrigemDestinoEnum origem, @NotNull final OrigemDestinoEnum destino) {
+    public boolean isFromOrigemToDestino(@NotNull final OrigemDestinoEnum origem, @NotNull final OrigemDestinoEnum destino) {
         return getOrigem().getTipo().equals(origem) && getDestino().getTipo().equals(destino);
     }
 }

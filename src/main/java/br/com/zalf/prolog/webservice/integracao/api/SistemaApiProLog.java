@@ -2,7 +2,12 @@ package br.com.zalf.prolog.webservice.integracao.api;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
@@ -108,6 +113,15 @@ public final class SistemaApiProLog extends Sistema {
         return getIntegradorProLog().getVeiculoAberturaServico(codServico, placaVeiculo);
     }
 
+    @NotNull
+    @Override
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        // Neste cenário, a flag deveAbrirServico é setada como false pois não queremos serviços.
+        return getIntegradorProLog().insertAfericao(codUnidade, afericao, false);
+    }
+
     @Override
     public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
         if (servico.getTipoServico().equals(TipoServico.MOVIMENTACAO)) {
@@ -116,6 +130,21 @@ public final class SistemaApiProLog extends Sistema {
                             "Por enquanto, utilize o seu sistema para movimentar os pneus.");
         }
         getIntegradorProLog().fechaServico(codUnidade, servico);
+    }
+
+    @NotNull
+    @Override
+    public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       final boolean fecharServicosAutomaticamente) throws Throwable {
+        for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
+            if (!movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE)) {
+                throw new BloqueadoIntegracaoException("É permitido apenas movimentações do ESTOQUE para o DESCARTE.\n" +
+                        "As demais movimentações ainda estão sendo integradas.");
+            }
+        }
+        // Apenas processamos movimentações com origem ESTOQUE e destino DESCARTE.
+        return getIntegradorProLog().insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
     }
 
     @NotNull
