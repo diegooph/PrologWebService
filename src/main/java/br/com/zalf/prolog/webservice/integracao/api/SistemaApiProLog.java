@@ -118,7 +118,7 @@ public final class SistemaApiProLog extends Sistema {
     public Long insertAfericao(@NotNull final Long codUnidade,
                                @NotNull final Afericao afericao,
                                final boolean deveAbrirServico) throws Throwable {
-        // Neste cenário, a flag deveAbrirServico é setada como false pois não queremos serviços
+        // Neste cenário, a flag deveAbrirServico é setada como false pois não queremos serviços.
         return getIntegradorProLog().insertAfericao(codUnidade, afericao, false);
     }
 
@@ -138,8 +138,7 @@ public final class SistemaApiProLog extends Sistema {
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
-            if (!movimentacao.getOrigem().getTipo().equals(OrigemDestinoEnum.ESTOQUE)
-                    || !movimentacao.getDestino().getTipo().equals(OrigemDestinoEnum.DESCARTE)) {
+            if (!movimentacao.isFrom(OrigemDestinoEnum.ESTOQUE) || !movimentacao.isTo(OrigemDestinoEnum.DESCARTE)) {
                 throw new BloqueadoIntegracaoException("É permitido apenas movimentações do ESTOQUE para o DESCARTE.\n" +
                         "As demais movimentações ainda estão sendo integradas.");
             }
