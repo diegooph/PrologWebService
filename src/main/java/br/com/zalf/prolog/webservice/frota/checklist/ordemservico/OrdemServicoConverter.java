@@ -38,6 +38,8 @@ final class OrdemServicoConverter {
             @NotNull final ResultSet rSet) throws Throwable {
         return new AlternativaAberturaOrdemServico(
                 rSet.getLong("COD_ALTERNATIVA"),
+                rSet.getLong("COD_CONTEXTO_PERGUNTA"),
+                rSet.getLong("COD_CONTEXTO_ALTERNATIVA"),
                 rSet.getLong("COD_ITEM_ORDEM_SERVICO"),
                 rSet.getInt("QTD_APONTAMENTOS_ITEM"),
                 rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"));

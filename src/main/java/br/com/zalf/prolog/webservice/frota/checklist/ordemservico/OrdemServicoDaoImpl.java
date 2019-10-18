@@ -52,15 +52,17 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                 createAlternativasAberturaOrdemServico(
                         conn,
                         checklist.getCodModelo(),
+                        checklist.getCodVersaoModeloChecklist(),
                         checklist.getPlacaVeiculo());
 
         PreparedStatement stmtQtdApontamentos = null, stmtCriacaoItens = null;
         try {
             stmtQtdApontamentos = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS " +
                     "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1 WHERE CODIGO = ? AND STATUS_RESOLUCAO = ?;");
-            stmtCriacaoItens = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS" +
-                    "(COD_UNIDADE, COD_OS, COD_PERGUNTA, COD_ALTERNATIVA, STATUS_RESOLUCAO) " +
-                    "VALUES (?, ?, ?, ?, ?);");
+            stmtCriacaoItens = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS_DATA" +
+                    "(COD_UNIDADE, COD_OS, COD_PERGUNTA_PRIMEIRO_APONTAMENTO, COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO," +
+                    " STATUS_RESOLUCAO, COD_CONTEXTO_PERGUNTA, COD_CONTEXTO_ALTERNATIVA) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?);");
 
             // Se uma nova O.S. tiver que ser aberta, conterá o código dela. Lembrando que um checklist pode abrir,
             // NO MÁXIMO, uma Ordem de Serviço.
@@ -70,6 +72,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             for (final ChecklistResposta resposta : respostas) {
                 final List<ChecklistAlternativaResposta> alternativas = resposta.getAlternativasRespostas();
                 for (final ChecklistAlternativaResposta alternativaResposta : alternativas) {
+
                     final AlternativaAberturaOrdemServico alternativaOrdemServico =
                             alternativasOrdemServico.get(alternativaResposta.getCodAlternativa());
 
@@ -91,9 +94,12 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                             stmtCriacaoItens.setLong(3, resposta.getCodPergunta());
                             stmtCriacaoItens.setLong(4, alternativaResposta.getCodAlternativa());
                             stmtCriacaoItens.setString(5, StatusItemOrdemServico.PENDENTE.asString());
+                            stmtCriacaoItens.setLong(6, alternativaOrdemServico.getCodContextoPergunta());
+                            stmtCriacaoItens.setLong(7, alternativaOrdemServico.getCodContextoAlternativa());
                             stmtCriacaoItens.addBatch();
                         }
                     }
+
                 }
             }
 
@@ -457,13 +463,15 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     private Map<Long, AlternativaAberturaOrdemServico> createAlternativasAberturaOrdemServico(
             @NotNull final Connection conn,
             @NotNull final Long codModelo,
+            @NotNull final Long codVersaoModelo,
             @NotNull final String placaVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(?, ?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(?, ?, ?)");
             stmt.setLong(1, codModelo);
-            stmt.setString(2, placaVeiculo);
+            stmt.setLong(2, codVersaoModelo);
+            stmt.setString(3, placaVeiculo);
             rSet = stmt.executeQuery();
             final Map<Long, AlternativaAberturaOrdemServico> alternativas = new HashMap<>();
             while (rSet.next()) {

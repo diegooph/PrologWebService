@@ -18,15 +18,21 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model;
  */
 public final class AlternativaAberturaOrdemServico {
     private final long codAlternativa;
+    private final long codContextoPergunta;
+    private final long codContextoAlternativa;
     private final long codItemOrdemServico;
     private final int qtdApontamentosItem;
     private final boolean deveAbrirOrdemServico;
 
     public AlternativaAberturaOrdemServico(final long codAlternativa,
+                                           final long codContextoPergunta,
+                                           final long codContextoAlternativa,
                                            final long codItemOrdemServico,
                                            final int qtdApontamentosItem,
                                            final boolean deveAbrirOrdemServico) {
         this.codAlternativa = codAlternativa;
+        this.codContextoPergunta = codContextoPergunta;
+        this.codContextoAlternativa = codContextoAlternativa;
         this.codItemOrdemServico = codItemOrdemServico;
         this.qtdApontamentosItem = qtdApontamentosItem;
         this.deveAbrirOrdemServico = deveAbrirOrdemServico;
@@ -48,6 +54,14 @@ public final class AlternativaAberturaOrdemServico {
 
     public long getCodAlternativa() {
         return codAlternativa;
+    }
+
+    public long getCodContextoPergunta() {
+        return codContextoPergunta;
+    }
+
+    public long getCodContextoAlternativa() {
+        return codContextoAlternativa;
     }
 
     public long getCodItemOrdemServico() {
