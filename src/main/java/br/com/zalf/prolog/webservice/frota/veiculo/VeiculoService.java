@@ -5,10 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Eixos;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -130,18 +127,17 @@ public final class VeiculoService {
 
     @NotNull
     public Response insert(@NotNull final String userToken,
-                           @NotNull final Long codUnidade,
-                           @NotNull final Veiculo veiculo) throws ProLogException {
+                           @NotNull final VeiculoCadastro veiculo) throws ProLogException {
         try {
             VeiculoValidator.validacaoAtributosVeiculo(veiculo);
             RouterVeiculo
                     .create(dao, userToken)
-                    .insert(codUnidade, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
+                    .insert(veiculo, Injection.provideDadosChecklistOfflineChangedListener());
             return Response.ok("Veículo inserido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                     "userToken: %s" +
-                    "codUnidade: %d", userToken, codUnidade), t);
+                    "codUnidade: %d", userToken, veiculo.getCodUnidadeAlocado()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir o veículo, tente novamente");

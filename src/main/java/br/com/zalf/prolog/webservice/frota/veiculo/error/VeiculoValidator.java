@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.error;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,14 +13,13 @@ public class VeiculoValidator {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static void validacaoAtributosVeiculo(@NotNull final Veiculo veiculo) throws GenericException {
+    public static void validacaoAtributosVeiculo(@NotNull final VeiculoCadastro veiculo) throws GenericException {
         try {
-            validacaoPlaca(veiculo.getPlaca());
-            validacaoKmAtual(veiculo.getKmAtual());
-            validacaoMarca(veiculo.getMarca().getCodigo());
-            validacaoModelo(veiculo.getModelo().getCodigo());
-            validacaoEixos(veiculo.getEixos().codigo);
-            validacaoTipo(veiculo.getTipo().getCodigo());
+            validacaoPlaca(veiculo.getPlacaVeiculo());
+            validacaoKmAtual(veiculo.getKmAtualVeiculo());
+            validacaoMarca(veiculo.getCodMarcaVeiculo());
+            validacaoModelo(veiculo.getCodModeloVeiculo());
+            validacaoTipo(veiculo.getCodTipoVeiculo());
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);
         }
@@ -54,11 +53,6 @@ public class VeiculoValidator {
     private static void validacaoModelo(Long codModelo) {
         Preconditions.checkNotNull(codModelo, "Você precisa selecionar o modelo");
         Preconditions.checkArgument(codModelo > 0, "Modelo inválido");
-    }
-
-    private static void validacaoEixos(Long codEixos) {
-        Preconditions.checkNotNull(codEixos, "Você precisa selecionar o tipo de eixos");
-        Preconditions.checkArgument(codEixos > 0, "Eixos inválido");
     }
 
     private static void validacaoTipo(Long codTipo) {

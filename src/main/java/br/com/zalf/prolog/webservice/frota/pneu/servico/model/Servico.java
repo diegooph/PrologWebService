@@ -40,7 +40,12 @@ public abstract class Servico {
     private boolean fechadoAutomaticamenteMovimentacao;
 
     /**
-     * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos.
+     * Indica se esse serviço foi fechado automaticamente por um método de integração.
+     */
+    private boolean fechadoAutomaticamenteIntegracao;
+
+    /**
+     * Armazena o tempo que o colaborador levou para realizar esse serviço, em milissegundos.
      */
     private long tempoRealizacaoServicoInMillis;
 
@@ -177,5 +182,13 @@ public abstract class Servico {
 
     public void setFechadoAutomaticamenteMovimentacao(boolean fechadoAutomaticamenteMovimentacao) {
         this.fechadoAutomaticamenteMovimentacao = fechadoAutomaticamenteMovimentacao;
+    }
+
+    public boolean isFechadoAutomaticamenteIntegracao() {
+        return fechadoAutomaticamenteIntegracao;
+    }
+
+    public void setFechadoAutomaticamenteIntegracao(boolean fechadoAutomaticamenteIntegracao) {
+        this.fechadoAutomaticamenteIntegracao = fechadoAutomaticamenteIntegracao;
     }
 }

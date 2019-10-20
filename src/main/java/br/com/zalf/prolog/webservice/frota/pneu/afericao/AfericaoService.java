@@ -33,7 +33,7 @@ public class AfericaoService {
             afericao.setDataHora(Now.localDateTimeUtc());
             return RouterAfericao
                     .create(dao, userToken)
-                    .insertAfericao(codUnidade, afericao);
+                    .insertAfericao(codUnidade, afericao, true);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao inserir aferição", e);
             throw exceptionHandler.map(e, "Erro ao inserir aferição, tente novamente");

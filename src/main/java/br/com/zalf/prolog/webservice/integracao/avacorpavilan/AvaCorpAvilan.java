@@ -357,7 +357,9 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
         if (afericao instanceof AfericaoPlaca) {
             final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
             if (afericaoPlaca.getKmMomentoAfericao() == 0) {
