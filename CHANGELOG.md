@@ -1,14 +1,6 @@
 Change Log
 ==========
 
-## Stage
-
-### Refactors
-* Bloqueia abertura de Serviços de Pneus na integração com a Praxio (PLI-37)
-* Mostra serviços fechados automaticamente por integração (PLI-31)
-* Bloqueia movimentações diferentes de ESTOQUE -> DESCARTE para clientes Afere Fácil (PLI-38)
-* Altera insert de veículo para utilizar novo objeto e salvar cod_empresa (PL-2276)
-
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (2019-10-20)
 
@@ -20,6 +12,10 @@ Change Log
 ### Refactors
 * Melhore log de erros no import do mapa
 * Atualiza retrofit e okhttp para últimas versões
+* Bloqueia abertura de Serviços de Pneus na integração com a Praxio (PLI-37)
+* Mostra serviços fechados automaticamente por integração (PLI-31)
+* Bloqueia movimentações diferentes de ESTOQUE -> DESCARTE para clientes Afere Fácil (PLI-38)
+* Altera insert de veículo para utilizar novo objeto e salvar cod_empresa (PL-2276)
 
 <a name="v1.0.2"></a>
 ## Version [v1.0.2](https://github.com/luizfp/PrologWebService/compare/v1.0.1...v1.0.2) (2019-09-29)
