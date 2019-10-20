@@ -22,18 +22,22 @@ public class MapaService {
             } else {
                 return Response.error("Problema ao inserir o arquivo");
             }
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro relacionado ao banco de dados ao inserir o arquivo. \n" +
+        } catch (final SQLException e) {
+            Log.e(TAG, String.format("Erro relacionado ao banco de dados ao inserir o arquivo.\n" +
                     "codUnidade: %d", codUnidade), e);
             return Response.error("Erro relacionado ao banco de dados ao inserir o arquivo");
-        } catch (IOException e) {
-            Log.e(TAG, String.format("Erro relacionado ao processamento do arquivo. \n" +
+        } catch (final IOException e) {
+            Log.e(TAG, String.format("Erro relacionado ao processamento do arquivo.\n" +
                     "codUnidade: %d", codUnidade), e);
             return Response.error("Erro relacionado ao processamento do arquivo");
-        } catch (ParseException e) {
-            Log.e(TAG, String.format("Erro relacionado aos dados da planilha. \n" +
+        } catch (final ParseException | NumberFormatException e) {
+            Log.e(TAG, String.format("Erro relacionado aos dados da planilha.\n" +
                     "codUnidade: %d", codUnidade), e);
             return Response.error("Erro nos dados da planilha");
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro não identificado ao realizar o import da planilha de mapa.\n" +
+                    "codUnidade: %d", codUnidade), throwable);
+            return Response.error("Erro ao realizar o import da planilha");
         }
     }
 

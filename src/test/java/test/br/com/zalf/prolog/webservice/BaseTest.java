@@ -2,8 +2,8 @@ package test.br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,12 +22,12 @@ public abstract class BaseTest {
     protected static LocalDate DATA_INICIAL = LocalDate.parse("2018-03-18");
     protected static LocalDate DATA_FINAL = LocalDate.parse("2018-04-19");
 
-    @Before
+    @BeforeAll
     public void initialize() throws Throwable {
         // Do nothing.
     }
 
-    @After
+    @AfterAll
     public void destroy() {
         // Do nothing.
     }

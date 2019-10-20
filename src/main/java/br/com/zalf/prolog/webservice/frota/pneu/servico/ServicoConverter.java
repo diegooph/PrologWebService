@@ -177,6 +177,7 @@ final class ServicoConverter {
         servico.setDataHoraFechamento(resultSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));
+        servico.setFechadoAutomaticamenteIntegracao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_INTEGRACAO"));
 
         // Cria pneu com problema, responsável por originar o serviço.
         final PneuComum pneuProblema = new PneuComum();

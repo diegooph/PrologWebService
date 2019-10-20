@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.postgresql.util.PGobject;
 
 import java.sql.Array;
 import java.sql.Connection;
@@ -25,5 +26,13 @@ public class PostgresUtils {
                                     @NotNull final SqlType type,
                                     @NotNull final List<?> list) throws SQLException {
         return conn.createArrayOf(type.asString(), list.toArray());
+    }
+
+    @NotNull
+    public static PGobject toJsonb(@NotNull final String json) throws SQLException {
+        final PGobject pgObject = new PGobject();
+        pgObject.setType("jsonb");
+        pgObject.setValue(json);
+        return pgObject;
     }
 }
