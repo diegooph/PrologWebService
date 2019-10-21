@@ -59,6 +59,7 @@ public final class DebugLogInterceptor implements ContainerRequestFilter {
             final CtMethod javassistMethod = cc.getDeclaredMethod(method.getName());
             final int linenumber = javassistMethod.getMethodInfo().getLineNumber(0);
             if (linenumber > 0) {
+                // Com logs no padrão .(%s.java:%d), o IntelliJ cria um link clicável.
                 Log.d(TAG, String.format("Where: .%s(%s.java:%d)",
                         method.getName(),
                         resourceClass.getSimpleName(),
@@ -67,7 +68,6 @@ public final class DebugLogInterceptor implements ContainerRequestFilter {
             }
         } catch (final Throwable t) {
             // Ignored.
-            System.out.println("t");
         }
 
         // Fall back caso o log principal não funcione.
