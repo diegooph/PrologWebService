@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
+import br.com.zalf.prolog.webservice.errorhandling.sql.SqlErrorCodes;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PGobject;
+import org.postgresql.util.PSQLException;
 
 import java.sql.Array;
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -34,5 +37,20 @@ public class PostgresUtils {
         pgObject.setType("jsonb");
         pgObject.setValue(json);
         return pgObject;
+    }
+
+    @NotNull
+    public static String getPSQLErrorMessage(@NotNull final SQLException sqlException,
+                                             @NotNull final String fallbackMessage) {
+        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.BD_GENERIC_ERROR_CODE.getErrorCode())) {
+            if (sqlException instanceof PSQLException) {
+                return ((PSQLException) sqlException).getServerErrorMessage().getMessage();
+            } else if (sqlException instanceof BatchUpdateException) {
+                if (sqlException.getNextException() instanceof PSQLException) {
+                    return ((PSQLException) sqlException.getNextException()).getServerErrorMessage().getMessage();
+                }
+            }
+        }
+        return fallbackMessage;
     }
 }

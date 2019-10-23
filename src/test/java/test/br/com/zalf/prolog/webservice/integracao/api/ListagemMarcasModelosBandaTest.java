@@ -35,23 +35,29 @@ public class ListagemMarcasModelosBandaTest extends BaseTest {
     }
 
     @Test
-    public void listagemMarcasBandaTest() {
-        final List<ApiMarcaBanda> marcasBanda = service.getMarcasBanda(TOKEN_INTEGRACAO, false);
+    public void listagemMarcasBandaTest() throws Throwable {
+        DatabaseManager.init();
+        final List<ApiMarcaBanda> marcasBanda = new ApiMarcaModeloPneuService().getMarcasBanda(TOKEN_INTEGRACAO, false);
         assertThat(marcasBanda).isNotNull();
         assertThat(marcasBanda).isNotEmpty();
+        DatabaseManager.finish();
     }
 
     @Test
     public void listagemModelosBandaTest() {
-        final List<ApiMarcaBanda> marcasBanda = service.getMarcasBanda(TOKEN_INTEGRACAO, false);
+        DatabaseManager.init();
+        final List<ApiMarcaBanda> marcasBanda =
+                new ApiMarcaModeloPneuService().getMarcasBanda(TOKEN_INTEGRACAO, false);
         assertThat(marcasBanda).isNotNull();
         Collections.shuffle(marcasBanda);
 
         final ApiMarcaBanda marcaBanda = marcasBanda.get(0);
 
         final List<ApiModeloBanda> modelosBanda =
-                service.getModelosBanda(TOKEN_INTEGRACAO, marcaBanda.getCodigo(), false);
+                new ApiMarcaModeloPneuService()
+                        .getModelosBanda(TOKEN_INTEGRACAO, marcaBanda.getCodigo(), false);
         assertThat(modelosBanda).isNotNull();
         assertThat(modelosBanda.size()).isEqualTo(marcaBanda.getModelos().size());
+        DatabaseManager.finish();
     }
 }
