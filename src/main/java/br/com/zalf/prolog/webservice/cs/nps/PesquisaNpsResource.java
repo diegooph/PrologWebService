@@ -43,7 +43,7 @@ public final class PesquisaNpsResource {
 
     @POST
     @Secured
-    @Path("/    bloqueio")
+    @Path("/bloqueio")
     @UsedBy(platforms = Platform.WEBSITE)
     public void bloqueiaPesquisaNpsColaborador(@Required final PesquisaNpsBloqueio pesquisaBloqueio) {
         service.bloqueiaPesquisaNpsColaborador(pesquisaBloqueio);
