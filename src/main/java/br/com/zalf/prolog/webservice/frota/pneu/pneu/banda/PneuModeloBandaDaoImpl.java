@@ -46,15 +46,15 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
     }
 
     @Override
-    public PneuMarcaBanda getMarcaBanda(@NotNull final Long codEmpresa) throws SQLException {
+    public PneuMarcaBanda getMarcaBanda(@NotNull final Long codMarca) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_EMPRESA(" +
-                    "F_COD_EMPRESA := ? )");
-            stmt.setLong(1, codEmpresa);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_MARCA(" +
+                    "F_COD_MARCA := ? )");
+            stmt.setLong(1, codMarca);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final PneuMarcaBanda marca = new PneuMarcaBanda(
@@ -145,21 +145,18 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
     }
 
     @Override
-    public boolean updateMarcaBanda(@NotNull final PneuMarcaModelosBanda marcaModelosBanda,
-                                    @NotNull final Long codEmpresa) throws Throwable {
+    public boolean updateMarcaBanda(@NotNull final PneuMarcaBanda marcaBanda) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_EDITA_MARCA_BANDA(" +
-                    "F_COD_EMPRESA := ?," +
-                    "F_COD_MARCA_BANDA := ?" +
-                    "F_MARCA_BANDA := ?);");
-            stmt.setLong(1, codEmpresa);
-            stmt.setLong(2, marcaModelosBanda.getCodigo());
-            stmt.setString(3, marcaModelosBanda.getNome());
+                    "F_COD_MARCA_BANDA := ?," +
+                    "F_NOME_MARCA_BANDA := ?);");
+            stmt.setLong(1, marcaBanda.getCodigo());
+            stmt.setString(2, marcaBanda.getNome());
             if (stmt.executeUpdate() == 0) {
-                throw new Throwable("Erro ao atualizar a marca da banca: " + marcaModelosBanda.getCodigo());
+                throw new Throwable("Erro ao atualizar a marca da banca: " + marcaBanda.getCodigo());
             }
         } finally {
             close(conn, stmt);

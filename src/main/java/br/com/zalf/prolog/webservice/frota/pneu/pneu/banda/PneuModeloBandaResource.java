@@ -47,9 +47,9 @@ public final class PneuModeloBandaResource {
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/bandas/marca/{codEmpresa}")
-    public PneuMarcaBanda getMarcaBanda(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.getMarcaBanda(codEmpresa);
+    @Path("/bandas/marca/{codMarca}")
+    public PneuMarcaBanda getMarcaBanda(@PathParam("codMarca") Long codMarca) {
+        return service.getMarcaBanda(codMarca);
     }
 
     @GET
@@ -92,9 +92,9 @@ public final class PneuModeloBandaResource {
 
     @PUT
     @Secured
-    @Path("bandas/marcas/{codEmpresa}")
-    public Response updateMarcaBanda(PneuMarcaModelosBanda marca, @PathParam("codEmpresa") Long codEmpresa) {
-        if (service.updateMarcaBanda(marca, codEmpresa)) {
+    @Path("bandas/marca")
+    public Response updateMarcaBanda(PneuMarcaBanda marcaBanda) {
+        if (service.updateMarcaBanda(marcaBanda)) {
             return Response.ok("Marca atualizada com sucesso");
         } else {
             return Response.error("Erro ao atualizar a marca");

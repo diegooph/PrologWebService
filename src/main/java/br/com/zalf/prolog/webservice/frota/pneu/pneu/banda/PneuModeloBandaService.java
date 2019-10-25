@@ -33,11 +33,11 @@ public final class PneuModeloBandaService {
         }
     }
 
-    public PneuMarcaBanda getMarcaBanda(@NotNull final Long codEmpresa) throws ProLogException {
+    public PneuMarcaBanda getMarcaBanda(@NotNull final Long codMarca) throws ProLogException {
         try {
-            return dao.getMarcaBanda(codEmpresa);
+            return dao.getMarcaBanda(codMarca);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar marca de banda: " + codEmpresa, t);
+            Log.e(TAG, "Erro ao buscar marca de banda: " + codMarca, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar de marca de banda");
@@ -80,12 +80,11 @@ public final class PneuModeloBandaService {
         }
     }
 
-    public boolean updateMarcaBanda(@NotNull final PneuMarcaModelosBanda marca,
-                                    @NotNull final Long codEmpresa) throws ProLogException {
+    public boolean updateMarcaBanda(@NotNull final PneuMarcaBanda marcaBanda) throws ProLogException {
         try {
-            return dao.updateMarcaBanda(marca, codEmpresa);
+            return dao.updateMarcaBanda(marcaBanda);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao atualizar marca de banda da empresa: " + codEmpresa, t);
+            Log.e(TAG, "Erro ao atualizar marca de banda da empresa: " + marcaBanda.getCodigo(), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar marca de banda");
