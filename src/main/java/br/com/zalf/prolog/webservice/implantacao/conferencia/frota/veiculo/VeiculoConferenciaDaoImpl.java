@@ -34,14 +34,18 @@ public final class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
             final VeiculoDadosTabelaImport veiculoDadosTabelaImport = createDadosTabelaImport(codEmpresa, codUnidade, usuario);
 
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM IMPLANTACAO.FUNC_VEICULO_CONFERE_PLANILHA_IMPORTACAO(" +
+            stmt = conn.prepareStatement("SELECT * FROM IMPLANTACAO.FUNC_VEICULO_INSERE_PLANILHA_IMPORTACAO(" +
+                    "F_COD_DADOS_AUTOR_IMPORT := ?," +
+                    "F_NOME_TABELA_IMPORT := ?," +
                     "F_COD_UNIDADE   := ?," +
                     "F_JSON_VEICULOS := ?);");
-            stmt.setLong(1, codUnidade);
+            stmt.setLong(1, veiculoDadosTabelaImport.getCodDadosAutorImport());
+            stmt.setString(2, veiculoDadosTabelaImport.getNomeTabelaImport());
+            stmt.setLong(3, codUnidade);
             final PGobject json = new PGobject();
             json.setType("jsonb");
             json.setValue(jsonPlanilha);
-            stmt.setObject(2, json);
+            stmt.setObject(4, json);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(out)
@@ -68,9 +72,8 @@ public final class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codUnidade);
             stmt.setString(3, usuario);
-
+            rSet = stmt.executeQuery();
             if (rSet.next()) {
-
                 final VeiculoDadosTabelaImport veiculoDadosTabelaImport = new VeiculoDadosTabelaImport(
                         rSet.getLong("COD_DADOS_AUTOR_IMPORT"),
                         rSet.getString("NOME_TABELA_IMPORT"));

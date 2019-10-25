@@ -41,7 +41,7 @@ public final class VeiculoPlanilhaReader {
         final CsvParserSettings settings = new CsvParserSettings();
         settings.setDelimiterDetectionEnabled(true, ',', ';');
         settings.setHeaderExtractionEnabled(true);
-        settings.setNumberOfRowsToSkip(1);
+        settings.setNumberOfRowsToSkip(12);
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
         final List<VeiculoPlanilha> veiculoPlanilha = new ArrayList<>();
@@ -55,38 +55,33 @@ public final class VeiculoPlanilhaReader {
     }
 
     private static VeiculoPlanilha read(@NotNull final String[] linha) {
-        if (linha[0].isEmpty()) {
+        if (linha[1].isEmpty()) {
             return null;
         }
         final VeiculoPlanilha item = new VeiculoPlanilha();
-
         // PLACA.
-        item.setPlaca(linha[1]);
-        System.out.println(item.getPlaca());
-
+        if (!StringUtils.isNullOrEmpty(linha[1])) {
+            item.setPlaca(linha[1]);
+        }
         // MARCA.
         if (!StringUtils.isNullOrEmpty(linha[2])) {
             item.setMarca(linha[2]);
         }
-
         // MODELO.
         if (!StringUtils.isNullOrEmpty(linha[3])) {
             item.setModelo(linha[3]);
         }
-
         // KM.
         if (!StringUtils.isNullOrEmpty(linha[4])) {
             item.setKm(Long.parseLong(linha[4]));
         }
-
         // TIPO.
         if (!StringUtils.isNullOrEmpty(linha[5])) {
             item.setTipo(linha[5]);
         }
-
         // DIAGRAMA.
         if (!StringUtils.isNullOrEmpty(linha[6])) {
-            item.setNumeroEixos(linha[6]);
+            item.setQtdEixos(linha[6]);
         }
         return item;
     }

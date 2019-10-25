@@ -12,7 +12,7 @@ public final class VeiculoPlanilha {
     private String modelo;
     private Long km;
     private String tipo;
-    private String numeroEixos;
+    private String qtdEixos;
 
     public VeiculoPlanilha() {
     }
@@ -65,11 +65,11 @@ public final class VeiculoPlanilha {
         this.modelo = modelo;
     }
 
-    public String getNumeroEixos() {
-        return numeroEixos;
+    public String getQtdEixos() {
+        return qtdEixos;
     }
 
-    public void setNumeroEixos(String numeroEixos) {
-        this.numeroEixos = numeroEixos;
+    public void setQtdEixos(String qtdEixos) {
+        this.qtdEixos = qtdEixos;
     }
 }
