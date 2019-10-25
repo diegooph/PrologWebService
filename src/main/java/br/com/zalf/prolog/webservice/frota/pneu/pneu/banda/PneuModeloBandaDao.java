@@ -21,7 +21,16 @@ public interface PneuModeloBandaDao {
      * @return uma lista de marcas de bandas da empresa
      * @throws SQLException caso não seja possivel realizar a busca
      */
-    List<PneuMarcasBanda> listagemMarcasBandas(@NotNull final Long codEmpresa) throws SQLException;
+    List<PneuMarcaBanda> listagemMarcasBandas(@NotNull final Long codEmpresa) throws SQLException;
+
+    /**
+     * Busca uma marca de banda específica de uma empresa
+     *
+     * @param codEmpresa código da empresa
+     * @return uma marca de banda da empresa
+     * @throws SQLException caso não seja possivel realizar a busca
+     */
+    PneuMarcaBanda getMarcaBanda(@NotNull final Long codEmpresa) throws SQLException;
 
     /**
      * Busca as marcas e modelos de bandas de uma empresa

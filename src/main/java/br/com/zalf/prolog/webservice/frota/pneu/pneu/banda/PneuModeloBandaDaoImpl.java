@@ -22,11 +22,11 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
 
     @Override
-    public List<PneuMarcasBanda> listagemMarcasBandas(@NotNull Long codEmpresa) throws SQLException {
+    public List<PneuMarcaBanda> listagemMarcasBandas(@NotNull Long codEmpresa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<PneuMarcasBanda> marcas = new ArrayList<>();
+        final List<PneuMarcaBanda> marcas = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_EMPRESA(" +
@@ -34,7 +34,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                final PneuMarcasBanda marca = new PneuMarcasBanda(
+                final PneuMarcaBanda marca = new PneuMarcaBanda(
                         rSet.getLong("CODIGO"),
                         rSet.getString("NOME"));
                 marcas.add(marca);
@@ -43,6 +43,30 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             close(conn, stmt, rSet);
         }
         return marcas;
+    }
+
+    @Override
+    public PneuMarcaBanda getMarcaBanda(@NotNull final Long codEmpresa) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_EMPRESA(" +
+                    "F_COD_EMPRESA := ? )");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final PneuMarcaBanda marca = new PneuMarcaBanda(
+                        rSet.getLong("CODIGO"),
+                        rSet.getString("NOME"));
+                return marca;
+            } else {
+                throw new SQLException("Erro ao buscar marca de banda");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @Override

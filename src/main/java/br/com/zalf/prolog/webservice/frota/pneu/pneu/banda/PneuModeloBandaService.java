@@ -22,7 +22,7 @@ public final class PneuModeloBandaService {
     private final PneuModeloBandaDao dao = Injection.providePneuModeloBandaDao();
 
 
-    public List<PneuMarcasBanda> listagemMarcasBandas(@NotNull final Long codEmpresa) throws ProLogException {
+    public List<PneuMarcaBanda> listagemMarcasBandas(@NotNull final Long codEmpresa) throws ProLogException {
         try {
             return dao.listagemMarcasBandas(codEmpresa);
         } catch (final Throwable t) {
@@ -30,6 +30,17 @@ public final class PneuModeloBandaService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar listagem de marcas de banda");
+        }
+    }
+
+    public PneuMarcaBanda getMarcaBanda(@NotNull final Long codEmpresa) throws ProLogException {
+        try {
+            return dao.getMarcaBanda(codEmpresa);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar marca de banda: " + codEmpresa, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar de marca de banda");
         }
     }
 
