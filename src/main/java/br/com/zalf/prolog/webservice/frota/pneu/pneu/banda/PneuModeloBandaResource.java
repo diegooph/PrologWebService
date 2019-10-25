@@ -35,7 +35,20 @@ public final class PneuModeloBandaResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/bandas/marcas/{codEmpresa}")
-    public List<PneuMarcaBandas> listagemMarcasModelosBandas(@PathParam("codEmpresa") Long codEmpresa) {
+    public List<PneuMarcasBanda> listagemMarcasBandas(@PathParam("codEmpresa") Long codEmpresa) {
+        return service.listagemMarcasBandas(codEmpresa);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.Pneu.VISUALIZAR})
+    @Path("/bandas/marcas-modelos/{codEmpresa}")
+    public List<PneuMarcaModelosBanda> listagemMarcasModelosBandas(@PathParam("codEmpresa") Long codEmpresa) {
         return service.listagemMarcasModelosBandas(codEmpresa);
     }
 
@@ -48,7 +61,7 @@ public final class PneuModeloBandaResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/bandas/marca-modelo/{codModelo}")
-    public PneuMarcaBanda getMarcaModeloBanda(@PathParam("codModelo") Long codModelo) {
+    public PneuMarcaModeloBanda getMarcaModeloBanda(@PathParam("codModelo") Long codModelo) {
         return service.getMarcaModeloBanda(codModelo);
     }
 
@@ -60,14 +73,14 @@ public final class PneuModeloBandaResource {
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
     @Path("/bandas/marcas/{codEmpresa}")
-    public AbstractResponse insertMarcaBanda(PneuMarcaBandas marca, @PathParam("codEmpresa") Long codEmpresa) {
+    public AbstractResponse insertMarcaBanda(PneuMarcaModelosBanda marca, @PathParam("codEmpresa") Long codEmpresa) {
         return service.insertMarcaBanda(marca, codEmpresa);
     }
 
     @PUT
     @Secured
     @Path("bandas/marcas/{codEmpresa}")
-    public Response updateMarcaBanda(PneuMarcaBandas marca, @PathParam("codEmpresa") Long codEmpresa) {
+    public Response updateMarcaBanda(PneuMarcaModelosBanda marca, @PathParam("codEmpresa") Long codEmpresa) {
         if (service.updateMarcaBanda(marca, codEmpresa)) {
             return Response.ok("Marca atualizada com sucesso");
         } else {
@@ -82,7 +95,7 @@ public final class PneuModeloBandaResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
-    @Path("/bandas/modelos/{codEmpresa}/{codMarcaBanda}")
+    @Path("/bandas/modelos")
     public AbstractResponse insertModeloBanda(@Required final PneuModeloBandaInsercao pneuModeloBandaInsercao)
             throws ProLogException {
         return service.insertModeloBanda(pneuModeloBandaInsercao);
@@ -110,7 +123,7 @@ public final class PneuModeloBandaResource {
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/bandas/{codEmpresa}")
     @Deprecated
-    public List<PneuMarcaBandas> DEPRECATED_GET_MARCA_MODELO_BANDA(@PathParam("codEmpresa") Long codEmpresa) {
+    public List<PneuMarcaModelosBanda> DEPRECATED_GET_MARCA_MODELO_BANDA(@PathParam("codEmpresa") Long codEmpresa) {
         return service.listagemMarcasModelosBandas(codEmpresa);
     }
 }

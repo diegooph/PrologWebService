@@ -21,7 +21,19 @@ public final class PneuModeloBandaService {
     @NotNull
     private final PneuModeloBandaDao dao = Injection.providePneuModeloBandaDao();
 
-    public List<PneuMarcaBandas> listagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws ProLogException {
+
+    public List<PneuMarcasBanda> listagemMarcasBandas(@NotNull final Long codEmpresa) throws ProLogException {
+        try {
+            return dao.listagemMarcasBandas(codEmpresa);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar listagem de marcas de banda: " + codEmpresa, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar listagem de marcas de banda");
+        }
+    }
+
+    public List<PneuMarcaModelosBanda> listagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws ProLogException {
         try {
             return dao.listagemMarcasModelosBandas(codEmpresa);
         } catch (final Throwable t) {
@@ -32,7 +44,7 @@ public final class PneuModeloBandaService {
         }
     }
 
-    public PneuMarcaBanda getMarcaModeloBanda(@NotNull final Long codModelo) throws ProLogException {
+    public PneuMarcaModeloBanda getMarcaModeloBanda(@NotNull final Long codModelo) throws ProLogException {
         try {
             return dao.getMarcaModeloBanda(codModelo);
         } catch (final Throwable t) {
@@ -45,7 +57,7 @@ public final class PneuModeloBandaService {
 
     }
 
-    public AbstractResponse insertMarcaBanda(@NotNull final PneuMarcaBandas marca,
+    public AbstractResponse insertMarcaBanda(@NotNull final PneuMarcaModelosBanda marca,
                                              @NotNull final Long codEmpresa) throws ProLogException {
         try {
             return ResponseWithCod.ok("Marca inserida com sucesso", dao.insertMarcaBanda(marca, codEmpresa));
@@ -57,7 +69,7 @@ public final class PneuModeloBandaService {
         }
     }
 
-    public boolean updateMarcaBanda(@NotNull final PneuMarcaBandas marca,
+    public boolean updateMarcaBanda(@NotNull final PneuMarcaModelosBanda marca,
                                     @NotNull final Long codEmpresa) throws ProLogException {
         try {
             return dao.updateMarcaBanda(marca, codEmpresa);

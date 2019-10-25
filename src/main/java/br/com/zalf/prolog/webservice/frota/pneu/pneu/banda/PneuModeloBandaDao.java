@@ -15,13 +15,22 @@ import java.util.List;
 public interface PneuModeloBandaDao {
 
     /**
+     * Busca as marcas de bandas de uma empresa
+     *
+     * @param codEmpresa código da empresa
+     * @return uma lista de marcas de bandas da empresa
+     * @throws SQLException caso não seja possivel realizar a busca
+     */
+    List<PneuMarcasBanda> listagemMarcasBandas(@NotNull final Long codEmpresa) throws SQLException;
+
+    /**
      * Busca as marcas e modelos de bandas de uma empresa
      *
      * @param codEmpresa código da empresa
      * @return uma lista de marcas contendo os modelos de cada uma
      * @throws SQLException caso não seja possivel realizar a busca
      */
-    List<PneuMarcaBandas> listagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws Throwable;
+    List<PneuMarcaModelosBanda> listagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * Busca a marca e um modelo de banda específico
@@ -30,7 +39,7 @@ public interface PneuModeloBandaDao {
      * @return uma objeto contendo a marca e o modelo de uma banda
      * @throws SQLException caso não seja possivel realizar a busca
      */
-    PneuMarcaBanda getMarcaModeloBanda(@NotNull final Long codModelo) throws Throwable;
+    PneuMarcaModeloBanda getMarcaModeloBanda(@NotNull final Long codModelo) throws Throwable;
 
     /**
      * Insere uma nova marca de banda
@@ -40,7 +49,7 @@ public interface PneuModeloBandaDao {
      * @return código gerado pelo BD para a nova banda inserida
      * @throws SQLException
      */
-    Long insertMarcaBanda(@NotNull final PneuMarcaBandas marca,
+    Long insertMarcaBanda(@NotNull final PneuMarcaModelosBanda marca,
                           @NotNull final Long codEmpresa) throws Throwable;
 
     /**
@@ -51,7 +60,7 @@ public interface PneuModeloBandaDao {
      * @return
      * @throws SQLException
      */
-    boolean updateMarcaBanda(@NotNull final PneuMarcaBandas marca,
+    boolean updateMarcaBanda(@NotNull final PneuMarcaModelosBanda marca,
                              @NotNull final Long codEmpresa) throws Throwable;
 
     /**

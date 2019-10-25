@@ -22,11 +22,11 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
 
     @Override
-    public List<PneuMarcaBandas> listagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws Throwable {
+    public List<PneuMarcasBanda> listagemMarcasBandas(@NotNull Long codEmpresa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<PneuMarcaBandas> marcas = new ArrayList<>();
+        final List<PneuMarcasBanda> marcas = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_EMPRESA(" +
@@ -34,10 +34,9 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                final PneuMarcaBandas marca = new PneuMarcaBandas(
+                final PneuMarcasBanda marca = new PneuMarcasBanda(
                         rSet.getLong("CODIGO"),
-                        rSet.getString("NOME"),
-                        getModelosBanda(conn, codEmpresa, rSet.getLong("CODIGO")));
+                        rSet.getString("NOME"));
                 marcas.add(marca);
             }
         } finally {
@@ -47,7 +46,32 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
     }
 
     @Override
-    public PneuMarcaBanda getMarcaModeloBanda(@NotNull final Long codEmpresa) throws Throwable {
+    public List<PneuMarcaModelosBanda> listagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<PneuMarcaModelosBanda> marcasModelosBandas = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_EMPRESA(" +
+                    "F_COD_EMPRESA := ? )");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                final PneuMarcaModelosBanda marcaModelosBandas = new PneuMarcaModelosBanda(
+                        rSet.getLong("CODIGO"),
+                        rSet.getString("NOME"),
+                        getModelosBanda(conn, codEmpresa, rSet.getLong("CODIGO")));
+                marcasModelosBandas.add(marcaModelosBandas);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return marcasModelosBandas;
+    }
+
+    @Override
+    public PneuMarcaModeloBanda getMarcaModeloBanda(@NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -59,11 +83,11 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             rSet = stmt.executeQuery();
 
             if (rSet.next()) {
-                final PneuMarcaBanda marca = new PneuMarcaBanda(
+                final PneuMarcaModeloBanda marcaModeloBanda = new PneuMarcaModeloBanda(
                         rSet.getLong("COD_MARCA_BANDA"),
                         rSet.getString("NOME_MARCA_BANDA"),
                         PneuBandaConverter.createModeloBanda(rSet));
-                return marca;
+                return marcaModeloBanda;
             } else {
                 throw new SQLException("Erro ao buscar marca e modelo de banda");
             }
@@ -73,7 +97,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
     }
 
     @Override
-    public Long insertMarcaBanda(@NotNull final PneuMarcaBandas marca,
+    public Long insertMarcaBanda(@NotNull final PneuMarcaModelosBanda marcaModelosBanda,
                                  @NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -84,7 +108,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
                     "F_COD_EMPRESA := ?," +
                     "F_MARCA_BANDA := ?) AS CODIGO;");
             stmt.setLong(1, codEmpresa);
-            stmt.setString(2, marca.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
+            stmt.setString(2, marcaModelosBanda.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -97,7 +121,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
     }
 
     @Override
-    public boolean updateMarcaBanda(@NotNull final PneuMarcaBandas marca,
+    public boolean updateMarcaBanda(@NotNull final PneuMarcaModelosBanda marcaModelosBanda,
                                     @NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -108,10 +132,10 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
                     "F_COD_MARCA_BANDA := ?" +
                     "F_MARCA_BANDA := ?);");
             stmt.setLong(1, codEmpresa);
-            stmt.setLong(2, marca.getCodigo());
-            stmt.setString(3, marca.getNome());
+            stmt.setLong(2, marcaModelosBanda.getCodigo());
+            stmt.setString(3, marcaModelosBanda.getNome());
             if (stmt.executeUpdate() == 0) {
-                throw new Throwable("Erro ao atualizar a marca da banca: " + marca.getCodigo());
+                throw new Throwable("Erro ao atualizar a marca da banca: " + marcaModelosBanda.getCodigo());
             }
         } finally {
             close(conn, stmt);

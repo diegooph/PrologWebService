@@ -2,28 +2,26 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu.banda.model;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /**
- * Created on 01/10/19.
+ * Created on 09/10/19.
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuMarcaBandas {
+public class PneuMarcaModeloBanda {
 
     @NotNull
     private final Long codigo;
     @NotNull
     private final String nome;
     @NotNull
-    private final List<PneuModeloBandaVisualizacao> modelos;
+    private final PneuModeloBandaVisualizacao modelo;
 
-    public PneuMarcaBandas(@NotNull final Long codigo,
-                           @NotNull final String nome,
-                           @NotNull final List<PneuModeloBandaVisualizacao> modelos) {
+    public PneuMarcaModeloBanda(@NotNull final Long codigo,
+                                @NotNull final String nome,
+                                @NotNull final PneuModeloBandaVisualizacao modelo) {
         this.codigo = codigo;
         this.nome = nome;
-        this.modelos = modelos;
+        this.modelo = modelo;
     }
 
     @NotNull
@@ -37,16 +35,17 @@ public class PneuMarcaBandas {
     }
 
     @NotNull
-    public List<PneuModeloBandaVisualizacao> getModelos() {
-        return modelos;
+    public PneuModeloBandaVisualizacao getModelo() {
+        return modelo;
     }
+
 
     @Override
     public String toString() {
         return "Marca{" +
                 "codigo=" + codigo +
                 ", nome='" + nome + '\'' +
-                ", modelos=" + modelos +
+                ", modelos=" + modelo +
                 '}';
     }
 }
