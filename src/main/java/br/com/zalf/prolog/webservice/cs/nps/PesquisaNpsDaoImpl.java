@@ -34,7 +34,7 @@ public final class PesquisaNpsDaoImpl extends DatabaseConnection implements Pesq
             stmt.setLong(1, codColaborador);
             stmt.setObject(2, Now.localDateUtc());
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
+            if (rSet.next() && rSet.getLong("COD_PESQUISA_NPS") > 0) {
                 return Optional.of(
                         new PesquisaNpsDisponivel(
                                 rSet.getLong("COD_PESQUISA_NPS"),
