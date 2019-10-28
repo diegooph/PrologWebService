@@ -10,8 +10,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.importar.PneuImportReader;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterPneu;
 import org.jetbrains.annotations.NotNull;
 
@@ -82,16 +80,6 @@ public class PneuService {
         }
     }
 
-    public AbstractResponse insertModeloPneu(ModeloPneu modelo, Long codEmpresa, Long codMarca) {
-        try {
-            return ResponseWithCod.ok("Modelo inserido com sucesso", dao.insertModeloPneu(modelo, codEmpresa,
-                    codMarca));
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inserir modelo de pneu. Empresa: " + codEmpresa + " Marca: " + codMarca, e);
-            return Response.error("Erro ao inserir o modelo de pneu");
-        }
-    }
-
     public List<Pneu> getPneusByCodUnidadeByStatus(@NotNull final Long codUnidade, @NotNull final String status)
             throws ProLogException {
         try {
@@ -130,15 +118,6 @@ public class PneuService {
         }
     }
 
-    public List<Marca> getMarcaModeloPneuByCodEmpresa(Long codEmpresa) {
-        try {
-            return dao.getMarcaModeloPneuByCodEmpresa(codEmpresa);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar as marcas de pneu da empresa: " + codEmpresa, e);
-            return null;
-        }
-    }
-
     public List<Dimensao> getDimensoes() {
         try {
             return dao.getDimensoes();
@@ -154,61 +133,6 @@ public class PneuService {
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao vincular pneus ao veículo: " + placaVeiculo, e);
             return false;
-        }
-    }
-
-    public List<Marca> getMarcaModeloBanda(Long codEmpresa) {
-        try {
-            return dao.getMarcaModeloBanda(codEmpresa);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar marcas de banda da empresa: " + codEmpresa, e);
-            return null;
-        }
-    }
-
-    public AbstractResponse insertMarcaBanda(Marca marca, Long codEmpresa) {
-        try {
-            return ResponseWithCod.ok("Marca inserida com sucesso", dao.insertMarcaBanda(marca, codEmpresa));
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inserir marca de banda para empresa: " + codEmpresa, e);
-            return Response.error("Erro ao inserir a marca da banda");
-        }
-    }
-
-    public AbstractResponse insertModeloBanda(ModeloBanda modelo, Long codMarcaBanda, Long codEmpresa) {
-        try {
-            return ResponseWithCod.ok("Modelo inserido com sucesso", dao.insertModeloBanda(modelo, codMarcaBanda,
-                    codEmpresa));
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inserir modelo de banda para marca: " + codMarcaBanda + " Empresa: " + codEmpresa, e);
-            return Response.error("Erro ao inserir o modelo da banda");
-        }
-    }
-
-    public boolean updateMarcaBanda(Marca marca, Long codEmpresa) {
-        try {
-            return dao.updateMarcaBanda(marca, codEmpresa);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao atualizar marca de banda da empresa: " + codEmpresa, e);
-            return false;
-        }
-    }
-
-    public boolean updateModeloBanda(Modelo modelo) {
-        try {
-            return dao.updateModeloBanda(modelo);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao atualizar modelo de banda", e);
-            return false;
-        }
-    }
-
-    public Modelo getModeloPneu(Long codModelo) {
-        try {
-            return dao.getModeloPneu(codModelo);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar modelo de pneu com código: " + codModelo, e);
-            return null;
         }
     }
 

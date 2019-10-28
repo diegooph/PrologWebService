@@ -376,27 +376,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     @NotNull
     @Override
-    public Modelo getModeloPneu(@NotNull final Long codModelo) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM MODELO_PNEU WHERE CODIGO = ?;");
-            stmt.setLong(1, codModelo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return createModeloPneu(rSet);
-            } else {
-                throw new SQLException("Erro ao buscar modelo pelo código: " + codModelo);
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
     public List<Dimensao> getDimensoes() throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -418,37 +397,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             close(conn, stmt, rSet);
         }
         return dimensoes;
-    }
-
-    @Override
-    public Long insertModeloPneu(ModeloPneu modelo, Long codEmpresa, Long codMarca) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO MODELO_PNEU(NOME, QT_SULCOS, ALTURA_SULCOS, COD_MARCA, COD_EMPRESA)" +
-                    "  SELECT ?, ?, ?, ?, ?\n" +
-                    "  WHERE NOT EXISTS (SELECT nome FROM modelo_pneu as mp " +
-                    "WHERE lower(mp.nome) = lower(?) and mp.cod_marca = ? and mp.cod_empresa = ?)" +
-                    "RETURNING codigo");
-            stmt.setString(1, modelo.getNome());
-            stmt.setInt(2, modelo.getQuantidadeSulcos());
-            stmt.setDouble(3, modelo.getAlturaSulcos());
-            stmt.setLong(4, codMarca);
-            stmt.setLong(5, codEmpresa);
-            stmt.setString(6, modelo.getNome());
-            stmt.setLong(7, codMarca);
-            stmt.setLong(8, codEmpresa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
-            } else {
-                throw new SQLException("Erro ao inserir o modelo do pneu ou modelo já existente");
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
     }
 
     @Override
@@ -519,128 +467,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         } finally {
             close(stmt, rSet);
         }
-    }
-
-    @Override
-    public List<Marca> getMarcaModeloBanda(Long codEmpresa) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<Marca> marcas = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM marca_banda WHERE cod_empresa = ? ORDER BY nome ASC");
-            stmt.setLong(1, codEmpresa);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                final Marca marca = new Marca();
-                marca.setCodigo(rSet.getLong("CODIGO"));
-                marca.setNome(rSet.getString("NOME"));
-                marca.setModelos(getModelosBanda(conn, codEmpresa, marca.getCodigo()));
-                marcas.add(marca);
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return marcas;
-    }
-
-    @Override
-    public Long insertMarcaBanda(Marca marca, Long codEmpresa) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO marca_banda" +
-                    "    (nome, cod_empresa)" +
-                    "SELECT ?, ?" +
-                    "WHERE" +
-                    "    NOT EXISTS (" +
-                    "        SELECT nome FROM marca_banda WHERE lower(nome) = lower(?) and cod_empresa = ?" +
-                    "    ) RETURNING codigo;");
-            stmt.setString(1, marca.getNome().trim().replaceAll("\\s+", " "));
-            stmt.setLong(2, codEmpresa);
-            stmt.setString(3, marca.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
-            stmt.setLong(4, codEmpresa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
-            } else {
-                throw new SQLException("Erro ao inserir a marca da banda ou banda já existente");
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public Long insertModeloBanda(ModeloBanda modelo, Long codMarcaBanda, Long codEmpresa) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO modelo_banda " +
-                    "    (nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos) " +
-                    "SELECT ?, ?, ?, ?, ? " +
-                    "WHERE NOT EXISTS " +
-                    " (SELECT nome FROM modelo_banda WHERE lower(nome) = lower(?) and cod_marca = ? and cod_empresa = ?) " +
-                    "RETURNING codigo;");
-            stmt.setString(1, modelo.getNome().trim().replaceAll("\\s+", " "));
-            stmt.setLong(2, codMarcaBanda);
-            stmt.setLong(3, codEmpresa);
-            stmt.setInt(4, modelo.getQuantidadeSulcos());
-            stmt.setDouble(5, modelo.getAlturaSulcos());
-            stmt.setString(6, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
-            stmt.setLong(7, codMarcaBanda);
-            stmt.setLong(8, codEmpresa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
-            } else {
-                throw new SQLException("Erro ao inserir o modelo da banda");
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public boolean updateMarcaBanda(Marca marca, Long codEmpresa) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE marca_banda SET nome = ? WHERE codigo = ? AND cod_empresa = ?;");
-            stmt.setString(1, marca.getNome());
-            stmt.setLong(2, marca.getCodigo());
-            stmt.setLong(3, codEmpresa);
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao atualizar a marca da banca: " + marca.getCodigo());
-            }
-        } finally {
-            close(conn, stmt);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean updateModeloBanda(@NotNull final Modelo modelo) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE modelo_banda SET nome = ? WHERE codigo = ?;");
-            stmt.setString(1, modelo.getNome());
-            stmt.setLong(2, modelo.getCodigo());
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao atualizar a modelo da banca: " + modelo.getCodigo());
-            }
-        } finally {
-            close(conn, stmt);
-        }
-        return true;
     }
 
     @Override
@@ -893,32 +719,5 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         } finally {
             close(stmt, rSet);
         }
-    }
-
-    @NotNull
-    private List<Modelo> getModelosBanda(@NotNull final Connection conn,
-                                         @NotNull final Long codEmpresa,
-                                         @NotNull final Long codMarcaBanda) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<Modelo> modelos = new ArrayList<>();
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM modelo_banda WHERE cod_marca = ? and cod_empresa = ? ORDER BY" +
-                    " nome ASC;");
-            stmt.setLong(1, codMarcaBanda);
-            stmt.setLong(2, codEmpresa);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                final ModeloBanda modelo = new ModeloBanda();
-                modelo.setCodigo(rSet.getLong("CODIGO"));
-                modelo.setNome(rSet.getString("NOME"));
-                modelo.setQuantidadeSulcos(rSet.getInt("QT_SULCOS"));
-                modelo.setAlturaSulcos(rSet.getDouble("ALTURA_SULCOS"));
-                modelos.add(modelo);
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-        return modelos;
     }
 }
