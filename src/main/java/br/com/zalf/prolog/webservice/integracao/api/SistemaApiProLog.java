@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api;
 
+import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
@@ -20,6 +22,7 @@ import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -138,13 +141,57 @@ public final class SistemaApiProLog extends Sistema {
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
-            if (!movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE)) {
-                throw new BloqueadoIntegracaoException("É permitido apenas movimentações do ESTOQUE para o DESCARTE.\n" +
-                        "As demais movimentações ainda estão sendo integradas.");
+            if (!movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE)
+                    || !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.VEICULO)
+                    || !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ESTOQUE)
+                    || !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
+                if (movimentacao.isFrom(OrigemDestinoEnum.ANALISE)) {
+                    // Adaptamos o texto de retorno para o cenário onde a origem é Análise.
+                    throw new BloqueadoIntegracaoException(
+                            String.format(
+                                    "ERRO!\nVocê está tentando mover um pneu da %s para o %s.\n" +
+                                            "Essa opção de movimentação ainda está sendo integrada",
+                                    OrigemDestinoEnum.ANALISE.asString(),
+                                    movimentacao.getDestino().getTipo().asString()));
+                } else if (movimentacao.isTo(OrigemDestinoEnum.ANALISE)) {
+                    // Adaptamos o texto de retorno para o cenário onde o destino é Análise.
+                    throw new BloqueadoIntegracaoException(
+                            String.format(
+                                    "ERRO!\nVocê está tentando mover um pneu do %s para a %s.\n" +
+                                            "Essa opção de movimentação ainda está sendo integrada",
+                                    movimentacao.getOrigem().getTipo().asString(),
+                                    OrigemDestinoEnum.ANALISE.asString()));
+                } else {
+                    throw new BloqueadoIntegracaoException(
+                            "ERRO!\nVocê está tentando realizar uma movimentação que ainda não está integrada");
+                }
             }
         }
-        // Apenas processamos movimentações com origem ESTOQUE e destino DESCARTE.
-        return getIntegradorProLog().insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            conn.setAutoCommit(false);
+            final Long codMovimentacao =
+                    Injection
+                            .provideMovimentacaoDao()
+                            .insert(conn, servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+
+            {
+                // TODO - Aqui nesse bloco deverá estar implementado o envio para o sistema parceiro, utilizando o requester.
+            }
+
+            conn.commit();
+            return codMovimentacao;
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
     }
 
     @NotNull
