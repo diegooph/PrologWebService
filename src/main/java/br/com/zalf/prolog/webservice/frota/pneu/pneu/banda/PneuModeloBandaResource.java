@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.banda;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -91,14 +90,13 @@ public final class PneuModeloBandaResource {
     }
 
     @PUT
-    @Secured
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE})
     @Path("bandas/marca")
-    public Response updateMarcaBanda(PneuMarcaBanda marcaBanda) {
-        if (service.updateMarcaBanda(marcaBanda)) {
-            return Response.ok("Marca atualizada com sucesso");
-        } else {
-            return Response.error("Erro ao atualizar a marca");
-        }
+    public ResponseWithCod updateMarcaBanda(PneuMarcaBanda marcaBanda) {
+        return service.updateMarcaBanda(marcaBanda);
     }
 
     @POST
@@ -115,7 +113,10 @@ public final class PneuModeloBandaResource {
     }
 
     @PUT
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE})
     @Path("/banda-update")
     public ResponseWithCod updateModeloBanda(
             @HeaderParam("Authorization") @Required final String userToken,

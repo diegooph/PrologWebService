@@ -102,7 +102,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_MODELO_BANDA(" +
-                    "F_COD_MODELO_BANDA := ? )");
+                    "F_COD_MODELO_BANDA := ? ) ");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
 
@@ -145,23 +145,26 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
     }
 
     @Override
-    public boolean updateMarcaBanda(@NotNull final PneuMarcaBanda marcaBanda) throws Throwable {
+    public Long updateMarcaBanda(@NotNull final PneuMarcaBanda marcaBanda) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_EDITA_MARCA_BANDA(" +
                     "F_COD_MARCA_BANDA := ?," +
-                    "F_NOME_MARCA_BANDA := ?);");
+                    "F_NOME_MARCA_BANDA := ?) AS CODIGO;");
             stmt.setLong(1, marcaBanda.getCodigo());
             stmt.setString(2, marcaBanda.getNome());
-            if (stmt.executeUpdate() == 0) {
-                throw new Throwable("Erro ao atualizar a marca da banca: " + marcaBanda.getCodigo());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new Throwable("Erro ao atualizar a marca de banda");
             }
         } finally {
-            close(conn, stmt);
+            close(conn, stmt, rSet);
         }
-        return true;
     }
 
     @NotNull

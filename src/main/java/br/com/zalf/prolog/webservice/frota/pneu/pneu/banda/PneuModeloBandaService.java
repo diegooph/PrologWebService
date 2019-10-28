@@ -80,9 +80,9 @@ public final class PneuModeloBandaService {
         }
     }
 
-    public boolean updateMarcaBanda(@NotNull final PneuMarcaBanda marcaBanda) throws ProLogException {
+    public ResponseWithCod updateMarcaBanda(@NotNull final PneuMarcaBanda marcaBanda) throws ProLogException {
         try {
-            return dao.updateMarcaBanda(marcaBanda);
+            return ResponseWithCod.ok("Marca de banda editado com sucesso",dao.updateMarcaBanda(marcaBanda));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atualizar marca de banda da empresa: " + marcaBanda.getCodigo(), t);
             throw Injection
