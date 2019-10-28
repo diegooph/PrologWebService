@@ -52,7 +52,7 @@ public final class PesquisaNpsService {
     public ResponseWithCod insertRespostasPesquisaNps(@NotNull final PesquisaNpsRealizada pesquisaRealizada) {
         try {
             return ResponseWithCod.ok(
-                    "Pesquisa de NPS salva com sucesso",
+                    "Recebemos sua resposta, obrigado!",
                     dao.insereRespostasPesquisaNps(pesquisaRealizada));
         } catch (final Throwable throwable) {
             final String errorMessage = String.format("Erro ao inserir pesquisa de NPS.\n" +
