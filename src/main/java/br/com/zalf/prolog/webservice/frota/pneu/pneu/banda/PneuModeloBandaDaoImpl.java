@@ -132,7 +132,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
                     "F_COD_EMPRESA := ?," +
                     "F_MARCA_BANDA := ?) AS CODIGO;");
             stmt.setLong(1, codEmpresa);
-            stmt.setString(2, marcaModelosBanda.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
+            stmt.setString(2, marcaModelosBanda.getNome().trim().replaceAll("\\s+", " "));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
