@@ -41,6 +41,8 @@ public final class PesquisaNpsDaoImpl extends DatabaseConnection implements Pesq
                                 rSet.getString("TITULO_PESQUISA"),
                                 rSet.getString("BREVE_DESCRICAO_PESQUISA"),
                                 rSet.getString("TITULO_PERGUNTA_ESCALA"),
+                                rSet.getString("LEGENDA_ESCALA_BAIXA"),
+                                rSet.getString("LEGENDA_ESCALA_ALTA"),
                                 rSet.getString("TITULO_PERGUNTA_DESCRITIVA")));
             } else {
                 return Optional.empty();

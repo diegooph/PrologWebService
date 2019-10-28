@@ -18,6 +18,10 @@ public final class PesquisaNpsDisponivel {
     private final String breveDescricaoPesquisa;
     @NotNull
     private final String tituloPerguntaEscala;
+    @NotNull
+    private final String legendaEscalaBaixa;
+    @NotNull
+    private final String legendaEscalaAlta;
     @Nullable
     private final String tituloPerguntaDescritiva;
     private final boolean temPerguntaDescritiva;
@@ -26,11 +30,15 @@ public final class PesquisaNpsDisponivel {
                                  @NotNull final String tituloPesquisa,
                                  @Nullable final String breveDescricaoPesquisa,
                                  @NotNull final String tituloPerguntaEscala,
+                                 @NotNull final String legendaEscalaBaixa,
+                                 @NotNull final String legendaEscalaAlta,
                                  @Nullable final String tituloPerguntaDescritiva) {
         this.codPesquisaNps = codPesquisaNps;
         this.tituloPesquisa = tituloPesquisa;
         this.breveDescricaoPesquisa = breveDescricaoPesquisa;
         this.tituloPerguntaEscala = tituloPerguntaEscala;
+        this.legendaEscalaBaixa = legendaEscalaBaixa;
+        this.legendaEscalaAlta = legendaEscalaAlta;
         this.tituloPerguntaDescritiva = StringUtils.trimToNull(tituloPerguntaDescritiva);
         this.temPerguntaDescritiva = StringUtils.trimToNull(tituloPerguntaDescritiva) != null;
     }
@@ -54,6 +62,12 @@ public final class PesquisaNpsDisponivel {
     public String getTituloPerguntaEscala() {
         return tituloPerguntaEscala;
     }
+
+    @NotNull
+    public String getLegendaEscalaBaixa() { return legendaEscalaBaixa; }
+
+    @NotNull
+    public String getLegendaEscalaAlta() { return legendaEscalaAlta; }
 
     @Nullable
     public String getTituloPerguntaDescritiva() {
