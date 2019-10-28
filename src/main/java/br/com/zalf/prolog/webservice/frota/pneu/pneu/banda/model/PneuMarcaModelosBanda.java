@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuMarcaModelosBanda {
+public final class PneuMarcaModelosBanda {
 
     @NotNull
     private final Long codigo;

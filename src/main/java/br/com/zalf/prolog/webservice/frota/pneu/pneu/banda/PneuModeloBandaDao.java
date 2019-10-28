@@ -64,7 +64,7 @@ public interface PneuModeloBandaDao {
     /**
      * Atualiza o nome de uma marca
      *
-     * @param marcaBanda      marca com o nome atualizado
+     * @param marcaBanda marca com o nome atualizado
      * @return codigo da marca editada
      * @throws SQLException
      */

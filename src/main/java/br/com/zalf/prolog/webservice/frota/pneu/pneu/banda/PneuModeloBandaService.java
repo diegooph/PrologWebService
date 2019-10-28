@@ -21,7 +21,6 @@ public final class PneuModeloBandaService {
     @NotNull
     private final PneuModeloBandaDao dao = Injection.providePneuModeloBandaDao();
 
-
     public List<PneuMarcaBanda> listagemMarcasBandas(@NotNull final Long codEmpresa) throws ProLogException {
         try {
             return dao.listagemMarcasBandas(codEmpresa);
@@ -64,8 +63,6 @@ public final class PneuModeloBandaService {
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar marca e modelo de banda");
         }
-
-
     }
 
     public AbstractResponse insertMarcaBanda(@NotNull final PneuMarcaModelosBanda marca,
@@ -82,7 +79,7 @@ public final class PneuModeloBandaService {
 
     public ResponseWithCod updateMarcaBanda(@NotNull final PneuMarcaBanda marcaBanda) throws ProLogException {
         try {
-            return ResponseWithCod.ok("Marca de banda editado com sucesso",dao.updateMarcaBanda(marcaBanda));
+            return ResponseWithCod.ok("Marca de banda editado com sucesso", dao.updateMarcaBanda(marcaBanda));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atualizar marca de banda da empresa: " + marcaBanda.getCodigo(), t);
             throw Injection

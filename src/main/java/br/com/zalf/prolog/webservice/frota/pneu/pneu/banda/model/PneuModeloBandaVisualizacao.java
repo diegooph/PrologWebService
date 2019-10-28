@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuModeloBandaVisualizacao {
+public final class PneuModeloBandaVisualizacao {
 
     @NotNull
     private final Long codigo;

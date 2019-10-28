@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class PneuModeloBandaInsercao {
+
     @NotNull
     private final Long codEmpresa;
     @NotNull

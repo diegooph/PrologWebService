@@ -11,8 +11,7 @@ import java.sql.SQLException;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuBandaConverter {
-    private static final String TAG = PneuBandaConverter.class.getSimpleName();
+public final class PneuBandaConverter {
 
     @NotNull
     public static PneuModeloBandaVisualizacao createModeloBanda(@NotNull final ResultSet rSet) throws SQLException {

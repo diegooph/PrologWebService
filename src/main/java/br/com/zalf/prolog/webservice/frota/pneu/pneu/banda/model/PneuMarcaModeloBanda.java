@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuMarcaModeloBanda {
+public final class PneuMarcaModeloBanda {
 
     @NotNull
     private final Long codigo;
@@ -38,7 +38,6 @@ public class PneuMarcaModeloBanda {
     public PneuModeloBandaVisualizacao getModelo() {
         return modelo;
     }
-
 
     @Override
     public String toString() {
