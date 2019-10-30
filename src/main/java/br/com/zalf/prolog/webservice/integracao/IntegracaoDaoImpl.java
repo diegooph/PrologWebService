@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,18 +28,12 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  (SELECT I.CHAVE_SISTEMA FROM INTEGRACAO I " +
-                    "    JOIN TOKEN_AUTENTICACAO TA ON TA.TOKEN = ? " +
-                    "    LEFT JOIN COLABORADOR C ON C.CPF = TA.CPF_COLABORADOR " +
-                    "  WHERE C.COD_EMPRESA = I.COD_EMPRESA AND I.RECURSO_INTEGRADO = ?) AS CHAVE_SISTEMA, " +
-                    "  (SELECT EXISTS (SELECT TOKEN FROM TOKEN_AUTENTICACAO WHERE TOKEN = ?)) AS TOKEN_EXISTE;");
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_GERAL_BUSCA_SISTEMA_KEY(?, ?);");
             stmt.setString(1, userToken);
             stmt.setString(2, recursoIntegrado.getKey());
-            stmt.setString(3, userToken);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                if (!rSet.getBoolean("TOKEN_EXISTE")) {
+                if (!rSet.getBoolean("EXISTE_TOKEN")) {
                     throw new Exception("Token não existe ou não é válido para a execução da funcionalidade");
                 } else if (rSet.getString("CHAVE_SISTEMA") == null) {
                     return null;
@@ -54,31 +49,6 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         } finally {
             close(conn, stmt, rSet);
         }
-    }
-
-    @NotNull
-    @Override
-    public String getCodUnidadeErpClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws SQLException {
-        Preconditions.checkNotNull(codUnidadeProLog, "codUnidadeProLog não pode ser null!");
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT IU.COD_UNIDADE_CLIENTE FROM INTEGRACAO_UNIDADE IU " +
-                    "WHERE IU.COD_UNIDADE_PROLOG = ?");
-            stmt.setLong(1, codUnidadeProLog);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getString("COD_UNIDADE_CLIENTE");
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-
-        throw new IllegalStateException("Código da unidade do cliente não encontrado para o código da unidade do " +
-                "ProLog: " + codUnidadeProLog);
     }
 
     @NotNull
@@ -128,5 +98,58 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
         throw new IllegalStateException(
                 "Erro ao buscar cod_empresa a partir de token da integração: " + tokenIntegracao);
+    }
+
+    @NotNull
+    @Override
+    public Long getCodEmpresaByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "SELECT U.COD_EMPRESA AS COD_EMPRESA " +
+                            "FROM UNIDADE U " +
+                            "WHERE U.CODIGO = ?;");
+            stmt.setLong(1, codUnidadeProLog);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("COD_EMPRESA");
+            } else {
+                throw new SQLException("Nenhum dado retornado para a unidade:\ncodUnidadeProLog: " + codUnidadeProLog);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public String getUrl(@NotNull final Long codEmpresa,
+                         @NotNull final SistemaKey sistemaKey,
+                         @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM INTEGRACAO.FUNC_GERAL_BUSCA_URL_SISTEMA_PARCEIRO(?, ?, ?) AS URL_COMPLETA;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setString(2, sistemaKey.getKey());
+            stmt.setString(3, metodoIntegrado.getKey());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getString("URL_COMPLETA");
+            } else {
+                throw new SQLException("Nenhuma URL encontrada para:\n" +
+                        "codEmpresa: " + codEmpresa + "\n" +
+                        "sistemaKey: " + sistemaKey.getKey() + "\n" +
+                        "metodoIntegrado: " + metodoIntegrado.getKey());
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 }

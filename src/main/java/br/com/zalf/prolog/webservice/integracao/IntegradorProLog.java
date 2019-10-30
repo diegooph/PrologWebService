@@ -39,6 +39,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransfer
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -166,31 +168,34 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull String placaVeiculo) throws Exception {
-        if (veiculoDao == null) {
-            veiculoDao = Injection.provideVeiculoDao();
-        }
-        return veiculoDao.getDiagramaVeiculoByPlaca(placaVeiculo);
-    }
-
-    @NotNull
-    @Override
-    public String getCodUnidadeClienteByCodUnidadeProLog(@NotNull Long codUnidadeProLog) throws Exception {
-        if (integracaoDao == null) {
-            integracaoDao = Injection.provideIntegracaoDao();
-        }
-
-        return integracaoDao.getCodUnidadeErpClienteByCodUnidadeProLog(codUnidadeProLog);
-    }
-
-    @NotNull
-    @Override
     public String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
 
         return integracaoDao.getTokenIntegracaoByCodUnidadeProLog(codUnidadeProLog);
+    }
+
+    @NotNull
+    @Override
+    public Long getCodEmpresaByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+
+        return integracaoDao.getCodEmpresaByCodUnidadeProLog(codUnidadeProLog);
+    }
+
+    @NotNull
+    @Override
+    public String getUrl(@NotNull final Long codEmpresa,
+                         @NotNull final SistemaKey sistemaKey,
+                         @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+
+        return integracaoDao.getUrl(codEmpresa, sistemaKey, metodoIntegrado);
     }
 
     //

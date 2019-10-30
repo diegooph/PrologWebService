@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.api.SistemaApiProLog;
+import br.com.zalf.prolog.webservice.integracao.api.SistemaApiProLogRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.SistemaGlobusPiccolotur;
@@ -58,7 +59,11 @@ public final class SistemasFactory {
                         sistemaKey,
                         userToken);
             case API_PROLOG:
-                return new SistemaApiProLog(integradorProLog, sistemaKey, userToken);
+                return new SistemaApiProLog(
+                        new SistemaApiProLogRequesterImpl(),
+                        integradorProLog,
+                        sistemaKey,
+                        userToken);
             default:
                 throw new IllegalStateException("Nenhum sistema encontrado com a chave: " + sistemaKey.getKey());
         }

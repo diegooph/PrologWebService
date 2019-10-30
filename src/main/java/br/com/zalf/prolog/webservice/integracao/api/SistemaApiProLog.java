@@ -18,8 +18,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.movimentacao.ApiMovimentacaoConverter;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -32,10 +34,15 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class SistemaApiProLog extends Sistema {
-    public SistemaApiProLog(@NotNull final IntegradorProLog integradorProLog,
+    @NotNull
+    private final SistemaApiProLogRequester requester;
+
+    public SistemaApiProLog(@NotNull final SistemaApiProLogRequester requester,
+                            @NotNull final IntegradorProLog integradorProLog,
                             @NotNull final SistemaKey sistemaKey,
                             @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, userToken);
+        this.requester = requester;
     }
 
     @Override
@@ -142,9 +149,9 @@ public final class SistemaApiProLog extends Sistema {
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
             if (!movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE)
-                    || !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.VEICULO)
-                    || !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ESTOQUE)
-                    || !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
+                    && !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.VEICULO)
+                    && !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ESTOQUE)
+                    && !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
                 if (movimentacao.isFrom(OrigemDestinoEnum.ANALISE)) {
                     // Adaptamos o texto de retorno para o cenário onde a origem é Análise.
                     throw new BloqueadoIntegracaoException(
@@ -171,17 +178,20 @@ public final class SistemaApiProLog extends Sistema {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
+            final long codUnidade = processoMovimentacao.getUnidade().getCodigo();
             conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
             final Long codMovimentacao =
                     Injection
                             .provideMovimentacaoDao()
                             .insert(conn, servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
-
-            {
-                // TODO - Aqui nesse bloco deverá estar implementado o envio para o sistema parceiro, utilizando o requester.
-            }
-
+            requester.insertProcessoMovimentacao(
+                    getIntegradorProLog().getUrl(
+                            getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(codUnidade),
+                            getSistemaKey(),
+                            MetodoIntegrado.INSERT_MOVIMENTACAO),
+                    getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade),
+                    ApiMovimentacaoConverter.convert(processoMovimentacao));
             conn.commit();
             return codMovimentacao;
         } catch (final Throwable t) {

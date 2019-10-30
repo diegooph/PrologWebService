@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoNovaA
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -14,7 +16,6 @@ import java.util.Optional;
  * precise de informações extras para funcionar.
  */
 public interface InformacoesProvidas {
-
     @NotNull
     Colaborador getColaboradorByToken(@NotNull final String userToken) throws Exception;
 
@@ -28,11 +29,13 @@ public interface InformacoesProvidas {
     Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama) throws Exception;
 
     @NotNull
-    Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placaVeiculo) throws Exception;
-
-    @NotNull
-    String getCodUnidadeClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Exception;
-
-    @NotNull
     String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable;
+
+    @NotNull
+    Long getCodEmpresaByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable;
+
+    @NotNull
+    String getUrl(@NotNull final Long codEmpresa,
+                  @NotNull final SistemaKey sistemaKey,
+                  @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 }

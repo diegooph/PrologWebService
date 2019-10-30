@@ -4,11 +4,11 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  * DAO que conterá todos os métodos necessários para que as integrações funcionem.
@@ -36,21 +36,6 @@ public interface IntegracaoDao {
                              @NotNull final RecursoIntegrado recursoIntegrado) throws Exception;
 
     /**
-     * Esse método retorna o código da unidade utilizado no ERP do cliente equivalente a mesma unidade utilizada
-     * no ProLog.
-     * <p>
-     * Por exemplo, se quisermos saber o código de Santa Maria no ERP da Avilan, basta chamarmos essa função passando
-     * o número 3 (código da unidade de Santa Maria no ProLog) e ela irá retornar o código único utilizado pela Avilan
-     * para representar Santa Maria em seu ERP.
-     *
-     * @param codUnidadeProLog Código da {@link Unidade} utilizado no ProLog.
-     * @return Código da unidade no ERP do cliente.
-     * @throws SQLException Caso aconteça algum erro na consulta.
-     */
-    @NotNull
-    String getCodUnidadeErpClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws SQLException;
-
-    /**
      * Método necessário para buscar o token utilizado para autenticações de requisições em métodos integrados. No banco
      * de dados o token é geral para a empresa.
      * O método executa a busca do token com base no {@code codUnidadeProLog} fornecido.
@@ -65,7 +50,7 @@ public interface IntegracaoDao {
     /**
      * Busca o código da empresa vinculado ao {@code tokenIntegracao} fornecido.
      *
-     * @param conn Connection que será utilizada na requisição.
+     * @param conn            Connection que será utilizada na requisição.
      * @param tokenIntegracao Um token de integração.
      * @return O código da empresa.
      * @throws Throwable Caso ocorra algum problema na busca do token.
@@ -73,4 +58,32 @@ public interface IntegracaoDao {
     @NotNull
     Long getCodEmpresaByTokenIntegracao(@NotNull final Connection conn,
                                         @NotNull final String tokenIntegracao) throws Throwable;
+
+    /**
+     * Este método busca o código da empresa a partir de um código de unidade do ProLog.
+     *
+     * @param codUnidadeProLog Código da Unidade ProLog que será utilizada para buscar o código da empresa.
+     * @return Código da empresa a qual a unidade ProLog pertence.
+     * @throws Throwable Caso ocorra algum problema na busca do código da empresa.
+     */
+    @NotNull
+    Long getCodEmpresaByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable;
+
+    /**
+     * Método utilizado para buscar a URL para qual a integração deverá se comunicar. A URL é completa, contendo a
+     * <code>baseUrl</code> e também o <code>path</code> do endpoint que a integração irá se comunicar.
+     * <p>
+     * Para identificar a URL correta, utilizamos o {@code codEmpresa} e também o {@code sistemaKey}, contendo a
+     * chave do sistema integrado, e o {@code metodoIntegrado} identificando para qual método será utilizada a URL.
+     *
+     * @param codEmpresa      Código da empresa integrada que iremos buscar o método.
+     * @param sistemaKey      Chave do Sistema que a empresa utiliza.
+     * @param metodoIntegrado Metodo que irá utilizar a URL.
+     * @return Uma String contendo o URL completa do endpoint onde a integração irá comunicar.
+     * @throws Throwable Se algum erro acontecer na busca da URL.
+     */
+    @NotNull
+    String getUrl(@NotNull final Long codEmpresa,
+                  @NotNull final SistemaKey sistemaKey,
+                  @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 }
