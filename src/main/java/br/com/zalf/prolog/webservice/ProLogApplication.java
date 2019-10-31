@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.server.ServerProperties;
 
 import javax.ws.rs.core.Application;
 import java.util.HashMap;
@@ -26,6 +27,8 @@ public class ProLogApplication extends Application {
 		// no arquivo web.xml também
 		properties.put("jersey.config.server.provider.packages", 
 						"br.com.zalf.prolog.webservice");
+		properties.put(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+		properties.put(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
 		return properties;
 	}
 }
