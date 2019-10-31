@@ -79,7 +79,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
     @CsvSource({
             "true",
             "false"})
-    void insereChecklistOnline_deveCriaOs(final boolean comVersaoModeloSetada) {
+    void insereChecklistOnline_deveCriarOs(final boolean comVersaoModeloSetada) {
         final List<PerguntaModeloChecklistInsercao> perguntas = new ArrayList<>();
         {
             // P1.
@@ -298,7 +298,8 @@ public class ChecklistFluxoOsTest extends BaseTest {
     @CsvSource({
             "true",
             "false"})
-    void insereDoisChecklistsOnlineMesmoModelo_deveIncrementaItemOs(final boolean comVersaoModeloSetada) throws SQLException {
+    void insereDoisChecklistsOnlineMesmoModelo_deveIncrementarItemOs(final boolean comVersaoModeloSetada)
+            throws SQLException {
         //region Introdução e dependências
         /*
          * Este teste depende de alguns dados pré estabelecidos na base a ser testada.
@@ -582,7 +583,8 @@ public class ChecklistFluxoOsTest extends BaseTest {
     @CsvSource({
             "true",
             "false"})
-    void insereAntigoChecklistOnline_incrementaOsModeloAlterado(final boolean comVersaoModeloSetada) throws SQLException {
+    void insereChecklistOnlineEditaModeloMantendoContexto_deveIncrementarItemOs(final boolean comVersaoModeloSetada)
+            throws SQLException {
         //region Introdução e dependências
         /*
          * Este teste depende de alguns dados pré estabelecidos na base a ser testada.
