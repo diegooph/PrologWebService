@@ -1,10 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.banda;
 
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.*;
-
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -15,76 +13,82 @@ import java.util.List;
 public interface PneuModeloBandaDao {
 
     /**
-     * Busca as marcas de bandas de uma empresa
+     * Insere uma nova marca de banda.
      *
-     * @param codEmpresa código da empresa
-     * @return uma lista de marcas de bandas da empresa
-     * @throws SQLException caso não seja possivel realizar a busca
+     * @param marcaBanda marca a ser inserida.
+     * @return código gerado pelo BD para a nova banda inserida.
+     * @throws Throwable caso ocorra algum erro.
      */
-    List<PneuMarcaBanda> listagemMarcasBandas(@NotNull final Long codEmpresa) throws SQLException;
+    @NotNull
+    Long insertMarcaBanda(@NotNull final PneuMarcaBandaInsercao marcaBanda) throws Throwable;
 
     /**
-     * Busca uma marca de banda específica de uma empresa
+     * Atualiza o nome de uma marca.
      *
-     * @param codMarca código da empresa
-     * @return uma marca de banda da empresa
-     * @throws SQLException caso não seja possivel realizar a busca
+     * @param marcaBanda marca com o nome atualizado.
+     * @return codigo da marca editada.
+     * @throws Throwable caso ocorra algum erro.
      */
-    PneuMarcaBanda getMarcaBanda(@NotNull final Long codMarca) throws SQLException;
+    @NotNull
+    Long updateMarcaBanda(@NotNull final PneuMarcaBandaEdicao marcaBanda) throws Throwable;
 
     /**
-     * Busca as marcas e modelos de bandas de uma empresa
+     * Busca as marcas de bandas de uma empresa.
      *
-     * @param codEmpresa código da empresa
-     * @return uma lista de marcas contendo os modelos de cada uma
-     * @throws SQLException caso não seja possivel realizar a busca
+     * @param codEmpresa código da empresa.
+     * @return uma lista de marcas de bandas da empresa.
+     * @throws Throwable caso ocorra algum erro.
      */
-    List<PneuMarcaModelosBanda> listagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws Throwable;
+    @NotNull
+    List<PneuMarcaBandaListagemVisualizacao> getListagemMarcasBandas(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
-     * Busca a marca e um modelo de banda específico
+     * Busca uma marca de banda específica de uma empresa.
      *
-     * @param codModelo código do modelo de uma banda
-     * @return uma objeto contendo a marca e o modelo de uma banda
-     * @throws SQLException caso não seja possivel realizar a busca
+     * @param codMarca código da empresa.
+     * @return uma marca de banda da empresa.
+     * @throws Throwable caso ocorra algum erro.
      */
-    PneuMarcaModeloBanda getMarcaModeloBanda(@NotNull final Long codModelo) throws Throwable;
+    @NotNull
+    PneuMarcaBandaListagemVisualizacao getMarcaBanda(@NotNull final Long codMarca) throws Throwable;
 
     /**
-     * Insere uma nova marca de banda
+     * Insere um novo modelo de banda.
      *
-     * @param marca      marca a ser inserida
-     * @param codEmpresa código da empresa a ser vinculada a marca
-     * @return código gerado pelo BD para a nova banda inserida
-     * @throws SQLException
+     * @param pneuModeloBandaInsercao modelo de banda a ser inserido.
+     * @return código gerado pelo BD para o novo modelo inserido.
+     * @throws Throwable caso ocorra algum erro.
      */
-    Long insertMarcaBanda(@NotNull final PneuMarcaModelosBanda marca,
-                          @NotNull final Long codEmpresa) throws Throwable;
-
-    /**
-     * Atualiza o nome de uma marca
-     *
-     * @param marcaBanda marca com o nome atualizado
-     * @return codigo da marca editada
-     * @throws SQLException
-     */
-    Long updateMarcaBanda(@NotNull final PneuMarcaBanda marcaBanda) throws Throwable;
-
-    /**
-     * Insere um novo modelo de banda
-     *
-     * @param pneuModeloBandaInsercao modelo de banda a ser inserido
-     * @return código gerado pelo BD para o novo modelo inserido
-     * @throws Throwable
-     */
+    @NotNull
     Long insertModeloBanda(@NotNull final PneuModeloBandaInsercao pneuModeloBandaInsercao) throws Throwable;
 
     /**
-     * edita modelo de banda
+     * Edita um modelo de banda.
      *
-     * @param modeloBandaEdicao informações de um modelo de banda
-     * @return código do modelo de banda editado
-     * @throws Throwable caso ocorra erro no banco
+     * @param modeloBandaEdicao informações de um modelo de banda.
+     * @return código do modelo de banda editado.
+     * @throws Throwable caso ocorra algum erro.
      */
+    @NotNull
     Long updateModeloBanda(@NotNull final PneuModeloBandaEdicao modeloBandaEdicao) throws Throwable;
+
+    /**
+     * Busca a marca e um modelo de banda específico.
+     *
+     * @param codModelo código do modelo de uma banda.
+     * @return uma objeto contendo a marca e o modelo de uma banda.
+     * @throws Throwable caso ocorra algum erro.
+     */
+    @NotNull
+    PneuModeloBandaVisualizacao getMarcaModeloBanda(@NotNull final Long codModelo) throws Throwable;
+
+    /**
+     * Busca as marcas e modelos de bandas de uma empresa.
+     *
+     * @param codEmpresa código da empresa.
+     * @return uma lista de marcas contendo os modelos de cada uma.
+     * @throws Throwable caso ocorra algum erro.
+     */
+    @NotNull
+    List<PneuModeloBandaListagem> getListagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws Throwable;
 }

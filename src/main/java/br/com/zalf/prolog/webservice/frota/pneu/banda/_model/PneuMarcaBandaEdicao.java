@@ -2,26 +2,24 @@ package br.com.zalf.prolog.webservice.frota.pneu.banda._model;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created on 09/10/19.
- *
- * @author Thais Francisco (https://github.com/thaisksf)
- */
-public final class PneuMarcaModeloBanda {
+import javax.validation.constraints.NotBlank;
 
+/**
+ * Created on 2019-10-31
+ *
+ * @author Luiz Felipe (https://github.com/luizfp)
+ */
+public final class PneuMarcaBandaEdicao {
     @NotNull
     private final Long codigo;
     @NotNull
+    @NotBlank(message = "O nome da marca não pode estar vazio")
     private final String nome;
-    @NotNull
-    private final PneuModeloBandaVisualizacao modelo;
 
-    public PneuMarcaModeloBanda(@NotNull final Long codigo,
-                                @NotNull final String nome,
-                                @NotNull final PneuModeloBandaVisualizacao modelo) {
+    public PneuMarcaBandaEdicao(@NotNull final Long codigo,
+                                @NotNull final String nome) {
         this.codigo = codigo;
         this.nome = nome;
-        this.modelo = modelo;
     }
 
     @NotNull
@@ -34,17 +32,11 @@ public final class PneuMarcaModeloBanda {
         return nome;
     }
 
-    @NotNull
-    public PneuModeloBandaVisualizacao getModelo() {
-        return modelo;
-    }
-
     @Override
     public String toString() {
         return "Marca{" +
                 "codigo=" + codigo +
                 ", nome='" + nome + '\'' +
-                ", modelos=" + modelo +
                 '}';
     }
 }

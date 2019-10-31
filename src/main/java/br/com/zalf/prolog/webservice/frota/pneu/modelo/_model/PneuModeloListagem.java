@@ -1,13 +1,13 @@
-package br.com.zalf.prolog.webservice.frota.pneu.banda._model;
+package br.com.zalf.prolog.webservice.frota.pneu.modelo._model;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created on 09/10/19.
+ * Created on 27/09/19.
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class PneuModeloBandaVisualizacao {
+public final class PneuModeloListagem {
     @NotNull
     private final Long codMarcaBanda;
     @NotNull
@@ -20,12 +20,12 @@ public final class PneuModeloBandaVisualizacao {
     @NotNull
     private final Double alturaSulcos;
 
-    public PneuModeloBandaVisualizacao(@NotNull final Long codMarcaBanda,
-                                       @NotNull final String nomeMarcaBanda,
-                                       @NotNull final Long codModeloBanda,
-                                       @NotNull final String nomeModeloBanda,
-                                       final int quantidadeSulcos,
-                                       @NotNull final Double alturaSulcos) {
+    public PneuModeloListagem(@NotNull final Long codMarcaBanda,
+                              @NotNull final String nomeMarcaBanda,
+                              @NotNull final Long codModeloBanda,
+                              @NotNull final String nomeModeloBanda,
+                              final int quantidadeSulcos,
+                              @NotNull final Double alturaSulcos) {
         this.codMarcaBanda = codMarcaBanda;
         this.nomeMarcaBanda = nomeMarcaBanda;
         this.codModeloBanda = codModeloBanda;

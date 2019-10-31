@@ -11,14 +11,14 @@ import java.sql.SQLException;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class PneuModeloConverter {
+final class PneuModeloConverter {
 
     private PneuModeloConverter() {
         throw new IllegalStateException(PneuModeloConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull
-    public static PneuModeloVisualizacao createModeloPneu(@NotNull final ResultSet rSet) throws SQLException {
+    static PneuModeloVisualizacao createModeloPneu(@NotNull final ResultSet rSet) throws SQLException {
         return new PneuModeloVisualizacao(
                 rSet.getLong("COD_MARCA"),
                 rSet.getLong("CODIGO"),

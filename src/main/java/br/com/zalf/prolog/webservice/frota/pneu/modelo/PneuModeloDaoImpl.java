@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.modelo;
 
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuMarcaModelo;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloVisualizacao;
@@ -22,55 +22,38 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  */
 public final class PneuModeloDaoImpl implements PneuModeloDao {
 
+    @NotNull
     @Override
-    public List<PneuMarcaModelo> listagemMarcasModelosPneu(Long codEmpresa) throws Throwable {
+    public List<PneuModeloListagem> getListagemMarcasModelosPneu(Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<PneuMarcaModelo> marcas = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_PNEU_BY_COD_EMPRESA (" +
                     "F_COD_EMPRESA := ?);");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
+            final List<PneuModeloListagem> marcas = new ArrayList<>();
             while (rSet.next()) {
-                final PneuMarcaModelo marca = new PneuMarcaModelo(
+                final PneuModeloListagem marca = new PneuModeloListagem(
                         rSet.getLong("COD_MARCA_PNEU"),
                         rSet.getString("NOME_MARCA_PNEU"),
-                        getModelosPneu(conn, codEmpresa, rSet.getLong("COD_MARCA_PNEU")));
+                        rSet.getLong("CODIGO"),
+                        rSet.getString("NOME"),
+                        rSet.getInt("QT_SULCOS"),
+                        rSet.getDouble("ALTURA_SULCOS"));
                 marcas.add(marca);
             }
+            return marcas;
         } finally {
             close(conn, stmt, rSet);
         }
-        return marcas;
     }
 
     @NotNull
-    private List<PneuModeloVisualizacao> getModelosPneu(@NotNull final Connection conn,
-                                                        @NotNull final Long codEmpresa,
-                                                        @NotNull final Long codMarcaPneu) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<PneuModeloVisualizacao> modelos = new ArrayList<>();
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELOS_PNEU_BY_COD_EMPRESA_COD_MARCA(" +
-                    "F_COD_EMPRESA := ? , " +
-                    "F_COD_MARCA_PNEU := ? );");
-            stmt.setLong(1, codEmpresa);
-            stmt.setLong(2, codMarcaPneu);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                modelos.add(PneuModeloConverter.createModeloPneu(rSet));
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-        return modelos;
-    }
-
     @Override
+    @SuppressWarnings("Duplicates")
     public Long insertModeloPneu(@NotNull final PneuModeloInsercao pneuModeloInsercao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -99,7 +82,9 @@ public final class PneuModeloDaoImpl implements PneuModeloDao {
         }
     }
 
+    @NotNull
     @Override
+    @SuppressWarnings("Duplicates")
     public Long updateModeloPneu(@NotNull final PneuModeloEdicao pneuModeloEdicao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;

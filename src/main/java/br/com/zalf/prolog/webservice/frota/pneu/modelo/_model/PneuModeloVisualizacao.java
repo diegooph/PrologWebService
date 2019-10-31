@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class PneuModeloVisualizacao {
-
     @NotNull
     private final Long codMarca;
     @NotNull
@@ -32,14 +31,17 @@ public final class PneuModeloVisualizacao {
         this.alturaSulcos = alturaSulcos;
     }
 
+    @NotNull
     public Long getCodMarca() {
         return codMarca;
     }
 
+    @NotNull
     public Long getCodigo() {
         return codigo;
     }
 
+    @NotNull
     public String getNome() {
         return nome;
     }
@@ -48,6 +50,7 @@ public final class PneuModeloVisualizacao {
         return quantidadeSulcos;
     }
 
+    @NotNull
     public Double getAlturaSulcos() {
         return alturaSulcos;
     }

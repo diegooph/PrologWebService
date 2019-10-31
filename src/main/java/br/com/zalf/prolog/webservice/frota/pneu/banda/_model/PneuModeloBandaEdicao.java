@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.banda._model;
 
+import org.hibernate.validator.constraints.Range;
 import org.jetbrains.annotations.NotNull;
+
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 
 /**
  * Created on 18/09/19.
@@ -8,17 +12,22 @@ import org.jetbrains.annotations.NotNull;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class PneuModeloBandaEdicao {
-
     @NotNull
     private final Long codEmpresa;
     @NotNull
     private final Long codigo;
     @NotNull
     private final Long codMarca;
+
     @NotNull
+    @NotBlank(message = "O nome do modelo não pode estar vazio")
     private final String nome;
+
+    @Range(min = 0, max = 6, message = "A quantidade de sulcos aceita é entre 1 e 6")
     private final int quantidadeSulcos;
+
     @NotNull
+    @DecimalMin(value = "1.0", message = "A altura dos sulcos deve ser, pelo menos, 1.0")
     private final Double alturaSulcos;
 
     public PneuModeloBandaEdicao(@NotNull final Long codEmpresa,
@@ -55,7 +64,6 @@ public final class PneuModeloBandaEdicao {
         return nome;
     }
 
-    @NotNull
     public int getQuantidadeSulcos() {
         return quantidadeSulcos;
     }

@@ -1,18 +1,18 @@
 package br.com.zalf.prolog.webservice.frota.pneu.modelo;
 
 
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuMarcaModelo;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloEdicao;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -32,15 +32,15 @@ public final class PneuModeloResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/marcaModelos/{codEmpresa}")
-    public List<PneuMarcaModelo> listagemMarcasModelosPneu(@PathParam("codEmpresa") Long codEmpresa)
+    public List<PneuModeloListagem> getListagemMarcasModelosPneu(@PathParam("codEmpresa") Long codEmpresa)
             throws ProLogException {
-        return service.listagemMarcasModelosPneu(codEmpresa);
+        return service.getListagemMarcasModelosPneu(codEmpresa);
     }
 
     @POST
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/modelo-insert")
-    public AbstractResponse insertModeloPneu(@Required final PneuModeloInsercao pneuModeloInsercao)
+    public ResponseWithCod insertModeloPneu(@Valid @Required final PneuModeloInsercao pneuModeloInsercao)
             throws ProLogException {
         return service.insertModeloPneu(pneuModeloInsercao);
     }

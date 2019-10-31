@@ -7,15 +7,14 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class PneuMarcaBanda {
-
+public final class PneuMarcaBandaListagemVisualizacao {
     @NotNull
     private final Long codigo;
     @NotNull
     private final String nome;
 
-    public PneuMarcaBanda(@NotNull final Long codigo,
-                          @NotNull final String nome) {
+    public PneuMarcaBandaListagemVisualizacao(@NotNull final Long codigo,
+                                              @NotNull final String nome) {
         this.codigo = codigo;
         this.nome = nome;
     }

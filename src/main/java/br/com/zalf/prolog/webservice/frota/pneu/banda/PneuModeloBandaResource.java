@@ -25,68 +25,15 @@ public final class PneuModeloBandaResource {
     @NotNull
     private final PneuModeloBandaService service = new PneuModeloBandaService();
 
-    @GET
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR,
-            Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/bandas/marcas/{codEmpresa}")
-    public List<PneuMarcaBanda> listagemMarcasBandas(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.listagemMarcasBandas(codEmpresa);
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR,
-            Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/bandas/marca/{codMarca}")
-    public PneuMarcaBanda getMarcaBanda(@PathParam("codMarca") Long codMarca) {
-        return service.getMarcaBanda(codMarca);
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR,
-            Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/bandas/marcas-modelos/{codEmpresa}")
-    public List<PneuMarcaModelosBanda> listagemMarcasModelosBandas(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.listagemMarcasModelosBandas(codEmpresa);
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR,
-            Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/bandas/marca-modelo/{codModelo}")
-    public PneuMarcaModeloBanda getMarcaModeloBanda(@PathParam("codModelo") Long codModelo) {
-        return service.getMarcaModeloBanda(codModelo);
-    }
-
     @POST
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
     @Path("/bandas/marcas/{codEmpresa}")
-    public AbstractResponse insertMarcaBanda(PneuMarcaModelosBanda marca, @PathParam("codEmpresa") Long codEmpresa) {
-        return service.insertMarcaBanda(marca, codEmpresa);
+    public AbstractResponse insertMarcaBanda(PneuMarcaBandaInsercao marcaBanda) {
+        return service.insertMarcaBanda(marcaBanda);
     }
 
     @PUT
@@ -95,13 +42,36 @@ public final class PneuModeloBandaResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE})
     @Path("bandas/marca")
-    public ResponseWithCod updateMarcaBanda(PneuMarcaBanda marcaBanda) {
+    public ResponseWithCod updateMarcaBanda(PneuMarcaBandaEdicao marcaBanda) {
         return service.updateMarcaBanda(marcaBanda);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.Pneu.VISUALIZAR})
+    @Path("/bandas/marcas/{codEmpresa}")
+    public List<PneuMarcaBandaListagemVisualizacao> getListagemMarcasBandas(@PathParam("codEmpresa") Long codEmpresa) {
+        return service.getListagemMarcasBandas(codEmpresa);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.Pneu.VISUALIZAR})
+    @Path("/bandas/marca/{codMarca}")
+    public PneuMarcaBandaListagemVisualizacao getMarcaBanda(@PathParam("codMarca") Long codMarca) {
+        return service.getMarcaBanda(codMarca);
     }
 
     @POST
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
             Pilares.Frota.Pneu.CADASTRAR,
@@ -124,20 +94,27 @@ public final class PneuModeloBandaResource {
         return service.updateModeloBanda(pneuModeloBandaEdicao);
     }
 
-    /**
-     * @deprecated Use {@link #listagemMarcasModelosBandas(Long)} instead.
-     */
     @GET
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/bandas/{codEmpresa}")
-    @Deprecated
-    public List<PneuMarcaModelosBanda> DEPRECATED_GET_MARCA_MODELO_BANDA(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.listagemMarcasModelosBandas(codEmpresa);
+    @Path("/bandas/marcas-modelos/{codEmpresa}")
+    public List<PneuModeloBandaListagem> getListagemMarcasModelosBandas(@PathParam("codEmpresa") Long codEmpresa) {
+        return service.getListagemMarcasModelosBandas(codEmpresa);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.Pneu.VISUALIZAR})
+    @Path("/bandas/marca-modelo/{codModelo}")
+    public PneuModeloBandaVisualizacao getMarcaModeloBanda(@PathParam("codModelo") Long codModelo) {
+        return service.getMarcaModeloBanda(codModelo);
     }
 }
