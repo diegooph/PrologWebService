@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.nomenclatura;
 
-import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaCadastro;
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura._model.PneuNomenclaturaCadastro;
 import org.jetbrains.annotations.NotNull;
-import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaItemVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura._model.PneuNomenclaturaItemVisualizacao;
 
 import java.util.List;
 

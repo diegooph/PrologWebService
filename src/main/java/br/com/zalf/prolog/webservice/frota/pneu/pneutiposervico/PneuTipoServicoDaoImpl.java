@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico;
 import br.com.zalf.prolog.webservice.commons.OrderByClause;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuTipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuTipoServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import org.jetbrains.annotations.NotNull;
 
 /**

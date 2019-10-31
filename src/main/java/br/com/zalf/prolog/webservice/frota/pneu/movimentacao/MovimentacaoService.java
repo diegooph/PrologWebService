@@ -9,10 +9,10 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PermissoesMovimentacaoValidator;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.PermissoesMovimentacaoValidator;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import org.jetbrains.annotations.NotNull;
 
