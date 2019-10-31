@@ -32,8 +32,9 @@ import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.lang.reflect.Type;
@@ -85,59 +86,11 @@ public final class ChecklistRealizacaoTest extends BaseTest {
     }
 
     //region Chamadas dos testes
-    @Test
-    void insereNovoChecklistOnline_buscaParaComparar_deveTerInfosIguais() {
-        internalInsereChecklistOnline_buscaParaComparar_deveTerInfosIguais(true);
-    }
-
-    @Test
-    void insereAntigoChecklistOnline_buscaParaComparar_deveTerInfosIguais() {
-        internalInsereChecklistOnline_buscaParaComparar_deveTerInfosIguais(false);
-    }
-
-    @Test
-    void insereNovoChecklistOffline_buscaParaComparar_deveTerInfosIguais() {
-        internalInsereChecklistOffline_buscaParaComparar_deveTerInfosIguais(true);
-    }
-
-    @Test
-    void insereAntigoChecklistOffline_buscaParaComparar_deveTerInfosIguais() {
-        internalInsereChecklistOffline_buscaParaComparar_deveTerInfosIguais(false);
-    }
-
-    @Test
-    void insereNovoChecklistOnline_criaOs() {
-        internalInsereChecklistOnline_criaOs(true);
-    }
-
-    @Test
-    void insereAntigoChecklistOnline_criaOs() {
-        internalInsereChecklistOnline_criaOs(false);
-    }
-
-    @Test
-    void insereNovoChecklistOnline_incrementaOsMesmoModelo() throws SQLException {
-        internalInsereChecklistOnline_incrementaOsMesmoModelo(true);
-    }
-
-    @Test
-    void insereAntigoChecklistOnline_incrementaOsMesmoModelo() throws SQLException {
-        internalInsereChecklistOnline_incrementaOsMesmoModelo(false);
-    }
-
-    @Test
-    void insereNovoChecklistOnline_incrementaOsModeloAlterado() throws SQLException {
-        internalInsereChecklistOnline_incrementaOsModeloAlterado(true);
-    }
-
-    @Test
-    void insereAntigoChecklistOnline_incrementaOsModeloAlterado() throws SQLException {
-        internalInsereChecklistOnline_incrementaOsModeloAlterado(false);
-    }
-    //endregion
-
-    //region Métodos de teste
-    void internalInsereChecklistOnline_buscaParaComparar_deveTerInfosIguais(boolean novo) {
+    @ParameterizedTest
+    @CsvSource({
+            "true",
+            "false"})
+    void insereChecklistOnline_buscaParaComparar_deveTerInfosIguais(final boolean comVersaoModeloSetada) {
         //region Insere modelo de checklist
         final List<PerguntaModeloChecklistInsercao> perguntas = new ArrayList<>();
         {
@@ -264,7 +217,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             respostas.add(new ChecklistResposta(p2.getCodigo(), alternativas));
         }
 
-        Long codVersaoModeloChecklistInserido = (novo) ? result.getCodVersaoModeloChecklistInserido() : null;
+        final Long codVersaoModeloChecklistInserido = comVersaoModeloSetada
+                ? result.getCodVersaoModeloChecklistInserido()
+                : null;
 
         final ChecklistInsercao insercao = new ChecklistInsercao(
                 5L,
@@ -354,7 +309,11 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         //endregion
     }
 
-    void internalInsereChecklistOffline_buscaParaComparar_deveTerInfosIguais(boolean novo) {
+    @ParameterizedTest
+    @CsvSource({
+            "true",
+            "false"})
+    void insereChecklistOffline_buscaParaComparar_deveTerInfosIguais(final boolean comVersaoModeloSetada) {
         final List<PerguntaModeloChecklistInsercao> perguntas = new ArrayList<>();
         {
             // P1.
@@ -480,7 +439,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             respostas.add(new ChecklistResposta(p2.getCodigo(), alternativas));
         }
 
-        Long codVersaoModeloChecklistInserido = (novo) ? result.getCodVersaoModeloChecklistInserido() : null;
+        final Long codVersaoModeloChecklistInserido = comVersaoModeloSetada
+                ? result.getCodVersaoModeloChecklistInserido()
+                : null;
 
         final ChecklistInsercao insercao = new ChecklistInsercao(
                 5L,
@@ -503,15 +464,16 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 10000,
                 11000);
 
-        final ChecklistOfflineService checklistService = new ChecklistOfflineService();
-        final Long codChecklistInserido = checklistService.insertChecklistOffline(
+        final ChecklistOfflineService checklistOfflineService = new ChecklistOfflineService();
+        final Long codChecklistInserido = checklistOfflineService.insertChecklistOffline(
                 TOKEN_CHECK_OFF,
                 83,
                 insercao).getCodigo();
 
+        final ChecklistService checklistService = new ChecklistService();
         {
             // Compara as propriedades do checklist inserido com o buscado.
-            final Checklist checklist = new ChecklistService().getByCod(codChecklistInserido, token);
+            final Checklist checklist = checklistService.getByCod(codChecklistInserido, token);
 
             assertThat(checklist).isNotNull();
             assertThat(checklist.getCodigo()).isEqualTo(codChecklistInserido);
@@ -570,7 +532,11 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         }
     }
 
-    void internalInsereChecklistOnline_criaOs(boolean novo) {
+    @ParameterizedTest
+    @CsvSource({
+            "true",
+            "false"})
+    void insereChecklistOnline_deveCriaOs(final boolean comVersaoModeloSetada) {
         final List<PerguntaModeloChecklistInsercao> perguntas = new ArrayList<>();
         {
             // P1.
@@ -696,7 +662,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             respostas.add(new ChecklistResposta(p2.getCodigo(), alternativas));
         }
 
-        Long codVersaoModeloChecklistInserido = (novo) ? result.getCodVersaoModeloChecklistInserido() : null;
+        final Long codVersaoModeloChecklistInserido = comVersaoModeloSetada
+                ? result.getCodVersaoModeloChecklistInserido()
+                : null;
 
         final ChecklistInsercao insercao = new ChecklistInsercao(
                 5L,
@@ -783,7 +751,11 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         }
     }
 
-    void internalInsereChecklistOnline_incrementaOsMesmoModelo(boolean novo) throws SQLException {
+    @ParameterizedTest
+    @CsvSource({
+            "true",
+            "false"})
+    void insereDoisChecklistsOnlineMesmoModelo_deveIncrementaItemOs(final boolean comVersaoModeloSetada) throws SQLException {
         //region Introdução e dependências
         /*
          * Este teste depende de alguns dados pré estabelecidos na base a ser testada.
@@ -792,14 +764,14 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         final Long codColaborador = 2272L;
         final Long codVeiculo = 3195L;
         final String placa = "PRO0001";
-        final Integer kmColetadoVeiculo = 112;
-        final Integer tempoRealizacaoCheckInMillis = 10000;
+        final int kmColetadoVeiculo = 112;
+        final int tempoRealizacaoCheckInMillis = 10000;
         final Integer versaoAppMomentoRealizacao = 80;
         final Integer versaoAppMomentoSincronizacao = 83;
         final String deviceId = "device didID";
         final String deviceImei = "deviceImei";
-        final Integer deviceUptimeRealizacaoMillis = 10000;
-        final Integer deviceUptimeSincronizacaoMillis = 11000;
+        final int deviceUptimeRealizacaoMillis = 10000;
+        final int deviceUptimeSincronizacaoMillis = 11000;
         //endregion
 
         //region Insere modelo de checklist
@@ -881,10 +853,10 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         /* Armazena os códigos de contexto das alternativas que abrem O.S. */
         final long codigoContextoA1 = modeloBuscado.getPerguntas().get(0).getAlternativas().get(1).getCodigoContexto();
         final long codigoContextoA2 = modeloBuscado.getPerguntas().get(1).getAlternativas().get(1).getCodigoContexto();
-        final Long codVersaoModeloChecklistInserido = (novo) ? modeloBuscado.getCodVersaoModelo() : null;
+        final Long codVersaoModeloChecklistInserido = comVersaoModeloSetada
+                ? modeloBuscado.getCodVersaoModelo()
+                : null;
         //endregion
-
-        //region Insere checklist C1 com alternativas que devem abrir O.S.
 
         //region Responde o checklist C1.
         final List<ChecklistResposta> respostasC1 = new ArrayList<>();
@@ -895,7 +867,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
             final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
 
-            /** Responde a alternativa A1, não selecionada. */
+            /* Responde a alternativa A1, não selecionada. */
             final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
             alternativas.add(new ChecklistAlternativaResposta(
                     a1.getCodigo(),
@@ -903,7 +875,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     null));
 
-            /** Responde a alternativa A2 (Abre O.S.), tipo outros, selecionada. */
+            /* Responde a alternativa A2 (Abre O.S.), tipo outros, selecionada. */
             final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
             alternativas.add(new ChecklistAlternativaResposta(
                     a2.getCodigo(),
@@ -919,7 +891,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
             final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
 
-            /** Responde a alternativa B1, não selecionada. */
+            /* Responde a alternativa B1, não selecionada. */
             final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
             alternativas.add(new ChecklistAlternativaResposta(
                     b1.getCodigo(),
@@ -927,7 +899,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     null));
 
-            /** Responde a alternativa B2 (Abre O.S.), tipo outros, selecionada. */
+            /* Responde a alternativa B2 (Abre O.S.), tipo outros, selecionada. */
             final AlternativaModeloChecklist b2 = p2.getAlternativas().get(1);
             alternativas.add(new ChecklistAlternativaResposta(
                     b2.getCodigo(),
@@ -962,9 +934,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 deviceUptimeSincronizacaoMillis);
 
         final ChecklistService checklistService = new ChecklistService();
-        final Long codChecklistInserido = checklistService.insert(token, insercao);
-        //endregion
-
+        checklistService.insert(token, insercao);
         //endregion
 
         //region Verificar se as O.S. foram abertas com o item pendente relacionado a alternativa
@@ -978,8 +948,6 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         }
         //endregion
 
-        //region Insere checklist C2 com as mesmas alternativas que devem abrir O.S.
-
         //region Responde o checklist C2.
         final List<ChecklistResposta> respostasC2 = new ArrayList<>();
 
@@ -989,7 +957,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
             final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
 
-            /** Responde a alternativa A1, não selecionada. */
+            /* Responde a alternativa A1, não selecionada. */
             final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
             alternativas.add(new ChecklistAlternativaResposta(
                     a1.getCodigo(),
@@ -997,7 +965,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     null));
 
-            /** Responde a alternativa A2 (Abre O.S.), tipo outros, selecionada. */
+            /* Responde a alternativa A2 (Abre O.S.), tipo outros, selecionada. */
             final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
             alternativas.add(new ChecklistAlternativaResposta(
                     a2.getCodigo(),
@@ -1013,7 +981,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
             final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
 
-            /** Responde a alternativa B1, não selecionada. */
+            /* Responde a alternativa B1, não selecionada. */
             final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
             alternativas.add(new ChecklistAlternativaResposta(
                     b1.getCodigo(),
@@ -1021,7 +989,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     null));
 
-            /** Responde a alternativa B2 (Abre O.S.), tipo outros, selecionada. */
+            /* Responde a alternativa B2 (Abre O.S.), tipo outros, selecionada. */
             final AlternativaModeloChecklist b2 = p2.getAlternativas().get(1);
             alternativas.add(new ChecklistAlternativaResposta(
                     b2.getCodigo(),
@@ -1059,49 +1027,19 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         final Long codChecklistInseridoC2 = checklistServiceC2.insert(token, insercaoC2);
         //endregion
 
-        //endregion
-
-        //region Verificar se a quantidade de apontamentos do item de O.S. foi incrementado
-        /* Verifica o incremento na quantidade de apontamentos do item de O.S. pelo código de contexto do C2 A1*/
+        // Verifica o incremento na quantidade de apontamentos do item de O.S. pelo código de contexto do C2 A1
+        // e do C2 A2.
         {
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            ResultSet rSet = null;
-            conn = DatabaseConnection.getConnection();
-            stmt = conn.prepareStatement("SELECT QT_APONTAMENTOS FROM CHECKLIST_ORDEM_SERVICO_ITENS_DATA " +
-                    "WHERE COD_CONTEXTO_ALTERNATIVA IN (?);");
-            stmt.setLong(1, codigoContextoA1);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                assertThat(rSet.getLong("QT_APONTAMENTOS")).isEqualTo(2);
-            } else {
-                throw new SQLException(
-                        "Não foi possível encontrar a O.S. da alternativa com o código de contexto: " + codigoContextoA1);
-            }
-            close(conn, stmt, rSet);
+            assertThat(getQuantidadeApontamentosAlternativaItemOs(codigoContextoA1)).isEqualTo(2);
+            assertThat(getQuantidadeApontamentosAlternativaItemOs(codigoContextoA2)).isEqualTo(2);
         }
-        /* Verifica o incremento na quantidade de apontamentos do item de O.S. pelo código de contexto do C2 A2*/
-        {
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            ResultSet rSet = null;
-            conn = DatabaseConnection.getConnection();
-            stmt = conn.prepareStatement("SELECT QT_APONTAMENTOS FROM CHECKLIST_ORDEM_SERVICO_ITENS_DATA " +
-                    "WHERE COD_CONTEXTO_ALTERNATIVA IN (?);");
-            stmt.setLong(1, codigoContextoA2);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                assertThat(rSet.getLong("QT_APONTAMENTOS")).isEqualTo(2);
-            } else {
-                throw new SQLException(
-                        "Não foi possível encontrar a O.S. da alternativa com o código de contexto: " + codigoContextoA2);
-            }
-            close(conn, stmt, rSet);
-        }
-        //endregion
     }
 
-    void internalInsereChecklistOnline_incrementaOsModeloAlterado(boolean novo) throws SQLException {
+    @ParameterizedTest
+    @CsvSource({
+            "true",
+            "false"})
+    void insereAntigoChecklistOnline_incrementaOsModeloAlterado(final boolean comVersaoModeloSetada) throws SQLException {
         //region Introdução e dependências
         /*
          * Este teste depende de alguns dados pré estabelecidos na base a ser testada.
@@ -1110,14 +1048,14 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         final Long codColaborador = 2272L;
         final Long codVeiculo = 3195L;
         final String placa = "PRO0001";
-        final Integer kmColetadoVeiculo = 112;
-        final Integer tempoRealizacaoCheckInMillis = 10000;
+        final int kmColetadoVeiculo = 112;
+        final int tempoRealizacaoCheckInMillis = 10000;
         final Integer versaoAppMomentoRealizacao = 80;
         final Integer versaoAppMomentoSincronizacao = 83;
         final String deviceId = "device didID";
         final String deviceImei = "deviceImei";
-        final Integer deviceUptimeRealizacaoMillis = 10000;
-        final Integer deviceUptimeSincronizacaoMillis = 11000;
+        final int deviceUptimeRealizacaoMillis = 10000;
+        final int deviceUptimeSincronizacaoMillis = 11000;
         //endregion
 
         //region Insere modelo de checklist
@@ -1197,9 +1135,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
 
         /* Armazena os códigos de contexto das alternativas que abrem O.S. */
-        final long codigoContextoA1 = modeloBuscado.getPerguntas().get(0).getAlternativas().get(1).getCodigoContexto();
-        final long codigoContextoA2 = modeloBuscado.getPerguntas().get(1).getAlternativas().get(1).getCodigoContexto();
-        Long codVersaoModeloChecklistInseridoM1 = (novo) ? modeloBuscado.getCodVersaoModelo() : null;
+        final long codigoContextoP1A2 = modeloBuscado.getPerguntas().get(0).getAlternativas().get(1).getCodigoContexto();
+        final long codigoContextoP2B2 = modeloBuscado.getPerguntas().get(1).getAlternativas().get(1).getCodigoContexto();
+        Long codVersaoModeloChecklistInseridoM1 = comVersaoModeloSetada ? modeloBuscado.getCodVersaoModelo() : null;
         //endregion
 
         //region Insere checklist C1 com alternativas que devem abrir O.S.
@@ -1213,7 +1151,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
             final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
 
-            /** Responde a alternativa A1, não selecionada. */
+            /* Responde a alternativa A1, não selecionada. */
             final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
             alternativas.add(new ChecklistAlternativaResposta(
                     a1.getCodigo(),
@@ -1221,7 +1159,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     null));
 
-            /** Responde a alternativa A2 (Abre O.S.), tipo outros, selecionada. */
+            /* Responde a alternativa A2 (Abre O.S.), tipo outros, selecionada. */
             final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
             alternativas.add(new ChecklistAlternativaResposta(
                     a2.getCodigo(),
@@ -1232,12 +1170,12 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             respostasC1.add(new ChecklistResposta(p1.getCodigo(), alternativas));
         }
 
-        /* Responde a P2 do modelo criado, ela é single_choice. */
+        /* Responde a P2 do modelo criado, ela não é single_choice. */
         {
             final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
             final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
 
-            /** Responde a alternativa B1, não selecionada. */
+            /* Responde a alternativa B1, não selecionada. */
             final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
             alternativas.add(new ChecklistAlternativaResposta(
                     b1.getCodigo(),
@@ -1245,7 +1183,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     null));
 
-            /** Responde a alternativa B2 (Abre O.S.), tipo outros, selecionada. */
+            /* Responde a alternativa B2 (Abre O.S.), tipo outros, selecionada. */
             final AlternativaModeloChecklist b2 = p2.getAlternativas().get(1);
             alternativas.add(new ChecklistAlternativaResposta(
                     b2.getCodigo(),
@@ -1285,24 +1223,22 @@ public final class ChecklistRealizacaoTest extends BaseTest {
 
         //endregion
 
-        //region Verificar se as O.S. foram abertas com o item pendente relacionado a alternativa
         /* Verifica se existe o item de ordem de serviço pelo código de contexto do C1 A1*/
         {
-            assertThat(verifyIfContextoAlternativaExists(codigoContextoA1)).isTrue();
+            assertThat(verifyIfContextoAlternativaExists(codigoContextoP1A2)).isTrue();
         }
         /* Verifica se existe o item de ordem de serviço pelo código de contexto do C1 A2*/
         {
-            assertThat(verifyIfContextoAlternativaExists(codigoContextoA2)).isTrue();
+            assertThat(verifyIfContextoAlternativaExists(codigoContextoP2B2)).isTrue();
         }
-        //endregion
 
-        //region Alterar a alternativa no modelo sem alterar o contexto
-        // 4, 5 - Então, removemos a P1 e atualizamos.
+        //region Alterar a alternativa no modelo sem alterar o contexto.
+        // 4, 5 - Então, removemos a P2 e atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntasEditado = toPerguntasEdicao(modeloBuscado);
         final List<Long> cargosEditado = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculoEditado = getCodigosTiposVeiculos(modeloBuscado);
 
-        // Removemos a última pergunta (Cinto de segurança).
+        // Removemos a última pergunta.
         perguntas.remove(perguntas.size() - 1);
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntasEditado, cargosEditado, tiposVeiculoEditado);
@@ -1316,10 +1252,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         final ModeloChecklistVisualizacao novoModeloEditado = service.getModeloChecklist(
                 codUnidade,
                 result.getCodModeloChecklistInserido());
-        Long codVersaoModeloChecklistInseridoM2 = (novo) ? novoModeloEditado.getCodVersaoModelo() : null;
         //endregion
-
-        //region Insere checklist C2 com as mesmas alternativas que devem abrir O.S.
 
         //region Responde o checklist C2.
         final List<ChecklistResposta> respostasC2 = new ArrayList<>();
@@ -1330,7 +1263,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             final PerguntaModeloChecklistVisualizacao p1 = novoModeloEditado.getPerguntas().get(0);
             final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
 
-            /** Responde a alternativa A1, não selecionada. */
+            /* Responde a alternativa A1, não selecionada. */
             final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
             alternativas.add(new ChecklistAlternativaResposta(
                     a1.getCodigo(),
@@ -1338,7 +1271,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     null));
 
-            /** Responde a alternativa A2 (Abre O.S.), tipo outros, selecionada. */
+            /* Responde a alternativa A2 (Abre O.S.), tipo outros, selecionada. */
             final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
             alternativas.add(new ChecklistAlternativaResposta(
                     a2.getCodigo(),
@@ -1351,6 +1284,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         //endregion
 
         //region Insere o checklist C2 respondido
+        final Long codVersaoModeloChecklistInseridoM2 = comVersaoModeloSetada
+                ? novoModeloEditado.getCodVersaoModelo()
+                : null;
         final ChecklistInsercao insercaoC2 = new ChecklistInsercao(
                 codUnidade,
                 novoModeloEditado.getCodModelo(),
@@ -1376,19 +1312,16 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         final Long codChecklistInseridoC2 = checklistServiceC2.insert(token, insercaoC2);
         //endregion
 
-        //endregion
-
-        //region Verificar se a quantidade de apontamentos do item de O.S. foi incrementado
-        /* Verifica o incremento na quantidade de apontamentos do item de O.S. pelo código de contexto do C2 A1*/
+        // Garante que a A2 foi a incrementada pois manteve o código de contexto e a B2 não pois foi removida e não
+        // realizada no checklist C2.
         {
-            assertThat(verifyIfContextoAlternativaExists(codigoContextoA1)).isTrue();
+            assertThat(getQuantidadeApontamentosAlternativaItemOs(codigoContextoP1A2)).isEqualTo(2);
+            assertThat(getQuantidadeApontamentosAlternativaItemOs(codigoContextoP2B2)).isEqualTo(1);
         }
-        //endregion
     }
-    //endregion
 
     //region Métodos de auxílio para os testes
-    public boolean verifyIfContextoAlternativaExists(@NotNull final Long codigoContextoAlternativa) throws SQLException {
+    private boolean verifyIfContextoAlternativaExists(@NotNull final Long codigoContextoAlternativa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -1406,6 +1339,29 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             }
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    private long getQuantidadeApontamentosAlternativaItemOs(@NotNull final Long codigoContextoAlternativa)
+            throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            stmt = conn.prepareStatement("SELECT QT_APONTAMENTOS FROM CHECKLIST_ORDEM_SERVICO_ITENS_DATA " +
+                    "WHERE COD_CONTEXTO_ALTERNATIVA IN (?);");
+            stmt.setLong(1, codigoContextoAlternativa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("QT_APONTAMENTOS");
+            } else {
+                throw new SQLException(
+                        "Não foi possível encontrar a O.S. da alternativa com o código de contexto: "
+                                + codigoContextoAlternativa);
+            }
+        } finally {
+            DatabaseConnection.close(conn, stmt, rSet);
         }
     }
 
@@ -1441,24 +1397,6 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 .stream()
                 .map(Cargo::getCodigo)
                 .collect(Collectors.toList());
-    }
-
-    @NotNull
-    private ModeloChecklistEdicao createModeloEdicao(
-            @NotNull final ModeloChecklistVisualizacao modeloBuscado,
-            @NotNull final String novoNome,
-            @NotNull final List<PerguntaModeloChecklistEdicao> perguntas,
-            @NotNull final List<Long> cargos,
-            @NotNull final List<Long> tiposVeiculo) {
-        return new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                novoNome,
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
     }
 
     @NotNull
