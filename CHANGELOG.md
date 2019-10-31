@@ -13,6 +13,7 @@ Change Log
 * Altera métodos de insert de checklist online e offline para novos objetos e estrutura (PL-2227)
 * Altera integração com Avilan e com Piccolotur para utilizar novo objeto de checklist (PL-2227)
 * Altera os fluxos de insert e edição de modelos de checklist para nova estrutura (PL-2231)
+* Altera o fluxo de processamento de ordens de serviço para considerar a versão do modelo de checklist (PL-2346) 
 
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (release-date) [unreleased]
