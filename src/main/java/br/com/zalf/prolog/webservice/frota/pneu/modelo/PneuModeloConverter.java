@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.modelo;
 
+import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,9 +22,20 @@ final class PneuModeloConverter {
     static PneuModeloVisualizacao createModeloPneu(@NotNull final ResultSet rSet) throws SQLException {
         return new PneuModeloVisualizacao(
                 rSet.getLong("COD_MARCA"),
-                rSet.getLong("CODIGO"),
-                rSet.getString("NOME"),
-                rSet.getInt("QT_SULCOS"),
+                rSet.getLong("COD_MODELO"),
+                rSet.getString("NOME_MODELO"),
+                rSet.getInt("QTD_SULCOS"),
+                rSet.getDouble("ALTURA_SULCOS"));
+    }
+
+    @NotNull
+    static PneuModeloListagem createPneuModeloListagem(@NotNull final ResultSet rSet) throws SQLException {
+        return new PneuModeloListagem(
+                rSet.getLong("COD_MARCA_PNEU"),
+                rSet.getString("NOME_MARCA_PNEU"),
+                rSet.getLong("COD_MODELO_PNEU"),
+                rSet.getString("NOME_MODELO_PNEU"),
+                rSet.getInt("QTD_SULCOS"),
                 rSet.getDouble("ALTURA_SULCOS"));
     }
 }

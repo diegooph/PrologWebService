@@ -25,7 +25,7 @@ public final class PneuModeloService {
 
     public ResponseWithCod insertModeloPneu(@NotNull final PneuModeloInsercao pneuModeloInsercao) {
         try {
-            return ResponseWithCod.ok("Modelo inserido com sucesso", dao.insertModeloPneu(pneuModeloInsercao));
+            return ResponseWithCod.ok("Modelo de pneu inserido com sucesso", dao.insertModeloPneu(pneuModeloInsercao));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir modelo de pneu. Empresa: " + pneuModeloInsercao.getCodEmpresa() +
                     " Marca: " + pneuModeloInsercao.getCodMarca(), t);
@@ -38,7 +38,7 @@ public final class PneuModeloService {
     public ResponseWithCod updateModeloPneu(@NotNull final PneuModeloEdicao pneuModeloEdicao) {
         try {
             return ResponseWithCod.ok(
-                    "Modelo de Pneu editado com sucesso",
+                    "Modelo de pneu editado com sucesso",
                     dao.updateModeloPneu(pneuModeloEdicao));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao editar o modelo de pneu", t);
@@ -55,7 +55,7 @@ public final class PneuModeloService {
             Log.e(TAG, "Erro ao buscar as marcas de pneu da empresa: " + codEmpresa, t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar as marcas de pneu, tente novamente");
+                    .map(t, "Erro ao buscar os modelos de pneu, tente novamente");
         }
     }
 

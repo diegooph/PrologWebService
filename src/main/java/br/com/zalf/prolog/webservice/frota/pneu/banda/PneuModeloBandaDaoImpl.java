@@ -76,13 +76,13 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_EMPRESA(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCAS_BANDA_LISTAGEM(" +
                     "F_COD_EMPRESA := ? )");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             final List<PneuMarcaBandaListagemVisualizacao> marcas = new ArrayList<>();
             while (rSet.next()) {
-                marcas.add(PneuBandaConverter.createPneuMarcaBandaListagemVisualizacao(rSet));
+                marcas.add(PneuModeloBandaConverter.createPneuMarcaBandaListagemVisualizacao(rSet));
             }
             return marcas;
         } finally {
@@ -98,12 +98,12 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_MARCA(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_VISUALIZACAO(" +
                     "F_COD_MARCA := ? )");
             stmt.setLong(1, codMarca);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return PneuBandaConverter.createPneuMarcaBandaListagemVisualizacao(rSet);
+                return PneuModeloBandaConverter.createPneuMarcaBandaListagemVisualizacao(rSet);
             } else {
                 throw new Throwable("Erro ao buscar marca de banda");
             }
@@ -185,20 +185,13 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_BANDA_BY_COD_EMPRESA(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELOS_BANDA_LISTAGEM(" +
                     "F_COD_EMPRESA := ? )");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             final List<PneuModeloBandaListagem> marcasModelosBandas = new ArrayList<>();
             while (rSet.next()) {
-                final PneuModeloBandaListagem marcaModelosBandas = new PneuModeloBandaListagem(
-                        rSet.getLong("CODIGO"),
-                        rSet.getString("NOME"),
-                        rSet.getLong("CODIGO"),
-                        rSet.getString("NOME"),
-                        rSet.getInt("QT_SULCOS"),
-                        rSet.getDouble("ALTURA_SULCOS"));
-                marcasModelosBandas.add(marcaModelosBandas);
+                marcasModelosBandas.add(PneuModeloBandaConverter.createPneuModeloBandaListagem(rSet));
             }
             return marcasModelosBandas;
         } finally {
@@ -219,13 +212,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return new PneuModeloBandaVisualizacao(
-                        rSet.getLong("COD_MARCA_BANDA"),
-                        rSet.getString("NOME_MARCA_BANDA"),
-                        rSet.getLong("COD_MODELO_BANDA"),
-                        rSet.getString("NOME_MODELO_BANDA"),
-                        rSet.getInt("QT_SULCOS_MODELO_BANDA"),
-                        rSet.getDouble("ALTURA_SULCOS_MODELO_BANDA"));
+                return PneuModeloBandaConverter.createPneuModeloBandaVisualizacao(rSet);
             } else {
                 throw new Throwable("Erro ao buscar marca e modelo de banda");
             }

@@ -26,16 +26,15 @@ public final class PneuModeloEdicao {
     @Range(min = 0, max = 6, message = "A quantidade de sulcos aceita é entre 1 e 6")
     private final int quantidadeSulcos;
 
-    @NotNull
     @DecimalMin(value = "1.0", message = "A altura dos sulcos deve ser, pelo menos, 1.0")
-    private final Double alturaSulcos;
+    private final double alturaSulcos;
 
     public PneuModeloEdicao(@NotNull final Long codEmpresa,
                             @NotNull final Long codigo,
                             @NotNull final Long codMarca,
                             @NotNull final String nome,
                             final int quantidadeSulcos,
-                            @NotNull final Double alturaSulcos) {
+                            final double alturaSulcos) {
         this.codEmpresa = codEmpresa;
         this.codigo = codigo;
         this.codMarca = codMarca;
@@ -68,8 +67,7 @@ public final class PneuModeloEdicao {
         return quantidadeSulcos;
     }
 
-    @NotNull
-    public Double getAlturaSulcos() {
+    public double getAlturaSulcos() {
         return alturaSulcos;
     }
 }

@@ -24,35 +24,6 @@ public final class PneuModeloDaoImpl implements PneuModeloDao {
 
     @NotNull
     @Override
-    public List<PneuModeloListagem> getListagemMarcasModelosPneu(Long codEmpresa) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCA_PNEU_BY_COD_EMPRESA (" +
-                    "F_COD_EMPRESA := ?);");
-            stmt.setLong(1, codEmpresa);
-            rSet = stmt.executeQuery();
-            final List<PneuModeloListagem> marcas = new ArrayList<>();
-            while (rSet.next()) {
-                final PneuModeloListagem marca = new PneuModeloListagem(
-                        rSet.getLong("COD_MARCA_PNEU"),
-                        rSet.getString("NOME_MARCA_PNEU"),
-                        rSet.getLong("CODIGO"),
-                        rSet.getString("NOME"),
-                        rSet.getInt("QT_SULCOS"),
-                        rSet.getDouble("ALTURA_SULCOS"));
-                marcas.add(marca);
-            }
-            return marcas;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
     @SuppressWarnings("Duplicates")
     public Long insertModeloPneu(@NotNull final PneuModeloInsercao pneuModeloInsercao) throws Throwable {
         Connection conn = null;
@@ -104,7 +75,6 @@ public final class PneuModeloDaoImpl implements PneuModeloDao {
             stmt.setString(4, pneuModeloEdicao.getNome());
             stmt.setInt(5, pneuModeloEdicao.getQuantidadeSulcos());
             stmt.setDouble(6, pneuModeloEdicao.getAlturaSulcos());
-
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -118,13 +88,35 @@ public final class PneuModeloDaoImpl implements PneuModeloDao {
 
     @NotNull
     @Override
+    public List<PneuModeloListagem> getListagemMarcasModelosPneu(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELOS_PNEU_LISTAGEM(" +
+                    "F_COD_EMPRESA := ?);");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            final List<PneuModeloListagem> marcas = new ArrayList<>();
+            while (rSet.next()) {
+                marcas.add(PneuModeloConverter.createPneuModeloListagem(rSet));
+            }
+            return marcas;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
     public PneuModeloVisualizacao getModeloPneu(@NotNull final Long codModelo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_INFORMACOES_MODELO_PNEU(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELO_PNEU_VISUALIZACAO(" +
                     "F_COD_MODELO := ? );");
             stmt.setLong(1, codModelo);
             rSet = stmt.executeQuery();

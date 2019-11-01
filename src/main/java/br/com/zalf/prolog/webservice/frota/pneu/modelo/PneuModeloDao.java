@@ -23,7 +23,7 @@ public interface PneuModeloDao {
      * @throws Throwable caso ocorra algum erro.
      */
     @NotNull
-    List<PneuModeloListagem> getListagemMarcasModelosPneu(Long codEmpresa) throws Throwable;
+    List<PneuModeloListagem> getListagemMarcasModelosPneu(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * Insere um modelo de pneu.
