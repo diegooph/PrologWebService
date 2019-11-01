@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloInsercao
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +21,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
+@DebugLog
 @Path("pneus/modelos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
