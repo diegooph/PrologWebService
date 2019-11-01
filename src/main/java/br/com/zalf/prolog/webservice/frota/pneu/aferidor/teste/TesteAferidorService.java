@@ -3,8 +3,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste.model.ProcedimentoTesteAferidor;
-import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste.model.TesteAferidorExecutado;
+import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste._model.ProcedimentoTesteAferidor;
+import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste._model.TesteAferidorExecutado;
 import org.jetbrains.annotations.NotNull;
 
 /**

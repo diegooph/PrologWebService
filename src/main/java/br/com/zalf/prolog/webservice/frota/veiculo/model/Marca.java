@@ -3,8 +3,10 @@ package br.com.zalf.prolog.webservice.frota.veiculo.model;
 import java.util.List;
 
 /**
- * Created by jean on 20/06/16.
+ * @deprecated em 2019-10-11 por conta da criação de objetos específicos para o crud de bandas e modelos de pneu.
+ * Esse objeto precisa ser refatorado.
  */
+@Deprecated
 public class Marca {
 
     private long codigo;

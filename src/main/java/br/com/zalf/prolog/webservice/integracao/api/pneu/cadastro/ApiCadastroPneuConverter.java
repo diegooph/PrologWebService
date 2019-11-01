@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
-import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuTransferencia;
 import org.jetbrains.annotations.NotNull;
 

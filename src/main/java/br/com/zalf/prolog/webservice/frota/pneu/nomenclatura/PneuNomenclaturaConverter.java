@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.nomenclatura;
 
-import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.model.PneuNomenclaturaItemVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura._model.PneuNomenclaturaItemVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;

@@ -4,8 +4,8 @@ import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste.model.ProcedimentoTesteAferidor;
-import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste.model.TesteAferidorExecutado;
+import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste._model.ProcedimentoTesteAferidor;
+import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste._model.TesteAferidorExecutado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;

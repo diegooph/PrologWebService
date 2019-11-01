@@ -1,6 +1,6 @@
 package test.br.com.zalf.prolog.webservice.integracao;
 
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

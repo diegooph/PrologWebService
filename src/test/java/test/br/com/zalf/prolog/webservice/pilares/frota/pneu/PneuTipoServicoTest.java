@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuTipoServicoService;
-import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuTipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuTipoServico;
 import org.junit.Assert;
 import org.junit.Test;
 import test.br.com.zalf.prolog.webservice.BaseTest;
