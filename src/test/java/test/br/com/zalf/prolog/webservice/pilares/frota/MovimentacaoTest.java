@@ -107,7 +107,7 @@ public class MovimentacaoTest extends BaseTest {
         pneu.setDot("1310");
         pneu.setValor(new BigDecimal(2250));
         pneu.getBanda().setValor(new BigDecimal(399));
-        final AbstractResponse response = pneuService.insert(TOKEN_COLABORADOR, 5L, pneu);
+        final AbstractResponse response = pneuService.insert(TOKEN_COLABORADOR, 5L, pneu, false);
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getStatus());
     }
