@@ -20,7 +20,9 @@ public final class PneuValidator {
         throw new IllegalStateException(PneuValidator.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static void validacaoAtributosPneu(@NotNull final Pneu pneu, Long codUnidade) throws GenericException {
+    public static void validacaoAtributosPneu(@NotNull final Pneu pneu,
+                                              Long codUnidade,
+                                              final boolean ignoreDotValidation) throws GenericException {
         try {
             validacaoUnidade(codUnidade);
             validacaoCodigoCliente(pneu.getCodigoCliente());
@@ -30,7 +32,9 @@ public final class PneuValidator {
             validacaoVida(pneu);
             validacaoPressao(pneu.getPressaoCorreta());
             validacaoDimensao(pneu.getDimensao());
-            validacaoDot(pneu.getDot());
+            if (!ignoreDotValidation) {
+                validacaoDot(pneu.getDot());
+            }
         } catch (GenericException e) {
             throw e;
         } catch (Exception e) {

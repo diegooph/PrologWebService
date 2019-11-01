@@ -7,6 +7,9 @@ Change Log
 # Features
 * Faz log de requisições serem clicáveis e direcionarem aos métodos no Resource
 
+# Refactors
+* Adiciona queryparam no cadastro de pneus para deixar parametrizável validação de DOT
+
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (2019-10-20)
 

@@ -29,9 +29,10 @@ public class PneuService {
     @NotNull
     public AbstractResponse insert(@NotNull final String userToken,
                                    @NotNull final Long codUnidade,
-                                   @NotNull final Pneu pneu) throws ProLogException {
+                                   @NotNull final Pneu pneu,
+                                   final boolean ignoreDotValidation) throws ProLogException {
         try {
-            PneuValidator.validacaoAtributosPneu(pneu, codUnidade);
+            PneuValidator.validacaoAtributosPneu(pneu, codUnidade, ignoreDotValidation);
             return ResponseWithCod.ok(
                     "Pneu inserido com sucesso",
                     RouterPneu
