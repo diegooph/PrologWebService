@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.integracao.api;
+package test.br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo;
 
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.ApiMarcaModeloPneuService;
