@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.modelo;
 
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloEdicao;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -21,6 +18,26 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class PneuModeloDaoImpl implements PneuModeloDao {
+
+    @NotNull
+    @Override
+    public List<PneuMarcaListagem> getListagemMarcasPneu() throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCAS_PNEU_LISTAGEM();");
+            rSet = stmt.executeQuery();
+            final List<PneuMarcaListagem> marcas = new ArrayList<>();
+            while (rSet.next()) {
+                marcas.add(PneuModeloConverter.createPneuMarcaListagem(rSet));
+            }
+            return marcas;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 
     @NotNull
     @Override
@@ -88,7 +105,7 @@ public final class PneuModeloDaoImpl implements PneuModeloDao {
 
     @NotNull
     @Override
-    public List<PneuModeloListagem> getListagemMarcasModelosPneu(@NotNull final Long codEmpresa) throws Throwable {
+    public List<PneuModeloListagem> getListagemModelosPneu(@NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

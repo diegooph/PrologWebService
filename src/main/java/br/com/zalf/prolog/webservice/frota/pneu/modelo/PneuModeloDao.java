@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.modelo;
 
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloEdicao;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -16,14 +13,13 @@ import java.util.List;
 public interface PneuModeloDao {
 
     /**
-     * Retorna uma lista de marcas e modelos de pneus da empresa.
+     * Retorna uma lista de marcas de pneu. As marcas de pneu são a nível ProLog.
      *
-     * @param codEmpresa código da empresa.
      * @return uma lista de marcas.
      * @throws Throwable caso ocorra algum erro.
      */
     @NotNull
-    List<PneuModeloListagem> getListagemMarcasModelosPneu(@NotNull final Long codEmpresa) throws Throwable;
+    List<PneuMarcaListagem> getListagemMarcasPneu() throws Throwable;
 
     /**
      * Insere um modelo de pneu.
@@ -44,6 +40,16 @@ public interface PneuModeloDao {
      */
     @NotNull
     Long updateModeloPneu(@NotNull final PneuModeloEdicao pneuModeloEdicao) throws Throwable;
+
+    /**
+     * Retorna uma lista de modelos de pneu da empresa.
+     *
+     * @param codEmpresa código da empresa.
+     * @return uma lista de marcas.
+     * @throws Throwable caso ocorra algum erro.
+     */
+    @NotNull
+    List<PneuModeloListagem> getListagemModelosPneu(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
      * Busca um modelo de pneu a partir de seu código único.

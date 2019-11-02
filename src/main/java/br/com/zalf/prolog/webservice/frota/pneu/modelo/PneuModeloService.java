@@ -4,10 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.PneuModeloBandaEdicao;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloEdicao;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -22,6 +19,16 @@ public final class PneuModeloService {
     @NotNull
     private final PneuModeloDao dao = Injection.providePneuModeloDao();
 
+    public List<PneuMarcaListagem> getListagemMarcasPneu() {
+        try {
+            return dao.getListagemMarcasPneu();
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar as marcas de pneu", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar as marcas de pneu, tente novamente");
+        }
+    }
 
     public ResponseWithCod insertModeloPneu(@NotNull final PneuModeloInsercao pneuModeloInsercao) {
         try {
@@ -48,11 +55,11 @@ public final class PneuModeloService {
         }
     }
 
-    public List<PneuModeloListagem> getListagemMarcasModelosPneu(@NotNull final Long codEmpresa) {
+    public List<PneuModeloListagem> getListagemModelosPneu(@NotNull final Long codEmpresa) {
         try {
-            return dao.getListagemMarcasModelosPneu(codEmpresa);
+            return dao.getListagemModelosPneu(codEmpresa);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar as marcas de pneu da empresa: " + codEmpresa, t);
+            Log.e(TAG, "Erro ao buscar os modelos de pneu da empresa: " + codEmpresa, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar os modelos de pneu, tente novamente");

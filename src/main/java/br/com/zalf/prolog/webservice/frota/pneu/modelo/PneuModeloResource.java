@@ -2,10 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.modelo;
 
 
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloEdicao;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuModeloVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -22,21 +19,30 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @DebugLog
-@Path("pneus/modelos")
+@Path("pneus")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class PneuModeloResource {
     @NotNull
     private final PneuModeloService service = new PneuModeloService();
 
+    @GET
+    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
+    @Path("/marcas")
+    public List<PneuMarcaListagem> getListagemMarcasPneu() {
+        return service.getListagemMarcasPneu();
+    }
+
     @POST
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
+    @Path("/modelos")
     public ResponseWithCod insertModeloPneu(@Valid final PneuModeloInsercao pneuModeloInsercao) {
         return service.insertModeloPneu(pneuModeloInsercao);
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
+    @Path("/modelos")
     public ResponseWithCod updateModeloPneu(
             @HeaderParam("Authorization") final String userToken,
             @Valid final PneuModeloEdicao pneuModeloEdicao) {
@@ -45,13 +51,14 @@ public final class PneuModeloResource {
 
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
-    public List<PneuModeloListagem> getListagemMarcasModelosPneu(@QueryParam("codEmpresa") Long codEmpresa) {
-        return service.getListagemMarcasModelosPneu(codEmpresa);
+    @Path("/modelos")
+    public List<PneuModeloListagem> getListagemModelosPneu(@QueryParam("codEmpresa") Long codEmpresa) {
+        return service.getListagemModelosPneu(codEmpresa);
     }
 
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/{codModelo}")
+    @Path("/modelos/{codModelo}")
     public PneuModeloVisualizacao getModeloPneu(@PathParam("codModelo") Long codModelo) {
         return service.getModeloPneu(codModelo);
     }
