@@ -11,6 +11,9 @@ Change Log
 * Adiciona queryparam no cadastro de pneus para deixar parametrizável validação de DOT
 * Permite editar infos de marcas e modelos de pneu e de banda (PL-2263)
 
+### Bug Fixes
+* Corrige fluxo que salva aferição valores para cenários onde não deve abrir serviços de pneus (PLI-37)
+
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (2019-10-20)
 
