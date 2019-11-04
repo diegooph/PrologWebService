@@ -17,7 +17,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class PneuModeloDaoImpl implements PneuModeloDao {
+public final class PneuMarcaModeloDaoImpl implements PneuMarcaModeloDao {
 
     @NotNull
     @Override
@@ -31,7 +31,7 @@ public final class PneuModeloDaoImpl implements PneuModeloDao {
             rSet = stmt.executeQuery();
             final List<PneuMarcaListagem> marcas = new ArrayList<>();
             while (rSet.next()) {
-                marcas.add(PneuModeloConverter.createPneuMarcaListagem(rSet));
+                marcas.add(PneuMarcaModeloConverter.createPneuMarcaListagem(rSet));
             }
             return marcas;
         } finally {
@@ -117,7 +117,7 @@ public final class PneuModeloDaoImpl implements PneuModeloDao {
             rSet = stmt.executeQuery();
             final List<PneuModeloListagem> marcas = new ArrayList<>();
             while (rSet.next()) {
-                marcas.add(PneuModeloConverter.createPneuModeloListagem(rSet));
+                marcas.add(PneuMarcaModeloConverter.createPneuModeloListagem(rSet));
             }
             return marcas;
         } finally {
@@ -138,7 +138,7 @@ public final class PneuModeloDaoImpl implements PneuModeloDao {
             stmt.setLong(1, codModelo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return PneuModeloConverter.createModeloPneu(rSet);
+                return PneuMarcaModeloConverter.createModeloPneu(rSet);
             } else {
                 throw new Throwable("Erro ao buscar modelo pelo código: " + codModelo);
             }

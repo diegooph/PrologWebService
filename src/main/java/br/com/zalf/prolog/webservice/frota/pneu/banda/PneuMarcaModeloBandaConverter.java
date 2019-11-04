@@ -13,7 +13,7 @@ import java.sql.SQLException;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-final class PneuModeloBandaConverter {
+final class PneuMarcaModeloBandaConverter {
 
     @NotNull
     static PneuMarcaBandaListagemVisualizacao createPneuMarcaBandaListagemVisualizacao(@NotNull final ResultSet rSet)

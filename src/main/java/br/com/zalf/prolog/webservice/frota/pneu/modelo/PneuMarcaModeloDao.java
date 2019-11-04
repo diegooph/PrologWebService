@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public interface PneuModeloDao {
+public interface PneuMarcaModeloDao {
 
     /**
      * Retorna uma lista de marcas de pneu. As marcas de pneu são a nível ProLog.

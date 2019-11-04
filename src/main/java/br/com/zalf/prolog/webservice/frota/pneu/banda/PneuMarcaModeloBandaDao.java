@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public interface PneuModeloBandaDao {
+public interface PneuMarcaModeloBandaDao {
 
     /**
      * Insere uma nova marca de banda.

@@ -17,7 +17,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
+public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDao {
 
     @NotNull
     @Override
@@ -82,7 +82,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             rSet = stmt.executeQuery();
             final List<PneuMarcaBandaListagemVisualizacao> marcas = new ArrayList<>();
             while (rSet.next()) {
-                marcas.add(PneuModeloBandaConverter.createPneuMarcaBandaListagemVisualizacao(rSet));
+                marcas.add(PneuMarcaModeloBandaConverter.createPneuMarcaBandaListagemVisualizacao(rSet));
             }
             return marcas;
         } finally {
@@ -103,7 +103,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             stmt.setLong(1, codMarca);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return PneuModeloBandaConverter.createPneuMarcaBandaListagemVisualizacao(rSet);
+                return PneuMarcaModeloBandaConverter.createPneuMarcaBandaListagemVisualizacao(rSet);
             } else {
                 throw new Throwable("Erro ao buscar marca de banda");
             }
@@ -191,7 +191,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             rSet = stmt.executeQuery();
             final List<PneuModeloBandaListagem> marcasModelosBandas = new ArrayList<>();
             while (rSet.next()) {
-                marcasModelosBandas.add(PneuModeloBandaConverter.createPneuModeloBandaListagem(rSet));
+                marcasModelosBandas.add(PneuMarcaModeloBandaConverter.createPneuModeloBandaListagem(rSet));
             }
             return marcasModelosBandas;
         } finally {
@@ -212,7 +212,7 @@ public final class PneuModeloBandaDaoImpl implements PneuModeloBandaDao {
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return PneuModeloBandaConverter.createPneuModeloBandaVisualizacao(rSet);
+                return PneuMarcaModeloBandaConverter.createPneuModeloBandaVisualizacao(rSet);
             } else {
                 throw new Throwable("Erro ao buscar marca e modelo de banda");
             }

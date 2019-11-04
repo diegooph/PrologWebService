@@ -13,10 +13,10 @@ import java.sql.SQLException;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-final class PneuModeloConverter {
+final class PneuMarcaModeloConverter {
 
-    private PneuModeloConverter() {
-        throw new IllegalStateException(PneuModeloConverter.class.getSimpleName() + " cannot be instantiated!");
+    private PneuMarcaModeloConverter() {
+        throw new IllegalStateException(PneuMarcaModeloConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull

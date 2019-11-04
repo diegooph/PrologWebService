@@ -14,10 +14,10 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class PneuModeloService {
+public final class PneuMarcaModeloService {
     private static final String TAG = PneuModeloBandaEdicao.class.getSimpleName();
     @NotNull
-    private final PneuModeloDao dao = Injection.providePneuModeloDao();
+    private final PneuMarcaModeloDao dao = Injection.providePneuModeloDao();
 
     public List<PneuMarcaListagem> getListagemMarcasPneu() {
         try {

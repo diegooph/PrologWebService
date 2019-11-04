@@ -22,9 +22,9 @@ import java.util.List;
 @Path("pneus")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class PneuModeloResource {
+public final class PneuMarcaModeloResource {
     @NotNull
-    private final PneuModeloService service = new PneuModeloService();
+    private final PneuMarcaModeloService service = new PneuMarcaModeloService();
 
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})

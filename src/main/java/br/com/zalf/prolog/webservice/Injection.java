@@ -66,12 +66,12 @@ import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaDao
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.banda.PneuModeloBandaDao;
-import br.com.zalf.prolog.webservice.frota.pneu.banda.PneuModeloBandaDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.banda.PneuMarcaModeloBandaDao;
+import br.com.zalf.prolog.webservice.frota.pneu.banda.PneuMarcaModeloBandaDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuSqlExceptionTranslator;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuModeloDao;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuModeloDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDao;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuTipoServicoDao;
@@ -211,13 +211,13 @@ public final class Injection {
     }
 
     @NotNull
-    public static PneuModeloBandaDao providePneuModeloBandaDao() {
-        return new PneuModeloBandaDaoImpl();
+    public static PneuMarcaModeloBandaDao providePneuModeloBandaDao() {
+        return new PneuMarcaModeloBandaDaoImpl();
     }
 
     @NotNull
-    public static PneuModeloDao providePneuModeloDao() {
-        return new PneuModeloDaoImpl();
+    public static PneuMarcaModeloDao providePneuModeloDao() {
+        return new PneuMarcaModeloDaoImpl();
     }
 
     @NotNull

@@ -21,9 +21,9 @@ import java.util.List;
 @Path("pneus/bandas")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class PneuModeloBandaResource {
+public final class PneuMarcaModeloBandaResource {
     @NotNull
-    private final PneuModeloBandaService service = new PneuModeloBandaService();
+    private final PneuMarcaModeloBandaService service = new PneuMarcaModeloBandaService();
 
     //
     //
