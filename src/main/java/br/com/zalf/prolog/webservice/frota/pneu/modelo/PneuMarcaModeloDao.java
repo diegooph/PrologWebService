@@ -14,13 +14,17 @@ import java.util.List;
 public interface PneuMarcaModeloDao {
 
     /**
-     * Retorna uma lista de marcas de pneu. As marcas de pneu são a nível ProLog.
+     * Retorna uma lista de marcas de pneu. As marcas de pneu são a nível ProLog, por enquanto. Como em breve será
+     * por empresa, o método já está preparado recebendo o código da empresa.
      *
+     * @param codEmpresa código da empresa.
+     * @param comModelos true se para cada marca deve retornar seus modelos, false caso contrário.
      * @return uma lista de marcas.
      * @throws Throwable caso ocorra algum erro.
      */
     @NotNull
-    List<PneuMarcaListagem> getListagemMarcasPneu() throws Throwable;
+    List<PneuMarcaListagem> getListagemMarcasPneu(@NotNull final Long codEmpresa,
+                                                  final boolean comModelos) throws Throwable;
 
     /**
      * Insere um modelo de pneu.

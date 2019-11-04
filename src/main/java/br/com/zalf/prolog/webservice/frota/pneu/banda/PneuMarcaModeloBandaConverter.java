@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.banda;
 
-import br.com.zalf.prolog.webservice.frota.pneu.banda._model.PneuMarcaBandaListagemVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.banda._model.PneuMarcaBandaListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.banda._model.PneuMarcaBandaVisualizacao;
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.PneuModeloBandaListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.PneuModeloBandaVisualizacao;
 import org.jetbrains.annotations.NotNull;
@@ -16,9 +17,17 @@ import java.sql.SQLException;
 final class PneuMarcaModeloBandaConverter {
 
     @NotNull
-    static PneuMarcaBandaListagemVisualizacao createPneuMarcaBandaListagemVisualizacao(@NotNull final ResultSet rSet)
+    static PneuMarcaBandaListagem createPneuMarcaBandaListagem(@NotNull final ResultSet rSet)
             throws SQLException {
-        return new PneuMarcaBandaListagemVisualizacao(
+        return new PneuMarcaBandaListagem(
+                rSet.getLong("CODIGO"),
+                rSet.getString("NOME"), null);
+    }
+
+    @NotNull
+    static PneuMarcaBandaVisualizacao createPneuMarcaBandaVisualizacao(@NotNull final ResultSet rSet)
+            throws SQLException {
+        return new PneuMarcaBandaVisualizacao(
                 rSet.getLong("CODIGO"),
                 rSet.getString("NOME"));
     }

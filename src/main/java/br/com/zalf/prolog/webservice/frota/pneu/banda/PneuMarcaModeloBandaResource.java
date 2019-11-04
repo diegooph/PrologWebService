@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.banda;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -59,8 +60,10 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/marcas")
-    public List<PneuMarcaBandaListagemVisualizacao> getListagemMarcasBandas(@QueryParam("codEmpresa") Long codEmpresa) {
-        return service.getListagemMarcasBandas(codEmpresa);
+    public List<PneuMarcaBandaListagem> getListagemMarcasBanda(
+            @QueryParam("codEmpresa") @Required Long codEmpresa,
+            @QueryParam("comModelos") @Optional boolean comModelos) {
+        return service.getListagemMarcasBanda(codEmpresa, comModelos);
     }
 
     @GET
@@ -71,7 +74,7 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/marcas/{codMarca}")
-    public PneuMarcaBandaListagemVisualizacao getMarcaBanda(@PathParam("codMarca") Long codMarca) {
+    public PneuMarcaBandaVisualizacao getMarcaBanda(@PathParam("codMarca") Long codMarca) {
         return service.getMarcaBanda(codMarca);
     }
     //

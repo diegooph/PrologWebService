@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
@@ -72,22 +74,41 @@ public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDa
 
     @NotNull
     @Override
-    public List<PneuMarcaBandaListagemVisualizacao> getListagemMarcasBandas(@NotNull final Long codEmpresa)
+    public List<PneuMarcaBandaListagem> getListagemMarcasBanda(@NotNull final Long codEmpresa,
+                                                               final boolean comModelos)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCAS_BANDA_LISTAGEM(" +
-                    "F_COD_EMPRESA := ? )");
-            stmt.setLong(1, codEmpresa);
-            rSet = stmt.executeQuery();
-            final List<PneuMarcaBandaListagemVisualizacao> marcas = new ArrayList<>();
-            while (rSet.next()) {
-                marcas.add(PneuMarcaModeloBandaConverter.createPneuMarcaBandaListagemVisualizacao(rSet));
+            if (comModelos) {
+                final Map<PneuMarcaBandaListagem, List<PneuModeloBandaListagem>> map =
+                        getListagemModelosBandas(codEmpresa, null)
+                                .stream()
+                                .collect(Collectors.groupingBy(m -> new PneuMarcaBandaListagem(
+                                        m.getCodMarcaBanda(),
+                                        m.getNomeMarcaBanda(),
+                                        null)));
+                return map
+                        .entrySet()
+                        .stream()
+                        .peek(entry -> entry
+                                .getKey()
+                                .setModelos(entry.getValue()))
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
+            } else {
+                conn = getConnection();
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCAS_BANDA_LISTAGEM(" +
+                        "F_COD_EMPRESA := ? )");
+                stmt.setLong(1, codEmpresa);
+                rSet = stmt.executeQuery();
+                final List<PneuMarcaBandaListagem> marcas = new ArrayList<>();
+                while (rSet.next()) {
+                    marcas.add(PneuMarcaModeloBandaConverter.createPneuMarcaBandaListagem(rSet));
+                }
+                return marcas;
             }
-            return marcas;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -95,7 +116,7 @@ public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDa
 
     @NotNull
     @Override
-    public PneuMarcaBandaListagemVisualizacao getMarcaBanda(@NotNull final Long codMarca) throws Throwable {
+    public PneuMarcaBandaVisualizacao getMarcaBanda(@NotNull final Long codMarca) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -106,7 +127,7 @@ public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDa
             stmt.setLong(1, codMarca);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return PneuMarcaModeloBandaConverter.createPneuMarcaBandaListagemVisualizacao(rSet);
+                return PneuMarcaModeloBandaConverter.createPneuMarcaBandaVisualizacao(rSet);
             } else {
                 throw new Throwable("Erro ao buscar marca de banda");
             }

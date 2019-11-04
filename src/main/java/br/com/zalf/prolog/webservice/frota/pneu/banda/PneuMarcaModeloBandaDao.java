@@ -37,11 +37,13 @@ public interface PneuMarcaModeloBandaDao {
      * Busca as marcas de bandas de uma empresa.
      *
      * @param codEmpresa código da empresa.
+     * @param comModelos true se para cada marca deve retornar seus modelos, false caso contrário.
      * @return uma lista de marcas de bandas da empresa.
      * @throws Throwable caso ocorra algum erro.
      */
     @NotNull
-    List<PneuMarcaBandaListagemVisualizacao> getListagemMarcasBandas(@NotNull final Long codEmpresa) throws Throwable;
+    List<PneuMarcaBandaListagem> getListagemMarcasBanda(@NotNull final Long codEmpresa,
+                                                        final boolean comModelos) throws Throwable;
 
     /**
      * Busca uma marca de banda específica de uma empresa.
@@ -51,7 +53,7 @@ public interface PneuMarcaModeloBandaDao {
      * @throws Throwable caso ocorra algum erro.
      */
     @NotNull
-    PneuMarcaBandaListagemVisualizacao getMarcaBanda(@NotNull final Long codMarca) throws Throwable;
+    PneuMarcaBandaVisualizacao getMarcaBanda(@NotNull final Long codMarca) throws Throwable;
 
     /**
      * Insere um novo modelo de banda.

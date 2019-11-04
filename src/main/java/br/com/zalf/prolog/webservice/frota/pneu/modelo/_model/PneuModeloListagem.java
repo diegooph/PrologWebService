@@ -9,49 +9,49 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class PneuModeloListagem {
     @NotNull
-    private final Long codMarcaBanda;
+    private final Long codMarcaPneu;
     @NotNull
-    private final String nomeMarcaBanda;
+    private final String nomeMarcaPneu;
     @NotNull
-    private final Long codModeloBanda;
+    private final Long codModeloPneu;
     @NotNull
-    private final String nomeModeloBanda;
+    private final String nomeModeloPneu;
     private final int quantidadeSulcos;
     @NotNull
     private final Double alturaSulcos;
 
-    public PneuModeloListagem(@NotNull final Long codMarcaBanda,
-                              @NotNull final String nomeMarcaBanda,
-                              @NotNull final Long codModeloBanda,
-                              @NotNull final String nomeModeloBanda,
+    public PneuModeloListagem(@NotNull final Long codMarcaPneu,
+                              @NotNull final String nomeMarcaPneu,
+                              @NotNull final Long codModeloPneu,
+                              @NotNull final String nomeModeloPneu,
                               final int quantidadeSulcos,
                               @NotNull final Double alturaSulcos) {
-        this.codMarcaBanda = codMarcaBanda;
-        this.nomeMarcaBanda = nomeMarcaBanda;
-        this.codModeloBanda = codModeloBanda;
-        this.nomeModeloBanda = nomeModeloBanda;
+        this.codMarcaPneu = codMarcaPneu;
+        this.nomeMarcaPneu = nomeMarcaPneu;
+        this.codModeloPneu = codModeloPneu;
+        this.nomeModeloPneu = nomeModeloPneu;
         this.quantidadeSulcos = quantidadeSulcos;
         this.alturaSulcos = alturaSulcos;
     }
 
     @NotNull
-    public Long getCodMarcaBanda() {
-        return codMarcaBanda;
+    public Long getCodMarcaPneu() {
+        return codMarcaPneu;
     }
 
     @NotNull
-    public String getNomeMarcaBanda() {
-        return nomeMarcaBanda;
+    public String getNomeMarcaPneu() {
+        return nomeMarcaPneu;
     }
 
     @NotNull
-    public Long getCodModeloBanda() {
-        return codModeloBanda;
+    public Long getCodModeloPneu() {
+        return codModeloPneu;
     }
 
     @NotNull
-    public String getNomeModeloBanda() {
-        return nomeModeloBanda;
+    public String getNomeModeloPneu() {
+        return nomeModeloPneu;
     }
 
     public int getQuantidadeSulcos() {

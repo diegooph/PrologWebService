@@ -3,18 +3,18 @@ package br.com.zalf.prolog.webservice.frota.pneu.banda._model;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created on 25/10/19.
+ * Created on 2019-11-04
  *
- * @author Thais Francisco (https://github.com/thaisksf)
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class PneuMarcaBandaListagemVisualizacao {
+public final class PneuMarcaBandaVisualizacao {
     @NotNull
     private final Long codigo;
     @NotNull
     private final String nome;
 
-    public PneuMarcaBandaListagemVisualizacao(@NotNull final Long codigo,
-                                              @NotNull final String nome) {
+    public PneuMarcaBandaVisualizacao(@NotNull final Long codigo,
+                                      @NotNull final String nome) {
         this.codigo = codigo;
         this.nome = nome;
     }

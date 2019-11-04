@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.modelo._model;
+package br.com.zalf.prolog.webservice.frota.pneu.banda._model;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -7,21 +7,21 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Created on 2019-11-02
+ * Created on 25/10/19.
  *
- * @author Luiz Felipe (https://github.com/luizfp)
+ * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class PneuMarcaListagem {
+public final class PneuMarcaBandaListagem {
     @NotNull
     private final Long codigo;
     @NotNull
     private final String nome;
     @Nullable
-    private List<PneuModeloListagem> modelos;
+    private List<PneuModeloBandaListagem> modelos;
 
-    public PneuMarcaListagem(@NotNull final Long codigo,
-                             @NotNull final String nome,
-                             @Nullable final List<PneuModeloListagem> modelos) {
+    public PneuMarcaBandaListagem(@NotNull final Long codigo,
+                                  @NotNull final String nome,
+                                  @Nullable final List<PneuModeloBandaListagem> modelos) {
         this.codigo = codigo;
         this.nome = nome;
         this.modelos = modelos;
@@ -38,11 +38,11 @@ public final class PneuMarcaListagem {
     }
 
     @Nullable
-    public List<PneuModeloListagem> getModelos() {
+    public List<PneuModeloBandaListagem> getModelos() {
         return modelos;
     }
 
-    public void setModelos(@Nullable final List<PneuModeloListagem> modelos) {
+    public void setModelos(@Nullable final List<PneuModeloBandaListagem> modelos) {
         this.modelos = modelos;
     }
 
@@ -50,7 +50,7 @@ public final class PneuMarcaListagem {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final PneuMarcaListagem that = (PneuMarcaListagem) o;
+        final PneuMarcaBandaListagem that = (PneuMarcaBandaListagem) o;
         return codigo.equals(that.codigo);
     }
 

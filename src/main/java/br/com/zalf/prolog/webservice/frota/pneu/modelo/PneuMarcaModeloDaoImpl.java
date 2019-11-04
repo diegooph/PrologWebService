@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
@@ -24,19 +26,38 @@ public final class PneuMarcaModeloDaoImpl implements PneuMarcaModeloDao {
 
     @NotNull
     @Override
-    public List<PneuMarcaListagem> getListagemMarcasPneu() throws Throwable {
+    public List<PneuMarcaListagem> getListagemMarcasPneu(@NotNull final Long codEmpresa,
+                                                         final boolean comModelos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCAS_PNEU_LISTAGEM();");
-            rSet = stmt.executeQuery();
-            final List<PneuMarcaListagem> marcas = new ArrayList<>();
-            while (rSet.next()) {
-                marcas.add(PneuMarcaModeloConverter.createPneuMarcaListagem(rSet));
+            if (comModelos) {
+                final Map<PneuMarcaListagem, List<PneuModeloListagem>> map =
+                        getListagemModelosPneu(codEmpresa, null)
+                                .stream()
+                                .collect(Collectors.groupingBy(m -> new PneuMarcaListagem(
+                                        m.getCodMarcaPneu(),
+                                        m.getNomeMarcaPneu(),
+                                        null)));
+                return map
+                        .entrySet()
+                        .stream()
+                        .peek(entry -> entry
+                                .getKey()
+                                .setModelos(entry.getValue()))
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
+            } else {
+                conn = getConnection();
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCAS_PNEU_LISTAGEM();");
+                rSet = stmt.executeQuery();
+                final List<PneuMarcaListagem> marcas = new ArrayList<>();
+                while (rSet.next()) {
+                    marcas.add(PneuMarcaModeloConverter.createPneuMarcaListagem(rSet));
+                }
+                return marcas;
             }
-            return marcas;
         } finally {
             close(conn, stmt, rSet);
         }

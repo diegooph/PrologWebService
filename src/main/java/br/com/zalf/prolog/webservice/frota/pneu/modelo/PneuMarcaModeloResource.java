@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.modelo;
 
 
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -29,8 +31,10 @@ public final class PneuMarcaModeloResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/marcas")
-    public List<PneuMarcaListagem> getListagemMarcasPneu() {
-        return service.getListagemMarcasPneu();
+    public List<PneuMarcaListagem> getListagemMarcasPneu(
+            @QueryParam("codEmpresa") @Required Long codEmpresa,
+            @QueryParam("comModelos") @Optional boolean comModelos) {
+        return service.getListagemMarcasPneu(codEmpresa, comModelos);
     }
 
     @POST

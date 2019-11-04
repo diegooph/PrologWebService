@@ -42,18 +42,21 @@ public final class PneuMarcaModeloBandaService {
         }
     }
 
-    public List<PneuMarcaBandaListagemVisualizacao> getListagemMarcasBandas(@NotNull final Long codEmpresa) {
+    public List<PneuMarcaBandaListagem> getListagemMarcasBanda(@NotNull final Long codEmpresa,
+                                                               final boolean comModelos) {
         try {
-            return dao.getListagemMarcasBandas(codEmpresa);
+            return dao.getListagemMarcasBanda(codEmpresa, comModelos);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar listagem de marcas de banda: " + codEmpresa, t);
+            Log.e(TAG, "Erro ao buscar listagem de marcas de banda:\n" +
+                    "codEmpresa: " + codEmpresa + "\n" +
+                    "comModelos: " + comModelos, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar marcas de banda, tente novamente");
         }
     }
 
-    public PneuMarcaBandaListagemVisualizacao getMarcaBanda(@NotNull final Long codMarca) {
+    public PneuMarcaBandaVisualizacao getMarcaBanda(@NotNull final Long codMarca) {
         try {
             return dao.getMarcaBanda(codMarca);
         } catch (final Throwable t) {
