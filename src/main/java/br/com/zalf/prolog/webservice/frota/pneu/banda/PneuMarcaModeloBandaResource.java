@@ -114,8 +114,9 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/modelos")
-    public List<PneuModeloBandaListagem> getListagemMarcasModelosBandas(@QueryParam("codEmpresa") Long codEmpresa) {
-        return service.getListagemMarcasModelosBandas(codEmpresa);
+    public List<PneuModeloBandaListagem> getListagemModelosBandas(@QueryParam("codEmpresa") Long codEmpresa,
+                                                                  @QueryParam("codMarca") Long codMarca) {
+        return service.getListagemModelosBandas(codEmpresa, codMarca);
     }
 
     @GET
@@ -126,8 +127,8 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/modelos/{codModelo}")
-    public PneuModeloBandaVisualizacao getMarcaModeloBanda(@PathParam("codModelo") Long codModelo) {
-        return service.getMarcaModeloBanda(codModelo);
+    public PneuModeloBandaVisualizacao getModeloBanda(@PathParam("codModelo") Long codModelo) {
+        return service.getModeloBanda(codModelo);
     }
     //
     //

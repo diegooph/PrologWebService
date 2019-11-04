@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.PneuModeloBandaEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -55,11 +56,19 @@ public final class PneuMarcaModeloService {
         }
     }
 
-    public List<PneuModeloListagem> getListagemModelosPneu(@NotNull final Long codEmpresa) {
+    public List<PneuModeloListagem> getListagemModelosPneu(@Nullable final Long codEmpresa,
+                                                           @Nullable final Long codMarca) {
         try {
-            return dao.getListagemModelosPneu(codEmpresa);
+            if (codEmpresa == null) {
+                // Como a marca é a nível ProLog, a empresa sempre precisa estar presente.
+                throw new RuntimeException("codEmpresa não pode ser nulo na busca dos modelos de pneu!");
+            }
+
+            return dao.getListagemModelosPneu(codEmpresa, codMarca);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar os modelos de pneu da empresa: " + codEmpresa, t);
+            Log.e(TAG, "Erro ao buscar listagem de modelos de pneu:\n"
+                    + "codEmpresa: " + codEmpresa + "\n"
+                    + "codMarca: " + codMarca, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar os modelos de pneu, tente novamente");

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.banda;
 
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -80,15 +81,17 @@ public interface PneuMarcaModeloBandaDao {
      * @throws Throwable caso ocorra algum erro.
      */
     @NotNull
-    PneuModeloBandaVisualizacao getMarcaModeloBanda(@NotNull final Long codModelo) throws Throwable;
+    PneuModeloBandaVisualizacao getModeloBanda(@NotNull final Long codModelo) throws Throwable;
 
     /**
-     * Busca as marcas e modelos de bandas de uma empresa.
+     * Busca os modelos de banda de uma empresa ou marca de banda. Ao menos um dos parâmetros precisa existir.
      *
      * @param codEmpresa código da empresa.
+     * @param codMarca código da marca de banda.
      * @return uma lista de marcas contendo os modelos de cada uma.
      * @throws Throwable caso ocorra algum erro.
      */
     @NotNull
-    List<PneuModeloBandaListagem> getListagemMarcasModelosBandas(@NotNull final Long codEmpresa) throws Throwable;
+    List<PneuModeloBandaListagem> getListagemModelosBandas(@Nullable final Long codEmpresa,
+                                                           @Nullable final Long codMarca) throws Throwable;
 }

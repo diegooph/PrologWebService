@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.modelo;
 
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -105,15 +108,18 @@ public final class PneuMarcaModeloDaoImpl implements PneuMarcaModeloDao {
 
     @NotNull
     @Override
-    public List<PneuModeloListagem> getListagemModelosPneu(@NotNull final Long codEmpresa) throws Throwable {
+    public List<PneuModeloListagem> getListagemModelosPneu(@Nullable final Long codEmpresa,
+                                                           @Nullable final Long codMarca) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELOS_PNEU_LISTAGEM(" +
-                    "F_COD_EMPRESA := ?);");
-            stmt.setLong(1, codEmpresa);
+                    "F_COD_EMPRESA := ?," +
+                    "F_COD_MARCA   := ?)");
+            StatementUtils.bindValueOrNull(stmt, 1, codEmpresa, SqlType.BIGINT);
+            StatementUtils.bindValueOrNull(stmt, 2, codMarca, SqlType.BIGINT);
             rSet = stmt.executeQuery();
             final List<PneuModeloListagem> marcas = new ArrayList<>();
             while (rSet.next()) {

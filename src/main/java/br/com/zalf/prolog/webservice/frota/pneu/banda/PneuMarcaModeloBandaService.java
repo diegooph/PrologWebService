@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -88,22 +89,29 @@ public final class PneuMarcaModeloBandaService {
         }
     }
 
-    public List<PneuModeloBandaListagem> getListagemMarcasModelosBandas(@NotNull final Long codEmpresa) {
+    public List<PneuModeloBandaListagem> getListagemModelosBandas(@Nullable final Long codEmpresa,
+                                                                  @Nullable final Long codMarca) {
         try {
-            return dao.getListagemMarcasModelosBandas(codEmpresa);
+            if (codEmpresa == null && codMarca == null) {
+                throw new RuntimeException("codEmpresa e codMarca não podem ser ambos nulos!");
+            }
+
+            return dao.getListagemModelosBandas(codEmpresa, codMarca);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar listagem de marcas e modelos de banda: " + codEmpresa, t);
+            Log.e(TAG, "Erro ao buscar listagem de modelos de banda:\n"
+                    + "codEmpresa: " + codEmpresa + "\n"
+                    + "codMarca: " + codMarca, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar os modelos de banda, tente novamente");
         }
     }
 
-    public PneuModeloBandaVisualizacao getMarcaModeloBanda(@NotNull final Long codModelo) {
+    public PneuModeloBandaVisualizacao getModeloBanda(@NotNull final Long codModelo) {
         try {
-            return dao.getMarcaModeloBanda(codModelo);
+            return dao.getModeloBanda(codModelo);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar marca e modelo de banda da empresa: " + codModelo, t);
+            Log.e(TAG, "Erro ao buscar modelo de banda da empresa: " + codModelo, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar modelo de banda, tente novamente");

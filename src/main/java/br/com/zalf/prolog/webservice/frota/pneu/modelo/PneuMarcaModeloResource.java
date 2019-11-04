@@ -52,8 +52,9 @@ public final class PneuMarcaModeloResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/modelos")
-    public List<PneuModeloListagem> getListagemModelosPneu(@QueryParam("codEmpresa") Long codEmpresa) {
-        return service.getListagemModelosPneu(codEmpresa);
+    public List<PneuModeloListagem> getListagemModelosPneu(@QueryParam("codEmpresa") Long codEmpresa,
+                                                           @QueryParam("codMarca") Long codMarca) {
+        return service.getListagemModelosPneu(codEmpresa, codMarca);
     }
 
     @GET

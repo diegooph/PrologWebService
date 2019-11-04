@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.modelo;
 
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -42,14 +43,16 @@ public interface PneuMarcaModeloDao {
     Long updateModeloPneu(@NotNull final PneuModeloEdicao pneuModeloEdicao) throws Throwable;
 
     /**
-     * Retorna uma lista de modelos de pneu da empresa.
+     * Busca os modelos de pneu de uma empresa ou marca de pneu. Ao menos um dos parâmetros precisa existir.
      *
      * @param codEmpresa código da empresa.
-     * @return uma lista de marcas.
+     * @param codMarca código da marca de pneu.
+     * @return uma lista de modelos.
      * @throws Throwable caso ocorra algum erro.
      */
     @NotNull
-    List<PneuModeloListagem> getListagemModelosPneu(@NotNull final Long codEmpresa) throws Throwable;
+    List<PneuModeloListagem> getListagemModelosPneu(@Nullable final Long codEmpresa,
+                                                    @Nullable final Long codMarca) throws Throwable;
 
     /**
      * Busca um modelo de pneu a partir de seu código único.
