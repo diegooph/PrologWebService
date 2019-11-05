@@ -6,6 +6,7 @@ Change Log
 
 # Features
 * Faz log de requisições serem clicáveis e direcionarem aos métodos no Resource
+* Cria método na API do ProLog para buscar relatório de controle de jornada da portaria 1510 (PLI-45)
 
 # Refactors
 * Adiciona queryparam no cadastro de pneus para deixar parametrizável validação de DOT
