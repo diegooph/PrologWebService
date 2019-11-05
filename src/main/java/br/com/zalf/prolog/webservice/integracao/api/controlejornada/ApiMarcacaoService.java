@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiMarcacao;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
