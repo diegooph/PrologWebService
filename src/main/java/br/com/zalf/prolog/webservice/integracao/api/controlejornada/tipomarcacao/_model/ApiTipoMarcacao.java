@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcacao.model;
+package br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcacao._model;
 
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;

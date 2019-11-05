@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.api.controlejornada.model;
+package br.com.zalf.prolog.webservice.integracao.api.controlejornada._model;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import org.jetbrains.annotations.NotNull;
