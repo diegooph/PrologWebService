@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.4"></a>
-## Version [v1.0.4](https://github.com/luizfp/PrologWebService/compare/v1.0.3...v1.0.4) (release-date) [unreleased]
+## Version [v1.0.4](https://github.com/luizfp/PrologWebService/compare/v1.0.3...v1.0.4) (2019-11-05)
 
 # Features
 * Faz log de requisições serem clicáveis e direcionarem aos métodos no Resource
