@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.router;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;

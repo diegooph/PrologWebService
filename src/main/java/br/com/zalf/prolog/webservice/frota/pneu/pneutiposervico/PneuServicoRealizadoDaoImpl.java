@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizado;
-import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizadoIncrementaVida;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;

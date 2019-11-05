@@ -21,13 +21,13 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.Scatter
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterGroup;
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.QtdDiasAfericoesVencidas;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.StatusPlacasAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.SulcoPressao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.QtdDiasAfericoesVencidas;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.QuantidadeAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.StatusPlacasAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.SulcoPressao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -35,10 +35,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao.PRESSAO;
-import static br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao.SULCO;
-import static br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao.SULCO_PRESSAO;
-import static br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico.*;
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao.PRESSAO;
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao.SULCO;
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao.SULCO_PRESSAO;
+import static br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico.*;
 
 /**
  * Created on 1/22/18
