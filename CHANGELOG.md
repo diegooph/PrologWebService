@@ -10,6 +10,7 @@ Change Log
 # Refactors
 * Adiciona queryparam no cadastro de pneus para deixar parametrizável validação de DOT
 * Permite editar infos de marcas e modelos de pneu e de banda (PL-2263)
+* Bloqueia métodos antigos de marca e modelo de pneu e banda (PL-2263)
 
 ### Bug Fixes
 * Corrige fluxo que salva aferição valores para cenários onde não deve abrir serviços de pneus (PLI-37)
