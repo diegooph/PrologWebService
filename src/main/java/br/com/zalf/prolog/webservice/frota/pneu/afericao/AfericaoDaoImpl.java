@@ -647,7 +647,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             // Se não devemos abrir serviços para as medições coletadas,
             // então podemos encerrar o processo aqui.
             if (!deveAbrirServico || !afericaoPlaca) {
-                break;
+                continue;
             }
 
             // Insere/atualiza os serviços que os pneus aferidos possam ter gerado.
