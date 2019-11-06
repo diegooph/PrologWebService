@@ -26,7 +26,6 @@ public final class ApiMarcacaoRelatorioDaoImpl extends DatabaseConnection implem
     @Override
     public List<ApiMarcacaoRelatorio1510> getRelatorioPortaria1510(
             @NotNull final String tokenIntegracao,
-            @NotNull final Long codUltimaMarcacaoSincronizada,
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal,
             @Nullable final Long codUnidadeProLog,
@@ -38,21 +37,23 @@ public final class ApiMarcacaoRelatorioDaoImpl extends DatabaseConnection implem
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM INTEGRACAO.FUNC_RELATORIO_INTERVALO_PORTARIA_1510_TIPO_3(" +
+                    "FROM INTEGRACAO.FUNC_MARCACAO_RELATORIO_INTERVALO_PORTARIA_1510_TIPO_3(" +
                     "F_TOKEN_INTEGRACAO := ?, " +
-                    "F_COD_ULTIMA_MARCACAO_SINCRONIZADA := ?, " +
                     "F_DATA_INICIAL := ?, " +
                     "F_DATA_FINAL := ?, " +
                     "F_COD_UNIDADE := ?, " +
                     "F_COD_TIPO_INTERVALO := ?, " +
                     "F_CPF_COLABORADOR := ?);");
             stmt.setString(1, tokenIntegracao);
-            stmt.setLong(2, codUltimaMarcacaoSincronizada);
-            stmt.setObject(3, dataInicial);
-            stmt.setObject(4, dataFinal);
-            bindValueOrNull(stmt, 5, codUnidadeProLog, SqlType.BIGINT);
-            bindValueOrNull(stmt, 6, codTipoMarcacao, SqlType.BIGINT);
-            bindValueOrNull(stmt, 7, Colaborador.formatCpf(cpfColaborador), SqlType.TEXT);
+            stmt.setObject(2, dataInicial);
+            stmt.setObject(3, dataFinal);
+            bindValueOrNull(stmt, 4, codUnidadeProLog, SqlType.BIGINT);
+            bindValueOrNull(stmt, 5, codTipoMarcacao, SqlType.BIGINT);
+            bindValueOrNull(
+                    stmt,
+                    6,
+                    cpfColaborador == null ? null : Colaborador.formatCpf(cpfColaborador),
+                    SqlType.BIGINT);
             rSet = stmt.executeQuery();
             final List<ApiMarcacaoRelatorio1510> marcacoes = new ArrayList<>();
             while (rSet.next()) {

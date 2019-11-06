@@ -9,8 +9,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ApiMarcacaoRelatorio1510 {
     @NotNull
-    private final Long codMarcacao;
-    @NotNull
     private final String nsr;
     @NotNull
     private final String tipoRegistro;
@@ -21,23 +19,16 @@ public final class ApiMarcacaoRelatorio1510 {
     @NotNull
     private final String pisColaborador;
 
-    public ApiMarcacaoRelatorio1510(@NotNull final Long codMarcacao,
-                                    @NotNull final String nsr,
+    public ApiMarcacaoRelatorio1510(@NotNull final String nsr,
                                     @NotNull final String tipoRegistro,
                                     @NotNull final String dataMarcacao,
                                     @NotNull final String horaMarcacao,
                                     @NotNull final String pisColaborador) {
-        this.codMarcacao = codMarcacao;
         this.nsr = nsr;
         this.tipoRegistro = tipoRegistro;
         this.dataMarcacao = dataMarcacao;
         this.horaMarcacao = horaMarcacao;
         this.pisColaborador = pisColaborador;
-    }
-
-    @NotNull
-    public Long getCodMarcacao() {
-        return codMarcacao;
     }
 
     @NotNull

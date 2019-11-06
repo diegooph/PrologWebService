@@ -25,7 +25,6 @@ public final class ApiMarcacaoRelatorioService extends BaseIntegracaoService {
     @NotNull
     public List<ApiMarcacaoRelatorio1510> getRelatorioPortaria1510(
             @NotNull final String tokenIntegracao,
-            @NotNull final Long codUltimaMarcacaoSincronizada,
             @NotNull final String dataInicial,
             @NotNull final String dataFinal,
             @Nullable final Long codUnidadeProLog,
@@ -35,7 +34,6 @@ public final class ApiMarcacaoRelatorioService extends BaseIntegracaoService {
             ensureValidToken(tokenIntegracao, TAG);
             return dao.getRelatorioPortaria1510(
                     tokenIntegracao,
-                    codUltimaMarcacaoSincronizada,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal),
                     codUnidadeProLog,
@@ -44,7 +42,6 @@ public final class ApiMarcacaoRelatorioService extends BaseIntegracaoService {
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar relatório padrão portaria 1510\n" +
                             "tokenIntegracao: " + tokenIntegracao + "\n" +
-                            "codUltimaMarcacaoSincronizada: " + codUltimaMarcacaoSincronizada + "\n" +
                             "dataInicial: " + dataInicial + "\n" +
                             "dataFinal: " + dataFinal + "\n" +
                             "codUnidadeProLog: " + codUnidadeProLog + "\n" +

@@ -16,7 +16,6 @@ public interface ApiMarcacaoRelatorioDao {
     @NotNull
     List<ApiMarcacaoRelatorio1510> getRelatorioPortaria1510(
             @NotNull final String tokenIntegracao,
-            @NotNull final Long codUltimaMarcacaoSincronizada,
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal,
             @Nullable final Long codUnidadeProLog,
