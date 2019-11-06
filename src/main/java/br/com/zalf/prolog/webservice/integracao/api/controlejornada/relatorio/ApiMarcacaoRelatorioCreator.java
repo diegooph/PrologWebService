@@ -20,7 +20,6 @@ public final class ApiMarcacaoRelatorioCreator {
     static ApiMarcacaoRelatorio1510 createApiMarcacaoRelatorio1510(
             @NotNull final ResultSet rSet) throws SQLException {
         return new ApiMarcacaoRelatorio1510(
-                rSet.getLong("COD_MARCACAO"),
                 rSet.getString("NSR"),
                 rSet.getString("TIPO_REGISTRO"),
                 rSet.getString("DATA_MARCACAO"),

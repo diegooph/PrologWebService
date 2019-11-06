@@ -1,9 +1,13 @@
 Change Log
 ==========
 
+## Stage
+
+# Features
+* Cria endpoint para disponibilizar relatório padrão portaria 1510 de controle de jornada de forma integrada (PLI-45)
+
 <a name="v1.0.5"></a>
 ## Version [v1.0.5](https://github.com/luizfp/PrologWebService/compare/v1.0.4...v1.0.5) (release-date) [unreleased]
-
 
 <a name="v1.0.4"></a>
 ## Version [v1.0.4](https://github.com/luizfp/PrologWebService/compare/v1.0.3...v1.0.4) (2019-11-05)
