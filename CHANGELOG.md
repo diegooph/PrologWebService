@@ -6,15 +6,20 @@ Change Log
 # Features
 * Cria endpoint para disponibilizar relatório padrão portaria 1510 de controle de jornada de forma integrada (PLI-45)
 
+<a name="v1.0.5"></a>
+## Version [v1.0.5](https://github.com/luizfp/PrologWebService/compare/v1.0.4...v1.0.5) (release-date) [unreleased]
+
 <a name="v1.0.4"></a>
-## Version [v1.0.4](https://github.com/luizfp/PrologWebService/compare/v1.0.3...v1.0.4) (release-date) [unreleased]
+## Version [v1.0.4](https://github.com/luizfp/PrologWebService/compare/v1.0.3...v1.0.4) (2019-11-05)
 
-# Features
+### Features
 * Faz log de requisições serem clicáveis e direcionarem aos métodos no Resource
+* Cria método na API do ProLog para buscar relatório de controle de jornada da portaria 1510 (PLI-45)
 
-# Refactors
+### Refactors
 * Adiciona queryparam no cadastro de pneus para deixar parametrizável validação de DOT
 * Permite editar infos de marcas e modelos de pneu e de banda (PL-2263)
+* Bloqueia métodos antigos de marca e modelo de pneu e banda (PL-2263)
 
 ### Bug Fixes
 * Corrige fluxo que salva aferição valores para cenários onde não deve abrir serviços de pneus (PLI-37)

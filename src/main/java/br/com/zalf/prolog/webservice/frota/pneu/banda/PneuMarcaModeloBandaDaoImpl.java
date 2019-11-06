@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.banda;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuMarcaListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -96,6 +98,7 @@ public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDa
                                 .getKey()
                                 .setModelos(entry.getValue()))
                         .map(Map.Entry::getKey)
+                        .sorted(Comparator.comparing(PneuMarcaBandaListagem::getNome))
                         .collect(Collectors.toList());
             } else {
                 conn = getConnection();

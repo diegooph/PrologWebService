@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,6 +48,7 @@ public final class PneuMarcaModeloDaoImpl implements PneuMarcaModeloDao {
                                 .getKey()
                                 .setModelos(entry.getValue()))
                         .map(Map.Entry::getKey)
+                        .sorted(Comparator.comparing(PneuMarcaListagem::getNome))
                         .collect(Collectors.toList());
             } else {
                 conn = getConnection();
