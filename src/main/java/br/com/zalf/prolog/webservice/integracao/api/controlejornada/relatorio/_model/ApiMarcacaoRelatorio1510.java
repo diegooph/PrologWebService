@@ -32,6 +32,16 @@ public final class ApiMarcacaoRelatorio1510 {
     }
 
     @NotNull
+    public static ApiMarcacaoRelatorio1510 getDummy() {
+        return new ApiMarcacaoRelatorio1510(
+                "000000001",
+                "3",
+                "05112019",
+                "1524",
+                "123456789012");
+    }
+
+    @NotNull
     public String getNsr() {
         return nsr;
     }
