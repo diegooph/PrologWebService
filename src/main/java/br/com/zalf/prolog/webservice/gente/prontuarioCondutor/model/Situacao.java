@@ -34,7 +34,7 @@ public final class Situacao {
         // Depois verificamos se é um status válido.
         Preconditions.checkArgument(
                 status.equals(BLOQUEADO) || status.equals(BLOQUEADO_INTEGRACAO) || status.equals(LIBERADO),
-                "status precisa ser " + BLOQUEADO  + " ou " + BLOQUEADO_INTEGRACAO + " ou " + LIBERADO);
+                String.format("O status %s não é valido. Precisa ser %s ou %s ou %s.", status, BLOQUEADO, BLOQUEADO_INTEGRACAO, LIBERADO));
 
         this.status = status;
     }

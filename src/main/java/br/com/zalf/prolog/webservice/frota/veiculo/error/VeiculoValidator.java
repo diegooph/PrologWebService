@@ -34,7 +34,7 @@ public class VeiculoValidator {
         if (!(StringUtils.stripCharactersWithAccents(placa)).equals(placa)) {
             throw new GenericException("Placa inválida\nA placa não deve conter acentos", "Placa informada: " + placa);
         }
-        if (!(StringUtils.stripCharactersSpecials(placa)).equals(placa)) {
+        if (!(StringUtils.stripAccents(placa)).equals(placa)) {
             throw new GenericException("Placa inválida\nA placa não deve conter caracteres especiais", "Placa informada: " + placa);
         }
     }
