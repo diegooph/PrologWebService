@@ -5,9 +5,9 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.Aderencia;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.Faixa;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

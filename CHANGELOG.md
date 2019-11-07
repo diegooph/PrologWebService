@@ -1,11 +1,30 @@
 Change Log
 ==========
 
-<a name="v1.0.4"></a>
-## Version [v1.0.4](https://github.com/luizfp/PrologWebService/compare/v1.0.3...v1.0.4) (release-date) [unreleased]
+<a name="v1.0.6"></a>
+## Version [v1.0.6](https://github.com/luizfp/PrologWebService/compare/v1.0.5...v1.0.6) (release-date) [unreleased]
 
-# Features
+
+<a name="v1.0.5"></a>
+## Version [v1.0.5](https://github.com/luizfp/PrologWebService/compare/v1.0.4...v1.0.5) (2019-11-06)
+
+### Refactors
+* Altera método na API do ProLog para buscar relatório de controle de jornada da portaria 1510 (PLI-45)
+
+<a name="v1.0.4"></a>
+## Version [v1.0.4](https://github.com/luizfp/PrologWebService/compare/v1.0.3...v1.0.4) (2019-11-05)
+
+### Features
 * Faz log de requisições serem clicáveis e direcionarem aos métodos no Resource
+* Cria método na API do ProLog para buscar relatório de controle de jornada da portaria 1510 (PLI-45)
+
+### Refactors
+* Adiciona queryparam no cadastro de pneus para deixar parametrizável validação de DOT
+* Permite editar infos de marcas e modelos de pneu e de banda (PL-2263)
+* Bloqueia métodos antigos de marca e modelo de pneu e banda (PL-2263)
+
+### Bug Fixes
+* Corrige fluxo que salva aferição valores para cenários onde não deve abrir serviços de pneus (PLI-37)
 
 <a name="v1.0.3"></a>
 ## Version [v1.0.3](https://github.com/luizfp/PrologWebService/compare/v1.0.2...v1.0.3) (2019-10-20)

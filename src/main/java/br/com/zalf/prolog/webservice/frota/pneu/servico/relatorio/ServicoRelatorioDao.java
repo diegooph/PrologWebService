@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

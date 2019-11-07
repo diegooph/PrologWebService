@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;

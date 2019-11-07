@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiMarcacao;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiMarcacao;
 import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import org.jetbrains.annotations.NotNull;

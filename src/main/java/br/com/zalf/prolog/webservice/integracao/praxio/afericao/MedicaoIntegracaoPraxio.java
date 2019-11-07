@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.afericao;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoProcessoColetaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;

@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoAvulsa;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoAvulsa;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Sulcos;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoAvulsaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoPlacaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.MedicaoAfericaoRodoparHorizonte;

@@ -2,7 +2,7 @@ package test.br.com.zalf.prolog.webservice.integracao.api.controlejornada;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiMarcacao;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiMarcacao;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.ApiMarcacaoService;
 import org.junit.Test;
 import test.br.com.zalf.prolog.webservice.BaseTest;

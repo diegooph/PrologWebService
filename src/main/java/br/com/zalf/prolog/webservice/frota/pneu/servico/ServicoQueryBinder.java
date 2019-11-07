@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoCalibragem;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoInspecao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoCalibragem;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoInspecao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
