@@ -30,11 +30,10 @@ public final class ApiMarcacaoRelatorioResource {
 
     @GET
     @LogIntegracaoRequest
-    @Path("padrao-portaria-1510")
+    @Path("padrao-portaria-1510-tipo-3")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiMarcacaoRelatorio1510> getRelatorioPortaria1510(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @QueryParam("codUltimaMarcacaoSincronizada") @Required final Long codUltimaMarcacaoSincronizada,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal,
             @QueryParam("codUnidadeProLog") @Nullable final Long codUnidadeProLog,
@@ -43,7 +42,6 @@ public final class ApiMarcacaoRelatorioResource {
             throws ProLogException {
         return service.getRelatorioPortaria1510(
                 tokenIntegracao,
-                codUltimaMarcacaoSincronizada,
                 dataInicial,
                 dataFinal,
                 codUnidadeProLog,
