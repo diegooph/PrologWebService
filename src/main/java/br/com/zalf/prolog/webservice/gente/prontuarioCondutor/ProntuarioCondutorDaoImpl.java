@@ -97,27 +97,6 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
         }
     }
 
-    @Nullable
-    @Override
-    public Double getPontuacaoProntuario(@NotNull final Long cpf) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT pontuacao_ponderada FROM prontuario_condutor_consolidado" +
-                    " WHERE cpf_colaborador = ?");
-            stmt.setLong(1, cpf);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getDouble("PONTUACAO_PONDERADA");
-            }
-            return null;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
     @NotNull
     @Override
     public List<ProntuarioCondutor> getResumoProntuarios(@NotNull final Long codUnidade,
@@ -246,6 +225,27 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
             close(conn, stmt, rSet);
         }
         return prontuario;
+    }
+
+    @Nullable
+    @Override
+    public Double getPontuacaoProntuario(@NotNull final Long cpf) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT pontuacao_ponderada FROM prontuario_condutor_consolidado" +
+                    " WHERE cpf_colaborador = ?");
+            stmt.setLong(1, cpf);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getDouble("PONTUACAO_PONDERADA");
+            }
+            return null;
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @NotNull

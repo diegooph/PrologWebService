@@ -11,16 +11,16 @@ import java.util.List;
  */
 public interface ProntuarioCondutorDao {
 
-    @NotNull
-    ProntuarioCondutor getProntuario(@NotNull final Long cpf) throws Throwable;
-
     void insertOrUpdate(@NotNull final String path) throws Throwable;
-
-    @Nullable
-    Double getPontuacaoProntuario(@NotNull final Long cpf) throws Throwable;
 
     @NotNull
     List<ProntuarioCondutor> getResumoProntuarios(@NotNull final Long codUnidade,
                                                   @NotNull final String equipe) throws Throwable;
+
+    @NotNull
+    ProntuarioCondutor getProntuario(@NotNull final Long cpf) throws Throwable;
+
+    @Nullable
+    Double getPontuacaoProntuario(@NotNull final Long cpf) throws Throwable;
 
 }
