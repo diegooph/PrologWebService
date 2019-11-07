@@ -84,7 +84,7 @@ public final class ProntuarioCondutorResource {
             return Response.ok("Prontuários inseridos com sucesso");
         } catch (IOException e) {
             e.printStackTrace();
-            return Response.error("Erro ao enviar o arquivo.");
+            return Response.error("Erro ao enviar o arquivo");
         }
     }
 }
