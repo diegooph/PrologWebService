@@ -1,15 +1,16 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,18 +28,23 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ProntuarioCondutorResource {
 
-    private ProntuarioCondutorService service = new ProntuarioCondutorService();
+    @NotNull
+    private final ProntuarioCondutorService service = new ProntuarioCondutorService();
 
     @GET
     @Path("/{cpf}")
-    @Secured(permissions = {Pilares.Gente.ProntuarioCondutor.VISUALIZAR_PROPRIO, Pilares.Gente.ProntuarioCondutor.VISUALIZAR_TODOS})
+    @Secured(permissions = {
+            Pilares.Gente.ProntuarioCondutor.VISUALIZAR_PROPRIO,
+            Pilares.Gente.ProntuarioCondutor.VISUALIZAR_TODOS})
     public ProntuarioCondutor getProntuario(@PathParam("cpf") Long cpf) {
         return service.getProntuario(cpf);
     }
 
     @GET
     @Path("/{codUnidade}/{codEquipe}")
-    @Secured(permissions = {Pilares.Gente.ProntuarioCondutor.VISUALIZAR_TODOS, Pilares.Gente.ProntuarioCondutor.UPLOAD})
+    @Secured(permissions = {
+            Pilares.Gente.ProntuarioCondutor.VISUALIZAR_TODOS,
+            Pilares.Gente.ProntuarioCondutor.UPLOAD})
     public List<ProntuarioCondutor> getResumoProntuarios(@PathParam("codUnidade") Long codUnidade,
                                                          @PathParam("codEquipe") String codEquipe) {
         return service.getResumoProntuarios(codUnidade, codEquipe);
@@ -46,7 +52,9 @@ public final class ProntuarioCondutorResource {
 
     @GET
     @Path("/{cpf}/pontuacao-total")
-    @Secured(permissions = {Pilares.Gente.ProntuarioCondutor.VISUALIZAR_PROPRIO, Pilares.Gente.ProntuarioCondutor.VISUALIZAR_TODOS})
+    @Secured(permissions = {
+            Pilares.Gente.ProntuarioCondutor.VISUALIZAR_PROPRIO,
+            Pilares.Gente.ProntuarioCondutor.VISUALIZAR_TODOS})
     public Double getPontuacaoProntuario(@PathParam("cpf") Long cpf) {
         return service.getPontuacaoProntuario(cpf);
     }
@@ -63,7 +71,7 @@ public final class ProntuarioCondutorResource {
         try {
             final String fileName = Now.utcMillis() + "_" +
                     codUnidade + "_" + fileDetail.getFileName().replace(" ", "_");
-            final File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
+            final File tmpDir = new File(System.getProperty("java.io.tmpdir"), "prontuarios");
             if (!tmpDir.exists()) {
                 tmpDir.mkdir();
             }
@@ -72,7 +80,8 @@ public final class ProntuarioCondutorResource {
             IOUtils.copy(fileInputStream, out);
             IOUtils.closeQuietly(out);
             final ProntuarioCondutorService service = new ProntuarioCondutorService();
-            return service.insertOrUpdate(file.getPath());
+            service.insertOrUpdate(file.getPath());
+            return Response.ok("Prontuários inseridos com sucesso");
         } catch (IOException e) {
             e.printStackTrace();
             return Response.error("Erro ao enviar o arquivo.");

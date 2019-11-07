@@ -2,9 +2,9 @@ package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.entrega.ImportUtils;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.Cnh;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.Documento;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
@@ -22,9 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.*;
 
 /**
@@ -81,31 +79,27 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
     }
 
     @Override
-    public boolean insertOrUpdate(String path) throws SQLException, IOException {
-
+    public void insertOrUpdate(@NotNull final String path) throws SQLException, IOException {
         Connection conn = null;
         try {
             conn = getConnection();
             final Reader in = new FileReader(path);
             final List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
             final List<List<String>> dados = criarDadosSemColunasVazias(tabela);
-            for (int i = 0; i < dados.size(); i++) {
-                final ProntuarioCondutor prontuario = createProntuarioFromData(dados.get(i));
+            for (final List<String> dado : dados) {
+                final ProntuarioCondutor prontuario = createProntuarioFromData(dado);
                 if (prontuario != null) {
-                    if (!updateProntuario(conn, prontuario)) {
-                        // Prontuário não existia e será inserido na base.
-                        insertProntuario(conn, prontuario);
-                    }
+                    insertOrUpdateProntuario(conn, prontuario);
                 }
             }
-            return true;
         } finally {
             close(conn);
         }
     }
 
+    @Nullable
     @Override
-    public Double getPontuacaoProntuario(Long cpf) throws SQLException {
+    public Double getPontuacaoProntuario(@NotNull final Long cpf) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -124,8 +118,10 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
         }
     }
 
+    @NotNull
     @Override
-    public List<ProntuarioCondutor> getResumoProntuarios(Long codUnidade, String codEquipe) throws SQLException {
+    public List<ProntuarioCondutor> getResumoProntuarios(@NotNull final Long codUnidade,
+                                                         @NotNull final String codEquipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -163,7 +159,7 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
     }
 
     @NotNull
-    public ProntuarioCondutor getProntuario(Long cpf) throws SQLException {
+    public ProntuarioCondutor getProntuario(@NotNull final Long cpf) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -308,8 +304,7 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
             }
             // Podemos ignorar o uso de toTimestamp aqui. No banco, a columa é um DATE (que é o que importa para o
             // vencimento de CNH) então não teremos problema com time zone nesse caso.
-            // TODO: Trocar para LocalDate.
-//            cnh.setVencimento(ImportUtils.toTimestamp(getValue(COLUMN_VENCIMENTO_CNH, linha)));
+            cnh.setVencimento(ImportUtils.toLocalDate(getValue(COLUMN_VENCIMENTO_CNH, linha)));
 
             final Documento documento = new Documento();
             documento.setRs(getValue(COLUMN_DOCUMENTOS_RS, linha));
@@ -373,6 +368,7 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
             prontuario.setDocumento(documento);
             prontuario.setAcidentesTrabalho(acidentesTrabalho);
             prontuario.setAcidentesTransito(acidentesTransito);
+            prontuario.setGerenciamentoFadigas(fadigas);
             prontuario.setMultas(multas);
             prontuario.setSac(sac);
             prontuario.setIndisciplina(indisciplina);
@@ -390,55 +386,54 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
         return Double.parseDouble(value.replace(",", "."));
     }
 
-    private boolean insertProntuario(@NotNull final Connection conn,
-                                     @NotNull final ProntuarioCondutor prontuario) throws SQLException {
+    private void insertOrUpdateProntuario(@NotNull final Connection conn,
+                                          @NotNull final ProntuarioCondutor prontuario) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO PRONTUARIO_CONDUTOR_CONSOLIDADO (" +
-                    "CPF_COLABORADOR," +
-                    "STATUS," +
-                    "MOTIVO," +
-                    "PONTUACAO," +
-                    "VENCIMENTO_CNH," +
-                    "DOCUMENTOS_RS," +
-                    "DOCUMENTOS_EC," +
-                    "DOCUMENTOS_IT," +
-                    "PONTUACAO_PONDERADA," +
-                    "ACIDENTES_FAI," +
-                    "ACIDENTES_LTI," +
-                    "ACIDENTES_MDI," +
-                    "ACIDENTES_MTI," +
-                    "CAPOTAMENTOS," +
-                    "COLISOES," +
-                    "TOMBAMENTOS," +
-                    "FADIGAS_CELULAR," +
-                    "FADIGAS_CONSUMO_ALIMENTO," +
-                    "FADIGAS_FUMANDO," +
-                    "FADIGAS_OCLUSAO," +
-                    "FADIGAS_SEM_CINTO," +
-                    "MULTAS_LEVE," +
-                    "MULTAS_MEDIA," +
-                    "MULTAS_GRAVE," +
-                    "MULTAS_GRAVISSIMA," +
-                    "SAC_IMPERICIA," +
-                    "SAC_IMPRUDENCIA," +
-                    "SAV_IMPERICIA," +
-                    "SAV_IMPRUDENCIA," +
-                    "ADVERTENCIAS," +
-                    "SUSPENSOES," +
-                    "EXCESSO_VELOCIDADE_1," +
-                    "EXCESSO_VELOCIDADE_2," +
-                    "EXCESSO_VELOCIDADE_3," +
-                    "FORCA_G," +
-                    "FRENAGEM_BRUSCA," +
-                    "POWER_ON," +
-                    "DATA_ATUALIZACAO = ?) VALUES " +
-                    "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = conn.prepareCall("{CALL FUNCTION FUNC_PRONTUARIO_INSERT_OR_UPDATE(" +
+                    "F_CPF_COLABORADOR := ?," +
+                    "F_STATUS := ?," +
+                    "F_MOTIVO := ?," +
+                    "F_PONTUACAO := ?," +
+                    "F_VENCIMENTO_CNH := ?," +
+                    "F_DOCUMENTOS_RS := ?," +
+                    "F_DOCUMENTOS_EC := ?," +
+                    "F_DOCUMENTOS_IT := ?," +
+                    "F_PONTUACAO_PONDERADA := ?," +
+                    "F_ACIDENTES_FAI := ?," +
+                    "F_ACIDENTES_LTI := ?," +
+                    "F_ACIDENTES_MDI := ?," +
+                    "F_ACIDENTES_MTI := ?," +
+                    "F_CAPOTAMENTOS := ?," +
+                    "F_COLISOES := ?," +
+                    "F_TOMBAMENTOS := ?," +
+                    "F_FADIGAS_CELULAR := ?," +
+                    "F_FADIGAS_CONSUMO_ALIMENTO := ?," +
+                    "F_FADIGAS_FUMANDO := ?," +
+                    "F_FADIGAS_OCLUSAO := ?," +
+                    "F_FADIGAS_SEM_CINTO := ?," +
+                    "F_MULTAS_LEVE := ?," +
+                    "F_MULTAS_MEDIA := ?," +
+                    "F_MULTAS_GRAVE := ?," +
+                    "F_MULTAS_GRAVISSIMA := ?," +
+                    "F_SAC_IMPERICIA := ?," +
+                    "F_SAC_IMPRUDENCIA := ?," +
+                    "F_SAV_IMPERICIA := ?," +
+                    "F_SAV_IMPRUDENCIA := ?," +
+                    "F_ADVERTENCIAS := ?," +
+                    "F_SUSPENSOES := ?," +
+                    "F_EXCESSO_VELOCIDADE_1 := ?," +
+                    "F_EXCESSO_VELOCIDADE_2 := ?," +
+                    "F_EXCESSO_VELOCIDADE_3 := ?," +
+                    "F_FORCA_G := ?," +
+                    "F_FRENAGEM_BRUSCA := ?," +
+                    "F_POWER_ON := ?," +
+                    "F_DATA_ATUALIZACAO := ?)}");
             stmt.setLong(1, prontuario.getColaborador().getCpf());
             stmt.setString(2, prontuario.getSituacao().getStatus());
             stmt.setString(3, prontuario.getSituacao().getMotivo());
             stmt.setDouble(4, prontuario.getCnh().getPontuacao());
-            stmt.setDate(5, DateUtils.toSqlDate(prontuario.getCnh().getVencimento()));
+            stmt.setObject(5, prontuario.getCnh().getVencimento());
             stmt.setString(6, prontuario.getDocumento().getRs());
             stmt.setString(7, prontuario.getDocumento().getEc());
             stmt.setString(8, prontuario.getDocumento().getIt());
@@ -472,100 +467,9 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
             stmt.setInt(36, prontuario.getTelemetria().getFrenagemBrusca());
             stmt.setObject(37, prontuario.getTelemetria().getPowerOn());
             stmt.setObject(38, Now.offsetDateTimeUtc());
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao inserir o prontuário do colaborador: "
-                        + prontuario.getColaborador().getCpf());
-            }
+            stmt.execute();
         } finally {
             close(stmt);
         }
-        return true;
-    }
-
-    private boolean updateProntuario(@NotNull final Connection conn,
-                                     @NotNull final ProntuarioCondutor prontuario) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("UPDATE PRONTUARIO_CONDUTOR_CONSOLIDADO SET " +
-                    "CPF_COLABORADOR= ? ," +
-                    "STATUS = ? ," +
-                    "MOTIVO = ? ," +
-                    "PONTUACAO = ? ," +
-                    "VENCIMENTO_CNH = ? ," +
-                    "DOCUMENTOS_RS = ? ," +
-                    "DOCUMENTOS_EC = ? ," +
-                    "DOCUMENTOS_IT = ? ," +
-                    "PONTUACAO_PONDERADA= ? ," +
-                    "ACIDENTES_FAI = ? ," +
-                    "ACIDENTES_LTI = ? ," +
-                    "ACIDENTES_MDI = ? ," +
-                    "ACIDENTES_MTI = ? ," +
-                    "CAPOTAMENTOS= ? ," +
-                    "COLISOES= ? ," +
-                    "TOMBAMENTOS = ? ," +
-                    "FADIGAS_CELULAR = ? ," +
-                    "FADIGAS_CONSUMO_ALIMENTO = ? ," +
-                    "FADIGAS_FUMANDO = ? ," +
-                    "FADIGAS_OCLUSAO = ? ," +
-                    "FADIGAS_SEM_CINTO = ? ," +
-                    "MULTAS_LEVE = ? ," +
-                    "MULTAS_MEDIA= ? ," +
-                    "MULTAS_GRAVE= ? ," +
-                    "MULTAS_GRAVISSIMA = ? ," +
-                    "SAC_IMPERICIA = ? ," +
-                    "SAC_IMPRUDENCIA = ? ," +
-                    "SAV_IMPERICIA = ? ," +
-                    "SAV_IMPRUDENCIA = ? ," +
-                    "ADVERTENCIAS= ? ," +
-                    "SUSPENSOES= ? ," +
-                    "EXCESSO_VELOCIDADE_1= ? ," +
-                    "EXCESSO_VELOCIDADE_2= ? ," +
-                    "EXCESSO_VELOCIDADE_3= ? ," +
-                    "FORCA_G = ? ," +
-                    "FRENAGEM_BRUSCA = ? ," +
-                    "POWER_ON = ? ," +
-                    "DATA_ATUALIZACAO= ? " +
-                    "WHERE CPF_COLABORADOR = ?;");
-            stmt.setLong(1, prontuario.getColaborador().getCpf());
-            stmt.setString(2, prontuario.getSituacao().getStatus());
-            stmt.setString(3, prontuario.getSituacao().getMotivo());
-            stmt.setDouble(4, prontuario.getCnh().getPontuacao());
-            stmt.setDate(5, DateUtils.toSqlDate(prontuario.getCnh().getVencimento()));
-            stmt.setString(6, prontuario.getDocumento().getRs());
-            stmt.setString(7, prontuario.getDocumento().getEc());
-            stmt.setString(8, prontuario.getDocumento().getIt());
-            stmt.setDouble(9, prontuario.getPontuacaoTotalPonderada());
-            stmt.setInt(10, prontuario.getAcidentesTrabalho().getFai());
-            stmt.setInt(11, prontuario.getAcidentesTrabalho().getLti());
-            stmt.setInt(12, prontuario.getAcidentesTrabalho().getMdi());
-            stmt.setInt(13, prontuario.getAcidentesTrabalho().getMti());
-            stmt.setInt(14, prontuario.getAcidentesTransito().getCapotamentos());
-            stmt.setInt(15, prontuario.getAcidentesTransito().getColisoes());
-            stmt.setInt(16, prontuario.getAcidentesTransito().getTombamentos());
-            stmt.setInt(17, prontuario.getMultas().getLeve());
-            stmt.setInt(18, prontuario.getMultas().getMedia());
-            stmt.setInt(19, prontuario.getMultas().getGrave());
-            stmt.setInt(20, prontuario.getMultas().getGravissima());
-            stmt.setInt(21, prontuario.getSac().getImpericia());
-            stmt.setInt(22, prontuario.getSac().getImprudencia());
-            stmt.setInt(23, prontuario.getSav().getImpericia());
-            stmt.setInt(24, prontuario.getSav().getImprudencia());
-            stmt.setInt(25, prontuario.getIndisciplina().getAdvertencias());
-            stmt.setInt(26, prontuario.getIndisciplina().getSuspensoes());
-            stmt.setInt(27, prontuario.getTelemetria().getExcessoVelocidade1());
-            stmt.setInt(28, prontuario.getTelemetria().getExcessoVelocidade2());
-            stmt.setInt(29, prontuario.getTelemetria().getExcessoVelocidade3());
-            stmt.setInt(30, prontuario.getTelemetria().getForcaG());
-            stmt.setInt(31, prontuario.getTelemetria().getFrenagemBrusca());
-            stmt.setInt(32, prontuario.getTelemetria().getPowerOn());
-            stmt.setObject(33, OffsetDateTime.now(Clock.systemUTC()));
-            stmt.setLong(34, prontuario.getColaborador().getCpf());
-            if (stmt.executeUpdate() == 0) {
-                return false;
-            }
-        } finally {
-            close(stmt);
-        }
-        return true;
     }
 }
