@@ -202,11 +202,11 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
                 prontuario.setAcidentesTransito(acidentesTransito);
 
                 final GerenciamentoFadigas fadigas = new GerenciamentoFadigas();
-                fadigas.setCelular(rSet.getDouble("FADIGAS_CELULAR"));
-                fadigas.setConsumoAlimento(rSet.getDouble("FADIGAS_CONSUMO_ALIMENTO"));
-                fadigas.setFumando(rSet.getDouble("FADIGAS_FUMANDO"));
-                fadigas.setOclusao(rSet.getDouble("FADIGAS_OCLUSAO"));
-                fadigas.setSemCinto(rSet.getDouble("FADIGAS_SEM_CINTO"));
+                fadigas.setCelular((int) rSet.getDouble("FADIGAS_CELULAR"));
+                fadigas.setConsumoAlimento((int) rSet.getDouble("FADIGAS_CONSUMO_ALIMENTO"));
+                fadigas.setFumando((int) rSet.getDouble("FADIGAS_FUMANDO"));
+                fadigas.setOclusao((int) rSet.getDouble("FADIGAS_OCLUSAO"));
+                fadigas.setSemCinto((int) rSet.getDouble("FADIGAS_SEM_CINTO"));
                 prontuario.setGerenciamentoFadigas(fadigas);
 
                 final Multas multas = new Multas();
@@ -327,11 +327,11 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
                     COLUMN_ACIDENTES_TRANSITO_TOMBAMENTOS, linha)));
 
             final GerenciamentoFadigas fadigas = new GerenciamentoFadigas();
-            fadigas.setCelular(parseDouble(getValue(COLUMN_FADIGAS_CELULAR, linha)));
-            fadigas.setConsumoAlimento(parseDouble(getValue(COLUMN_FADIGAS_CONSUMO_ALIMENTO, linha)));
-            fadigas.setFumando(parseDouble(getValue(COLUMN_FADIGAS_FUMANDO, linha)));
-            fadigas.setOclusao(parseDouble(getValue(COLUMN_FADIGAS_OCLUSAO, linha)));
-            fadigas.setSemCinto(parseDouble(getValue(COLUMN_FADIGAS_SEM_CINTO, linha)));
+            fadigas.setCelular((int) parseDouble(getValue(COLUMN_FADIGAS_CELULAR, linha)));
+            fadigas.setConsumoAlimento((int) parseDouble(getValue(COLUMN_FADIGAS_CONSUMO_ALIMENTO, linha)));
+            fadigas.setFumando((int) parseDouble(getValue(COLUMN_FADIGAS_FUMANDO, linha)));
+            fadigas.setOclusao((int) parseDouble(getValue(COLUMN_FADIGAS_OCLUSAO, linha)));
+            fadigas.setSemCinto((int) parseDouble(getValue(COLUMN_FADIGAS_SEM_CINTO, linha)));
 
             final Multas multas = new Multas();
             multas.setGrave((int) parseDouble(getValue(COLUMN_MULTAS_GRAVE, linha)));
@@ -390,7 +390,7 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
                                           @NotNull final ProntuarioCondutor prontuario) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareCall("{CALL FUNCTION FUNC_PRONTUARIO_INSERT_OR_UPDATE(" +
+            stmt = conn.prepareCall("{CALL FUNC_PRONTUARIO_INSERT_OR_UPDATE(" +
                     "F_CPF_COLABORADOR := ?," +
                     "F_STATUS := ?," +
                     "F_MOTIVO := ?," +
@@ -432,7 +432,7 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
             stmt.setLong(1, prontuario.getColaborador().getCpf());
             stmt.setString(2, prontuario.getSituacao().getStatus());
             stmt.setString(3, prontuario.getSituacao().getMotivo());
-            stmt.setDouble(4, prontuario.getCnh().getPontuacao());
+            stmt.setInt(4, prontuario.getCnh().getPontuacao());
             stmt.setObject(5, prontuario.getCnh().getVencimento());
             stmt.setString(6, prontuario.getDocumento().getRs());
             stmt.setString(7, prontuario.getDocumento().getEc());
@@ -445,11 +445,11 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
             stmt.setInt(14, prontuario.getAcidentesTransito().getCapotamentos());
             stmt.setInt(15, prontuario.getAcidentesTransito().getColisoes());
             stmt.setInt(16, prontuario.getAcidentesTransito().getTombamentos());
-            stmt.setDouble(17, prontuario.getGerenciamentoFadigas().getCelular());
-            stmt.setDouble(18, prontuario.getGerenciamentoFadigas().getConsumoAlimento());
-            stmt.setDouble(19, prontuario.getGerenciamentoFadigas().getFumando());
-            stmt.setDouble(20, prontuario.getGerenciamentoFadigas().getOclusao());
-            stmt.setDouble(21, prontuario.getGerenciamentoFadigas().getSemCinto());
+            stmt.setInt(17, prontuario.getGerenciamentoFadigas().getCelular());
+            stmt.setInt(18, prontuario.getGerenciamentoFadigas().getConsumoAlimento());
+            stmt.setInt(19, prontuario.getGerenciamentoFadigas().getFumando());
+            stmt.setInt(20, prontuario.getGerenciamentoFadigas().getOclusao());
+            stmt.setInt(21, prontuario.getGerenciamentoFadigas().getSemCinto());
             stmt.setInt(22, prontuario.getMultas().getLeve());
             stmt.setInt(23, prontuario.getMultas().getMedia());
             stmt.setInt(24, prontuario.getMultas().getGrave());

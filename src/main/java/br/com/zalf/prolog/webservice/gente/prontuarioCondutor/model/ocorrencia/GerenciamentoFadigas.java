@@ -6,52 +6,52 @@ package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class GerenciamentoFadigas extends Ocorrencia {
-    private double celular;
-    private double consumoAlimento;
-    private double fumando;
-    private double oclusao;
-    private double semCinto;
+    private int celular;
+    private int consumoAlimento;
+    private int fumando;
+    private int oclusao;
+    private int semCinto;
 
     public GerenciamentoFadigas() {
     }
 
-    public double getCelular() {
+    public int getCelular() {
         return celular;
     }
 
-    public void setCelular(final double celular) {
+    public void setCelular(final int celular) {
         this.celular = celular;
     }
 
-    public double getConsumoAlimento() {
+    public int getConsumoAlimento() {
         return consumoAlimento;
     }
 
-    public void setConsumoAlimento(final double consumoAlimento) {
+    public void setConsumoAlimento(final int consumoAlimento) {
         this.consumoAlimento = consumoAlimento;
     }
 
-    public double getFumando() {
+    public int getFumando() {
         return fumando;
     }
 
-    public void setFumando(final double fumando) {
+    public void setFumando(final int fumando) {
         this.fumando = fumando;
     }
 
-    public double getOclusao() {
+    public int getOclusao() {
         return oclusao;
     }
 
-    public void setOclusao(final double oclusao) {
+    public void setOclusao(final int oclusao) {
         this.oclusao = oclusao;
     }
 
-    public double getSemCinto() {
+    public int getSemCinto() {
         return semCinto;
     }
 
-    public void setSemCinto(final double semCinto) {
+    public void setSemCinto(final int semCinto) {
         this.semCinto = semCinto;
     }
 }
