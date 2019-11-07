@@ -1,10 +1,9 @@
-package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia;
+package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model;
 
 /**
  * Created by Zart on 03/07/2017.
  */
-public class Documento extends Ocorrencia{
-
+public final class Documento {
     private String rs;
     private String ec;
     private String it;

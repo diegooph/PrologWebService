@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -13,11 +14,11 @@ import java.util.List;
 /**
  * Created by Zart on 03/07/2017.
  */
-public class ProntuarioCondutorService {
+public final class ProntuarioCondutorService {
     private static final String TAG = ProntuarioCondutorService.class.getSimpleName();
     private final ProntuarioCondutorDao dao = Injection.provideProntuarioCondutorDao();
 
-    public ProntuarioCondutor getProntuario(Long cpf) {
+    public ProntuarioCondutor getProntuario(@NotNull final Long cpf) {
         try {
             return dao.getProntuario(cpf);
         } catch (SQLException e) {
@@ -27,7 +28,7 @@ public class ProntuarioCondutorService {
         }
     }
 
-    public Double getPontuacaoProntuario(Long cpf) {
+    public Double getPontuacaoProntuario(@NotNull final Long cpf) {
         try {
             return dao.getPontuacaoProntuario(cpf);
         } catch (SQLException e) {
@@ -37,7 +38,8 @@ public class ProntuarioCondutorService {
         }
     }
 
-    public List<ProntuarioCondutor> getResumoProntuarios(Long codUnidade, String codEquipe) {
+    public List<ProntuarioCondutor> getResumoProntuarios(@NotNull final Long codUnidade,
+                                                         @NotNull final String codEquipe) {
         try {
             return dao.getResumoProntuarios(codUnidade, codEquipe);
         } catch (SQLException e) {
@@ -48,7 +50,7 @@ public class ProntuarioCondutorService {
         }
     }
 
-    public Response insertOrUpdate(String path) {
+    public Response insertOrUpdate(@NotNull final String path) {
         try {
             if (dao.insertOrUpdate(path)) {
                 return Response.ok("Prontuários inseridos com sucesso.");

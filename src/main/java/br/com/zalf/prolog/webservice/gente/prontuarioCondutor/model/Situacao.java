@@ -7,8 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by Zart on 03/07/2017.
  */
-public class Situacao {
-
+public final class Situacao {
     private static final String LIBERADO = "LIBERADO";
     private static final String BLOQUEADO = "BLOQUEADO";
     private static final String BLOQUEADO_INTEGRACAO = "BLOQUEADO_INTEGRACAO";

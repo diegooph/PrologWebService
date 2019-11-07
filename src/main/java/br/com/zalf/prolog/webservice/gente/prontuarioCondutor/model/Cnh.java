@@ -1,18 +1,16 @@
-package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia;
+package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import com.google.common.base.Preconditions;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Created by Zart on 03/07/2017.
  */
-public class Cnh {
-
+public final class Cnh {
     private int pontuacao;
-    private Date vencimento;
+    private LocalDate vencimento;
 
     /**
      * {@code true} se a CNH já estiver vencida.
@@ -23,7 +21,7 @@ public class Cnh {
 
     }
 
-    public Cnh(int pontuacao, Date vencimento) {
+    public Cnh(int pontuacao, LocalDate vencimento) {
         Preconditions.checkNotNull(vencimento);
 
         this.pontuacao = pontuacao;
@@ -40,17 +38,17 @@ public class Cnh {
         this.pontuacao = pontuacao;
     }
 
-    public Date getVencimento() {
+    public LocalDate getVencimento() {
         return vencimento;
     }
 
-    public void setVencimento(Date vencimento) {
+    public void setVencimento(LocalDate vencimento) {
         Preconditions.checkNotNull(vencimento);
         this.vencimento = vencimento;
         calculaVencimento();
     }
 
     private void calculaVencimento() {
-        cnhVencida = LocalDate.now().isAfter(DateUtils.toLocalDate(vencimento));
+        cnhVencida = Now.localDateUtc().isAfter(vencimento);
     }
 }

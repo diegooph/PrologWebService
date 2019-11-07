@@ -25,7 +25,7 @@ import java.util.List;
 @Path("/prontuarios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class ProntuarioCondutorResource {
+public final class ProntuarioCondutorResource {
 
     private ProntuarioCondutorService service = new ProntuarioCondutorService();
 
@@ -61,17 +61,17 @@ public class ProntuarioCondutorResource {
             @FormDataParam("file") FormDataContentDisposition fileDetail,
             @PathParam("codUnidade") Long codUnidade) {
         try {
-            String fileName = String.valueOf(Now.utcMillis()) + "_" +
-                    String.valueOf(codUnidade) + "_" + fileDetail.getFileName().replace(" ", "_");
-            File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
+            final String fileName = Now.utcMillis() + "_" +
+                    codUnidade + "_" + fileDetail.getFileName().replace(" ", "_");
+            final File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
             if (!tmpDir.exists()) {
                 tmpDir.mkdir();
             }
-            File file = new File(tmpDir, fileName);
-            FileOutputStream out = new FileOutputStream(file);
+            final File file = new File(tmpDir, fileName);
+            final FileOutputStream out = new FileOutputStream(file);
             IOUtils.copy(fileInputStream, out);
             IOUtils.closeQuietly(out);
-            ProntuarioCondutorService service = new ProntuarioCondutorService();
+            final ProntuarioCondutorService service = new ProntuarioCondutorService();
             return service.insertOrUpdate(file.getPath());
         } catch (IOException e) {
             e.printStackTrace();
