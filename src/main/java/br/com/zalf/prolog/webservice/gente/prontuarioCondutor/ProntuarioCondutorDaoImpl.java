@@ -392,14 +392,14 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
         try {
             stmt = conn.prepareCall("{CALL FUNC_PRONTUARIO_INSERT_OR_UPDATE(" +
                     "F_CPF_COLABORADOR := ?," +
-                    "F_STATUS := ?," +
-                    "F_MOTIVO := ?," +
+                    "F_STATUS := ? :: TEXT," +
+                    "F_MOTIVO := ? :: TEXT," +
                     "F_PONTUACAO := ?," +
                     "F_VENCIMENTO_CNH := ?," +
-                    "F_DOCUMENTOS_RS := ?," +
-                    "F_DOCUMENTOS_EC := ?," +
-                    "F_DOCUMENTOS_IT := ?," +
-                    "F_PONTUACAO_PONDERADA := ?," +
+                    "F_DOCUMENTOS_RS := ? :: TEXT," +
+                    "F_DOCUMENTOS_EC := ? :: TEXT," +
+                    "F_DOCUMENTOS_IT := ? :: TEXT," +
+                    "F_PONTUACAO_PONDERADA := ? :: REAL," +
                     "F_ACIDENTES_FAI := ?," +
                     "F_ACIDENTES_LTI := ?," +
                     "F_ACIDENTES_MDI := ?," +
@@ -465,7 +465,7 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
             stmt.setInt(34, prontuario.getTelemetria().getExcessoVelocidade3());
             stmt.setInt(35, prontuario.getTelemetria().getForcaG());
             stmt.setInt(36, prontuario.getTelemetria().getFrenagemBrusca());
-            stmt.setObject(37, prontuario.getTelemetria().getPowerOn());
+            stmt.setInt(37, prontuario.getTelemetria().getPowerOn());
             stmt.setObject(38, Now.offsetDateTimeUtc());
             stmt.execute();
         } finally {
