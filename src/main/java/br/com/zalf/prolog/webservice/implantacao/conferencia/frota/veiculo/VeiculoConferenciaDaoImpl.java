@@ -22,8 +22,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public final class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
 
     @Override
-    public void importPlanilhaVeiculos(@NotNull final OutputStream out,
-                                       @NotNull final Long codEmpresa,
+    public void importPlanilhaVeiculos(@NotNull final Long codEmpresa,
                                        @NotNull final Long codUnidade,
                                        @NotNull final String usuario,
                                        @NotNull final String jsonPlanilha) throws Throwable {
@@ -47,11 +46,6 @@ public final class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
             json.setValue(jsonPlanilha);
             stmt.setObject(4, json);
             rSet = stmt.executeQuery();
-            new CsvWriter
-                    .Builder(out)
-                    .withResultSet(rSet)
-                    .build()
-                    .write();
         } finally {
             close(conn, stmt, rSet);
         }

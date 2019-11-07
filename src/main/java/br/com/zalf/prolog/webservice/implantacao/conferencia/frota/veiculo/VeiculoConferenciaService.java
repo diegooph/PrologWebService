@@ -2,11 +2,13 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.implantacao.ImplantacaoImportTokensValidator;
-import br.com.zalf.prolog.webservice.implantacao.ImplantacaoImportTokens;
+import br.com.zalf.prolog.webservice.implantacao.autenticacao.ImplantacaoLoginSenhaValidator;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoPlanilha;
 import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
@@ -27,18 +29,15 @@ public final class VeiculoConferenciaService {
     @NotNull
     private final VeiculoConferenciaDao dao = Injection.provideVeiculoConferenciaDao();
 
-    void getVerificacaoPlanilhaImportVeiculo(@NotNull final String tokenImplantacao,
-                                             @NotNull final OutputStream out,
-                                             @NotNull final Long codEmpresa,
-                                             @NotNull final Long codUnidade,
-                                             @NotNull final String usuario,
-                                             @NotNull final InputStream fileInputStream,
-                                             @NotNull final FormDataContentDisposition fileDetail) {
+    public void getVerificacaoPlanilhaImportVeiculo(@NotNull final String usernamePassword,
+                                                    @NotNull final Long codEmpresa,
+                                                    @NotNull final Long codUnidade,
+                                                    @NotNull final InputStream fileInputStream,
+                                                    @NotNull final FormDataContentDisposition fileDetail) {
         try {
-            ImplantacaoImportTokensValidator.validateTokenFor(ImplantacaoImportTokens.IMPORT_VEICULO, tokenImplantacao);
-
+            final String usuario = new ImplantacaoLoginSenhaValidator().verifyUsernamePassword(usernamePassword);
             final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
-            readAndInsertImport(out, codEmpresa, codUnidade, usuario, file);
+            readAndInsertImport(codEmpresa, codUnidade, usuario, file);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao verificar planilha de import de veiculos", throwable);
             throw new RuntimeException(throwable);
@@ -67,15 +66,14 @@ public final class VeiculoConferenciaService {
         }
     }
 
-    private void readAndInsertImport(@NotNull final OutputStream out,
-                                     @NotNull final Long codEmpresa,
+    private void readAndInsertImport(@NotNull final Long codEmpresa,
                                      @NotNull final Long codUnidade,
                                      @NotNull final String usuario,
                                      @NotNull final File file) throws ProLogException {
         try {
             final List<VeiculoPlanilha> veiculoPlanilha = VeiculoPlanilhaReader.readListFromCsvFilePath(file);
             String jsonPlanilha = GsonUtils.getGson().toJson(veiculoPlanilha);
-            dao.importPlanilhaVeiculos(out, codEmpresa, codUnidade, usuario, jsonPlanilha);
+            dao.importPlanilhaVeiculos(codEmpresa, codUnidade, usuario, jsonPlanilha);
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection

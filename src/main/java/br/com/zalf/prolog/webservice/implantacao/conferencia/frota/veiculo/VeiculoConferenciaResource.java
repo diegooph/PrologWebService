@@ -1,10 +1,11 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.implantacao.ImplantacaoImportTokensValidator;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jetbrains.annotations.NotNull;
@@ -30,20 +31,18 @@ public final class VeiculoConferenciaResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/upload-planilha-import")
-    public StreamingOutput getVerificacaoPlanilhaImportVeiculo(
-            @HeaderParam(ImplantacaoImportTokensValidator.HEADER_PARAM) @Required final String tokenImplantacao,
-            @HeaderParam("usuario") @Required final String usuario,
+    public Response getVerificacaoPlanilhaImportVeiculo(
+            @HeaderParam("usernamePassword") @Required final String usernamePassword,
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @FormDataParam("file") @Required final InputStream fileInputStream,
             @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) throws ProLogException {
-        return outputStream -> service.getVerificacaoPlanilhaImportVeiculo(
-                tokenImplantacao,
-                outputStream,
+        service.getVerificacaoPlanilhaImportVeiculo(
+                usernamePassword,
                 codEmpresa,
                 codUnidade,
-                usuario,
                 fileInputStream,
                 fileDetail);
+        return Response.ok("Dados cadastrados no banco com sucesso");
     }
 }
