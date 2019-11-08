@@ -147,6 +147,7 @@ public final class SistemaApiProLog extends Sistema {
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
+        // Garantimos que apenas movimentações válidas foram feitas para essa integração.
         for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
             if (!movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE)
                     && !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.VEICULO)
@@ -178,20 +179,24 @@ public final class SistemaApiProLog extends Sistema {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
-            final long codUnidade = processoMovimentacao.getUnidade().getCodigo();
             conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
             final Long codMovimentacao =
                     Injection
                             .provideMovimentacaoDao()
-                            .insert(conn, servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+                            .insert(conn,
+                                    servicoDao,
+                                    processoMovimentacao,
+                                    dataHoraMovimentacao,
+                                    fecharServicosAutomaticamente);
+            final long codUnidade = processoMovimentacao.getUnidade().getCodigo();
             requester.insertProcessoMovimentacao(
                     getIntegradorProLog().getUrl(
                             getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(codUnidade),
                             getSistemaKey(),
                             MetodoIntegrado.INSERT_MOVIMENTACAO),
                     getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade),
-                    ApiMovimentacaoConverter.convert(processoMovimentacao));
+                    ApiMovimentacaoConverter.convert(processoMovimentacao, dataHoraMovimentacao));
             conn.commit();
             return codMovimentacao;
         } catch (final Throwable t) {

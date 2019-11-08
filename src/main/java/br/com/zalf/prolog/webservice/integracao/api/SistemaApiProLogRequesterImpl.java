@@ -3,13 +3,15 @@ package br.com.zalf.prolog.webservice.integracao.api;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
 import br.com.zalf.prolog.webservice.integracao.api.error.ApiGenericException;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.movimentacao.ApiProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import java.util.List;
 
 /**
  * Created on 10/29/19
@@ -25,7 +27,7 @@ public final class SistemaApiProLogRequesterImpl implements SistemaApiProLogRequ
     public SuccessResponseIntegracao insertProcessoMovimentacao(
             @NotNull final String url,
             @NotNull final String tokenIntegracao,
-            @NotNull final ApiProcessoMovimentacao processoMovimentacao) throws Throwable {
+            @NotNull final List<ProcessoMovimentacaoGlobus> processoMovimentacaoGlobus) throws Throwable {
         final SistemaApiProLogRest service = SistemaApiProLogRestClient.getService(SistemaApiProLogRest.class);
         final Call<SuccessResponseIntegracao> call = service.insertProcessoMovimentacao(url);
         return handleResponse(call.execute());
