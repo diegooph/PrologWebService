@@ -46,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
@@ -461,16 +462,20 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
-        afericaoServicoDao.fechaServico(servico, codUnidade);
+    public void fechaServico(@NotNull final Long codUnidade,
+                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                             @NotNull final Servico servico) throws Throwable {
+        afericaoServicoDao.fechaServico(codUnidade, dataHorafechamentoServico, servico);
     }
 
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final LocalDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
-        return movimentacaoDao.insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+        return movimentacaoDao
+                .insert(servicoDao, processoMovimentacao, dataHoraMovimentacao, fecharServicosAutomaticamente);
     }
 
     public static final class Builder {

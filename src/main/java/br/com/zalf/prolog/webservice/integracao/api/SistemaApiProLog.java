@@ -25,6 +25,7 @@ import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -133,19 +134,22 @@ public final class SistemaApiProLog extends Sistema {
     }
 
     @Override
-    public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
+    public void fechaServico(@NotNull final Long codUnidade,
+                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                             @NotNull final Servico servico) throws Throwable {
         if (servico.getTipoServico().equals(TipoServico.MOVIMENTACAO)) {
             throw new BloqueadoIntegracaoException(
                     "O fechamento de serviço de movimentação está sendo integrado e ainda não está disponível.\n" +
                             "Por enquanto, utilize o seu sistema para movimentar os pneus.");
         }
-        getIntegradorProLog().fechaServico(codUnidade, servico);
+        getIntegradorProLog().fechaServico(codUnidade, dataHorafechamentoServico, servico);
     }
 
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final LocalDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         // Garantimos que apenas movimentações válidas foram feitas para essa integração.
         for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
