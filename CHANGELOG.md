@@ -13,7 +13,9 @@ Change Log
 * Altera métodos de insert de checklist online e offline para novos objetos e estrutura (PL-2227)
 * Altera integração com Avilan e com Piccolotur para utilizar novo objeto de checklist (PL-2227)
 * Altera os fluxos de insert e edição de modelos de checklist para nova estrutura (PL-2231)
-* Altera o fluxo de processamento de ordens de serviço para considerar a versão do modelo de checklist (PL-2346) 
+* Altera o fluxo de processamento de ordens de serviço para considerar a versão do modelo de checklist (PL-2346)
+* Altera busca dos dados de checklist para realização offline incluindo novas informações 
+(versão modelo e código context) PL-2349 
 
 
 <a name="v1.0.6"></a>

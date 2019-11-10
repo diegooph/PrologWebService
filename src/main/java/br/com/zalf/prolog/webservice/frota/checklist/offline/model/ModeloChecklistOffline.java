@@ -17,6 +17,14 @@ public final class ModeloChecklistOffline {
     private final Long codModelo;
 
     /**
+     * Número que representa o código da versão em que o modelo de checklist se encontra.
+     * O código da versão também é um identificador único no banco de dados. Mesmo modelos diferentes que estejam
+     * ambos na primeira versão, terão códigos de versão diferentes.
+     */
+    @NotNull
+    private final Long codVersaoModelo;
+
+    /**
      * Valor alfanumérico que representa o nome do modelo do checklist. Identificador para o usuário.
      */
     @NotNull
@@ -47,12 +55,14 @@ public final class ModeloChecklistOffline {
     private final List<PerguntaModeloChecklistOffline> perguntasModeloChecklistOffline;
 
     public ModeloChecklistOffline(@NotNull final Long codModelo,
+                                  @NotNull final Long codVersaoModelo,
                                   @NotNull final String nomeModelo,
                                   @NotNull final Long codUnidadeModelo,
                                   @NotNull final List<CargoChecklistOffline> cargosLiberados,
                                   @NotNull final List<TipoVeiculoChecklistOffline> tiposVeiculosLiberados,
                                   @NotNull final List<PerguntaModeloChecklistOffline> perguntasModeloChecklistOffline) {
         this.codModelo = codModelo;
+        this.codVersaoModelo = codVersaoModelo;
         this.nomeModelo = nomeModelo;
         this.codUnidadeModelo = codUnidadeModelo;
         this.cargosLiberados = cargosLiberados;
@@ -63,6 +73,11 @@ public final class ModeloChecklistOffline {
     @NotNull
     public Long getCodModelo() {
         return codModelo;
+    }
+
+    @NotNull
+    public Long getCodVersaoModelo() {
+        return codVersaoModelo;
     }
 
     @NotNull

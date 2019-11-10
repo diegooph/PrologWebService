@@ -16,6 +16,12 @@ public final class AlternativaModeloChecklistOffline {
     private final Long codigo;
 
     /**
+     * Código de contexto da alternativa.
+     */
+    @NotNull
+    private final Long codigoContexto;
+
+    /**
      * Atributo alfanumérico que representa o texto descritivo da alternativa.
      */
     @NotNull
@@ -42,11 +48,13 @@ public final class AlternativaModeloChecklistOffline {
     private final PrioridadeAlternativa prioridadeAlternativa;
 
     AlternativaModeloChecklistOffline(@NotNull final Long codigo,
+                                      @NotNull final Long codigoContexto,
                                       @NotNull final String descricao,
                                       final boolean tipoOutros,
                                       final int ordemExibicao,
                                       @NotNull final PrioridadeAlternativa prioridadeAlternativa) {
         this.codigo = codigo;
+        this.codigoContexto = codigoContexto;
         this.descricao = descricao;
         this.tipoOutros = tipoOutros;
         this.ordemExibicao = ordemExibicao;
@@ -56,6 +64,11 @@ public final class AlternativaModeloChecklistOffline {
     @NotNull
     public Long getCodigo() {
         return codigo;
+    }
+
+    @NotNull
+    public Long getCodigoContexto() {
+        return codigoContexto;
     }
 
     @NotNull

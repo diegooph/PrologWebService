@@ -76,6 +76,9 @@ public final class MigracaoEstruturaChecklistV3 {
             log("************************ PASSO 9 - INÍCIO ************************");
             executaPasso9(conn);
             log("************************ PASSO 9 - FIM ************************");
+            log("************************ PASSO 10 - INÍCIO ************************");
+            executaPasso10(conn);
+            log("************************ PASSO 10 - FIM ************************");
             conn.commit();
             log("************************ Fim da execução da migração ************************");
         } catch (final Throwable t) {
@@ -253,6 +256,19 @@ public final class MigracaoEstruturaChecklistV3 {
             stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_9_CRIACAO_INDEXES()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 9");
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+    }
+
+    private void executaPasso10(@NotNull final Connection conn) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            log("Realizando alterações necessárias no checklist offline");
+            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_10_ALTERACOES_CHECK_OFF()}");
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao executar passo 10");
             }
         } finally {
             DatabaseConnection.close(stmt);

@@ -18,6 +18,12 @@ public final class PerguntaModeloChecklistOffline {
     private final Long codigo;
 
     /**
+     * Código de contexto da pergunta.
+     */
+    @NotNull
+    private final Long codigoContexto;
+
+    /**
      * Alfanumérico que representa o texto descritivo da pergunta.
      */
     @NotNull
@@ -55,6 +61,7 @@ public final class PerguntaModeloChecklistOffline {
     private final List<AlternativaModeloChecklistOffline> alternativas;
 
     PerguntaModeloChecklistOffline(@NotNull final Long codigo,
+                                   @NotNull final Long codigoContexto,
                                    @NotNull final String descricao,
                                    @Nullable final Long codImagem,
                                    @Nullable final String urlImagem,
@@ -62,6 +69,7 @@ public final class PerguntaModeloChecklistOffline {
                                    final boolean singleChoice,
                                    @NotNull final List<AlternativaModeloChecklistOffline> alternativas) {
         this.codigo = codigo;
+        this.codigoContexto = codigoContexto;
         this.descricao = descricao;
         this.codImagem = codImagem;
         this.urlImagem = urlImagem;
@@ -73,6 +81,11 @@ public final class PerguntaModeloChecklistOffline {
     @NotNull
     public Long getCodigo() {
         return codigo;
+    }
+
+    @NotNull
+    public Long getCodigoContexto() {
+        return codigoContexto;
     }
 
     @NotNull

@@ -29,6 +29,7 @@ public final class ChecklistOfflineConverter {
             @NotNull final ResultSet rSet) throws SQLException {
         return new AlternativaModeloChecklistOffline(
                 rSet.getLong("COD_ALTERNATIVA"),
+                rSet.getLong("COD_CONTEXTO_ALTERNATIVA"),
                 rSet.getString("DESCRICAO_ALTERNATIVA"),
                 rSet.getBoolean("TIPO_OUTROS"),
                 rSet.getInt("ALTERNATIVA_ORDEM_EXIBICAO"),
@@ -41,6 +42,7 @@ public final class ChecklistOfflineConverter {
             @NotNull final List<AlternativaModeloChecklistOffline> alternativas) throws SQLException {
         return new PerguntaModeloChecklistOffline(
                 rSet.getLong("COD_PERGUNTA"),
+                rSet.getLong("COD_CONTEXTO_PERGUNTA"),
                 rSet.getString("DESCRICAO_PERGUNTA"),
                 rSet.getLong("COD_IMAGEM"),
                 rSet.getString("URL_IMAGEM"),
@@ -53,12 +55,14 @@ public final class ChecklistOfflineConverter {
     public static ModeloChecklistOffline createModeloChecklistOffline(
             @NotNull final Long codUnidadeModeloChecklist,
             @NotNull final Long codModeloCheklist,
+            @NotNull final Long codVersaoModeloChecklist,
             @NotNull final String nomeModeloChecklist,
             @NotNull final List<CargoChecklistOffline> cargosLiberados,
             @NotNull final List<TipoVeiculoChecklistOffline> tiposVeiculosLiberados,
             @NotNull final List<PerguntaModeloChecklistOffline> perguntas) {
         return new ModeloChecklistOffline(
                 codModeloCheklist,
+                codVersaoModeloChecklist,
                 nomeModeloChecklist,
                 codUnidadeModeloChecklist,
                 cargosLiberados,
