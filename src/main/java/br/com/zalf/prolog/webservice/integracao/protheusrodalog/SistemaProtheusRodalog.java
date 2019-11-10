@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericaoPlaca;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.CronogramaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
@@ -32,8 +32,11 @@ public class SistemaProtheusRodalog extends Sistema {
         this.requester = requester;
     }
 
+    @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
         final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
         final ProtheusRodalogResponseAfericao responseAfericao = requester.insertAfericao(
                 tokenIntegracao,

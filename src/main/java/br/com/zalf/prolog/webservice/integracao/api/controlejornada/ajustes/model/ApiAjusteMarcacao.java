@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada.ajustes.model;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiMarcacao;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

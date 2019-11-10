@@ -3,10 +3,9 @@ package test.br.com.zalf.prolog.webservice.integracao.avilan;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -60,7 +59,7 @@ public class AvaCorpAvilanSistemaTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Exception.class)
     public void testInsertAfericao() throws Throwable {
-        sistema.insertAfericao(0L, new AfericaoPlaca());
+        sistema.insertAfericao(0L, new AfericaoPlaca(), true);
     }
 
     @Test

@@ -8,12 +8,11 @@ import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistM
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.CronogramaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -364,7 +363,9 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
         if (afericao instanceof AfericaoPlaca) {
             final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
             if (afericaoPlaca.getKmMomentoAfericao() == 0) {

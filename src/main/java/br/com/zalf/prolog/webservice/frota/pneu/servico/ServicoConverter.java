@@ -2,11 +2,11 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuEstoque;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuEstoque;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -177,6 +177,7 @@ final class ServicoConverter {
         servico.setDataHoraFechamento(resultSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));
+        servico.setFechadoAutomaticamenteIntegracao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_INTEGRACAO"));
 
         // Cria pneu com problema, responsável por originar o serviço.
         final PneuComum pneuProblema = new PneuComum();

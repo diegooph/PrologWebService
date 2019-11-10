@@ -3,17 +3,16 @@ package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoAvulsa;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.AfericaoPlaca;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoAvulsa;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.ProtheusRodalogCredentialCreator;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequester;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.ProtheusRodalogCredentialCreator;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenIntegracao;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 
@@ -34,9 +33,11 @@ public class SistemaRodoparHorizonte extends Sistema {
         this.requester = requester;
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
@@ -46,7 +47,8 @@ public class SistemaRodoparHorizonte extends Sistema {
             final RodoparHorizonteTokenIntegracao tokenIntegracao =
                     requester.getTokenUsuarioIntegracao(
                             ProtheusRodalogCredentialCreator.createCredentials(colaboradorRequisicao));
-            final Long codAfericaoInserida = Injection.provideAfericaoDao().insert(conn, codUnidade, afericao);
+            final Long codAfericaoInserida =
+                    Injection.provideAfericaoDao().insert(conn, codUnidade, afericao, deveAbrirServico);
 
             if (afericao instanceof AfericaoPlaca) {
                 requester.insertAfericaoPlaca(

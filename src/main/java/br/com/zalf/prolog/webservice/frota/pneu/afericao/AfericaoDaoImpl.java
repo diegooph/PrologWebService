@@ -9,12 +9,12 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuConverter;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuConverter;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
@@ -31,22 +31,25 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Long insert(@NotNull final Connection conn,
                        @NotNull final Long codUnidade,
-                       @NotNull final Afericao afericao) throws Throwable {
-        return internalInsertAfericao(conn, codUnidade, afericao);
+                       @NotNull final Afericao afericao,
+                       final boolean deveAbrirServico) throws Throwable {
+        return internalInsertAfericao(conn, codUnidade, afericao, deveAbrirServico);
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public Long insert(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+    public Long insert(@NotNull final Long codUnidade,
+                       @NotNull final Afericao afericao,
+                       final boolean deveAbrirServico) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final Long codAfericao = internalInsertAfericao(conn, codUnidade, afericao);
+            final Long codAfericao = internalInsertAfericao(conn, codUnidade, afericao, deveAbrirServico);
             conn.commit();
             return codAfericao;
         } catch (final Throwable e) {
@@ -62,7 +65,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     @NotNull
     private Long internalInsertAfericao(@NotNull final Connection conn,
                                         @NotNull final Long codUnidade,
-                                        @NotNull final Afericao afericao) throws Throwable {
+                                        @NotNull final Afericao afericao,
+                                        final boolean deveAbrirServico) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -76,9 +80,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setString(5, afericao.getTipoMedicaoColetadaAfericao().asString());
             stmt.setString(6, afericao.getTipoProcessoColetaAfericao().asString());
 
-            // Só devemos abrir serviços com base nas medidas coletadas, se for uma AfericaPlaca.
-            // Caso contrário iremos apenas inserir os valores coletados.
-            boolean deveAbrirServicos = false;
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                 stmt.setString(7, afericaoPlaca.getVeiculo().getPlaca());
@@ -88,7 +89,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                 afericaoPlaca.getVeiculo().getPlaca(),
                                 afericaoPlaca.getKmMomentoAfericao(),
                                 conn);
-                deveAbrirServicos = true;
             } else {
                 stmt.setNull(7, Types.VARCHAR);
                 stmt.setNull(8, Types.BIGINT);
@@ -98,7 +98,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             if (rSet.next()) {
                 codAfericao = rSet.getLong("CODIGO");
                 afericao.setCodigo(codAfericao);
-                insertValores(conn, codUnidade, afericao, deveAbrirServicos);
+                insertValores(conn, codUnidade, afericao, deveAbrirServico, afericao instanceof AfericaoPlaca);
             }
 
             if (codAfericao != null && codAfericao != 0) {
@@ -593,7 +593,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private void insertValores(@NotNull final Connection conn,
                                @NotNull final Long codUnidade,
                                @NotNull final Afericao afericao,
-                               final boolean deveAbrirServicos) throws Throwable {
+                               final boolean deveAbrirServico,
+                               final boolean afericaoPlaca) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final ServicoDao servicoDao = Injection.provideServicoDao();
         final Restricao restricao = getRestricaoByCodUnidade(conn, codUnidade);
@@ -645,8 +646,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
             // Se não devemos abrir serviços para as medições coletadas,
             // então podemos encerrar o processo aqui.
-            if (!deveAbrirServicos) {
-                return;
+            if (!deveAbrirServico || !afericaoPlaca) {
+                continue;
             }
 
             // Insere/atualiza os serviços que os pneus aferidos possam ter gerado.

@@ -15,13 +15,16 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.Mod
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
-import br.com.zalf.prolog.webservice.frota.pneu.transferencia.model.realizacao.PneuTransferenciaRealizacao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
@@ -73,13 +76,12 @@ public abstract class Router implements OperacoesIntegradas {
 
     @Override
     public boolean insert(
-            @NotNull final Long codUnidade,
-            @NotNull final Veiculo veiculo,
+            @NotNull final VeiculoCadastro veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insert(codUnidade, veiculo, checklistOfflineListener);
+            return getSistema().insert(veiculo, checklistOfflineListener);
         } else {
-            return integradorProLog.insert(codUnidade, veiculo, checklistOfflineListener);
+            return integradorProLog.insert(veiculo, checklistOfflineListener);
         }
     }
 
@@ -223,13 +225,15 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable {
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insertAfericao(codUnidade, afericao);
+            return getSistema().insertAfericao(codUnidade, afericao, deveAbrirServico);
         } else {
-            return integradorProLog.insertAfericao(codUnidade, afericao);
+            return integradorProLog.insertAfericao(codUnidade, afericao, deveAbrirServico);
         }
     }
 
@@ -497,6 +501,18 @@ public abstract class Router implements OperacoesIntegradas {
             getSistema().fechaServico(codUnidade, servico);
         } else {
             integradorProLog.fechaServico(codUnidade, servico);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       final boolean fecharServicosAutomaticamente) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+        } else {
+            return integradorProLog.insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
         }
     }
 

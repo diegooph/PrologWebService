@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoCalibragem;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoInspecao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoCalibragem;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoInspecao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,6 +41,7 @@ final class ServicoQueryBinder {
             + "AM.QT_APONTAMENTOS, "
             + "AM.PSI_APOS_CONSERTO AS PRESSAO_COLETADA_FECHAMENTO, "
             + "AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, "
+            + "AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, "
             + "A.DATA_HORA AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS DATA_HORA_ABERTURA, "
             + "A.PLACA_VEICULO AS PLACA_VEICULO, "
             + "A.CODIGO AS COD_AFERICAO, "
@@ -181,6 +182,7 @@ final class ServicoQueryBinder {
                 "   AM.PSI_APOS_CONSERTO AS PRESSAO_COLETADA_FECHAMENTO, " +
                 "   AM.COD_ALTERNATIVA AS COD_ALTERNATIVA_SELECIONADA, " +
                 "   AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
+                "   AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, " +
                 "   AAMI.ALTERNATIVA AS DESCRICAO_ALTERNATIVA_SELECIONADA, " +
                 "   M.COD_PNEU AS COD_PNEU_NOVO, " +
                 "   PNEU_NOVO.CODIGO_CLIENTE AS COD_PNEU_NOVO_CLIENTE, " +

@@ -7,8 +7,8 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ public class AfericaoService {
             afericao.setDataHora(Now.localDateTimeUtc());
             return RouterAfericao
                     .create(dao, userToken)
-                    .insertAfericao(codUnidade, afericao);
+                    .insertAfericao(codUnidade, afericao, true);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao inserir aferição", e);
             throw exceptionHandler.map(e, "Erro ao inserir aferição, tente novamente");

@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
@@ -26,33 +26,32 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public boolean insert(
-            @NotNull final Long codUnidade,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+    public boolean insert(@NotNull final VeiculoCadastro veiculo,
+                          @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener)
+            throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO VEICULO (PLACA, COD_UNIDADE, KM, STATUS_ATIVO," +
-                    " COD_TIPO, COD_MODELO, COD_EIXOS, COD_UNIDADE_CADASTRO) " +
+            stmt = conn.prepareStatement("INSERT INTO VEICULO (PLACA, COD_EMPRESA, COD_UNIDADE, KM, STATUS_ATIVO," +
+                    " COD_TIPO, COD_MODELO, COD_UNIDADE_CADASTRO) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
-            stmt.setString(1, veiculo.getPlaca().toUpperCase());
-            stmt.setLong(2, codUnidade);
-            stmt.setLong(3, veiculo.getKmAtual());
-            stmt.setBoolean(4, true);
-            stmt.setLong(5, veiculo.getTipo().getCodigo());
-            stmt.setLong(6, veiculo.getModelo().getCodigo());
-            stmt.setLong(7, veiculo.getEixos().codigo);
-            stmt.setLong(8, codUnidade);
+            stmt.setString(1, veiculo.getPlacaVeiculo().toUpperCase());
+            stmt.setLong(2, veiculo.getCodEmpresaAlocado());
+            stmt.setLong(3, veiculo.getCodUnidadeAlocado());
+            stmt.setLong(4, veiculo.getKmAtualVeiculo());
+            stmt.setBoolean(5, true);
+            stmt.setLong(6, veiculo.getCodTipoVeiculo());
+            stmt.setLong(7, veiculo.getCodModeloVeiculo());
+            stmt.setLong(8, veiculo.getCodUnidadeAlocado());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoInserido = rSet.getLong("CODIGO");
                 if (codVeiculoInserido <= 0) {
                     throw new SQLException("Erro ao inserir veículo:\n" +
-                            "codUnidade: " + codUnidade + "\n" +
+                            "codUnidade: " + veiculo.getCodUnidadeAlocado() + "\n" +
                             "codVeiculoInserido: " + codVeiculoInserido);
                 }
                 // Avisamos ao Listener que um veículo foi inserido.

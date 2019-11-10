@@ -11,7 +11,10 @@ import br.com.zalf.prolog.webservice.integracao.transport.IntegracaoTransportSer
 import br.com.zalf.prolog.webservice.integracao.transport.ItemPendenteIntegracaoTransport;
 import br.com.zalf.prolog.webservice.integracao.transport.ItemResolvidoIntegracaoTransport;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.time.Duration;
@@ -26,17 +29,18 @@ import static org.junit.Assert.*;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class IntegracaoOrdemServicoTransportTest extends BaseTest {
     private static final String TOKEN_TRANSLECCHI = "pdgcvsvt1bnhbaqt4ldlhq6i4d5v2ve1jd6g36gmtqgfpikpi7q";
     private IntegracaoTransportService service;
 
-    @Override
+    @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
         service = new IntegracaoTransportService();
     }
 
-    @Override
+    @AfterAll
     public void destroy() {
         DatabaseManager.finish();
         service = null;
@@ -45,7 +49,7 @@ public class IntegracaoOrdemServicoTransportTest extends BaseTest {
     @Test
     public void testBuscaItensPendentes() throws ProLogException {
         final List<ItemPendenteIntegracaoTransport> itensPendentes =
-                service.getItensPendentes(TOKEN_TRANSLECCHI, 10L);
+                service.getItensPendentes(TOKEN_TRANSLECCHI, 354083L);
 
         assertNotNull(itensPendentes);
         assertTrue(itensPendentes.size() > 0);

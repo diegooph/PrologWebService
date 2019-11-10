@@ -2,10 +2,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,22 +15,35 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface AfericaoDao {
-
-    @Nullable
+    /**
+     * Insere uma aferição.
+     *
+     * @param conn             Conexão que será utilizada para inserir a aferição.
+     * @param codUnidade       Código da unidade onde a Aferição foi realizada.
+     * @param afericao         Objeto contendo as medidas capturadas no processo de aferição
+     * @param deveAbrirServico Flag indicando se é preciso abrir ordem de serviço.
+     * @return Código da aferição inserida.
+     * @throws Throwable Se ocorrer erro na inserção.
+     */
+    @NotNull
     Long insert(@NotNull final Connection conn,
                 @NotNull final Long codUnidade,
-                @NotNull final Afericao afericao) throws Throwable;
+                @NotNull final Afericao afericao,
+                final boolean deveAbrirServico) throws Throwable;
 
     /**
      * Insere uma aferição lincada com o código da unidade.
      *
-     * @param afericao   A {@link Afericao} contendo os dados da realização.
-     * @param codUnidade Código da {@link Unidade}.
+     * @param afericao         A {@link Afericao} contendo os dados da realização.
+     * @param codUnidade       Código da {@link Unidade}.
+     * @param deveAbrirServico Flag indicando se é preciso abrir ordem de serviço.
      * @return Código da aferição inserida.
      * @throws Throwable Se ocorrer erro no banco.
      */
-    @Nullable
-    Long insert(@NotNull final Long codUnidade, @NotNull final Afericao afericao) throws Throwable;
+    @NotNull
+    Long insert(@NotNull final Long codUnidade,
+                @NotNull final Afericao afericao,
+                final boolean deveAbrirServico) throws Throwable;
 
     /**
      * Busca objeto contendo informações necessárias para se iniciar uma aferição do {@link Veiculo}.

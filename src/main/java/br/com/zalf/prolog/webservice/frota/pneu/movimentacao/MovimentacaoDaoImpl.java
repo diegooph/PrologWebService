@@ -5,19 +5,19 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoAnalise;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoDescarte;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoAnalise;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoDescarte;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.MotivoDescarte;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemAnalise;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizado;
-import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizadoIncrementaVida;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
@@ -633,7 +633,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                     @NotNull final Long codUnidade,
                                     @NotNull final Long codProcessoMovimentacao,
                                     @NotNull final Movimentacao movimentacao) throws Throwable {
-        if (movimentacao.isFromDestinoToOrigem(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
+        if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
             Log.d(TAG, "O pneu " + movimentacao.getPneu().getCodigo()
                     + " está sendo movido dentro do mesmo veículo, não é preciso fechar seus serviços");
             return;
