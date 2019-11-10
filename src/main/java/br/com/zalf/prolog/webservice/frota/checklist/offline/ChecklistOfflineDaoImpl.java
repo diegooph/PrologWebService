@@ -138,7 +138,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                     modelo = createModeloChecklistOffline(
                             rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST"),
                             rSet.getLong("COD_MODELO_CHECKLIST"),
-                            rSet.getLong("COD_VERSAO_MODELO_CHECKLIST"),
+                            rSet.getLong("COD_VERSAO_ATUAL_MODELO_CHECKLIST"),
                             rSet.getString("NOME_MODELO_CHECKLIST"),
                             cargos,
                             tiposVeiculos,
@@ -163,7 +163,7 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
                             modelo = createModeloChecklistOffline(
                                     rSet.getLong("COD_UNIDADE_MODELO_CHECKLIST"),
                                     rSet.getLong("COD_MODELO_CHECKLIST"),
-                                    rSet.getLong("COD_VERSAO_MODELO_CHECKLIST"),
+                                    rSet.getLong("COD_VERSAO_ATUAL_MODELO_CHECKLIST"),
                                     rSet.getString("NOME_MODELO_CHECKLIST"),
                                     cargos,
                                     tiposVeiculos,

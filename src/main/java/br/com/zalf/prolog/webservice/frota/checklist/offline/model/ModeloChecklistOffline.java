@@ -22,7 +22,7 @@ public final class ModeloChecklistOffline {
      * ambos na primeira versão, terão códigos de versão diferentes.
      */
     @NotNull
-    private final Long codVersaoModelo;
+    private final Long codVersaoAtualModelo;
 
     /**
      * Valor alfanumérico que representa o nome do modelo do checklist. Identificador para o usuário.
@@ -55,14 +55,14 @@ public final class ModeloChecklistOffline {
     private final List<PerguntaModeloChecklistOffline> perguntasModeloChecklistOffline;
 
     public ModeloChecklistOffline(@NotNull final Long codModelo,
-                                  @NotNull final Long codVersaoModelo,
+                                  @NotNull final Long codVersaoAtualModelo,
                                   @NotNull final String nomeModelo,
                                   @NotNull final Long codUnidadeModelo,
                                   @NotNull final List<CargoChecklistOffline> cargosLiberados,
                                   @NotNull final List<TipoVeiculoChecklistOffline> tiposVeiculosLiberados,
                                   @NotNull final List<PerguntaModeloChecklistOffline> perguntasModeloChecklistOffline) {
         this.codModelo = codModelo;
-        this.codVersaoModelo = codVersaoModelo;
+        this.codVersaoAtualModelo = codVersaoAtualModelo;
         this.nomeModelo = nomeModelo;
         this.codUnidadeModelo = codUnidadeModelo;
         this.cargosLiberados = cargosLiberados;
@@ -76,8 +76,8 @@ public final class ModeloChecklistOffline {
     }
 
     @NotNull
-    public Long getCodVersaoModelo() {
-        return codVersaoModelo;
+    public Long getCodVersaoAtualModelo() {
+        return codVersaoAtualModelo;
     }
 
     @NotNull
