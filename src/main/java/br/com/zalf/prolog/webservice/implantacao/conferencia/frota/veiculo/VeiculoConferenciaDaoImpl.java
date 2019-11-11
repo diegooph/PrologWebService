@@ -73,7 +73,7 @@ public final class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
                         rSet.getString("NOME_TABELA_IMPORT"));
                 return veiculoDadosTabelaImport;
             } else {
-                throw new SQLException("Erro criar");
+                throw new SQLException("Erro criar tabela de import");
             }
         } finally {
             close(conn, stmt, rSet);

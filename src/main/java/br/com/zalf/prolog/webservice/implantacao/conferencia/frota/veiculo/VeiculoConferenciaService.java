@@ -2,9 +2,7 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -29,18 +27,21 @@ public final class VeiculoConferenciaService {
     @NotNull
     private final VeiculoConferenciaDao dao = Injection.provideVeiculoConferenciaDao();
 
-    public void getVerificacaoPlanilhaImportVeiculo(@NotNull final String usernamePassword,
+    public Response getVerificacaoPlanilhaImportVeiculo(@NotNull final String authorization,
                                                     @NotNull final Long codEmpresa,
                                                     @NotNull final Long codUnidade,
                                                     @NotNull final InputStream fileInputStream,
-                                                    @NotNull final FormDataContentDisposition fileDetail) {
+                                                    @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
-            final String usuario = new ImplantacaoLoginSenhaValidator().verifyUsernamePassword(usernamePassword);
+            final String usuario = new ImplantacaoLoginSenhaValidator().verifyUsernamePassword(authorization);
             final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
             readAndInsertImport(codEmpresa, codUnidade, usuario, file);
+            return Response.ok("Upload realizado com sucesso!");
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao verificar planilha de import de veiculos", throwable);
-            throw new RuntimeException(throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro com a conexão");
         }
     }
 

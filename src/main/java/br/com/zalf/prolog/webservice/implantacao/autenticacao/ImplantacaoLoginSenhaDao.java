@@ -9,5 +9,5 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ImplantacaoLoginSenhaDao {
 
-    String verifyUsernamePassword(@NotNull final String usernamePassword) throws Throwable;
+    String verifyUsernamePassword(@NotNull final String authorization) throws Throwable;
 }
