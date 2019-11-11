@@ -26,7 +26,6 @@ public final class ImplantacaoLoginSenhaDaoImpl implements ImplantacaoLoginSenha
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-
             String encrypted[] = authorization.split(" ");
             String[] splitUsernamePassword = new String(new BASE64Decoder().decodeBuffer(encrypted[1])).split(":");
 

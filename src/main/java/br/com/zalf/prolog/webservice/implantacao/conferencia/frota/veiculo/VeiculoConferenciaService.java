@@ -28,10 +28,10 @@ public final class VeiculoConferenciaService {
     private final VeiculoConferenciaDao dao = Injection.provideVeiculoConferenciaDao();
 
     public Response getVerificacaoPlanilhaImportVeiculo(@NotNull final String authorization,
-                                                    @NotNull final Long codEmpresa,
-                                                    @NotNull final Long codUnidade,
-                                                    @NotNull final InputStream fileInputStream,
-                                                    @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
+                                                        @NotNull final Long codEmpresa,
+                                                        @NotNull final Long codUnidade,
+                                                        @NotNull final InputStream fileInputStream,
+                                                        @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
             final String usuario = new ImplantacaoLoginSenhaValidator().verifyUsernamePassword(authorization);
             final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);

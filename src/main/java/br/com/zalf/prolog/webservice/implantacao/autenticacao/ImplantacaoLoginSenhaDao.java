@@ -9,5 +9,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ImplantacaoLoginSenhaDao {
 
+    /**
+     * Método para verificar se usuário e senha existem.
+     *
+     * @param authorization Código de autorização.
+     * @throws Throwable Se algum erro ocorrer.
+     */
     String verifyUsernamePassword(@NotNull final String authorization) throws Throwable;
 }
