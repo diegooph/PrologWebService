@@ -288,7 +288,11 @@ public final class ChecklistMigracaoEstruturaSuporte {
     }
 
     public static boolean isAppNovaEstruturaChecklist(@NotNull final ChecklistInsercao checklist) {
-        return checklist.getCodVersaoModeloChecklist() != null;
+        return checklist.getCodVersaoModeloChecklist() != null
+                // Para os checklist offline pendentes de sincronia que existem no BD local do app quando o mesmo
+                // atualizou e teve seu BD local migrado, a versão do modelo recebida será 0 e não null. Pois esse
+                // foi o valor assumido como default para a coluna no App.
+                && checklist.getCodVersaoModeloChecklist() > 0;
     }
 
     public static boolean isAppNovaEstruturaChecklist(@Nullable final Integer versaoApp) {
