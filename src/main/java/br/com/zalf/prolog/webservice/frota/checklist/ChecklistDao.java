@@ -152,5 +152,6 @@ public interface ChecklistDao {
     @NotNull
     Map<Long, AlternativaChecklistStatus> getItensStatus(@NotNull final Connection conn,
                                                          @NotNull final Long codModelo,
+                                                         @NotNull final Long codVersaoModelo,
                                                          @NotNull final String placaVeiculo) throws Throwable;
 }

@@ -17,6 +17,7 @@ Change Log
 * Altera o fluxo de processamento de ordens de serviço para considerar a versão do modelo de checklist (PL-2346)
 * Altera busca dos dados de checklist para realização offline incluindo novas informações 
 (versão modelo e código context) PL-2349 
+* Altera o fluxo de realização de checklist na integração ao Globus (PL-2369)
 
 
 <a name="v1.0.6"></a>
