@@ -6,6 +6,7 @@ Change Log
 ### Features
 * Cria estrutura de pesquisa de NPS (PL-2350)
 * Cria testes para validar criação e edição de modelos de checklist (PL-2305)
+* Implementa o uso da tabela de histórico de checklists realizados e itens apontamentos (PL-2370) 
 
 ### Refactors
 * Os método de busca de modelos de checklist para seleção foi recriado com novos objetos (PL-2228)

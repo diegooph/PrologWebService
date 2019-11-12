@@ -55,14 +55,17 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         checklist.getCodVersaoModeloChecklist(),
                         checklist.getPlacaVeiculo());
 
-        PreparedStatement stmtQtdApontamentos = null, stmtCriacaoItens = null;
+        PreparedStatement stmtQtdApontamentos = null, stmtCriacaoItens = null, stmtItensApontamentos = null;
         try {
             stmtQtdApontamentos = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS " +
                     "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1 WHERE CODIGO = ? AND STATUS_RESOLUCAO = ?;");
             stmtCriacaoItens = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS_DATA" +
                     "(COD_UNIDADE, COD_OS, COD_PERGUNTA_PRIMEIRO_APONTAMENTO, COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO," +
                     " STATUS_RESOLUCAO, COD_CONTEXTO_PERGUNTA, COD_CONTEXTO_ALTERNATIVA) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?);");
+                    "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO, COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO;", Statement.RETURN_GENERATED_KEYS);
+            stmtItensApontamentos = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS_APONTAMENTOS " +
+                    " (COD_ITEM_ORDEM_SERVICO, COD_CHECKLIST_REALIZADO, COD_ALTERNATIVA, NOVA_QTD_APONTAMENTOS) " +
+                    "VALUES (?, ?, ?, ?)");
 
             // Se uma nova O.S. tiver que ser aberta, conterá o código dela. Lembrando que um checklist pode abrir,
             // NO MÁXIMO, uma Ordem de Serviço.
@@ -80,11 +83,16 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                             && alternativaOrdemServico.isDeveAbrirOrdemServico()) {
                         if (alternativaOrdemServico.jaTemItemPendente()) {
                             // Incrementa apontamentos.
-                            stmtQtdApontamentos.setLong(
-                                    1,
-                                    alternativaOrdemServico.getCodItemOrdemServico());
+                            stmtQtdApontamentos.setLong(1, alternativaOrdemServico.getCodItemOrdemServico());
                             stmtQtdApontamentos.setString(2, StatusItemOrdemServico.PENDENTE.asString());
                             stmtQtdApontamentos.addBatch();
+
+                            // Incrementa apontamentos.
+                            stmtItensApontamentos.setLong(1, alternativaOrdemServico.getCodItemOrdemServico());
+                            stmtItensApontamentos.setLong(2, codChecklistInserido);
+                            stmtItensApontamentos.setLong(3, alternativaOrdemServico.getCodAlternativa());
+                            stmtItensApontamentos.setLong(4, alternativaOrdemServico.getQtdApontamentosItem()+1);
+                            stmtItensApontamentos.addBatch();
                         } else {
                             if (codOrdemServico == null) {
                                 codOrdemServico = criarOrdemServico(conn, codUnidade, codChecklistInserido);
@@ -99,7 +107,6 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                             stmtCriacaoItens.addBatch();
                         }
                     }
-
                 }
             }
 
@@ -120,8 +127,26 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             if (!criacaoItensOk) {
                 throw new IllegalStateException("Erro ao criar itens de O.S.");
             }
+
+
+            // Lista os itens criados para
+            ResultSet itensInseridos = stmtCriacaoItens.getGeneratedKeys();
+            while (itensInseridos.next()) {
+                stmtItensApontamentos.setLong(1, itensInseridos.getLong(1));
+                stmtItensApontamentos.setLong(2, codChecklistInserido);
+                stmtItensApontamentos.setLong(3, itensInseridos.getLong(2));
+                stmtItensApontamentos.setLong(4, 1);
+                stmtItensApontamentos.addBatch();
+            }
+
+            final boolean aplicaTabelaOsItens = IntStream
+                    .of(stmtItensApontamentos.executeBatch())
+                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
+            if (!aplicaTabelaOsItens) {
+                throw new IllegalStateException("Erro ao aplicar itens de O.S. na tabela de apontamentos");
+            }
         } finally {
-            close(stmtQtdApontamentos, stmtCriacaoItens);
+            close(stmtQtdApontamentos, stmtCriacaoItens, stmtItensApontamentos);
         }
     }
 
