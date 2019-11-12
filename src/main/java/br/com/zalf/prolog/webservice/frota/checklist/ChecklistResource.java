@@ -46,7 +46,7 @@ public final class ChecklistResource {
             checklistNew = GsonUtils.getGson().fromJson(checklistJson, ChecklistInsercao.class);
         } else {
             final Checklist checklistOld = GsonUtils.getGson().fromJson(checklistJson, Checklist.class);
-            checklistNew = ChecklistInsercao.createFrom(checklistOld, versaoApp);
+            checklistNew = ChecklistMigracaoEstruturaSuporte.toChecklistInsercao(checklistOld, versaoApp);
             checklistNew.setChecklistAntigo(checklistOld);
         }
         final Long codChecklist = service.insert(userToken, checklistNew);

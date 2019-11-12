@@ -278,52 +278,6 @@ public final class ChecklistInsercao {
     }
 
     @NotNull
-    public static ChecklistInsercao createFrom(@NotNull final Checklist antigo,
-                                               @NotNull final Integer versaoApp) {
-        return new ChecklistInsercao(
-                -1L /* antigo não tem unidade */,
-                antigo.getCodModelo(),
-                antigo.getCodVersaoModeloChecklist(),
-                antigo.getColaborador().getCodigo() /* TODO: talvez não tenha */,
-                antigo.getColaborador().getCpfAsString() /* antigo não tem codVeiculo */,
-                -1L /* antigo não tem codVeiculo */,
-                antigo.getPlacaVeiculo(),
-                TipoChecklist.fromChar(antigo.getTipo()),
-                antigo.getKmAtualVeiculo(),
-                antigo.getTempoRealizacaoCheckInMillis(),
-                convertRespostas(antigo.getListRespostas()),
-                antigo.getData(),
-                FonteDataHora.SERVIDOR,
-                versaoApp,
-                versaoApp,
-                null,
-                null,
-                0,
-                0);
-    }
-
-    @NotNull
-    private static List<ChecklistResposta> convertRespostas(@NotNull final List<PerguntaRespostaChecklist> antigas) {
-        final List<ChecklistResposta> respostas = new ArrayList<>();
-        antigas
-                .forEach(respostaAntiga -> {
-                    final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-                    final ChecklistResposta resposta = new ChecklistResposta(respostaAntiga.getCodigo(), alternativas);
-                    respostaAntiga
-                            .getAlternativasResposta()
-                            .forEach(alternativaAntiga -> {
-                                alternativas.add(new ChecklistAlternativaResposta(
-                                        alternativaAntiga.getCodigo(),
-                                        alternativaAntiga.isSelected(),
-                                        alternativaAntiga.isTipoOutros(),
-                                        alternativaAntiga.getRespostaOutros()));
-                            });
-                    respostas.add(resposta);
-                });
-        return respostas;
-    }
-
-    @NotNull
     public Checklist getChecklistAntigo() {
         if (checklistAntigo != null) {
             // Já foi convertido e setado no Service.

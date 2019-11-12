@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura;
 
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -10,10 +11,13 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -167,26 +171,65 @@ public final class ChecklistMigracaoEstruturaSuporte {
     }
 
     @NotNull
-    public static Long getCodVeiculoByPlaca(@NotNull final String placa) {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
+    public static ChecklistInsercao toChecklistInsercao(@NotNull final Checklist antigo,
+                                                        @NotNull final Integer versaoApp) {
+        final DadosChecklistInsercaoEstrutraSuporte dados = getDadosChecklistInsercao(
+                antigo.getColaborador().getCpf(),
+                antigo.getPlacaVeiculo());
+
+        return new ChecklistInsercao(
+                dados.getCodUnidadeColaborador(),
+                antigo.getCodModelo(),
+                antigo.getCodVersaoModeloChecklist(),
+                dados.getCodColaborador(),
+                antigo.getColaborador().getCpfAsString(),
+                dados.getCodVeiculo(),
+                antigo.getPlacaVeiculo(),
+                TipoChecklist.fromChar(antigo.getTipo()),
+                antigo.getKmAtualVeiculo(),
+                antigo.getTempoRealizacaoCheckInMillis(),
+                convertRespostas(antigo.getListRespostas()),
+                antigo.getData(),
+                FonteDataHora.SERVIDOR,
+                versaoApp,
+                versaoApp,
+                null,
+                null,
+                0,
+                0);
+    }
+
+    @NotNull
+    public static DadosChecklistInsercaoEstrutraSuporte getDadosChecklistInsercao(@NotNull final Long cpfColaborador,
+                                                                                  @NotNull final String placa) {
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
-            // Como a placa ainda é PK, a busca só pela placa já basta.
-            stmt = conn.prepareStatement("SELECT VD.CODIGO FROM VEICULO_DATA VD WHERE VD.PLACA = ?;");
-            stmt.setString(1, placa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
-            } else {
-                throw new RuntimeException();
-            }
+            final Long codVeiculo = internalGetCodVeiculoByPlaca(conn, placa);
+            final Pair<Long, Long> pairUnidadeCodColaborador = internalGetCodColaboradorByCpf(conn, cpfColaborador);
+            return new DadosChecklistInsercaoEstrutraSuporte(
+                    pairUnidadeCodColaborador.getLeft(),
+                    pairUnidadeCodColaborador.getRight(),
+                    codVeiculo);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar código do veículo pela placa: " + placa);
             throw new RuntimeException(throwable);
         } finally {
-            DatabaseConnection.close(conn, stmt, rSet);
+            DatabaseConnection.close(conn);
+        }
+    }
+
+    @NotNull
+    public static Long getCodVeiculoByPlaca(@NotNull final String placa) {
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            return internalGetCodVeiculoByPlaca(conn, placa);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar código do veículo pela placa: " + placa);
+            throw new RuntimeException(t);
+        } finally {
+            DatabaseConnection.close(conn);
         }
     }
 
@@ -202,6 +245,48 @@ public final class ChecklistMigracaoEstruturaSuporte {
                                                         @NotNull final Checklist checklist) throws Throwable {
         final List<ChecklistJson> checklistJson = createChecklistJson(checklist);
         return interalEncontraCodVersaoModeloChecklist(conn, checklist.getCodModelo(), checklistJson);
+    }
+
+    @NotNull
+    private static Pair<Long, Long> internalGetCodColaboradorByCpf(@NotNull final Connection conn,
+                                                                   @NotNull final Long cpfColaborador) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            // Como o CPF ainda é PK, o busca só por ele já basta.
+            stmt = conn.prepareStatement("SELECT CD.COD_UNIDADE, CD.CODIGO FROM COLABORADOR_DATA CD WHERE CD.CPF = ?;");
+            stmt.setLong(1, cpfColaborador);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return Pair.of(
+                        rSet.getLong("COD_UNIDADE"),
+                        rSet.getLong("CODIGO"));
+            } else {
+                throw new RuntimeException();
+            }
+        } finally {
+            DatabaseConnection.close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private static Long internalGetCodVeiculoByPlaca(@NotNull final Connection conn,
+                                                     @NotNull final String placa) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            // Como a placa ainda é PK, a busca só pela placa já basta.
+            stmt = conn.prepareStatement("SELECT VD.CODIGO FROM VEICULO_DATA VD WHERE VD.PLACA = ?;");
+            stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new RuntimeException();
+            }
+        } finally {
+            DatabaseConnection.close(stmt, rSet);
+        }
     }
 
     @NotNull
@@ -297,5 +382,26 @@ public final class ChecklistMigracaoEstruturaSuporte {
 
     public static boolean isAppNovaEstruturaChecklist(@Nullable final Integer versaoApp) {
         return versaoApp != null && versaoApp >= VERSION_CODE_APP_NOVA_ESTRUTURA;
+    }
+
+    @NotNull
+    private static List<ChecklistResposta> convertRespostas(@NotNull final List<PerguntaRespostaChecklist> antigas) {
+        final List<ChecklistResposta> respostas = new ArrayList<>();
+        antigas
+                .forEach(respostaAntiga -> {
+                    final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+                    final ChecklistResposta resposta = new ChecklistResposta(respostaAntiga.getCodigo(), alternativas);
+                    respostaAntiga
+                            .getAlternativasResposta()
+                            .forEach(alternativaAntiga -> {
+                                alternativas.add(new ChecklistAlternativaResposta(
+                                        alternativaAntiga.getCodigo(),
+                                        alternativaAntiga.isSelected(),
+                                        alternativaAntiga.isTipoOutros(),
+                                        alternativaAntiga.getRespostaOutros()));
+                            });
+                    respostas.add(resposta);
+                });
+        return respostas;
     }
 }
