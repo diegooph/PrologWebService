@@ -55,14 +55,15 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         checklist.getCodVersaoModeloChecklist(),
                         checklist.getPlacaVeiculo());
 
-        PreparedStatement stmtQtdApontamentos = null, stmtCriacaoItens = null, stmtItensApontamentos = null;
+        PreparedStatement stmtUpdateQtdApontamentos = null, stmtCriacaoItens = null, stmtItensApontamentos = null;
         try {
-            stmtQtdApontamentos = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS " +
-                    "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1 WHERE CODIGO = ? AND STATUS_RESOLUCAO = ?;");
+            stmtUpdateQtdApontamentos = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS " +
+                    "SET QT_APONTAMENTOS = ? WHERE CODIGO = ? AND STATUS_RESOLUCAO = ?;");
             stmtCriacaoItens = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS_DATA" +
                     "(COD_UNIDADE, COD_OS, COD_PERGUNTA_PRIMEIRO_APONTAMENTO, COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO," +
                     " STATUS_RESOLUCAO, COD_CONTEXTO_PERGUNTA, COD_CONTEXTO_ALTERNATIVA) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO, COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO;", Statement.RETURN_GENERATED_KEYS);
+                    "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO, COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO;",
+                    Statement.RETURN_GENERATED_KEYS);
             stmtItensApontamentos = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS_APONTAMENTOS " +
                     " (COD_ITEM_ORDEM_SERVICO, COD_CHECKLIST_REALIZADO, COD_ALTERNATIVA, NOVA_QTD_APONTAMENTOS) " +
                     "VALUES (?, ?, ?, ?)");
@@ -82,16 +83,17 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                     if (alternativaResposta.isAlternativaSelecionada()
                             && alternativaOrdemServico.isDeveAbrirOrdemServico()) {
                         if (alternativaOrdemServico.jaTemItemPendente()) {
-                            // Incrementa apontamentos.
-                            stmtQtdApontamentos.setLong(1, alternativaOrdemServico.getCodItemOrdemServico());
-                            stmtQtdApontamentos.setString(2, StatusItemOrdemServico.PENDENTE.asString());
-                            stmtQtdApontamentos.addBatch();
+                            // Incrementa apontamentos (update).
+                            stmtUpdateQtdApontamentos.setLong(1, alternativaOrdemServico.getQtdApontamentosItem() + 1);
+                            stmtUpdateQtdApontamentos.setLong(2, alternativaOrdemServico.getCodItemOrdemServico());
+                            stmtUpdateQtdApontamentos.setString(3, StatusItemOrdemServico.PENDENTE.asString());
+                            stmtUpdateQtdApontamentos.addBatch();
 
-                            // Incrementa apontamentos.
+                            // Salva novo apontamento (insert).
                             stmtItensApontamentos.setLong(1, alternativaOrdemServico.getCodItemOrdemServico());
                             stmtItensApontamentos.setLong(2, codChecklistInserido);
                             stmtItensApontamentos.setLong(3, alternativaOrdemServico.getCodAlternativa());
-                            stmtItensApontamentos.setLong(4, alternativaOrdemServico.getQtdApontamentosItem()+1);
+                            stmtItensApontamentos.setLong(4, alternativaOrdemServico.getQtdApontamentosItem() + 1);
                             stmtItensApontamentos.addBatch();
                         } else {
                             if (codOrdemServico == null) {
@@ -113,7 +115,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             // Executa o batch de operações de incremento de quantidade de apontamento de itens de O.S. já existentes
             // e pendentes. Se o batch estiver vazio, um array vazio será retornado e não teremos problema com esse caso.
             final boolean todosUpdatesOk = IntStream
-                    .of(stmtQtdApontamentos.executeBatch())
+                    .of(stmtUpdateQtdApontamentos.executeBatch())
                     .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
             if (!todosUpdatesOk) {
                 throw new IllegalStateException("Erro ao incrementar a quantidade de apontamentos");
@@ -129,8 +131,10 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
 
 
-            // Lista os itens criados para
-            ResultSet itensInseridos = stmtCriacaoItens.getGeneratedKeys();
+            // Recupera informações dos itens inseridos via batch e cria o primeiro apontamento para cada um.
+            // Note from the docs: the ResultSet object is automatically closed by the Statement object that generated
+            // it when that Statement object is closed.
+            final ResultSet itensInseridos = stmtCriacaoItens.getGeneratedKeys();
             while (itensInseridos.next()) {
                 stmtItensApontamentos.setLong(1, itensInseridos.getLong(1));
                 stmtItensApontamentos.setLong(2, codChecklistInserido);
@@ -139,14 +143,14 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                 stmtItensApontamentos.addBatch();
             }
 
-            final boolean aplicaTabelaOsItens = IntStream
+            final boolean insercaoApontamentosOk = IntStream
                     .of(stmtItensApontamentos.executeBatch())
                     .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
-            if (!aplicaTabelaOsItens) {
-                throw new IllegalStateException("Erro ao aplicar itens de O.S. na tabela de apontamentos");
+            if (!insercaoApontamentosOk) {
+                throw new IllegalStateException("Erro ao inserir apontamento de item de O.S.");
             }
         } finally {
-            close(stmtQtdApontamentos, stmtCriacaoItens, stmtItensApontamentos);
+            close(stmtUpdateQtdApontamentos, stmtCriacaoItens, stmtItensApontamentos);
         }
     }
 
