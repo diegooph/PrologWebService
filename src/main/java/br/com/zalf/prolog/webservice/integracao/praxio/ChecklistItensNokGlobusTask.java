@@ -79,7 +79,10 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             final Map<Long, AlternativaChecklistStatus> alternativasStatus =
                     Injection
                             .provideChecklistDao()
-                            .getItensStatus(conn, checklist.getCodModelo(), checklist.getPlacaVeiculo());
+                            .getItensStatus(conn,
+                                    checklist.getCodModelo(),
+                                    checklist.getCodVersaoModeloChecklist(),
+                                    checklist.getPlacaVeiculo());
             final List<Long> codItensOsIncrementaQtdApontamentos =
                     getItensIncrementaApontamentos(alternativasStatus, checklist.getListRespostas());
 

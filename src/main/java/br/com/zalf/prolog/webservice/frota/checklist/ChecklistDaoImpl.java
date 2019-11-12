@@ -464,13 +464,15 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     @Override
     public Map<Long, AlternativaChecklistStatus> getItensStatus(@NotNull final Connection conn,
                                                                 @NotNull final Long codModelo,
+                                                                @NotNull final Long codVersaoModelo,
                                                                 @NotNull final String placaVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(?, ?, ?);");
             stmt.setLong(1, codModelo);
-            stmt.setString(2, placaVeiculo);
+            stmt.setLong(2, codVersaoModelo);
+            stmt.setString(3, placaVeiculo);
             rSet = stmt.executeQuery();
             final Map<Long, AlternativaChecklistStatus> alternativas = new HashMap<>();
             while (rSet.next()) {
