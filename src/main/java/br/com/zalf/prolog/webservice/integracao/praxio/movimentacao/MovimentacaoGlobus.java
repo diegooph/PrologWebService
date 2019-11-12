@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.api.pneu.movimentacao;
+package br.com.zalf.prolog.webservice.integracao.praxio.movimentacao;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class ProcessoMovimentacaoGlobus {
+public final class MovimentacaoGlobus {
     @NotNull
     public static final String PNEU_RETIRADO = "retirada";
     @NotNull
@@ -30,13 +30,13 @@ public final class ProcessoMovimentacaoGlobus {
     @Nullable
     private final Integer posicao;
 
-    public ProcessoMovimentacaoGlobus(@NotNull Long sequencia,
-                                      @NotNull final String placa,
-                                      @NotNull final LocalDateTime dataHora,
-                                      @NotNull final String numeroFogoPneu,
-                                      @NotNull final String tipoOperacao,
-                                      @Nullable final String observacao,
-                                      @Nullable final Integer posicao) {
+    public MovimentacaoGlobus(@NotNull Long sequencia,
+                              @NotNull final String placa,
+                              @NotNull final LocalDateTime dataHora,
+                              @NotNull final String numeroFogoPneu,
+                              @NotNull final String tipoOperacao,
+                              @Nullable final String observacao,
+                              @Nullable final Integer posicao) {
         this.sequencia = sequencia;
         this.placa = placa;
         this.dataHora = dataHora;

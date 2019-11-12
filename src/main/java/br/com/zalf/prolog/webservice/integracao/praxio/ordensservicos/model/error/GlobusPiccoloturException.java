@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error;
 
+import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
 import br.com.zalf.prolog.webservice.errorhandling.exception.IntegracaoException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,5 +22,10 @@ public final class GlobusPiccoloturException extends IntegracaoException {
                                      @Nullable final String developerMessage,
                                      @Nullable final Throwable exception) {
         super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), message, developerMessage, exception);
+    }
+
+    @NotNull
+    public static GlobusPiccoloturException from(@NotNull final ProLogError proLogError) {
+        return new GlobusPiccoloturException(proLogError.getMessage());
     }
 }

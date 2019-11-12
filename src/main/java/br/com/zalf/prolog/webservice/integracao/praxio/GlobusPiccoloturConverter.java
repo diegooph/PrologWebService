@@ -5,14 +5,25 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaCheckli
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.MovimentacaoGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.datatype.DatatypeFactory;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * Created on 04/06/19.
@@ -83,6 +94,68 @@ public final class GlobusPiccoloturConverter {
         osGlobus.setUsuario(GlobusPiccoloturConstants.USUARIO_PROLOG_INTEGRACAO);
         osGlobus.setListaPerguntasNokVO(convertPerguntas(factory, checklistItensNokGlobus.getPerguntasNok()));
         return osGlobus;
+    }
+
+    @NotNull
+    public static ProcessoMovimentacaoGlobus convert(@NotNull final ProcessoMovimentacao processoMovimentacao,
+                                                     @NotNull final LocalDateTime dataHoraMovimentacao) {
+        final List<MovimentacaoGlobus> movimentacoesGlobus = new ArrayList<>();
+        for (int i = 0; i < processoMovimentacao.getMovimentacoes().size(); i++) {
+            final Movimentacao movimentacao = processoMovimentacao.getMovimentacoes().get(i);
+            if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.VEICULO)) {
+                final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
+                movimentacoesGlobus.add(new MovimentacaoGlobus(
+                        (long) i,
+                        GlobusPiccoloturUtils.addHifenPlaca(destinoVeiculo.getVeiculo().getPlaca()),
+                        dataHoraMovimentacao,
+                        GlobusPiccoloturUtils.formatNumeroFogo(movimentacao.getPneu().getCodigoCliente()),
+                        MovimentacaoGlobus.PNEU_INSERIDO,
+                        movimentacao.getObservacao(),
+                        destinoVeiculo.getPosicaoDestinoPneu()));
+            } else if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ESTOQUE)) {
+                final OrigemVeiculo origemVeiculo = ((OrigemVeiculo) movimentacao.getOrigem());
+                movimentacoesGlobus.add(new MovimentacaoGlobus(
+                        (long) i,
+                        GlobusPiccoloturUtils.addHifenPlaca(origemVeiculo.getVeiculo().getPlaca()),
+                        dataHoraMovimentacao,
+                        GlobusPiccoloturUtils.formatNumeroFogo(movimentacao.getPneu().getCodigoCliente()),
+                        MovimentacaoGlobus.PNEU_RETIRADO,
+                        movimentacao.getObservacao(),
+                        origemVeiculo.getPosicaoOrigemPneu()));
+            } else if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
+                final OrigemVeiculo origemVeiculo = ((OrigemVeiculo) movimentacao.getOrigem());
+                final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
+                final String codigoCliente = movimentacao.getPneu().getCodigoCliente();
+                // Retira pneu
+                movimentacoesGlobus.add(new MovimentacaoGlobus(
+                        (long) i,
+                        GlobusPiccoloturUtils.addHifenPlaca(origemVeiculo.getVeiculo().getPlaca()),
+                        dataHoraMovimentacao,
+                        GlobusPiccoloturUtils.formatNumeroFogo(codigoCliente),
+                        MovimentacaoGlobus.PNEU_RETIRADO,
+                        movimentacao.getObservacao(),
+                        origemVeiculo.getPosicaoOrigemPneu()));
+
+                // Aplica pneu
+                movimentacoesGlobus.add(new MovimentacaoGlobus(
+                        (long) i,
+                        GlobusPiccoloturUtils.addHifenPlaca(destinoVeiculo.getVeiculo().getPlaca()),
+                        dataHoraMovimentacao,
+                        GlobusPiccoloturUtils.formatNumeroFogo(codigoCliente),
+                        MovimentacaoGlobus.PNEU_INSERIDO,
+                        movimentacao.getObservacao(),
+                        destinoVeiculo.getPosicaoDestinoPneu()));
+            } else {
+                throw new IllegalStateException("Esse processo de movimentação não é válido para essa integração");
+            }
+        }
+        final AtomicInteger counter = new AtomicInteger(0);
+        final List<MovimentacaoGlobus> collect = movimentacoesGlobus
+                .stream()
+                .sorted(Comparator.comparing(MovimentacaoGlobus::getTipoOperacao).reversed())
+                .peek(pmg -> pmg.setSequencia((long) counter.getAndIncrement()))
+                .collect(Collectors.toList());
+        return new ProcessoMovimentacaoGlobus(collect);
     }
 
     @NotNull
