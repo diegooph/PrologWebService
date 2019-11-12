@@ -451,7 +451,6 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         final ChecklistOfflineService checklistOfflineService = new ChecklistOfflineService();
         final Long codChecklistInserido = checklistOfflineService.insertChecklistOffline(
                 TOKEN_CHECK_OFF,
-                83,
                 insercao).getCodigo();
 
         final ChecklistService checklistService = new ChecklistService();

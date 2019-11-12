@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  */
 public final class ChecklistMigracaoEstruturaSuporte {
     private static final String TAG = ChecklistMigracaoEstruturaSuporte.class.getSimpleName();
-    private static final int VERSION_CODE_APP_NOVA_ESTRUTURA = 83;
+    private static final int VERSION_CODE_APP_NOVA_ESTRUTURA = 89;
 
     @NotNull
     public static Long getCodVersaoAtualModeloChecklist(@NotNull final Long codModelo)
@@ -120,6 +120,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
         final NovoChecklistHolder novo = new NovoChecklistHolder();
         novo.setCodUnidaedModeloChecklist(modelo.getCodUnidadeModelo());
         novo.setCodigoModeloChecklist(modelo.getCodModelo());
+        novo.setCodigoVersaoAtualModeloChecklist(modelo.getCodVersaoModelo());
         novo.setNomeModeloChecklist(modelo.getNomeModelo());
         novo.setVeiculo(veiculo);
         novo.setListPerguntas(perguntas);
@@ -177,7 +178,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getLong("COD");
+                return rSet.getLong("CODIGO");
             } else {
                 throw new RuntimeException();
             }

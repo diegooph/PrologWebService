@@ -20,6 +20,11 @@ public class NovoChecklistHolder {
      */
     private Long codigoModeloChecklist;
 
+    /**
+     * Código da versão atual do modelo de checklist.
+     */
+    private Long codigoVersaoAtualModeloChecklist;
+
     public NovoChecklistHolder() {
 
     }
@@ -62,6 +67,14 @@ public class NovoChecklistHolder {
 
     public void setCodigoModeloChecklist(Long codigoModeloChecklist) {
         this.codigoModeloChecklist = codigoModeloChecklist;
+    }
+
+    public Long getCodigoVersaoAtualModeloChecklist() {
+        return codigoVersaoAtualModeloChecklist;
+    }
+
+    public void setCodigoVersaoAtualModeloChecklist(final Long codigoVersaoAtualModeloChecklist) {
+        this.codigoVersaoAtualModeloChecklist = codigoVersaoAtualModeloChecklist;
     }
 
     @Override

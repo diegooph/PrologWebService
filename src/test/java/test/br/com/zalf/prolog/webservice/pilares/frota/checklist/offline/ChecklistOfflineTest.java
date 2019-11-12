@@ -50,7 +50,6 @@ public class ChecklistOfflineTest extends BaseTest {
         final ChecklistInsercao checklist = createChecklist();
         final ResponseWithCod responseChecklistWithCod = service.insertChecklistOffline(
                 "a",
-                9,
                 checklist);
 
         assertNotNull(responseChecklistWithCod);
