@@ -42,7 +42,8 @@ final class OrdemServicoConverter {
                 rSet.getLong("COD_CONTEXTO_ALTERNATIVA"),
                 rSet.getLong("COD_ITEM_ORDEM_SERVICO"),
                 rSet.getInt("QTD_APONTAMENTOS_ITEM"),
-                rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"));
+                rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
+                rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"));
     }
 
     @NotNull

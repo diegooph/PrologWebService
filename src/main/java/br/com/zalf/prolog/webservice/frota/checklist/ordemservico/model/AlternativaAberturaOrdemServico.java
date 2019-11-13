@@ -23,19 +23,22 @@ public final class AlternativaAberturaOrdemServico {
     private final long codItemOrdemServico;
     private final int qtdApontamentosItem;
     private final boolean deveAbrirOrdemServico;
+    private final boolean alternativaTipoOutros;
 
     public AlternativaAberturaOrdemServico(final long codAlternativa,
                                            final long codContextoPergunta,
                                            final long codContextoAlternativa,
                                            final long codItemOrdemServico,
                                            final int qtdApontamentosItem,
-                                           final boolean deveAbrirOrdemServico) {
+                                           final boolean deveAbrirOrdemServico,
+                                           final boolean alternativaTipoOutros) {
         this.codAlternativa = codAlternativa;
         this.codContextoPergunta = codContextoPergunta;
         this.codContextoAlternativa = codContextoAlternativa;
         this.codItemOrdemServico = codItemOrdemServico;
         this.qtdApontamentosItem = qtdApontamentosItem;
         this.deveAbrirOrdemServico = deveAbrirOrdemServico;
+        this.alternativaTipoOutros = alternativaTipoOutros;
 
         if (codItemOrdemServico > 0 && qtdApontamentosItem <= 0) {
             throw new IllegalStateException(String.format("O item de código %d não pode ter uma quantidade de " +
@@ -74,5 +77,9 @@ public final class AlternativaAberturaOrdemServico {
 
     public boolean isDeveAbrirOrdemServico() {
         return deveAbrirOrdemServico;
+    }
+
+    public boolean isAlternativaTipoOutros() {
+        return alternativaTipoOutros;
     }
 }
