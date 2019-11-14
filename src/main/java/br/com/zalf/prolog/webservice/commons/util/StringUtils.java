@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
+import com.google.common.base.CharMatcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,6 +15,11 @@ public final class StringUtils {
      * @since 2.0
      */
     public static final String EMPTY = "";
+    private static final CharMatcher ALPHA_AND_DIGITS_MATCHER = CharMatcher
+            .inRange('a', 'z')
+            .or(CharMatcher.inRange('A', 'Z'))
+            .or(CharMatcher.inRange('0', '9'))
+            .precomputed();
 
     private StringUtils() {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
@@ -99,7 +105,7 @@ public final class StringUtils {
      * @return String with only numbers.
      */
     @NotNull
-    public static String getOnlyNumbers(String string) {
+    public static String getOnlyNumbers(@Nullable final String string) {
         if (string != null && !string.isEmpty())
             return string.replaceAll("[^0-9]*", "");
         return "";
@@ -111,14 +117,26 @@ public final class StringUtils {
      * @param string the string to test.
      * @return String with only letters.
      */
-    public static String getOnlyLetters(String string) {
+    @NotNull
+    public static String getOnlyLetters(@Nullable final String string) {
         if (string != null && !string.isEmpty())
             return stripAccents(string).replaceAll("[^A-Z]*", "");
         return "";
     }
 
     /**
-     * Remove accent.
+     * Returns only alpha and digits from the string.
+     *
+     * @param string a string.
+     * @return String with only alpha and digits.
+     */
+    @NotNull
+    public static String getOnlyAlphaAndDigits(@NotNull final String string) {
+        return ALPHA_AND_DIGITS_MATCHER.retainFrom(string);
+    }
+
+    /**
+     * Remove accents.
      *
      * @param string the string to test.
      * @return String without accents.
@@ -129,15 +147,14 @@ public final class StringUtils {
     }
 
     /**
-     * Remove letters that contain accent.
+     * Remove letters that contains accents.
      *
      * @param string the string to test.
      * @return String without letters that contain accents.
      */
     @NotNull
     public static String stripCharactersWithAccents(@NotNull String string) {
-        String stringFormatada = string.replaceAll("[^\\p{ASCII}]", "");
-        return stringFormatada;
+        return string.replaceAll("[^\\p{ASCII}]", "");
     }
 
     /**

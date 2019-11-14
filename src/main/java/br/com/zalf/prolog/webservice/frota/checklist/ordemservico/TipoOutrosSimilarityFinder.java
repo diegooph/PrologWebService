@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import org.apache.commons.text.similarity.SimilarityScore;
@@ -37,9 +38,10 @@ public final class TipoOutrosSimilarityFinder {
                 continue;
             }
 
-            final double generatedSimilarity = algorithm.apply(
-                    a.getRespostaTipoOutrosAberturaItem(),
-                    alternativaResposta.getRespostaTipoOutros());
+            final String source = normalizeString(a.getRespostaTipoOutrosAberturaItem());
+            final String target = normalizeString(alternativaResposta.getRespostaTipoOutros());
+
+            final double generatedSimilarity = algorithm.apply(source, target);
             if (generatedSimilarity > maxSimilarityDetected) {
                 maxSimilarityDetected = generatedSimilarity;
                 infoMaxSimilarity = a;
@@ -52,5 +54,12 @@ public final class TipoOutrosSimilarityFinder {
         } else {
             return Optional.empty();
         }
+    }
+
+    @NotNull
+    private String normalizeString(@NotNull final String respostaTipoOutrosAberturaItem) {
+        return StringUtils.getOnlyAlphaAndDigits(
+                StringUtils.stripAccents(
+                        respostaTipoOutrosAberturaItem.trim().toLowerCase()));
     }
 }
