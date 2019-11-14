@@ -79,7 +79,6 @@ public final class ProntuarioCondutorResource {
             final FileOutputStream out = new FileOutputStream(file);
             IOUtils.copy(fileInputStream, out);
             IOUtils.closeQuietly(out);
-            final ProntuarioCondutorService service = new ProntuarioCondutorService();
             service.insertOrUpdate(file.getPath());
             return Response.ok("Prontuários inseridos com sucesso");
         } catch (IOException e) {
