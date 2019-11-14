@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Essa classe contém informações úteis durante o processamento de um checklist, para sabermos se abrimos ou não O.S.
  * ou se incrementamos a quantidade de apontamentos de um item já criado.
@@ -16,26 +18,30 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class AlternativaAberturaOrdemServico {
+public final class InfosAlternativaAberturaOrdemServico {
     private final long codAlternativa;
     private final long codContextoPergunta;
     private final long codContextoAlternativa;
     private final long codItemOrdemServico;
+    @Nullable
+    private final String respostaTipoOutrosAberturaItem;
     private final int qtdApontamentosItem;
     private final boolean deveAbrirOrdemServico;
     private final boolean alternativaTipoOutros;
 
-    public AlternativaAberturaOrdemServico(final long codAlternativa,
-                                           final long codContextoPergunta,
-                                           final long codContextoAlternativa,
-                                           final long codItemOrdemServico,
-                                           final int qtdApontamentosItem,
-                                           final boolean deveAbrirOrdemServico,
-                                           final boolean alternativaTipoOutros) {
+    public InfosAlternativaAberturaOrdemServico(final long codAlternativa,
+                                                final long codContextoPergunta,
+                                                final long codContextoAlternativa,
+                                                final long codItemOrdemServico,
+                                                @Nullable final String respostaTipoOutrosAberturaItem,
+                                                final int qtdApontamentosItem,
+                                                final boolean deveAbrirOrdemServico,
+                                                final boolean alternativaTipoOutros) {
         this.codAlternativa = codAlternativa;
         this.codContextoPergunta = codContextoPergunta;
         this.codContextoAlternativa = codContextoAlternativa;
         this.codItemOrdemServico = codItemOrdemServico;
+        this.respostaTipoOutrosAberturaItem = respostaTipoOutrosAberturaItem;
         this.qtdApontamentosItem = qtdApontamentosItem;
         this.deveAbrirOrdemServico = deveAbrirOrdemServico;
         this.alternativaTipoOutros = alternativaTipoOutros;
@@ -69,6 +75,11 @@ public final class AlternativaAberturaOrdemServico {
 
     public long getCodItemOrdemServico() {
         return codItemOrdemServico;
+    }
+
+    @Nullable
+    public String getRespostaTipoOutrosAberturaItem() {
+        return respostaTipoOutrosAberturaItem;
     }
 
     public int getQtdApontamentosItem() {

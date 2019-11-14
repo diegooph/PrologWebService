@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.AlternativaAberturaOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoAbertaListagem;
@@ -34,13 +34,14 @@ final class OrdemServicoConverter {
     }
 
     @NotNull
-    static AlternativaAberturaOrdemServico createAlternativaChecklistAbreOrdemServico(
+    static InfosAlternativaAberturaOrdemServico createAlternativaChecklistAbreOrdemServico(
             @NotNull final ResultSet rSet) throws Throwable {
-        return new AlternativaAberturaOrdemServico(
+        return new InfosAlternativaAberturaOrdemServico(
                 rSet.getLong("COD_ALTERNATIVA"),
                 rSet.getLong("COD_CONTEXTO_PERGUNTA"),
                 rSet.getLong("COD_CONTEXTO_ALTERNATIVA"),
                 rSet.getLong("COD_ITEM_ORDEM_SERVICO"),
+                rSet.getString("RESPOSTA_TIPO_OUTROS_ABERTURA_ITEM"),
                 rSet.getInt("QTD_APONTAMENTOS_ITEM"),
                 rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
                 rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"));
