@@ -7,7 +7,7 @@ import com.google.common.base.Preconditions;
 /**
  * Created by Zart on 03/07/2017.
  */
-public class ProntuarioCondutor {
+public final class ProntuarioCondutor {
 
     /**
      * Faixa de valores no qual a {@link #pontuacaoTotalPonderada} pode variar;
@@ -69,6 +69,7 @@ public class ProntuarioCondutor {
     private Colaborador colaborador;
     private AcidentesTrabalho acidentesTrabalho;
     private AcidentesTransito acidentesTransito;
+    private GerenciamentoFadigas gerenciamentoFadigas;
     private Cnh cnh;
     private Documento documento;
     private Indisciplina indisciplina;
@@ -82,6 +83,17 @@ public class ProntuarioCondutor {
     }
 
 
+    public void setFaixa(final Faixa faixa) {
+        this.faixa = faixa;
+    }
+
+    public GerenciamentoFadigas getGerenciamentoFadigas() {
+        return gerenciamentoFadigas;
+    }
+
+    public void setGerenciamentoFadigas(final GerenciamentoFadigas gerenciamentoFadigas) {
+        this.gerenciamentoFadigas = gerenciamentoFadigas;
+    }
 
     public Faixa getFaixa() {
         return faixa;
