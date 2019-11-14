@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAlertaColetaSulco;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoTipoVeiculoAferivel;
 import org.jetbrains.annotations.NotNull;
@@ -60,5 +61,26 @@ public interface ConfiguracaoAfericaoDao {
      */
     @NotNull
     List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(
+            @NotNull final Long codColaborador) throws Throwable;
+
+    /**
+     * Cria ou atualiza, caso já exista, as configurações de abertura de serviços de pneus para cada Unidade.
+     *
+     * @param configuracoes Novas {@link ConfiguracaoAberturaServico configurações} que serão inseridas ou atualizadas.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    void updateConfiguracaoAberturaServico(
+            @NotNull final List<ConfiguracaoAberturaServico> configuracoes) throws Throwable;
+
+    /**
+     * Busca todas as configurações de abertura de serviços das unidades que o {@link Colaborador colaborador} tem
+     * acesso.
+     *
+     * @param codColaborador Codigo do {@link Colaborador colaborador} do qual serão buscados as configurações para
+     *                       cada unidade que ele tem acesso.
+     * @return Lista de unidades a qual o usuário tem acesso, contendo a configuração atual de cada unidade.
+     */
+    @NotNull
+    List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico(
             @NotNull final Long codColaborador) throws Throwable;
 }

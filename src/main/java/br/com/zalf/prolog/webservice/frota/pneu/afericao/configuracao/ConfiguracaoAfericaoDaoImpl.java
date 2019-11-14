@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAlertaColetaSulco;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoConverter;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoTipoVeiculoAferivel;
@@ -121,6 +122,18 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @Override
+    public void updateConfiguracaoAberturaServico(
+            @NotNull final List<ConfiguracaoAberturaServico> configuracoes) throws Throwable {
+    }
+
+    @NotNull
+    @Override
+    public List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico(
+            @NotNull final Long codColaborador) throws Throwable {
+        return null;
     }
 
     private void insertConfiguracaoTipoVeiculo(

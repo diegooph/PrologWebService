@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAlertaColetaSulco;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoTipoVeiculoAferivel;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -30,29 +31,43 @@ public class ConfiguracaoAfericaoResource {
     @PUT
     @Path("/tipos-veiculo/{codUnidade}")
     public Response updateConfiguracaoTiposVeiculosAferiveis(
-            @PathParam("codUnidade") Long codUnidade,
-            List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws ProLogException {
+            @PathParam("codUnidade") @NotNull final Long codUnidade,
+            @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws ProLogException {
         return service.updateConfiguracaoTiposVeiculosAferiveis(codUnidade, configuracoes);
     }
 
     @GET
     @Path("/tipos-veiculo/{codUnidade}")
     public List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(
-            @PathParam("codUnidade") Long codUnidade) throws ProLogException {
+            @PathParam("codUnidade") @NotNull final Long codUnidade) throws ProLogException {
         return service.getConfiguracoesTipoAfericaoVeiculo(codUnidade);
     }
 
     @PUT
     @Path("/alertas-sulcos")
     public Response updateConfiguracaoAlertaColetaSulco(
-            List<ConfiguracaoAlertaColetaSulco> configuracoes) throws ProLogException {
+            @NotNull final List<ConfiguracaoAlertaColetaSulco> configuracoes) throws ProLogException {
         return service.updateConfiguracaoAlertaColetaSulco(configuracoes);
     }
 
     @GET
     @Path("/alertas-sulcos")
     public List<ConfiguracaoAlertaColetaSulco> getConfiguracoesAlertaColetaSulco(
-            @QueryParam("codColaborador") Long codColaborador) throws ProLogException {
+            @QueryParam("codColaborador") @NotNull final Long codColaborador) throws ProLogException {
         return service.getConfiguracoesAlertaColetaSulco(codColaborador);
+    }
+
+    @PUT
+    @Path("/abertura-servico")
+    public Response updateConfiguracaoAberturaServico(
+            @NotNull final List<ConfiguracaoAberturaServico> configuracoes) throws ProLogException {
+        return service.updateConfiguracaoAberturaServico(configuracoes);
+    }
+
+    @GET
+    @Path("/abertura-servico")
+    public List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico(
+            @QueryParam("codColaborador") @NotNull final Long codColaborador) throws ProLogException {
+        return service.getConfiguracaoAberturaServico(codColaborador);
     }
 }
