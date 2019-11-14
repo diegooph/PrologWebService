@@ -18,6 +18,8 @@ Change Log
 * Altera busca dos dados de checklist para realização offline incluindo novas informações 
 (versão modelo e código context) PL-2349 
 * Altera o fluxo de realização de checklist na integração ao Globus (PL-2369)
+* Altera forma de processar abertura de OSs e considera texto das alternativas tipo_outros para abrir ou não 
+um item (PL-2389)
 
 
 <a name="v1.0.6"></a>
