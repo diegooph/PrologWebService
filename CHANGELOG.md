@@ -25,6 +25,8 @@ um item (PL-2389)
 <a name="v1.0.6"></a>
 ## Version [v1.0.6](https://github.com/luizfp/PrologWebService/compare/v1.0.5...v1.0.6) (release-date) [unreleased]
 
+### Refactors
+* Adiciona informações de fadiga no prontuário do condutor (PL-2269)
 
 <a name="v1.0.5"></a>
 ## Version [v1.0.5](https://github.com/luizfp/PrologWebService/compare/v1.0.4...v1.0.5) (2019-11-06)

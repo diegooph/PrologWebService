@@ -1,10 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -12,12 +11,16 @@ import java.util.List;
  */
 public interface ProntuarioCondutorDao {
 
-    ProntuarioCondutor getProntuario(Long cpf) throws SQLException;
+    void insertOrUpdate(@NotNull final String path) throws Throwable;
 
-    boolean insertOrUpdate(String path) throws SQLException, IOException, ParseException;
+    @NotNull
+    List<ProntuarioCondutor> getResumoProntuarios(@NotNull final Long codUnidade,
+                                                  @NotNull final String equipe) throws Throwable;
 
-    Double getPontuacaoProntuario(Long cpf) throws SQLException;
+    @NotNull
+    ProntuarioCondutor getProntuario(@NotNull final Long cpf) throws Throwable;
 
-    List<ProntuarioCondutor> getResumoProntuarios(Long codUnidade, String equipe) throws SQLException;
+    @Nullable
+    Double getPontuacaoProntuario(@NotNull final Long cpf) throws Throwable;
 
 }
