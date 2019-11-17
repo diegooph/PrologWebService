@@ -6,7 +6,7 @@ Change Log
 
 ### Refactors
 * Adiciona informações de fadiga no prontuário do condutor (PL-2269)
-* Permite filtrar para incluir marcas não utilizadas na busca de marcas de pneus (PL-2390)
+* Permite filtrar para incluir marcas não utilizadas na busca de marcas de pneus e bandas (PL-2390)
 
 <a name="v1.0.5"></a>
 ## Version [v1.0.5](https://github.com/luizfp/PrologWebService/compare/v1.0.4...v1.0.5) (2019-11-06)

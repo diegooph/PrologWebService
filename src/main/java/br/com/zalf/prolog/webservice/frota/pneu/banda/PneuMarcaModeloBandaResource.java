@@ -65,8 +65,9 @@ public final class PneuMarcaModeloBandaResource {
     @Path("/marcas")
     public List<PneuMarcaBandaListagem> getListagemMarcasBanda(
             @QueryParam("codEmpresa") @Required Long codEmpresa,
-            @QueryParam("comModelos") @Optional boolean comModelos) {
-        return service.getListagemMarcasBanda(codEmpresa, comModelos);
+            @QueryParam("comModelos") @Optional boolean comModelos,
+            @QueryParam("incluirMarcasNaoUtilizadas") @DefaultValue("true") boolean incluirMarcasNaoUtilizadas) {
+        return service.getListagemMarcasBanda(codEmpresa, comModelos, incluirMarcasNaoUtilizadas);
     }
 
     @GET

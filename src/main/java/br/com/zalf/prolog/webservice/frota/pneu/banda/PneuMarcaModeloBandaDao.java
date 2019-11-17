@@ -38,12 +38,15 @@ public interface PneuMarcaModeloBandaDao {
      *
      * @param codEmpresa código da empresa.
      * @param comModelos true se para cada marca deve retornar seus modelos, false caso contrário.
+     * @param incluirMarcasNaoUtilizadas true se devemos buscar também as marcas que a empresa não utiliza,
+     *                                   false caso contrário.
      * @return uma lista de marcas de bandas da empresa.
      * @throws Throwable caso ocorra algum erro.
      */
     @NotNull
     List<PneuMarcaBandaListagem> getListagemMarcasBanda(@NotNull final Long codEmpresa,
-                                                        final boolean comModelos) throws Throwable;
+                                                        final boolean comModelos,
+                                                        final boolean incluirMarcasNaoUtilizadas) throws Throwable;
 
     /**
      * Busca uma marca de banda específica de uma empresa.

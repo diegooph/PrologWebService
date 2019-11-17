@@ -43,13 +43,15 @@ public final class PneuMarcaModeloBandaService {
     }
 
     public List<PneuMarcaBandaListagem> getListagemMarcasBanda(@NotNull final Long codEmpresa,
-                                                               final boolean comModelos) {
+                                                               final boolean comModelos,
+                                                               final boolean incluirMarcasNaoUtilizadas) {
         try {
-            return dao.getListagemMarcasBanda(codEmpresa, comModelos);
+            return dao.getListagemMarcasBanda(codEmpresa, comModelos, incluirMarcasNaoUtilizadas);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar listagem de marcas de banda:\n" +
                     "codEmpresa: " + codEmpresa + "\n" +
-                    "comModelos: " + comModelos, t);
+                    "comModelos: " + comModelos + "\n" +
+                    "incluirMarcasNaoUtilizadas: " + incluirMarcasNaoUtilizadas, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar marcas de banda, tente novamente");
