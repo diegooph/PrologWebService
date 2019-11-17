@@ -21,13 +21,16 @@ public final class PneuMarcaModeloService {
     private final PneuMarcaModeloDao dao = Injection.providePneuModeloDao();
 
     public List<PneuMarcaListagem> getListagemMarcasPneu(@NotNull final Long codEmpresa,
-                                                         final boolean comModelos) {
+                                                         final boolean comModelos,
+                                                         final boolean incluirMarcasNaoUtilizadas) {
         try {
-            return dao.getListagemMarcasPneu(codEmpresa, comModelos);
+            return dao.getListagemMarcasPneu(codEmpresa, comModelos, incluirMarcasNaoUtilizadas);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar listagem de marcas de pneu:\n" +
                     "codEmpresa: " + codEmpresa + "\n" +
-                    "comModelos: " + comModelos, t);
+                    "comModelos: " + comModelos + "\n" +
+                    "incluirMarcasNaoUtilizadas: " + incluirMarcasNaoUtilizadas,
+                    t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar as marcas de pneu, tente novamente");

@@ -19,12 +19,15 @@ public interface PneuMarcaModeloDao {
      *
      * @param codEmpresa código da empresa.
      * @param comModelos true se para cada marca deve retornar seus modelos, false caso contrário.
+     * @param incluirMarcasNaoUtilizadas true se devemos buscar também as marcas que a empresa não utiliza,
+     *                                   false caso contrário.
      * @return uma lista de marcas.
      * @throws Throwable caso ocorra algum erro.
      */
     @NotNull
     List<PneuMarcaListagem> getListagemMarcasPneu(@NotNull final Long codEmpresa,
-                                                  final boolean comModelos) throws Throwable;
+                                                  final boolean comModelos,
+                                                  final boolean incluirMarcasNaoUtilizadas) throws Throwable;
 
     /**
      * Insere um modelo de pneu.

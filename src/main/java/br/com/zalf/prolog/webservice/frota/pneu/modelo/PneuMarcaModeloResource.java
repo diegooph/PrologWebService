@@ -36,8 +36,9 @@ public final class PneuMarcaModeloResource {
     @Path("/marcas")
     public List<PneuMarcaListagem> getListagemMarcasPneu(
             @QueryParam("codEmpresa") @Required Long codEmpresa,
-            @QueryParam("comModelos") @Optional boolean comModelos) {
-        return service.getListagemMarcasPneu(codEmpresa, comModelos);
+            @QueryParam("comModelos") @Optional boolean comModelos,
+            @QueryParam("incluirMarcasNaoUtilizadas") @DefaultValue("true") boolean incluirMarcasNaoUtilizadas) {
+        return service.getListagemMarcasPneu(codEmpresa, comModelos, incluirMarcasNaoUtilizadas);
     }
 
     @POST

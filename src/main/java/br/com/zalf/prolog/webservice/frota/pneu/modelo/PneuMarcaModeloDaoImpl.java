@@ -10,10 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
@@ -28,31 +25,56 @@ public final class PneuMarcaModeloDaoImpl implements PneuMarcaModeloDao {
     @NotNull
     @Override
     public List<PneuMarcaListagem> getListagemMarcasPneu(@NotNull final Long codEmpresa,
-                                                         final boolean comModelos) throws Throwable {
+                                                         final boolean comModelos,
+                                                         final boolean incluirMarcasNaoUtilizadas) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             if (comModelos) {
-                final Map<PneuMarcaListagem, List<PneuModeloListagem>> map =
-                        getListagemModelosPneu(codEmpresa, null)
-                                .stream()
-                                .collect(Collectors.groupingBy(m -> new PneuMarcaListagem(
-                                        m.getCodMarcaPneu(),
-                                        m.getNomeMarcaPneu(),
-                                        null)));
-                return map
-                        .entrySet()
-                        .stream()
-                        .peek(entry -> entry
-                                .getKey()
-                                .setModelos(entry.getValue()))
-                        .map(Map.Entry::getKey)
-                        .sorted(Comparator.comparing(PneuMarcaListagem::getNome))
-                        .collect(Collectors.toList());
+                conn = getConnection();
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELOS_PNEU_LISTAGEM(" +
+                        "F_COD_EMPRESA                   := ?," +
+                        "F_COD_MARCA                     := ?," +
+                        "F_INCLUIR_MARCAS_NAO_UTILIZADAS := ?)");
+                stmt.setLong(1, codEmpresa);
+                stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
+                stmt.setBoolean(3, incluirMarcasNaoUtilizadas);
+                rSet = stmt.executeQuery();
+                PneuMarcaListagem marca = null;
+                List<PneuModeloListagem> modelos;
+                final List<PneuMarcaListagem> marcas = new ArrayList<>();
+                while (rSet.next()) {
+                    if (marca == null) {
+                        marca = PneuMarcaModeloConverter.createPneuMarcaListagem(rSet);
+                        marcas.add(marca);
+                        if (rSet.getLong("COD_MODELO_PNEU") > 0) {
+                            modelos = new ArrayList<>();
+                            modelos.add(PneuMarcaModeloConverter.createPneuModeloListagem(rSet));
+                            marca.setModelos(modelos);
+                        }
+                    } else {
+                        if (marca.getCodigo() == rSet.getLong("COD_MARCA_PNEU")) {
+                            marca.getModelos().add(PneuMarcaModeloConverter.createPneuModeloListagem(rSet));
+                        } else {
+                            marca = PneuMarcaModeloConverter.createPneuMarcaListagem(rSet);
+                            marcas.add(marca);
+                            if (rSet.getLong("COD_MODELO_PNEU") > 0) {
+                                modelos = new ArrayList<>();
+                                modelos.add(PneuMarcaModeloConverter.createPneuModeloListagem(rSet));
+                                marca.setModelos(modelos);
+                            }
+                        }
+                    }
+                }
+                return marcas;
             } else {
                 conn = getConnection();
-                stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCAS_PNEU_LISTAGEM();");
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCAS_PNEU_LISTAGEM(" +
+                        "F_COD_EMPRESA                   := ?," +
+                        "F_INCLUIR_MARCAS_NAO_UTILIZADAS := ?);");
+                stmt.setLong(1, codEmpresa);
+                stmt.setBoolean(2, incluirMarcasNaoUtilizadas);
                 rSet = stmt.executeQuery();
                 final List<PneuMarcaListagem> marcas = new ArrayList<>();
                 while (rSet.next()) {
@@ -139,10 +161,12 @@ public final class PneuMarcaModeloDaoImpl implements PneuMarcaModeloDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELOS_PNEU_LISTAGEM(" +
-                    "F_COD_EMPRESA := ?," +
-                    "F_COD_MARCA   := ?)");
+                    "F_COD_EMPRESA                   := ?," +
+                    "F_COD_MARCA                     := ?," +
+                    "F_INCLUIR_MARCAS_NAO_UTILIZADAS := ?)");
             StatementUtils.bindValueOrNull(stmt, 1, codEmpresa, SqlType.BIGINT);
             StatementUtils.bindValueOrNull(stmt, 2, codMarca, SqlType.BIGINT);
+            stmt.setBoolean(3, false);
             rSet = stmt.executeQuery();
             final List<PneuModeloListagem> marcas = new ArrayList<>();
             while (rSet.next()) {
