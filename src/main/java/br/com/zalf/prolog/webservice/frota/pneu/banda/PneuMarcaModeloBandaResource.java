@@ -64,7 +64,7 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/marcas")
     @AppVersionCodeHandler(
-            targetVersionCode = 88,
+            targetVersionCode = 89,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<PneuMarcaBandaListagem> getListagemMarcasBanda(
