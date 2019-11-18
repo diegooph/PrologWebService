@@ -469,7 +469,10 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(" +
+                    "F_COD_MODELO_CHECKLIST        := ?, " +
+                    "F_COD_VERSAO_MODELO_CHECKLIST := ?, " +
+                    "F_PLACA_VEICULO               := ?);");
             stmt.setLong(1, codModelo);
             stmt.setLong(2, codVersaoModelo);
             stmt.setString(3, placaVeiculo);
