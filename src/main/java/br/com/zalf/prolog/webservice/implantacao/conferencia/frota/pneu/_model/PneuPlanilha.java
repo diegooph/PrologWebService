@@ -1,5 +1,9 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu._model;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.math.BigDecimal;
+
 /**
  * Created on 19/11/19.
  *
@@ -10,89 +14,85 @@ public class PneuPlanilha {
     private String numeroFogo;
     private String marca;
     private String modelo;
-    private Long dot;
+    private String dot;
     private String dimensao;
-    private String pressaoIdeal;
-    private String qtdSulcos;
-    private String alturaSulcos;
-    private String valorPneu;
-    private String valorBanda;
-    private String vidaAtual;
-    private String vidaTotal;
+    private double pressaoIdeal;
+    private int qtdSulcos;
+    private double alturaSulcos;
+    private BigDecimal valorPneu;
+    private BigDecimal valorBanda;
+    private int vidaAtual;
+    private int vidaTotal;
     private String marcaBanda;
     private String modeloBanda;
-    private String qtdSulcosBanda;
+    private int qtdSulcosBanda;
     private String pneuNovoNuncaRodado;
 
-    public void setCodUnidade(Long codUnidade) {
+    public void setCodUnidade(@NotNull final Long codUnidade) {
         this.codUnidade = codUnidade;
     }
 
-    public String getNumeroFogo() {
-        return numeroFogo;
-    }
-
-    public void setNumeroFogo(String numeroFogo) {
+    public void setNumeroFogo(@NotNull final String numeroFogo) {
         this.numeroFogo = numeroFogo;
     }
 
-    public void setMarca(String marca) {
+    public void setMarca(@NotNull final String marca) {
         this.marca = marca;
     }
 
-    public void setModelo(String modelo) {
+    public void setModelo(@NotNull final String modelo) {
         this.modelo = modelo;
     }
 
-    public void setDot(Long dot) {
+    public void setDot(@NotNull final String dot) {
         this.dot = dot;
     }
 
-    public void setDimensao(String dimensao) {
+    public void setDimensao(@NotNull final String dimensao) {
         this.dimensao = dimensao;
     }
 
-    public void setPressaoIdeal(String pressaoIdeal) {
+    public void setPressaoIdeal(final double pressaoIdeal) {
         this.pressaoIdeal = pressaoIdeal;
     }
 
-    public void setQtdSulcos(String qtdSulcos) {
+    public void setQtdSulcos(final int qtdSulcos) {
         this.qtdSulcos = qtdSulcos;
     }
 
-    public void setAlturaSulcos(String alturaSulcos) {
+    public void setAlturaSulcos(final double alturaSulcos) {
         this.alturaSulcos = alturaSulcos;
     }
 
-    public void setValorPneu(String valorPneu) {
+    public void setValorPneu(@NotNull final BigDecimal valorPneu) {
         this.valorPneu = valorPneu;
     }
 
-    public void setValorBanda(String valorBanda) {
+    public void setValorBanda(@NotNull final BigDecimal valorBanda) {
         this.valorBanda = valorBanda;
     }
 
-    public void setVidaAtual(String vidaAtual) {
+    public void setVidaAtual(final int vidaAtual) {
         this.vidaAtual = vidaAtual;
     }
 
-    public void setVidaTotal(String vidaTotal) {
+    public void setVidaTotal(final int vidaTotal) {
         this.vidaTotal = vidaTotal;
     }
 
-    public void setMarcaBanda(String marcaBanda) {
+    public void setMarcaBanda(@NotNull final String marcaBanda) {
         this.marcaBanda = marcaBanda;
     }
 
-    public void setModeloBanda(String modeloBanda) {
+    public void setModeloBanda(@NotNull final String modeloBanda) {
         this.modeloBanda = modeloBanda;
     }
 
-    public void setQtdSulcosBanda(String qtdSulcosBanda) {
+    public void setQtdSulcosBanda(final int qtdSulcosBanda) {
         this.qtdSulcosBanda = qtdSulcosBanda;
     }
 
-    public void setPneuNovoNuncaRodado(String pneuNovoNuncaRodado) {
+    public void setPneuNovoNuncaRodado(@NotNull final String pneuNovoNuncaRodado) {
         this.pneuNovoNuncaRodado = pneuNovoNuncaRodado;
     }
 }
