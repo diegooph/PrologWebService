@@ -1,11 +1,9 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model.VeiculoDadosTabelaImport;
+import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo._model.VeiculoDadosTabelaImport;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PGobject;
 
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
