@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.model;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 24/07/19.
  *
@@ -21,7 +23,7 @@ public final class VeiculoPlanilha {
         return codUnidade;
     }
 
-    public void setCodUnidade(Long codUnidade) {
+    public void setCodUnidade(@NotNull final Long codUnidade) {
         this.codUnidade = codUnidade;
     }
 
@@ -29,7 +31,7 @@ public final class VeiculoPlanilha {
         return placa;
     }
 
-    public void setPlaca(String placa) {
+    public void setPlaca(@NotNull final String placa) {
         this.placa = placa;
     }
 
@@ -37,7 +39,7 @@ public final class VeiculoPlanilha {
         return km;
     }
 
-    public void setKm(Long km) {
+    public void setKm(@NotNull final Long km) {
         this.km = km;
     }
 
@@ -45,7 +47,7 @@ public final class VeiculoPlanilha {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(@NotNull final String tipo) {
         this.tipo = tipo;
     }
 
@@ -53,7 +55,7 @@ public final class VeiculoPlanilha {
         return marca;
     }
 
-    public void setMarca(String marca) {
+    public void setMarca(@NotNull final String marca) {
         this.marca = marca;
     }
 
@@ -61,7 +63,7 @@ public final class VeiculoPlanilha {
         return modelo;
     }
 
-    public void setModelo(String modelo) {
+    public void setModelo(@NotNull final String modelo) {
         this.modelo = modelo;
     }
 
@@ -69,7 +71,7 @@ public final class VeiculoPlanilha {
         return qtdEixos;
     }
 
-    public void setQtdEixos(String qtdEixos) {
+    public void setQtdEixos(@NotNull final String qtdEixos) {
         this.qtdEixos = qtdEixos;
     }
 }

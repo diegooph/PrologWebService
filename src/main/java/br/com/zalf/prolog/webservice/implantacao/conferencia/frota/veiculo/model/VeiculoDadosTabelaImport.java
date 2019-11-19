@@ -9,18 +9,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class VeiculoDadosTabelaImport {
     @NotNull
-    private Long codDadosAutorImport;
+    private final Long codDadosAutorImport;
     @NotNull
-    private String nomeTabelaImport;
+    private final String nomeTabelaImport;
 
     public VeiculoDadosTabelaImport(@NotNull final Long codDadosAutorImport,
                                     @NotNull final String nomeTabelaImport) {
         this.codDadosAutorImport = codDadosAutorImport;
         this.nomeTabelaImport = nomeTabelaImport;
-    }
-
-    public VeiculoDadosTabelaImport() {
-
     }
 
     public final Long getCodDadosAutorImport() {
