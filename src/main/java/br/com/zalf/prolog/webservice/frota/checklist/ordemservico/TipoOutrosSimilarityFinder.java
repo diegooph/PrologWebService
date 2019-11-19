@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
-import org.apache.commons.text.similarity.SimilarityScore;
 import org.jetbrains.annotations.NotNull;
+import org.simmetrics.StringMetric;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +18,12 @@ import static br.com.zalf.prolog.webservice.commons.util.StringUtils.*;
 public final class TipoOutrosSimilarityFinder {
     // 1.0 muito similar ou idêntico.
     // 0.0 muito dissimilar ou totalmente diferente.
-    private static final double ACCEPTED_SIMILARITY_PERCENTAGE = 0.85;
+    private static final double ACCEPTED_SIMILARITY_PERCENTAGE = 0.82;
 
     @NotNull
-    private final SimilarityScore<Double> algorithm;
+    private final StringMetric algorithm;
 
-    public TipoOutrosSimilarityFinder(@NotNull final SimilarityScore<Double> algorithm) {
+    public TipoOutrosSimilarityFinder(@NotNull final StringMetric algorithm) {
         this.algorithm = algorithm;
     }
 
@@ -42,7 +42,7 @@ public final class TipoOutrosSimilarityFinder {
             final String source = normalizeString(a.getRespostaTipoOutrosAberturaItem());
             final String target = normalizeString(alternativaResposta.getRespostaTipoOutros());
 
-            final double generatedSimilarity = algorithm.apply(source, target);
+            final double generatedSimilarity = algorithm.compare(source, target);
             if (generatedSimilarity > maxSimilarityDetected) {
                 maxSimilarityDetected = generatedSimilarity;
                 infoMaxSimilarity = a;

@@ -20,9 +20,9 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.simmetrics.metrics.StringMetrics;
 
 import java.sql.*;
 import java.time.Clock;
@@ -53,7 +53,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         checklist.getCodModelo(),
                         checklist.getCodVersaoModeloChecklist(),
                         checklist.getPlacaVeiculo());
-        final TipoOutrosSimilarityFinder similarityFinder = new TipoOutrosSimilarityFinder(new JaroWinklerSimilarity());
+        final TipoOutrosSimilarityFinder similarityFinder = new TipoOutrosSimilarityFinder(StringMetrics.jaro());
 
         new OrdemServicoProcessor(
                 codChecklistInserido,
