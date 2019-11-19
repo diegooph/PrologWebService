@@ -21,6 +21,13 @@ public final class StringUtils {
             .or(CharMatcher.inRange('0', '9'))
             .precomputed();
 
+    private static final CharMatcher ALPHA_AND_DIGITS_AND_WHITESPACE_MATCHER = CharMatcher
+            .inRange('a', 'z')
+            .or(CharMatcher.inRange('A', 'Z'))
+            .or(CharMatcher.inRange('0', '9'))
+            .or(CharMatcher.whitespace())
+            .precomputed();
+
     private StringUtils() {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
     }
@@ -133,6 +140,28 @@ public final class StringUtils {
     @NotNull
     public static String getOnlyAlphaAndDigits(@NotNull final String string) {
         return ALPHA_AND_DIGITS_MATCHER.retainFrom(string);
+    }
+
+    /**
+     * Returns only alpha and digits from the string, keeping whitespaces.
+     *
+     * @param string a string.
+     * @return String with only alpha, digits and whitespaces.
+     */
+    @NotNull
+    public static String stripSpecialCharacters(@NotNull final String string) {
+        return ALPHA_AND_DIGITS_AND_WHITESPACE_MATCHER.retainFrom(string);
+    }
+
+    /**
+     * Replaces 2 or more spaces with single space.
+     *
+     * @param string a string.
+     * @return The replaced string.
+     */
+    @NotNull
+    public static String removeExtraSpaces(@NotNull final String string) {
+        return string.replaceAll(" +", " ");
     }
 
     /**

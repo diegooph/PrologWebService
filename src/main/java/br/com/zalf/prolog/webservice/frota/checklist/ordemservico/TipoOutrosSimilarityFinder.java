@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
-import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import org.apache.commons.text.similarity.SimilarityScore;
@@ -8,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
+
+import static br.com.zalf.prolog.webservice.commons.util.StringUtils.*;
 
 /**
  * Created on 2019-11-13
@@ -58,8 +59,8 @@ public final class TipoOutrosSimilarityFinder {
 
     @NotNull
     private String normalizeString(@NotNull final String respostaTipoOutrosAberturaItem) {
-        return StringUtils.getOnlyAlphaAndDigits(
-                StringUtils.stripAccents(
-                        respostaTipoOutrosAberturaItem.trim().toLowerCase()));
+        return stripSpecialCharacters(
+                stripAccents(
+                        removeExtraSpaces(respostaTipoOutrosAberturaItem.trim().toLowerCase())));
     }
 }
