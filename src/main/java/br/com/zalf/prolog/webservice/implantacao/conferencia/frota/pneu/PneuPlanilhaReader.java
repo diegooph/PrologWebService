@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuPlanilhaReader {
+public final class PneuPlanilhaReader {
 
     private PneuPlanilhaReader() {
         throw new IllegalStateException(PneuPlanilhaReader.class.getSimpleName() + " cannot be instantiated!");

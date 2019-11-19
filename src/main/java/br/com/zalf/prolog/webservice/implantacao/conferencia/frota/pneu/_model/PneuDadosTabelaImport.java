@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuDadosTabelaImport {
+public final class PneuDadosTabelaImport {
     @NotNull
     private Long codDadosAutorImport;
     @NotNull

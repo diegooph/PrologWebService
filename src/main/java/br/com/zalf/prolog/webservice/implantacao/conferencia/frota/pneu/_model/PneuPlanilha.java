@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuPlanilha {
+public final class PneuPlanilha {
     private Long codUnidade;
     private String numeroFogo;
     private String marca;

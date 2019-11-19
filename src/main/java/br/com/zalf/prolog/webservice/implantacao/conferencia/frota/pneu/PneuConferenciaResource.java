@@ -21,7 +21,7 @@ import java.io.InputStream;
 @Path("/implantacoes/pneus")
 @Consumes({MediaType.MULTIPART_FORM_DATA})
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class PneuConferenciaResource {
+public final class PneuConferenciaResource {
 
     @NotNull
     private final PneuConferenciaService service = new PneuConferenciaService();

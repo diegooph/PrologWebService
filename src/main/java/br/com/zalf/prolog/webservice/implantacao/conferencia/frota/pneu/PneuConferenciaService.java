@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuConferenciaService {
+public final class PneuConferenciaService {
 
     @NotNull
     private static final String TAG = PneuConferenciaService.class.getSimpleName();

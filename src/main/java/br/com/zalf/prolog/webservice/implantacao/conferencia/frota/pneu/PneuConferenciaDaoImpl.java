@@ -17,7 +17,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PneuConferenciaDaoImpl implements PneuConferenciaDao {
+public final class PneuConferenciaDaoImpl implements PneuConferenciaDao {
 
     @Override
     public void importPlanilhaPneus(@NotNull final Long codEmpresa,
