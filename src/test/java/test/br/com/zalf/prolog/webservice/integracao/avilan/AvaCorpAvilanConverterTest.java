@@ -174,7 +174,7 @@ public class AvaCorpAvilanConverterTest {
         assertNotNull(questionarios);
         assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
 
-        final Map<ModeloChecklist, List<String>> map = AvaCorpAvilanConverter.convert(questionarios);
+        final Map<ModeloChecklist, List<String>> map = AvaCorpAvilanConverter.convert(-1L, questionarios);
         assertNotNull(map);
         assertTrue(!map.isEmpty());
 
