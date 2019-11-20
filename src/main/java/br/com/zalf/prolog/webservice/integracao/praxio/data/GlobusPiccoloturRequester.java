@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
-import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -38,13 +37,13 @@ public interface GlobusPiccoloturRequester {
      * <p>
      * Para cada rotação no ProLog, teremos 4 movimentações no Globus.
      *
-     * @param url {@link retrofit2.http.Url Url} para onde a movimentação será enviada.
+     * @param url                        {@link retrofit2.http.Url Url} para onde a movimentação será enviada.
      * @param processoMovimentacaoGlobus Informações das movimentações que serão enviadas para o Globus.
-     * @return
-     * @throws Throwable
+     * @return {@link GlobusPiccoloturMovimentacaoResponse Resposta} do globus indicando se a operação foi sucesso ou erro.
+     * @throws Throwable Caso algum erro aconteça.
      */
     @NotNull
-    SuccessResponseIntegracao insertProcessoMovimentacao(
+    GlobusPiccoloturMovimentacaoResponse insertProcessoMovimentacao(
             @NotNull final String url,
             @NotNull final ProcessoMovimentacaoGlobus processoMovimentacaoGlobus) throws Throwable;
 }

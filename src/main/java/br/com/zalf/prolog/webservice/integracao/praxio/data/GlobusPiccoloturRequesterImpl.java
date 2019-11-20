@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
 import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
@@ -10,7 +9,6 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.Retor
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.headerhandler.SoapHeaderHandler;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.requester.ManutencaoWSTerceiros;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.requester.ManutencaoWSTerceirosSoap;
-import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,11 +59,11 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
 
     @NotNull
     @Override
-    public SuccessResponseIntegracao insertProcessoMovimentacao(
+    public GlobusPiccoloturMovimentacaoResponse insertProcessoMovimentacao(
             @NotNull final String url,
             @NotNull final ProcessoMovimentacaoGlobus processoMovimentacaoGlobus) throws Throwable {
         final GlobusPiccoloturRest service = GlobusPiccoloturRestClient.getService(GlobusPiccoloturRest.class);
-        final Call<SuccessResponseIntegracao> call =
+        final Call<GlobusPiccoloturMovimentacaoResponse> call =
                 service.insertProcessoMovimentacao(url, processoMovimentacaoGlobus);
         return handleJsonResponse(call.execute());
     }
@@ -79,7 +77,7 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
                 if (response.errorBody() == null) {
                     throw new GlobusPiccoloturException("[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado");
                 }
-                throw GlobusPiccoloturException.from(toProLogError(response.errorBody()));
+                throw GlobusPiccoloturException.from(toGlobusPiccoloturResponse(response.errorBody()));
             }
         } else {
             throw new GlobusPiccoloturException("[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado");
@@ -87,10 +85,11 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
     }
 
     @NotNull
-    private ProLogError toProLogError(@NotNull final ResponseBody errorBody) throws Throwable {
+    private GlobusPiccoloturMovimentacaoResponse toGlobusPiccoloturResponse(
+            @NotNull final ResponseBody errorBody) throws Throwable {
         final String jsonBody = errorBody.string();
         try {
-            return ProLogError.generateFromString(jsonBody);
+            return GlobusPiccoloturMovimentacaoResponse.generateFromString(jsonBody);
         } catch (final Throwable t) {
             final String msg = String.format("Erro ao realizar o parse da mensagem de erro recebida da integração:\n" +
                     "jsonBody: %s", jsonBody);

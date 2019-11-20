@@ -15,10 +15,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovi
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturMovimentacaoResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
-import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
@@ -170,14 +170,15 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                     dataHoraMovimentacao,
                                     fecharServicosAutomaticamente);
             final long codUnidade = processoMovimentacao.getUnidade().getCodigo();
-            final SuccessResponseIntegracao response = requester.insertProcessoMovimentacao(
+            final GlobusPiccoloturMovimentacaoResponse response = requester.insertProcessoMovimentacao(
                     getIntegradorProLog().getUrl(
                             getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(codUnidade),
                             getSistemaKey(),
                             MetodoIntegrado.INSERT_MOVIMENTACAO),
                     GlobusPiccoloturConverter.convert(processoMovimentacao, dataHoraMovimentacao));
-            if (response.getCodigo() == null || response.getCodigo() <= 0) {
-                throw new GlobusPiccoloturException("[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado");
+            if (!response.isSucesso()) {
+                throw new GlobusPiccoloturException(
+                        "[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado\n" + response.getPrettyErrors());
             }
             conn.commit();
             return codMovimentacao;

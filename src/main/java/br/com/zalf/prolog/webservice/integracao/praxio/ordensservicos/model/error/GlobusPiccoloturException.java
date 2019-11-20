@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error;
 
-import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
 import br.com.zalf.prolog.webservice.errorhandling.exception.IntegracaoException;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturMovimentacaoResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +25,7 @@ public final class GlobusPiccoloturException extends IntegracaoException {
     }
 
     @NotNull
-    public static GlobusPiccoloturException from(@NotNull final ProLogError proLogError) {
-        return new GlobusPiccoloturException(proLogError.getMessage());
+    public static GlobusPiccoloturException from(@NotNull final GlobusPiccoloturMovimentacaoResponse response) {
+        return new GlobusPiccoloturException(response.getPrettyErrors());
     }
 }
