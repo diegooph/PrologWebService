@@ -85,7 +85,7 @@ public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDa
                 stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELOS_BANDA_LISTAGEM(" +
                         "F_COD_EMPRESA                   := ?," +
                         "F_COD_MARCA                     := ?," +
-                        "F_INCLUIR_MARCAS_NAO_UTILIZADAS := ?)");
+                        "F_INCLUIR_MARCAS_NAO_UTILIZADAS := ?);");
                 stmt.setLong(1, codEmpresa);
                 stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
                 stmt.setBoolean(3, incluirMarcasNaoUtilizadas);
@@ -222,7 +222,7 @@ public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDa
 
     @NotNull
     @Override
-    public List<PneuModeloBandaListagem> getListagemModelosBandas(@Nullable final Long codEmpresa,
+    public List<PneuModeloBandaListagem> getListagemModelosBandas(@NotNull final Long codEmpresa,
                                                                   @Nullable final Long codMarca)
             throws Throwable {
         Connection conn = null;
@@ -233,8 +233,8 @@ public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDa
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELOS_BANDA_LISTAGEM(" +
                     "F_COD_EMPRESA                   := ?," +
                     "F_COD_MARCA                     := ?," +
-                    "F_INCLUIR_MARCAS_NAO_UTILIZADAS := ?)");
-            StatementUtils.bindValueOrNull(stmt, 1, codEmpresa, SqlType.BIGINT);
+                    "F_INCLUIR_MARCAS_NAO_UTILIZADAS := ?);");
+            stmt.setLong(1, codEmpresa);
             StatementUtils.bindValueOrNull(stmt, 2, codMarca, SqlType.BIGINT);
             stmt.setBoolean(3, false);
             rSet = stmt.executeQuery();

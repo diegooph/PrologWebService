@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.banda;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.*;
@@ -16,13 +15,17 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class PneuMarcaModeloBandaService {
+    @NotNull
     private static final String TAG = PneuModeloBandaEdicao.class.getSimpleName();
     @NotNull
     private final PneuMarcaModeloBandaDao dao = Injection.providePneuModeloBandaDao();
 
-    public AbstractResponse insertMarcaBanda(@NotNull final PneuMarcaBandaInsercao marcaBanda) {
+    @NotNull
+    ResponseWithCod insertMarcaBanda(@NotNull final PneuMarcaBandaInsercao marcaBanda) {
         try {
-            return ResponseWithCod.ok("Marca de banda inserida com sucesso", dao.insertMarcaBanda(marcaBanda));
+            return ResponseWithCod.ok(
+                    "Marca de banda inserida com sucesso",
+                    dao.insertMarcaBanda(marcaBanda));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir marca de banda para empresa: " + marcaBanda.getCodEmpresa(), t);
             throw Injection
@@ -31,7 +34,8 @@ public final class PneuMarcaModeloBandaService {
         }
     }
 
-    public ResponseWithCod updateMarcaBanda(@NotNull final PneuMarcaBandaEdicao marcaBanda) {
+    @NotNull
+    ResponseWithCod updateMarcaBanda(@NotNull final PneuMarcaBandaEdicao marcaBanda) {
         try {
             return ResponseWithCod.ok("Marca de banda editada com sucesso", dao.updateMarcaBanda(marcaBanda));
         } catch (final Throwable t) {
@@ -42,9 +46,10 @@ public final class PneuMarcaModeloBandaService {
         }
     }
 
-    public List<PneuMarcaBandaListagem> getListagemMarcasBanda(@NotNull final Long codEmpresa,
-                                                               final boolean comModelos,
-                                                               final boolean incluirMarcasNaoUtilizadas) {
+    @NotNull
+    List<PneuMarcaBandaListagem> getListagemMarcasBanda(@NotNull final Long codEmpresa,
+                                                        final boolean comModelos,
+                                                        final boolean incluirMarcasNaoUtilizadas) {
         try {
             return dao.getListagemMarcasBanda(codEmpresa, comModelos, incluirMarcasNaoUtilizadas);
         } catch (final Throwable t) {
@@ -58,7 +63,8 @@ public final class PneuMarcaModeloBandaService {
         }
     }
 
-    public PneuMarcaBandaVisualizacao getMarcaBanda(@NotNull final Long codMarca) {
+    @NotNull
+    PneuMarcaBandaVisualizacao getMarcaBanda(@NotNull final Long codMarca) {
         try {
             return dao.getMarcaBanda(codMarca);
         } catch (final Throwable t) {
@@ -69,7 +75,8 @@ public final class PneuMarcaModeloBandaService {
         }
     }
 
-    public AbstractResponse insertModeloBanda(@NotNull final PneuModeloBandaInsercao pneuModeloBandaInsercao) {
+    @NotNull
+    ResponseWithCod insertModeloBanda(@NotNull final PneuModeloBandaInsercao pneuModeloBandaInsercao) {
         try {
             return ResponseWithCod.ok("Modelo de banda inserido com sucesso",
                     dao.insertModeloBanda(pneuModeloBandaInsercao));
@@ -82,7 +89,8 @@ public final class PneuMarcaModeloBandaService {
         }
     }
 
-    public ResponseWithCod updateModeloBanda(@NotNull final PneuModeloBandaEdicao pneuModeloBandaEdicao) {
+    @NotNull
+    ResponseWithCod updateModeloBanda(@NotNull final PneuModeloBandaEdicao pneuModeloBandaEdicao) {
         try {
             return ResponseWithCod.ok("Modelo de banda editado com sucesso",
                     dao.updateModeloBanda(pneuModeloBandaEdicao));
@@ -94,11 +102,12 @@ public final class PneuMarcaModeloBandaService {
         }
     }
 
-    public List<PneuModeloBandaListagem> getListagemModelosBandas(@Nullable final Long codEmpresa,
-                                                                  @Nullable final Long codMarca) {
+    @NotNull
+    List<PneuModeloBandaListagem> getListagemModelosBandas(@Nullable final Long codEmpresa,
+                                                           @Nullable final Long codMarca) {
         try {
-            if (codEmpresa == null && codMarca == null) {
-                throw new RuntimeException("codEmpresa e codMarca não podem ser ambos nulos!");
+            if (codEmpresa == null) {
+                throw new RuntimeException("codEmpresa nunca pode ser null!");
             }
 
             return dao.getListagemModelosBandas(codEmpresa, codMarca);
@@ -112,7 +121,8 @@ public final class PneuMarcaModeloBandaService {
         }
     }
 
-    public PneuModeloBandaVisualizacao getModeloBanda(@NotNull final Long codModelo) {
+    @NotNull
+    PneuModeloBandaVisualizacao getModeloBanda(@NotNull final Long codModelo) {
         try {
             return dao.getModeloBanda(codModelo);
         } catch (final Throwable t) {

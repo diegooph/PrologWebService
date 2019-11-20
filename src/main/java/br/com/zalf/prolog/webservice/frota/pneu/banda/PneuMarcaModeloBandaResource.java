@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.banda;
 
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
@@ -41,7 +40,7 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
     @Path("/marcas")
-    public AbstractResponse insertMarcaBanda(@Valid PneuMarcaBandaInsercao marcaBanda) {
+    public ResponseWithCod insertMarcaBanda(@Valid PneuMarcaBandaInsercao marcaBanda) {
         return service.insertMarcaBanda(marcaBanda);
     }
 
@@ -89,9 +88,6 @@ public final class PneuMarcaModeloBandaResource {
     public PneuMarcaBandaVisualizacao getMarcaBanda(@PathParam("codMarca") Long codMarca) {
         return service.getMarcaBanda(codMarca);
     }
-    //
-    //
-    //
 
     //
     //
@@ -105,7 +101,7 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
     @Path("/modelos")
-    public AbstractResponse insertModeloBanda(@Valid final PneuModeloBandaInsercao pneuModeloBandaInsercao) {
+    public ResponseWithCod insertModeloBanda(@Valid final PneuModeloBandaInsercao pneuModeloBandaInsercao) {
         return service.insertModeloBanda(pneuModeloBandaInsercao);
     }
 
@@ -145,7 +141,4 @@ public final class PneuMarcaModeloBandaResource {
     public PneuModeloBandaVisualizacao getModeloBanda(@PathParam("codModelo") Long codModelo) {
         return service.getModeloBanda(codModelo);
     }
-    //
-    //
-    //
 }
