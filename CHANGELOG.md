@@ -20,6 +20,7 @@ Change Log
 * Altera o fluxo de realização de checklist na integração ao Globus (PL-2369)
 * Altera forma de processar abertura de OSs e considera texto das alternativas tipo_outros para abrir ou não 
 um item (PL-2389)
+* Altera método de busca das URLs das perguntas do checklist (PL-2386)
 
 
 <a name="v1.0.6"></a>
