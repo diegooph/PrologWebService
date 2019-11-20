@@ -212,7 +212,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
                     pairUnidadeCodColaborador.getRight(),
                     codVeiculo);
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao buscar código do veículo pela placa: " + placa);
+            Log.e(TAG, "Erro ao buscar dados de checklist inserção");
             throw new RuntimeException(throwable);
         } finally {
             DatabaseConnection.close(conn);
@@ -282,7 +282,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
             } else {
-                throw new RuntimeException();
+                return -1L;
             }
         } finally {
             DatabaseConnection.close(stmt, rSet);
