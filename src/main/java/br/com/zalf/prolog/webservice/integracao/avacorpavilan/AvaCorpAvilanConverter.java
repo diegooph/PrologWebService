@@ -184,7 +184,7 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static Map<ModeloChecklist, List<String>> convert(ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
+    public static Map<ModeloChecklist, List<String>> convert(Long codUnidade, ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
         checkNotNull(arrayOfQuestionarioVeiculos, "arrayOfQuestionarioVeiculos não pode ser null!");
 
         final Map<ModeloChecklist, List<String>> map = new HashMap<>();
@@ -195,6 +195,7 @@ public final class AvaCorpAvilanConverter {
             final Questionario questionario = questionarioVeiculos.getQuestionario();
             modeloChecklist.setCodigo(Long.valueOf(questionario.getCodigoQuestionario()));
             modeloChecklist.setNome(questionario.getDescricao());
+            modeloChecklist.setCodUnidade(codUnidade);
 
             // cria placa dos veículos
             final List<String> placasVeiculo = new ArrayList<>();

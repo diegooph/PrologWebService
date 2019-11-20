@@ -129,7 +129,7 @@ public final class AvaCorpAvilan extends Sistema {
     public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
                                                                     @NotNull final Long codCargo) throws Throwable {
         return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaSelecaoModelo(
-                AvaCorpAvilanConverter.convert(requester.getSelecaoModeloChecklistPlacaVeiculo(
+                AvaCorpAvilanConverter.convert(codUnidade, requester.getSelecaoModeloChecklistPlacaVeiculo(
                         getCpf(),
                         getDataNascimento())));
     }
