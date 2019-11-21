@@ -104,7 +104,7 @@ public final class GlobusPiccoloturConverter {
                 final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
                 movimentacoesGlobus.add(new MovimentacaoGlobus(
                         (long) i,
-                        GlobusPiccoloturUtils.addHifenPlaca(destinoVeiculo.getVeiculo().getPlaca()),
+                        GlobusPiccoloturUtils.addHifenPlacaSePadraoAntigo(destinoVeiculo.getVeiculo().getPlaca()),
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(movimentacao.getPneu().getCodigoCliente()),
                         MovimentacaoGlobus.PNEU_INSERIDO,
@@ -114,7 +114,7 @@ public final class GlobusPiccoloturConverter {
                 final OrigemVeiculo origemVeiculo = ((OrigemVeiculo) movimentacao.getOrigem());
                 movimentacoesGlobus.add(new MovimentacaoGlobus(
                         (long) i,
-                        GlobusPiccoloturUtils.addHifenPlaca(origemVeiculo.getVeiculo().getPlaca()),
+                        GlobusPiccoloturUtils.addHifenPlacaSePadraoAntigo(origemVeiculo.getVeiculo().getPlaca()),
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(movimentacao.getPneu().getCodigoCliente()),
                         MovimentacaoGlobus.PNEU_RETIRADO,
@@ -127,7 +127,7 @@ public final class GlobusPiccoloturConverter {
                 // Retira pneu
                 movimentacoesGlobus.add(new MovimentacaoGlobus(
                         (long) i,
-                        GlobusPiccoloturUtils.addHifenPlaca(origemVeiculo.getVeiculo().getPlaca()),
+                        GlobusPiccoloturUtils.addHifenPlacaSePadraoAntigo(origemVeiculo.getVeiculo().getPlaca()),
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(codigoCliente),
                         MovimentacaoGlobus.PNEU_RETIRADO,
@@ -137,7 +137,7 @@ public final class GlobusPiccoloturConverter {
                 // Aplica pneu
                 movimentacoesGlobus.add(new MovimentacaoGlobus(
                         (long) i,
-                        GlobusPiccoloturUtils.addHifenPlaca(destinoVeiculo.getVeiculo().getPlaca()),
+                        GlobusPiccoloturUtils.addHifenPlacaSePadraoAntigo(destinoVeiculo.getVeiculo().getPlaca()),
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(codigoCliente),
                         MovimentacaoGlobus.PNEU_INSERIDO,

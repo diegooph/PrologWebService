@@ -187,13 +187,10 @@ public final class StringUtils {
     }
 
     /**
-     * Return whether the specified string contains only alpabets/special chars too.
-     *
-     * @param palavra the string to test.
-     * @return true if the string contains only alpabets/special chars, false if it has numbers.
+     * {@link org.apache.commons.lang3.StringUtils#isAlpha(CharSequence)}
      */
-    public static boolean isAlpabetsValue(String palavra) {
-        return !palavra.matches(".*\\d+.*");
+    public static boolean isAlpha(@NotNull final String string) {
+        return org.apache.commons.lang3.StringUtils.isAlpha(string);
     }
 
     /**
@@ -214,5 +211,15 @@ public final class StringUtils {
      */
     public static boolean isIntegerValuePositive(@NotNull final String representacaoValor) {
         return representacaoValor.matches("^?\\d+$");
+    }
+
+    /**
+     * Return whether the specified string contains only letters.
+     *
+     * @param string the String to test.
+     * @return True if thes String contains letters, false when the string contains only numbers.
+     */
+    public static boolean containsLetters(@NotNull final String string) {
+        return !isIntegerValue(string);
     }
 }
