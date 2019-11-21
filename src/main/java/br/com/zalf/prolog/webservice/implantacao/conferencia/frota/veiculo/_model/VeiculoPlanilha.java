@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class VeiculoPlanilha {
-    private Long codUnidade;
     private String placa;
     private String marca;
     private String modelo;
@@ -17,14 +16,6 @@ public final class VeiculoPlanilha {
     private String qtdEixos;
 
     public VeiculoPlanilha() {
-    }
-
-    public Long getCodUnidade() {
-        return codUnidade;
-    }
-
-    public void setCodUnidade(@NotNull final Long codUnidade) {
-        this.codUnidade = codUnidade;
     }
 
     public String getPlaca() {
