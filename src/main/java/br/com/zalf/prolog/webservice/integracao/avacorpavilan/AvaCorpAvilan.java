@@ -4,15 +4,13 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -260,7 +258,15 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidadeCronograma) throws Throwable {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidadesCronograma) throws Throwable {
+        // A Avilan não possui a busca do cronograma para todas as unidades, então temos que limitar a apenas 1 por vez.
+        if (codUnidadesCronograma.size() > 1) {
+            throw new BloqueadoIntegracaoException(
+                    "Para a sua empresa não é possível filtrar todas as placas de uma vez." +
+                            "\nPor favor, selecione uma Unidade específica");
+        }
+        final Long codUnidadeCronograma = codUnidadesCronograma.get(0);
+
         /*
          * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
          * que não esteja presente na mesma unidade dele.
@@ -276,10 +282,10 @@ public final class AvaCorpAvilan extends Sistema {
         final AfericaoVeiculosExclusionStrategy exclusionStrategy = new AfericaoVeiculosExclusionStrategy();
         final CronogramaAfericao cronograma =
                 AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao, codUnidadeCronograma);
-        cronograma.removerPlacasNaoAferiveis(cronograma);
-        cronograma.removerModelosSemPlacas(cronograma);
-        cronograma.calcularQuatidadeSulcosPressaoOk(cronograma);
-        cronograma.calcularTotalVeiculos(cronograma);
+        cronograma.removerPlacasNaoAferiveis();
+        cronograma.removerModelosSemPlacas();
+        cronograma.calcularQuatidadeSulcosPressaoOk(false);
+        cronograma.calcularTotalVeiculos();
         return cronograma;
     }
 

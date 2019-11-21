@@ -15,7 +15,8 @@ public class CronogramaAfericao {
     private int totalSulcoPressaoOk;
     private int totalVeiculos;
 
-    public CronogramaAfericao() {}
+    public CronogramaAfericao() {
+    }
 
     public List<ModeloPlacasAfericao> getModelosPlacasAfericao() {
         return modelosPlacasAfericao;
@@ -86,7 +87,7 @@ public class CronogramaAfericao {
                 '}';
     }
 
-    public void calcularQuatidadeSulcosPressaoOk(CronogramaAfericao cronogramaAfericao) {
+    public void calcularQuatidadeSulcosPressaoOk(final boolean useMetaAfericaoFromPlaca) {
         int qtdSulcosOk = 0;
         int qtdPressaoOk = 0;
         int qtdSulcosPressaook = 0;
@@ -95,22 +96,18 @@ public class CronogramaAfericao {
         int qtdModeloPressaoOk = 0;
         int qtdModeloSulcosPressaoOk = 0;
 
-        final int metaAfericaoSulco = cronogramaAfericao.getMetaAfericaoSulco();
-        final int metaAfericaoPressao = cronogramaAfericao.getMetaAfericaoPressao();
-
-        final List<ModeloPlacasAfericao> modelos = cronogramaAfericao.getModelosPlacasAfericao();
-        for (final ModeloPlacasAfericao modelo : modelos) {
+        for (final ModeloPlacasAfericao modelo : getModelosPlacasAfericao()) {
             for (final ModeloPlacasAfericao.PlacaAfericao placaAfericao : modelo.getPlacasAfericao()) {
-                if (isAfericaoSulcoOk(placaAfericao, metaAfericaoSulco)) {
+                if (isAfericaoSulcoOk(placaAfericao, useMetaAfericaoFromPlaca)) {
                     qtdSulcosOk++;
                     qtdModeloSulcosOk++;
                 }
-                if (isAfericaoPressaoOk(placaAfericao, metaAfericaoPressao)) {
+                if (isAfericaoPressaoOk(placaAfericao, useMetaAfericaoFromPlaca)) {
                     qtdPressaoOk++;
                     qtdModeloPressaoOk++;
                 }
-                if (isAfericaoSulcoOk(placaAfericao, metaAfericaoSulco)
-                        && isAfericaoPressaoOk(placaAfericao, metaAfericaoPressao)) {
+                if (isAfericaoSulcoOk(placaAfericao, useMetaAfericaoFromPlaca)
+                        && isAfericaoPressaoOk(placaAfericao, useMetaAfericaoFromPlaca)) {
                     qtdSulcosPressaook++;
                     qtdModeloSulcosPressaoOk++;
                 }
@@ -124,33 +121,37 @@ public class CronogramaAfericao {
             qtdModeloSulcosPressaoOk = 0;
         }
         // Devemos setar a quatidade total de sulcos/pressões no cronograma.
-        cronogramaAfericao.setTotalSulcosOk(qtdSulcosOk);
-        cronogramaAfericao.setTotalPressaoOk(qtdPressaoOk);
-        cronogramaAfericao.setTotalSulcoPressaoOk(qtdSulcosPressaook);
+        setTotalSulcosOk(qtdSulcosOk);
+        setTotalPressaoOk(qtdPressaoOk);
+        setTotalSulcoPressaoOk(qtdSulcosPressaook);
     }
 
-    public void calcularTotalVeiculos(CronogramaAfericao cronogramaAfericao) {
+    public void calcularTotalVeiculos() {
         int totalVeiculos = 0;
-        for (final ModeloPlacasAfericao modelo : cronogramaAfericao.getModelosPlacasAfericao()) {
+        for (final ModeloPlacasAfericao modelo : getModelosPlacasAfericao()) {
             modelo.setTotalVeiculosModelo(modelo.getPlacasAfericao().size());
             totalVeiculos += modelo.getPlacasAfericao().size();
         }
-        cronogramaAfericao.setTotalVeiculos(totalVeiculos);
+        setTotalVeiculos(totalVeiculos);
     }
 
-    private boolean isAfericaoPressaoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao, int metaAfericaoPressao) {
-        return placaAfericao.getIntervaloUltimaAfericaoPressao() <= metaAfericaoPressao
+    private boolean isAfericaoPressaoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao,
+                                        final boolean useMetaAfericaoFromPlaca) {
+        final int metaAfericao = useMetaAfericaoFromPlaca ? placaAfericao.getMetaAfericaoPressao() : metaAfericaoPressao;
+        return placaAfericao.getIntervaloUltimaAfericaoPressao() <= metaAfericao
                 && placaAfericao.getIntervaloUltimaAfericaoPressao() != ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO;
     }
 
-    private boolean isAfericaoSulcoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao, int metaAfericaoSulco) {
-        return placaAfericao.getIntervaloUltimaAfericaoSulco() <= metaAfericaoSulco
+    private boolean isAfericaoSulcoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao,
+                                      final boolean useMetaAfericaoFromPlaca) {
+        final int metaAfericao = useMetaAfericaoFromPlaca ? placaAfericao.getMetaAfericaoSulco() : metaAfericaoSulco;
+        return placaAfericao.getIntervaloUltimaAfericaoSulco() <= metaAfericao
                 && placaAfericao.getIntervaloUltimaAfericaoSulco() != ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO;
     }
 
-    public void removerPlacasNaoAferiveis(final CronogramaAfericao cronogramaAfericao) {
+    public void removerPlacasNaoAferiveis() {
         final List<ModeloPlacasAfericao.PlacaAfericao> placasNaoAferiveis = new ArrayList<>();
-        for (final ModeloPlacasAfericao modelo : cronogramaAfericao.getModelosPlacasAfericao()) {
+        for (final ModeloPlacasAfericao modelo : getModelosPlacasAfericao()) {
             for (final ModeloPlacasAfericao.PlacaAfericao placaAfericao : modelo.getPlacasAfericao()) {
                 // Se não pode aferir nem SULCO nem PRESSAO e nem SULCO_PRESSAO, removemos essa placa da listagem.
                 if (!placaAfericao.isPodeAferirPressao()
@@ -163,15 +164,15 @@ public class CronogramaAfericao {
         }
     }
 
-    public void removerModelosSemPlacas(final CronogramaAfericao cronogramaAfericao) {
+    public void removerModelosSemPlacas() {
         final List<ModeloPlacasAfericao> modelosSemPlacas = new ArrayList<>();
-        for (final ModeloPlacasAfericao modeloPlacasAfericao : cronogramaAfericao.getModelosPlacasAfericao()) {
+        for (final ModeloPlacasAfericao modeloPlacasAfericao : getModelosPlacasAfericao()) {
             if (modeloPlacasAfericao.getPlacasAfericao().isEmpty()) {
                 modelosSemPlacas.add(modeloPlacasAfericao);
             }
         }
         if (!modelosSemPlacas.isEmpty()) {
-            cronogramaAfericao.getModelosPlacasAfericao().removeAll(modelosSemPlacas);
+            getModelosPlacasAfericao().removeAll(modelosSemPlacas);
         }
     }
 }

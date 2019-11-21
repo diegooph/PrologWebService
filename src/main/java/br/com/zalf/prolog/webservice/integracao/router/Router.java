@@ -180,11 +180,11 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getCronogramaAfericao(codUnidade);
+            return getSistema().getCronogramaAfericao(codUnidades);
         } else {
-            return integradorProLog.getCronogramaAfericao(codUnidade);
+            return integradorProLog.getCronogramaAfericao(codUnidades);
         }
     }
 
