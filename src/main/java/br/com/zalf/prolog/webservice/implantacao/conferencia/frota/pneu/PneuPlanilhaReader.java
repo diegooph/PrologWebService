@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,32 +81,32 @@ public final class PneuPlanilhaReader {
         }
         // PRESSÃO IDEAL.
         if (!StringUtils.isNullOrEmpty(linha[8])) {
-            item.setPressaoIdeal(Double.parseDouble(linha[8]));
+            item.setPressaoIdeal(linha[8]);
         }
 
         // QUANTIDADE DE SULCOS.
         if (!StringUtils.isNullOrEmpty(linha[9])) {
-            item.setQtdSulcos(Integer.parseInt(linha[9]));
+            item.setQtdSulcos(linha[9]);
         }
 
         // ALTURA DOS SULCOS
         if (!StringUtils.isNullOrEmpty(linha[10])) {
-            item.setAlturaSulcos(Double.parseDouble(linha[10]));
+            item.setAlturaSulcos(linha[10]);
         }
 
         // VALOR DA COMPRA DO PNEU.
         if (!StringUtils.isNullOrEmpty(linha[11])) {
-            item.setValorPneu(new BigDecimal(linha[11]));
+            item.setValorPneu(linha[11]);
         }
 
         // VALOR DA BANDA.
         if (!StringUtils.isNullOrEmpty(linha[12])) {
-            item.setValorBanda(new BigDecimal(linha[12]));
+            item.setValorBanda(linha[12]);
         }
 
         // VIDA ATUAL.
         if (!StringUtils.isNullOrEmpty(linha[13])) {
-            item.setVidaAtual(Integer.parseInt(linha[13]));
+            item.setVidaAtual(linha[13]);
         }
 
         // MARCA DE BANDA.
@@ -122,12 +121,12 @@ public final class PneuPlanilhaReader {
 
         // NUMERO DE SULCOS DE BANDA.
         if (!StringUtils.isNullOrEmpty(linha[16])) {
-            item.setQtdSulcosBanda(Integer.parseInt(linha[16]));
+            item.setQtdSulcosBanda(linha[16]);
         }
 
         // VIDAS TOTAL.
         if (!StringUtils.isNullOrEmpty(linha[17])) {
-            item.setVidaTotal(Integer.parseInt(linha[17]));
+            item.setVidaTotal(linha[17]);
         }
 
         // PNEU NOVO NUNCA RODADO.

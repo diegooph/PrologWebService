@@ -16,16 +16,16 @@ public final class PneuPlanilha {
     private String modelo;
     private String dot;
     private String dimensao;
-    private double pressaoIdeal;
-    private int qtdSulcos;
-    private double alturaSulcos;
-    private BigDecimal valorPneu;
-    private BigDecimal valorBanda;
-    private int vidaAtual;
-    private int vidaTotal;
+    private String pressaoIdeal;
+    private String qtdSulcos;
+    private String alturaSulcos;
+    private String valorPneu;
+    private String valorBanda;
+    private String vidaAtual;
+    private String vidaTotal;
     private String marcaBanda;
     private String modeloBanda;
-    private int qtdSulcosBanda;
+    private String qtdSulcosBanda;
     private String pneuNovoNuncaRodado;
 
     public void setCodUnidade(@NotNull final Long codUnidade) {
@@ -52,31 +52,31 @@ public final class PneuPlanilha {
         this.dimensao = dimensao;
     }
 
-    public void setPressaoIdeal(final double pressaoIdeal) {
+    public void setPressaoIdeal(final String pressaoIdeal) {
         this.pressaoIdeal = pressaoIdeal;
     }
 
-    public void setQtdSulcos(final int qtdSulcos) {
+    public void setQtdSulcos(final String qtdSulcos) {
         this.qtdSulcos = qtdSulcos;
     }
 
-    public void setAlturaSulcos(final double alturaSulcos) {
+    public void setAlturaSulcos(final String alturaSulcos) {
         this.alturaSulcos = alturaSulcos;
     }
 
-    public void setValorPneu(@NotNull final BigDecimal valorPneu) {
+    public void setValorPneu(@NotNull final String valorPneu) {
         this.valorPneu = valorPneu;
     }
 
-    public void setValorBanda(@NotNull final BigDecimal valorBanda) {
+    public void setValorBanda(@NotNull final String valorBanda) {
         this.valorBanda = valorBanda;
     }
 
-    public void setVidaAtual(final int vidaAtual) {
+    public void setVidaAtual(final String vidaAtual) {
         this.vidaAtual = vidaAtual;
     }
 
-    public void setVidaTotal(final int vidaTotal) {
+    public void setVidaTotal(final String vidaTotal) {
         this.vidaTotal = vidaTotal;
     }
 
@@ -88,7 +88,7 @@ public final class PneuPlanilha {
         this.modeloBanda = modeloBanda;
     }
 
-    public void setQtdSulcosBanda(final int qtdSulcosBanda) {
+    public void setQtdSulcosBanda(final String qtdSulcosBanda) {
         this.qtdSulcosBanda = qtdSulcosBanda;
     }
 
