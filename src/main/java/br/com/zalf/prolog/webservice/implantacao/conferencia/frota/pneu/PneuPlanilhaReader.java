@@ -55,7 +55,22 @@ public final class PneuPlanilhaReader {
     }
 
     private static PneuPlanilha read(@NotNull final String[] linha) {
-        if (linha[1].isEmpty()) {
+        if (linha[1].isEmpty() &&
+            linha[4].isEmpty() &&
+            linha[5].isEmpty() &&
+            linha[6].isEmpty() &&
+            linha[7].isEmpty() &&
+            linha[8].isEmpty() &&
+            linha[9].isEmpty() &&
+            linha[10].isEmpty() &&
+            linha[11].isEmpty() &&
+            linha[12].isEmpty() &&
+            linha[13].isEmpty() &&
+            linha[14].isEmpty() &&
+            linha[15].isEmpty() &&
+            linha[16].isEmpty() &&
+            linha[17].isEmpty() &&
+            linha[18].isEmpty()) {
             return null;
         }
         final PneuPlanilha item = new PneuPlanilha();
