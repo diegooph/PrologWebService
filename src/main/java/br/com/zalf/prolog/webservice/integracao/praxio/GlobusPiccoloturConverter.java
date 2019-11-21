@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * Created on 04/06/19.
@@ -149,13 +147,16 @@ public final class GlobusPiccoloturConverter {
                 throw new IllegalStateException("Esse processo de movimentação não é válido para essa integração");
             }
         }
-        final AtomicInteger counter = new AtomicInteger(0);
-        final List<MovimentacaoGlobus> collect = movimentacoesGlobus
-                .stream()
-                .sorted(Comparator.comparing(MovimentacaoGlobus::getTipoOperacao).reversed())
-                .peek(pmg -> pmg.setSequencia((long) counter.getAndIncrement()))
-                .collect(Collectors.toList());
-        return new ProcessoMovimentacaoGlobus(collect);
+
+        // Ordena a lista com base na ordem das operações que foram executadas.
+        movimentacoesGlobus.sort(Comparator.comparingInt(MovimentacaoGlobus::getTipoOperacaoOrdem));
+
+        // Atualiza o valor da sequência com o index do objeto na lista.
+        for (int i = 0; i < movimentacoesGlobus.size(); i++) {
+            movimentacoesGlobus.get(i).setSequencia((long) i);
+        }
+
+        return new ProcessoMovimentacaoGlobus(movimentacoesGlobus);
     }
 
     @NotNull

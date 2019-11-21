@@ -30,6 +30,15 @@ public final class MovimentacaoGlobus {
     @Nullable
     private final Integer posicao;
 
+    /**
+     * A ordem de execução da operação sendo feita. Retiradas precisam ser feitas sempre antes de inserções. Isso é uma
+     * regra adotada na integração para facilitar as coisas no Globus. Esse atributo nos ajuda a ordenar a lista antes
+     * do envio.
+     *
+     * Este atributo é <code>transient</code> para não ser enviado no JSON.
+     */
+    private transient final int tipoOperacaoOrdem;
+
     public MovimentacaoGlobus(@NotNull Long sequencia,
                               @NotNull final String placa,
                               @NotNull final LocalDateTime dataHora,
@@ -44,6 +53,7 @@ public final class MovimentacaoGlobus {
         this.tipoOperacao = tipoOperacao;
         this.observacao = observacao;
         this.posicao = posicao;
+        this.tipoOperacaoOrdem = tipoOperacao.equals(PNEU_RETIRADO) ? 0 : 1;
     }
 
     @NotNull
@@ -83,5 +93,9 @@ public final class MovimentacaoGlobus {
     @Nullable
     public Integer getPosicao() {
         return posicao;
+    }
+
+    public int getTipoOperacaoOrdem() {
+        return tipoOperacaoOrdem;
     }
 }
