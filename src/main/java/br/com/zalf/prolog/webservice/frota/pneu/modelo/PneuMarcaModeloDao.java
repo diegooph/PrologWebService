@@ -12,26 +12,28 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public interface PneuMarcaModeloDao {
-
     /**
      * Retorna uma lista de marcas de pneu. As marcas de pneu são a nível ProLog, por enquanto. Como em breve será
      * por empresa, o método já está preparado recebendo o código da empresa.
      *
-     * @param codEmpresa código da empresa.
-     * @param comModelos true se para cada marca deve retornar seus modelos, false caso contrário.
-     * @return uma lista de marcas.
-     * @throws Throwable caso ocorra algum erro.
+     * @param codEmpresa                 Código da empresa.
+     * @param comModelos                 True se para cada marca deve retornar seus modelos, false caso contrário.
+     * @param incluirMarcasNaoUtilizadas True se devemos buscar também as marcas que a empresa não utiliza,
+     *                                   false caso contrário.
+     * @return Uma lista de marcas.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     List<PneuMarcaListagem> getListagemMarcasPneu(@NotNull final Long codEmpresa,
-                                                  final boolean comModelos) throws Throwable;
+                                                  final boolean comModelos,
+                                                  final boolean incluirMarcasNaoUtilizadas) throws Throwable;
 
     /**
      * Insere um modelo de pneu.
      *
-     * @param pneuModeloInsercao um modelo de pneu.
-     * @return codigo de inserção do modelo.
-     * @throws Throwable caso ocorra algum erro.
+     * @param pneuModeloInsercao Um modelo de pneu.
+     * @return Codigo de inserção do modelo.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     Long insertModeloPneu(@NotNull final PneuModeloInsercao pneuModeloInsercao) throws Throwable;
@@ -39,31 +41,31 @@ public interface PneuMarcaModeloDao {
     /**
      * Edita um modelo de pneu.
      *
-     * @param pneuModeloEdicao informações de um modelo de pneu.
-     * @return código do modelo de pneu editado.
-     * @throws Throwable caso ocorra algum erro.
+     * @param pneuModeloEdicao Informações de um modelo de pneu.
+     * @return Código do modelo de pneu editado.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     Long updateModeloPneu(@NotNull final PneuModeloEdicao pneuModeloEdicao) throws Throwable;
 
     /**
-     * Busca os modelos de pneu de uma empresa ou marca de pneu. Ao menos um dos parâmetros precisa existir.
+     * Busca os modelos de pneu de uma empresa ou de umna marca de pneu. O {@code codEmpresa} é obrigatório.
      *
-     * @param codEmpresa código da empresa.
-     * @param codMarca código da marca de pneu.
-     * @return uma lista de modelos.
-     * @throws Throwable caso ocorra algum erro.
+     * @param codEmpresa Código da empresa.
+     * @param codMarca   Código da marca de pneu.
+     * @return Uma lista de modelos.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
-    List<PneuModeloListagem> getListagemModelosPneu(@Nullable final Long codEmpresa,
+    List<PneuModeloListagem> getListagemModelosPneu(@NotNull final Long codEmpresa,
                                                     @Nullable final Long codMarca) throws Throwable;
 
     /**
      * Busca um modelo de pneu a partir de seu código único.
      *
-     * @param codModelo código do modelo para buscar.
+     * @param codModelo Código do modelo para buscar.
      * @return Um pneu para visualização.
-     * @throws Throwable caso ocorra algum erro.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     PneuModeloVisualizacao getModeloPneu(@NotNull final Long codModelo) throws Throwable;

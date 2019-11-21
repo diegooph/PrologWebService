@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia;
 /**
  * Created by Zart on 03/07/2017.
  */
-public class AcidentesTransito {
+public final class AcidentesTransito extends Ocorrencia {
 
     private int capotamentos;
     private int colisoes;

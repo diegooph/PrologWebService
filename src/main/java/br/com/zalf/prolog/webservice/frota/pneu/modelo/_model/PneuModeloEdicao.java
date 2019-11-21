@@ -18,14 +18,11 @@ public final class PneuModeloEdicao {
     private final Long codigo;
     @NotNull
     private final Long codMarca;
-
     @NotNull
     @NotBlank(message = "O nome do modelo não pode estar vazio")
     private final String nome;
-
     @Range(min = 0, max = 6, message = "A quantidade de sulcos aceita é entre 1 e 6")
     private final int quantidadeSulcos;
-
     @DecimalMin(value = "1.0", message = "A altura dos sulcos deve ser, pelo menos, 1.0")
     private final double alturaSulcos;
 

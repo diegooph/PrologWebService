@@ -3,8 +3,6 @@ package br.com.zalf.prolog.webservice.commons.util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.Normalizer;
-
 /**
  * Created on 06/06/18.
  *
@@ -13,7 +11,6 @@ import java.text.Normalizer;
 public final class StringUtils {
     /**
      * The empty String {@code ""}.
-     *
      * @since 2.0
      */
     public static final String EMPTY = "";
@@ -38,12 +35,11 @@ public final class StringUtils {
      * StringUtils.trimToNull("    abc    ") = "abc"
      * </pre>
      *
-     * @param str the String to be trimmed, may be null
+     * @param str  the String to be trimmed, may be null
      * @return the trimmed String,
-     * {@code null} if only chars &lt;= 32, empty or null String input
+     *  {@code null} if only chars &lt;= 32, empty or null String input
      */
-    @Nullable
-    public static String trimToNull(@Nullable final String str) {
+    public static String trimToNull(final String str) {
         final String ts = trim(str);
         return isNullOrEmpty(ts) ? null : ts;
     }
@@ -64,11 +60,10 @@ public final class StringUtils {
      * StringUtils.trimToEmpty("    abc    ") = "abc"
      * </pre>
      *
-     * @param str the String to be trimmed, may be null
+     * @param str  the String to be trimmed, may be null
      * @return the trimmed String, or an empty String if {@code null} input
      */
-    @NotNull
-    public static String trimToEmpty(@Nullable final String str) {
+    public static String trimToEmpty(final String str) {
         return str == null ? EMPTY : str.trim();
     }
 
@@ -90,11 +85,10 @@ public final class StringUtils {
      * StringUtils.trim("    abc    ") = "abc"
      * </pre>
      *
-     * @param str the String to be trimmed, may be null
+     * @param str  the String to be trimmed, may be null
      * @return the trimmed string, {@code null} if null String input
      */
-    @Nullable
-    public static String trim(@Nullable final String str) {
+    public static String trim(final String str) {
         return str == null ? null : str.trim();
     }
 
@@ -105,7 +99,7 @@ public final class StringUtils {
      * @return String with only numbers.
      */
     @NotNull
-    public static String getOnlyNumbers(@Nullable final String string) {
+    public static String getOnlyNumbers(String string) {
         if (string != null && !string.isEmpty())
             return string.replaceAll("[^0-9]*", "");
         return "";
@@ -117,22 +111,10 @@ public final class StringUtils {
      * @param string the string to test.
      * @return String with only letters.
      */
-    @NotNull
-    public static String getOnlyLetters(@Nullable final String string) {
+    public static String getOnlyLetters(String string) {
         if (string != null && !string.isEmpty())
             return stripAccents(string).replaceAll("[^A-Z]*", "");
         return "";
-    }
-
-    /**
-     * Return whether the specified string contains only alpabets/special chars too.
-     *
-     * @param string the string to test.
-     * @return true if the string contains only alpabets/special chars, false if it has numbers.
-     */
-    @NotNull
-    public static String stripCharactersSpecials(@NotNull final String string) {
-        return string.replaceAll("\\-|\\s+", "");
     }
 
     /**
@@ -143,8 +125,7 @@ public final class StringUtils {
      */
     @NotNull
     public static String stripAccents(@NotNull final String string) {
-        final String normalized = Normalizer.normalize(string, Normalizer.Form.NFD);
-        return normalized.replaceAll("[^\\p{ASCII}]", "");
+        return org.apache.commons.lang3.StringUtils.stripAccents(string);
     }
 
     /**
@@ -154,8 +135,9 @@ public final class StringUtils {
      * @return String without letters that contain accents.
      */
     @NotNull
-    public static String stripCharactersWithAccents(@NotNull final String string) {
-        return string.replaceAll("[^\\p{ASCII}]", "");
+    public static String stripCharactersWithAccents(@NotNull String string) {
+        String stringFormatada = string.replaceAll("[^\\p{ASCII}]", "");
+        return stringFormatada;
     }
 
     /**
@@ -189,8 +171,7 @@ public final class StringUtils {
      * @param string the string to test and possibly return.
      * @return {@code string} itself if it is non-null; {@code ""} if it is null
      */
-    @NotNull
-    public static String nullToEmpty(@Nullable final String string) {
+    public static String nullToEmpty(@Nullable String string) {
         return (string == null) ? "" : string;
     }
 
@@ -201,7 +182,7 @@ public final class StringUtils {
      * @return {@code string} itself if it is nonempty; {@code null} if it is empty or null
      */
     @Nullable
-    public static String emptyToNull(@Nullable final String string) {
+    public static String emptyToNull(@Nullable String string) {
         return isNullOrEmpty(string) ? null : string;
     }
 
@@ -211,7 +192,7 @@ public final class StringUtils {
      * @param palavra the string to test.
      * @return true if the string contains only alpabets/special chars, false if it has numbers.
      */
-    public static boolean isAlpabetsValue(@NotNull final String palavra) {
+    public static boolean isAlpabetsValue(String palavra) {
         return !palavra.matches(".*\\d+.*");
     }
 
@@ -233,15 +214,5 @@ public final class StringUtils {
      */
     public static boolean isIntegerValuePositive(@NotNull final String representacaoValor) {
         return representacaoValor.matches("^?\\d+$");
-    }
-
-    /**
-     * Return whether the specified string contains only letters.
-     *
-     * @param string the String to test.
-     * @return True if thes String contains letters, false when the string contains only numbers.
-     */
-    public static boolean containsLetters(@NotNull final String string) {
-        return !isIntegerValue(string);
     }
 }

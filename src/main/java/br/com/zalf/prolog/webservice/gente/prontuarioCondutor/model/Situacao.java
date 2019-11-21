@@ -7,8 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by Zart on 03/07/2017.
  */
-public class Situacao {
-
+public final class Situacao {
     private static final String LIBERADO = "LIBERADO";
     private static final String BLOQUEADO = "BLOQUEADO";
     private static final String BLOQUEADO_INTEGRACAO = "BLOQUEADO_INTEGRACAO";
@@ -35,7 +34,7 @@ public class Situacao {
         // Depois verificamos se é um status válido.
         Preconditions.checkArgument(
                 status.equals(BLOQUEADO) || status.equals(BLOQUEADO_INTEGRACAO) || status.equals(LIBERADO),
-                "status precisa ser " + BLOQUEADO  + " ou " + BLOQUEADO_INTEGRACAO + " ou " + LIBERADO);
+                String.format("O status %s não é valido. Precisa ser %s ou %s ou %s.", status, BLOQUEADO, BLOQUEADO_INTEGRACAO, LIBERADO));
 
         this.status = status;
     }
