@@ -50,8 +50,8 @@ public final class PneuConferenciaDaoImpl implements PneuConferenciaDao {
     }
 
     private static PneuDadosTabelaImport createDadosTabelaImport(@NotNull final Long codEmpresa,
-                                                                  @NotNull final Long codUnidade,
-                                                                  @NotNull final String usuario) throws Throwable {
+                                                                 @NotNull final Long codUnidade,
+                                                                 @NotNull final String usuario) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
