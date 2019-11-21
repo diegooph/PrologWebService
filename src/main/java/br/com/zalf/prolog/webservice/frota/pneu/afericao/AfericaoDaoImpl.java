@@ -209,7 +209,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CRONOGRAMA_AFERICOES_PLACAS_FILTRADO(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CRONOGRAMA_AFERICOES_PLACAS(" +
                     "F_COD_UNIDADES := ?," +
                     "F_DATA_HORA_ATUAL := ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
