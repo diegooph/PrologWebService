@@ -60,11 +60,7 @@ public final class GlobusPiccoloturMovimentacaoResponse {
         if (this.errors == null || this.errors.isEmpty()) {
             return "";
         }
-        String errorMessage = "";
 
-        for (final String error : this.errors) {
-            errorMessage = errorMessage.concat(error).concat("\n");
-        }
-        return errorMessage;
+        return String.join("\n", this.errors);
     }
 }
