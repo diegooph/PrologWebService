@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Stage
+==========
+
+### Features
+* Cria relatório de farol de aferições (PL-2379)
+
 <a name="v1.0.6"></a>
 ## Version [v1.0.6](https://github.com/luizfp/PrologWebService/compare/v1.0.5...v1.0.6) (release-date) [unreleased]
 
