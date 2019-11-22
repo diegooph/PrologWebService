@@ -94,7 +94,7 @@ public interface AfericaoDao {
     Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable;
 
     /**
-     * Retorna a lista de placas das unidades selecionadas e também a meta de dias em que cada placa deve ser aferido.
+     * Retorna a lista de placas das unidades selecionadas e também a meta de dias em que cada placa deve ser aferida.
      *
      * @param codUnidades Códigos das unidades selecionadas para o filtro do cronograma.
      * @return Um {@link CronogramaAfericao} contendo as placas para ser aferidas.

@@ -164,7 +164,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             return novaAfericao;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -176,7 +176,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             conn = getConnection();
             return getRestricaoByCodUnidade(conn, codUnidade);
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -236,11 +236,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                         modelo.setNomeModelo(rSet.getString("NOME_MODELO"));
                     }
                 }
-                placas.add(createPlacaAfericao(rSet, multiUnidades));
+                placas.add(createPlacaAfericao(rSet));
             }
             modelo.setPlacasAfericao(placas);
             modelos.add(modelo);
 
+            // Os atributos de meta são mantidos no cronograma ainda a nível de compatibilidade com apps antigos.
             if (!multiUnidades) {
                 // Finaliza criação do Cronograma.
                 final Restricao restricao = getRestricaoByCodUnidade(conn, codUnidades.get(0));
@@ -275,7 +276,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             return pneus;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -320,7 +321,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             return afericoes;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -352,7 +353,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             return afericoes;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -386,7 +387,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -435,7 +436,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             conn = getConnection();
             return getConfiguracaoNovaAfericaoPlaca(conn, placa);
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -454,8 +455,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 throw new Throwable("Dados de restrição não encontrados para a unidade: " + codUnidade);
             }
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -476,7 +476,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                         + placa);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -497,7 +497,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                         + codPneu);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -580,8 +580,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(@NotNull final ResultSet rSet,
-                                                                   final boolean needsToSetPeriodo) throws Throwable {
+    private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(@NotNull final ResultSet rSet) throws Throwable {
         final ModeloPlacasAfericao.PlacaAfericao placa = new ModeloPlacasAfericao.PlacaAfericao();
         placa.setPlaca(rSet.getString("PLACA"));
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
@@ -591,10 +590,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         placa.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
         placa.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
         placa.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
-        if (needsToSetPeriodo) {
-            placa.setMetaAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
-            placa.setMetaAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));
-        }
+        placa.setMetaAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
+        placa.setMetaAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));
         return placa;
     }
 

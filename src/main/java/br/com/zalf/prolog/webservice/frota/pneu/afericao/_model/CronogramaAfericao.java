@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -150,29 +149,19 @@ public class CronogramaAfericao {
     }
 
     public void removerPlacasNaoAferiveis() {
-        final List<ModeloPlacasAfericao.PlacaAfericao> placasNaoAferiveis = new ArrayList<>();
-        for (final ModeloPlacasAfericao modelo : getModelosPlacasAfericao()) {
-            for (final ModeloPlacasAfericao.PlacaAfericao placaAfericao : modelo.getPlacasAfericao()) {
-                // Se não pode aferir nem SULCO nem PRESSAO e nem SULCO_PRESSAO, removemos essa placa da listagem.
-                if (!placaAfericao.isPodeAferirPressao()
-                        && !placaAfericao.isPodeAferirSulco()
-                        && !placaAfericao.isPodeAferirSulcoPressao()) {
-                    placasNaoAferiveis.add(placaAfericao);
-                }
-            }
-            modelo.getPlacasAfericao().removeAll(placasNaoAferiveis);
-        }
+        getModelosPlacasAfericao()
+                .forEach(m -> m
+                        .getPlacasAfericao()
+                        .removeIf(p ->
+                                // Se não pode aferir nem SULCO nem PRESSAO e nem SULCO_PRESSAO, removemos essa placa
+                                // da listagem.
+                                !p.isPodeAferirPressao()
+                                && !p.isPodeAferirSulco()
+                                && !p.isPodeAferirSulcoPressao()));
     }
 
     public void removerModelosSemPlacas() {
-        final List<ModeloPlacasAfericao> modelosSemPlacas = new ArrayList<>();
-        for (final ModeloPlacasAfericao modeloPlacasAfericao : getModelosPlacasAfericao()) {
-            if (modeloPlacasAfericao.getPlacasAfericao().isEmpty()) {
-                modelosSemPlacas.add(modeloPlacasAfericao);
-            }
-        }
-        if (!modelosSemPlacas.isEmpty()) {
-            getModelosPlacasAfericao().removeAll(modelosSemPlacas);
-        }
+        getModelosPlacasAfericao()
+                .removeIf(m -> m.getPlacasAfericao().isEmpty());
     }
 }
