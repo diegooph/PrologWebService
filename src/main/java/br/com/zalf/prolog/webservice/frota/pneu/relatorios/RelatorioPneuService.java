@@ -24,6 +24,22 @@ public class RelatorioPneuService {
     @NotNull
     private final RelatorioPneuDao dao = Injection.provideRelatorioPneuDao();
 
+    public void getFarolAfericaoCsv(@NotNull final OutputStream outputStream,
+                                    @NotNull final List<Long> codUnidades,
+                                    @NotNull final String dataInicial,
+                                    @NotNull final String dataFinal) {
+        try {
+            dao.getFarolAfericaoCsv(
+                    outputStream,
+                    codUnidades,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas (CSV)", throwable);
+            throw new RuntimeException(throwable);
+        }
+    }
+
     public void getPneusComDesgasteIrregularCsv(final OutputStream outputStream,
                                                 final List<Long> codUnidades,
                                                 final String statusPneu) {

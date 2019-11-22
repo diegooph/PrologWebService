@@ -31,6 +31,15 @@ import java.util.List;
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class RelatorioPneuResource {
+    @GET
+    @Path("/farol-afericao/csv")
+    @Produces("application/csv")
+    public StreamingOutput getFarolAfericao(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> new RelatorioPneuService().getFarolAfericaoCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
 
     @GET
     @Path("/desgaste-irregular/csv")
