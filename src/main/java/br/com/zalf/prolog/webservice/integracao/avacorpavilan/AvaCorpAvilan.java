@@ -262,8 +262,8 @@ public final class AvaCorpAvilan extends Sistema {
         // A Avilan não possui a busca do cronograma para todas as unidades, então temos que limitar a apenas 1 por vez.
         if (codUnidadesCronograma.size() > 1) {
             throw new BloqueadoIntegracaoException(
-                    "Para a sua empresa não é possível filtrar todas as placas de uma vez." +
-                            "\nPor favor, selecione uma Unidade específica");
+                    "Não é possível filtrar mais de uma unidade na integração com a Avilan." +
+                            "\nSelecione apenas uma.");
         }
         final Long codUnidadeCronograma = codUnidadesCronograma.get(0);
 
