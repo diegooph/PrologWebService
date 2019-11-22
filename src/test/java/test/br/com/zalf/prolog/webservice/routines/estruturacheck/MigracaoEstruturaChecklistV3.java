@@ -1,4 +1,4 @@
-package test.routines.estruturacheck;
+package test.br.com.zalf.prolog.webservice.routines.estruturacheck;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -213,8 +213,8 @@ public final class MigracaoEstruturaChecklistV3 {
     private void executaPasso6(@NotNull final Connection conn) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            log("Migrando functions e views");
-            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_6_MIGRA_FUNCTIONS_VIEWS()}");
+            log("Migrando mudanças para possibilitar realização de checklist");
+            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_6_WS_REALIZACAO_CHECKLIST()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 6");
             }
@@ -239,8 +239,8 @@ public final class MigracaoEstruturaChecklistV3 {
     private void executaPasso8(@NotNull final Connection conn) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            log("Migrando mudanças para possibilitar realização de checklist");
-            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_8_WS_REALIZACAO_CHECKLIST()}");
+            log("Migrando functions e views");
+            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_8_MIGRA_FUNCTIONS_VIEWS()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 8");
             }
