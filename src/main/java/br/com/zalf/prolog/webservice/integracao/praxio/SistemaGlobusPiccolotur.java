@@ -14,8 +14,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
-import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturMovimentacaoResponse;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
@@ -172,7 +172,8 @@ public final class SistemaGlobusPiccolotur extends Sistema {
             final long codUnidade = processoMovimentacao.getUnidade().getCodigo();
             final GlobusPiccoloturMovimentacaoResponse response = requester.insertProcessoMovimentacao(
                     getIntegradorProLog().getUrl(
-                            getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(codUnidade),
+                            conn,
+                            getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade),
                             getSistemaKey(),
                             MetodoIntegrado.INSERT_MOVIMENTACAO),
                     GlobusPiccoloturConverter.convert(processoMovimentacao, dataHoraMovimentacao));

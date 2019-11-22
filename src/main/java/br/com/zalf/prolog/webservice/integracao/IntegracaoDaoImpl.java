@@ -102,12 +102,11 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
     @NotNull
     @Override
-    public Long getCodEmpresaByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
-        Connection conn = null;
+    public Long getCodEmpresaByCodUnidadeProLog(@NotNull final Connection conn,
+                                                @NotNull final Long codUnidadeProLog) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement(
                     "SELECT U.COD_EMPRESA AS COD_EMPRESA " +
                             "FROM UNIDADE U " +
@@ -120,20 +119,19 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 throw new SQLException("Nenhum dado retornado para a unidade:\ncodUnidadeProLog: " + codUnidadeProLog);
             }
         } finally {
-            close(conn, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
     @NotNull
     @Override
-    public String getUrl(@NotNull final Long codEmpresa,
+    public String getUrl(@NotNull final Connection conn,
+                         @NotNull final Long codEmpresa,
                          @NotNull final SistemaKey sistemaKey,
                          @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
-        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement(
                     "SELECT * FROM INTEGRACAO.FUNC_GERAL_BUSCA_URL_SISTEMA_PARCEIRO(?, ?, ?) AS URL_COMPLETA;");
             stmt.setLong(1, codEmpresa);
@@ -149,7 +147,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                         "metodoIntegrado: " + metodoIntegrado.getKey());
             }
         } finally {
-            close(conn, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 }

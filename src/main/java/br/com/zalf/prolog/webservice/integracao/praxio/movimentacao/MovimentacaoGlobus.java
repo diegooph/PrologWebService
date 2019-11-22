@@ -29,7 +29,6 @@ public final class MovimentacaoGlobus {
     private final String observacao;
     @Nullable
     private final Integer posicao;
-
     /**
      * A ordem de execução da operação sendo feita. Retiradas precisam ser feitas sempre antes de inserções. Isso é uma
      * regra adotada na integração para facilitar as coisas no Globus. Esse atributo nos ajuda a ordenar a lista antes

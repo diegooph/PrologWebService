@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## Stage
+
+### Features
+* Integra envio de movimentação em tempo real (PLI-41)
+
 <a name="v1.0.6"></a>
 ## Version [v1.0.6](https://github.com/luizfp/PrologWebService/compare/v1.0.5...v1.0.6) (release-date) [unreleased]
 

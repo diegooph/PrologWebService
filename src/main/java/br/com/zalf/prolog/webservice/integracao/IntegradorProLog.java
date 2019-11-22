@@ -45,6 +45,7 @@ import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -179,24 +180,26 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Long getCodEmpresaByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
+    public Long getCodEmpresaByCodUnidadeProLog(@NotNull final Connection conn,
+                                                @NotNull final Long codUnidadeProLog) throws Throwable {
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
 
-        return integracaoDao.getCodEmpresaByCodUnidadeProLog(codUnidadeProLog);
+        return integracaoDao.getCodEmpresaByCodUnidadeProLog(conn, codUnidadeProLog);
     }
 
     @NotNull
     @Override
-    public String getUrl(@NotNull final Long codEmpresa,
+    public String getUrl(@NotNull final Connection conn,
+                         @NotNull final Long codEmpresa,
                          @NotNull final SistemaKey sistemaKey,
                          @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
 
-        return integracaoDao.getUrl(codEmpresa, sistemaKey, metodoIntegrado);
+        return integracaoDao.getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
     }
 
     //

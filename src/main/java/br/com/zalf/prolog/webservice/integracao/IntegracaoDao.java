@@ -62,12 +62,14 @@ public interface IntegracaoDao {
     /**
      * Este método busca o código da empresa a partir de um código de unidade do ProLog.
      *
+     * @param conn             Conexão que será utilizada para buscar os dados.
      * @param codUnidadeProLog Código da Unidade ProLog que será utilizada para buscar o código da empresa.
      * @return Código da empresa a qual a unidade ProLog pertence.
      * @throws Throwable Caso ocorra algum problema na busca do código da empresa.
      */
     @NotNull
-    Long getCodEmpresaByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable;
+    Long getCodEmpresaByCodUnidadeProLog(@NotNull final Connection conn,
+                                         @NotNull final Long codUnidadeProLog) throws Throwable;
 
     /**
      * Método utilizado para buscar a URL para qual a integração deverá se comunicar. A URL é completa, contendo a
@@ -76,6 +78,7 @@ public interface IntegracaoDao {
      * Para identificar a URL correta, utilizamos o {@code codEmpresa} e também o {@code sistemaKey}, contendo a
      * chave do sistema integrado, e o {@code metodoIntegrado} identificando para qual método será utilizada a URL.
      *
+     * @param conn            Conexão que será utilizada para buscar os dados.
      * @param codEmpresa      Código da empresa integrada que iremos buscar o método.
      * @param sistemaKey      Chave do Sistema que a empresa utiliza.
      * @param metodoIntegrado Metodo que irá utilizar a URL.
@@ -83,7 +86,8 @@ public interface IntegracaoDao {
      * @throws Throwable Se algum erro acontecer na busca da URL.
      */
     @NotNull
-    String getUrl(@NotNull final Long codEmpresa,
+    String getUrl(@NotNull final Connection conn,
+                  @NotNull final Long codEmpresa,
                   @NotNull final SistemaKey sistemaKey,
                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 }
