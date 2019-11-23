@@ -267,8 +267,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
-        return afericaoDao.getCronogramaAfericao(codUnidade);
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
+        return afericaoDao.getCronogramaAfericao(codUnidades);
     }
 
     @NotNull

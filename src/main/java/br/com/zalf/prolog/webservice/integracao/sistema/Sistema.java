@@ -127,8 +127,8 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
-        return getIntegradorProLog().getCronogramaAfericao(codUnidade);
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
+        return getIntegradorProLog().getCronogramaAfericao(codUnidades);
     }
 
     @NotNull
