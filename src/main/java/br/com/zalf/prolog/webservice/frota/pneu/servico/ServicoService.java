@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericaoServico;
@@ -65,7 +66,7 @@ public class ServicoService {
         try {
             RouterAfericaoServico
                     .create(dao, userToken)
-                    .fechaServico(codUnidade, servico);
+                    .fechaServico(codUnidade, Now.localDateTimeUtc(), servico);
             return Response.ok("Serviço consertado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o conserto de um item\n" +
