@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.6"></a>
-## Version [v1.0.6](https://github.com/luizfp/PrologWebService/compare/v1.0.5...v1.0.6) (release-date) [unreleased]
+## Version [v1.0.6](https://github.com/luizfp/PrologWebService/compare/v1.0.5...v1.0.6) (2019-11-24)
 
 ### Features
 * Integra envio de movimentação em tempo real (PLI-41)
