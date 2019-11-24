@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+<a name="v1.0.7"></a>
+## Version [v1.0.7](https://github.com/luizfp/PrologWebService/compare/v1.0.6...v1.0.7) (2019-11-24)
+
+### Bug Fixes
+* Corrige validação de nome de colaborador ao cadastrar/editar
+
 <a name="v1.0.6"></a>
 ## Version [v1.0.6](https://github.com/luizfp/PrologWebService/compare/v1.0.5...v1.0.6) (2019-11-24)
 
