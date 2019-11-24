@@ -39,11 +39,15 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransfer
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Connection;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
@@ -166,31 +170,36 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull String placaVeiculo) throws Exception {
-        if (veiculoDao == null) {
-            veiculoDao = Injection.provideVeiculoDao();
-        }
-        return veiculoDao.getDiagramaVeiculoByPlaca(placaVeiculo);
-    }
-
-    @NotNull
-    @Override
-    public String getCodUnidadeClienteByCodUnidadeProLog(@NotNull Long codUnidadeProLog) throws Exception {
-        if (integracaoDao == null) {
-            integracaoDao = Injection.provideIntegracaoDao();
-        }
-
-        return integracaoDao.getCodUnidadeErpClienteByCodUnidadeProLog(codUnidadeProLog);
-    }
-
-    @NotNull
-    @Override
     public String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
 
         return integracaoDao.getTokenIntegracaoByCodUnidadeProLog(codUnidadeProLog);
+    }
+
+    @NotNull
+    @Override
+    public Long getCodEmpresaByCodUnidadeProLog(@NotNull final Connection conn,
+                                                @NotNull final Long codUnidadeProLog) throws Throwable {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+
+        return integracaoDao.getCodEmpresaByCodUnidadeProLog(conn, codUnidadeProLog);
+    }
+
+    @NotNull
+    @Override
+    public String getUrl(@NotNull final Connection conn,
+                         @NotNull final Long codEmpresa,
+                         @NotNull final SistemaKey sistemaKey,
+                         @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+
+        return integracaoDao.getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
     }
 
     //
@@ -267,8 +276,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
-        return afericaoDao.getCronogramaAfericao(codUnidade);
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
+        return afericaoDao.getCronogramaAfericao(codUnidades);
     }
 
     @NotNull
@@ -456,16 +465,20 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
-        afericaoServicoDao.fechaServico(servico, codUnidade);
+    public void fechaServico(@NotNull final Long codUnidade,
+                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                             @NotNull final Servico servico) throws Throwable {
+        afericaoServicoDao.fechaServico(codUnidade, dataHorafechamentoServico, servico);
     }
 
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final LocalDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
-        return movimentacaoDao.insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+        return movimentacaoDao
+                .insert(servicoDao, processoMovimentacao, dataHoraMovimentacao, fecharServicosAutomaticamente);
     }
 
     public static final class Builder {

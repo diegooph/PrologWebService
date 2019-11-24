@@ -15,7 +15,8 @@ public class ModeloPlacasAfericao {
     private int qtdModeloSulcoPressaoOk;
     private int totalVeiculosModelo;
 
-    public ModeloPlacasAfericao() {}
+    public ModeloPlacasAfericao() {
+    }
 
     public String getNomeModelo() {
         return nomeModelo;
@@ -123,6 +124,16 @@ public class ModeloPlacasAfericao {
          */
         private boolean podeAferirEstepe;
 
+        /**
+         * Quantidade de dias que a aferição de sulco deve ser repetida.
+         */
+        private int metaAfericaoSulco;
+
+        /**
+         * Quantidade de dias que a aferição de pressão deve ser repetida.
+         */
+        private int metaAfericaoPressao;
+
         public String getPlaca() {
             return placa;
         }
@@ -187,7 +198,24 @@ public class ModeloPlacasAfericao {
             this.podeAferirEstepe = podeAferirEstepe;
         }
 
-        public PlacaAfericao() {}
+        public int getMetaAfericaoSulco() {
+            return metaAfericaoSulco;
+        }
+
+        public void setMetaAfericaoSulco(final int metaAfericaoSulco) {
+            this.metaAfericaoSulco = metaAfericaoSulco;
+        }
+
+        public int getMetaAfericaoPressao() {
+            return metaAfericaoPressao;
+        }
+
+        public void setMetaAfericaoPressao(final int metaAfericaoPressao) {
+            this.metaAfericaoPressao = metaAfericaoPressao;
+        }
+
+        public PlacaAfericao() {
+        }
 
         @Override
         public String toString() {

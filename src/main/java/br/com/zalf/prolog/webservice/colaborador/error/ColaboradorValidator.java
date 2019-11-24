@@ -93,7 +93,7 @@ public class ColaboradorValidator {
         if (StringUtils.isNullOrEmpty(nome.trim())) {
             throw new GenericException("Vocẽ precisa fornecer o nome", "nome com apenas espaços em branco" + nome);
         }
-        if (!StringUtils.isAlpabetsValue(nome)) {
+        if (!StringUtils.isAlpha(nome)) {
             throw new GenericException("Nome inválido\nO nome não pode conter números", "Nome informado: " + nome);
         }
     }

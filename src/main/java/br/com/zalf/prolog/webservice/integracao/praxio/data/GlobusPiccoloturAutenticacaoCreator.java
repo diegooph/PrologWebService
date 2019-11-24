@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data;
+package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
 import br.com.zalf.prolog.webservice.integracao.praxio.GlobusPiccoloturConstants;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.AutenticacaoWebService;

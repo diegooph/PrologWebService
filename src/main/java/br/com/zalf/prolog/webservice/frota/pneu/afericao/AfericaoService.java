@@ -7,8 +7,8 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,15 +42,16 @@ public class AfericaoService {
 
     @NotNull
     CronogramaAfericao getCronogramaAfericao(@NotNull final String userToken,
-                                             @NotNull final Long codUnidade) throws ProLogException {
+                                             @NotNull final List<Long> codUnidades) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
-                    .getCronogramaAfericao(codUnidade);
-        } catch (final Throwable e) {
-            final String errorMessage = "Erro ao buscar o cronograma de aferições";
-            Log.e(TAG, errorMessage, e);
-            throw exceptionHandler.map(e, errorMessage);
+                    .getCronogramaAfericao(codUnidades);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar cronograma de aferições\n" +
+                    "userToken: " + userToken + "\n" +
+                    "codUnidades: " + codUnidades.toString(), t);
+            throw exceptionHandler.map(t, "Erro ao buscar cronograma de aferições, tente novamente");
         }
     }
 

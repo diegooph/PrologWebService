@@ -20,33 +20,41 @@ public final class PneuMarcaModeloService {
     @NotNull
     private final PneuMarcaModeloDao dao = Injection.providePneuModeloDao();
 
-    public List<PneuMarcaListagem> getListagemMarcasPneu(@NotNull final Long codEmpresa,
-                                                         final boolean comModelos) {
+    @NotNull
+    List<PneuMarcaListagem> getListagemMarcasPneu(@NotNull final Long codEmpresa,
+                                                  final boolean comModelos,
+                                                  final boolean incluirMarcasNaoUtilizadas) {
         try {
-            return dao.getListagemMarcasPneu(codEmpresa, comModelos);
+            return dao.getListagemMarcasPneu(codEmpresa, comModelos, incluirMarcasNaoUtilizadas);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar listagem de marcas de pneu:\n" +
                     "codEmpresa: " + codEmpresa + "\n" +
-                    "comModelos: " + comModelos, t);
+                    "comModelos: " + comModelos + "\n" +
+                    "incluirMarcasNaoUtilizadas: " + incluirMarcasNaoUtilizadas, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar as marcas de pneu, tente novamente");
         }
     }
 
-    public ResponseWithCod insertModeloPneu(@NotNull final PneuModeloInsercao pneuModeloInsercao) {
+    @NotNull
+    ResponseWithCod insertModeloPneu(@NotNull final PneuModeloInsercao pneuModeloInsercao) {
         try {
-            return ResponseWithCod.ok("Modelo de pneu inserido com sucesso", dao.insertModeloPneu(pneuModeloInsercao));
+            return ResponseWithCod.ok(
+                    "Modelo de pneu inserido com sucesso",
+                    dao.insertModeloPneu(pneuModeloInsercao));
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao inserir modelo de pneu. Empresa: " + pneuModeloInsercao.getCodEmpresa() +
-                    " Marca: " + pneuModeloInsercao.getCodMarca(), t);
+            Log.e(TAG, "Erro ao inserir modelo de pneu.\n" +
+                    "Empresa: " + pneuModeloInsercao.getCodEmpresa() + "\n" +
+                    "Marca: " + pneuModeloInsercao.getCodMarca(), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir o modelo de pneu, tente novamente");
         }
     }
 
-    public ResponseWithCod updateModeloPneu(@NotNull final PneuModeloEdicao pneuModeloEdicao) {
+    @NotNull
+    ResponseWithCod updateModeloPneu(@NotNull final PneuModeloEdicao pneuModeloEdicao) {
         try {
             return ResponseWithCod.ok(
                     "Modelo de pneu editado com sucesso",
@@ -59,8 +67,9 @@ public final class PneuMarcaModeloService {
         }
     }
 
-    public List<PneuModeloListagem> getListagemModelosPneu(@Nullable final Long codEmpresa,
-                                                           @Nullable final Long codMarca) {
+    @NotNull
+    List<PneuModeloListagem> getListagemModelosPneu(@Nullable final Long codEmpresa,
+                                                    @Nullable final Long codMarca) {
         try {
             if (codEmpresa == null) {
                 // Como a marca é a nível ProLog, a empresa sempre precisa estar presente.
@@ -78,7 +87,8 @@ public final class PneuMarcaModeloService {
         }
     }
 
-    public PneuModeloVisualizacao getModeloPneu(@NotNull final Long codModelo) {
+    @NotNull
+    PneuModeloVisualizacao getModeloPneu(@NotNull final Long codModelo) {
         try {
             return dao.getModeloPneu(codModelo);
         } catch (final Throwable t) {

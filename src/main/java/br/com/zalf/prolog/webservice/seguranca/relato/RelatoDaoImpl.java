@@ -102,6 +102,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                     "R.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
                     "R.FEEDBACK_FECHAMENTO AS FEEDBACK_FECHAMENTO, " +
                     "R.STATUS AS STATUS, " +
+                    "R.COD_ALTERNATIVA AS COD_ALTERNATIVA, " +
+                    "RA.ALTERNATIVA AS ALTERNATIVA, " +
                     "R.RESPOSTA_OUTROS AS RESPOSTA_OUTROS, " +
                     "R.COD_PDV AS COD_PDV, " +
                     "C.NOME AS NOME, " +
@@ -126,7 +128,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 return createRelato(rSet);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return null;
     }

@@ -16,9 +16,9 @@ public interface PneuMarcaModeloBandaDao {
     /**
      * Insere uma nova marca de banda.
      *
-     * @param marcaBanda marca a ser inserida.
-     * @return código gerado pelo BD para a nova banda inserida.
-     * @throws Throwable caso ocorra algum erro.
+     * @param marcaBanda Marca a ser inserida.
+     * @return Código gerado pelo BD para a nova banda inserida.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     Long insertMarcaBanda(@NotNull final PneuMarcaBandaInsercao marcaBanda) throws Throwable;
@@ -26,9 +26,9 @@ public interface PneuMarcaModeloBandaDao {
     /**
      * Atualiza o nome de uma marca.
      *
-     * @param marcaBanda marca com o nome atualizado.
-     * @return codigo da marca editada.
-     * @throws Throwable caso ocorra algum erro.
+     * @param marcaBanda Marca com o nome atualizado.
+     * @return Codigo da marca editada.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     Long updateMarcaBanda(@NotNull final PneuMarcaBandaEdicao marcaBanda) throws Throwable;
@@ -36,21 +36,24 @@ public interface PneuMarcaModeloBandaDao {
     /**
      * Busca as marcas de bandas de uma empresa.
      *
-     * @param codEmpresa código da empresa.
-     * @param comModelos true se para cada marca deve retornar seus modelos, false caso contrário.
-     * @return uma lista de marcas de bandas da empresa.
-     * @throws Throwable caso ocorra algum erro.
+     * @param codEmpresa                 Código da empresa.
+     * @param comModelos                 True se para cada marca deve retornar seus modelos, false caso contrário.
+     * @param incluirMarcasNaoUtilizadas True se devemos buscar também as marcas que a empresa não utiliza,
+     *                                   false caso contrário.
+     * @return Uma lista de marcas de bandas da empresa.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     List<PneuMarcaBandaListagem> getListagemMarcasBanda(@NotNull final Long codEmpresa,
-                                                        final boolean comModelos) throws Throwable;
+                                                        final boolean comModelos,
+                                                        final boolean incluirMarcasNaoUtilizadas) throws Throwable;
 
     /**
      * Busca uma marca de banda específica de uma empresa.
      *
-     * @param codMarca código da empresa.
-     * @return uma marca de banda da empresa.
-     * @throws Throwable caso ocorra algum erro.
+     * @param codMarca Código da empresa.
+     * @return Uma marca de banda da empresa.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     PneuMarcaBandaVisualizacao getMarcaBanda(@NotNull final Long codMarca) throws Throwable;
@@ -58,9 +61,9 @@ public interface PneuMarcaModeloBandaDao {
     /**
      * Insere um novo modelo de banda.
      *
-     * @param pneuModeloBandaInsercao modelo de banda a ser inserido.
-     * @return código gerado pelo BD para o novo modelo inserido.
-     * @throws Throwable caso ocorra algum erro.
+     * @param pneuModeloBandaInsercao Modelo de banda a ser inserido.
+     * @return Código gerado pelo BD para o novo modelo inserido.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     Long insertModeloBanda(@NotNull final PneuModeloBandaInsercao pneuModeloBandaInsercao) throws Throwable;
@@ -68,9 +71,9 @@ public interface PneuMarcaModeloBandaDao {
     /**
      * Edita um modelo de banda.
      *
-     * @param modeloBandaEdicao informações de um modelo de banda.
-     * @return código do modelo de banda editado.
-     * @throws Throwable caso ocorra algum erro.
+     * @param modeloBandaEdicao Informações de um modelo de banda.
+     * @return Código do modelo de banda editado.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     Long updateModeloBanda(@NotNull final PneuModeloBandaEdicao modeloBandaEdicao) throws Throwable;
@@ -78,22 +81,22 @@ public interface PneuMarcaModeloBandaDao {
     /**
      * Busca a marca e um modelo de banda específico.
      *
-     * @param codModelo código do modelo de uma banda.
-     * @return uma objeto contendo a marca e o modelo de uma banda.
-     * @throws Throwable caso ocorra algum erro.
+     * @param codModelo Código do modelo de uma banda.
+     * @return Uma objeto contendo a marca e o modelo de uma banda.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
     PneuModeloBandaVisualizacao getModeloBanda(@NotNull final Long codModelo) throws Throwable;
 
     /**
-     * Busca os modelos de banda de uma empresa ou marca de banda. Ao menos um dos parâmetros precisa existir.
+     * Busca os modelos de banda de uma empresa ou de uma marca específica. O {@code codEmpresa} é obrigatório.
      *
-     * @param codEmpresa código da empresa.
-     * @param codMarca código da marca de banda.
-     * @return uma lista de marcas contendo os modelos de cada uma.
-     * @throws Throwable caso ocorra algum erro.
+     * @param codEmpresa Código da empresa.
+     * @param codMarca   Código da marca de banda.
+     * @return Uma lista de marcas contendo os modelos de cada uma.
+     * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
-    List<PneuModeloBandaListagem> getListagemModelosBandas(@Nullable final Long codEmpresa,
+    List<PneuModeloBandaListagem> getListagemModelosBandas(@NotNull final Long codEmpresa,
                                                            @Nullable final Long codMarca) throws Throwable;
 }
