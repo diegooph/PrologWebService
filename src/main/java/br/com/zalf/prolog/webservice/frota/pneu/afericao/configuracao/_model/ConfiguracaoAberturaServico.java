@@ -9,35 +9,76 @@ import org.jetbrains.annotations.Nullable;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ConfiguracaoAberturaServico {
+    /**
+    * Código do registro de configuração para abertura de serviço
+    * */
     @NotNull
     private final Long codigo;
+    /**
+     * Código da regional
+     * */
+    @NotNull
+    private final Long codRegionalReferente;
+    /**
+     * Nome da regional
+     * */
+    @NotNull
+    private final String nomeRegionalReferente;
+    /**
+     * Código da unidade
+     * */
     @NotNull
     private final Long codUnidadeReferente;
+    /**
+     * Nome da unidade
+     * */
     @NotNull
     private final String nomeUnidadeReferente;
+    /**
+     * Tolerância da calibragem
+     * */
     @Nullable
-    private final Long toleranciaCalibragem;
+    private final Double toleranciaCalibragem;
+    /**
+     * Tolerância de inspeção
+     * */
     @Nullable
-    private final Long toleranciaInspecao;
+    private final Double toleranciaInspecao;
+    /**
+     * Sulco mínimo para recape
+     * */
     @Nullable
-    private final Long sulcoMinimoRecape;
+    private final Double sulcoMinimoRecape;
+    /**
+     * Sunco mínimo para descarte
+     * */
     @Nullable
-    private final Long sulcoMinimoDescarte;
+    private final Double sulcoMinimoDescarte;
+    /**
+     * Período para aferição de pressão
+     * */
     @Nullable
     private final Integer periodoAfericaoPressao;
+    /**
+     * Período para aferição de sulco
+     * */
     @Nullable
     private final Integer periodoAfericaoSulco;
 
     public ConfiguracaoAberturaServico(@NotNull final Long codigo,
+                                       @NotNull final Long codRegionalReferente,
+                                       @NotNull final String nomeRegionalReferente,
                                        @NotNull final Long codUnidadeReferente,
                                        @NotNull final String nomeUnidadeReferente,
-                                       @Nullable final Long toleranciaCalibragem,
-                                       @Nullable final Long toleranciaInspecao,
-                                       @Nullable final Long sulcoMinimoRecape,
-                                       @Nullable final Long sulcoMinimoDescarte,
+                                       @Nullable final Double toleranciaCalibragem,
+                                       @Nullable final Double toleranciaInspecao,
+                                       @Nullable final Double sulcoMinimoRecape,
+                                       @Nullable final Double sulcoMinimoDescarte,
                                        @Nullable final Integer periodoAfericaoPressao,
                                        @Nullable final Integer periodoAfericaoSulco) {
         this.codigo = codigo;
+        this.codRegionalReferente = codRegionalReferente;
+        this.nomeRegionalReferente = nomeRegionalReferente;
         this.codUnidadeReferente = codUnidadeReferente;
         this.nomeUnidadeReferente = nomeUnidadeReferente;
         this.toleranciaCalibragem = toleranciaCalibragem;
@@ -48,54 +89,53 @@ public final class ConfiguracaoAberturaServico {
         this.periodoAfericaoSulco = periodoAfericaoSulco;
     }
 
-//    @NotNull
-//    public static ConfiguracaoAberturaServico getDummy() {
-//        return new ConfiguracaoAberturaServico(
-//        );
-//    }
+    @NotNull
+    public static ConfiguracaoAberturaServico getDummy() {
+        return new ConfiguracaoAberturaServico(
+                1L,
+                1L,
+                "Sul",
+                3L,
+                "Unidade Teste Zalf",
+                0.1D,
+                0.2D,
+                11.1D,
+                11.2D,
+                15,
+                7
+        );
+    }
 
     @NotNull
-    public Long getCodigo() {
-        return codigo;
-    }
+    public Long getCodigo() { return codigo; }
 
     @NotNull
-    public Long getCodUnidadeReferente() {
-        return codUnidadeReferente;
-    }
+    public Long getCodRegionalReferente() { return codRegionalReferente; }
 
     @NotNull
-    public String getNomeUnidadeReferente() {
-        return nomeUnidadeReferente;
-    }
+    public String getNomeRegionalReferente() { return nomeRegionalReferente; }
+
+    @NotNull
+    public Long getCodUnidadeReferente() { return codUnidadeReferente; }
+
+    @NotNull
+    public String getNomeUnidadeReferente() { return nomeUnidadeReferente; }
 
     @Nullable
-    public Long getToleranciaCalibragem() {
-        return toleranciaCalibragem;
-    }
+    public Double getToleranciaCalibragem() { return toleranciaCalibragem; }
 
     @Nullable
-    public Long getToleranciaInspecao() {
-        return toleranciaInspecao;
-    }
+    public Double getToleranciaInspecao() { return toleranciaInspecao; }
 
     @Nullable
-    public Long getSulcoMinimoRecape() {
-        return sulcoMinimoRecape;
-    }
+    public Double getSulcoMinimoRecape() { return sulcoMinimoRecape; }
 
     @Nullable
-    public Long getSulcoMinimoDescarte() {
-        return sulcoMinimoDescarte;
-    }
+    public Double getSulcoMinimoDescarte() { return sulcoMinimoDescarte; }
 
     @Nullable
-    public Integer getPeriodoAfericaoPressao() {
-        return periodoAfericaoPressao;
-    }
+    public Integer getPeriodoAfericaoPressao() { return periodoAfericaoPressao; }
 
     @Nullable
-    public Integer getPeriodoAfericaoSulco() {
-        return periodoAfericaoSulco;
-    }
+    public Integer getPeriodoAfericaoSulco() { return periodoAfericaoSulco; }
 }
