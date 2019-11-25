@@ -42,9 +42,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @Override
     public void getFarolAfericaoCsv(@NotNull final OutputStream outputStream,
-                                       @NotNull final List<Long> codUnidades,
-                                       @NotNull final LocalDate dataInicial,
-                                       @NotNull final LocalDate dataFinal) throws Throwable {
+                                    @NotNull final List<Long> codUnidades,
+                                    @NotNull final LocalDate dataInicial,
+                                    @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -1099,11 +1099,14 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @NotNull
     private PreparedStatement getFarolAfericaoStatement(@NotNull final Connection conn,
-                                                           @NotNull final List<Long> codUnidades,
-                                                           @NotNull final LocalDate dataInicial,
-                                                           @NotNull final LocalDate dataFinal) throws SQLException {
+                                                        @NotNull final List<Long> codUnidades,
+                                                        @NotNull final LocalDate dataInicial,
+                                                        @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
-        "SELECT * FROM FUNC_RELATORIO_PNEU_FAROL_AFERICAO(F_COD_UNIDADES := ?, F_DATA_INICIAL := ?, F_DATA_FINAL := ?);");
+                "SELECT * FROM FUNC_PNEU_RELATORIO_FAROL_AFERICAO(" +
+                        "F_COD_UNIDADES := ?, " +
+                        "F_DATA_INICIAL := ?, " +
+                        "F_DATA_FINAL := ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
