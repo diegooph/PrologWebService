@@ -82,6 +82,9 @@ public final class MigracaoEstruturaChecklistV3 {
             log("************************ PASSO 11 - INÍCIO ************************");
             executaPasso11(conn);
             log("************************ PASSO 11 - FIM ************************");
+            log("************************ PASSO 12 - INÍCIO ************************");
+            executaPasso12(conn);
+            log("************************ PASSO 12 - FIM ************************");
             conn.commit();
             log("************************ Fim da execução da migração ************************");
         } catch (final Throwable t) {
@@ -285,6 +288,19 @@ public final class MigracaoEstruturaChecklistV3 {
             stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_11_CORRIGIR_COMPONENTES_DASH()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 11");
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+    }
+
+    private void executaPasso12(@NotNull final Connection conn) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            log("Movendo tabela checklist_respostas de schema e bloqueando insert/update/delete");
+            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_12_MOVE_TABELA_RESPOSTAS_ANTIGA()}");
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao executar passo 12");
             }
         } finally {
             DatabaseConnection.close(stmt);
