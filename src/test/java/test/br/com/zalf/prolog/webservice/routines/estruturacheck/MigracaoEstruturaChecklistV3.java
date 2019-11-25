@@ -79,6 +79,9 @@ public final class MigracaoEstruturaChecklistV3 {
             log("************************ PASSO 10 - INÍCIO ************************");
             executaPasso10(conn);
             log("************************ PASSO 10 - FIM ************************");
+            log("************************ PASSO 11 - INÍCIO ************************");
+            executaPasso11(conn);
+            log("************************ PASSO 11 - FIM ************************");
             conn.commit();
             log("************************ Fim da execução da migração ************************");
         } catch (final Throwable t) {
@@ -269,6 +272,19 @@ public final class MigracaoEstruturaChecklistV3 {
             stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_10_ALTERACOES_CHECK_OFF()}");
             if (stmt.executeUpdate() < 0) {
                 throw new IllegalStateException("Erro ao executar passo 10");
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+    }
+
+    private void executaPasso11(@NotNull final Connection conn) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            log("Realizando as correções dos componentes da dashboard");
+            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_11_CORRIGIR_COMPONENTES_DASH()}");
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao executar passo 11");
             }
         } finally {
             DatabaseConnection.close(stmt);
