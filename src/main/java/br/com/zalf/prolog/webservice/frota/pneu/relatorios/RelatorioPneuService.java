@@ -35,8 +35,14 @@ public class RelatorioPneuService {
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas (CSV)", throwable);
-            throw new RuntimeException(throwable);
+            Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas (CSV).\n" +
+                    "Unidades: " + codUnidades.toString() + "\n" +
+                    "Data inicial: " + dataInicial + "\n" +
+                    "Data final: " + dataFinal + "\n", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable,
+                            "Erro ao gerar relatório, tente novamente");
         }
     }
 
