@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServicoUpsert;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAlertaColetaSulco;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoTipoVeiculoAferivel;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -59,9 +60,9 @@ public class ConfiguracaoAfericaoResource {
 
     @PUT
     @Path("/abertura-servico")
-    public Response updateConfiguracaoAberturaServico(
-            @NotNull final List<ConfiguracaoAberturaServico> configuracoes) throws ProLogException {
-        return service.updateConfiguracaoAberturaServico(configuracoes);
+    public Response upsertConfiguracaoAberturaServico(
+            @NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) throws ProLogException {
+        return service.upsertConfiguracaoAberturaServico(configuracoes);
     }
 
     @GET

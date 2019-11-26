@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServicoUpsert;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAlertaColetaSulco;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoTipoVeiculoAferivel;
 import org.jetbrains.annotations.NotNull;
@@ -73,9 +74,9 @@ class ConfiguracaoAfericaoService {
     }
 
     @NotNull
-    Response updateConfiguracaoAberturaServico(@NotNull final List<ConfiguracaoAberturaServico> configuracoes) {
+    Response upsertConfiguracaoAberturaServico(@NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) {
         try {
-            dao.updateConfiguracaoAberturaServico(configuracoes);
+            dao.upsertConfiguracaoAberturaServico(configuracoes);
             return Response.ok("Configurações de abertura de serviços de pneus atualizadas com sucesso!");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao configurar restrições de abertura de serviços de pneus", t);

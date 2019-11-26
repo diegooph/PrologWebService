@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServicoUpsert;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAlertaColetaSulco;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoTipoVeiculoAferivel;
 import org.jetbrains.annotations.NotNull;
@@ -66,11 +67,11 @@ public interface ConfiguracaoAfericaoDao {
     /**
      * Cria ou atualiza, caso já exista, as configurações de abertura de serviços de pneus para cada Unidade.
      *
-     * @param configuracoes Novas {@link ConfiguracaoAberturaServico configurações} que serão inseridas ou atualizadas.
+     * @param configuracoes Novas {@link ConfiguracaoAberturaServicoUpsert configurações} que serão inseridas ou atualizadas.
      * @throws Throwable Se algum erro ocorrer.
      */
-    void updateConfiguracaoAberturaServico(
-            @NotNull final List<ConfiguracaoAberturaServico> configuracoes) throws Throwable;
+    void upsertConfiguracaoAberturaServico(
+            @NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) throws Throwable;
 
     /**
      * Busca todas as configurações de abertura de serviços das unidades que o {@link Colaborador colaborador} tem

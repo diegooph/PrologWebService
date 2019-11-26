@@ -35,8 +35,8 @@ public final class ConfiguracaoConverter {
         final long codigo = rSet.getLong("CODIGO");
         return new ConfiguracaoAberturaServico(
                 codigo == 0 ? null : codigo,
-                rSet.getLong("CODIGO_REGIONAL"),
                 rSet.getLong("CODIGO_EMPRESA"),
+                rSet.getLong("CODIGO_REGIONAL"),
                 rSet.getString("NOME_REGIONAL"),
                 rSet.getLong("CODIGO_UNIDADE"),
                 rSet.getString("NOME_UNIDADE"),

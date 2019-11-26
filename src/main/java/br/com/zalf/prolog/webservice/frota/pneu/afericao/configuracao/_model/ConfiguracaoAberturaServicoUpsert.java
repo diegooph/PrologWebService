@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class ConfiguracaoAberturaServico {
+public final class ConfiguracaoAberturaServicoUpsert {
     /**
     * Código do registro de configuração para abertura de serviço
     * */
@@ -25,20 +25,10 @@ public final class ConfiguracaoAberturaServico {
     @NotNull
     private final Long codRegionalReferente;
     /**
-     * Nome da regional
-     * */
-    @NotNull
-    private final String nomeRegionalReferente;
-    /**
      * Código da unidade
      * */
     @NotNull
     private final Long codUnidadeReferente;
-    /**
-     * Nome da unidade
-     * */
-    @NotNull
-    private final String nomeUnidadeReferente;
     /**
      * Tolerância da calibragem
      * */
@@ -70,24 +60,20 @@ public final class ConfiguracaoAberturaServico {
     @Nullable
     private final Integer periodoAfericaoSulco;
 
-    public ConfiguracaoAberturaServico(@Nullable final Long codigo,
-                                       @NotNull final Long codEmpresaReferente,
-                                       @NotNull final Long codRegionalReferente,
-                                       @NotNull final String nomeRegionalReferente,
-                                       @NotNull final Long codUnidadeReferente,
-                                       @NotNull final String nomeUnidadeReferente,
-                                       @Nullable final Double toleranciaCalibragem,
-                                       @Nullable final Double toleranciaInspecao,
-                                       @Nullable final Double sulcoMinimoRecape,
-                                       @Nullable final Double sulcoMinimoDescarte,
-                                       @Nullable final Integer periodoAfericaoPressao,
-                                       @Nullable final Integer periodoAfericaoSulco) {
+    public ConfiguracaoAberturaServicoUpsert(@Nullable final Long codigo,
+                                             @NotNull final Long codEmpresaReferente,
+                                             @NotNull final Long codRegionalReferente,
+                                             @NotNull final Long codUnidadeReferente,
+                                             @Nullable final Double toleranciaCalibragem,
+                                             @Nullable final Double toleranciaInspecao,
+                                             @Nullable final Double sulcoMinimoRecape,
+                                             @Nullable final Double sulcoMinimoDescarte,
+                                             @Nullable final Integer periodoAfericaoPressao,
+                                             @Nullable final Integer periodoAfericaoSulco) {
         this.codigo = codigo;
         this.codEmpresaReferente = codEmpresaReferente;
         this.codRegionalReferente = codRegionalReferente;
-        this.nomeRegionalReferente = nomeRegionalReferente;
         this.codUnidadeReferente = codUnidadeReferente;
-        this.nomeUnidadeReferente = nomeUnidadeReferente;
         this.toleranciaCalibragem = toleranciaCalibragem;
         this.toleranciaInspecao = toleranciaInspecao;
         this.sulcoMinimoRecape = sulcoMinimoRecape;
@@ -97,14 +83,12 @@ public final class ConfiguracaoAberturaServico {
     }
 
     @NotNull
-    public static ConfiguracaoAberturaServico getDummy() {
-        return new ConfiguracaoAberturaServico(
+    public static ConfiguracaoAberturaServicoUpsert getDummy() {
+        return new ConfiguracaoAberturaServicoUpsert(
                 1L,
                 3L,
                 1L,
-                "Sul",
                 3L,
-                "Unidade Teste Zalf",
                 0.1D,
                 0.2D,
                 11.1D,
@@ -124,13 +108,7 @@ public final class ConfiguracaoAberturaServico {
     public Long getCodRegionalReferente() { return codRegionalReferente; }
 
     @NotNull
-    public String getNomeRegionalReferente() { return nomeRegionalReferente; }
-
-    @NotNull
     public Long getCodUnidadeReferente() { return codUnidadeReferente; }
-
-    @NotNull
-    public String getNomeUnidadeReferente() { return nomeUnidadeReferente; }
 
     @Nullable
     public Double getToleranciaCalibragem() { return toleranciaCalibragem; }

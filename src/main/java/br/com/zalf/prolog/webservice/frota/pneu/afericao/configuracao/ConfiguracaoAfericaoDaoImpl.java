@@ -2,10 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAlertaColetaSulco;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoConverter;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoTipoVeiculoAferivel;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -125,9 +122,47 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
     }
 
     @Override
-    public void updateConfiguracaoAberturaServico(
-            @NotNull final List<ConfiguracaoAberturaServico> configuracoes) throws Throwable {
-        //TODO: ESCREVE O CÓDIGO DE UPSERT DAS INFORMAÇÕES DE FUNC_PNEU_GET_CONFIGURACAO_POR_COLABORADOR(F_COD_COLABORADOR)
+    public void upsertConfiguracaoAberturaServico(
+            @NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) throws Throwable {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            for (final ConfiguracaoAberturaServicoUpsert configuracao : configuracoes) {
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_UPSERT_CONFIGURACAO_ABERTURA_SERVICO(" +
+                        "F_CODIGO_EMPRESA := ?," +
+                        "F_CODIGO_UNIDADE := ?," +
+                        "F_TOLERANCIA_CALIBRAGEM := ?," +
+                        "F_TOLERANCIA_INSPECAO := ?," +
+                        "F_SULCO_MINIMO_RECAPAGEM := ?," +
+                        "F_SULCO_MINIMO_DESCARTE := ?," +
+                        "F_PERIODO_AFERICAO_PRESSAO := ?," +
+                        "F_PERIODO_AFERICAO_SULCO := ?);");
+                stmt.setLong(1, configuracao.getCodEmpresaReferente());
+                stmt.setLong(2, configuracao.getCodUnidadeReferente());
+                stmt.setDouble(3, configuracao.getToleranciaCalibragem());
+                stmt.setDouble(4, configuracao.getToleranciaInspecao());
+                stmt.setDouble(5, configuracao.getSulcoMinimoRecape());
+                stmt.setDouble(6, configuracao.getSulcoMinimoDescarte());
+                stmt.setInt(7, configuracao.getPeriodoAfericaoPressao());
+                stmt.setInt(8, configuracao.getPeriodoAfericaoSulco());
+                rSet = stmt.executeQuery();
+                if (rSet.next() && rSet.getBoolean(1)) {
+                    conn.commit();
+                } else {
+                    throw new IllegalStateException("Erro ao atualizar configurações da unidade: "
+                            + configuracao.getCodUnidadeReferente());
+                }
+            }
+        } finally {
+            if (conn != null) {
+                conn.rollback();
+            }
+            close(conn, stmt, rSet);
+        }
     }
 
     @NotNull

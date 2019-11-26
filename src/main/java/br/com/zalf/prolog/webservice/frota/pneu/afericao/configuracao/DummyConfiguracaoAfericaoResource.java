@@ -31,6 +31,7 @@ public class DummyConfiguracaoAfericaoResource {
         configuracao.add(ConfiguracaoAberturaServico.getDummy());
         ConfiguracaoAberturaServico configVazia = new ConfiguracaoAberturaServico(
                 null,
+                3L,
                 1L,
                 "Sul",
                 3L,
