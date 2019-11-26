@@ -27,6 +27,8 @@ import java.util.List;
  */
 public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequester {
     @NotNull
+    private static final String ERRO_AO_AUTENTICAR_INTEGRACAO = "[INTEGRAÇÃO] Erro ao autenticar integração";
+    @NotNull
     private static final String TAG = GlobusPiccoloturRequesterImpl.class.getSimpleName();
 
     @NotNull
@@ -59,23 +61,68 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
 
     @NotNull
     @Override
+    public GlobusPiccoloturAtenticacaoResponse getTokenAutenticacaoIntegracao(
+            @NotNull final String url,
+            @NotNull final String token,
+            @NotNull final Integer shortCode) throws Throwable {
+        final GlobusPiccoloturRest service = GlobusPiccoloturRestClient.getService(GlobusPiccoloturRest.class);
+        final Call<GlobusPiccoloturAtenticacaoResponse> call =
+                service.getTokenAutenticacaoIntegracao(url, token, shortCode);
+        return handleJsonResponse(call.execute(), true);
+    }
+
+    @NotNull
+    @Override
     public GlobusPiccoloturMovimentacaoResponse insertProcessoMovimentacao(
             @NotNull final String url,
+            @NotNull final String tokenIntegracao,
             @NotNull final ProcessoMovimentacaoGlobus processoMovimentacaoGlobus) throws Throwable {
         final GlobusPiccoloturRest service = GlobusPiccoloturRestClient.getService(GlobusPiccoloturRest.class);
         final Call<GlobusPiccoloturMovimentacaoResponse> call =
-                service.insertProcessoMovimentacao(url, processoMovimentacaoGlobus);
+                service.insertProcessoMovimentacao(url, tokenIntegracao, processoMovimentacaoGlobus);
         return handleJsonResponse(call.execute());
     }
 
     @NotNull
     private <T> T handleJsonResponse(@Nullable final Response<T> response) throws Throwable {
+        return handleJsonResponse(response, false);
+    }
+
+    @NotNull
+    private <T> T handleJsonResponse(@Nullable final Response<T> response,
+                                     final boolean tokenResponse) throws Throwable {
         if (response != null) {
             if (response.isSuccessful() && response.body() != null) {
+                // A autenticação retorna status = 200 inclusive quando for um erro, precisamos tratar os cenários de
+                // erro utilizando o body, para essas situações.
+                if (tokenResponse) {
+                    try {
+                        final GlobusPiccoloturAtenticacaoResponse atenticacaoResponse =
+                                ((GlobusPiccoloturAtenticacaoResponse) response.body());
+                        if (atenticacaoResponse.isSucesso()) {
+                            return response.body();
+                        }
+                        throw new GlobusPiccoloturException(
+                                ERRO_AO_AUTENTICAR_INTEGRACAO,
+                                "O método de autenticação retornou um erro, devemos tratar imediatamente",
+                                // Lançamos uma exception contendo o conteúdo do erro recebido, assim podemos logar essa
+                                // informação facilitando a correção de erros.
+                                new Exception(atenticacaoResponse.getData()));
+                    } catch (final ClassCastException c) {
+                        throw new GlobusPiccoloturException(
+                                ERRO_AO_AUTENTICAR_INTEGRACAO,
+                                "O retorno obtido da integração não está no padrão esperado",
+                                c);
+                    }
+                }
                 return response.body();
             } else {
                 if (response.errorBody() == null) {
                     throw new GlobusPiccoloturException("[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado");
+                }
+                // Tratamos de forma específica o retorno de erro da requisição de autenticação.
+                if (tokenResponse) {
+                    throw new GlobusPiccoloturException(ERRO_AO_AUTENTICAR_INTEGRACAO);
                 }
                 throw GlobusPiccoloturException.from(toGlobusPiccoloturResponse(response.errorBody()));
             }

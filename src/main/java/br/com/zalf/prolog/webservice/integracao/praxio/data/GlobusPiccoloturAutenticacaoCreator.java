@@ -15,8 +15,8 @@ final class GlobusPiccoloturAutenticacaoCreator {
     @NotNull
     static AutenticacaoWebService createCredentials() {
         final AutenticacaoWebService autenticacaoWebService = new ObjectFactory().createAutenticacaoWebService();
-        autenticacaoWebService.setToken(GlobusPiccoloturConstants.TOKEN);
-        autenticacaoWebService.setShortCode(GlobusPiccoloturConstants.SHORT_CODE);
+        autenticacaoWebService.setToken(GlobusPiccoloturConstants.TOKEN_AUTENTICACAO_OS);
+        autenticacaoWebService.setShortCode(GlobusPiccoloturConstants.SHORT_CODE_AUTENTICACAO_OS);
         autenticacaoWebService.setNomeMetodo(GlobusPiccoloturConstants.METODO_PARA_LIBERAR);
         return autenticacaoWebService;
     }
