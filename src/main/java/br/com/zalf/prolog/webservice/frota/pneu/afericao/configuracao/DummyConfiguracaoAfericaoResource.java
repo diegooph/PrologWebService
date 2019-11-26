@@ -49,8 +49,10 @@ public class DummyConfiguracaoAfericaoResource {
     @GET
     @Secured
     @Path("/abertura-servico-historico")
-    public ConfiguracaoAberturaServicoHistoricoExibicao getConfiguracaoAberturaServicoHistoricoExibicao() {
-        final ConfiguracaoAberturaServicoHistoricoExibicao historico = ConfiguracaoAberturaServicoHistoricoExibicao.getDummy();
+    public List<ConfiguracaoAberturaServicoHistoricoExibicao> getConfiguracaoAberturaServicoHistoricoExibicao() {
+        final List<ConfiguracaoAberturaServicoHistoricoExibicao> historico = new ArrayList<>();
+        historico.add(ConfiguracaoAberturaServicoHistoricoExibicao.getDummy());
+        historico.add(ConfiguracaoAberturaServicoHistoricoExibicao.getDummy());
         return historico;
     }
 }
