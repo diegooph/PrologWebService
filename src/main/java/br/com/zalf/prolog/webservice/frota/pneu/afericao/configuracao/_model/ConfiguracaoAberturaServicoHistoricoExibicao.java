@@ -33,13 +33,13 @@ public final class ConfiguracaoAberturaServicoHistoricoExibicao {
      * Lista de {@link ConfiguracaoAberturaServico objetos} de configuração de abertura de serviço
      * */
     @Nullable
-    private final List<ConfiguracaoAberturaServico> ConfiguracaoAberturaServico;
+    private final ConfiguracaoAberturaServico ConfiguracaoAberturaServico;
 
 
     public ConfiguracaoAberturaServicoHistoricoExibicao(@Nullable final String nomeUnidadeReferente,
                                                         @Nullable final String nomeColaboradorAjuste,
                                                         @Nullable final LocalDateTime dataHoraAlteracao,
-                                                        @Nullable final List<ConfiguracaoAberturaServico> ConfiguracaoAberturaServico) {
+                                                        @Nullable final ConfiguracaoAberturaServico ConfiguracaoAberturaServico) {
         this.nomeUnidadeReferente = nomeUnidadeReferente;
         this.nomeColaboradorAjuste = nomeColaboradorAjuste;
         this.dataHoraAlteracao = dataHoraAlteracao;
@@ -48,7 +48,6 @@ public final class ConfiguracaoAberturaServicoHistoricoExibicao {
 
     @NotNull
     public static ConfiguracaoAberturaServicoHistoricoExibicao getDummy() {
-        final List<ConfiguracaoAberturaServico> listaConfiguracaoAberturaServico = new ArrayList<>();
         final ConfiguracaoAberturaServico configuracaoAberturaServico = new ConfiguracaoAberturaServico(
                 1L,
                 3L,
@@ -63,13 +62,12 @@ public final class ConfiguracaoAberturaServicoHistoricoExibicao {
                 15,
                 7
         );
-        listaConfiguracaoAberturaServico.add(configuracaoAberturaServico);
 
         return new ConfiguracaoAberturaServicoHistoricoExibicao(
                 "Unidade Teste Zalf",
                 "Colaborador teste",
                 ProLogDateParser.toLocalDateTime("2019-01-10T09:45:00"),
-                listaConfiguracaoAberturaServico
+                configuracaoAberturaServico
         );
     }
 
@@ -79,5 +77,5 @@ public final class ConfiguracaoAberturaServicoHistoricoExibicao {
 
     public LocalDateTime getDataHoraAlteracao() { return dataHoraAlteracao; }
 
-    public List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico() { return ConfiguracaoAberturaServico; }
+    public ConfiguracaoAberturaServico getConfiguracaoAberturaServico() { return ConfiguracaoAberturaServico; }
 }
