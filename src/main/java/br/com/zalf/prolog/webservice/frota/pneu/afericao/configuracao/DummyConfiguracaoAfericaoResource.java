@@ -29,7 +29,19 @@ public class DummyConfiguracaoAfericaoResource {
         final List<ConfiguracaoAberturaServico> configuracao = new ArrayList<>();
         configuracao.add(ConfiguracaoAberturaServico.getDummy());
         configuracao.add(ConfiguracaoAberturaServico.getDummy());
-        configuracao.add(ConfiguracaoAberturaServico.getDummy());
+        ConfiguracaoAberturaServico configVazia = new ConfiguracaoAberturaServico(
+                null,
+                1L,
+                "Sul",
+                3L,
+                "Unidade Teste Zalf",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        configuracao.add(configVazia);
         return configuracao;
     }
 
