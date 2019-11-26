@@ -36,6 +36,7 @@ public final class ConfiguracaoConverter {
         return new ConfiguracaoAberturaServico(
                 codigo == 0 ? null : codigo,
                 rSet.getLong("CODIGO_REGIONAL"),
+                rSet.getLong("CODIGO_EMPRESA"),
                 rSet.getString("NOME_REGIONAL"),
                 rSet.getLong("CODIGO_UNIDADE"),
                 rSet.getString("NOME_UNIDADE"),

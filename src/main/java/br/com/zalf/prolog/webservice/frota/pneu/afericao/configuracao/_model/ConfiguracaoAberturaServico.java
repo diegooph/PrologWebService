@@ -15,6 +15,11 @@ public final class ConfiguracaoAberturaServico {
     @NotNull
     private final Long codigo;
     /**
+     * Código da empresa
+     * */
+    @NotNull
+    private final Long codEmpresaReferente;
+    /**
      * Código da regional
      * */
     @NotNull
@@ -66,6 +71,7 @@ public final class ConfiguracaoAberturaServico {
     private final Integer periodoAfericaoSulco;
 
     public ConfiguracaoAberturaServico(@Nullable final Long codigo,
+                                       @NotNull final Long codEmpresaReferente,
                                        @NotNull final Long codRegionalReferente,
                                        @NotNull final String nomeRegionalReferente,
                                        @NotNull final Long codUnidadeReferente,
@@ -77,6 +83,7 @@ public final class ConfiguracaoAberturaServico {
                                        @Nullable final Integer periodoAfericaoPressao,
                                        @Nullable final Integer periodoAfericaoSulco) {
         this.codigo = codigo;
+        this.codEmpresaReferente = codEmpresaReferente;
         this.codRegionalReferente = codRegionalReferente;
         this.nomeRegionalReferente = nomeRegionalReferente;
         this.codUnidadeReferente = codUnidadeReferente;
@@ -93,6 +100,7 @@ public final class ConfiguracaoAberturaServico {
     public static ConfiguracaoAberturaServico getDummy() {
         return new ConfiguracaoAberturaServico(
                 1L,
+                3L,
                 1L,
                 "Sul",
                 3L,
@@ -108,6 +116,9 @@ public final class ConfiguracaoAberturaServico {
 
     @NotNull
     public Long getCodigo() { return codigo; }
+
+    @NotNull
+    public Long getCodEmpresaReferente() { return codEmpresaReferente; }
 
     @NotNull
     public Long getCodRegionalReferente() { return codRegionalReferente; }

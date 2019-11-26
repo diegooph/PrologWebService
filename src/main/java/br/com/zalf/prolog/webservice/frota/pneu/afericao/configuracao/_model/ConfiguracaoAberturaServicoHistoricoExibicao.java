@@ -51,6 +51,7 @@ public final class ConfiguracaoAberturaServicoHistoricoExibicao {
         final List<ConfiguracaoAberturaServico> listaConfiguracaoAberturaServico = new ArrayList<>();
         final ConfiguracaoAberturaServico configuracaoAberturaServico = new ConfiguracaoAberturaServico(
                 1L,
+                3L,
                 1L,
                 "Sul",
                 3L,
