@@ -127,13 +127,29 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
     @Override
     public void updateConfiguracaoAberturaServico(
             @NotNull final List<ConfiguracaoAberturaServico> configuracoes) throws Throwable {
+        //TODO: ESCREVE O CÓDIGO DE UPSERT DAS INFORMAÇÕES DE FUNC_PNEU_GET_CONFIGURACAO_POR_COLABORADOR(F_COD_COLABORADOR)
     }
 
     @NotNull
     @Override
     public List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico(
             @NotNull final Long codColaborador) throws Throwable {
-        return null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_CONFIGURACAO_POR_COLABORADOR(F_COD_COLABORADOR := ?);");
+            stmt.setLong(1, codColaborador);
+            rSet = stmt.executeQuery();
+            final List<ConfiguracaoAberturaServico> configuracoes = new ArrayList<>();
+            while (rSet.next()) {
+                configuracoes.add(ConfiguracaoConverter.createConfiguracaoAberturaServico(rSet));
+            }
+            return configuracoes;
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     private void insertConfiguracaoTipoVeiculo(

@@ -65,7 +65,7 @@ public final class ConfiguracaoAberturaServico {
     @Nullable
     private final Integer periodoAfericaoSulco;
 
-    public ConfiguracaoAberturaServico(@NotNull final Long codigo,
+    public ConfiguracaoAberturaServico(@Nullable final Long codigo,
                                        @NotNull final Long codRegionalReferente,
                                        @NotNull final String nomeRegionalReferente,
                                        @NotNull final Long codUnidadeReferente,

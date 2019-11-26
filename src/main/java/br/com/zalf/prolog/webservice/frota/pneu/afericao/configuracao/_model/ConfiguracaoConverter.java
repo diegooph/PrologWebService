@@ -30,6 +30,24 @@ public final class ConfiguracaoConverter {
     }
 
     @NotNull
+    public static ConfiguracaoAberturaServico createConfiguracaoAberturaServico(
+            @NotNull final ResultSet rSet) throws Throwable {
+        final long codigo = rSet.getLong("CODIGO");
+        return new ConfiguracaoAberturaServico(
+                codigo == 0 ? null : codigo,
+                rSet.getLong("CODIGO_REGIONAL"),
+                rSet.getString("NOME_REGIONAL"),
+                rSet.getLong("CODIGO_UNIDADE"),
+                rSet.getString("NOME_UNIDADE"),
+                rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
+                rSet.getDouble("TOLERANCIA_INSPECAO"),
+                rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
+                rSet.getDouble("SULCO_MINIMO_DESCARTE"),
+                rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
+                rSet.getInt("PERIODO_AFERICAO_SULCO"));
+    }
+
+    @NotNull
     public static ConfiguracaoTipoVeiculoAferivel createConfiguracaoTipoVeiculoAfericao(
             @NotNull final ResultSet rSet) throws Throwable {
         final ConfiguracaoTipoVeiculoAferivel config = new ConfiguracaoTipoVeiculoAferivel();
