@@ -15,7 +15,7 @@ public interface GlobusPiccoloturRest {
     Call<GlobusPiccoloturAtenticacaoResponse> getTokenAutenticacaoIntegracao(
             @Url @NotNull final String url,
             @Query("token") @NotNull final String token,
-            @Query("shortCode") @NotNull final Integer shortCode);
+            @Query("shortCode") @NotNull final Long shortCode);
 
     @POST
     Call<GlobusPiccoloturMovimentacaoResponse> insertProcessoMovimentacao(

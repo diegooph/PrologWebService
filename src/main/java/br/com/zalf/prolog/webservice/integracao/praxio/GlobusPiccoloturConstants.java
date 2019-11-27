@@ -25,15 +25,7 @@ public final class GlobusPiccoloturConstants {
     public static final String METODO_PARA_LIBERAR = "GerarOrdemDeServicoCorretivaProlog";
     public static final String USUARIO_PROLOG_INTEGRACAO = "MANAGER";
 
-    // #################################################################################################################
-    // #################################################################################################################
-    // #######           CONSTANTES UTILIZADAS PARA A FUNCIONDALIDADE DE CHECKLIST/ORDENS DE SERVIÇOS            #######
-    // #################################################################################################################
-    // #################################################################################################################
-    public static final String TOKEN_AUTENTICACAO_MOVIMENTACAO = "ODMxMjk7MTQ5OzI0Ng==";
-    public static final int SHORT_CODE_AUTENTICACAO_MOVIMENTACAO = 1038;
-
     private GlobusPiccoloturConstants() {
-        throw new IllegalStateException(GlobusPiccoloturConstants.class.getSimpleName() + "can not be instantiated");
+        throw new IllegalStateException(GlobusPiccoloturConstants.class.getSimpleName() + " can not be instantiated");
     }
 }

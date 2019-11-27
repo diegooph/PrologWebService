@@ -39,7 +39,7 @@ public interface GlobusPiccoloturRequester {
     GlobusPiccoloturAtenticacaoResponse getTokenAutenticacaoIntegracao(
             @NotNull final String url,
             @NotNull final String token,
-            @NotNull final Integer shortCode) throws Throwable;
+            @NotNull final Long shortCode) throws Throwable;
 
     /**
      * Método utilizado para enviar um processo de movimentação realizado no ProLog para o Globus.

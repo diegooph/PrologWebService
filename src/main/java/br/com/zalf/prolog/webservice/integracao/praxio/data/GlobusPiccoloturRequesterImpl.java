@@ -64,7 +64,7 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
     public GlobusPiccoloturAtenticacaoResponse getTokenAutenticacaoIntegracao(
             @NotNull final String url,
             @NotNull final String token,
-            @NotNull final Integer shortCode) throws Throwable {
+            @NotNull final Long shortCode) throws Throwable {
         final GlobusPiccoloturRest service = GlobusPiccoloturRestClient.getService(GlobusPiccoloturRest.class);
         final Call<GlobusPiccoloturAtenticacaoResponse> call =
                 service.getTokenAutenticacaoIntegracao(url, token, shortCode);

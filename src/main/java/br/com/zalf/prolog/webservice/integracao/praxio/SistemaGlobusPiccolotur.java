@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
@@ -161,12 +162,18 @@ public final class SistemaGlobusPiccolotur extends Sistema {
             final long codEmpresa =
                     getIntegradorProLog()
                             .getCodEmpresaByCodUnidadeProLog(conn, processoMovimentacao.getUnidade().getCodigo());
+            final ApiAutenticacaoHolder autenticacaoHolder =
+                    getIntegradorProLog()
+                            .getApiAutenticacaoHolder(
+                                    conn,
+                                    codEmpresa,
+                                    getSistemaKey(),
+                                    MetodoIntegrado.GET_AUTENTICACAO);
             final GlobusPiccoloturAtenticacaoResponse atenticacaoResponse =
                     requester.getTokenAutenticacaoIntegracao(
-                            getIntegradorProLog()
-                                    .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_AUTENTICACAO),
-                            GlobusPiccoloturConstants.TOKEN_AUTENTICACAO_MOVIMENTACAO,
-                            GlobusPiccoloturConstants.SHORT_CODE_AUTENTICACAO_MOVIMENTACAO);
+                            autenticacaoHolder.getUrl(),
+                            autenticacaoHolder.getApiTokenClient(),
+                            autenticacaoHolder.getApiShortCode());
             final Long codMovimentacao =
                     Injection
                             .provideMovimentacaoDao()
