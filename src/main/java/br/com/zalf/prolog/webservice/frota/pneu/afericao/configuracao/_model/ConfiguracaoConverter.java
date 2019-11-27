@@ -52,26 +52,16 @@ public final class ConfiguracaoConverter {
     @NotNull
     public static ConfiguracaoAberturaServicoHistorico createConfiguracaoAberturaServicoHistorico(
             @NotNull final ResultSet rSet) throws Throwable {
-
-        final ConfiguracaoAberturaServico configuracaoAberturaServico = new ConfiguracaoAberturaServico(
-                rSet.getLong("COD_PNEU_RESTRICAO_UNIDADE"),
-                rSet.getLong("CODIGO_EMPRESA"),
-                rSet.getLong("CODIGO_REGIONAL"),
-                rSet.getString("NOME_REGIONAL"),
-                rSet.getLong("CODIGO_UNIDADE"),
+        return new ConfiguracaoAberturaServicoHistorico(
                 rSet.getString("NOME_UNIDADE"),
+                rSet.getString("NOME_COLABORADOR"),
+                rSet.getObject("DATA_HORA_MARCACAO_INICIO", LocalDateTime.class),
                 rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
                 rSet.getDouble("TOLERANCIA_INSPECAO"),
                 rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
                 rSet.getDouble("SULCO_MINIMO_DESCARTE"),
                 rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
                 rSet.getInt("PERIODO_AFERICAO_SULCO"));
-
-        return new ConfiguracaoAberturaServicoHistorico(
-                rSet.getString("NOME_UNIDADE"),
-                rSet.getString("NOME_COLABORADOR"),
-                rSet.getObject("DATA_HORA_MARCACAO_INICIO", LocalDateTime.class),
-                configuracaoAberturaServico);
     }
 
     @NotNull

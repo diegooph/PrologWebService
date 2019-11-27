@@ -224,7 +224,8 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_CONFIGURACAO_POR_COLABORADOR(F_COD_COLABORADOR := ?);");
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "FUNC_PNEU_GET_CONFIGURACAO_POR_COLABORADOR(F_COD_COLABORADOR := ?);");
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
             final List<ConfiguracaoAberturaServico> configuracoes = new ArrayList<>();
@@ -246,7 +247,8 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PNEU_RESTRICAO_UNIDADE_HISTORICO WHERE COD_PNEU_RESTRICAO_UNIDADE = ?;");
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "FUNC_PNEU_GET_CONFIGURACAO_ABERTURA_SERVICO_HISTORICO(COD_PNEU_RESTRICAO_UNIDADE := ?);");
             stmt.setLong(1, codPneuRestricao);
             rSet = stmt.executeQuery();
             final List<ConfiguracaoAberturaServicoHistorico> historicos = new ArrayList<>();
