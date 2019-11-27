@@ -20,8 +20,9 @@ final class PneuMarcaModeloBandaConverter {
     static PneuMarcaBandaListagem createPneuMarcaBandaListagem(@NotNull final ResultSet rSet)
             throws SQLException {
         return new PneuMarcaBandaListagem(
-                rSet.getLong("CODIGO"),
-                rSet.getString("NOME"), null);
+                rSet.getLong("COD_MARCA_BANDA"),
+                rSet.getString("NOME_MARCA_BANDA"),
+                null);
     }
 
     @NotNull

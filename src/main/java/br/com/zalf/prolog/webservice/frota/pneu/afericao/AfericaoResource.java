@@ -8,10 +8,10 @@ import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -65,10 +66,21 @@ public class AfericaoResource {
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @Path("/cronogramas/{codUnidade}")
     @UsedBy(platforms = Platform.ANDROID)
+    @Deprecated
     public CronogramaAfericao getCronogramaAfericao(
             @HeaderParam("Authorization") @Required final String userToken,
             @PathParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
-        return service.getCronogramaAfericao(userToken, codUnidade);
+        return getCronogramaAfericao(userToken, Collections.singletonList(codUnidade));
+    }
+
+    @GET
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
+    @Path("/cronogramas")
+    @UsedBy(platforms = Platform.ANDROID)
+    public CronogramaAfericao getCronogramaAfericao(
+            @HeaderParam("Authorization") @Required final String userToken,
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) throws ProLogException {
+        return service.getCronogramaAfericao(userToken, codUnidades);
     }
 
     @GET

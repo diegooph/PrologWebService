@@ -74,7 +74,7 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
         if (!(StringUtils.stripCharactersWithAccents(placa)).equals(placa)) {
             throw new GenericException("Placa inválida\nA placa não deve conter acentos\n", "Placa informada: " + placa);
         }
-        if (!(StringUtils.stripCharactersSpecials(placa)).equals(placa)) {
+        if (!(StringUtils.stripAccents(placa)).equals(placa)) {
             throw new GenericException("Placa inválida\nA placa não deve conter caracteres especiais\n", "Placa informada: " + placa);
         }
     }

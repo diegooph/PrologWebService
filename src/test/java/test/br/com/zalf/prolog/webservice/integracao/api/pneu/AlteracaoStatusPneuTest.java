@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.integracao.api;
+package test.br.com.zalf.prolog.webservice.integracao.api.pneu;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;

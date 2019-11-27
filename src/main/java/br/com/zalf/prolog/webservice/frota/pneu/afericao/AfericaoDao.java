@@ -2,10 +2,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -94,14 +94,14 @@ public interface AfericaoDao {
     Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable;
 
     /**
-     * Retorna a lista de placas da unidade e também a meta de dias em que cada placa deve ser aferido.
+     * Retorna a lista de placas das unidades selecionadas e também a meta de dias em que cada placa deve ser aferida.
      *
-     * @param codUnidade Código da unidade.
+     * @param codUnidades Códigos das unidades selecionadas para o filtro do cronograma.
      * @return Um {@link CronogramaAfericao} contendo as placas para ser aferidas.
      * @throws Throwable Para qualquer erro do banco.
      */
     @NotNull
-    CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable;
+    CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable;
 
     /**
      * Método para buscar uma lista de pneus para serem aferidos seguindo o

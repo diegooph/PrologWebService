@@ -3,8 +3,7 @@ package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia;
 /**
  * Created by Zart on 03/07/2017.
  */
-public class Multas {
-
+public final class Multas extends Ocorrencia {
     private int leve;
     private int media;
     private int grave;

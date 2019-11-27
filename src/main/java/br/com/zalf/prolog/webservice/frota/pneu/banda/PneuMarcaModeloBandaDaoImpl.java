@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.banda;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.PneuMarcaListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,10 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
@@ -77,29 +73,50 @@ public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDa
     @NotNull
     @Override
     public List<PneuMarcaBandaListagem> getListagemMarcasBanda(@NotNull final Long codEmpresa,
-                                                               final boolean comModelos)
+                                                               final boolean comModelos,
+                                                               final boolean incluirMarcasNaoUtilizadas)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             if (comModelos) {
-                final Map<PneuMarcaBandaListagem, List<PneuModeloBandaListagem>> map =
-                        getListagemModelosBandas(codEmpresa, null)
-                                .stream()
-                                .collect(Collectors.groupingBy(m -> new PneuMarcaBandaListagem(
-                                        m.getCodMarcaBanda(),
-                                        m.getNomeMarcaBanda(),
-                                        null)));
-                return map
-                        .entrySet()
-                        .stream()
-                        .peek(entry -> entry
-                                .getKey()
-                                .setModelos(entry.getValue()))
-                        .map(Map.Entry::getKey)
-                        .sorted(Comparator.comparing(PneuMarcaBandaListagem::getNome))
-                        .collect(Collectors.toList());
+                conn = getConnection();
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELOS_BANDA_LISTAGEM(" +
+                        "F_COD_EMPRESA                   := ?," +
+                        "F_COD_MARCA                     := ?," +
+                        "F_INCLUIR_MARCAS_NAO_UTILIZADAS := ?);");
+                stmt.setLong(1, codEmpresa);
+                stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
+                stmt.setBoolean(3, incluirMarcasNaoUtilizadas);
+                rSet = stmt.executeQuery();
+                PneuMarcaBandaListagem marca = null;
+                List<PneuModeloBandaListagem> modelos;
+                final List<PneuMarcaBandaListagem> marcas = new ArrayList<>();
+                while (rSet.next()) {
+                    if (marca == null) {
+                        marca = PneuMarcaModeloBandaConverter.createPneuMarcaBandaListagem(rSet);
+                        marcas.add(marca);
+                        if (rSet.getLong("COD_MODELO_BANDA") > 0) {
+                            modelos = new ArrayList<>();
+                            modelos.add(PneuMarcaModeloBandaConverter.createPneuModeloBandaListagem(rSet));
+                            marca.setModelos(modelos);
+                        }
+                    } else {
+                        if (marca.getCodigo() == rSet.getLong("COD_MARCA_BANDA")) {
+                            marca.getModelos().add(PneuMarcaModeloBandaConverter.createPneuModeloBandaListagem(rSet));
+                        } else {
+                            marca = PneuMarcaModeloBandaConverter.createPneuMarcaBandaListagem(rSet);
+                            marcas.add(marca);
+                            if (rSet.getLong("COD_MODELO_BANDA") > 0) {
+                                modelos = new ArrayList<>();
+                                modelos.add(PneuMarcaModeloBandaConverter.createPneuModeloBandaListagem(rSet));
+                                marca.setModelos(modelos);
+                            }
+                        }
+                    }
+                }
+                return marcas;
             } else {
                 conn = getConnection();
                 stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MARCAS_BANDA_LISTAGEM(" +
@@ -205,7 +222,7 @@ public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDa
 
     @NotNull
     @Override
-    public List<PneuModeloBandaListagem> getListagemModelosBandas(@Nullable final Long codEmpresa,
+    public List<PneuModeloBandaListagem> getListagemModelosBandas(@NotNull final Long codEmpresa,
                                                                   @Nullable final Long codMarca)
             throws Throwable {
         Connection conn = null;
@@ -214,10 +231,12 @@ public final class PneuMarcaModeloBandaDaoImpl implements PneuMarcaModeloBandaDa
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_MODELOS_BANDA_LISTAGEM(" +
-                    "F_COD_EMPRESA := ?," +
-                    "F_COD_MARCA   := ?)");
-            StatementUtils.bindValueOrNull(stmt, 1, codEmpresa, SqlType.BIGINT);
+                    "F_COD_EMPRESA                   := ?," +
+                    "F_COD_MARCA                     := ?," +
+                    "F_INCLUIR_MARCAS_NAO_UTILIZADAS := ?);");
+            stmt.setLong(1, codEmpresa);
             StatementUtils.bindValueOrNull(stmt, 2, codMarca, SqlType.BIGINT);
+            stmt.setBoolean(3, false);
             rSet = stmt.executeQuery();
             final List<PneuModeloBandaListagem> marcasModelosBandas = new ArrayList<>();
             while (rSet.next()) {
