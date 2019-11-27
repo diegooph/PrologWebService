@@ -2,10 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServicoUpsert;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAlertaColetaSulco;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoTipoVeiculoAferivel;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -75,7 +72,7 @@ public class ConfiguracaoAfericaoResource {
 
     @GET
     @Path("/abertura-servico-historico")
-    public List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServicoHistorico(
+    public List<ConfiguracaoAberturaServicoHistorico> getConfiguracaoAberturaServicoHistorico(
             @QueryParam("codPneuRestricao") @NotNull final Long codPneuRestricao) throws ProLogException {
         return service.getConfiguracaoAberturaServicoHistorico(codPneuRestricao);
     }
