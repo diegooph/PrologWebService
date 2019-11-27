@@ -88,7 +88,7 @@ public interface ConfiguracaoAfericaoDao {
      * Busca o histórico de edições de uma configuração de restrição de pneus para abertura de serviços.
      *
      * @param codPneuRestricao Codigo da {@link ConfiguracaoAberturaServico configuração de restrição}.
-     * @return Lista de unidades a qual o usuário tem acesso, contendo a configuração atual de cada unidade.
+     * @return Lista de histórico de edições de uma configuração de restrição de pneus para abertura de serviços.
      */
     @NotNull
     List<ConfiguracaoAberturaServicoHistorico> getConfiguracaoAberturaServicoHistorico(
