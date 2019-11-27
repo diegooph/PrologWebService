@@ -83,7 +83,7 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_REALIZADO " +
-                    "(COD_PNEU_TIPO_SERVICO, COD_UNIDADE, COD_PNEU, CUSTO, VIDA, FONTE_SERVICO_REALIZADO) " +
+                    "(COD_TIPO_SERVICO, COD_UNIDADE, COD_PNEU, CUSTO, VIDA, FONTE_SERVICO_REALIZADO) " +
                     "VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, servicoRealizado.getCodPneuTipoServico());
             stmt.setLong(2, codUnidade);
