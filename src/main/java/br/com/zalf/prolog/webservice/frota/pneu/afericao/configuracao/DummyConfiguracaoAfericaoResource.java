@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServicoHistoricoExibicao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServicoHistorico;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.Consumes;
@@ -49,10 +49,10 @@ public class DummyConfiguracaoAfericaoResource {
     @GET
     @Secured
     @Path("/abertura-servico-historico")
-    public List<ConfiguracaoAberturaServicoHistoricoExibicao> getConfiguracaoAberturaServicoHistoricoExibicao() {
-        final List<ConfiguracaoAberturaServicoHistoricoExibicao> historico = new ArrayList<>();
-        historico.add(ConfiguracaoAberturaServicoHistoricoExibicao.getDummy());
-        historico.add(ConfiguracaoAberturaServicoHistoricoExibicao.getDummy());
+    public List<ConfiguracaoAberturaServicoHistorico> getConfiguracaoAberturaServicoHistorico() {
+        final List<ConfiguracaoAberturaServicoHistorico> historico = new ArrayList<>();
+        historico.add(ConfiguracaoAberturaServicoHistorico.getDummy());
+        historico.add(ConfiguracaoAberturaServicoHistorico.getDummy());
         return historico;
     }
 }

@@ -1,14 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServicoUpsert;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAlertaColetaSulco;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoTipoVeiculoAferivel;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -74,13 +74,22 @@ class ConfiguracaoAfericaoService {
     }
 
     @NotNull
-    Response upsertConfiguracaoAberturaServico(@NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) {
+    Response upsertConfiguracaoAberturaServico(@NotNull String userToken,
+                                               @NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) {
         try {
-            dao.upsertConfiguracaoAberturaServico(configuracoes);
+            final ColaboradorService colaboradorService = new ColaboradorService();
+            final Colaborador colaborador;
+            try {
+                colaborador = colaboradorService.getByToken(TokenCleaner.getOnlyToken(userToken));
+            } catch (final Throwable tc) {
+                throw exceptionHandler.map(tc,
+                        "Erro ao configurar restrições de abertura de serviços de pneus");
+            }
+            dao.upsertConfiguracaoAberturaServico(colaborador.getCodigo(), configuracoes);
             return Response.ok("Configurações de abertura de serviços de pneus atualizadas com sucesso!");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao configurar restrições de abertura de serviços de pneus", t);
-            throw exceptionHandler.map(t, "Erro ao configurar abertura de serviços de pneus");
+            throw exceptionHandler.map(t, "Erro ao configurar restrições de abertura de serviços de pneus");
         }
     }
 
@@ -91,6 +100,19 @@ class ConfiguracaoAfericaoService {
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar configurações de abertura de serviços de pneus \n" +
                     "codColaborador: " + codColaborador, t);
+            throw exceptionHandler.map(t,
+                    "Erro ao buscar configurações de abertura de serviços de pneus");
+        }
+    }
+
+
+    @NotNull
+    List<ConfiguracaoAberturaServicoHistorico> getConfiguracaoAberturaServicoHistorico(@NotNull final Long codPneuRestricao) {
+        try {
+            return dao.getConfiguracaoAberturaServicoHistorico(codPneuRestricao);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar configurações de abertura de serviços de pneus \n" +
+                    "codColaborador: " + codPneuRestricao, t);
             throw exceptionHandler.map(t,
                     "Erro ao buscar configurações de abertura de serviços de pneus");
         }

@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 
 /**
  * Created on 22/10/2018
@@ -46,6 +47,31 @@ public final class ConfiguracaoConverter {
                 rSet.getDouble("SULCO_MINIMO_DESCARTE"),
                 rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
                 rSet.getInt("PERIODO_AFERICAO_SULCO"));
+    }
+
+    @NotNull
+    public static ConfiguracaoAberturaServicoHistorico createConfiguracaoAberturaServicoHistorico(
+            @NotNull final ResultSet rSet) throws Throwable {
+
+        final ConfiguracaoAberturaServico configuracaoAberturaServico = new ConfiguracaoAberturaServico(
+                rSet.getLong("COD_PNEU_RESTRICAO_UNIDADE"),
+                rSet.getLong("CODIGO_EMPRESA"),
+                rSet.getLong("CODIGO_REGIONAL"),
+                rSet.getString("NOME_REGIONAL"),
+                rSet.getLong("CODIGO_UNIDADE"),
+                rSet.getString("NOME_UNIDADE"),
+                rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
+                rSet.getDouble("TOLERANCIA_INSPECAO"),
+                rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
+                rSet.getDouble("SULCO_MINIMO_DESCARTE"),
+                rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
+                rSet.getInt("PERIODO_AFERICAO_SULCO"));
+
+        return new ConfiguracaoAberturaServicoHistorico(
+                rSet.getString("NOME_UNIDADE"),
+                rSet.getString("NOME_COLABORADOR"),
+                rSet.getObject("DATA_HORA_MARCACAO_INICIO", LocalDateTime.class),
+                configuracaoAberturaServico);
     }
 
     @NotNull

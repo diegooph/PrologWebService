@@ -11,9 +11,9 @@ import java.util.List;
 /**
  * Created on 11/25/19
  *
- * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * @author Wellington Moraes (https://github.com/wvinim)
  */
-public final class ConfiguracaoAberturaServicoHistoricoExibicao {
+public final class ConfiguracaoAberturaServicoHistorico {
     /**
      * Nome da Unidade
      * */
@@ -36,7 +36,7 @@ public final class ConfiguracaoAberturaServicoHistoricoExibicao {
     private final ConfiguracaoAberturaServico ConfiguracaoAberturaServico;
 
 
-    public ConfiguracaoAberturaServicoHistoricoExibicao(@Nullable final String nomeUnidadeReferente,
+    public ConfiguracaoAberturaServicoHistorico(@Nullable final String nomeUnidadeReferente,
                                                         @Nullable final String nomeColaboradorAjuste,
                                                         @Nullable final LocalDateTime dataHoraAlteracao,
                                                         @Nullable final ConfiguracaoAberturaServico ConfiguracaoAberturaServico) {
@@ -47,7 +47,7 @@ public final class ConfiguracaoAberturaServicoHistoricoExibicao {
     }
 
     @NotNull
-    public static ConfiguracaoAberturaServicoHistoricoExibicao getDummy() {
+    public static ConfiguracaoAberturaServicoHistorico getDummy() {
         final ConfiguracaoAberturaServico configuracaoAberturaServico = new ConfiguracaoAberturaServico(
                 1L,
                 3L,
@@ -63,7 +63,7 @@ public final class ConfiguracaoAberturaServicoHistoricoExibicao {
                 7
         );
 
-        return new ConfiguracaoAberturaServicoHistoricoExibicao(
+        return new ConfiguracaoAberturaServicoHistorico(
                 "Unidade Teste Zalf",
                 "Colaborador teste",
                 ProLogDateParser.toLocalDateTime("2019-01-10T09:45:00"),

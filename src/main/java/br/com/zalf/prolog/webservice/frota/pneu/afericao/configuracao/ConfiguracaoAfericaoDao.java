@@ -2,10 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServicoUpsert;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAlertaColetaSulco;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoTipoVeiculoAferivel;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -67,10 +64,12 @@ public interface ConfiguracaoAfericaoDao {
     /**
      * Cria ou atualiza, caso já exista, as configurações de abertura de serviços de pneus para cada Unidade.
      *
+     * @param codColaborador Codigo do {@link Colaborador colaborador} que realizou a operação.
      * @param configuracoes Novas {@link ConfiguracaoAberturaServicoUpsert configurações} que serão inseridas ou atualizadas.
      * @throws Throwable Se algum erro ocorrer.
      */
     void upsertConfiguracaoAberturaServico(
+            @NotNull final Long codColaborador,
             @NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) throws Throwable;
 
     /**
@@ -84,4 +83,14 @@ public interface ConfiguracaoAfericaoDao {
     @NotNull
     List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico(
             @NotNull final Long codColaborador) throws Throwable;
+
+    /**
+     * Busca o histórico de edições de uma configuração de restrição de pneus para abertura de serviços.
+     *
+     * @param codPneuRestricao Codigo da {@link ConfiguracaoAberturaServico configuração de restrição}.
+     * @return Lista de unidades a qual o usuário tem acesso, contendo a configuração atual de cada unidade.
+     */
+    @NotNull
+    List<ConfiguracaoAberturaServicoHistorico> getConfiguracaoAberturaServicoHistorico(
+            @NotNull final Long codPneuRestricao) throws Throwable;
 }

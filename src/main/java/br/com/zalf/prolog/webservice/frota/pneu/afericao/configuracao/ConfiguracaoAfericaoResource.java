@@ -61,8 +61,9 @@ public class ConfiguracaoAfericaoResource {
     @PUT
     @Path("/abertura-servico")
     public Response upsertConfiguracaoAberturaServico(
+            @HeaderParam("Authorization") String userToken,
             @NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) throws ProLogException {
-        return service.upsertConfiguracaoAberturaServico(configuracoes);
+        return service.upsertConfiguracaoAberturaServico(userToken, configuracoes);
     }
 
     @GET
@@ -70,5 +71,12 @@ public class ConfiguracaoAfericaoResource {
     public List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico(
             @QueryParam("codColaborador") @NotNull final Long codColaborador) throws ProLogException {
         return service.getConfiguracaoAberturaServico(codColaborador);
+    }
+
+    @GET
+    @Path("/abertura-servico-historico")
+    public List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServicoHistorico(
+            @QueryParam("codPneuRestricao") @NotNull final Long codPneuRestricao) throws ProLogException {
+        return service.getConfiguracaoAberturaServicoHistorico(codPneuRestricao);
     }
 }
