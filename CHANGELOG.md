@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Stage
+==========
+
+### Features
+* Adiciona a configuração de restrições de pneus para abertura de serviços (PL-1989 / PL-2011)
+
 <a name="v1.0.6"></a>
 ## Version [v1.0.6](https://github.com/luizfp/PrologWebService/compare/v1.0.5...v1.0.6) (release-date) [unreleased]
 
