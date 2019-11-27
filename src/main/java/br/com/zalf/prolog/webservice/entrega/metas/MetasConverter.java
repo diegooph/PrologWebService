@@ -24,7 +24,7 @@ public final class MetasConverter {
                 rSet.getDouble("META_DEV_HL"),
                 rSet.getDouble("META_DEV_PDV"),
                 rSet.getDouble("META_TRACKING"),
-                (int) rSet.getDouble("META_RAIO_TRACKING") * 1000,
+                (int) (rSet.getDouble("META_RAIO_TRACKING") * 1000),
                 rSet.getDouble("META_TEMPO_LARGADA_MAPAS"),
                 rSet.getDouble("META_TEMPO_ROTA_MAPAS"),
                 rSet.getDouble("META_TEMPO_INTERNO_MAPAS"),
