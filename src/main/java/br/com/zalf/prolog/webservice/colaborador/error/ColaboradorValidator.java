@@ -53,8 +53,10 @@ public class ColaboradorValidator {
     private static void validacaoCpf(@Nullable final Long cpf) throws Exception {
         Preconditions.checkNotNull(cpf, "Você precisa fornecer o CPF");
 
-        if (!ValidationUtils.isValidCpf(String.format("%011d", cpf))) {
-            throw new GenericException("CPF inválido", "CPF informado: " + cpf);
+        if (String.format("%011d", cpf).length() != MAX_LENGTH_CPF) {
+            throw new GenericException(
+                    String.format("CPF inválido\nO CPF precisa ter %d caracteres", MAX_LENGTH_CPF),
+                    "CPF informado:" + cpf);
         }
     }
 
