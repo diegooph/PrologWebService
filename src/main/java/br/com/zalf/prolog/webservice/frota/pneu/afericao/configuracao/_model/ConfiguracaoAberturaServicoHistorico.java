@@ -27,7 +27,7 @@ public final class ConfiguracaoAberturaServicoHistorico {
     /**
      * Data e hora do ajuste
      * */
-    @Nullable
+    @NotNull
     private final LocalDateTime dataHoraAlteracao;
     /**
      * Tolerância da calibragem
@@ -68,7 +68,7 @@ public final class ConfiguracaoAberturaServicoHistorico {
 
     public ConfiguracaoAberturaServicoHistorico(@NotNull final String nomeUnidadeReferente,
                                                 @Nullable final String nomeColaboradorAjuste,
-                                                @Nullable final LocalDateTime dataHoraAlteracao,
+                                                @NotNull final LocalDateTime dataHoraAlteracao,
                                                 @NotNull final Double toleranciaCalibragem,
                                                 @NotNull final Double toleranciaInspecao,
                                                 @NotNull final Double sulcoMinimoRecape,
@@ -110,7 +110,7 @@ public final class ConfiguracaoAberturaServicoHistorico {
     @Nullable
     public String getNomeColaboradorAjuste() { return nomeColaboradorAjuste; }
 
-    @Nullable
+    @NotNull
     public LocalDateTime getDataHoraAlteracao() { return dataHoraAlteracao; }
 
     @NotNull
