@@ -169,7 +169,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                     codEmpresa,
                                     getSistemaKey(),
                                     MetodoIntegrado.GET_AUTENTICACAO);
-            final GlobusPiccoloturAtenticacaoResponse atenticacaoResponse =
+            final GlobusPiccoloturAutenticacaoResponse autenticacaoResponse =
                     requester.getTokenAutenticacaoIntegracao(
                             autenticacaoHolder.getUrl(),
                             autenticacaoHolder.getApiTokenClient(),
@@ -185,7 +185,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
             final GlobusPiccoloturMovimentacaoResponse response = requester.insertProcessoMovimentacao(
                     getIntegradorProLog()
                             .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.INSERT_MOVIMENTACAO),
-                    atenticacaoResponse.getFormattedBearerToken(),
+                    autenticacaoResponse.getFormattedBearerToken(),
                     GlobusPiccoloturConverter.convert(processoMovimentacao, dataHoraMovimentacao));
             if (!response.isSucesso()) {
                 throw new GlobusPiccoloturException(

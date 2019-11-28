@@ -61,12 +61,12 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
 
     @NotNull
     @Override
-    public GlobusPiccoloturAtenticacaoResponse getTokenAutenticacaoIntegracao(
+    public GlobusPiccoloturAutenticacaoResponse getTokenAutenticacaoIntegracao(
             @NotNull final String url,
             @NotNull final String token,
             @NotNull final Long shortCode) throws Throwable {
         final GlobusPiccoloturRest service = GlobusPiccoloturRestClient.getService(GlobusPiccoloturRest.class);
-        final Call<GlobusPiccoloturAtenticacaoResponse> call =
+        final Call<GlobusPiccoloturAutenticacaoResponse> call =
                 service.getTokenAutenticacaoIntegracao(url, token, shortCode);
         return handleJsonResponse(call.execute(), true);
     }
@@ -97,8 +97,8 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
                 // erro utilizando o body, para essas situações.
                 if (tokenResponse) {
                     try {
-                        final GlobusPiccoloturAtenticacaoResponse atenticacaoResponse =
-                                ((GlobusPiccoloturAtenticacaoResponse) response.body());
+                        final GlobusPiccoloturAutenticacaoResponse atenticacaoResponse =
+                                ((GlobusPiccoloturAutenticacaoResponse) response.body());
                         if (atenticacaoResponse.isSucesso()) {
                             return response.body();
                         }

@@ -36,7 +36,7 @@ public interface GlobusPiccoloturRequester {
      * @throws Throwable Se algum erro acontecer.
      */
     @NotNull
-    GlobusPiccoloturAtenticacaoResponse getTokenAutenticacaoIntegracao(
+    GlobusPiccoloturAutenticacaoResponse getTokenAutenticacaoIntegracao(
             @NotNull final String url,
             @NotNull final String token,
             @NotNull final Long shortCode) throws Throwable;

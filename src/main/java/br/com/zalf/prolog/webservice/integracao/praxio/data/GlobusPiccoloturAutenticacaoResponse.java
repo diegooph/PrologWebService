@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class GlobusPiccoloturAtenticacaoResponse {
+public final class GlobusPiccoloturAutenticacaoResponse {
     @NotNull
     private static final String BEARER = "Bearer ";
 
@@ -15,7 +15,7 @@ public final class GlobusPiccoloturAtenticacaoResponse {
     @NotNull
     private final String data;
 
-    public GlobusPiccoloturAtenticacaoResponse(final boolean sucesso, @NotNull final String data) {
+    public GlobusPiccoloturAutenticacaoResponse(final boolean sucesso, @NotNull final String data) {
         this.sucesso = sucesso;
         this.data = data;
     }

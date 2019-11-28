@@ -12,7 +12,7 @@ import retrofit2.http.*;
  */
 public interface GlobusPiccoloturRest {
     @GET
-    Call<GlobusPiccoloturAtenticacaoResponse> getTokenAutenticacaoIntegracao(
+    Call<GlobusPiccoloturAutenticacaoResponse> getTokenAutenticacaoIntegracao(
             @Url @NotNull final String url,
             @Query("token") @NotNull final String token,
             @Query("shortCode") @NotNull final Long shortCode);
