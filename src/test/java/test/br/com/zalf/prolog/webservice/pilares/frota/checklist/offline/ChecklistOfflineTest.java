@@ -157,7 +157,6 @@ public class ChecklistOfflineTest extends BaseTest {
         1L,
         1L,
         2272L,
-        "03383283194",
         3195L,
         "PRO0001",
         TipoChecklist.SAIDA,
