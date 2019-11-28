@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
@@ -90,4 +91,19 @@ public interface IntegracaoDao {
                   @NotNull final Long codEmpresa,
                   @NotNull final SistemaKey sistemaKey,
                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
+
+    /**
+     * @param conn            Conexão que será utilizada para buscar os dados.
+     * @param codEmpresa      Código da empresa integrada que iremos buscar as informações para autenticar.
+     * @param sistemaKey      Chave do Sistema que a empresa utiliza.
+     * @param metodoIntegrado Metodo que será utilizado.
+     * @return {@link ApiAutenticacaoHolder Objeto} contendo as informações a serem utilizadas para autenticar a
+     * requisição.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Connection conn,
+                                                   @NotNull final Long codEmpresa,
+                                                   @NotNull final SistemaKey sistemaKey,
+                                                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 }

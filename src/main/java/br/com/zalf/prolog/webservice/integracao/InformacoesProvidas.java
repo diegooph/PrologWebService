@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
@@ -41,4 +42,10 @@ public interface InformacoesProvidas {
                   @NotNull final Long codEmpresa,
                   @NotNull final SistemaKey sistemaKey,
                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
+
+    @NotNull
+    ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Connection conn,
+                                                   @NotNull final Long codEmpresa,
+                                                   @NotNull final SistemaKey sistemaKey,
+                                                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 }

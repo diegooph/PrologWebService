@@ -38,6 +38,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
@@ -200,6 +201,20 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         }
 
         return integracaoDao.getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
+    }
+
+    @NotNull
+    @Override
+    public ApiAutenticacaoHolder getApiAutenticacaoHolder(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa,
+            @NotNull final SistemaKey sistemaKey,
+            @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+
+        return integracaoDao.getApiAutenticacaoHolder(conn, codEmpresa, sistemaKey, metodoIntegrado);
     }
 
     //
