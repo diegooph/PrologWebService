@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model;
 
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,12 +22,12 @@ public final class ConfiguracaoAberturaServicoHistorico {
     /**
      * Nome da colaborador
      * */
-    @NotNull
+    @Nullable
     private final String nomeColaboradorAjuste;
     /**
      * Data e hora do ajuste
      * */
-    @NotNull
+    @Nullable
     private final LocalDateTime dataHoraAlteracao;
     /**
      * Tolerância da calibragem
@@ -66,8 +67,8 @@ public final class ConfiguracaoAberturaServicoHistorico {
 
 
     public ConfiguracaoAberturaServicoHistorico(@NotNull final String nomeUnidadeReferente,
-                                                @NotNull final String nomeColaboradorAjuste,
-                                                @NotNull final LocalDateTime dataHoraAlteracao,
+                                                @Nullable final String nomeColaboradorAjuste,
+                                                @Nullable final LocalDateTime dataHoraAlteracao,
                                                 @NotNull final Double toleranciaCalibragem,
                                                 @NotNull final Double toleranciaInspecao,
                                                 @NotNull final Double sulcoMinimoRecape,
@@ -106,10 +107,10 @@ public final class ConfiguracaoAberturaServicoHistorico {
     @NotNull
     public String getNomeUnidadeReferente() { return nomeUnidadeReferente; }
 
-    @NotNull
+    @Nullable
     public String getNomeColaboradorAjuste() { return nomeColaboradorAjuste; }
 
-    @NotNull
+    @Nullable
     public LocalDateTime getDataHoraAlteracao() { return dataHoraAlteracao; }
 
     @NotNull
