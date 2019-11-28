@@ -336,14 +336,14 @@ public final class ChecklistConverter {
 
     private static void setRespostaAlternativa(@NotNull final AlternativaChecklist alternativa,
                                                @NotNull final ResultSet rSet) throws SQLException {
-        if (rSet.getString("RESPOSTA").equals("NOK")) {
+        if (rSet.getBoolean("ALTERNATIVA_SELECIONADA")) {
             alternativa.selected = true;
-        } else if (rSet.getString("RESPOSTA").equals("OK")) {
-            alternativa.selected = false;
+            if (rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS")) {
+                alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
+                alternativa.respostaOutros = rSet.getString("RESPOSTA_OUTROS");
+            }
         } else {
-            alternativa.selected = true;
-            alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
-            alternativa.respostaOutros = rSet.getString("RESPOSTA");
+            alternativa.selected = false;
         }
     }
 }
