@@ -73,7 +73,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_INSERT_AFERICAO(?,?,?,?,?,?,?,?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_INSERT_AFERICAO(F_COD_UNIDADE := ?," +
+                    "F_DATA_HORA := ?, F_CPF_AFERIDOR := ?, F_TEMPO_REALIZACAO := ?, F_TIPO_MEDICAO_COLETADA := ?, " +
+                    "F_TIPO_PROCESSO_COLETA := ?, F_PLACA_VEICULO := ?, F_KM_VEICULO := ?);");
 
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, afericao.getDataHora().atOffset(ZoneOffset.UTC));
@@ -95,16 +97,10 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 stmt.setNull(7, Types.VARCHAR);
                 stmt.setNull(8, Types.BIGINT);
             }
-
-
-            /*   aaaaaaaaaaaaaaaaaaa     */
-
-
             Long codAfericao = null;
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 codAfericao = rSet.getLong("FUNC_AFERICAO_INSERT_AFERICAO");
-                System.out.println("O código da afericao é: " + codAfericao);
                 afericao.setCodigo(codAfericao);
                 insertValores(conn, codUnidade, afericao, deveAbrirServico, afericao instanceof AfericaoPlaca);
             }
