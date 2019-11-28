@@ -9,6 +9,7 @@ Change Log
 
 ### Refactors
 * Remove validação de CPF no cadastro / edição de colaborador (PL-2400)
+* Altera forma de autenticar o envio de movimentações com a Praxio (PLI-41) 
 
 <a name="v1.0.7"></a>
 ## Version [v1.0.7](https://github.com/luizfp/PrologWebService/compare/v1.0.6...v1.0.7) (2019-11-24)
