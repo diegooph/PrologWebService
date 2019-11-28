@@ -36,6 +36,7 @@ public class DummyConfiguracaoAfericaoResource {
                 "Sul",
                 3L,
                 "Unidade Teste Zalf",
+                2272L,
                 null,
                 null,
                 null,

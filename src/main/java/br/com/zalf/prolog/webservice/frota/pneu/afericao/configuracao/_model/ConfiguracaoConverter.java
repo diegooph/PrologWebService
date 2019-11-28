@@ -41,6 +41,7 @@ public final class ConfiguracaoConverter {
                 rSet.getString("NOME_REGIONAL"),
                 rSet.getLong("CODIGO_UNIDADE"),
                 rSet.getString("NOME_UNIDADE"),
+                rSet.getLong("COD_COLABORADOR_ULTIMA_ATUALIZACAO"),
                 rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
                 rSet.getDouble("TOLERANCIA_INSPECAO"),
                 rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
@@ -61,7 +62,8 @@ public final class ConfiguracaoConverter {
                 rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
                 rSet.getDouble("SULCO_MINIMO_DESCARTE"),
                 rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
-                rSet.getInt("PERIODO_AFERICAO_SULCO"));
+                rSet.getInt("PERIODO_AFERICAO_SULCO"),
+                rSet.getBoolean("ATUAL"));
     }
 
     @NotNull

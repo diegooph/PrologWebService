@@ -58,6 +58,11 @@ public final class ConfiguracaoAberturaServicoHistorico {
      * */
     @NotNull
     private final Integer periodoAfericaoSulco;
+    /**
+     * Define se o objeto se trata do registro atual
+     */
+    @NotNull
+    private final Boolean atual;
 
 
     public ConfiguracaoAberturaServicoHistorico(@NotNull final String nomeUnidadeReferente,
@@ -68,7 +73,8 @@ public final class ConfiguracaoAberturaServicoHistorico {
                                                 @NotNull final Double sulcoMinimoRecape,
                                                 @NotNull final Double sulcoMinimoDescarte,
                                                 @NotNull final Integer periodoAfericaoPressao,
-                                                @NotNull final Integer periodoAfericaoSulco) {
+                                                @NotNull final Integer periodoAfericaoSulco,
+                                                @NotNull final Boolean atual) {
         this.nomeUnidadeReferente = nomeUnidadeReferente;
         this.nomeColaboradorAjuste = nomeColaboradorAjuste;
         this.dataHoraAlteracao = dataHoraAlteracao;
@@ -78,6 +84,7 @@ public final class ConfiguracaoAberturaServicoHistorico {
         this.sulcoMinimoDescarte = sulcoMinimoDescarte;
         this.periodoAfericaoPressao = periodoAfericaoPressao;
         this.periodoAfericaoSulco = periodoAfericaoSulco;
+        this.atual = atual;
     }
 
     @NotNull
@@ -91,7 +98,8 @@ public final class ConfiguracaoAberturaServicoHistorico {
                 11.1D,
                 11.2D,
                 15,
-                7
+                7,
+                false
         );
     }
 
@@ -121,4 +129,7 @@ public final class ConfiguracaoAberturaServicoHistorico {
 
     @NotNull
     public Integer getPeriodoAfericaoSulco() { return periodoAfericaoSulco; }
+
+    @NotNull
+    public Boolean getAtual() { return atual; }
 }

@@ -40,6 +40,11 @@ public final class ConfiguracaoAberturaServico {
     @NotNull
     private final String nomeUnidadeReferente;
     /**
+     * Código do colaborador que realizou a última atualização
+     * */
+    @NotNull
+    private final Long codColaboradorUltimaAtualizacao;
+    /**
      * Tolerância da calibragem
      * */
     @Nullable
@@ -76,6 +81,7 @@ public final class ConfiguracaoAberturaServico {
                                        @NotNull final String nomeRegionalReferente,
                                        @NotNull final Long codUnidadeReferente,
                                        @NotNull final String nomeUnidadeReferente,
+                                       @Nullable final Long codColaboradorUltimaAtualizacao,
                                        @Nullable final Double toleranciaCalibragem,
                                        @Nullable final Double toleranciaInspecao,
                                        @Nullable final Double sulcoMinimoRecape,
@@ -88,6 +94,7 @@ public final class ConfiguracaoAberturaServico {
         this.nomeRegionalReferente = nomeRegionalReferente;
         this.codUnidadeReferente = codUnidadeReferente;
         this.nomeUnidadeReferente = nomeUnidadeReferente;
+        this.codColaboradorUltimaAtualizacao = codColaboradorUltimaAtualizacao;
         this.toleranciaCalibragem = toleranciaCalibragem;
         this.toleranciaInspecao = toleranciaInspecao;
         this.sulcoMinimoRecape = sulcoMinimoRecape;
@@ -105,6 +112,7 @@ public final class ConfiguracaoAberturaServico {
                 "Sul",
                 3L,
                 "Unidade Teste Zalf",
+                2272L,
                 0.1D,
                 0.2D,
                 11.1D,
@@ -131,6 +139,9 @@ public final class ConfiguracaoAberturaServico {
 
     @NotNull
     public String getNomeUnidadeReferente() { return nomeUnidadeReferente; }
+
+    @Nullable
+    public Long getCodColaboradorUltimaAtualizacao() { return codColaboradorUltimaAtualizacao; }
 
     @Nullable
     public Double getToleranciaCalibragem() { return toleranciaCalibragem; }
