@@ -55,7 +55,7 @@ public final class ConfiguracaoConverter {
         return new ConfiguracaoAberturaServicoHistorico(
                 rSet.getString("NOME_UNIDADE"),
                 rSet.getString("NOME_COLABORADOR"),
-                rSet.getObject("DATA_HORA_MARCACAO_INICIO", LocalDateTime.class),
+                rSet.getObject("DATA_HORA_ALTERACAO", LocalDateTime.class),
                 rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
                 rSet.getDouble("TOLERANCIA_INSPECAO"),
                 rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),

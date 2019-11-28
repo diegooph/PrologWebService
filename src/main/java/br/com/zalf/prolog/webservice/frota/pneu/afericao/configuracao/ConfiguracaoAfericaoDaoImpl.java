@@ -248,7 +248,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_PNEU_GET_CONFIGURACAO_ABERTURA_SERVICO_HISTORICO(COD_PNEU_RESTRICAO_UNIDADE := ?);");
+                    "FUNC_PNEU_GET_CONFIGURACAO_ABERTURA_SERVICO_HISTORICO(F_COD_PNEU_RESTRICAO_UNIDADE := ?);");
             stmt.setLong(1, codPneuRestricao);
             rSet = stmt.executeQuery();
             final List<ConfiguracaoAberturaServicoHistorico> historicos = new ArrayList<>();
