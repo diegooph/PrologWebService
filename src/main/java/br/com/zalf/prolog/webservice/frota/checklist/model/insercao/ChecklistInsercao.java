@@ -1,19 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model.insercao;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
-import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,9 +32,6 @@ public final class ChecklistInsercao {
 
     @NotNull
     private final Long codColaborador;
-
-    @NotNull
-    private final String cpfColaborador;
 
     @NotNull
     private final Long codVeiculo;
@@ -121,7 +113,6 @@ public final class ChecklistInsercao {
                              @NotNull  final Long codModelo,
                              @Nullable final Long codVersaoModeloChecklist,
                              @NotNull  final Long codColaborador,
-                             @NotNull  final String cpfColaborador,
                              @NotNull  final Long codVeiculo,
                              @NotNull  final String placaVeiculo,
                              @NotNull  final TipoChecklist tipo,
@@ -140,7 +131,6 @@ public final class ChecklistInsercao {
         this.codModelo = codModelo;
         this.codVersaoModeloChecklist = codVersaoModeloChecklist;
         this.codColaborador = codColaborador;
-        this.cpfColaborador = cpfColaborador;
         this.codVeiculo = codVeiculo;
         this.placaVeiculo = placaVeiculo;
         this.tipo = tipo;
@@ -180,11 +170,6 @@ public final class ChecklistInsercao {
     @NotNull
     public Long getCodColaborador() {
         return codColaborador;
-    }
-
-    @NotNull
-    public String getCpfColaborador() {
-        return cpfColaborador;
     }
 
     @NotNull
@@ -283,47 +268,7 @@ public final class ChecklistInsercao {
             // Já foi convertido e setado no Service.
             return checklistAntigo;
         } else {
-            checklistAntigo = new Checklist();
-            checklistAntigo.setCodModelo(getCodModelo());
-            checklistAntigo.setCodVersaoModeloChecklist(getCodVersaoModeloChecklist());
-            final LocalDateTime now = Now.localDateTimeUtc();
-            checklistAntigo.setData(now);
-            checklistAntigo.setDataHoraImportadoProLog(now);
-            checklistAntigo.setPlacaVeiculo(getPlacaVeiculo());
-            checklistAntigo.setTipo(getTipo().asChar());
-            checklistAntigo.setKmAtualVeiculo(getKmColetadoVeiculo());
-            checklistAntigo.setTempoRealizacaoCheckInMillis(getTempoRealizacaoCheckInMillis());
-            final Colaborador colaborador = new Colaborador();
-            colaborador.setCodigo(getCodColaborador());
-            colaborador.setCpf(Long.valueOf(getCpfColaborador()));
-            checklistAntigo.setColaborador(colaborador);
-
-            // Conversão das respostas.
-            final List<PerguntaRespostaChecklist> respostas = new ArrayList<>();
-            getRespostas()
-                    .forEach(novaPergunta -> {
-                final PerguntaRespostaChecklist resposta = new PerguntaRespostaChecklist();
-                resposta.setCodigo(novaPergunta.getCodPergunta());
-                final List<AlternativaChecklist> alternativas = new ArrayList<>();
-                novaPergunta
-                        .getAlternativasRespostas()
-                        .forEach(novaAlternativa -> {
-                    final AlternativaChecklist alternativa = new AlternativaChecklist();
-                    alternativa.setSelected(novaAlternativa.isAlternativaSelecionada());
-                    alternativa.setCodigo(novaAlternativa.getCodAlternativa());
-                    if (novaAlternativa.isTipoOutros()) {
-                        alternativa.setTipo(Alternativa.TIPO_OUTROS);
-                        alternativa.setRespostaOutros(novaAlternativa.getRespostaTipoOutros());
-                    }
-                    alternativas.add(alternativa);
-                });
-                resposta.setAlternativasResposta(alternativas);
-                respostas.add(resposta);
-            });
-            checklistAntigo.setListRespostas(respostas);
-
-            // Antes de retornar, calcula as quantidades.
-            checklistAntigo.calculaQtdOkOrNok();
+            checklistAntigo = ChecklistMigracaoEstruturaSuporte.toChecklistAntigo(this);
             return checklistAntigo;
         }
     }

@@ -1,10 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
@@ -25,6 +27,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,6 +53,52 @@ public final class ChecklistMigracaoEstruturaSuporte {
         } finally {
             DatabaseConnection.close(conn);
         }
+    }
+
+    @NotNull
+    public static Checklist toChecklistAntigo(@NotNull final ChecklistInsercao checklist) {
+        final Checklist checklistAntigo = new Checklist();
+        checklistAntigo.setCodModelo(checklist.getCodModelo());
+        checklistAntigo.setCodVersaoModeloChecklist(checklist.getCodVersaoModeloChecklist());
+        final LocalDateTime now = Now.localDateTimeUtc();
+        checklistAntigo.setData(now);
+        checklistAntigo.setDataHoraImportadoProLog(now);
+        checklistAntigo.setPlacaVeiculo(checklist.getPlacaVeiculo());
+        checklistAntigo.setTipo(checklist.getTipo().asChar());
+        checklistAntigo.setKmAtualVeiculo(checklist.getKmColetadoVeiculo());
+        checklistAntigo.setTempoRealizacaoCheckInMillis(checklist.getTempoRealizacaoCheckInMillis());
+        final Colaborador colaborador = new Colaborador();
+        colaborador.setCodigo(checklist.getCodColaborador());
+        colaborador.setCpf(getCpfByCodColaborador(checklist.getCodColaborador()));
+        checklistAntigo.setColaborador(colaborador);
+
+        // Conversão das respostas.
+        final List<PerguntaRespostaChecklist> respostas = new ArrayList<>();
+        checklist.getRespostas()
+                .forEach(novaPergunta -> {
+                    final PerguntaRespostaChecklist resposta = new PerguntaRespostaChecklist();
+                    resposta.setCodigo(novaPergunta.getCodPergunta());
+                    final List<AlternativaChecklist> alternativas = new ArrayList<>();
+                    novaPergunta
+                            .getAlternativasRespostas()
+                            .forEach(novaAlternativa -> {
+                                final AlternativaChecklist alternativa = new AlternativaChecklist();
+                                alternativa.setSelected(novaAlternativa.isAlternativaSelecionada());
+                                alternativa.setCodigo(novaAlternativa.getCodAlternativa());
+                                if (novaAlternativa.isTipoOutros()) {
+                                    alternativa.setTipo(Alternativa.TIPO_OUTROS);
+                                    alternativa.setRespostaOutros(novaAlternativa.getRespostaTipoOutros());
+                                }
+                                alternativas.add(alternativa);
+                            });
+                    resposta.setAlternativasResposta(alternativas);
+                    respostas.add(resposta);
+                });
+        checklistAntigo.setListRespostas(respostas);
+
+        // Antes de retornar, calcula as quantidades.
+        checklistAntigo.calculaQtdOkOrNok();
+        return checklistAntigo;
     }
 
     @NotNull
@@ -182,7 +231,6 @@ public final class ChecklistMigracaoEstruturaSuporte {
                 antigo.getCodModelo(),
                 antigo.getCodVersaoModeloChecklist(),
                 dados.getCodColaborador(),
-                antigo.getColaborador().getCpfAsString(),
                 dados.getCodVeiculo(),
                 antigo.getPlacaVeiculo(),
                 TipoChecklist.fromChar(antigo.getTipo()),
@@ -245,6 +293,28 @@ public final class ChecklistMigracaoEstruturaSuporte {
                                                         @NotNull final Checklist checklist) throws Throwable {
         final List<ChecklistJson> checklistJson = createChecklistJson(checklist);
         return interalEncontraCodVersaoModeloChecklist(conn, checklist.getCodModelo(), checklistJson);
+    }
+
+    @NotNull
+    private static Long getCpfByCodColaborador(@NotNull final Long codColaborador) {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            stmt = conn.prepareStatement("SELECT CD.CPF FROM COLABORADOR_DATA CD WHERE CD.CODIGO = ?;");
+            stmt.setLong(1, codColaborador);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CPF");
+            } else {
+                throw new RuntimeException("Erro ao buscar CPF pelo código: " + codColaborador);
+            }
+        } catch (final SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            DatabaseConnection.close(conn, stmt, rSet);
+        }
     }
 
     @NotNull
