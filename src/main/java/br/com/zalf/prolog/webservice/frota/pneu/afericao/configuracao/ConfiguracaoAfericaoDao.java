@@ -62,35 +62,36 @@ public interface ConfiguracaoAfericaoDao {
             @NotNull final Long codColaborador) throws Throwable;
 
     /**
-     * Cria ou atualiza, caso já exista, as configurações de abertura de serviços de pneus para cada Unidade.
+     * Cria ou atualiza, caso já exista, as configurações de cronograma e serviços de pneus para cada Unidade.
      *
      * @param codColaborador Codigo do {@link Colaborador colaborador} que realizou a operação.
-     * @param configuracoes Novas {@link ConfiguracaoAberturaServicoUpsert configurações} que serão inseridas ou atualizadas.
+     * @param configuracoes Novas {@link ConfiguracaoCronogramaServicoUpsert configurações} que serão inseridas ou
+     *                      atualizadas.
      * @throws Throwable Se algum erro ocorrer.
      */
-    void upsertConfiguracaoAberturaServico(
+    void upsertConfiguracoesCronogramaServicos(
             @NotNull final Long codColaborador,
-            @NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) throws Throwable;
+            @NotNull final List<ConfiguracaoCronogramaServicoUpsert> configuracoes) throws Throwable;
 
     /**
-     * Busca todas as configurações de abertura de serviços das unidades que o {@link Colaborador colaborador} tem
-     * acesso.
+     * Busca todas as configurações de cronograma e serviços das unidades que o {@link Colaborador colaborador}
+     * tem acesso.
      *
      * @param codColaborador Codigo do {@link Colaborador colaborador} do qual serão buscados as configurações para
      *                       cada unidade que ele tem acesso.
      * @return Lista de unidades a qual o usuário tem acesso, contendo a configuração atual de cada unidade.
      */
     @NotNull
-    List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico(
+    List<ConfiguracaoCronogramaServico> getConfiguracoesCronogramaServicos(
             @NotNull final Long codColaborador) throws Throwable;
 
     /**
-     * Busca o histórico de edições de uma configuração de restrição de pneus para abertura de serviços.
+     * Busca o histórico de edições da configuração de cronograma e serviços.
      *
-     * @param codPneuRestricao Codigo da {@link ConfiguracaoAberturaServico configuração de restrição}.
-     * @return Lista de histórico de edições de uma configuração de restrição de pneus para abertura de serviços.
+     * @param codPneuRestricao Codigo da {@link ConfiguracaoCronogramaServico configuração de restrição}.
+     * @return Lista de histórico de edições.
      */
     @NotNull
-    List<ConfiguracaoAberturaServicoHistorico> getConfiguracaoAberturaServicoHistorico(
+    List<ConfiguracaoCronogramaServicoHistorico> getConfiguracoesCronogramaServicosHistorico(
             @NotNull final Long codPneuRestricao) throws Throwable;
 }

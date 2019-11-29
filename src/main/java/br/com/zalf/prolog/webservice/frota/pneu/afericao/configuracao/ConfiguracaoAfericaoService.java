@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,12 +17,10 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-class ConfiguracaoAfericaoService {
+final class ConfiguracaoAfericaoService {
     private static final String TAG = ConfiguracaoAfericaoService.class.getSimpleName();
     @NotNull
     private final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
-    @NotNull
-    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @NotNull
     Response updateConfiguracaoTiposVeiculosAferiveis(
@@ -35,7 +32,9 @@ class ConfiguracaoAfericaoService {
             return Response.ok("Configurações atualizadas com sucesso!");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atualizar configurações dos tipos de veículo da aferição", t);
-            throw exceptionHandler.map(t, "Não foi possível atualizar as configurações, tente novamente");
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível atualizar as configurações, tente novamente");
         }
     }
 
@@ -46,7 +45,9 @@ class ConfiguracaoAfericaoService {
             return dao.getConfiguracoesTipoAfericaoVeiculo(codUnidade);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar configurações de tipos de veículo da aferição", t);
-            throw exceptionHandler.map(t, "Não foi possível buscar as configurações, tente novamente");
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível buscar as configurações, tente novamente");
         }
     }
 
@@ -58,7 +59,9 @@ class ConfiguracaoAfericaoService {
             return Response.ok("Configurações atualizadas com sucesso!");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atualizar configuração de alerta na coleta de sulco", t);
-            throw exceptionHandler.map(t, "Não foi possível atualizar as configurações, tente novamente");
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível atualizar as configurações, tente novamente");
         }
     }
 
@@ -69,52 +72,52 @@ class ConfiguracaoAfericaoService {
             return dao.getConfiguracoesAlertaColetaSulco(codColaborador);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar configurações de alerta na coleta de sulco", t);
-            throw exceptionHandler.map(t, "Não foi possível buscar as configurações, tente novamente");
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível buscar as configurações, tente novamente");
         }
     }
 
     @NotNull
-    Response upsertConfiguracaoAberturaServico(@NotNull String userToken,
-                                               @NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) {
+    Response upsertConfiguracoesCronogramaServicos(@NotNull final String userToken,
+                                                   @NotNull final List<ConfiguracaoCronogramaServicoUpsert> configuracoes) {
         try {
             final ColaboradorService colaboradorService = new ColaboradorService();
-            final Colaborador colaborador;
-            try {
-                colaborador = colaboradorService.getByToken(TokenCleaner.getOnlyToken(userToken));
-            } catch (final Throwable tc) {
-                throw exceptionHandler.map(tc,
-                        "Erro ao configurar restrições de abertura de serviços de pneus");
-            }
-            dao.upsertConfiguracaoAberturaServico(colaborador.getCodigo(), configuracoes);
+            final Colaborador colaborador = colaboradorService.getByToken(TokenCleaner.getOnlyToken(userToken));
+            dao.upsertConfiguracoesCronogramaServicos(colaborador.getCodigo(), configuracoes);
             return Response.ok("Configurações de abertura de serviços de pneus atualizadas com sucesso!");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao configurar restrições de abertura de serviços de pneus", t);
-            throw exceptionHandler.map(t, "Erro ao configurar restrições de abertura de serviços de pneus");
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao configurar restrições de abertura de serviços de pneus");
         }
     }
 
     @NotNull
-    List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico(@NotNull final Long codColaborador) {
+    List<ConfiguracaoCronogramaServico> getConfiguracoesCronogramaServicos(@NotNull final Long codColaborador) {
         try {
-            return dao.getConfiguracaoAberturaServico(codColaborador);
+            return dao.getConfiguracoesCronogramaServicos(codColaborador);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar configurações de abertura de serviços de pneus \n" +
+            Log.e(TAG, "Erro ao buscar configurações de cronograma e serviços de pneus\n" +
                     "codColaborador: " + codColaborador, t);
-            throw exceptionHandler.map(t,
-                    "Erro ao buscar configurações de abertura de serviços de pneus");
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar configurações de cronograma e serviços");
         }
     }
 
-
     @NotNull
-    List<ConfiguracaoAberturaServicoHistorico> getConfiguracaoAberturaServicoHistorico(@NotNull final Long codPneuRestricao) {
+    List<ConfiguracaoCronogramaServicoHistorico> getConfiguracoesCronogramaServicosHistorico(
+            @NotNull final Long codRestricaoUnidade) {
         try {
-            return dao.getConfiguracaoAberturaServicoHistorico(codPneuRestricao);
+            return dao.getConfiguracoesCronogramaServicosHistorico(codRestricaoUnidade);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar configurações de abertura de serviços de pneus \n" +
-                    "codColaborador: " + codPneuRestricao, t);
-            throw exceptionHandler.map(t,
-                    "Erro ao buscar configurações de abertura de serviços de pneus");
+            Log.e(TAG, "Erro ao buscar configurações de cronograma e abertura de serviços de pneus\n" +
+                    "codRestricaoUnidade: " + codRestricaoUnidade, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar histórico de configurações de cronograma e serviços");
         }
     }
 }

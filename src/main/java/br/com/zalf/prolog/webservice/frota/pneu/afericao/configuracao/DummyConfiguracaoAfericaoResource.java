@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServico;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoAberturaServicoHistorico;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoCronogramaServico;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.ConfiguracaoCronogramaServicoHistorico;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.Consumes;
@@ -20,16 +20,16 @@ import java.util.List;
 @Path("/dummies")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class DummyConfiguracaoAfericaoResource {
+public final class DummyConfiguracaoAfericaoResource {
 
     @GET
     @Secured
     @Path("/abertura-servico")
-    public List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico() {
-        final List<ConfiguracaoAberturaServico> configuracao = new ArrayList<>();
-        configuracao.add(ConfiguracaoAberturaServico.getDummy());
-        configuracao.add(ConfiguracaoAberturaServico.getDummy());
-        ConfiguracaoAberturaServico configVazia = new ConfiguracaoAberturaServico(
+    public List<ConfiguracaoCronogramaServico> getConfiguracaoAberturaServico() {
+        final List<ConfiguracaoCronogramaServico> configuracao = new ArrayList<>();
+        configuracao.add(ConfiguracaoCronogramaServico.getDummy());
+        configuracao.add(ConfiguracaoCronogramaServico.getDummy());
+        ConfiguracaoCronogramaServico configVazia = new ConfiguracaoCronogramaServico(
                 null,
                 3L,
                 1L,
@@ -50,10 +50,10 @@ public class DummyConfiguracaoAfericaoResource {
     @GET
     @Secured
     @Path("/abertura-servico-historico")
-    public List<ConfiguracaoAberturaServicoHistorico> getConfiguracaoAberturaServicoHistorico() {
-        final List<ConfiguracaoAberturaServicoHistorico> historico = new ArrayList<>();
-        historico.add(ConfiguracaoAberturaServicoHistorico.getDummy());
-        historico.add(ConfiguracaoAberturaServicoHistorico.getDummy());
+    public List<ConfiguracaoCronogramaServicoHistorico> getConfiguracaoAberturaServicoHistorico() {
+        final List<ConfiguracaoCronogramaServicoHistorico> historico = new ArrayList<>();
+        historico.add(ConfiguracaoCronogramaServicoHistorico.getDummy());
+        historico.add(ConfiguracaoCronogramaServicoHistorico.getDummy());
         return historico;
     }
 }

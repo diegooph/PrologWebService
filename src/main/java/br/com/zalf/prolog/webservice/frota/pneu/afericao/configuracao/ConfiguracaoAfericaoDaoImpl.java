@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
 import org.jetbrains.annotations.NotNull;
@@ -9,8 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
@@ -19,7 +22,8 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements ConfiguracaoAfericaoDao {
+public final class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements ConfiguracaoAfericaoDao {
+    private static final int EXECUTE_BATCH_SUCCESS = 0;
 
     public ConfiguracaoAfericaoDaoImpl() {
 
@@ -121,6 +125,104 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         }
     }
 
+    @Override
+    public void upsertConfiguracoesCronogramaServicos(
+            @NotNull final Long codColaborador,
+            @NotNull final List<ConfiguracaoCronogramaServicoUpsert> configuracoes) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareCall("{CALL FUNC_PNEU_UPSERT_CONFIGURACAO_ABERTURA_SERVICO(" +
+                    "F_CODIGO_EMPRESA := ?," +
+                    "F_CODIGO_UNIDADE := ?," +
+                    "F_TOLERANCIA_CALIBRAGEM := ?," +
+                    "F_TOLERANCIA_INSPECAO := ?," +
+                    "F_SULCO_MINIMO_RECAPAGEM := ?," +
+                    "F_SULCO_MINIMO_DESCARTE := ?," +
+                    "F_PERIODO_AFERICAO_PRESSAO := ?," +
+                    "F_PERIODO_AFERICAO_SULCO := ?," +
+                    "F_COD_COLABORADOR := ?," +
+                    "F_DATA_HORA_ATUAL_UTC := ?)}");
+            final OffsetDateTime now = Now.offsetDateTimeUtc();
+            for (final ConfiguracaoCronogramaServicoUpsert configuracao : configuracoes) {
+                stmt.setLong(1, configuracao.getCodEmpresaReferente());
+                stmt.setLong(2, configuracao.getCodUnidadeReferente());
+                stmt.setObject(3, configuracao.getToleranciaCalibragem(), SqlType.NUMERIC.asIntTypeJava());
+                stmt.setObject(4, configuracao.getToleranciaInspecao(), SqlType.NUMERIC.asIntTypeJava());
+                stmt.setObject(5, configuracao.getSulcoMinimoRecape(), SqlType.NUMERIC.asIntTypeJava());
+                stmt.setObject(6, configuracao.getSulcoMinimoDescarte(), SqlType.NUMERIC.asIntTypeJava());
+                stmt.setInt(7, configuracao.getPeriodoAfericaoPressao());
+                stmt.setInt(8, configuracao.getPeriodoAfericaoSulco());
+                stmt.setLong(9, codColaborador);
+                stmt.setObject(10, now);
+                stmt.addBatch();
+            }
+            final int[] batchResult = stmt.executeBatch();
+            final boolean tudoOk = IntStream
+                    .of(batchResult)
+                    .allMatch(result -> result == EXECUTE_BATCH_SUCCESS);
+            if (!tudoOk || batchResult.length != configuracoes.size()) {
+                throw new IllegalStateException("Erro ao atualizar configurações de cronograma e serviços da unidade");
+            }
+            conn.commit();
+        } catch (final Throwable throwable) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw throwable;
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<ConfiguracaoCronogramaServico> getConfiguracoesCronogramaServicos(
+            @NotNull final Long codColaborador) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "FUNC_PNEU_GET_CONFIGURACAO_POR_COLABORADOR(F_COD_COLABORADOR := ?);");
+            stmt.setLong(1, codColaborador);
+            rSet = stmt.executeQuery();
+            final List<ConfiguracaoCronogramaServico> configuracoes = new ArrayList<>();
+            while (rSet.next()) {
+                configuracoes.add(ConfiguracaoConverter.createConfiguracaoAberturaServico(rSet));
+            }
+            return configuracoes;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<ConfiguracaoCronogramaServicoHistorico> getConfiguracoesCronogramaServicosHistorico(
+            @NotNull final Long codRestricaoUnidadePneu) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "FUNC_PNEU_GET_CONFIGURACAO_ABERTURA_SERVICO_HISTORICO(F_COD_RESTRICAO_UNIDADE_PNEU := ?);");
+            stmt.setLong(1, codRestricaoUnidadePneu);
+            rSet = stmt.executeQuery();
+            final List<ConfiguracaoCronogramaServicoHistorico> historicos = new ArrayList<>();
+            while (rSet.next()) {
+                historicos.add(ConfiguracaoConverter.createConfiguracaoAberturaServicoHistorico(rSet));
+            }
+            return historicos;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     private void insertConfiguracaoTipoVeiculo(
             @NotNull final Connection conn,
             @NotNull final Long codUnidade,
@@ -170,94 +272,5 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
             close(stmt);
         }
         return true;
-    }
-
-
-    @Override
-    public void upsertConfiguracaoAberturaServico(
-            @NotNull final Long codColaborador,
-            @NotNull final List<ConfiguracaoAberturaServicoUpsert> configuracoes) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_UPSERT_CONFIGURACAO_ABERTURA_SERVICO(" +
-                    "F_CODIGO_EMPRESA := ?," +
-                    "F_CODIGO_UNIDADE := ?," +
-                    "F_TOLERANCIA_CALIBRAGEM := ?," +
-                    "F_TOLERANCIA_INSPECAO := ?," +
-                    "F_SULCO_MINIMO_RECAPAGEM := ?," +
-                    "F_SULCO_MINIMO_DESCARTE := ?," +
-                    "F_PERIODO_AFERICAO_PRESSAO := ?," +
-                    "F_PERIODO_AFERICAO_SULCO := ?," +
-                    "F_COD_COLABORADOR := ?);");
-            for (final ConfiguracaoAberturaServicoUpsert configuracao : configuracoes) {
-                stmt.setLong(1, configuracao.getCodEmpresaReferente());
-                stmt.setLong(2, configuracao.getCodUnidadeReferente());
-                stmt.setObject(3, configuracao.getToleranciaCalibragem(), java.sql.Types.NUMERIC);
-                stmt.setObject(4, configuracao.getToleranciaInspecao(), java.sql.Types.NUMERIC);
-                stmt.setObject(5, configuracao.getSulcoMinimoRecape(), java.sql.Types.NUMERIC);
-                stmt.setObject(6, configuracao.getSulcoMinimoDescarte(), java.sql.Types.NUMERIC);
-                stmt.setInt(7, configuracao.getPeriodoAfericaoPressao());
-                stmt.setInt(8, configuracao.getPeriodoAfericaoSulco());
-                stmt.setLong(9, codColaborador);
-                stmt.addBatch();
-            }
-            if(stmt.executeBatch().length != configuracoes.size()){
-                throw new IllegalStateException("Erro ao atualizar configurações da unidade.");
-            }else{
-                conn.commit();
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public List<ConfiguracaoAberturaServico> getConfiguracaoAberturaServico(
-            @NotNull final Long codColaborador) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_PNEU_GET_CONFIGURACAO_POR_COLABORADOR(F_COD_COLABORADOR := ?);");
-            stmt.setLong(1, codColaborador);
-            rSet = stmt.executeQuery();
-            final List<ConfiguracaoAberturaServico> configuracoes = new ArrayList<>();
-            while (rSet.next()) {
-                configuracoes.add(ConfiguracaoConverter.createConfiguracaoAberturaServico(rSet));
-            }
-            return configuracoes;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public List<ConfiguracaoAberturaServicoHistorico> getConfiguracaoAberturaServicoHistorico(
-            @NotNull final Long codPneuRestricao) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_PNEU_GET_CONFIGURACAO_ABERTURA_SERVICO_HISTORICO(F_COD_PNEU_RESTRICAO_UNIDADE := ?);");
-            stmt.setLong(1, codPneuRestricao);
-            rSet = stmt.executeQuery();
-            final List<ConfiguracaoAberturaServicoHistorico> historicos = new ArrayList<>();
-            while (rSet.next()) {
-                historicos.add(ConfiguracaoConverter.createConfiguracaoAberturaServicoHistorico(rSet));
-            }
-            return historicos;
-        } finally {
-            close(conn, stmt, rSet);
-        }
     }
 }

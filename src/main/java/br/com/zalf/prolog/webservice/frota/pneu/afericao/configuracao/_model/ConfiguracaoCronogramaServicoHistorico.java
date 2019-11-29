@@ -5,15 +5,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created on 11/25/19
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public final class ConfiguracaoAberturaServicoHistorico {
+public final class ConfiguracaoCronogramaServicoHistorico {
     /**
      * Nome da Unidade
      * */
@@ -66,16 +64,16 @@ public final class ConfiguracaoAberturaServicoHistorico {
     private final Boolean atual;
 
 
-    public ConfiguracaoAberturaServicoHistorico(@NotNull final String nomeUnidadeReferente,
-                                                @Nullable final String nomeColaboradorAjuste,
-                                                @NotNull final LocalDateTime dataHoraAlteracao,
-                                                @NotNull final Double toleranciaCalibragem,
-                                                @NotNull final Double toleranciaInspecao,
-                                                @NotNull final Double sulcoMinimoRecape,
-                                                @NotNull final Double sulcoMinimoDescarte,
-                                                @NotNull final Integer periodoAfericaoPressao,
-                                                @NotNull final Integer periodoAfericaoSulco,
-                                                @NotNull final Boolean atual) {
+    public ConfiguracaoCronogramaServicoHistorico(@NotNull final String nomeUnidadeReferente,
+                                                  @Nullable final String nomeColaboradorAjuste,
+                                                  @NotNull final LocalDateTime dataHoraAlteracao,
+                                                  @NotNull final Double toleranciaCalibragem,
+                                                  @NotNull final Double toleranciaInspecao,
+                                                  @NotNull final Double sulcoMinimoRecape,
+                                                  @NotNull final Double sulcoMinimoDescarte,
+                                                  @NotNull final Integer periodoAfericaoPressao,
+                                                  @NotNull final Integer periodoAfericaoSulco,
+                                                  @NotNull final Boolean atual) {
         this.nomeUnidadeReferente = nomeUnidadeReferente;
         this.nomeColaboradorAjuste = nomeColaboradorAjuste;
         this.dataHoraAlteracao = dataHoraAlteracao;
@@ -89,8 +87,8 @@ public final class ConfiguracaoAberturaServicoHistorico {
     }
 
     @NotNull
-    public static ConfiguracaoAberturaServicoHistorico getDummy() {
-        return new ConfiguracaoAberturaServicoHistorico(
+    public static ConfiguracaoCronogramaServicoHistorico getDummy() {
+        return new ConfiguracaoCronogramaServicoHistorico(
                 "Unidade Teste Zalf",
                 "Colaborador teste",
                 ProLogDateParser.toLocalDateTime("2019-01-10T09:45:00"),

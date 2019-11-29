@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class ConfiguracaoAberturaServicoUpsert {
+public final class ConfiguracaoCronogramaServico {
     /**
     * Código do registro de configuração para abertura de serviço
     * */
@@ -25,10 +25,25 @@ public final class ConfiguracaoAberturaServicoUpsert {
     @NotNull
     private final Long codRegionalReferente;
     /**
+     * Nome da regional
+     * */
+    @NotNull
+    private final String nomeRegionalReferente;
+    /**
      * Código da unidade
      * */
     @NotNull
     private final Long codUnidadeReferente;
+    /**
+     * Nome da unidade
+     * */
+    @NotNull
+    private final String nomeUnidadeReferente;
+    /**
+     * Código do colaborador que realizou a última atualização
+     * */
+    @NotNull
+    private final Long codColaboradorUltimaAtualizacao;
     /**
      * Tolerância da calibragem
      * */
@@ -60,20 +75,26 @@ public final class ConfiguracaoAberturaServicoUpsert {
     @Nullable
     private final Integer periodoAfericaoSulco;
 
-    public ConfiguracaoAberturaServicoUpsert(@Nullable final Long codigo,
-                                             @NotNull final Long codEmpresaReferente,
-                                             @NotNull final Long codRegionalReferente,
-                                             @NotNull final Long codUnidadeReferente,
-                                             @Nullable final Double toleranciaCalibragem,
-                                             @Nullable final Double toleranciaInspecao,
-                                             @Nullable final Double sulcoMinimoRecape,
-                                             @Nullable final Double sulcoMinimoDescarte,
-                                             @Nullable final Integer periodoAfericaoPressao,
-                                             @Nullable final Integer periodoAfericaoSulco) {
+    public ConfiguracaoCronogramaServico(@Nullable final Long codigo,
+                                         @NotNull final Long codEmpresaReferente,
+                                         @NotNull final Long codRegionalReferente,
+                                         @NotNull final String nomeRegionalReferente,
+                                         @NotNull final Long codUnidadeReferente,
+                                         @NotNull final String nomeUnidadeReferente,
+                                         @Nullable final Long codColaboradorUltimaAtualizacao,
+                                         @Nullable final Double toleranciaCalibragem,
+                                         @Nullable final Double toleranciaInspecao,
+                                         @Nullable final Double sulcoMinimoRecape,
+                                         @Nullable final Double sulcoMinimoDescarte,
+                                         @Nullable final Integer periodoAfericaoPressao,
+                                         @Nullable final Integer periodoAfericaoSulco) {
         this.codigo = codigo;
         this.codEmpresaReferente = codEmpresaReferente;
         this.codRegionalReferente = codRegionalReferente;
+        this.nomeRegionalReferente = nomeRegionalReferente;
         this.codUnidadeReferente = codUnidadeReferente;
+        this.nomeUnidadeReferente = nomeUnidadeReferente;
+        this.codColaboradorUltimaAtualizacao = codColaboradorUltimaAtualizacao;
         this.toleranciaCalibragem = toleranciaCalibragem;
         this.toleranciaInspecao = toleranciaInspecao;
         this.sulcoMinimoRecape = sulcoMinimoRecape;
@@ -83,12 +104,15 @@ public final class ConfiguracaoAberturaServicoUpsert {
     }
 
     @NotNull
-    public static ConfiguracaoAberturaServicoUpsert getDummy() {
-        return new ConfiguracaoAberturaServicoUpsert(
+    public static ConfiguracaoCronogramaServico getDummy() {
+        return new ConfiguracaoCronogramaServico(
                 1L,
                 3L,
                 1L,
+                "Sul",
                 3L,
+                "Unidade Teste Zalf",
+                2272L,
                 0.1D,
                 0.2D,
                 11.1D,
@@ -108,7 +132,16 @@ public final class ConfiguracaoAberturaServicoUpsert {
     public Long getCodRegionalReferente() { return codRegionalReferente; }
 
     @NotNull
+    public String getNomeRegionalReferente() { return nomeRegionalReferente; }
+
+    @NotNull
     public Long getCodUnidadeReferente() { return codUnidadeReferente; }
+
+    @NotNull
+    public String getNomeUnidadeReferente() { return nomeUnidadeReferente; }
+
+    @Nullable
+    public Long getCodColaboradorUltimaAtualizacao() { return codColaboradorUltimaAtualizacao; }
 
     @Nullable
     public Double getToleranciaCalibragem() { return toleranciaCalibragem; }

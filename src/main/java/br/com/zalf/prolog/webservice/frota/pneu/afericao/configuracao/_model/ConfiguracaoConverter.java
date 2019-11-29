@@ -31,10 +31,10 @@ public final class ConfiguracaoConverter {
     }
 
     @NotNull
-    public static ConfiguracaoAberturaServico createConfiguracaoAberturaServico(
+    public static ConfiguracaoCronogramaServico createConfiguracaoAberturaServico(
             @NotNull final ResultSet rSet) throws Throwable {
         final long codigo = rSet.getLong("CODIGO");
-        return new ConfiguracaoAberturaServico(
+        return new ConfiguracaoCronogramaServico(
                 codigo == 0 ? null : codigo,
                 rSet.getLong("CODIGO_EMPRESA"),
                 rSet.getLong("CODIGO_REGIONAL"),
@@ -51,9 +51,9 @@ public final class ConfiguracaoConverter {
     }
 
     @NotNull
-    public static ConfiguracaoAberturaServicoHistorico createConfiguracaoAberturaServicoHistorico(
+    public static ConfiguracaoCronogramaServicoHistorico createConfiguracaoAberturaServicoHistorico(
             @NotNull final ResultSet rSet) throws Throwable {
-        return new ConfiguracaoAberturaServicoHistorico(
+        return new ConfiguracaoCronogramaServicoHistorico(
                 rSet.getString("NOME_UNIDADE"),
                 rSet.getString("NOME_COLABORADOR"),
                 rSet.getObject("DATA_HORA_ALTERACAO", LocalDateTime.class),
