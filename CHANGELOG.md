@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## Stage
+
+### Refactors
+* Altera nome de coluna de serviço realizado de pneu (PL-2295)
+
 <a name="v1.0.8"></a>
 ## Version [v1.0.8](https://github.com/luizfp/PrologWebService/compare/v1.0.7...v1.0.8) (release-date) [unreleased]
 

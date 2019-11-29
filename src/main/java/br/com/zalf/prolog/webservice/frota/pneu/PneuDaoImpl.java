@@ -612,7 +612,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     .providePneuServicoRealizadoDao()
                     .insertServicoByPneuCadastro(conn, codUnidade, pneu.getCodigo(), servicoRecapagem);
             stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_CADASTRO " +
-                    "(COD_PNEU, COD_PNEU_SERVICO_REALIZADO) " +
+                    "(COD_PNEU, COD_SERVICO_REALIZADO) " +
                     "VALUES (?, ?);");
             stmt.setLong(1, pneu.getCodigo());
             stmt.setLong(2, codServicoRealizado);
