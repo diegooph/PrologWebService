@@ -1,22 +1,18 @@
 Change Log
 ==========
 
-## Stage
-
-### Refactors
-* Altera nome de coluna de serviço realizado de pneu (PL-2295)
-
 <a name="v1.0.8"></a>
 ## Version [v1.0.8](https://github.com/luizfp/PrologWebService/compare/v1.0.7...v1.0.8) (release-date) [unreleased]
 
 ### Features
 * Cria relatório de farol de aferições (PL-2379)
-* Adiciona a configuração de restrições de pneus para abertura de serviços (PL-1989 / PL-2011)
+* Adiciona a configuração de restrições de pneus para o cronograma e serviços (PL-1989 / PL-2011)
 
 ### Refactors
 * Remove validação de CPF no cadastro / edição de colaborador (PL-2400)
 * Altera forma de autenticar o envio de movimentações com a Praxio (PLI-41) 
-* Melhora código da estrutura de metas (PL-2232) 
+* Melhora código da estrutura de metas (PL-2232)
+* Altera nome de coluna de serviço realizado de pneu (PL-2295) 
 
 ### Bug fixes
 * Corrige problema para buscar valor de meta do apontamento do tracking (PL-2232)
