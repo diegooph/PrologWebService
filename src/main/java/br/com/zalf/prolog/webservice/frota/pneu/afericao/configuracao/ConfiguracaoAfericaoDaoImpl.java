@@ -134,7 +134,7 @@ public final class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implem
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareCall("{CALL FUNC_PNEU_UPSERT_CONFIGURACAO_ABERTURA_SERVICO(" +
+            stmt = conn.prepareCall("{CALL FUNC_AFERICAO_UPSERT_CONFIGURACAO_CRONOGRAMA_SERVICO(" +
                     "F_CODIGO_EMPRESA := ?," +
                     "F_CODIGO_UNIDADE := ?," +
                     "F_TOLERANCIA_CALIBRAGEM := ?," +
@@ -187,7 +187,7 @@ public final class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implem
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_PNEU_GET_CONFIGURACAO_POR_COLABORADOR(F_COD_COLABORADOR := ?);");
+                    "FUNC_AFERICAO_GET_CONFIGURACAO_CRONOGRAMA_SERVICO_BY_COLABORADOR(F_COD_COLABORADOR := ?);");
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
             final List<ConfiguracaoCronogramaServico> configuracoes = new ArrayList<>();
@@ -210,7 +210,7 @@ public final class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implem
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_PNEU_GET_CONFIGURACAO_ABERTURA_SERVICO_HISTORICO(F_COD_RESTRICAO_UNIDADE_PNEU := ?);");
+                    "FUNC_AFERICAO_GET_CONFIGURACAO_CRONOGRAMA_SERVICO_HISTORICO(F_COD_RESTRICAO_UNIDADE_PNEU := ?);");
             stmt.setLong(1, codRestricaoUnidadePneu);
             rSet = stmt.executeQuery();
             final List<ConfiguracaoCronogramaServicoHistorico> historicos = new ArrayList<>();
