@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.commons.util.date;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -80,5 +83,18 @@ public class TimeUtils {
 
     public static Time toSqlTime(String stringToParse) {
         return toSqlTime(LocalTime.parse(stringToParse));
+    }
+
+    @NotNull
+    public static Time timeFromDuration(@NotNull final Duration duration) {
+        final long segundos = Math.abs(duration.getSeconds());
+        return TimeUtils.toSqlTime(LocalTime.ofSecondOfDay(segundos));
+    }
+
+    @NotNull
+    public static Duration durationFromTime(@NotNull final Time time) {
+        final LocalTime localTime = TimeUtils.toLocalTime(time);
+        final long segundos = localTime.getSecond() + (localTime.getMinute() * 60) + (localTime.getHour() * 60 * 60);
+        return Duration.of(segundos, ChronoUnit.SECONDS);
     }
 }

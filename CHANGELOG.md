@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+## Stage
+### Bug fixes
+* Corrige problema para buscar valor de meta do apontamento do tracking (PL-2232)
+
+### Refactors
+* Melhora código da estrutura de metas (PL-2232) 
+
 <a name="v1.0.8"></a>
 ## Version [v1.0.8](https://github.com/luizfp/PrologWebService/compare/v1.0.7...v1.0.8) (release-date) [unreleased]
 
