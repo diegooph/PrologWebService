@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import com.google.common.base.Preconditions;
@@ -140,6 +141,41 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getString("URL_COMPLETA");
+            } else {
+                throw new SQLException("Nenhuma URL encontrada para:\n" +
+                        "codEmpresa: " + codEmpresa + "\n" +
+                        "sistemaKey: " + sistemaKey.getKey() + "\n" +
+                        "metodoIntegrado: " + metodoIntegrado.getKey());
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public ApiAutenticacaoHolder getApiAutenticacaoHolder(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa,
+            @NotNull final SistemaKey sistemaKey,
+            @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT *" +
+                    "FROM INTEGRACAO.FUNC_GERAL_BUSCA_INFOS_AUTENTICACAO(" +
+                    "F_COD_EMPRESA := ?, " +
+                    "F_SISTEMA_KEY := ?, " +
+                    "F_METODO_INTEGRADO := ?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setString(2, sistemaKey.getKey());
+            stmt.setString(3, metodoIntegrado.getKey());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return new ApiAutenticacaoHolder(
+                        rSet.getString("URL_COMPLETA"),
+                        rSet.getString("API_TOKEN_CLIENT"),
+                        rSet.getLong("API_SHORT_CODE"));
             } else {
                 throw new SQLException("Nenhuma URL encontrada para:\n" +
                         "codEmpresa: " + codEmpresa + "\n" +

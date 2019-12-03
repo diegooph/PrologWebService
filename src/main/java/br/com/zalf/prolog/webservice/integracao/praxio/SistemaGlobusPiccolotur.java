@@ -13,11 +13,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
-import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturMovimentacaoResponse;
-import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
-import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDao;
-import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDaoImpl;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -161,6 +159,21 @@ public final class SistemaGlobusPiccolotur extends Sistema {
         try {
             conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
+            final long codEmpresa =
+                    getIntegradorProLog()
+                            .getCodEmpresaByCodUnidadeProLog(conn, processoMovimentacao.getUnidade().getCodigo());
+            final ApiAutenticacaoHolder autenticacaoHolder =
+                    getIntegradorProLog()
+                            .getApiAutenticacaoHolder(
+                                    conn,
+                                    codEmpresa,
+                                    getSistemaKey(),
+                                    MetodoIntegrado.GET_AUTENTICACAO);
+            final GlobusPiccoloturAutenticacaoResponse autenticacaoResponse =
+                    requester.getTokenAutenticacaoIntegracao(
+                            autenticacaoHolder.getUrl(),
+                            autenticacaoHolder.getApiTokenClient(),
+                            autenticacaoHolder.getApiShortCode());
             final Long codMovimentacao =
                     Injection
                             .provideMovimentacaoDao()
@@ -169,13 +182,10 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                     processoMovimentacao,
                                     dataHoraMovimentacao,
                                     fecharServicosAutomaticamente);
-            final long codUnidade = processoMovimentacao.getUnidade().getCodigo();
             final GlobusPiccoloturMovimentacaoResponse response = requester.insertProcessoMovimentacao(
-                    getIntegradorProLog().getUrl(
-                            conn,
-                            getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade),
-                            getSistemaKey(),
-                            MetodoIntegrado.INSERT_MOVIMENTACAO),
+                    getIntegradorProLog()
+                            .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.INSERT_MOVIMENTACAO),
+                    autenticacaoResponse.getFormattedBearerToken(),
                     GlobusPiccoloturConverter.convert(processoMovimentacao, dataHoraMovimentacao));
             if (!response.isSucesso()) {
                 throw new GlobusPiccoloturException(

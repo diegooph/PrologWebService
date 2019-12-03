@@ -2,31 +2,44 @@ package br.com.zalf.prolog.webservice.entrega.metas;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
+import javax.ws.rs.core.Response;
+import java.util.Optional;
 
 /**
  * Classe MetaService responsavel por comunicar-se com a interface DAO
  */
-public class MetaService {
+public final class MetaService {
 	private static final String TAG = MetaService.class.getSimpleName();
+	@NotNull
 	private final MetasDao dao = Injection.provideMetasDao();
 
-	public Metas getByCodUnidade(Long codUnidade) {
+	@NotNull
+	public Response getByCodUnidade(@NotNull final Long codUnidade) {
 		try {
-			return dao.getByCodUnidade(codUnidade);
-		} catch (SQLException e) {
-			Log.e(TAG, "Erro ao buscar as metas de uma unidade", e);
-			return null;
+			final Optional<Metas> optional = dao.getByCodUnidade(codUnidade);
+			if (optional.isPresent()) {
+				return Response.ok(optional.get()).build();
+			} else {
+				return Response.noContent().build();
+			}
+		} catch (final Throwable throwable) {
+			Log.e(TAG, "Erro ao buscar as metas da unidade: " + codUnidade, throwable);
+			throw Injection
+					.provideProLogExceptionHandler()
+					.map(throwable, "Erro ao buscar as metas, tente novamente");
 		}
 	}
 
-	public boolean update(Metas metas, Long codUnidade) {
+	public void update(@NotNull final Metas metas, @NotNull final Long codUnidade) {
 		try {
-			return dao.update(metas, codUnidade);
-		} catch (SQLException e) {
-			Log.e(TAG, "Erro ao atualizar as metas de uma unidade", e);
-			return false;
+			dao.update(metas, codUnidade);
+		} catch (final Throwable throwable) {
+			Log.e(TAG, "Erro ao atualizar as metas da unidade: " + codUnidade, throwable);
+			throw Injection
+					.provideProLogExceptionHandler()
+					.map(throwable, "Erro ao atualizar as metas, tente novamente");
 		}
 	}
 }
