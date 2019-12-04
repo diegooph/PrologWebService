@@ -391,6 +391,10 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             rSet = stmt.executeQuery();
             final Map<Long, List<InfosAlternativaAberturaOrdemServico>> map = new HashMap<>();
             while (rSet.next()) {
+                // TODO: Alterar para usar código de contexto da alternativa.
+                // TESTE: abrir um item de OS em uma versão do modelo, incrementar versão sem mudar alternativa que
+                // abriu o item (manter contexto), realizar novo check apontando mesmo problema.
+                // RESULTADO ESPERADO: deveria incrementar quantidade de apontamentos e não criar novo item.
                 final Long codAlternativa = rSet.getLong("COD_ALTERNATIVA");
                 List<InfosAlternativaAberturaOrdemServico> alternativas = map.get(codAlternativa);
                 if (alternativas != null) {
