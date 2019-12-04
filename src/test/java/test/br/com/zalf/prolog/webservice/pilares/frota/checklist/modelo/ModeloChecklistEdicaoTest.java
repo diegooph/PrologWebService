@@ -1091,8 +1091,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
             final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
 
-            // 8, 9 - Código contexto mudou.
-            ensureAllAttributesEqual(p1Antes, p1Depois, 4, false, false);
+            // 8, 9 - Mantém o código de contexto.
+            ensureAllAttributesEqual(p1Antes, p1Depois, 4, true, false);
 
             // 10 - Está single_choice.
             assertThat(p1Depois.isSingleChoice()).isTrue();
@@ -1300,7 +1300,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Atualiza o nome do modelo, mantém a versão")
+    @DisplayName("Atualiza o nome do modelo, aumenta a versão mas mantém o código de contexto")
     void caso21_atualizaNomeDoModelo_deveManterVersao() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
@@ -1332,7 +1332,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 COD_UNIDADE,
                 result.getCodModeloChecklistInserido());
         assertThat(buscado.getNome()).isEqualTo("NOVO NOME");
-        assertThat(editado.getCodVersaoModelo()).isEqualTo(buscado.getCodVersaoModelo());
+        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
     }
 
     @Test
