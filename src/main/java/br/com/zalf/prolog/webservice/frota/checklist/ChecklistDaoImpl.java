@@ -117,6 +117,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(3, checklist.getCodVersaoModeloChecklist());
             // Se foi um checklist offline salvamos a data/hora realização que recebemos do App. Senão, salvamos a
             // data/hora atual do servidor.
+            // TODO: Se a data/hora do WS estiver incorreta, iremos salvar informação errada no check off.
             final OffsetDateTime dataHoraRealizacao = foiOffline
                     ? checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime()
                     : Now.offsetDateTimeUtc();
