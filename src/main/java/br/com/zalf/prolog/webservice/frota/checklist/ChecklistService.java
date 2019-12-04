@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
@@ -11,10 +13,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -104,10 +103,10 @@ public final class ChecklistService {
 
     @NotNull
     public DeprecatedFarolChecklist getFarolChecklist(Long codUnidade,
-                                            String dataInicial,
-                                            String dataFinal,
-                                            boolean itensCriticosRetroativos,
-                                            String userToken) throws ProLogException {
+                                                      String dataInicial,
+                                                      String dataFinal,
+                                                      boolean itensCriticosRetroativos,
+                                                      String userToken) throws ProLogException {
         return internalGetFarolChecklist(
                 codUnidade,
                 ProLogDateParser.toLocalDate(dataInicial),
@@ -120,9 +119,19 @@ public final class ChecklistService {
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
                                             final boolean itensCriticosRetroativos,
                                             @NotNull final String userToken) throws ProLogException {
-        // TODO: Precisamos aplicar o tz do cliente
-        final LocalDate hoje = ZonedDateTime.now(Clock.systemUTC()).withZoneSameInstant(ZoneId.of("America/Sao_Paulo")).toLocalDate();
-        return internalGetFarolChecklist(codUnidade, hoje, hoje, itensCriticosRetroativos, userToken);
+        LocalDate hojeComTz = null;
+        try {
+            hojeComTz = Now
+                    .zonedDateTimeTzAware(TimeZoneManager.getZoneIdForCodUnidade(codUnidade))
+                    .toLocalDate();
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar TZ do cliente para gerar farol do checklist.\n" +
+                    "Unidade: " + codUnidade, throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar farol, tente novamente");
+        }
+        return internalGetFarolChecklist(codUnidade, hojeComTz, hojeComTz, itensCriticosRetroativos, userToken);
     }
 
     public boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) {
