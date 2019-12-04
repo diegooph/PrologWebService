@@ -135,6 +135,18 @@ public final class Pilares {
                 public static final int EDICAO = 135;
             }
         }
+
+        public final class SocorroRota {
+            private SocorroRota() {
+            }
+
+            public static final int SOLICITAR_SOCORRO = 145;
+
+            // Assumir um socorro. Invalidar um socorro. Finalizar um socorro.
+            public static final int TRATAR_SOCORRO = 146;
+
+            public static final int VISUALIZAR_SOCORROS_E_RELATORIOS = 147;
+        }
     }
 
     public static final int SEGURANCA = 2;
