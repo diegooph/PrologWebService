@@ -40,6 +40,7 @@ public final class ChecklistResource {
     public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
                                    @HeaderParam(ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) Integer versaoApp,
                                    @Required final String checklistJson) throws ProLogException {
+        // TODO: Ainda temos problema com data/hora aqui. Mesmo o checklist online está usando a data/hora do App.
         final ChecklistInsercao checklistNew;
         // Convertemos o JSON dependendo da versão do App.
         if (ChecklistMigracaoEstruturaSuporte.isAppNovaEstruturaChecklist(versaoApp)) {
