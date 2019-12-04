@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -114,7 +115,12 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
             stmt.setLong(3, checklist.getCodVersaoModeloChecklist());
-            stmt.setObject(4, checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime());
+            // Se foi um checklist offline salvamos a data/hora realização que recebemos do App. Senão, salvamos a
+            // data/hora atual do servidor.
+            final OffsetDateTime dataHoraRealizacao = foiOffline
+                    ? checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime()
+                    : Now.offsetDateTimeUtc();
+            stmt.setObject(4, dataHoraRealizacao);
             stmt.setLong(5, checklist.getCodColaborador());
             stmt.setLong(6, checklist.getCodVeiculo());
             stmt.setString(7, checklist.getPlacaVeiculo());
