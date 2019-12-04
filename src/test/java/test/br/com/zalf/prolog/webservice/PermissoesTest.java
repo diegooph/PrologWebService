@@ -9,8 +9,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created on 2/1/18
@@ -55,7 +54,7 @@ public class PermissoesTest {
         for (final Integer value : permissoesPilar) {
             assertNotNull(permissoesPilar);
             final int frequency = Iterables.frequency(permissoesPilar, value);
-            assertTrue(frequency == 1);
+            assertEquals("Permissão " + value + " declarada mais de uma vez", 1, frequency);
         }
     }
 
