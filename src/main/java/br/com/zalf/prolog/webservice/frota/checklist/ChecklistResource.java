@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -40,14 +42,14 @@ public final class ChecklistResource {
     public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
                                    @HeaderParam(ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) Integer versaoApp,
                                    @Required final String checklistJson) throws ProLogException {
-        // TODO: Ainda temos problema com data/hora aqui. Mesmo o checklist online está usando a data/hora do App.
         final ChecklistInsercao checklistNew;
         // Convertemos o JSON dependendo da versão do App.
         if (ChecklistMigracaoEstruturaSuporte.isAppNovaEstruturaChecklist(versaoApp)) {
             checklistNew = GsonUtils.getGson().fromJson(checklistJson, ChecklistInsercao.class);
         } else {
             final Checklist checklistOld = GsonUtils.getGson().fromJson(checklistJson, Checklist.class);
-            checklistNew = ChecklistMigracaoEstruturaSuporte.toChecklistInsercao(checklistOld, versaoApp);
+            final LocalDateTime agora = Now.localDateTimeUtc();
+            checklistNew = ChecklistMigracaoEstruturaSuporte.toChecklistInsercao(checklistOld, agora, versaoApp);
             checklistNew.setChecklistAntigo(checklistOld);
         }
         final Long codChecklist = service.insert(userToken, checklistNew);

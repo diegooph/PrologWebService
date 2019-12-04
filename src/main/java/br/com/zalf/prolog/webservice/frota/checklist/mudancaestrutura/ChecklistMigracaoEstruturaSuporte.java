@@ -221,6 +221,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
 
     @NotNull
     public static ChecklistInsercao toChecklistInsercao(@NotNull final Checklist antigo,
+                                                        @NotNull final LocalDateTime dataHoraRealizacao,
                                                         @NotNull final Integer versaoApp) {
         final DadosChecklistInsercaoEstrutraSuporte dados = getDadosChecklistInsercao(
                 antigo.getColaborador().getCpf(),
@@ -237,7 +238,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
                 antigo.getKmAtualVeiculo(),
                 antigo.getTempoRealizacaoCheckInMillis(),
                 convertRespostas(antigo.getListRespostas()),
-                antigo.getData(),
+                dataHoraRealizacao,
                 FonteDataHora.SERVIDOR,
                 versaoApp,
                 versaoApp,
