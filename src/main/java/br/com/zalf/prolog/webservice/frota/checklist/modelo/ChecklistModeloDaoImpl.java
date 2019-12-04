@@ -569,21 +569,23 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_ANALISA_MUDANCAS_MODELO(" +
                     "F_COD_MODELO                  := ?," +
                     "F_COD_VERSAO_MODELO           := ?," +
+                    "F_NOME_MODELO                 := ?," +
                     "F_COD_CARGOS                  := ?," +
                     "F_COD_TIPOS_VEICULOS          := ?," +
                     "F_PERGUNTAS_ALTERNATIVAS_JSON := ?);");
             stmt.setLong(1, codModelo);
             stmt.setLong(2, modeloChecklist.getCodVersaoModelo());
-            stmt.setArray(3, PostgresUtils.listToArray(
+            stmt.setString(3, modeloChecklist.getNome());
+            stmt.setArray(4, PostgresUtils.listToArray(
                     conn,
                     SqlType.BIGINT,
                     modeloChecklist.getCargosLiberados()));
-            stmt.setArray(4, PostgresUtils.listToArray(
+            stmt.setArray(5, PostgresUtils.listToArray(
                     conn,
                     SqlType.BIGINT,
                     modeloChecklist.getTiposVeiculoLiberados()));
             final String json = GsonUtils.getGson().toJson(modeloChecklist.getPerguntas());
-            stmt.setObject(5, PostgresUtils.toJsonb(json));
+            stmt.setObject(6, PostgresUtils.toJsonb(json));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final boolean algoMudouNoModelo = rSet.getBoolean("ALGO_MUDOU_NO_MODELO");
