@@ -1041,7 +1041,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Altera P1 para single_choice, aumenta versão")
-    void caso17_alteraP1ParaSingleChoice_deveMudarVersaoModeloECodigoContextoP1() {
+    void caso17_alteraP1ParaSingleChoice_deveMudarVersaoModeloEManterCodigoContextoP1() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1060,7 +1060,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
         perguntas.set(
                 0,
-                // P1 é substituída agora sendo single_choice..
+                // P1 é substituída agora sendo single_choice.
                 new PerguntaModeloChecklistEdicaoAtualiza(
                         p1.getCodigo(),
                         p1.getCodigoContexto(),
