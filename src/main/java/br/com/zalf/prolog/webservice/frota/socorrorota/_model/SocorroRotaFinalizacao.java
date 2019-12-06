@@ -13,19 +13,19 @@ import java.time.LocalDateTime;
 public final class SocorroRotaFinalizacao extends SocorroRotaAcao {
     @NotNull
     private final Long codSocorroRota;
-    @Nullable
+    @NotNull
     private final String observacaoFinalizacao;
     @Nullable
-    private final String urlFoto1;
+    private final String urlFoto1Finalizacao;
     @Nullable
-    private final String urlFoto2;
+    private final String urlFoto2Finalizacao;
     @Nullable
     private final String urlFoto3;
 
     public SocorroRotaFinalizacao(@NotNull final Long codSocorroRota,
-                                  @Nullable final String observacaoFinalizacao,
-                                  @Nullable final String urlFoto1,
-                                  @Nullable final String urlFoto2,
+                                  @NotNull final String observacaoFinalizacao,
+                                  @Nullable final String urlFoto1Finalizacao,
+                                  @Nullable final String urlFoto2Finalizacao,
                                   @Nullable final String urlFoto3,
                                   @NotNull final Long codColaborador,
                                   @NotNull final LocalDateTime dataHora,
@@ -50,8 +50,8 @@ public final class SocorroRotaFinalizacao extends SocorroRotaAcao {
                 modeloDevice);
         this.codSocorroRota = codSocorroRota;
         this.observacaoFinalizacao = observacaoFinalizacao;
-        this.urlFoto1 = urlFoto1;
-        this.urlFoto2 = urlFoto2;
+        this.urlFoto1Finalizacao = urlFoto1Finalizacao;
+        this.urlFoto2Finalizacao = urlFoto2Finalizacao;
         this.urlFoto3 = urlFoto3;
     }
 
@@ -60,19 +60,19 @@ public final class SocorroRotaFinalizacao extends SocorroRotaAcao {
         return codSocorroRota;
     }
 
-    @Nullable
+    @NotNull
     public String getObservacaoFinalizacao() {
         return observacaoFinalizacao;
     }
 
     @Nullable
-    public String getUrlFoto1() {
-        return urlFoto1;
+    public String getUrlFoto1Finalizacao() {
+        return urlFoto1Finalizacao;
     }
 
     @Nullable
-    public String getUrlFoto2() {
-        return urlFoto2;
+    public String getUrlFoto2Finalizacao() {
+        return urlFoto2Finalizacao;
     }
 
     @Nullable

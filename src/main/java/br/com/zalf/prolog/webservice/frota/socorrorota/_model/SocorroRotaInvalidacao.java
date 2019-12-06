@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
     @NotNull
     private final Long codSocorroRota;
-    @Nullable
+    @NotNull
     private final String observacaoInvalidacao;
     @Nullable
     private final String urlFoto1;
@@ -23,7 +23,7 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
     private final String urlFoto3;
 
     public SocorroRotaInvalidacao(@NotNull final Long codSocorroRota,
-                                  @Nullable final String observacaoInvalidacao,
+                                  @NotNull final String observacaoInvalidacao,
                                   @Nullable final String urlFoto1,
                                   @Nullable final String urlFoto2,
                                   @Nullable final String urlFoto3,
@@ -60,7 +60,7 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
         return codSocorroRota;
     }
 
-    @Nullable
+    @NotNull
     public String getObservacaoInvalidacao() {
         return observacaoInvalidacao;
     }
