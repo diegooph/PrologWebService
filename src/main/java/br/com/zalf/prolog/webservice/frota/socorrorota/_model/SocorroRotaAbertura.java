@@ -15,14 +15,17 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
     private final Long codUnidadeAbertura;
     @NotNull
     private final Long codVeiculoProblema;
+    private final long kmVeiculoAbertura;
+    @NotNull
+    private final Long codProblemaSocorroRota;
     @Nullable
     private final String descricaoProblema;
     @Nullable
-    private final String urlFoto1;
+    private final String urlFoto1Abertura;
     @Nullable
-    private final String urlFoto2;
+    private final String urlFoto2Abertura;
     @Nullable
-    private final String urlFoto3;
+    private final String urlFoto3Abertura;
     @Nullable
     private final String pontoReferencia;
 
@@ -30,10 +33,12 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
 
     public SocorroRotaAbertura(@NotNull final Long codUnidadeAbertura,
                                @NotNull final Long codVeiculoProblema,
+                               final long kmVeiculoAbertura,
+                               @NotNull final Long codProblemaSocorroRota,
                                @Nullable final String descricaoProblema,
-                               @Nullable final String urlFoto1,
-                               @Nullable final String urlFoto2,
-                               @Nullable final String urlFoto3,
+                               @Nullable final String urlFoto1Abertura,
+                               @Nullable final String urlFoto2Abertura,
+                               @Nullable final String urlFoto3Abertura,
                                @Nullable final String pontoReferencia,
                                @NotNull final Long codColaborador,
                                @NotNull final LocalDateTime dataHora,
@@ -58,10 +63,12 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
                 modeloDevice);
         this.codUnidadeAbertura = codUnidadeAbertura;
         this.codVeiculoProblema = codVeiculoProblema;
+        this.kmVeiculoAbertura = kmVeiculoAbertura;
+        this.codProblemaSocorroRota = codProblemaSocorroRota;
         this.descricaoProblema = descricaoProblema;
-        this.urlFoto1 = urlFoto1;
-        this.urlFoto2 = urlFoto2;
-        this.urlFoto3 = urlFoto3;
+        this.urlFoto1Abertura = urlFoto1Abertura;
+        this.urlFoto2Abertura = urlFoto2Abertura;
+        this.urlFoto3Abertura = urlFoto3Abertura;
         this.pontoReferencia = pontoReferencia;
     }
 
@@ -75,24 +82,33 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
         return codVeiculoProblema;
     }
 
+    public long getKmVeiculoAbertura() {
+        return kmVeiculoAbertura;
+    }
+
+    @NotNull
+    public Long getCodProblemaSocorroRota() {
+        return codProblemaSocorroRota;
+    }
+
     @Nullable
     public String getDescricaoProblema() {
         return descricaoProblema;
     }
 
     @Nullable
-    public String getUrlFoto1() {
-        return urlFoto1;
+    public String getUrlFoto1Abertura() {
+        return urlFoto1Abertura;
     }
 
     @Nullable
-    public String getUrlFoto2() {
-        return urlFoto2;
+    public String getUrlFoto2Abertura() {
+        return urlFoto2Abertura;
     }
 
     @Nullable
-    public String getUrlFoto3() {
-        return urlFoto3;
+    public String getUrlFoto3Abertura() {
+        return urlFoto3Abertura;
     }
 
     @Nullable
