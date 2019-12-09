@@ -16,18 +16,18 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
     @NotNull
     private final String observacaoInvalidacao;
     @Nullable
-    private final String urlFoto1;
+    private final String urlFoto1Invalidacao;
     @Nullable
-    private final String urlFoto2;
+    private final String urlFoto2Invalidacao;
     @Nullable
-    private final String urlFoto3;
+    private final String urlFoto3Invalidacao;
 
     public SocorroRotaInvalidacao(@NotNull final Long codUnidadeAbertura,
                                   @NotNull final Long codSocorroRota,
                                   @NotNull final String observacaoInvalidacao,
-                                  @Nullable final String urlFoto1,
-                                  @Nullable final String urlFoto2,
-                                  @Nullable final String urlFoto3,
+                                  @Nullable final String urlFoto1Invalidacao,
+                                  @Nullable final String urlFoto2Invalidacao,
+                                  @Nullable final String urlFoto3Invalidacao,
                                   @NotNull final Long codColaborador,
                                   @NotNull final LocalDateTime dataHora,
                                   @NotNull final LocalizacaoSocorroRota localizacao,
@@ -52,9 +52,9 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
                 modeloDevice);
         this.codSocorroRota = codSocorroRota;
         this.observacaoInvalidacao = observacaoInvalidacao;
-        this.urlFoto1 = urlFoto1;
-        this.urlFoto2 = urlFoto2;
-        this.urlFoto3 = urlFoto3;
+        this.urlFoto1Invalidacao = urlFoto1Invalidacao;
+        this.urlFoto2Invalidacao = urlFoto2Invalidacao;
+        this.urlFoto3Invalidacao = urlFoto3Invalidacao;
     }
 
     @NotNull
@@ -69,16 +69,16 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
 
     @Nullable
     public String getUrlFoto1() {
-        return urlFoto1;
+        return urlFoto1Invalidacao;
     }
 
     @Nullable
     public String getUrlFoto2() {
-        return urlFoto2;
+        return urlFoto2Invalidacao;
     }
 
     @Nullable
     public String getUrlFoto3() {
-        return urlFoto3;
+        return urlFoto3Invalidacao;
     }
 }

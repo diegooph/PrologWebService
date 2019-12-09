@@ -20,14 +20,14 @@ public final class SocorroRotaFinalizacao extends SocorroRotaAcao {
     @Nullable
     private final String urlFoto2Finalizacao;
     @Nullable
-    private final String urlFoto3;
+    private final String urlFoto3Finalizacao;
 
     public SocorroRotaFinalizacao(@NotNull final Long codUnidadeAbertura,
                                   @NotNull final Long codSocorroRota,
                                   @NotNull final String observacaoFinalizacao,
                                   @Nullable final String urlFoto1Finalizacao,
                                   @Nullable final String urlFoto2Finalizacao,
-                                  @Nullable final String urlFoto3,
+                                  @Nullable final String urlFoto3Finalizacao,
                                   @NotNull final Long codColaborador,
                                   @NotNull final LocalDateTime dataHora,
                                   @NotNull final LocalizacaoSocorroRota localizacao,
@@ -54,7 +54,7 @@ public final class SocorroRotaFinalizacao extends SocorroRotaAcao {
         this.observacaoFinalizacao = observacaoFinalizacao;
         this.urlFoto1Finalizacao = urlFoto1Finalizacao;
         this.urlFoto2Finalizacao = urlFoto2Finalizacao;
-        this.urlFoto3 = urlFoto3;
+        this.urlFoto3Finalizacao = urlFoto3Finalizacao;
     }
 
     @NotNull
@@ -78,8 +78,8 @@ public final class SocorroRotaFinalizacao extends SocorroRotaAcao {
     }
 
     @Nullable
-    public String getUrlFoto3() {
-        return urlFoto3;
+    public String getUrlFoto3Finalizacao() {
+        return urlFoto3Finalizacao;
     }
 
 }
