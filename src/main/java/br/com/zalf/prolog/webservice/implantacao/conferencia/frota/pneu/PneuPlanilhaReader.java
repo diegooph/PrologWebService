@@ -41,7 +41,7 @@ public final class PneuPlanilhaReader {
         final CsvParserSettings settings = new CsvParserSettings();
         settings.setDelimiterDetectionEnabled(true, ',', ';');
         settings.setHeaderExtractionEnabled(true);
-        settings.setNumberOfRowsToSkip(12);
+        settings.setNumberOfRowsToSkip(36);
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
         final List<PneuPlanilha> veiculoPlanilha = new ArrayList<>();
