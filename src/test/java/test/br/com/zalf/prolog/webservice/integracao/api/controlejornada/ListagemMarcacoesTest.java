@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.integracao.api;
+package test.br.com.zalf.prolog.webservice.integracao.api.controlejornada;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;

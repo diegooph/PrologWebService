@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data;
+package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;

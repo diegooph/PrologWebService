@@ -6,6 +6,9 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracao
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
@@ -267,7 +270,15 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidadeCronograma) throws Throwable {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidadesCronograma) throws Throwable {
+        // A Avilan não possui a busca do cronograma para todas as unidades, então temos que limitar a apenas 1 por vez.
+        if (codUnidadesCronograma.size() > 1) {
+            throw new BloqueadoIntegracaoException(
+                    "Não é possível filtrar mais de uma unidade na integração com a Avilan." +
+                            "\nSelecione apenas uma.");
+        }
+        final Long codUnidadeCronograma = codUnidadesCronograma.get(0);
+
         /*
          * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
          * que não esteja presente na mesma unidade dele.
@@ -283,10 +294,10 @@ public final class AvaCorpAvilan extends Sistema {
         final AfericaoVeiculosExclusionStrategy exclusionStrategy = new AfericaoVeiculosExclusionStrategy();
         final CronogramaAfericao cronograma =
                 AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao, codUnidadeCronograma);
-        cronograma.removerPlacasNaoAferiveis(cronograma);
-        cronograma.removerModelosSemPlacas(cronograma);
-        cronograma.calcularQuatidadeSulcosPressaoOk(cronograma);
-        cronograma.calcularTotalVeiculos(cronograma);
+        cronograma.removerPlacasNaoAferiveis();
+        cronograma.removerModelosSemPlacas();
+        cronograma.calcularQuatidadeSulcosPressaoOk(false);
+        cronograma.calcularTotalVeiculos();
         return cronograma;
     }
 

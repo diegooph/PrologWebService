@@ -4,10 +4,6 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracao
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
@@ -20,6 +16,7 @@ import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -29,6 +26,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class SistemaApiProLog extends Sistema {
+
     public SistemaApiProLog(@NotNull final IntegradorProLog integradorProLog,
                             @NotNull final SistemaKey sistemaKey,
                             @NotNull final String userToken) {
@@ -123,28 +121,15 @@ public final class SistemaApiProLog extends Sistema {
     }
 
     @Override
-    public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
+    public void fechaServico(@NotNull final Long codUnidade,
+                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                             @NotNull final Servico servico) throws Throwable {
         if (servico.getTipoServico().equals(TipoServico.MOVIMENTACAO)) {
             throw new BloqueadoIntegracaoException(
                     "O fechamento de serviço de movimentação está sendo integrado e ainda não está disponível.\n" +
                             "Por enquanto, utilize o seu sistema para movimentar os pneus.");
         }
-        getIntegradorProLog().fechaServico(codUnidade, servico);
-    }
-
-    @NotNull
-    @Override
-    public Long insert(@NotNull final ServicoDao servicoDao,
-                       @NotNull final ProcessoMovimentacao processoMovimentacao,
-                       final boolean fecharServicosAutomaticamente) throws Throwable {
-        for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
-            if (!movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE)) {
-                throw new BloqueadoIntegracaoException("É permitido apenas movimentações do ESTOQUE para o DESCARTE.\n" +
-                        "As demais movimentações ainda estão sendo integradas.");
-            }
-        }
-        // Apenas processamos movimentações com origem ESTOQUE e destino DESCARTE.
-        return getIntegradorProLog().insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+        getIntegradorProLog().fechaServico(codUnidade, dataHorafechamentoServico, servico);
     }
 
     @NotNull

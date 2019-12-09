@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -182,11 +183,11 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getCronogramaAfericao(codUnidade);
+            return getSistema().getCronogramaAfericao(codUnidades);
         } else {
-            return integradorProLog.getCronogramaAfericao(codUnidade);
+            return integradorProLog.getCronogramaAfericao(codUnidades);
         }
     }
 
@@ -496,11 +497,13 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable {
+    public void fechaServico(@NotNull final Long codUnidade,
+                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                             @NotNull final Servico servico) throws Throwable {
         if (getSistema() != null) {
-            getSistema().fechaServico(codUnidade, servico);
+            getSistema().fechaServico(codUnidade, dataHorafechamentoServico, servico);
         } else {
-            integradorProLog.fechaServico(codUnidade, servico);
+            integradorProLog.fechaServico(codUnidade, dataHorafechamentoServico, servico);
         }
     }
 
@@ -508,11 +511,14 @@ public abstract class Router implements OperacoesIntegradas {
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final LocalDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+            return getSistema()
+                    .insert(servicoDao, processoMovimentacao, dataHoraMovimentacao, fecharServicosAutomaticamente);
         } else {
-            return integradorProLog.insert(servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+            return integradorProLog
+                    .insert(servicoDao, processoMovimentacao, dataHoraMovimentacao, fecharServicosAutomaticamente);
         }
     }
 

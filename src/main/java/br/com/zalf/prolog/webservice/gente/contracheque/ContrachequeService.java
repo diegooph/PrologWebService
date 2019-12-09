@@ -27,13 +27,15 @@ public class ContrachequeService {
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) {
         try {
             return dao.getPreContracheque(cpf, codUnidade, ano, mes);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o contracheque de um colaborador. \n" +
-                    "codUnidade: %d \n" +
-                    "cpf: %d \n" +
-                    "ano: %d \n" +
-                    "mes: %d", codUnidade, cpf, ano, mes), e);
-            return null;
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar o contracheque de um colaborador.\n" +
+                    "codUnidade: %d\n" +
+                    "cpf: %d\n" +
+                    "ano: %d\n" +
+                    "mes: %d", codUnidade, cpf, ano, mes), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar pré contracheque, tente novamente");
         }
     }
 

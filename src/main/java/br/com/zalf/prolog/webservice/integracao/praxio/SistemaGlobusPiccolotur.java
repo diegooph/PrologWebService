@@ -11,15 +11,21 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.Resul
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.GlobusPiccoloturRequester;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.SistemaGlobusPiccoloturDao;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.data.SistemaGlobusPiccoloturDaoImpl;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.*;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
+import java.time.LocalDateTime;
 import java.util.concurrent.Executors;
 
 /**
@@ -123,6 +129,90 @@ public final class SistemaGlobusPiccolotur extends Sistema {
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) {
         throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
+    }
+
+    @NotNull
+    @Override
+    public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final LocalDateTime dataHoraMovimentacao,
+                       final boolean fecharServicosAutomaticamente) throws Throwable {
+        // Garantimos que apenas movimentações válidas foram feitas para essa integração.
+        for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
+            if (!movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE)
+                    && !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.VEICULO)
+                    && !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ESTOQUE)
+                    && !movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
+                if (movimentacao.isFrom(OrigemDestinoEnum.ANALISE)) {
+                    // Adaptamos o texto de retorno para o cenário onde a origem é Análise.
+                    throw new BloqueadoIntegracaoException(
+                            String.format(
+                                    "ERRO!\nVocê está tentando mover um pneu da %s para o %s.\n" +
+                                            "Essa opção de movimentação ainda está sendo integrada",
+                                    OrigemDestinoEnum.ANALISE.asString(),
+                                    movimentacao.getDestino().getTipo().asString()));
+                } else if (movimentacao.isTo(OrigemDestinoEnum.ANALISE)) {
+                    // Adaptamos o texto de retorno para o cenário onde o destino é Análise.
+                    throw new BloqueadoIntegracaoException(
+                            String.format(
+                                    "ERRO!\nVocê está tentando mover um pneu do %s para a %s.\n" +
+                                            "Essa opção de movimentação ainda está sendo integrada",
+                                    movimentacao.getOrigem().getTipo().asString(),
+                                    OrigemDestinoEnum.ANALISE.asString()));
+                } else {
+                    throw new BloqueadoIntegracaoException(
+                            "ERRO!\nVocê está tentando realizar uma movimentação que ainda não está integrada");
+                }
+            }
+        }
+
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            conn.setAutoCommit(false);
+            final long codEmpresa =
+                    getIntegradorProLog()
+                            .getCodEmpresaByCodUnidadeProLog(conn, processoMovimentacao.getUnidade().getCodigo());
+            final ApiAutenticacaoHolder autenticacaoHolder =
+                    getIntegradorProLog()
+                            .getApiAutenticacaoHolder(
+                                    conn,
+                                    codEmpresa,
+                                    getSistemaKey(),
+                                    MetodoIntegrado.GET_AUTENTICACAO);
+            final GlobusPiccoloturAutenticacaoResponse autenticacaoResponse =
+                    requester.getTokenAutenticacaoIntegracao(
+                            autenticacaoHolder.getUrl(),
+                            autenticacaoHolder.getApiTokenClient(),
+                            autenticacaoHolder.getApiShortCode());
+            final Long codMovimentacao =
+                    Injection
+                            .provideMovimentacaoDao()
+                            .insert(conn,
+                                    servicoDao,
+                                    processoMovimentacao,
+                                    dataHoraMovimentacao,
+                                    fecharServicosAutomaticamente);
+            final GlobusPiccoloturMovimentacaoResponse response = requester.insertProcessoMovimentacao(
+                    getIntegradorProLog()
+                            .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.INSERT_MOVIMENTACAO),
+                    autenticacaoResponse.getFormattedBearerToken(),
+                    GlobusPiccoloturConverter.convert(processoMovimentacao, dataHoraMovimentacao));
+            if (!response.isSucesso()) {
+                throw new GlobusPiccoloturException(
+                        "[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado\n" + response.getPrettyErrors());
+            }
+            conn.commit();
+            return codMovimentacao;
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
     }
 
     @NotNull

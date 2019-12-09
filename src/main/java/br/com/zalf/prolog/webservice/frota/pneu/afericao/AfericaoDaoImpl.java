@@ -8,11 +8,12 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuConverter;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -21,7 +22,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,7 +164,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             return novaAfericao;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -173,7 +176,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             conn = getConnection();
             return getRestricaoByCodUnidade(conn, codUnidade);
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -198,24 +201,22 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
-    @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
+    @NotNull
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CRONOGRAMA_AFERICOES_PLACAS(?, ?, ?);");
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-            final LocalDateTime dataHoraTzCliente = ZonedDateTime
-                    .now(Clock.systemUTC())
-                    .withZoneSameInstant(zoneId)
-                    .toLocalDateTime();
-            stmt.setLong(1, codUnidade);
-            stmt.setObject(2, dataHoraTzCliente);
-            stmt.setString(3, zoneId.getId());
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CRONOGRAMA_AFERICOES_PLACAS(" +
+                    "F_COD_UNIDADES := ?," +
+                    "F_DATA_HORA_ATUAL := ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setObject(2, Now.localDateTimeUtc());
             rSet = stmt.executeQuery();
+
+            final boolean multiUnidades = codUnidades.size() > 1;
 
             final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
             ModeloPlacasAfericao modelo = new ModeloPlacasAfericao();
@@ -224,15 +225,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             while (rSet.next()) {
                 if (placas.size() == 0) {
                     // Primeiro resultado do resultset.
-                    modelo.setNomeModelo(rSet.getString("NOME"));
+                    modelo.setNomeModelo(rSet.getString("NOME_MODELO"));
                 } else {
-                    if (!modelo.getNomeModelo().equals(rSet.getString("NOME"))) {
+                    if (!modelo.getNomeModelo().equals(rSet.getString("NOME_MODELO"))) {
                         // Modelo diferente.
                         modelo.setPlacasAfericao(placas);
                         modelos.add(modelo);
                         placas = new ArrayList<>();
                         modelo = new ModeloPlacasAfericao();
-                        modelo.setNomeModelo(rSet.getString("NOME"));
+                        modelo.setNomeModelo(rSet.getString("NOME_MODELO"));
                     }
                 }
                 placas.add(createPlacaAfericao(rSet));
@@ -240,15 +241,18 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             modelo.setPlacasAfericao(placas);
             modelos.add(modelo);
 
-            // Finaliza criação do Cronograma.
-            final Restricao restricao = getRestricaoByCodUnidade(conn, codUnidade);
-            cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
-            cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
+            // Os atributos de meta são mantidos no cronograma ainda a nível de compatibilidade com apps antigos.
+            if (!multiUnidades) {
+                // Finaliza criação do Cronograma.
+                final Restricao restricao = getRestricaoByCodUnidade(conn, codUnidades.get(0));
+                cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
+                cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
+            }
             cronogramaAfericao.setModelosPlacasAfericao(modelos);
-            cronogramaAfericao.removerPlacasNaoAferiveis(cronogramaAfericao);
-            cronogramaAfericao.removerModelosSemPlacas(cronogramaAfericao);
-            cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(cronogramaAfericao);
-            cronogramaAfericao.calcularTotalVeiculos(cronogramaAfericao);
+            cronogramaAfericao.removerPlacasNaoAferiveis();
+            cronogramaAfericao.removerModelosSemPlacas();
+            cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(true);
+            cronogramaAfericao.calcularTotalVeiculos();
             return cronogramaAfericao;
         } finally {
             close(conn, stmt, rSet);
@@ -272,7 +276,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             return pneus;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -317,7 +321,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             return afericoes;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -349,7 +353,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             return afericoes;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -383,7 +387,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -432,7 +436,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             conn = getConnection();
             return getConfiguracaoNovaAfericaoPlaca(conn, placa);
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -451,8 +455,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 throw new Throwable("Dados de restrição não encontrados para a unidade: " + codUnidade);
             }
         } finally {
-            closeStatement(stmt);
-            closeResultSet(rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -473,7 +476,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                         + placa);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -494,7 +497,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                         + codPneu);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -587,6 +590,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         placa.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
         placa.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
         placa.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
+        placa.setMetaAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
+        placa.setMetaAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));
         return placa;
     }
 

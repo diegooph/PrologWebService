@@ -23,12 +23,43 @@ um item (PL-2389)
 * Altera método de busca das URLs das perguntas do checklist (PL-2386)
 * Altera busca do farol do checklist (PL-2417)
 
+<a name="v1.0.9"></a>
+## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (release-date) [unreleased]
+
+
+<a name="v1.0.8"></a>
+## Version [v1.0.8](https://github.com/luizfp/PrologWebService/compare/v1.0.7...v1.0.8) (2019-12-02)
+
+### Features
+* Cria relatório de farol de aferições (PL-2379)
+* Adiciona a configuração de restrições de pneus para o cronograma e serviços (PL-1989 / PL-2011)
+
+### Refactors
+* Remove validação de CPF no cadastro / edição de colaborador (PL-2400)
+* Altera forma de autenticar o envio de movimentações com a Praxio (PLI-41) 
+* Melhora código da estrutura de metas (PL-2232)
+* Altera nome de coluna de serviço realizado de pneu (PL-2295) 
+
+### Bug fixes
+* Corrige problema para buscar valor de meta do apontamento do tracking (PL-2232)
+
+<a name="v1.0.7"></a>
+## Version [v1.0.7](https://github.com/luizfp/PrologWebService/compare/v1.0.6...v1.0.7) (2019-11-24)
+
+### Bug Fixes
+* Corrige validação de nome de colaborador ao cadastrar/editar
 
 <a name="v1.0.6"></a>
-## Version [v1.0.6](https://github.com/luizfp/PrologWebService/compare/v1.0.5...v1.0.6) (release-date) [unreleased]
+## Version [v1.0.6](https://github.com/luizfp/PrologWebService/compare/v1.0.5...v1.0.6) (2019-11-24)
+
+### Features
+* Integra envio de movimentação em tempo real (PLI-41)
 
 ### Refactors
 * Adiciona informações de fadiga no prontuário do condutor (PL-2269)
+* Permite filtrar para incluir marcas não utilizadas na busca de marcas de pneus e bandas (PL-2390)
+* Cria métodos para import de planilha de veículos (PL-2318)
+* Adiciona filtro de todas unidades no cronograma de aferição (PLI-51)
 
 <a name="v1.0.5"></a>
 ## Version [v1.0.5](https://github.com/luizfp/PrologWebService/compare/v1.0.4...v1.0.5) (2019-11-06)
