@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  */
 public abstract class SocorroRotaAcao {
     @NotNull
-    private final Long codUnidadeAbertura;
+    private final Long codUnidade;
     @NotNull
     private final StatusSocorroRota statusSocorroRota;
     @NotNull
@@ -71,7 +71,7 @@ public abstract class SocorroRotaAcao {
     @Nullable
     private final String modeloDevice;
 
-    protected SocorroRotaAcao(@NotNull final Long codUnidadeAbertura,
+    protected SocorroRotaAcao(@NotNull final Long codUnidade,
                               @NotNull final StatusSocorroRota statusSocorroRota,
                               @NotNull final Long codColaborador,
                               @NotNull final LocalDateTime dataHora,
@@ -83,7 +83,7 @@ public abstract class SocorroRotaAcao {
                               final long deviceUptimeMillis,
                               @Nullable final String marcaDevice,
                               @Nullable final String modeloDevice) {
-        this.codUnidadeAbertura = codUnidadeAbertura;
+        this.codUnidade = codUnidade;
         this.statusSocorroRota = statusSocorroRota;
         this.codColaborador = codColaborador;
         this.dataHora = dataHora;
@@ -98,8 +98,8 @@ public abstract class SocorroRotaAcao {
     }
     
     @NotNull
-    public Long getCodUnidadeAbertura() {
-        return codUnidadeAbertura;
+    public Long getcodUnidade() {
+        return codUnidade;
     }
 
     @NotNull
