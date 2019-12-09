@@ -22,7 +22,8 @@ public final class SocorroRotaFinalizacao extends SocorroRotaAcao {
     @Nullable
     private final String urlFoto3;
 
-    public SocorroRotaFinalizacao(@NotNull final Long codSocorroRota,
+    public SocorroRotaFinalizacao(@NotNull final Long codUnidadeAbertura,
+                                  @NotNull final Long codSocorroRota,
                                   @NotNull final String observacaoFinalizacao,
                                   @Nullable final String urlFoto1Finalizacao,
                                   @Nullable final String urlFoto2Finalizacao,
@@ -37,7 +38,8 @@ public final class SocorroRotaFinalizacao extends SocorroRotaAcao {
                                   final long deviceUptimeMillis,
                                   @Nullable final String marcaDevice,
                                   @Nullable final String modeloDevice) {
-        super(StatusSocorroRota.FINALIZADO,
+        super(  codUnidadeAbertura,
+                StatusSocorroRota.FINALIZADO,
                 codColaborador,
                 dataHora,
                 localizacao,

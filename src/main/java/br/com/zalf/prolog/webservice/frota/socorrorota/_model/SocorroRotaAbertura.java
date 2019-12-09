@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
  */
 public final class SocorroRotaAbertura extends SocorroRotaAcao {
     @NotNull
-    private final Long codUnidadeAbertura;
-    @NotNull
     private final Long codVeiculoProblema;
     private final long kmVeiculoAbertura;
     @NotNull
@@ -50,7 +48,8 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
                                final long deviceUptimeMillis,
                                @Nullable final String marcaDevice,
                                @Nullable final String modeloDevice) {
-        super(StatusSocorroRota.ABERTO,
+        super(  codUnidadeAbertura,
+                StatusSocorroRota.ABERTO,
                 codColaborador,
                 dataHora,
                 localizacao,
@@ -61,7 +60,6 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
                 deviceUptimeMillis,
                 marcaDevice,
                 modeloDevice);
-        this.codUnidadeAbertura = codUnidadeAbertura;
         this.codVeiculoProblema = codVeiculoProblema;
         this.kmVeiculoAbertura = kmVeiculoAbertura;
         this.codProblemaSocorroRota = codProblemaSocorroRota;
@@ -70,11 +68,6 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
         this.urlFoto2Abertura = urlFoto2Abertura;
         this.urlFoto3Abertura = urlFoto3Abertura;
         this.pontoReferencia = pontoReferencia;
-    }
-
-    @NotNull
-    public Long getCodUnidadeAbertura() {
-        return codUnidadeAbertura;
     }
 
     @NotNull

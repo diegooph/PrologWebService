@@ -16,7 +16,8 @@ public final class SocorroRotaAtendimento extends SocorroRotaAcao {
     @Nullable
     private final String observacaoAtendimento;
 
-    public SocorroRotaAtendimento(@NotNull final Long codSocorroRota,
+    public SocorroRotaAtendimento(@NotNull final Long codUnidadeAbertura,
+                                  @NotNull final Long codSocorroRota,
                                   @Nullable final String observacaoAtendimento,
                                   @NotNull final Long codColaborador,
                                   @NotNull final LocalDateTime dataHora,
@@ -28,7 +29,8 @@ public final class SocorroRotaAtendimento extends SocorroRotaAcao {
                                   final long deviceUptimeMillis,
                                   @Nullable final String marcaDevice,
                                   @Nullable final String modeloDevice) {
-        super(StatusSocorroRota.EM_ATENDIMENTO,
+        super(  codUnidadeAbertura,
+                StatusSocorroRota.EM_ATENDIMENTO,
                 codColaborador,
                 dataHora,
                 localizacao,
