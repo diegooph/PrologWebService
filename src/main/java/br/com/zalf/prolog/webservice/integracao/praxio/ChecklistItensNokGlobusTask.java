@@ -79,7 +79,8 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             final Map<Long, AlternativaChecklistStatus> alternativasStatus =
                     Injection
                             .provideChecklistDao()
-                            .getItensStatus(conn,
+                            .getItensStatus(
+                                    conn,
                                     checklist.getCodModelo(),
                                     checklist.getCodVersaoModeloChecklist(),
                                     checklist.getPlacaVeiculo());
@@ -118,16 +119,21 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 return;
             }
 
+            // IMPORTANTE: Deixamos essas duas linhas antes de enviar a requisição para Globus, assim evitamos que,
+            // após enviar ao Globus ocorra um erro e o ProLog fique com um estado do dado e o Globus com outro.
+            // Assumimos que a requisição será sucesso assim, salvamos quais foram os itens enviados para poder
+            // consultar. Se a requisição para o Globus retornar erro, será feito rollback e será como se esse código
+            // não tivesse executado.
+            sistema.insertItensNokEnviadosGlobus(conn, checklistItensNokGlobus);
+            // Também marcamos o checklist como sincronizado, pois as informações já estão no sistema integrado.
+            sistema.marcaChecklistSincronizado(conn, codChecklistProLog);
+
             final Long codOsAbertaGlobus =
                     requester.insertItensNok(GlobusPiccoloturConverter.convert(checklistItensNokGlobus));
             if (codOsAbertaGlobus <= 0) {
                 throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Globus retornou um código de O.S inválido");
             }
 
-            // Após enviar os Itens NOK para a integração, salvamos quais foram os itens enviados para poder consultar.
-            sistema.insertItensNokEnviadosGlobus(conn, checklistItensNokGlobus);
-            // Também marcamos o checklist como sincronizado, pois as informações já estão no sistema integrado.
-            sistema.marcaChecklistSincronizado(conn, codChecklistProLog);
             conn.commit();
             // Avismos que os itens foram sincronizados com sucesso.
             if (listener != null) {
