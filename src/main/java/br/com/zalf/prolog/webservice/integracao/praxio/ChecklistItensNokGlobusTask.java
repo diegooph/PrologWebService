@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.integracao.agendador.SincroniaChecklistListener;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDao;
@@ -76,9 +76,9 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
 
             // Dentro do checklist realizado buscamos os itens apontados como NOK que devem abrir O.S ou incrementar a
             // quantidade apontamentos.
-            final Map<Long, AlternativaChecklistStatus> alternativasStatus =
+            final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus =
                     Injection
-                            .provideChecklistDao()
+                            .provideOrdemServicoDao()
                             .getItensStatus(
                                     conn,
                                     checklist.getCodModelo(),
@@ -162,17 +162,19 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
 
     @NotNull
     private List<Long> getItensIncrementaApontamentos(
-            @NotNull final Map<Long, AlternativaChecklistStatus> alternativasStatus,
+            @NotNull final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus,
             @NotNull final List<PerguntaRespostaChecklist> respostas) {
         final List<Long> codItensOsIncrementaQtdApontamentos = new ArrayList<>();
         for (final PerguntaRespostaChecklist pergunta : respostas) {
             for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
-                final AlternativaChecklistStatus alternativaChecklistStatus =
+                final List<InfosAlternativaAberturaOrdemServico> infosAlternativaAberturaOrdemServicos =
                         alternativasStatus.get(alternativa.getCodigo());
-                if (alternativaChecklistStatus != null
-                        && alternativaChecklistStatus.getQtdApontamentosItemOs() > 0
-                        && alternativaChecklistStatus.isDeveAbrirOrdemServico()) {
-                    codItensOsIncrementaQtdApontamentos.add(alternativaChecklistStatus.getCodItemOsAlternativa());
+                if (infosAlternativaAberturaOrdemServicos != null
+                        && infosAlternativaAberturaOrdemServicos.size() > 0
+                        && infosAlternativaAberturaOrdemServicos.get(0).isDeveAbrirOrdemServico()
+                        && infosAlternativaAberturaOrdemServicos.get(0).getQtdApontamentosItem() > 0) {
+                    codItensOsIncrementaQtdApontamentos.add(
+                            infosAlternativaAberturaOrdemServicos.get(0).getCodItemOrdemServico());
                 }
             }
         }

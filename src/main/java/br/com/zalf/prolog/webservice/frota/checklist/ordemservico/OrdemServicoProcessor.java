@@ -51,7 +51,7 @@ final class OrdemServicoProcessor {
         try {
             stmtUpdateQtdApontamentos = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS " +
                     "SET QT_APONTAMENTOS = ? WHERE CODIGO = ? AND STATUS_RESOLUCAO = ?;");
-            stmtCriacaoItens = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS_DATA" +
+            stmtCriacaoItens = conn.prepareStatement("INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS" +
                             "(COD_UNIDADE, COD_OS, COD_PERGUNTA_PRIMEIRO_APONTAMENTO, COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO," +
                             " STATUS_RESOLUCAO, COD_CONTEXTO_PERGUNTA, COD_CONTEXTO_ALTERNATIVA) " +
                             "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO, COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO;",

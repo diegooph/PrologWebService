@@ -6,10 +6,8 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -27,7 +25,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
@@ -462,68 +462,6 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             }
         } finally {
             close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Map<Long, AlternativaChecklistStatus> getItensStatus(@NotNull final Connection conn,
-                                                                @NotNull final Long codModelo,
-                                                                @NotNull final Long codVersaoModelo,
-                                                                @NotNull final String placaVeiculo) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(" +
-                    "F_COD_MODELO_CHECKLIST        := ?, " +
-                    "F_COD_VERSAO_MODELO_CHECKLIST := ?, " +
-                    "F_PLACA_VEICULO               := ?);");
-            stmt.setLong(1, codModelo);
-            stmt.setLong(2, codVersaoModelo);
-            stmt.setString(3, placaVeiculo);
-            rSet = stmt.executeQuery();
-            final Map<Long, AlternativaChecklistStatus> alternativas = new HashMap<>();
-            while (rSet.next()) {
-                alternativas.put(
-                        rSet.getLong("COD_ALTERNATIVA"),
-                        ChecklistConverter.createAlternativaChecklistStatus(rSet));
-            }
-            return alternativas;
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    private void insertRespostasNok(@NotNull final Connection conn,
-                                    @NotNull final Long codUnidade,
-                                    @NotNull final Checklist checklist) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("INSERT INTO CHECKLIST_RESPOSTAS_NOK (COD_UNIDADE, COD_CHECKLIST_MODELO, " +
-                    "COD_VERSAO_CHECKLIST_MODELO, COD_CHECKLIST, COD_PERGUNTA, COD_ALTERNATIVA, RESPOSTA_OUTROS)" +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?);");
-            for (final PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
-                stmt.setLong(1, codUnidade);
-                stmt.setLong(2, checklist.getCodModelo());
-                stmt.setLong(2, checklist.getCodVersaoModeloChecklist());
-                stmt.setLong(3, checklist.getCodigo());
-                stmt.setLong(4, resposta.getCodigo());
-                for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
-                    if (alternativa.isSelected()) {
-                        stmt.setLong(5, alternativa.getCodigo());
-                        // Se a alternativa é do tipo Outros.
-                        if (alternativa.getTipo() == AlternativaChecklist.TIPO_OUTROS) {
-                            // Salva a resposta escrita do usuário.
-                            stmt.setString(6, StringUtils.trimToNull(alternativa.respostaOutros));
-                        }
-                        if (stmt.executeUpdate() == 0) {
-                            throw new SQLException("Erro ao inserir resposta.");
-                        }
-                    }
-                }
-            }
-        } finally {
-            close(stmt);
         }
     }
 

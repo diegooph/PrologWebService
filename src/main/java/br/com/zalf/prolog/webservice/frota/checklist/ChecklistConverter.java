@@ -108,18 +108,6 @@ public final class ChecklistConverter {
     }
 
     @NotNull
-    static AlternativaChecklistStatus createAlternativaChecklistStatus(
-            @NotNull final ResultSet rSet) throws SQLException {
-        return new AlternativaChecklistStatus(
-                rSet.getLong("COD_ALTERNATIVA"),
-                rSet.getLong("COD_ITEM_ORDEM_SERVICO"),
-                rSet.getBoolean("TEM_ITEM_OS_PENDENTE"),
-                rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
-                rSet.getInt("QTD_APONTAMENTOS_ITEM"),
-                PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
-    }
-
-    @NotNull
     static DeprecatedFarolChecklist createFarolChecklist(@NotNull final ResultSet rSet) throws SQLException {
         final List<FarolVeiculoDia> farolVeiculoDias = new ArrayList<>();
         String placaAntiga = null, placaAtual = null;

@@ -44,7 +44,8 @@ final class OrdemServicoConverter {
                 rSet.getString("RESPOSTA_TIPO_OUTROS_ABERTURA_ITEM"),
                 rSet.getInt("QTD_APONTAMENTOS_ITEM"),
                 rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
-                rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"));
+                rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"),
+                PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
     }
 
     @NotNull

@@ -85,6 +85,9 @@ public final class MigracaoEstruturaChecklistV3 {
             log("************************ PASSO 12 - INÍCIO ************************");
             executaPasso12(conn);
             log("************************ PASSO 12 - FIM ************************");
+            log("************************ PASSO 13 - INÍCIO ************************");
+            executaPasso13(conn);
+            log("************************ PASSO 13 - FIM ************************");
             conn.commit();
             log("************************ Fim da execução da migração ************************");
         } catch (final Throwable t) {
@@ -307,6 +310,19 @@ public final class MigracaoEstruturaChecklistV3 {
         }
     }
 
+    private void executaPasso13(@NotNull final Connection conn) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            log("Recriando funções integradas");
+            stmt = conn.prepareCall("{CALL MIGRATION_CHECKLIST.FUNC_MIGRATION_13_ATUALIZA_OS_INTEGRACAO()}");
+            if (stmt.executeUpdate() < 0) {
+                throw new IllegalStateException("Erro ao executar passo 13");
+            }
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+    }
+
     private long criaUltimaVersaoModelo(@NotNull final Connection conn,
                                         @NotNull final Long codModelo,
                                         @NotNull final OffsetDateTime dataHoraAtual) throws Throwable {
@@ -368,10 +384,10 @@ public final class MigracaoEstruturaChecklistV3 {
             rSet = stmt.executeQuery();
             final List<MigrationModeloCheck> modelos = new ArrayList<>();
             while (rSet.next()) {
-                    modelos.add(new MigrationModeloCheck(
-                            rSet.getLong(1),
-                            rSet.getString(2),
-                            rSet.getLong(3)));
+                modelos.add(new MigrationModeloCheck(
+                        rSet.getLong(1),
+                        rSet.getString(2),
+                        rSet.getLong(3)));
             }
             return modelos;
         } finally {

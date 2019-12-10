@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoListagem;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 20/11/18
@@ -29,8 +31,8 @@ public interface OrdemServicoDao {
      * Processa o checklist que foi realizado pelo usuário e cria itens de ordens de serviços ou incrementa a quantidade
      * de apontamento para itens já existentes e ainda pendentes.
      *
-     * @param conn       Conexão com o banco atualmente aberta.
-     * @param checklist  O checklist que foi realizado.
+     * @param conn      Conexão com o banco atualmente aberta.
+     * @param checklist O checklist que foi realizado.
      * @throws Throwable Se ocorrer algum erro no processamento das informações.
      */
     void processaChecklistRealizado(@NotNull final Connection conn,
@@ -168,6 +170,36 @@ public interface OrdemServicoDao {
      */
     void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable;
 
+    /**
+     * Método utilizado para incrementar a quantidade de apontamentos de uma lista de códigos de itens de Ordem de
+     * Serviço.
+     *
+     * @param conn                                Conexão com o bando para buscar os dados.
+     * @param codItensOsIncrementaQtdApontamentos
+     * @throws Throwable
+     */
     void incrementaQtdApontamentos(@NotNull final Connection conn,
                                    @NotNull final List<Long> codItensOsIncrementaQtdApontamentos) throws Throwable;
+
+    /**
+     * Método responsável por buscar o 'status das alternativas' de um modelo de checklist. O Status da alternativa
+     * consiste, neste contexto, nas informações de Ordens de Serviço Abertas para cada alternativa.
+     * O método recebe como parâmetro o {@code codModelo código do modelo} a qual as alternativas serão analisadas e
+     * também a {@code placaVeiculo placa do veículo} que será utilizada como base para saber se tem algum serviço
+     * pendente.
+     * Para cada alternativa do modelo, o método irá verificar se existe algum serviço para ser realizado na placa com
+     * o mesmo código de alternativa.
+     *
+     * @param conn         Conexão com o bando para buscar os dados.
+     * @param codModelo    Código do modelo de checklist para analisar as alternativas.
+     * @param placaVeiculo Placa do veículo para buscar itens em aberto.
+     * @return Um dicionário de informações listando o código das anternativas e qual as informações referentes.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    Map<Long, List<InfosAlternativaAberturaOrdemServico>> getItensStatus(
+            @NotNull final Connection conn,
+            @NotNull final Long codModelo,
+            @NotNull final Long codVersaoModelo,
+            @NotNull final String placaVeiculo) throws Throwable;
 }

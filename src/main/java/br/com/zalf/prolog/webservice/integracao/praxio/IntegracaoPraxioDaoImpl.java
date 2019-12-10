@@ -309,7 +309,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                 stmt.setLong(1, itemResolvido.getCodUnidadeItemOs());
                 stmt.setLong(2, itemResolvido.getCodOsGlobus());
                 stmt.setLong(3, itemResolvido.getCodItemResolvidoGlobus());
-                stmt.setLong(4, Long.valueOf(itemResolvido.getCpfColaboradorResolucao()));
+                stmt.setLong(4, Long.parseLong(itemResolvido.getCpfColaboradorResolucao()));
                 stmt.setString(5, itemResolvido.getPlacaVeiculoItemOs());
                 stmt.setLong(6, itemResolvido.getKmColetadoResolucao());
                 stmt.setLong(7, itemResolvido.getDuracaoResolucaoItemOsMillis());

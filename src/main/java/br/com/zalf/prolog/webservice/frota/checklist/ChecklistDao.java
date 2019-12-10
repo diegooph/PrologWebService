@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -13,7 +12,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Contém os métodos para manipular os checklists no banco de dados
@@ -133,25 +131,4 @@ public interface ChecklistDao {
      * @throws Throwable Caso ocorrer algum erro na busca dos dados.
      */
     boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;
-
-    /**
-     * Método responsável por buscar o 'status das alternativas' de um modelo de checklist. O Status da alternativa
-     * consiste, neste contexto, nas informações de Ordens de Serviço Abertas para cada alternativa.
-     * O método recebe como parâmetro o {@code codModelo código do modelo} a qual as alternativas serão analisadas e
-     * também a {@code placaVeiculo placa do veículo} que será utilizada como base para saber se tem algum serviço
-     * pendente.
-     * Para cada alternativa do modelo, o método irá verificar se existe algum serviço para ser realizado na placa com
-     * o mesmo código de alternativa.
-     *
-     * @param conn         Conexão com o bando para buscar os dados.
-     * @param codModelo    Código do modelo de checklist para analisar as alternativas.
-     * @param placaVeiculo Placa do veículo para buscar itens em aberto.
-     * @return Um dicionário de informações listando o código das anternativas e qual as informações referentes.
-     * @throws Throwable Se algum erro ocorrer.
-     */
-    @NotNull
-    Map<Long, AlternativaChecklistStatus> getItensStatus(@NotNull final Connection conn,
-                                                         @NotNull final Long codModelo,
-                                                         @NotNull final Long codVersaoModelo,
-                                                         @NotNull final String placaVeiculo) throws Throwable;
 }

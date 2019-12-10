@@ -48,7 +48,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                                            @NotNull final Long codChecklistInserido,
                                            @NotNull final ChecklistInsercao checklist) throws Throwable {
         final Map<Long, List<InfosAlternativaAberturaOrdemServico>> infosAberturaMap =
-                createAlternativasAberturaOrdemServico(
+                getItensStatus(
                         conn,
                         checklist.getCodModelo(),
                         checklist.getCodVersaoModeloChecklist(),
@@ -360,20 +360,8 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     }
 
     @NotNull
-    private List<Long> getCodItensNok(@NotNull final List<PerguntaRespostaChecklist> listRespostas) {
-        final List<Long> codItensNok = new ArrayList<>();
-        for (final PerguntaRespostaChecklist resposta : listRespostas) {
-            for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
-                if (alternativa.isSelected()) {
-                    codItensNok.add(alternativa.getCodigo());
-                }
-            }
-        }
-        return codItensNok;
-    }
-
-    @NotNull
-    private Map<Long, List<InfosAlternativaAberturaOrdemServico>> createAlternativasAberturaOrdemServico(
+    @Override
+    public Map<Long, List<InfosAlternativaAberturaOrdemServico>> getItensStatus(
             @NotNull final Connection conn,
             @NotNull final Long codModelo,
             @NotNull final Long codVersaoModelo,
@@ -409,6 +397,19 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         } finally {
             close(stmt, rSet);
         }
+    }
+
+    @NotNull
+    private List<Long> getCodItensNok(@NotNull final List<PerguntaRespostaChecklist> listRespostas) {
+        final List<Long> codItensNok = new ArrayList<>();
+        for (final PerguntaRespostaChecklist resposta : listRespostas) {
+            for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
+                if (alternativa.isSelected()) {
+                    codItensNok.add(alternativa.getCodigo());
+                }
+            }
+        }
+        return codItensNok;
     }
 
     private void fechaOrdensServicosComBaseItens(@NotNull final Connection conn,
