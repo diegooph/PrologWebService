@@ -1,9 +1,10 @@
 Change Log
 ==========
 
-## Stage
+### Stage
 ### Features
 * Cria objetos base do Socorro em Rota (PL-2421)
+* Implementa solicitação de socorro em rota (PL-2423)
 
 <a name="v1.0.9"></a>
 ## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (release-date) [unreleased]
