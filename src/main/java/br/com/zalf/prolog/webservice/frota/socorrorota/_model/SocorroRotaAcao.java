@@ -98,7 +98,7 @@ public abstract class SocorroRotaAcao {
     }
     
     @NotNull
-    public Long getcodUnidade() {
+    public Long getCodUnidade() {
         return codUnidade;
     }
 

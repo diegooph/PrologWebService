@@ -27,8 +27,6 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
     @Nullable
     private final String pontoReferencia;
 
-
-
     public SocorroRotaAbertura(@NotNull final Long codUnidadeAbertura,
                                @NotNull final Long codVeiculoProblema,
                                final long kmVeiculoAbertura,
