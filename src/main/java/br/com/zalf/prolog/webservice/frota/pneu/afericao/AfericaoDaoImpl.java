@@ -133,6 +133,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             novaAfericao.setDeveAferirEstepes(configuracao.isPodeAferirEstepe());
             novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(configuracao.getVariacaoAceitaSulcoMenorMilimetros());
             novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(configuracao.getVariacaoAceitaSulcoMaiorMilimetros());
+            novaAfericao.setBloqueiaValoresMenores(configuracao.isBloqueiaValoresMenores());
+            novaAfericao.setBloqueiaValoresMaiores(configuracao.isBloqueiaValoresMaiores());
             return novaAfericao;
         } finally {
             close(conn);
@@ -161,6 +163,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 novaAfericao.setPneuParaAferir(createPneuAfericaoAvulsa(rSet));
                 novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(config.getVariacaoAceitaSulcoMenorMilimetros());
                 novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(config.getVariacaoAceitaSulcoMaiorMilimetros());
+                novaAfericao.setBloqueiaValoresMenores(config.isBloqueiaValoresMenores());
+                novaAfericao.setBloqueiaValoresMaiores(config.isBloqueiaValoresMaiores());
             }
             return novaAfericao;
         } finally {
@@ -504,36 +508,42 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     @NotNull
     private ConfiguracaoNovaAfericaoPlaca createConfiguracaoNovaAfericaoPlaca(@NotNull final ResultSet rSet)
             throws SQLException {
-        final ConfiguracaoNovaAfericaoPlaca config = new ConfiguracaoNovaAfericaoPlaca();
-        config.setSulcoMinimoDescarte(rSet.getDouble("SULCO_MINIMO_DESCARTE"));
-        config.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
-        config.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
-        config.setToleranciaInspecao(rSet.getDouble("TOLERANCIA_INSPECAO"));
-        config.setPeriodoDiasAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));
-        config.setPeriodoDiasAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
-        config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
-        config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
-        config.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
-        config.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
-        config.setVariacaoAceitaSulcoMenorMilimetros(rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"));
-        config.setVariacaoAceitaSulcoMaiorMilimetros(rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
-        config.setUsaDefaultProLog(rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"));
+        final ConfiguracaoNovaAfericaoPlaca config = new ConfiguracaoNovaAfericaoPlaca(
+                rSet.getBoolean("PODE_AFERIR_SULCO"),
+                rSet.getBoolean("PODE_AFERIR_PRESSAO"),
+                rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"),
+                rSet.getBoolean("PODE_AFERIR_ESTEPE"),
+                rSet.getDouble("SULCO_MINIMO_DESCARTE"),
+                rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
+                rSet.getDouble("TOLERANCIA_INSPECAO"),
+                rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
+                rSet.getInt("PERIODO_AFERICAO_SULCO"),
+                rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
+                rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
+                rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"),
+                rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"),
+                rSet.getBoolean("BLOQUEAR_VALORES_MENORES"),
+                rSet.getBoolean("BLOQUEAR_VALORES_MAIORES")
+        );
         return config;
     }
 
     @NotNull
     private ConfiguracaoNovaAfericaoAvulsa createConfiguracaoNovaAfericaoAvulsa(@NotNull final ResultSet rSet)
             throws SQLException {
-        final ConfiguracaoNovaAfericaoAvulsa config = new ConfiguracaoNovaAfericaoAvulsa();
-        config.setSulcoMinimoDescarte(rSet.getDouble("SULCO_MINIMO_DESCARTE"));
-        config.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
-        config.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
-        config.setToleranciaInspecao(rSet.getDouble("TOLERANCIA_INSPECAO"));
-        config.setPeriodoDiasAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));
-        config.setPeriodoDiasAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
-        config.setVariacaoAceitaSulcoMenorMilimetros(rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"));
-        config.setVariacaoAceitaSulcoMaiorMilimetros(rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
-        config.setUsaDefaultProLog(rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"));
+        final ConfiguracaoNovaAfericaoAvulsa config = new ConfiguracaoNovaAfericaoAvulsa(
+                rSet.getDouble("SULCO_MINIMO_DESCARTE"),
+                rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
+                rSet.getDouble("TOLERANCIA_INSPECAO"),
+                rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
+                rSet.getInt("PERIODO_AFERICAO_SULCO"),
+                rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
+                rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
+                rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"),
+                rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"),
+                rSet.getBoolean("BLOQUEAR_VALORES_MENORES"),
+                rSet.getBoolean("BLOQUEAR_VALORES_MAIORES")
+        );
         return config;
     }
 

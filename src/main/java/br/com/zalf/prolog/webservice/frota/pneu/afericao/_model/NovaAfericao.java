@@ -12,6 +12,8 @@ public abstract class NovaAfericao {
     private Restricao restricao;
     private double variacaoAceitaSulcoMenorMilimetros;
     private double variacaoAceitaSulcoMaiorMilimetros;
+    private boolean bloqueiaValoresMenores;
+    private boolean bloqueiaValoresMaiores;
 
     @Exclude
     @NotNull
@@ -43,6 +45,22 @@ public abstract class NovaAfericao {
 
     public void setVariacaoAceitaSulcoMaiorMilimetros(final double variacaoAceitaSulcoMaiorMilimetros) {
         this.variacaoAceitaSulcoMaiorMilimetros = variacaoAceitaSulcoMaiorMilimetros;
+    }
+
+    public boolean isBloqueiaValoresMenores() {
+        return bloqueiaValoresMenores;
+    }
+
+    public void setBloqueiaValoresMenores(boolean bloqueiaValoresMenores) {
+        this.bloqueiaValoresMenores = bloqueiaValoresMenores;
+    }
+
+    public boolean isBloqueiaValoresMaiores() {
+        return bloqueiaValoresMaiores;
+    }
+
+    public void setBloqueiaValoresMaiores(boolean bloqueiaValoresMaiores) {
+        this.bloqueiaValoresMaiores = bloqueiaValoresMaiores;
     }
 
     @NotNull

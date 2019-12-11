@@ -2,95 +2,90 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
 
 /**
  * Classe para encapsular os atributos de configuração de aferição.
- *
+ * <p>
  * Created on 31/10/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public abstract class ConfiguracaoNovaAfericao {
-    private double sulcoMinimoDescarte;
-    private double sulcoMinimoRecape;
-    private double toleranciaInspecao;
-    private double toleranciaCalibragem;
-    private int periodoDiasAfericaoSulco;
-    private int periodoDiasAfericaoPressao;
-    private double variacaoAceitaSulcoMenorMilimetros;
-    private double variacaoAceitaSulcoMaiorMilimetros;
-    private boolean usaDefaultProLog;
+    private final double sulcoMinimoDescarte;
+    private final double sulcoMinimoRecape;
+    private final double toleranciaInspecao;
+    private final double toleranciaCalibragem;
+    private final int periodoDiasAfericaoSulco;
+    private final int periodoDiasAfericaoPressao;
+    private final double variacaoAceitaSulcoMenorMilimetros;
+    private final double variacaoAceitaSulcoMaiorMilimetros;
+    private final boolean usaDefaultProLog;
+    private final boolean bloqueiaValoresMenores;
+    private final boolean bloqueiaValoresMaiores;
 
-    public ConfiguracaoNovaAfericao() {
-
+    public ConfiguracaoNovaAfericao(final double sulcoMinimoDescarte,
+                                    final double sulcoMinimoRecape,
+                                    final double toleranciaInspecao,
+                                    final double toleranciaCalibragem,
+                                    final int periodoDiasAfericaoSulco,
+                                    final int periodoDiasAfericaoPressao,
+                                    final double variacaoAceitaSulcoMenorMilimetros,
+                                    final double variacaoAceitaSulcoMaiorMilimetros,
+                                    final boolean usaDefaultProLog,
+                                    final boolean bloqueiaValoresMenores,
+                                    final boolean bloqueiaValoresMaiores) {
+        this.sulcoMinimoDescarte = sulcoMinimoDescarte;
+        this.sulcoMinimoRecape = sulcoMinimoRecape;
+        this.toleranciaInspecao = toleranciaInspecao;
+        this.toleranciaCalibragem = toleranciaCalibragem;
+        this.periodoDiasAfericaoSulco = periodoDiasAfericaoSulco;
+        this.periodoDiasAfericaoPressao = periodoDiasAfericaoPressao;
+        this.variacaoAceitaSulcoMenorMilimetros = variacaoAceitaSulcoMenorMilimetros;
+        this.variacaoAceitaSulcoMaiorMilimetros = variacaoAceitaSulcoMaiorMilimetros;
+        this.usaDefaultProLog = usaDefaultProLog;
+        this.bloqueiaValoresMenores = bloqueiaValoresMenores;
+        this.bloqueiaValoresMaiores = bloqueiaValoresMaiores;
     }
 
     public double getSulcoMinimoDescarte() {
         return sulcoMinimoDescarte;
     }
 
-    public void setSulcoMinimoDescarte(final double sulcoMinimoDescarte) {
-        this.sulcoMinimoDescarte = sulcoMinimoDescarte;
-    }
-
     public double getSulcoMinimoRecape() {
         return sulcoMinimoRecape;
-    }
-
-    public void setSulcoMinimoRecape(final double sulcoMinimoRecape) {
-        this.sulcoMinimoRecape = sulcoMinimoRecape;
     }
 
     public double getToleranciaInspecao() {
         return toleranciaInspecao;
     }
 
-    public void setToleranciaInspecao(final double toleranciaInspecao) {
-        this.toleranciaInspecao = toleranciaInspecao;
-    }
-
     public double getToleranciaCalibragem() {
         return toleranciaCalibragem;
-    }
-
-    public void setToleranciaCalibragem(final double toleranciaCalibragem) {
-        this.toleranciaCalibragem = toleranciaCalibragem;
     }
 
     public int getPeriodoDiasAfericaoSulco() {
         return periodoDiasAfericaoSulco;
     }
 
-    public void setPeriodoDiasAfericaoSulco(final int periodoDiasAfericaoSulco) {
-        this.periodoDiasAfericaoSulco = periodoDiasAfericaoSulco;
-    }
 
     public int getPeriodoDiasAfericaoPressao() {
         return periodoDiasAfericaoPressao;
-    }
-
-    public void setPeriodoDiasAfericaoPressao(final int periodoDiasAfericaoPressao) {
-        this.periodoDiasAfericaoPressao = periodoDiasAfericaoPressao;
     }
 
     public double getVariacaoAceitaSulcoMenorMilimetros() {
         return variacaoAceitaSulcoMenorMilimetros;
     }
 
-    public void setVariacaoAceitaSulcoMenorMilimetros(final double variacaoAceitaSulcoMenorMilimetros) {
-        this.variacaoAceitaSulcoMenorMilimetros = variacaoAceitaSulcoMenorMilimetros;
-    }
-
     public double getVariacaoAceitaSulcoMaiorMilimetros() {
         return variacaoAceitaSulcoMaiorMilimetros;
-    }
-
-    public void setVariacaoAceitaSulcoMaiorMilimetros(final double variacaoAceitaSulcoMaiorMilimetros) {
-        this.variacaoAceitaSulcoMaiorMilimetros = variacaoAceitaSulcoMaiorMilimetros;
     }
 
     public boolean isUsaDefaultProLog() {
         return usaDefaultProLog;
     }
 
-    public void setUsaDefaultProLog(final boolean usaDefaultProLog) {
-        this.usaDefaultProLog = usaDefaultProLog;
+    public boolean isBloqueiaValoresMenores() {
+        return bloqueiaValoresMenores;
+    }
+
+    public boolean isBloqueiaValoresMaiores() {
+        return bloqueiaValoresMaiores;
     }
 }

@@ -82,11 +82,19 @@ public final class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implem
             conn = getConnection();
             conn.setAutoCommit(false);
             for (final ConfiguracaoAlertaColetaSulco configuracao : configuracoes) {
-                stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_UPSERT_CONFIG_ALERTA_SULCO(?, ?, ?, ?);");
+                stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_UPSERT_CONFIG_ALERTA_SULCO(" +
+                        "F_CODIGO := ?, " +
+                        "F_COD_UNIDADE := ?, " +
+                        "F_VARIACAO_SULCO_MENOR := ?, " +
+                        "F_VARIACAO_SULCO_MAIOR := ?, " +
+                        "F_BLOQUEAR_VALORES_MENORES := ?, " +
+                        "F_BLOQUEAR_VALORES_MAIORES := ?);");
                 bindValueOrNull(stmt, 1, configuracao.getCodigo(), SqlType.BIGINT);
                 stmt.setLong(2, configuracao.getCodUnidadeReferente());
                 stmt.setDouble(3, configuracao.getVariacaoAceitaSulcoMenorMilimetros());
                 stmt.setDouble(4, configuracao.getVariacaoAceitaSulcoMaiorMilimetros());
+                stmt.setBoolean(5, configuracao.isBloqueiaValoresMenores());
+                stmt.setBoolean(6, configuracao.isBloqueiaValoresMaiores());
                 rSet = stmt.executeQuery();
                 if (rSet.next() && rSet.getBoolean(1)) {
                     conn.commit();

@@ -7,7 +7,28 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
  */
 public final class ConfiguracaoNovaAfericaoAvulsa extends ConfiguracaoNovaAfericao {
 
-    public ConfiguracaoNovaAfericaoAvulsa() {
+    public ConfiguracaoNovaAfericaoAvulsa(final double sulcoMinimoDescarte,
+                                          final double sulcoMinimoRecape,
+                                          final double toleranciaInspecao,
+                                          final double toleranciaCalibragem,
+                                          final int periodoDiasAfericaoSulco,
+                                          final int periodoDiasAfericaoPressao,
+                                          final double variacaoAceitaSulcoMenorMilimetros,
+                                          final double variacaoAceitaSulcoMaiorMilimetros,
+                                          final boolean usaDefaultProLog,
+                                          final boolean bloqueiaValoresMenores,
+                                          final boolean bloqueiaValoresMaiores) {
+        super(  sulcoMinimoDescarte,
+                sulcoMinimoRecape,
+                toleranciaInspecao,
+                toleranciaCalibragem,
+                periodoDiasAfericaoSulco,
+                periodoDiasAfericaoPressao,
+                variacaoAceitaSulcoMenorMilimetros,
+                variacaoAceitaSulcoMaiorMilimetros,
+                usaDefaultProLog,
+                bloqueiaValoresMenores,
+                bloqueiaValoresMaiores);
 
     }
 }
