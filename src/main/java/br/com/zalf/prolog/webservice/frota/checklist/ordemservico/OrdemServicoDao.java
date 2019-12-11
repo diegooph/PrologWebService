@@ -174,12 +174,16 @@ public interface OrdemServicoDao {
      * Método utilizado para incrementar a quantidade de apontamentos de uma lista de códigos de itens de Ordem de
      * Serviço.
      *
-     * @param conn                                Conexão com o bando para buscar os dados.
-     * @param codItensOsIncrementaQtdApontamentos
-     * @throws Throwable
+     * @param conn                             Conexão com o bando para buscar os dados.
+     * @param codChecklistInserido             Código do checklist que está sendo processado.
+     * @param itensOsIncrementaQtdApontamentos Itens de O.S que deverão ter suas quantidade de apontamentos atualizadas.
+     * @throws Throwable Se algum erro acontecer no processo de atualização.
      */
-    void incrementaQtdApontamentos(@NotNull final Connection conn,
-                                   @NotNull final List<Long> codItensOsIncrementaQtdApontamentos) throws Throwable;
+    void incrementaQtdApontamentos(
+            @NotNull final Connection conn,
+            @NotNull final Long codChecklistInserido,
+            @NotNull final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos)
+            throws Throwable;
 
     /**
      * Método responsável por buscar o 'status das alternativas' de um modelo de checklist. O Status da alternativa

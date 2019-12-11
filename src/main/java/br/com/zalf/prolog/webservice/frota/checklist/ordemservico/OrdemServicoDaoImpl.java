@@ -4,10 +4,9 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
@@ -41,6 +40,7 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServicoDao {
+    private static final int EXECUTE_BATCH_SUCCESS = 0;
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -341,19 +341,28 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @Override
     public void incrementaQtdApontamentos(
             @NotNull final Connection conn,
-            @NotNull final List<Long> codItensOsIncrementaQtdApontamentos) throws Throwable {
+            @NotNull final Long codChecklistInserido,
+            @NotNull final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos)
+            throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS_DATA " +
-                    "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1 " +
-                    "WHERE CODIGO = ANY(?);");
-            stmt.setArray(
-                    1,
-                    PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensOsIncrementaQtdApontamentos));
-            if (stmt.executeUpdate() <= 0) {
-                throw new SQLException("Não foi possível atualizar a quantidade de apontamentos dos ites:\n" +
-                        "codItensOs: " + codItensOsIncrementaQtdApontamentos.toString());
+            stmt = conn.prepareCall(
+                    "{CALL FUNC_CHECKLIST_OS_INCREMENTA_QTD_APONTAMENTOS_ITEM(" +
+                            "F_COD_ITEM_ORDEM_SERVICO := ?, " +
+                            "F_COD_CHECKLIST_REALIZADO := ?, " +
+                            "F_COD_ALTERNATIVA := ?," +
+                            "F_STATUS_RESOLUCAO := ?)}");
+            for (final InfosAlternativaAberturaOrdemServico item : itensOsIncrementaQtdApontamentos) {
+                stmt.setLong(1, item.getCodItemOrdemServico());
+                stmt.setLong(2, codChecklistInserido);
+                stmt.setLong(3, item.getCodAlternativa());
+                stmt.setString(4, StatusItemOrdemServico.PENDENTE.asString());
+                stmt.addBatch();
             }
+            StatementUtils.executeBatchAndValidate(
+                    stmt,
+                    EXECUTE_BATCH_SUCCESS,
+                    "Não foi possível atualizar a quantidade de apontamentos dos itens");
         } finally {
             close(stmt);
         }
@@ -397,19 +406,6 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         } finally {
             close(stmt, rSet);
         }
-    }
-
-    @NotNull
-    private List<Long> getCodItensNok(@NotNull final List<PerguntaRespostaChecklist> listRespostas) {
-        final List<Long> codItensNok = new ArrayList<>();
-        for (final PerguntaRespostaChecklist resposta : listRespostas) {
-            for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
-                if (alternativa.isSelected()) {
-                    codItensNok.add(alternativa.getCodigo());
-                }
-            }
-        }
-        return codItensNok;
     }
 
     private void fechaOrdensServicosComBaseItens(@NotNull final Connection conn,

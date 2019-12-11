@@ -84,12 +84,14 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                                     checklist.getCodModelo(),
                                     checklist.getCodVersaoModeloChecklist(),
                                     checklist.getPlacaVeiculo());
-            final List<Long> codItensOsIncrementaQtdApontamentos =
+            final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos =
                     getItensIncrementaApontamentos(alternativasStatus, checklist.getListRespostas());
 
             // Verificamos se tem algum item que deve incrementar a quantidade de apontamentos em alguma O.S.
-            if (!codItensOsIncrementaQtdApontamentos.isEmpty()) {
-                Injection.provideOrdemServicoDao().incrementaQtdApontamentos(conn, codItensOsIncrementaQtdApontamentos);
+            if (!itensOsIncrementaQtdApontamentos.isEmpty()) {
+                Injection
+                        .provideOrdemServicoDao()
+                        .incrementaQtdApontamentos(conn, codChecklistProLog, itensOsIncrementaQtdApontamentos);
             }
 
             final Long codUnidadeProLog = Injection
@@ -161,10 +163,10 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
     }
 
     @NotNull
-    private List<Long> getItensIncrementaApontamentos(
+    private List<InfosAlternativaAberturaOrdemServico> getItensIncrementaApontamentos(
             @NotNull final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus,
             @NotNull final List<PerguntaRespostaChecklist> respostas) {
-        final List<Long> codItensOsIncrementaQtdApontamentos = new ArrayList<>();
+        final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos = new ArrayList<>();
         for (final PerguntaRespostaChecklist pergunta : respostas) {
             for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
                 final List<InfosAlternativaAberturaOrdemServico> infosAlternativaAberturaOrdemServicos =
@@ -173,12 +175,11 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                         && infosAlternativaAberturaOrdemServicos.size() > 0
                         && infosAlternativaAberturaOrdemServicos.get(0).isDeveAbrirOrdemServico()
                         && infosAlternativaAberturaOrdemServicos.get(0).getQtdApontamentosItem() > 0) {
-                    codItensOsIncrementaQtdApontamentos.add(
-                            infosAlternativaAberturaOrdemServicos.get(0).getCodItemOrdemServico());
+                    itensOsIncrementaQtdApontamentos.add(infosAlternativaAberturaOrdemServicos.get(0));
                 }
             }
         }
-        return codItensOsIncrementaQtdApontamentos;
+        return itensOsIncrementaQtdApontamentos;
     }
 
     @NotNull
