@@ -63,7 +63,7 @@ public final class SocorroDaoImpl extends DatabaseConnection implements SocorroD
             stmt.setString(10, socorroRotaAbertura.getUrlFoto3Abertura());
             stmt.setString(11, socorroRotaAbertura.getLocalizacao().getLatitude());
             stmt.setString(12, socorroRotaAbertura.getLocalizacao().getLongitude());
-            stmt.setObject(13, socorroRotaAbertura.getLocalizacao().getPrecisaoLocalizacao(), SqlType.NUMERIC.asIntTypeJava());
+            stmt.setObject(13, socorroRotaAbertura.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
             stmt.setString(14, socorroRotaAbertura.getPontoReferencia());
             stmt.setLong(15, socorroRotaAbertura.getVersaoAppAtual());
             stmt.setString(16, socorroRotaAbertura.getDeviceId());

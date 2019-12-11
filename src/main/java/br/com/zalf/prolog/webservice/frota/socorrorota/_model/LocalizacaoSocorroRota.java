@@ -12,14 +12,14 @@ public final class LocalizacaoSocorroRota {
     private final String latitude;
     @NotNull
     private final String longitude;
-    private final double precisaoLocalizacao;
+    private final float precisaoLocalizacaoMetros;
 
     public LocalizacaoSocorroRota(@NotNull final String latitude,
                                   @NotNull final String longitude,
-                                  final double precisaoLocalizacao) {
+                                  final float precisaoLocalizacaoMetros) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.precisaoLocalizacao = precisaoLocalizacao;
+        this.precisaoLocalizacaoMetros = precisaoLocalizacaoMetros;
     }
 
     @NotNull
@@ -32,7 +32,7 @@ public final class LocalizacaoSocorroRota {
         return longitude;
     }
 
-    public double getPrecisaoLocalizacao() {
-        return precisaoLocalizacao;
+    public float getPrecisaoLocalizacaoMetros() {
+        return precisaoLocalizacaoMetros;
     }
 }
