@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
-import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.ZoneId;
 
 /**
  * Created on 09/12/19.
@@ -40,7 +39,7 @@ public final class SocorroDaoImpl extends DatabaseConnection implements SocorroD
                     "F_URL_FOTO_3_ABERTURA := ?::TEXT," +
                     "F_LATITUDE_ABERTURA := ?::TEXT," +
                     "F_LONGITUDE_ABERTURA := ?::TEXT," +
-                    "F_PRECISAO_LOCALIZACAO_ABERTURA := ?," +
+                    "F_PRECISAO_LOCALIZACAO_ABERTURA_METROS := ?," +
                     "F_PONTO_REFERENCIA := ?::TEXT," +
                     "F_VERSAO_APP_MOMENTO_ABERTURA := ?," +
                     "F_DEVICE_ID_ABERTURA := ?::TEXT," +
@@ -50,14 +49,14 @@ public final class SocorroDaoImpl extends DatabaseConnection implements SocorroD
                     "F_MARCA_DEVICE_ABERTURA := ?::TEXT," +
                     "F_MODELO_DEVICE_ABERTURA := ?::TEXT) AS CODIGO;");
             final Long codUnidade = socorroRotaAbertura.getCodUnidade();
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, socorroRotaAbertura.getCodColaborador());
             stmt.setLong(3, socorroRotaAbertura.getCodVeiculoProblema());
             stmt.setLong(4, socorroRotaAbertura.getKmVeiculoAbertura());
             stmt.setLong(5, socorroRotaAbertura.getCodProblemaSocorroRota());
             stmt.setString(6, socorroRotaAbertura.getDescricaoProblema());
-            stmt.setObject(7, socorroRotaAbertura.getDataHora().atZone(zoneId).toOffsetDateTime());
+            // Ignoramos a data/hora do objeto e usamos a do WS.
+            stmt.setObject(7, Now.offsetDateTimeUtc());
             stmt.setString(8, socorroRotaAbertura.getUrlFoto1Abertura());
             stmt.setString(9, socorroRotaAbertura.getUrlFoto2Abertura());
             stmt.setString(10, socorroRotaAbertura.getUrlFoto3Abertura());
