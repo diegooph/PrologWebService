@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-@Path("socorro")
+@Path("socorro-rota")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class SocorroResource {
