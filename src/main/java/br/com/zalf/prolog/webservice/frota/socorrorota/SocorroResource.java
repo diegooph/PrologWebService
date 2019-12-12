@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.MediaType;
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 @Path("socorro-rota")
+@DebugLog
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class SocorroResource {
