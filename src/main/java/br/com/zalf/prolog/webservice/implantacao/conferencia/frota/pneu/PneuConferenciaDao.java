@@ -15,12 +15,12 @@ public interface PneuConferenciaDao {
      *
      * @param codUnidade   Código da unidade para a qual as informações serão conferidas.
      * @param jsonPlanilha Informações da planilha de import de pneus em formato Json.
-     * @param tipoImport
+     * @param tipoImportPneu Informação do tipo de import.
      * @throws Throwable Se algum erro ocorrer.
      */
     void importPlanilhaPneus(@NotNull final Long codEmpresa,
                              @NotNull final Long codUnidade,
                              @NotNull final String usuario,
                              @NotNull final String jsonPlanilha,
-                             @NotNull final TipoImport tipoImport) throws Throwable;
+                             @NotNull final TipoImport tipoImportPneu) throws Throwable;
 }
