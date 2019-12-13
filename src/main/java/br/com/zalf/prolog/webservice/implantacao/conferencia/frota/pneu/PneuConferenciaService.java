@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.implantacao.autenticacao.ImplantacaoLoginSenhaValidator;
+import br.com.zalf.prolog.webservice.implantacao.conferencia._model.TipoImport;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu._model.PneuPlanilha;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -78,7 +79,7 @@ public final class PneuConferenciaService {
         try {
             final List<PneuPlanilha> pneuPlanilha = PneuPlanilhaReader.readListFromCsvFilePath(file);
             String jsonPlanilha = GsonUtils.getGson().toJson(pneuPlanilha);
-            dao.importPlanilhaPneus(codEmpresa, codUnidade, usuario, jsonPlanilha);
+            dao.importPlanilhaPneus(codEmpresa, codUnidade, usuario, jsonPlanilha, TipoImport.PNEU );
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection

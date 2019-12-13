@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu;
 
+import br.com.zalf.prolog.webservice.implantacao.conferencia._model.TipoImport;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -14,10 +15,12 @@ public interface PneuConferenciaDao {
      *
      * @param codUnidade   Código da unidade para a qual as informações serão conferidas.
      * @param jsonPlanilha Informações da planilha de import de pneus em formato Json.
+     * @param tipoImport
      * @throws Throwable Se algum erro ocorrer.
      */
     void importPlanilhaPneus(@NotNull final Long codEmpresa,
                              @NotNull final Long codUnidade,
                              @NotNull final String usuario,
-                             @NotNull final String jsonPlanilha) throws Throwable;
+                             @NotNull final String jsonPlanilha,
+                             @NotNull final TipoImport tipoImport) throws Throwable;
 }
