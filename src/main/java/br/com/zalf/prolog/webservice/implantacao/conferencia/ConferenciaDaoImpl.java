@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia;
 
 import br.com.zalf.prolog.webservice.implantacao.conferencia._model.ConferenciaDadosTabelaImport;
 import br.com.zalf.prolog.webservice.implantacao.conferencia._model.TipoImport;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu._model.PneuDadosTabelaImport;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
