@@ -474,33 +474,31 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                            "CP.CODIGO              AS COD_PERGUNTA," +
-                            "CP.ORDEM               AS ORDEM_PERGUNTA," +
-                            "CP.PERGUNTA            AS DESCRICAO_PERGUNTA," +
-                            "CP.SINGLE_CHOICE       AS PERGUNTA_SINGLE_CHOICE," +
-                            "CAP.CODIGO             AS COD_ALTERNATIVA," +
-                            "CAP.PRIORIDADE :: TEXT AS PRIORIDADE_ALTERNATIVA," +
-                            "CAP.ORDEM              AS ORDEM_ALTERNATIVA," +
-                            "CAP.ALTERNATIVA        AS DESCRICAO_ALTERNATIVA," +
-                            "CGI.COD_IMAGEM         AS COD_IMAGEM," +
-                            "CGI.URL_IMAGEM         AS URL_IMAGEM," +
-                            "CR.RESPOSTA            AS RESPOSTA " +
+                            "       CP.CODIGO                   AS COD_PERGUNTA," +
+                            "       CP.ORDEM                    AS ORDEM_PERGUNTA," +
+                            "       CP.PERGUNTA                 AS DESCRICAO_PERGUNTA," +
+                            "       CP.SINGLE_CHOICE            AS PERGUNTA_SINGLE_CHOICE," +
+                            "       CAP.CODIGO                  AS COD_ALTERNATIVA," +
+                            "       CAP.PRIORIDADE :: TEXT      AS PRIORIDADE_ALTERNATIVA," +
+                            "       CAP.ORDEM                   AS ORDEM_ALTERNATIVA," +
+                            "       CAP.ALTERNATIVA             AS DESCRICAO_ALTERNATIVA," +
+                            "       CAP.ALTERNATIVA_TIPO_OUTROS AS ALTERNATIVA_TIPO_OUTROS," +
+                            "       CGI.COD_IMAGEM              AS COD_IMAGEM," +
+                            "       CGI.URL_IMAGEM              AS URL_IMAGEM," +
+                            "       CRN.CODIGO IS NOT NULL      AS ALTERNATIVA_SELECIONADA," +
+                            "       CRN.RESPOSTA_OUTROS         AS RESPOSTA_OUTROS " +
                             "FROM CHECKLIST C " +
-                            "  JOIN CHECKLIST_RESPOSTAS CR " +
-                            "    ON C.CODIGO = CR.COD_CHECKLIST " +
-                            "       AND CR.COD_CHECKLIST_MODELO = C.COD_CHECKLIST_MODELO " +
-                            "       AND C.COD_UNIDADE = CR.COD_UNIDADE " +
-                            "  JOIN CHECKLIST_PERGUNTAS CP " +
-                            "    ON CP.CODIGO = CR.COD_PERGUNTA " +
-                            "       AND CP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO " +
-                            "       AND CP.CODIGO = CR.COD_PERGUNTA " +
-                            "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP " +
-                            "    ON CAP.CODIGO = CR.COD_ALTERNATIVA " +
-                            "       AND CAP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO " +
-                            "       AND CAP.COD_PERGUNTA = CR.COD_PERGUNTA " +
-                            "  LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
-                            "    ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
-                            "WHERE C.CODIGO = ? AND C.CPF_COLABORADOR = ? " +
+                            "         JOIN CHECKLIST_PERGUNTAS CP" +
+                            "              ON CP.COD_VERSAO_CHECKLIST_MODELO = C.COD_VERSAO_CHECKLIST_MODELO" +
+                            "         JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP" +
+                            "              ON CAP.COD_PERGUNTA = CP.CODIGO" +
+                            "         LEFT JOIN CHECKLIST_RESPOSTAS_NOK CRN" +
+                            "                   ON C.CODIGO = CRN.COD_CHECKLIST" +
+                            "                       AND CAP.CODIGO = CRN.COD_ALTERNATIVA" +
+                            "         LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI" +
+                            "                   ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
+                            "WHERE C.CODIGO = ? " +
+                            "  AND C.CPF_COLABORADOR = ? " +
                             "ORDER BY CP.ORDEM, CAP.ORDEM;",
                     ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
