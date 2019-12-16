@@ -4,6 +4,8 @@ Change Log
 <a name="v1.0.9"></a>
 ## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (release-date) [unreleased]
 
+### Refactors
+* Altera tratamento de erro da VeiculoService para utilizar tratador específico
 
 <a name="v1.0.8"></a>
 ## Version [v1.0.8](https://github.com/luizfp/PrologWebService/compare/v1.0.7...v1.0.8) (2019-12-02)
