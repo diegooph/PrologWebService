@@ -13,9 +13,9 @@ public interface SocorroRotaDao {
     /**
      * Cria uma nova solicitação de socorro no banco de dados.
      *
-     * @param socorroRotaAbertura   Objeto contencod as informações do veículo a serem inseridas.
-     * @return Código gerado pelo BD para a nova solicitação de socorro
-     * @throws Throwable Se algum erro ocorrer ao salvar as informações.
+     * @param socorroRotaAbertura Objeto contendo as informações para abertura de um socorro.
+     * @return Código gerado pelo BD para a nova solicitação de socorro.
+     * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
     Long aberturaSocorro(@NotNull final SocorroRotaAbertura socorroRotaAbertura) throws Throwable;
