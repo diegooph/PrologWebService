@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public interface SocorroDao {
+public interface SocorroRotaDao {
 
     /**
      * Cria uma nova solicitação de socorro no banco de dados.

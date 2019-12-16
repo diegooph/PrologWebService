@@ -16,7 +16,7 @@ import java.sql.ResultSet;
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 
-public final class SocorroDaoImpl extends DatabaseConnection implements SocorroDao {
+public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements SocorroRotaDao {
 
     @NotNull
     @Override
@@ -75,7 +75,7 @@ public final class SocorroDaoImpl extends DatabaseConnection implements SocorroD
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
             } else {
-                throw new Throwable("Erro ao abrir uma solitação de socorro.");
+                throw new Throwable("Erro ao abrir uma solitação de socorro");
             }
         } finally {
             close(conn, stmt, rSet);

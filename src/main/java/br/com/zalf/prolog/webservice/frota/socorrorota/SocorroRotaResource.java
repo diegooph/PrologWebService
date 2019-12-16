@@ -4,14 +4,16 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -23,17 +25,18 @@ import javax.ws.rs.core.MediaType;
 @DebugLog
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class SocorroResource {
+public final class SocorroRotaResource {
     @NotNull
-    private SocorroService service = new SocorroService();
+    private SocorroRotaService service = new SocorroRotaService();
+
     /**
-    * Resource para realizar a abertura de uma solicitação de socorro
-    * */
+     * Resource para realizar a abertura de uma solicitação de socorro.
+     */
     @POST
     @Secured(permissions = Pilares.Frota.SocorroRota.SOLICITAR_SOCORRO)
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/abertura")
-    public ResponseWithCod aberturaSocorro(@Required final SocorroRotaAbertura socorroRotaAbertura) throws ProLogException {
+    public ResponseWithCod aberturaSocorro(@Required final SocorroRotaAbertura socorroRotaAbertura) {
         return service.aberturaSocorro(socorroRotaAbertura);
     }
 }
