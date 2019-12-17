@@ -27,7 +27,7 @@ public final class ConfiguracaoNovaAfericaoPlaca extends ConfiguracaoNovaAferica
             final boolean usaDefaultProLog,
             final boolean bloqueiaValoresMenores,
             final boolean bloqueiaValoresMaiores) {
-        super(  sulcoMinimoDescarte,
+        super(sulcoMinimoDescarte,
                 sulcoMinimoRecape,
                 toleranciaInspecao,
                 toleranciaCalibragem,

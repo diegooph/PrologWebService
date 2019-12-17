@@ -18,7 +18,7 @@ public final class ConfiguracaoNovaAfericaoAvulsa extends ConfiguracaoNovaAferic
                                           final boolean usaDefaultProLog,
                                           final boolean bloqueiaValoresMenores,
                                           final boolean bloqueiaValoresMaiores) {
-        super(  sulcoMinimoDescarte,
+        super(sulcoMinimoDescarte,
                 sulcoMinimoRecape,
                 toleranciaInspecao,
                 toleranciaCalibragem,

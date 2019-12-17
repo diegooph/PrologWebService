@@ -506,9 +506,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @NotNull
-    private ConfiguracaoNovaAfericaoPlaca createConfiguracaoNovaAfericaoPlaca(@NotNull final ResultSet rSet)
-            throws SQLException {
-        final ConfiguracaoNovaAfericaoPlaca config = new ConfiguracaoNovaAfericaoPlaca(
+    private ConfiguracaoNovaAfericaoPlaca createConfiguracaoNovaAfericaoPlaca(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new ConfiguracaoNovaAfericaoPlaca(
                 rSet.getBoolean("PODE_AFERIR_SULCO"),
                 rSet.getBoolean("PODE_AFERIR_PRESSAO"),
                 rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"),
@@ -523,15 +523,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"),
                 rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"),
                 rSet.getBoolean("BLOQUEAR_VALORES_MENORES"),
-                rSet.getBoolean("BLOQUEAR_VALORES_MAIORES")
-        );
-        return config;
+                rSet.getBoolean("BLOQUEAR_VALORES_MAIORES"));
     }
 
     @NotNull
-    private ConfiguracaoNovaAfericaoAvulsa createConfiguracaoNovaAfericaoAvulsa(@NotNull final ResultSet rSet)
-            throws SQLException {
-        final ConfiguracaoNovaAfericaoAvulsa config = new ConfiguracaoNovaAfericaoAvulsa(
+    private ConfiguracaoNovaAfericaoAvulsa createConfiguracaoNovaAfericaoAvulsa(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new ConfiguracaoNovaAfericaoAvulsa(
                 rSet.getDouble("SULCO_MINIMO_DESCARTE"),
                 rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
                 rSet.getDouble("TOLERANCIA_INSPECAO"),
@@ -542,9 +540,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"),
                 rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"),
                 rSet.getBoolean("BLOQUEAR_VALORES_MENORES"),
-                rSet.getBoolean("BLOQUEAR_VALORES_MAIORES")
-        );
-        return config;
+                rSet.getBoolean("BLOQUEAR_VALORES_MAIORES"));
     }
 
     @NotNull

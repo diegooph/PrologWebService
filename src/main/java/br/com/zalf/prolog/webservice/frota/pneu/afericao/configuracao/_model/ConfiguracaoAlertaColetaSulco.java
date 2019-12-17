@@ -54,12 +54,12 @@ public final class ConfiguracaoAlertaColetaSulco {
     private final double variacaoAceitaSulcoMaiorMilimetros;
 
     /**
-     * Parametrização que define se uma aferição que ultrapassou o limite de variação menor será bloqueada
+     * Parametrização que define se uma aferição que ultrapassou o limite de variação menor será bloqueada.
      */
     private final boolean bloqueiaValoresMenores;
 
     /**
-     * Parametrização que define se uma aferição que ultrapassou o limite de variação maior será bloqueada
+     * Parametrização que define se uma aferição que ultrapassou o limite de variação maior será bloqueada.
      */
     private final boolean bloqueiaValoresMaiores;
 
