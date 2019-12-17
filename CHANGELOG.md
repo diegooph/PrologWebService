@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## Stage
+### Refactors
+* Adiciona configuração para bloquear processo de aferição (PL-1934)
+
 <a name="v1.0.9"></a>
 ## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (release-date) [unreleased]
 
