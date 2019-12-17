@@ -29,7 +29,7 @@ public final class PneuConferenciaResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/upload-planilha-import")
-    public Response getVerificacaoPlanilhaImportVeiculo(
+    public Response getVerificacaoPlanilhaImportPneu(
             @HeaderParam("Authorization") @Required final String authorization,
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
             @QueryParam("codUnidade") @Required final Long codUnidade,
