@@ -25,6 +25,9 @@ public abstract class SocorroRotaAcao {
     @NotNull
     private final LocalizacaoSocorroRota localizacao;
 
+    /**
+     * Endereço coletado automáticamente no App com base na localização capturada.
+     */
     @Nullable
     private final String enderecoAutomatico;
 
