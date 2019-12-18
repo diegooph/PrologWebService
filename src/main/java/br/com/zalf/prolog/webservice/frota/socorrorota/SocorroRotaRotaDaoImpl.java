@@ -40,6 +40,7 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
                     "F_LATITUDE_ABERTURA := ?::TEXT," +
                     "F_LONGITUDE_ABERTURA := ?::TEXT," +
                     "F_PRECISAO_LOCALIZACAO_ABERTURA_METROS := ?," +
+                    "F_ENDERECO_AUTOMATICO := ?," +
                     "F_PONTO_REFERENCIA := ?::TEXT," +
                     "F_VERSAO_APP_MOMENTO_ABERTURA := ?," +
                     "F_DEVICE_ID_ABERTURA := ?::TEXT," +
@@ -63,14 +64,15 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             stmt.setString(11, socorroRotaAbertura.getLocalizacao().getLatitude());
             stmt.setString(12, socorroRotaAbertura.getLocalizacao().getLongitude());
             stmt.setObject(13, socorroRotaAbertura.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
-            stmt.setString(14, socorroRotaAbertura.getPontoReferencia());
-            stmt.setLong(15, socorroRotaAbertura.getVersaoAppAtual());
-            stmt.setString(16, socorroRotaAbertura.getDeviceId());
-            stmt.setString(17, socorroRotaAbertura.getDeviceImei());
-            stmt.setLong(18, socorroRotaAbertura.getDeviceUptimeMillis());
-            stmt.setInt(19, socorroRotaAbertura.getAndroidApiVersion());
-            stmt.setString(20, socorroRotaAbertura.getMarcaDevice());
-            stmt.setString(21, socorroRotaAbertura.getModeloDevice());
+            stmt.setString(14, socorroRotaAbertura.getEnderecoAutomatico());
+            stmt.setString(15, socorroRotaAbertura.getPontoReferencia());
+            stmt.setLong(16, socorroRotaAbertura.getVersaoAppAtual());
+            stmt.setString(17, socorroRotaAbertura.getDeviceId());
+            stmt.setString(18, socorroRotaAbertura.getDeviceImei());
+            stmt.setLong(19, socorroRotaAbertura.getDeviceUptimeMillis());
+            stmt.setInt(20, socorroRotaAbertura.getAndroidApiVersion());
+            stmt.setString(21, socorroRotaAbertura.getMarcaDevice());
+            stmt.setString(22, socorroRotaAbertura.getModeloDevice());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");

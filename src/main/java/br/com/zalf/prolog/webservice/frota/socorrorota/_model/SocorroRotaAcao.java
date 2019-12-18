@@ -25,6 +25,9 @@ public abstract class SocorroRotaAcao {
     @NotNull
     private final LocalizacaoSocorroRota localizacao;
 
+    @Nullable
+    private final String enderecoAutomatico;
+
     /**
      * Versão do aplicativo no momento que a marcação foi sincronizada.
      */
@@ -76,6 +79,7 @@ public abstract class SocorroRotaAcao {
                               @NotNull final Long codColaborador,
                               @NotNull final LocalDateTime dataHora,
                               @NotNull final LocalizacaoSocorroRota localizacao,
+                              @Nullable final String enderecoAutomatico,
                               final int versaoAppAtual,
                               @Nullable final String deviceId,
                               @Nullable final String deviceImei,
@@ -88,6 +92,7 @@ public abstract class SocorroRotaAcao {
         this.codColaborador = codColaborador;
         this.dataHora = dataHora;
         this.localizacao = localizacao;
+        this.enderecoAutomatico = enderecoAutomatico;
         this.versaoAppAtual = versaoAppAtual;
         this.deviceId = deviceId;
         this.deviceImei = deviceImei;
@@ -117,8 +122,14 @@ public abstract class SocorroRotaAcao {
         return dataHora;
     }
 
+    @NotNull
     public LocalizacaoSocorroRota getLocalizacao() {
         return localizacao;
+    }
+
+    @Nullable
+    public String getEnderecoAutomatico() {
+        return enderecoAutomatico;
     }
 
     public int getVersaoAppAtual() {
