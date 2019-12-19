@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.socorrorota;
+package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,9 +8,15 @@ import org.jetbrains.annotations.Nullable;
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 public class UnidadeAberturaSocorro {
+    /*
+    * Código único que identifica a unidade
+    * */
     @NotNull
     private final Long codUnidade;
 
+    /*
+    * Nome da unidade
+    * */
     @NotNull
     private final String nomeUnidade;
 

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

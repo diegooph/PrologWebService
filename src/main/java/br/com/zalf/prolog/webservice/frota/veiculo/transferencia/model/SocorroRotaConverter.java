@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model;
 
-import br.com.zalf.prolog.webservice.frota.socorrorota.UnidadeAberturaSocorro;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
