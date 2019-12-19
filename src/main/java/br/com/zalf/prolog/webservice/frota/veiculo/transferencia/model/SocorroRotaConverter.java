@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model;
 
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -23,5 +24,14 @@ public class SocorroRotaConverter {
         return new UnidadeAberturaSocorro(
                 rSet.getLong("CODIGO_UNIDADE"),
                 rSet.getString("NOME_UNIDADE"));
+    }
+
+    @NotNull
+    public static VeiculoAberturaSocorro createVeiculoAberturaSocorro(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new VeiculoAberturaSocorro(
+                rSet.getLong("CODIGO"),
+                rSet.getString("PLACA"),
+                rSet.getLong("KM"));
     }
 }

@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -44,7 +45,20 @@ public final class SocorroRotaService {
             Log.e(TAG, "Erro ao buscar as unidades disponíveis para abertura de socorro.", e);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(e, "Erro ao buscar as transferências, tente novamente");
+                    .map(e, "Erro ao buscar as unidades, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
+            @NotNull final Long codUnidade) throws ProLogException {
+        try {
+            return dao.getVeiculosDisponiveisAberturaSocorroByUnidade(codUnidade);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar os veículos disponíveis para abertura de socorro.", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao buscar os veículos, tente novamente");
         }
     }
 }

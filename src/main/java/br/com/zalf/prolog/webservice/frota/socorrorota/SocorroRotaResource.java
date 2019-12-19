@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -48,5 +49,17 @@ public final class SocorroRotaResource {
             @QueryParam("codColaborador") @Required final Long codColaborador){
 
         return service.getUnidadesDisponiveisAberturaSocorroByCodColaborador(codColaborador);
+    }
+
+
+    /**
+     * Resource para buscar os veículos disponíveis para a abertura de socorro por unidade
+     * */
+    @GET
+    @Path("/abertura/veiculos-selecao")
+    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
+            @QueryParam("codUnidade") @Required final Long codUnidade){
+
+        return service.getVeiculosDisponiveisAberturaSocorroByUnidade(codUnidade);
     }
 }

@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.SocorroRotaConverter;
 import org.jetbrains.annotations.NotNull;
 
@@ -106,6 +107,29 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
                 unidades.add(SocorroRotaConverter.createUnidadeAberturaSocorro(rSet));
             }
             return unidades;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
+            @NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT CODIGO, PLACA, KM FROM VEICULO WHERE COD_UNIDADE = ?" +
+                    " ORDER BY PLACA;");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            final List<VeiculoAberturaSocorro> veiculos = new ArrayList<>();
+            while (rSet.next()) {
+                veiculos.add(SocorroRotaConverter.createVeiculoAberturaSocorro(rSet));
+            }
+            return veiculos;
         } finally {
             close(conn, stmt, rSet);
         }
