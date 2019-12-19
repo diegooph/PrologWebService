@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.OpcaoProblemaAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
@@ -51,15 +52,26 @@ public final class SocorroRotaResource {
         return service.getUnidadesDisponiveisAberturaSocorroByCodColaborador(codColaborador);
     }
 
-
     /**
      * Resource para buscar os veículos disponíveis para a abertura de socorro por unidade
      * */
     @GET
     @Path("/abertura/veiculos-selecao")
     public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
-            @QueryParam("codUnidade") @Required final Long codUnidade){
+            @QueryParam("codUnidade") @Required final Long codUnidade) {
 
         return service.getVeiculosDisponiveisAberturaSocorroByUnidade(codUnidade);
     }
+
+    /**
+     * Resource para buscar as opções de problema disponíveis para a abertura de socorro por empresa
+     * */
+    @GET
+    @Path("/abertura/opcoes-problema")
+    public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa){
+
+        return service.getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(codEmpresa);
+    }
+
 }

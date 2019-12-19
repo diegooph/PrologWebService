@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model;
 
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.OpcaoProblemaAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
 import org.jetbrains.annotations.NotNull;
@@ -33,5 +34,14 @@ public class SocorroRotaConverter {
                 rSet.getLong("CODIGO"),
                 rSet.getString("PLACA"),
                 rSet.getLong("KM"));
+    }
+
+    @NotNull
+    public static OpcaoProblemaAberturaSocorro createOpcaoProblemaAberturaSocorro(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new OpcaoProblemaAberturaSocorro(
+                rSet.getLong("CODIGO"),
+                rSet.getString("DESCRICAO"),
+                rSet.getBoolean("OBRIGA_DESCRICAO"));
     }
 }

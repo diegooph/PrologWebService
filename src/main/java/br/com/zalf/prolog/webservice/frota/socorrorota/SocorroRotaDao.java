@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.OpcaoProblemaAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
@@ -45,4 +46,15 @@ public interface SocorroRotaDao {
     @NotNull
     List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
             @NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Busca as opções de problema disponíveis para a abertura de socorro em rota por empresa
+     *
+     * @param codEmpresa Código da empresa
+     * @return Uma lista de {@link OpcaoProblemaAberturaSocorro opções de problema} ativos por unidade
+     * @throws Throwable Se algo der errado na busca.
+     */
+    @NotNull
+    List<OpcaoProblemaAberturaSocorro> getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(
+            @NotNull final Long codEmpresa) throws Throwable;
 }

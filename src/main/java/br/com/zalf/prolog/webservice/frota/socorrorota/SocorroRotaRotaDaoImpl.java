@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.socorrorota;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.OpcaoProblemaAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
@@ -130,6 +131,31 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
                 veiculos.add(SocorroRotaConverter.createVeiculoAberturaSocorro(rSet));
             }
             return veiculos;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(
+            @NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT CODIGO, DESCRICAO, OBRIGA_DESCRICAO " +
+                    "FROM SOCORRO_ROTA_OPCAO_PROBLEMA " +
+                    "WHERE COD_EMPRESA = ? AND STATUS_ATIVO IS TRUE " +
+                    "ORDER BY DESCRICAO;");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            final List<OpcaoProblemaAberturaSocorro> opcoesProblema = new ArrayList<>();
+            while (rSet.next()) {
+                opcoesProblema.add(SocorroRotaConverter.createOpcaoProblemaAberturaSocorro(rSet));
+            }
+            return opcoesProblema;
         } finally {
             close(conn, stmt, rSet);
         }

@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.OpcaoProblemaAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
@@ -59,6 +60,19 @@ public final class SocorroRotaService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao buscar os veículos, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(
+            @NotNull final Long codEmpresa) throws ProLogException {
+        try {
+            return dao.getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(codEmpresa);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar as opções de problema disponíveis para abertura de socorro.", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao buscar as opções de problema, tente novamente");
         }
     }
 }
