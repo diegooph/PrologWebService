@@ -5,7 +5,8 @@ Change Log
 ### Features
 * Cria objetos base do Socorro em Rota (PL-2421)
 * Implementa solicitação de socorro em rota (PL-2423)
-* Implementa a listagem de unidades dispoíveis para abertura de um socorro em rota (PL-2445)
+* Implementa a listagem de unidades dispoíveis na abertura de um socorro em rota (PL-2445)
+* Implementa a listagem de veículos dispoíveis na abertura de um socorro em rota (PL-2446)
 
 <a name="v1.0.9"></a>
 ## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (release-date) [unreleased]
