@@ -4,11 +4,14 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
+import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.SocorroRotaConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 09/12/19.
@@ -79,6 +82,29 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             } else {
                 throw new Throwable("Erro ao abrir uma solitação de socorro");
             }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(
+            @NotNull final Long codColaborador) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT DISTINCT(CODIGO_UNIDADE), NOME_UNIDADE FROM FUNC_COLABORADOR_GET_UNIDADES_ACESSO(" +
+                    "F_COD_COLABORADOR := ?) ORDER BY NOME_UNIDADE;");
+            stmt.setLong(1, codColaborador);
+            rSet = stmt.executeQuery();
+            final List<UnidadeAberturaSocorro> unidades = new ArrayList<>();
+            while (rSet.next()) {
+                unidades.add(SocorroRotaConverter.createUnidadeAberturaSocorro(rSet));
+            }
+            return unidades;
         } finally {
             close(conn, stmt, rSet);
         }

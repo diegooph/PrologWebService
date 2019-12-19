@@ -10,11 +10,9 @@ import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created on 09/12/19.
@@ -38,5 +36,16 @@ public final class SocorroRotaResource {
     @Path("/abertura")
     public ResponseWithCod aberturaSocorro(@Required final SocorroRotaAbertura socorroRotaAbertura) {
         return service.aberturaSocorro(socorroRotaAbertura);
+    }
+
+    /**
+    * Resource para buscar as unidades disponíveis para a abertura de socorro por colaborador
+    * */
+    @GET
+    @Path("/abertura/unidades-selecao")
+    public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(
+            @QueryParam("codColaborador") @Required final Long codColaborador){
+
+        return service.getUnidadesDisponiveisAberturaSocorroByCodColaborador(codColaborador);
     }
 }
