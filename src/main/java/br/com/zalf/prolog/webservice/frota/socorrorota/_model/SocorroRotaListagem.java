@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -12,31 +13,42 @@ import java.util.Date;
  */
 public final class SocorroRotaListagem {
     @NotNull
+    private final Long codSocorroRota;
+    @NotNull
     private final String placaVeiculo;
     @NotNull
     private final String nomeResponsavelAberturaSocorro;
+    @Nullable
+    private final String descricaoFornecidaAberturaSocorro;
     @NotNull
     private final String descricaoOpcaoProblemaAberturaSocorro;
     @NotNull
-    private final Date dataHoraAberturaSocorro;
+    private final LocalDateTime dataHoraAberturaSocorro;
     @Nullable
     private final String enderecoAutomaticoAberturaSocorro;
     @NotNull
     private final StatusSocorroRota statusAtualSocorroRota;
 
-    public SocorroRotaListagem(@NotNull final String placaVeiculo,
+    public SocorroRotaListagem(@NotNull final Long codSocorroRota,
+                               @NotNull final String placaVeiculo,
                                @NotNull final String nomeResponsavelAberturaSocorro,
+                               @Nullable final String descricaoFornecidaAberturaSocorro,
                                @NotNull final String descricaoOpcaoProblemaAberturaSocorro,
-                               @NotNull final Date dataHoraAberturaSocorro,
+                               @NotNull final LocalDateTime dataHoraAberturaSocorro,
                                @Nullable final String enderecoAutomaticoAberturaSocorro,
                                @NotNull final StatusSocorroRota statusAtualSocorroRota) {
+        this.codSocorroRota = codSocorroRota;
         this.placaVeiculo = placaVeiculo;
         this.nomeResponsavelAberturaSocorro = nomeResponsavelAberturaSocorro;
+        this.descricaoFornecidaAberturaSocorro = descricaoFornecidaAberturaSocorro;
         this.descricaoOpcaoProblemaAberturaSocorro = descricaoOpcaoProblemaAberturaSocorro;
         this.dataHoraAberturaSocorro = dataHoraAberturaSocorro;
         this.enderecoAutomaticoAberturaSocorro = enderecoAutomaticoAberturaSocorro;
         this.statusAtualSocorroRota = statusAtualSocorroRota;
     }
+
+    @NotNull
+    public Long getCodSocorroRota() { return codSocorroRota; }
 
     @NotNull
     public String getPlacaVeiculo() {
@@ -48,13 +60,16 @@ public final class SocorroRotaListagem {
         return nomeResponsavelAberturaSocorro;
     }
 
+    @Nullable
+    public String getDescricaoFornecidaAberturaSocorro() { return descricaoFornecidaAberturaSocorro; }
+
     @NotNull
     public String getDescricaoOpcaoProblemaAberturaSocorro() {
         return descricaoOpcaoProblemaAberturaSocorro;
     }
 
     @NotNull
-    public Date getDataHoraAberturaSocorro() {
+    public LocalDateTime getDataHoraAberturaSocorro() {
         return dataHoraAberturaSocorro;
     }
 
