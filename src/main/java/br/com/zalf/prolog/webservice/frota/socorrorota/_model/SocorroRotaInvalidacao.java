@@ -14,7 +14,7 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
     @NotNull
     private final Long codSocorroRota;
     @NotNull
-    private final String observacaoInvalidacao;
+    private final String motivoInvalidacao;
     @Nullable
     private final String urlFoto1Invalidacao;
     @Nullable
@@ -24,7 +24,7 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
 
     public SocorroRotaInvalidacao(@NotNull final Long codUnidadeAbertura,
                                   @NotNull final Long codSocorroRota,
-                                  @NotNull final String observacaoInvalidacao,
+                                  @NotNull final String motivoInvalidacao,
                                   @Nullable final String urlFoto1Invalidacao,
                                   @Nullable final String urlFoto2Invalidacao,
                                   @Nullable final String urlFoto3Invalidacao,
@@ -53,7 +53,7 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
                 marcaDevice,
                 modeloDevice);
         this.codSocorroRota = codSocorroRota;
-        this.observacaoInvalidacao = observacaoInvalidacao;
+        this.motivoInvalidacao = motivoInvalidacao;
         this.urlFoto1Invalidacao = urlFoto1Invalidacao;
         this.urlFoto2Invalidacao = urlFoto2Invalidacao;
         this.urlFoto3Invalidacao = urlFoto3Invalidacao;
@@ -65,8 +65,8 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
     }
 
     @NotNull
-    public String getObservacaoInvalidacao() {
-        return observacaoInvalidacao;
+    public String getMotivoInvalidacao() {
+        return motivoInvalidacao;
     }
 
     @Nullable
