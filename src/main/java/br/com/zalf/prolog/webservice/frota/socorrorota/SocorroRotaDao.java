@@ -70,4 +70,14 @@ public interface SocorroRotaDao {
             @NotNull final List<Long> codUnidades,
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal) throws Throwable;
+
+    /**
+     * Invalida uma solicitação de socorro no banco de dados.
+     *
+     * @param socorroRotaInvalidacao Objeto contendo as informações para invalidação de um socorro.
+     * @return Código gerado pelo BD para a invalidação do socorro.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    Long invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) throws Throwable;
 }

@@ -188,4 +188,62 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             close(conn, stmt, rSet);
         }
     }
+
+    @NotNull
+    @Override
+    public Long invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_INVALIDACAO(" +
+                    "F_COD_SOCORRO_ROTA := ?," +
+                    "F_COD_COLABORADOR_INVALIDACAO := ?," +
+                    "F_MOTIVO_INVALIDACAO := ?::TEXT," +
+                    "F_DATA_HORA_INVALIDACAO := ?," +
+                    "F_URL_FOTO_1_INVALIDACAO := ?::TEXT," +
+                    "F_URL_FOTO_2_INVALIDACAO := ?::TEXT," +
+                    "F_URL_FOTO_3_INVALIDACAO := ?::TEXT," +
+                    "F_LATITUDE_INVALIDACAO := ?::TEXT," +
+                    "F_LONGITUDE_INVALIDACAO := ?::TEXT," +
+                    "F_PRECISAO_LOCALIZACAO_INVALIDACAO_METROS := ?," +
+                    "F_ENDERECO_AUTOMATICO := ?::TEXT," +
+                    "F_VERSAO_APP_MOMENTO_INVALIDACAO := ?," +
+                    "F_DEVICE_ID_INVALIDACAO := ?::TEXT," +
+                    "F_DEVICE_IMEI_INVALIDACAO := ?::TEXT," +
+                    "F_DEVICE_UPTIME_MILLIS_INVALIDACAO := ?," +
+                    "F_ANDROID_API_VERSION_INVALIDACAO := ?," +
+                    "F_MARCA_DEVICE_INVALIDACAO := ?::TEXT," +
+                    "F_MODELO_DEVICE_INVALIDACAO := ?::TEXT) AS CODIGO;");
+            final Long codUnidade = socorroRotaInvalidacao.getCodUnidade();
+            stmt.setLong(1, socorroRotaInvalidacao.getCodSocorroRota());
+            stmt.setLong(2, socorroRotaInvalidacao.getCodColaborador());
+            stmt.setString(3, socorroRotaInvalidacao.getMotivoInvalidacao());
+            // Ignoramos a data hora do objeto e usamos a do WS
+            stmt.setObject(4, Now.offsetDateTimeUtc());
+            stmt.setString(5, socorroRotaInvalidacao.getUrlFoto1());
+            stmt.setString(6, socorroRotaInvalidacao.getUrlFoto2());
+            stmt.setString(7, socorroRotaInvalidacao.getUrlFoto3());
+            stmt.setString(8, socorroRotaInvalidacao.getLocalizacao().getLatitude());
+            stmt.setString(9, socorroRotaInvalidacao.getLocalizacao().getLongitude());
+            stmt.setObject(10, socorroRotaInvalidacao.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
+            stmt.setString(11, socorroRotaInvalidacao.getEnderecoAutomatico());
+            stmt.setLong(12, socorroRotaInvalidacao.getVersaoAppAtual());
+            stmt.setString(13, socorroRotaInvalidacao.getDeviceId());
+            stmt.setString(14, socorroRotaInvalidacao.getDeviceImei());
+            stmt.setLong(15, socorroRotaInvalidacao.getDeviceUptimeMillis());
+            stmt.setInt(16, socorroRotaInvalidacao.getAndroidApiVersion());
+            stmt.setString(17, socorroRotaInvalidacao.getMarcaDevice());
+            stmt.setString(18, socorroRotaInvalidacao.getModeloDevice());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new Throwable("Erro ao invalidar esta solitação de socorro");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

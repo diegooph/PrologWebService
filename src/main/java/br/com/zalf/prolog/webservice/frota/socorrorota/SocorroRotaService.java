@@ -91,4 +91,19 @@ public final class SocorroRotaService {
                     .map(e, "Erro ao buscar a lista de socorros em rota, tente novamente.");
         }
     }
+
+    @NotNull
+    ResponseWithCod invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) throws ProLogException {
+        try {
+            return ResponseWithCod.ok(
+                    "Solicitação de socorro invalidada com sucesso.",
+                    dao.invalidacaoSocorro(socorroRotaInvalidacao));
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao invalidar uma solitação de socorro.", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível realizar a abertura desta solicitação de socorro, " +
+                            "tente novamente.");
+        }
+    }
 }

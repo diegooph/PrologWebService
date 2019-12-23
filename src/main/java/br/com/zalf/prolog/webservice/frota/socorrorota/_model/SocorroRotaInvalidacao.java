@@ -22,7 +22,7 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
     @Nullable
     private final String urlFoto3Invalidacao;
 
-    public SocorroRotaInvalidacao(@NotNull final Long codUnidadeAbertura,
+    public SocorroRotaInvalidacao(@NotNull final Long codUnidadeInvalidacao,
                                   @NotNull final Long codSocorroRota,
                                   @NotNull final String motivoInvalidacao,
                                   @Nullable final String urlFoto1Invalidacao,
@@ -39,7 +39,7 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
                                   final long deviceUptimeMillis,
                                   @Nullable final String marcaDevice,
                                   @Nullable final String modeloDevice) {
-        super(  codUnidadeAbertura,
+        super(  codUnidadeInvalidacao,
                 StatusSocorroRota.INVALIDO,
                 codColaborador,
                 dataHora,
