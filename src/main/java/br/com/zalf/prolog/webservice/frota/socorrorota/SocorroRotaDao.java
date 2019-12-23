@@ -1,11 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.OpcaoProblemaAberturaSocorro;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -57,4 +55,19 @@ public interface SocorroRotaDao {
     @NotNull
     List<OpcaoProblemaAberturaSocorro> getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(
             @NotNull final Long codEmpresa) throws Throwable;
+
+    /**
+     * Busca a listagem dos socorros em rota por data inicial, final e unidades
+     *
+     * @param codUnidades Array com os códigos de unidade
+     * @param dataInicial Data inicial da pesquisa
+     * @param dataFinal   Data final da pesquisa
+     * @return Uma lista de {@link SocorroRotaListagem socorros em rota}
+     * @throws Throwable Se algo der errado na busca.
+     */
+    @NotNull
+    List<SocorroRotaListagem> getListagemSocorroRota(
+            @NotNull final List<Long> codUnidades,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable;
 }

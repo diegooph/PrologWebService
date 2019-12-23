@@ -1,18 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.OpcaoProblemaAberturaSocorro;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.SocorroRotaConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,6 +155,35 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
                 opcoesProblema.add(SocorroRotaConverter.createOpcaoProblemaAberturaSocorro(rSet));
             }
             return opcoesProblema;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<SocorroRotaListagem> getListagemSocorroRota(
+            @NotNull final List<Long> codUnidades,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_LISTAGEM(" +
+                    "F_COD_UNIDADES := ?, " +
+                    "F_DATA_INICIAL :=?," +
+                    "F_DATA_FINAL := ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setObject(2, dataInicial);
+            stmt.setObject(3, dataFinal);
+            rSet = stmt.executeQuery();
+            final List<SocorroRotaListagem> socorrosRota = new ArrayList<>();
+            while (rSet.next()) {
+                socorrosRota.add(SocorroRotaConverter.createSocorroRotaListagem(rSet));
+            }
+            return socorrosRota;
         } finally {
             close(conn, stmt, rSet);
         }

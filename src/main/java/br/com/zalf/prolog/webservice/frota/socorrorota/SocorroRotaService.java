@@ -3,11 +3,9 @@ package br.com.zalf.prolog.webservice.frota.socorrorota;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.OpcaoProblemaAberturaSocorro;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaAbertura;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.UnidadeAberturaSocorro;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.VeiculoAberturaSocorro;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -73,6 +71,24 @@ public final class SocorroRotaService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao buscar as opções de problema, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<SocorroRotaListagem> getListagemSocorroRota(
+            @NotNull final List<Long> codUnidades,
+            @NotNull final String dataInicial,
+            @NotNull final String dataFinal) throws ProLogException {
+        try {
+            return dao.getListagemSocorroRota(
+                    codUnidades,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar a lista de socorros em rota.", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao buscar a lista de socorros em rota, tente novamente.");
         }
     }
 }
