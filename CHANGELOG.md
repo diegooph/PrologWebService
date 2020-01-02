@@ -4,6 +4,9 @@ Change Log
 <a name="v1.0.9"></a>
 ## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (release-date) [unreleased]
 
+### Features
+* Cria import automatizado de pneus (PL-2320)
+
 ### Refactors
 * Altera tratamento de erro da VeiculoService para utilizar tratador específico
 
