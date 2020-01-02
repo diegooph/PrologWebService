@@ -12,11 +12,11 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.QtdDiasAfericoesVencidas;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.QtdDiasAfericoesVencidas;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +38,28 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     public RelatorioPneuDaoImpl() {
 
+    }
+
+    @Override
+    public void getFarolAfericaoCsv(@NotNull final OutputStream outputStream,
+                                    @NotNull final List<Long> codUnidades,
+                                    @NotNull final LocalDate dataInicial,
+                                    @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getFarolAfericaoStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(outputStream)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @Override
@@ -1068,6 +1090,23 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                                            @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS(?, ?, ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        stmt.setObject(2, dataInicial);
+        stmt.setObject(3, dataFinal);
+        return stmt;
+    }
+
+
+    @NotNull
+    private PreparedStatement getFarolAfericaoStatement(@NotNull final Connection conn,
+                                                        @NotNull final List<Long> codUnidades,
+                                                        @NotNull final LocalDate dataInicial,
+                                                        @NotNull final LocalDate dataFinal) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_PNEU_RELATORIO_FAROL_AFERICAO(" +
+                        "F_COD_UNIDADES := ?, " +
+                        "F_DATA_INICIAL := ?, " +
+                        "F_DATA_FINAL := ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);

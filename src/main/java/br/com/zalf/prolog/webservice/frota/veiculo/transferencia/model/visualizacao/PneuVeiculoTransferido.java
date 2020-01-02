@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao;
 
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Sulcos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -2,13 +2,13 @@ package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.QtdDiasAfericoesVencidas;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoMedicaoColetadaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.QtdDiasAfericoesVencidas;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.MotivoDescarte;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +24,22 @@ import java.util.Map;
  * Created by didi on 9/15/16.
  */
 public interface RelatorioPneuDao {
+
+    /**
+     * Método para gerar um relatório contendo as quantidades e percentuais de pneus que estão aplicados (atualmente) e
+     * foram aferidos em um range de data.
+     * Para fins de exportação em CSV.
+     * <p>
+     * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param dataInicial  - Data inicial do período de filtro.
+     * @param dataFinal    - Data final do período de filtro.
+     * @throws Throwable - Se algum erro ocorrer na busca dos dados.
+     */
+    void getFarolAfericaoCsv(@NotNull final OutputStream outputStream,
+                             @NotNull final List<Long> codUnidades,
+                             @NotNull final LocalDate dataInicial,
+                             @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método para gerar um relatório contendo os pneus que possuem algum desgaste irregular, dentro dos desgastes

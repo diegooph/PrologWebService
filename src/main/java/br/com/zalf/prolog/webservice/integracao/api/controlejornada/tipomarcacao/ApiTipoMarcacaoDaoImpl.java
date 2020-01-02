@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcaca
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.ApiMarcacaoCreator;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcacao.model.ApiTipoMarcacao;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcacao._model.ApiTipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;

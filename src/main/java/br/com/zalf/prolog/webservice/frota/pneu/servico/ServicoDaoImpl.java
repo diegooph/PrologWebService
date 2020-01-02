@@ -8,17 +8,17 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoEstoque;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoEstoque;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemEstoque;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -29,6 +29,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -194,7 +195,9 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public void fechaServico(Servico servico, Long codUnidade) throws Throwable {
+    public void fechaServico(@NotNull final Long codUnidade,
+                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                             @NotNull final Servico servico) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -202,10 +205,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             final PneuDao pneuDao = Injection.providePneuDao();
             switch (servico.getTipoServico()) {
                 case CALIBRAGEM:
-                    fechaCalibragem(conn, pneuDao, (ServicoCalibragem) servico);
+                    fechaCalibragem(conn, pneuDao, dataHorafechamentoServico, (ServicoCalibragem) servico);
                     break;
                 case INSPECAO:
-                    fechaInspecao(conn, pneuDao, (ServicoInspecao) servico);
+                    fechaInspecao(conn, pneuDao, dataHorafechamentoServico, (ServicoInspecao) servico);
                     break;
                 case MOVIMENTACAO:
                     final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
@@ -219,6 +222,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                             conn,
                             this,
                             processoMovimentacao,
+                            dataHorafechamentoServico,
                             false);
                     movimentacao.setCodProcessoMovimentacao(codProcessoMovimentacao);
 
@@ -226,7 +230,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     // nós agora fechamos o de movimentação como sendo fechado pelo usuário e depois os demais que
                     // ficarem pendentes do mesmo pneu. Essa ordem de execução dos métodos é necessária e não deve
                     // ser alterada!
-                    fechaMovimentacao(conn, pneuDao, movimentacao);
+                    fechaMovimentacao(conn, pneuDao, dataHorafechamentoServico, movimentacao);
                     final Long codPneu = servico.getPneuComProblema().getCodigo();
                     final int qtdServicosEmAbertoPneu = getQuantidadeServicosEmAbertoPneu(
                             codUnidade,
@@ -234,11 +238,12 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                             conn);
                     if (qtdServicosEmAbertoPneu > 0) {
                         final int qtdServicosFechadosPneu = fecharAutomaticamenteServicosPneu(
+                                conn,
                                 codUnidade,
                                 codPneu,
                                 codProcessoMovimentacao,
-                                servico.getKmVeiculoMomentoFechamento(),
-                                conn);
+                                dataHorafechamentoServico,
+                                servico.getKmVeiculoMomentoFechamento());
                         if (qtdServicosEmAbertoPneu != qtdServicosFechadosPneu) {
                             throw new IllegalStateException("Erro ao fechar os serviços do pneu: " + codPneu + ". Deveriam ser fechados "
                                     + qtdServicosEmAbertoPneu + " serviços mas foram fechados " + qtdServicosFechadosPneu + "!");
@@ -259,7 +264,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             }
             throw e;
         } finally {
-            closeConnection(conn, null, null);
+            close(conn);
         }
     }
 
@@ -393,11 +398,12 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public int fecharAutomaticamenteServicosPneu(final Long codUnidade,
-                                                 final Long codPneu,
-                                                 final Long codProcessoMovimentacao,
-                                                 final long kmColetadoVeiculo,
-                                                 final Connection conn) throws SQLException {
+    public int fecharAutomaticamenteServicosPneu(@NotNull final Connection conn,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final Long codPneu,
+                                                 @NotNull final Long codProcessoMovimentacao,
+                                                 @NotNull final LocalDateTime dataHorafechamentoServico,
+                                                 final long kmColetadoVeiculo) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = ServicoQueryBinder.fecharAutomaticamenteServicosPneu(
@@ -405,10 +411,11 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     codUnidade,
                     codProcessoMovimentacao,
                     codPneu,
+                    dataHorafechamentoServico,
                     kmColetadoVeiculo);
             return stmt.executeUpdate();
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -518,10 +525,11 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     private void fechaCalibragem(@NotNull final Connection conn,
                                  @NotNull final PneuDao pneuDao,
+                                 @NotNull final LocalDateTime dataHorafechamentoServico,
                                  @NotNull final ServicoCalibragem servico) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = ServicoQueryBinder.fechaCalibragem(conn, servico);
+            stmt = ServicoQueryBinder.fechaCalibragem(conn, dataHorafechamentoServico, servico);
             final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
@@ -531,17 +539,18 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     servico.getPneuComProblema().getCodigo(),
                     servico.getPressaoColetadaFechamento());
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
 
     }
 
     private void fechaInspecao(@NotNull final Connection conn,
                                @NotNull final PneuDao pneuDao,
+                               @NotNull final LocalDateTime dataHorafechamentoServico,
                                @NotNull final ServicoInspecao servico) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = ServicoQueryBinder.fechaInspecao(conn, servico);
+            stmt = ServicoQueryBinder.fechaInspecao(conn, dataHorafechamentoServico, servico);
             final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
@@ -551,17 +560,18 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     servico.getPneuComProblema().getCodigo(),
                     servico.getPressaoColetadaFechamento());
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
 
     }
 
     private void fechaMovimentacao(@NotNull final Connection conn,
                                    @NotNull final PneuDao pneuDao,
+                                   @NotNull final LocalDateTime dataHorafechamentoServico,
                                    @NotNull final ServicoMovimentacao servico) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = ServicoQueryBinder.fechaMovimentacao(conn, servico);
+            stmt = ServicoQueryBinder.fechaMovimentacao(conn, dataHorafechamentoServico, servico);
             final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
@@ -577,7 +587,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     servico.getPneuNovo().getCodigo(),
                     servico.getSulcosColetadosFechamento());
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 }

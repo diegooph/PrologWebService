@@ -5,9 +5,9 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.Aderencia;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.Faixa;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +23,28 @@ public class RelatorioPneuService {
     private static final String TAG = RelatorioPneuService.class.getSimpleName();
     @NotNull
     private final RelatorioPneuDao dao = Injection.provideRelatorioPneuDao();
+
+    public void getFarolAfericaoCsv(@NotNull final OutputStream outputStream,
+                                    @NotNull final List<Long> codUnidades,
+                                    @NotNull final String dataInicial,
+                                    @NotNull final String dataFinal) {
+        try {
+            dao.getFarolAfericaoCsv(
+                    outputStream,
+                    codUnidades,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas (CSV).\n" +
+                    "Unidades: " + codUnidades.toString() + "\n" +
+                    "Data inicial: " + dataInicial + "\n" +
+                    "Data final: " + dataFinal + "\n", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable,
+                            "Erro ao gerar relatório, tente novamente");
+        }
+    }
 
     public void getPneusComDesgasteIrregularCsv(final OutputStream outputStream,
                                                 final List<Long> codUnidades,

@@ -64,10 +64,14 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.Moviment
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaDao;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuSqlExceptionTranslator;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.banda.PneuMarcaModeloBandaDao;
+import br.com.zalf.prolog.webservice.frota.pneu.banda.PneuMarcaModeloBandaDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.error.PneuExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.pneu.error.PneuSqlExceptionTranslator;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDao;
+import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuTipoServicoDao;
@@ -132,6 +136,8 @@ import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRel
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDao;
 import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDaoImpl;
+import br.com.zalf.prolog.webservice.implantacao.autenticacao.ImplantacaoLoginSenhaDao;
+import br.com.zalf.prolog.webservice.implantacao.autenticacao.ImplantacaoLoginSenhaDaoImpl;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
@@ -207,6 +213,16 @@ public final class Injection {
     }
 
     @NotNull
+    public static PneuMarcaModeloBandaDao providePneuModeloBandaDao() {
+        return new PneuMarcaModeloBandaDaoImpl();
+    }
+
+    @NotNull
+    public static PneuMarcaModeloDao providePneuModeloDao() {
+        return new PneuMarcaModeloDaoImpl();
+    }
+
+    @NotNull
     public static OrdemServicoDaoImpl provideOrdemServicoDao() {
         return new OrdemServicoDaoImpl();
     }
@@ -234,6 +250,10 @@ public final class Injection {
     @NotNull
     public static MovimentacaoRelatorioDao provideMovimentacaoRelatorioDao() {
         return new MovimentacaoRelatorioDaoImpl();
+    }
+
+    public static ImplantacaoLoginSenhaDao provideImplantacaoLoginSenhaDao() {
+        return new ImplantacaoLoginSenhaDaoImpl();
     }
 
     @NotNull
@@ -561,6 +581,4 @@ public final class Injection {
     private static PneuSqlExceptionTranslator providePneuSqlExceptionTranslator() {
         return new PneuSqlExceptionTranslator();
     }
-
-
 }

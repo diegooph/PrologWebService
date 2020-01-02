@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import org.jetbrains.annotations.NotNull;
+
+import java.time.LocalDateTime;
 
 /**
  * Created on 14/09/19.
@@ -13,5 +15,7 @@ public interface OperacoesIntegradasAfericaoServico {
     @NotNull
     VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
                                              @NotNull final String placaVeiculo) throws Throwable;
-    void fechaServico(@NotNull final Long codUnidade, @NotNull final Servico servico) throws Throwable;
+    void fechaServico(@NotNull final Long codUnidade,
+                      @NotNull final LocalDateTime dataHorafechamentoServico,
+                      @NotNull final Servico servico) throws Throwable;
 }

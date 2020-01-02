@@ -7,12 +7,13 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PermissoesMovimentacaoValidator;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.PermissoesMovimentacaoValidator;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterMovimentacao;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +55,10 @@ public class MovimentacaoService {
             final Long codigo =
                     RouterMovimentacao
                             .create(dao, userToken)
-                            .insert(Injection.provideServicoDao(), movimentacao, true);
+                            .insert(Injection.provideServicoDao(),
+                                    movimentacao,
+                                    Now.localDateTimeUtc(),
+                                    true);
             return ResponseWithCod.ok("Movimentações realizadas com sucesso", codigo);
         } catch (final Throwable throwable) {
             final String errorMessage = "Erro ao realizar as movimentações";

@@ -1,17 +1,18 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ServicoDao {
@@ -82,7 +83,9 @@ public interface ServicoDao {
 
     List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico) throws SQLException;
 
-    void fechaServico(Servico servico, Long codUnidade) throws Throwable;
+    void fechaServico(@NotNull final Long codUnidade,
+                      @NotNull final LocalDateTime dataHorafechamentoServico,
+                      @NotNull final Servico servico) throws Throwable;
 
     Servico getServicoByCod(final Long codUnidade, final Long codServico) throws SQLException;
 
@@ -128,12 +131,12 @@ public interface ServicoDao {
      * @return A quantidade de serviços fechados.
      * @throws SQLException Caso aconteça algum erro na operação com o BD.
      */
-    int fecharAutomaticamenteServicosPneu(final Long codUnidade,
-                                          final Long codPneu,
-                                          final Long codProcessoMovimentacao,
-                                          final long kmColetadoVeiculo,
-                                          final Connection connection) throws SQLException;
-
+    int fecharAutomaticamenteServicosPneu(@NotNull final Connection conn,
+                                          @NotNull final Long codUnidade,
+                                          @NotNull final Long codPneu,
+                                          @NotNull final Long codProcessoMovimentacao,
+                                          @NotNull final LocalDateTime dataHorafechamentoServico,
+                                          final long kmColetadoVeiculo) throws SQLException;
 
     /**
      * Remonta um veículo como ele estava na época da abertura do {@link Servico}. Com todos os seus pneus

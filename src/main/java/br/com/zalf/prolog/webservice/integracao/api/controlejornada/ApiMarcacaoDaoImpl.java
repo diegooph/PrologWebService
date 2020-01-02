@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiMarcacao;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiMarcacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;

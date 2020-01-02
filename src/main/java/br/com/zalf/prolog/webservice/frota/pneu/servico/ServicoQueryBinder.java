@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoCalibragem;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoInspecao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoCalibragem;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoInspecao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,8 +12,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.Clock;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 /**
@@ -329,6 +328,7 @@ final class ServicoQueryBinder {
 
     @NotNull
     static PreparedStatement fechaCalibragem(@NotNull final Connection connection,
+                                             @NotNull final LocalDateTime dataHorafechamentoServico,
                                              @NotNull final ServicoCalibragem servico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -339,7 +339,7 @@ final class ServicoQueryBinder {
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
-        stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
+        stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
@@ -351,6 +351,7 @@ final class ServicoQueryBinder {
 
     @NotNull
     static PreparedStatement fechaInspecao(@NotNull final Connection connection,
+                                           @NotNull final LocalDateTime dataHorafechamentoServico,
                                            @NotNull final ServicoInspecao servico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -362,7 +363,7 @@ final class ServicoQueryBinder {
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
-        stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
+        stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
@@ -375,6 +376,7 @@ final class ServicoQueryBinder {
 
     @NotNull
     static PreparedStatement fechaMovimentacao(@NotNull final Connection connection,
+                                               @NotNull final LocalDateTime dataHorafechamentoServico,
                                                @NotNull final ServicoMovimentacao servico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -387,7 +389,7 @@ final class ServicoQueryBinder {
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
-        stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
+        stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setLong(3, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(4, servico.getCodProcessoMovimentacao());
@@ -417,6 +419,7 @@ final class ServicoQueryBinder {
                                                                @NotNull final Long codUnidade,
                                                                @NotNull final Long codProcessoMovimentacao,
                                                                @NotNull final Long codPneu,
+                                                               @NotNull final LocalDateTime dataHorafechamentoServico,
                                                                final long kmColetadoVeiculo) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -426,7 +429,7 @@ final class ServicoQueryBinder {
                 + "WHERE COD_UNIDADE = ? "
                 + "AND COD_PNEU = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
-        stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
+        stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, codProcessoMovimentacao);
         stmt.setLong(3, kmColetadoVeiculo);
         stmt.setLong(4, codUnidade);

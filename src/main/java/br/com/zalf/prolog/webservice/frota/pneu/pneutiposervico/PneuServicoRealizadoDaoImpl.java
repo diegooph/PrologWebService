@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizado;
-import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.model.PneuServicoRealizadoIncrementaVida;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -83,7 +83,7 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_REALIZADO " +
-                    "(COD_PNEU_TIPO_SERVICO, COD_UNIDADE, COD_PNEU, CUSTO, VIDA, FONTE_SERVICO_REALIZADO) " +
+                    "(COD_TIPO_SERVICO, COD_UNIDADE, COD_PNEU, CUSTO, VIDA, FONTE_SERVICO_REALIZADO) " +
                     "VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, servicoRealizado.getCodPneuTipoServico());
             stmt.setLong(2, codUnidade);
@@ -110,7 +110,7 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_REALIZADO_INCREMENTA_VIDA " +
-                    "(COD_PNEU_SERVICO_REALIZADO, COD_MODELO_BANDA, VIDA_NOVA_PNEU, FONTE_SERVICO_REALIZADO) " +
+                    "(COD_SERVICO_REALIZADO, COD_MODELO_BANDA, VIDA_NOVA_PNEU, FONTE_SERVICO_REALIZADO) " +
                     "VALUES (?, ?, ?, ?);");
             stmt.setLong(1, codServicoRealizado);
             stmt.setLong(2, servicoIncrementaVida.getCodModeloBanda());

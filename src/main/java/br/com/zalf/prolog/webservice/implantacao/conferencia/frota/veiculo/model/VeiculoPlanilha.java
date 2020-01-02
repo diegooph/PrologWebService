@@ -8,11 +8,11 @@ package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.mode
 public final class VeiculoPlanilha {
     private Long codUnidade;
     private String placa;
-    private Long km;
     private String marca;
     private String modelo;
+    private Long km;
     private String tipo;
-    private String diagrama;
+    private String qtdEixos;
 
     public VeiculoPlanilha() {
     }
@@ -65,11 +65,11 @@ public final class VeiculoPlanilha {
         this.modelo = modelo;
     }
 
-    public String getDiagrama() {
-        return diagrama;
+    public String getQtdEixos() {
+        return qtdEixos;
     }
 
-    public void setDiagrama(String diagrama) {
-        this.diagrama = diagrama;
+    public void setQtdEixos(String qtdEixos) {
+        this.qtdEixos = qtdEixos;
     }
 }
