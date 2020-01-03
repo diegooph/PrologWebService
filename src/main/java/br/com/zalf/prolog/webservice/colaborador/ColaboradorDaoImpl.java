@@ -522,12 +522,17 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     @NotNull
     @Override
     public Long getCodColaboradorByCpf(@NotNull final Connection conn,
+                                       @NotNull final Long codEmpresa,
                                        @NotNull final String cpfColaborador) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT C.CODIGO FROM COLABORADOR C WHERE C.CPF = ?;");
+            stmt = conn.prepareStatement("SELECT C.CODIGO " +
+                    "FROM COLABORADOR C " +
+                    "WHERE C.CPF = ? " +
+                    "AND C.COD_EMPRESA = ?;");
             stmt.setLong(1, Colaborador.formatCpf(cpfColaborador));
+            stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codColaborador = rSet.getLong("CODIGO");

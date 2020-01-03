@@ -222,12 +222,13 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
+            final Long codEmpresa = getCodEmpresaByToken(conn, tokenIntegracao);
             final List<Long> codPneusTransferidos =
                     Injection
                             .providePneuDao()
                             .getCodPneuByCodCliente(
                                     conn,
-                                    getCodEmpresaByToken(conn, tokenIntegracao),
+                                    codEmpresa,
                                     pneuTransferencia.getCodPneusTransferidos());
             final Long codColaborador;
             try {
@@ -236,6 +237,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                                 .provideColaboradorDao()
                                 .getCodColaboradorByCpf(
                                         conn,
+                                        codEmpresa,
                                         pneuTransferencia.getCpfColaboradorRealizacaoTransferencia());
             } catch (final Throwable t) {
                 throw new GenericException(
