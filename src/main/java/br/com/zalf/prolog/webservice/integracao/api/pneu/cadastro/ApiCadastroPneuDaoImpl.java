@@ -157,7 +157,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setBigDecimal(10, pneuCadastro.getValorPneu());
             stmt.setBoolean(11, pneuCadastro.getPneuNovoNuncaRodado());
             bindValueOrNull(stmt, 12, pneuCadastro.getCodModeloBanda(), SqlType.BIGINT);
-            bindValueOrNull(stmt, 13, pneuCadastro.getValorBandaPneu(), SqlType.REAL);
+            bindValueOrNull(stmt, 13, pneuCadastro.getValorBandaPneu(), SqlType.NUMERIC);
             stmt.setObject(14, Now.offsetDateTimeUtc());
             stmt.setString(15, tokenIntegracao);
             rSet = stmt.executeQuery();
