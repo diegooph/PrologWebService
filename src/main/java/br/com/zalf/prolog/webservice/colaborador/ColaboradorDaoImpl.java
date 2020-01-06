@@ -261,7 +261,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "R.REGIAO AS NOME_REGIONAL, R.CODIGO AS COD_REGIONAL, U.NOME AS NOME_UNIDADE, U.CODIGO AS " +
                     "COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
                     + "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
+                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, U.TIMEZONE AS TZ_UNIDADE "
                     + "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
                     + " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
                     + " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
@@ -664,6 +664,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
         c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
         c.setCodPermissao(rSet.getInt("PERMISSAO"));
+        c.setTzUnidade(rSet.getString("TZ_UNIDADE"));
         return c;
     }
 }
