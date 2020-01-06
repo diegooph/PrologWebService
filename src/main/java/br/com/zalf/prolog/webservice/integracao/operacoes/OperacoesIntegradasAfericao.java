@@ -13,7 +13,7 @@ import java.util.List;
  */
 interface OperacoesIntegradasAfericao {
     @NotNull
-    CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable;
+    CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable;
 
     @NotNull
     NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,

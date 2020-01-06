@@ -3,8 +3,7 @@ package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia;
 /**
  * Created by Zart on 03/07/2017.
  */
-public class Telemetria extends Ocorrencia {
-
+public final class Telemetria extends Ocorrencia {
     private int excessoVelocidade1;
     private int excessoVelocidade2;
     private int excessoVelocidade3;

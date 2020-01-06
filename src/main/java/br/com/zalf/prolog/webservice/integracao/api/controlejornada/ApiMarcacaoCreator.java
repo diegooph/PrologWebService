@@ -3,11 +3,11 @@ package br.com.zalf.prolog.webservice.integracao.api.controlejornada;
 import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.ajustes.model.ApiAcaoAjusteMarcacao;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.ajustes.model.ApiAjusteMarcacao;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiCoordenadasMarcacao;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiFonteDataHora;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiMarcacao;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.model.ApiTipoInicioFim;
-import br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcacao.model.ApiTipoMarcacao;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiCoordenadasMarcacao;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiFonteDataHora;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiMarcacao;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiTipoInicioFim;
+import br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcacao._model.ApiTipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

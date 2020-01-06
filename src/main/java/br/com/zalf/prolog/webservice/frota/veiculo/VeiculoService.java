@@ -81,7 +81,7 @@ public final class VeiculoService {
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao atualizar o veículo.\nplacaOriginal: %s", placaOriginal), t);
             throw Injection
-                    .provideProLogExceptionHandler()
+                    .provideVeiculoExceptionHandler()
                     .map(t, "Erro ao atualizar veículo, tente novamente");
         }
     }
@@ -102,7 +102,7 @@ public final class VeiculoService {
                     "codUnidade: %s\n" +
                     "placa: %s", userToken, codUnidade, placa), t);
             throw Injection
-                    .provideProLogExceptionHandler()
+                    .provideVeiculoExceptionHandler()
                     .map(t, "Não foi possível atualizar o status do veículo");
         }
     }
@@ -120,7 +120,7 @@ public final class VeiculoService {
                     "userToken: %s" +
                     "placa: %s", userToken, placa), t);
             throw Injection
-                    .provideProLogExceptionHandler()
+                    .provideVeiculoExceptionHandler()
                     .map(t, "Não foi possível inativar o veículo");
         }
     }
@@ -139,7 +139,7 @@ public final class VeiculoService {
                     "userToken: %s" +
                     "codUnidade: %d", userToken, veiculo.getCodUnidadeAlocado()), t);
             throw Injection
-                    .provideProLogExceptionHandler()
+                    .provideVeiculoExceptionHandler()
                     .map(t, "Erro ao inserir o veículo, tente novamente");
         }
     }
@@ -163,7 +163,7 @@ public final class VeiculoService {
             final String errorMessage = "Erro ao buscar marcas de veículos";
             Log.e(TAG, errorMessage, t);
             throw Injection
-                    .provideProLogExceptionHandler()
+                    .provideVeiculoExceptionHandler()
                     .map(t, errorMessage);
         }
     }
@@ -175,7 +175,7 @@ public final class VeiculoService {
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar marcas e modelos de veículos da empresa %d", codEmpresa), t);
             throw Injection
-                    .provideProLogExceptionHandler()
+                    .provideVeiculoExceptionHandler()
                     .map(t, "Erro ao buscar marcas e modelos de veículos");
         }
     }
@@ -192,7 +192,7 @@ public final class VeiculoService {
                     "Empresa: %d\n" +
                     "codMarca: %d", codEmpresa, codMarca), t);
             throw Injection
-                    .provideProLogExceptionHandler()
+                    .provideVeiculoExceptionHandler()
                     .map(t, "Erro ao cadastrar modelo de veículo, tente novamente");
         }
     }

@@ -33,6 +33,20 @@ import java.util.List;
 public class RelatorioPneuResource {
 
     @GET
+    @Path("/farol-afericao/csv")
+    @Produces("application/csv")
+    public StreamingOutput getFarolAfericao(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> new RelatorioPneuService().getFarolAfericaoCsv(
+                outputStream,
+                codUnidades,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
     @Path("/desgaste-irregular/csv")
     @Produces("application/csv")
     public StreamingOutput getPneusComDesgasteIrregularCsv(

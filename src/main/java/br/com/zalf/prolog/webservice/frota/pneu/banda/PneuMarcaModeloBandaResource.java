@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.pneu.banda;
 
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.banda._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +40,7 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
     @Path("/marcas")
-    public AbstractResponse insertMarcaBanda(@Valid PneuMarcaBandaInsercao marcaBanda) {
+    public ResponseWithCod insertMarcaBanda(@Valid PneuMarcaBandaInsercao marcaBanda) {
         return service.insertMarcaBanda(marcaBanda);
     }
 
@@ -60,10 +62,15 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/marcas")
+    @AppVersionCodeHandler(
+            targetVersionCode = 89,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<PneuMarcaBandaListagem> getListagemMarcasBanda(
             @QueryParam("codEmpresa") @Required Long codEmpresa,
-            @QueryParam("comModelos") @Optional boolean comModelos) {
-        return service.getListagemMarcasBanda(codEmpresa, comModelos);
+            @QueryParam("comModelos") @Optional boolean comModelos,
+            @QueryParam("incluirMarcasNaoUtilizadas") @DefaultValue("true") boolean incluirMarcasNaoUtilizadas) {
+        return service.getListagemMarcasBanda(codEmpresa, comModelos, incluirMarcasNaoUtilizadas);
     }
 
     @GET
@@ -74,12 +81,13 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/marcas/{codMarca}")
+    @AppVersionCodeHandler(
+            targetVersionCode = 87,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public PneuMarcaBandaVisualizacao getMarcaBanda(@PathParam("codMarca") Long codMarca) {
         return service.getMarcaBanda(codMarca);
     }
-    //
-    //
-    //
 
     //
     //
@@ -93,7 +101,7 @@ public final class PneuMarcaModeloBandaResource {
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
     @Path("/modelos")
-    public AbstractResponse insertModeloBanda(@Valid final PneuModeloBandaInsercao pneuModeloBandaInsercao) {
+    public ResponseWithCod insertModeloBanda(@Valid final PneuModeloBandaInsercao pneuModeloBandaInsercao) {
         return service.insertModeloBanda(pneuModeloBandaInsercao);
     }
 
@@ -133,7 +141,4 @@ public final class PneuMarcaModeloBandaResource {
     public PneuModeloBandaVisualizacao getModeloBanda(@PathParam("codModelo") Long codModelo) {
         return service.getModeloBanda(codModelo);
     }
-    //
-    //
-    //
 }

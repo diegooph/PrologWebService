@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -51,10 +52,12 @@ public class SistemaProtheusRodalog extends Sistema {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Throwable {
-        final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
+        // Deixamos buscando a primeira unidade de forma fixa apenas para ignorar o erro. Essa integração não está
+        // sendo utilizada então não há por que refatorar toda ela.
+        final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidades.get(0));
         return ProtheusRodalogConverter
-                .convertCronogramaAfericao(requester.getCronogramaAfericao(tokenIntegracao, codUnidade));
+                .convertCronogramaAfericao(requester.getCronogramaAfericao(tokenIntegracao, codUnidades.get(0)));
     }
 
     @NotNull

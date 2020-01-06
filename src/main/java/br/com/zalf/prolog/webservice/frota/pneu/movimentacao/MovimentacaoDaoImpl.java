@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoDescarte;
@@ -13,8 +15,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motiv
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
@@ -22,7 +22,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -39,6 +42,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final LocalDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         Connection conn = null;
         try {
@@ -48,6 +52,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     conn,
                     servicoDao,
                     processoMovimentacao,
+                    dataHoraMovimentacao,
                     fecharServicosAutomaticamente);
             conn.commit();
             return codigoProcessoMovimentacao;
@@ -57,7 +62,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             }
             throw e;
         } finally {
-            closeConnection(conn);
+            close(conn);
         }
     }
 
@@ -66,29 +71,35 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     public Long insert(@NotNull final Connection conn,
                        @NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
-                       boolean fecharServicosAutomaticamente) throws Throwable {
+                       @NotNull final LocalDateTime dataHoraMovimentacao,
+                       final boolean fecharServicosAutomaticamente) throws Throwable {
         validaMovimentacoes(processoMovimentacao.getMovimentacoes());
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO movimentacao_processo(cod_unidade, data_hora, cpf_responsavel, " +
-                    "observacao) " +
-                    "VALUES (?,?,?,?) RETURNING codigo;");
+            stmt = conn.prepareStatement(
+                    "INSERT INTO MOVIMENTACAO_PROCESSO(COD_UNIDADE, DATA_HORA, CPF_RESPONSAVEL, OBSERVACAO) " +
+                    "VALUES (?, ?, ?, ?) RETURNING codigo;");
             stmt.setLong(1, processoMovimentacao.getUnidade().getCodigo());
-            stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
+            stmt.setObject(2, dataHoraMovimentacao);
             stmt.setLong(3, processoMovimentacao.getColaborador().getCpf());
             stmt.setString(4, processoMovimentacao.getObservacao());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codigoProcesso = rSet.getLong("CODIGO");
                 processoMovimentacao.setCodigo(codigoProcesso);
-                insertMovimentacoes(conn, servicoDao, processoMovimentacao, fecharServicosAutomaticamente);
+                insertMovimentacoes(
+                        conn,
+                        servicoDao,
+                        processoMovimentacao,
+                        dataHoraMovimentacao,
+                        fecharServicosAutomaticamente);
                 return codigoProcesso;
             } else {
                 throw new SQLException("Erro ao inserir processo de movimentação");
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -183,6 +194,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     private void insertMovimentacoes(@NotNull final Connection conn,
                                      @NotNull final ServicoDao servicoDao,
                                      @NotNull final ProcessoMovimentacao processoMov,
+                                     @NotNull final LocalDateTime dataHoraMovimentacao,
                                      boolean fecharServicosAutomaticamente) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
@@ -221,7 +233,13 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     insertOrigem(conn, pneuDao, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
                     insertDestino(conn, veiculoDao, codUnidade, mov);
                     if (fecharServicosAutomaticamente) {
-                        fecharServicosPneu(conn, servicoDao, codUnidade, processoMov.getCodigo(), mov);
+                        fecharServicosPneu(
+                                conn,
+                                servicoDao,
+                                codUnidade,
+                                processoMov.getCodigo(),
+                                mov,
+                                dataHoraMovimentacao);
                     }
 
                     // Atualiza o status do pneu.
@@ -396,10 +414,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             if (rSet.next()) {
                 return rSet.getBoolean("TEM_RECAPADORA");
             } else {
-                throw new SQLException("Não foi possível descobrir se o pneu " + codPneu+ " tem recapadora associada");
+                throw new SQLException("Não foi possível descobrir se o pneu " + codPneu + " tem recapadora associada");
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -409,7 +427,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU_SERVICO_REALIZADO " +
-                    "(COD_MOVIMENTACAO, COD_PNEU_SERVICO_REALIZADO) " +
+                    "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO) " +
                     "VALUES (?, ?);");
             stmt.setLong(1, codMovimentacao);
             stmt.setLong(2, codServicoRealizado);
@@ -418,7 +436,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                         "na tabela de vínculo com a Movimentação (movimentacao_servico_realizado)");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -429,7 +447,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU_SERVICO_REALIZADO_RECAPADORA " +
-                    "(COD_MOVIMENTACAO, COD_PNEU_SERVICO_REALIZADO, COD_RECAPADORA) " +
+                    "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO_MOVIMENTACAO, COD_RECAPADORA) " +
                     "VALUES (?, ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
                     "FROM MOVIMENTACAO_DESTINO AS MD " +
                     "JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
@@ -443,7 +461,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                         "na tabale MOVIMENTACAO_PNEU_SERVICO_REALIZADO_RECAPADORA");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -472,7 +490,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir a origem análise da movimentação");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -496,7 +514,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir a origem estoque da movimentação");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -530,7 +548,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir a origem veiculo da movimentação");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -564,7 +582,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir o destino veiculo da movimentação");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -581,7 +599,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir o destino estoque da movimentação");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -601,7 +619,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir o destino análise da movimentação");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -624,7 +642,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir o destino descarte da movimentação");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -632,7 +650,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                     @NotNull final ServicoDao servicoDao,
                                     @NotNull final Long codUnidade,
                                     @NotNull final Long codProcessoMovimentacao,
-                                    @NotNull final Movimentacao movimentacao) throws Throwable {
+                                    @NotNull final Movimentacao movimentacao,
+                                    @NotNull final LocalDateTime dataHoraMovimentacao) throws Throwable {
         if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
             Log.d(TAG, "O pneu " + movimentacao.getPneu().getCodigo()
                     + " está sendo movido dentro do mesmo veículo, não é preciso fechar seus serviços");
@@ -648,11 +667,12 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             if (movimentacao.isFrom(OrigemDestinoEnum.VEICULO)) {
                 final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
                 final int qtdServicosFechadosPneu = servicoDao.fecharAutomaticamenteServicosPneu(
+                        conn,
                         codUnidade,
                         codPneu,
                         codProcessoMovimentacao,
-                        origemVeiculo.getVeiculo().getKmAtual(),
-                        conn);
+                        dataHoraMovimentacao,
+                        origemVeiculo.getVeiculo().getKmAtual());
 
                 if (qtdServicosEmAbertoPneu != qtdServicosFechadosPneu) {
                     throw new IllegalStateException("Erro ao fechar os serviços do pneu: " + codPneu + ". Deveriam ser fechados "
