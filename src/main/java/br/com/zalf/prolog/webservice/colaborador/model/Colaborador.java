@@ -31,6 +31,7 @@ public class Colaborador {
 	private Equipe equipe;
 	private Visao visao;
 	private Integer codPermissao;
+	private String tzUnidade;
 
 	@Deprecated
 	private Long codEmpresa;
@@ -215,6 +216,10 @@ public class Colaborador {
 		return unidade.getCodigo();
 	}
 
+	public void setTzUnidade(String tzUnidade) { this.tzUnidade = tzUnidade; }
+
+	public String getTzUnidade(){ return this.tzUnidade; }
+
 	public String getDataNascimentoAsString() {
 		final Format formatter = new SimpleDateFormat(DATA_FORMATTER);
 		return formatter.format(dataNascimento);
@@ -242,6 +247,7 @@ public class Colaborador {
 				", codPermissao=" + codPermissao +
 				", codEmpresa=" + codEmpresa +
 				", visao=" + visao +
+				", tzUnidade=" + tzUnidade +
 				'}';
 	}
 }
