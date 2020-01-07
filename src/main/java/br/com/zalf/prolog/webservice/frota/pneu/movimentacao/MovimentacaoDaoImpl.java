@@ -480,8 +480,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     "               AND P.COD_UNIDADE = ?)), ?);");
             final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
             final Long codPneu = movimentacao.getPneu().getCodigo();
-
-
             stmt.setLong(1, codPneu);
             stmt.setLong(2, codUnidade);
             stmt.setString(3, origemAnalise.getTipo().asString());
