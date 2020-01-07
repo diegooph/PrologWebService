@@ -121,8 +121,8 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CODIGO, PLACA, KM FROM VEICULO WHERE COD_UNIDADE = ?" +
-                    " ORDER BY PLACA;");
+            stmt = conn.prepareStatement("SELECT CODIGO, PLACA, KM FROM VEICULO WHERE COD_UNIDADE = ? AND " +
+                    "STATUS_ATIVO = TRUE ORDER BY PLACA;");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             final List<VeiculoAberturaSocorro> veiculos = new ArrayList<>();
