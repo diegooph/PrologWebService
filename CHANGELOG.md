@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.10"></a>
-## Version [v1.0.10](https://github.com/luizfp/PrologWebService/compare/v1.0.9...v1.0.10) (release-date) [unreleased]
+## Version [v1.0.10](https://github.com/luizfp/PrologWebService/compare/v1.0.9...v1.0.10) (2020-01-07)
 
 ### Bug Fixes
 * Adicionado TZ da unidade nas buscas de colaborador que tinham problemas (PL-2367)
