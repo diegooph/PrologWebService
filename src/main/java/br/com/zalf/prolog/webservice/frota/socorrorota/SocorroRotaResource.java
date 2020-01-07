@@ -64,7 +64,7 @@ public final class SocorroRotaResource {
      * Resource para buscar as opções de problemas disponíveis para a abertura de socorro por empresa
      * */
     @GET
-    @Path("/abertura/opcoes-problemas")
+    @Path("/opcoes-problemas")
     public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa){
 
