@@ -42,7 +42,7 @@ public final class SocorroRotaResource {
     * Resource para buscar as unidades disponíveis para a abertura de socorro por colaborador
     * */
     @GET
-    @Path("/abertura/unidades-selecao")
+    @Path("/unidades-selecao")
     public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(
             @QueryParam("codColaborador") @Required final Long codColaborador){
 
