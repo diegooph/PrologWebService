@@ -98,8 +98,8 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT(CODIGO_UNIDADE), NOME_UNIDADE FROM FUNC_COLABORADOR_GET_UNIDADES_ACESSO(" +
-                    "F_COD_COLABORADOR := ?) ORDER BY NOME_UNIDADE;");
+            stmt = conn.prepareStatement("SELECT DISTINCT(CODIGO_UNIDADE), NOME_UNIDADE " +
+                    "FROM FUNC_COLABORADOR_GET_UNIDADES_ACESSO(F_COD_COLABORADOR := ?) ORDER BY NOME_UNIDADE;");
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
             final List<UnidadeAberturaSocorro> unidades = new ArrayList<>();
