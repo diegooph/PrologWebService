@@ -53,7 +53,7 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algo der errado na busca.
      */
     @NotNull
-    List<OpcaoProblemaAberturaSocorro> getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(
+    List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
             @NotNull final Long codEmpresa) throws Throwable;
 
     /**

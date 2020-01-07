@@ -61,14 +61,14 @@ public final class SocorroRotaResource {
     }
 
     /**
-     * Resource para buscar as opções de problema disponíveis para a abertura de socorro por empresa
+     * Resource para buscar as opções de problemas disponíveis para a abertura de socorro por empresa
      * */
     @GET
-    @Path("/abertura/opcoes-problema")
-    public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(
+    @Path("/abertura/opcoes-problemas")
+    public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa){
 
-        return service.getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(codEmpresa);
+        return service.getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(codEmpresa);
     }
 
     /**

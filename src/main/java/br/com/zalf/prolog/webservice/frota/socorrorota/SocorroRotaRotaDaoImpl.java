@@ -137,7 +137,7 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
-    public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(
+    public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
             @NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -150,11 +150,11 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
                     "ORDER BY DESCRICAO;");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
-            final List<OpcaoProblemaAberturaSocorro> opcoesProblema = new ArrayList<>();
+            final List<OpcaoProblemaAberturaSocorro> opcoesProblemas = new ArrayList<>();
             while (rSet.next()) {
-                opcoesProblema.add(SocorroRotaConverter.createOpcaoProblemaAberturaSocorro(rSet));
+                opcoesProblemas.add(SocorroRotaConverter.createOpcaoProblemaAberturaSocorro(rSet));
             }
-            return opcoesProblema;
+            return opcoesProblemas;
         } finally {
             close(conn, stmt, rSet);
         }

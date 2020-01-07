@@ -62,10 +62,10 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(
+    public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
             @NotNull final Long codEmpresa) throws ProLogException {
         try {
-            return dao.getOpcoesProblemaDisponiveisAberturaSocorroByEmpresa(codEmpresa);
+            return dao.getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(codEmpresa);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar as opções de problema disponíveis para abertura de socorro.", e);
             throw Injection
