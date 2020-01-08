@@ -36,6 +36,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.Item
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -97,141 +98,10 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     void testInsercaoChecklistRoteamentoIntegracao() throws Throwable {
         final long codUnidade = 96L;
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
-        final List<PerguntaModeloChecklistInsercao> perguntasModelo = new ArrayList<>();
-        { // region Criação Pergunta 1.
-
-            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
-            // A1.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "A1",
-                    PrioridadeAlternativa.ALTA,
-                    false,
-                    1,
-                    true));
-            // A2.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "Outros",
-                    PrioridadeAlternativa.CRITICA,
-                    true,
-                    2,
-                    true));
-
-            perguntasModelo.add(new PerguntaModeloChecklistInsercao(
-                    "P1",
-                    1L,
-                    1,
-                    true,
-                    alternativas));
-        }
-
-        { // region Criação Pergunta 2.
-
-            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
-            // B1.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "B1",
-                    PrioridadeAlternativa.ALTA,
-                    false,
-                    1,
-                    true));
-            // B2.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "Outros",
-                    PrioridadeAlternativa.BAIXA,
-                    true,
-                    2,
-                    true));
-
-            perguntasModelo.add(new PerguntaModeloChecklistInsercao(
-                    "P2",
-                    null,
-                    2,
-                    false,
-                    alternativas));
-        }
-
-        // Inserimos o modelo de checklist
-        final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
-                "Modelo Teste Inserção Checklist Roteado " + new Random().nextInt(999),
-                codUnidade,
-                Arrays.asList(326L, 327L, 397L, 399L, 400L, 412L, 419L, 483L, 484L),
-                Collections.singletonList(507L),
-                perguntasModelo);
-        final ResultInsertModeloChecklist resultModeloChecklist =
-                modeloChecklistService.insertModeloChecklist(modelo, tokenIntegrado);
+        final ResultInsertModeloChecklist resultModeloChecklist = criaModeloChecklist(codUnidade, "Modelo Teste Inserção Checklist Roteado ");
 
         // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
-        final ModeloChecklistVisualizacao modeloBuscado = modeloChecklistService.getModeloChecklist(
-                codUnidade,
-                resultModeloChecklist.getCodModeloChecklistInserido());
-
-        final List<ChecklistResposta> respostas = new ArrayList<>();
-        { // region Responde a P1 - ela É single_choice.
-
-            final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
-            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-            // A1.
-            final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    a1.getCodigo(),
-                    true,
-                    false,
-                    null));
-
-            // A2.
-            final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    a2.getCodigo(),
-                    false,
-                    true,
-                    null));
-
-            respostas.add(new ChecklistResposta(p1.getCodigo(), alternativas));
-        }
-
-        { // region Responde a P2 - ela é multi_choice.
-            final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
-            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-            // B1.
-            final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    b1.getCodigo(),
-                    true,
-                    false,
-                    null));
-
-            // B2.
-            final AlternativaModeloChecklist b2 = p2.getAlternativas().get(1);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    b2.getCodigo(),
-                    true,
-                    true,
-                    "Está com problema..."));
-
-            respostas.add(new ChecklistResposta(p2.getCodigo(), alternativas));
-        }
-
-        final ChecklistInsercao checklistInsercao = new ChecklistInsercao(
-                codUnidade,
-                resultModeloChecklist.getCodModeloChecklistInserido(),
-                resultModeloChecklist.getCodVersaoModeloChecklistInserido(),
-                19317L,
-                23246L,
-                "EBX2850",
-                TipoChecklist.SAIDA,
-                112,
-                10000,
-                respostas,
-                ProLogDateParser.toLocalDateTime("2019-12-11T09:35:10"),
-                FonteDataHora.LOCAL_CELULAR,
-                80,
-                83,
-                "device didID",
-                "deviceImei",
-                10000,
-                11000);
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(codUnidade, resultModeloChecklist);
 
         final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
         assertThat(codChecklistInserido).isNotNull();
@@ -285,177 +155,16 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     @Test
     void testAberturaOrdemServicoIntegracao() throws Throwable {
         final long codUnidade = 96L;
-        // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
-        final List<PerguntaModeloChecklistInsercao> perguntasModelo = new ArrayList<>();
-        { // region Criação Pergunta 1.
-
-            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
-            // A1.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "A1",
-                    PrioridadeAlternativa.ALTA,
-                    false,
-                    1,
-                    true));
-            // A2.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "Outros",
-                    PrioridadeAlternativa.CRITICA,
-                    true,
-                    2,
-                    true));
-
-            perguntasModelo.add(new PerguntaModeloChecklistInsercao(
-                    "P1",
-                    1L,
-                    1,
-                    true,
-                    alternativas));
-        }
-
-        { // region Criação Pergunta 2.
-
-            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
-            // B1.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "B1",
-                    PrioridadeAlternativa.ALTA,
-                    false,
-                    1,
-                    true));
-            // B2.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "Outros",
-                    PrioridadeAlternativa.BAIXA,
-                    true,
-                    2,
-                    true));
-
-            perguntasModelo.add(new PerguntaModeloChecklistInsercao(
-                    "P2",
-                    null,
-                    2,
-                    false,
-                    alternativas));
-        }
-
-        // Inserimos o modelo de checklist
-        final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
-                "Modelo Abertura Ordem Serviço Integração " + new Random().nextInt(999),
-                codUnidade,
-                Arrays.asList(326L, 327L, 397L, 399L, 400L, 412L, 419L, 483L, 484L),
-                Collections.singletonList(507L),
-                perguntasModelo);
-        final ResultInsertModeloChecklist resultModeloChecklist =
-                modeloChecklistService.insertModeloChecklist(modelo, tokenIntegrado);
+        final ResultInsertModeloChecklist resultModeloChecklist = criaModeloChecklist(codUnidade, "Modelo Abertura Ordem Serviço Integração ");
 
         // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
-        final ModeloChecklistVisualizacao modeloBuscado = modeloChecklistService.getModeloChecklist(
-                codUnidade,
-                resultModeloChecklist.getCodModeloChecklistInserido());
-
-        final List<ChecklistResposta> respostas = new ArrayList<>();
-        { // region Responde a P1 - ela É single_choice.
-
-            final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
-            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-            // A1.
-            final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    a1.getCodigo(),
-                    true,
-                    false,
-                    null));
-
-            // A2.
-            final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    a2.getCodigo(),
-                    false,
-                    true,
-                    null));
-
-            respostas.add(new ChecklistResposta(p1.getCodigo(), alternativas));
-        }
-
-        { // region Responde a P2 - ela é multi_choice.
-            final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
-            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-            // B1.
-            final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    b1.getCodigo(),
-                    true,
-                    false,
-                    null));
-
-            // B2.
-            final AlternativaModeloChecklist b2 = p2.getAlternativas().get(1);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    b2.getCodigo(),
-                    true,
-                    true,
-                    "Está com problema..."));
-
-            respostas.add(new ChecklistResposta(p2.getCodigo(), alternativas));
-        }
-
-        final ChecklistInsercao checklistInsercao = new ChecklistInsercao(
-                codUnidade,
-                resultModeloChecklist.getCodModeloChecklistInserido(),
-                resultModeloChecklist.getCodVersaoModeloChecklistInserido(),
-                19317L,
-                23246L,
-                "EBX2850",
-                TipoChecklist.SAIDA,
-                112,
-                10000,
-                respostas,
-                ProLogDateParser.toLocalDateTime("2019-12-11T09:35:10"),
-                FonteDataHora.LOCAL_CELULAR,
-                80,
-                83,
-                "device didID",
-                "deviceImei",
-                10000,
-                11000);
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(codUnidade, resultModeloChecklist);
 
         final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
 
         // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
         final Checklist checklistByCod = checklistService.getByCod(codChecklistInserido, tokenIntegrado);
-
-        { // region Atualiza informações do checklist integrado
-
-            final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
-            final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
-            Connection conn = null;
-            try {
-                conn = provider.provideDatabaseConnection();
-                //noinspection ConstantConditions
-                final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus =
-                        Injection
-                                .provideOrdemServicoDao()
-                                .getItensStatus(
-                                        conn,
-                                        checklistInsercao.getCodModelo(),
-                                        checklistInsercao.getCodVersaoModeloChecklist(),
-                                        checklistInsercao.getPlacaVeiculo());
-
-                final ChecklistItensNokGlobus checklistItensNokGlobus =
-                        GlobusPiccoloturConverter.createChecklistItensNokGlobus(
-                                codUnidade,
-                                codChecklistInserido,
-                                checklistByCod,
-                                alternativasStatus);
-                sistemaGlobusPiccoloturDao.insertItensNokEnviadosGlobus(conn, checklistItensNokGlobus);
-                sistemaGlobusPiccoloturDao.marcaChecklistSincronizado(conn, codChecklistInserido);
-            } finally {
-                provider.closeResources(conn);
-            }
-        }
+        marcarChecklistComoSincronizado(codUnidade, checklistInsercao, codChecklistInserido, checklistByCod);
 
         // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
         final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
@@ -587,175 +296,16 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     public void testFechamentoOrdemServicoIntegracao() throws Throwable {
         final long codUnidade = 96L;
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
-        final List<PerguntaModeloChecklistInsercao> perguntasModelo = new ArrayList<>();
-        { // region Criação Pergunta 1.
-
-            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
-            // A1.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "A1",
-                    PrioridadeAlternativa.ALTA,
-                    false,
-                    1,
-                    true));
-            // A2.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "Outros",
-                    PrioridadeAlternativa.CRITICA,
-                    true,
-                    2,
-                    true));
-
-            perguntasModelo.add(new PerguntaModeloChecklistInsercao(
-                    "P1",
-                    1L,
-                    1,
-                    true,
-                    alternativas));
-        }
-
-        { // region Criação Pergunta 2.
-
-            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
-            // B1.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "B1",
-                    PrioridadeAlternativa.ALTA,
-                    false,
-                    1,
-                    true));
-            // B2.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "Outros",
-                    PrioridadeAlternativa.BAIXA,
-                    true,
-                    2,
-                    true));
-
-            perguntasModelo.add(new PerguntaModeloChecklistInsercao(
-                    "P2",
-                    null,
-                    2,
-                    false,
-                    alternativas));
-        }
-
-        // Inserimos o modelo de checklist
-        final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
-                "Modelo Abertura Ordem Serviço Integração " + new Random().nextInt(999),
-                codUnidade,
-                Arrays.asList(326L, 327L, 397L, 399L, 400L, 412L, 419L, 483L, 484L),
-                Collections.singletonList(507L),
-                perguntasModelo);
-        final ResultInsertModeloChecklist resultModeloChecklist =
-                modeloChecklistService.insertModeloChecklist(modelo, tokenIntegrado);
+        final ResultInsertModeloChecklist resultModeloChecklist = criaModeloChecklist(codUnidade, "Modelo Abertura Ordem Serviço Integração ");
 
         // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
-        final ModeloChecklistVisualizacao modeloBuscado = modeloChecklistService.getModeloChecklist(
-                codUnidade,
-                resultModeloChecklist.getCodModeloChecklistInserido());
-
-        final List<ChecklistResposta> respostas = new ArrayList<>();
-        { // region Responde a P1 - ela É single_choice.
-
-            final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
-            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-            // A1.
-            final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    a1.getCodigo(),
-                    true,
-                    false,
-                    null));
-
-            // A2.
-            final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    a2.getCodigo(),
-                    false,
-                    true,
-                    null));
-
-            respostas.add(new ChecklistResposta(p1.getCodigo(), alternativas));
-        }
-
-        { // region Responde a P2 - ela é multi_choice.
-            final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
-            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-            // B1.
-            final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    b1.getCodigo(),
-                    true,
-                    false,
-                    null));
-
-            // B2.
-            final AlternativaModeloChecklist b2 = p2.getAlternativas().get(1);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    b2.getCodigo(),
-                    true,
-                    true,
-                    "Está com problema..."));
-
-            respostas.add(new ChecklistResposta(p2.getCodigo(), alternativas));
-        }
-
-        final ChecklistInsercao checklistInsercao = new ChecklistInsercao(
-                codUnidade,
-                resultModeloChecklist.getCodModeloChecklistInserido(),
-                resultModeloChecklist.getCodVersaoModeloChecklistInserido(),
-                19317L,
-                23246L,
-                "EBX2850",
-                TipoChecklist.SAIDA,
-                112,
-                10000,
-                respostas,
-                ProLogDateParser.toLocalDateTime("2019-12-11T09:35:10"),
-                FonteDataHora.LOCAL_CELULAR,
-                80,
-                83,
-                "device didID",
-                "deviceImei",
-                10000,
-                11000);
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(codUnidade, resultModeloChecklist);
 
         final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
 
         // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
         final Checklist checklistByCod = checklistService.getByCod(codChecklistInserido, tokenIntegrado);
-
-        { // region Atualiza informações do checklist integrado
-            final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
-            final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
-            Connection conn = null;
-            try {
-                conn = provider.provideDatabaseConnection();
-                //noinspection ConstantConditions
-                final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus =
-                        Injection
-                                .provideOrdemServicoDao()
-                                .getItensStatus(
-                                        conn,
-                                        checklistInsercao.getCodModelo(),
-                                        checklistInsercao.getCodVersaoModeloChecklist(),
-                                        checklistInsercao.getPlacaVeiculo());
-
-                final ChecklistItensNokGlobus checklistItensNokGlobus =
-                        GlobusPiccoloturConverter.createChecklistItensNokGlobus(
-                                codUnidade,
-                                codChecklistInserido,
-                                checklistByCod,
-                                alternativasStatus);
-                sistemaGlobusPiccoloturDao.insertItensNokEnviadosGlobus(conn, checklistItensNokGlobus);
-                sistemaGlobusPiccoloturDao.marcaChecklistSincronizado(conn, codChecklistInserido);
-            } finally {
-                provider.closeResources(conn);
-            }
-        }
+        marcarChecklistComoSincronizado(codUnidade, checklistInsercao, codChecklistInserido, checklistByCod);
 
         // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
         final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
@@ -804,11 +354,6 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         final List<ItemResolvidoGlobus> itensResolvidos = new ArrayList<>();
 
         { // region Informações para fechamento de O.S Globus no Prolog
-            final HolderResolucaoOrdemServico ordemServico =
-                    Injection
-                            .provideOrdemServicoDao()
-                            .getHolderResolucaoOrdemServico(codUnidade, nextCodOs);
-
             for (final ItemOSAbertaGlobus itemGlobus : itensOSAbertaGlobus) {
                 itensResolvidos.add(new ItemResolvidoGlobus(
                         codUnidade,
@@ -904,6 +449,180 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 provider.closeResources(conn, stmt, rSet);
             }
         }
+    }
+
+    private void marcarChecklistComoSincronizado(final long codUnidade,
+                                                 final ChecklistInsercao checklistInsercao,
+                                                 final Long codChecklistInserido,
+                                                 final Checklist checklistByCod) throws Throwable {
+        // region Atualiza informações do checklist integrado
+        final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
+        final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
+        Connection conn = null;
+        try {
+            conn = provider.provideDatabaseConnection();
+            //noinspection ConstantConditions
+            final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus =
+                    Injection
+                            .provideOrdemServicoDao()
+                            .getItensStatus(
+                                    conn,
+                                    checklistInsercao.getCodModelo(),
+                                    checklistInsercao.getCodVersaoModeloChecklist(),
+                                    checklistInsercao.getPlacaVeiculo());
+
+            final ChecklistItensNokGlobus checklistItensNokGlobus =
+                    GlobusPiccoloturConverter.createChecklistItensNokGlobus(
+                            codUnidade,
+                            codChecklistInserido,
+                            checklistByCod,
+                            alternativasStatus);
+            sistemaGlobusPiccoloturDao.insertItensNokEnviadosGlobus(conn, checklistItensNokGlobus);
+            sistemaGlobusPiccoloturDao.marcaChecklistSincronizado(conn, codChecklistInserido);
+        } finally {
+            provider.closeResources(conn);
+        }
+    }
+
+    @NotNull
+    private ResultInsertModeloChecklist criaModeloChecklist(final long codUnidade, final String s) {
+        // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
+        final List<PerguntaModeloChecklistInsercao> perguntasModelo = new ArrayList<>();
+        { // region Criação Pergunta 1.
+
+            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
+            // A1.
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "A1",
+                    PrioridadeAlternativa.ALTA,
+                    false,
+                    1,
+                    true));
+            // A2.
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "Outros",
+                    PrioridadeAlternativa.CRITICA,
+                    true,
+                    2,
+                    true));
+
+            perguntasModelo.add(new PerguntaModeloChecklistInsercao(
+                    "P1",
+                    1L,
+                    1,
+                    true,
+                    alternativas));
+        }
+
+        { // region Criação Pergunta 2.
+
+            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
+            // B1.
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "B1",
+                    PrioridadeAlternativa.ALTA,
+                    false,
+                    1,
+                    true));
+            // B2.
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "Outros",
+                    PrioridadeAlternativa.BAIXA,
+                    true,
+                    2,
+                    true));
+
+            perguntasModelo.add(new PerguntaModeloChecklistInsercao(
+                    "P2",
+                    null,
+                    2,
+                    false,
+                    alternativas));
+        }
+
+        // Inserimos o modelo de checklist
+        final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
+                s + new Random().nextInt(999),
+                codUnidade,
+                Arrays.asList(326L, 327L, 397L, 399L, 400L, 412L, 419L, 483L, 484L),
+                Collections.singletonList(507L),
+                perguntasModelo);
+        return modeloChecklistService.insertModeloChecklist(modelo, tokenIntegrado);
+    }
+
+    @NotNull
+    private ChecklistInsercao insertChecklistModeloCriado(final long codUnidade, final ResultInsertModeloChecklist resultModeloChecklist) {
+        final ModeloChecklistVisualizacao modeloBuscado = modeloChecklistService.getModeloChecklist(
+                codUnidade,
+                resultModeloChecklist.getCodModeloChecklistInserido());
+
+        final List<ChecklistResposta> respostas = new ArrayList<>();
+        { // region Responde a P1 - ela É single_choice.
+
+            final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
+            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+
+            // A1.
+            final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    a1.getCodigo(),
+                    true,
+                    false,
+                    null));
+
+            // A2.
+            final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    a2.getCodigo(),
+                    false,
+                    true,
+                    null));
+
+            respostas.add(new ChecklistResposta(p1.getCodigo(), alternativas));
+        }
+
+        { // region Responde a P2 - ela é multi_choice.
+            final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
+            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+
+            // B1.
+            final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    b1.getCodigo(),
+                    true,
+                    false,
+                    null));
+
+            // B2.
+            final AlternativaModeloChecklist b2 = p2.getAlternativas().get(1);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    b2.getCodigo(),
+                    true,
+                    true,
+                    "Está com problema..."));
+
+            respostas.add(new ChecklistResposta(p2.getCodigo(), alternativas));
+        }
+
+        return new ChecklistInsercao(
+                codUnidade,
+                resultModeloChecklist.getCodModeloChecklistInserido(),
+                resultModeloChecklist.getCodVersaoModeloChecklistInserido(),
+                19317L,
+                23246L,
+                "EBX2850",
+                TipoChecklist.SAIDA,
+                112,
+                10000,
+                respostas,
+                ProLogDateParser.toLocalDateTime("2019-12-11T09:35:10"),
+                FonteDataHora.LOCAL_CELULAR,
+                80,
+                83,
+                "device didID",
+                "deviceImei",
+                10000,
+                11000);
     }
 
     private long getNextCodOsUnidade(final long codUnidade) throws Throwable {
