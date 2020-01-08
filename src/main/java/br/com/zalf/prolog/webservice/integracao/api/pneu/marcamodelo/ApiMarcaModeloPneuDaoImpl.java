@@ -32,7 +32,7 @@ public final class ApiMarcaModeloPneuDaoImpl extends DatabaseConnection implemen
             stmt.setString(1, tokenIntegracao);
             stmt.setBoolean(2, apenasMarcasPneuAtivas);
             rSet = stmt.executeQuery();
-            return ApiPneuCreator.createMarcasPneu(rSet);
+            return ApiMarcaModeloCreator.createMarcasPneu(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -54,7 +54,7 @@ public final class ApiMarcaModeloPneuDaoImpl extends DatabaseConnection implemen
             stmt.setLong(2, codMarcaPneu);
             stmt.setBoolean(3, apenasModelosPneuAtivos);
             rSet = stmt.executeQuery();
-            return ApiPneuCreator.createModelosPneu(rSet);
+            return ApiMarcaModeloCreator.createModelosPneu(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -74,7 +74,7 @@ public final class ApiMarcaModeloPneuDaoImpl extends DatabaseConnection implemen
             stmt.setString(1, tokenIntegracao);
             stmt.setBoolean(2, apenasMarcasBandaAtivas);
             rSet = stmt.executeQuery();
-            return ApiPneuCreator.createMarcasBanda(rSet);
+            return ApiMarcaModeloCreator.createMarcasBanda(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -96,7 +96,7 @@ public final class ApiMarcaModeloPneuDaoImpl extends DatabaseConnection implemen
             stmt.setLong(2, codMarcaBanda);
             stmt.setBoolean(3, apenasModelosBandaAtivos);
             rSet = stmt.executeQuery();
-            return ApiPneuCreator.createModelosBanda(rSet);
+            return ApiMarcaModeloCreator.createModelosBanda(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
