@@ -298,4 +298,62 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             close(conn, stmt, rSet);
         }
     }
+
+    @NotNull
+    @Override
+    public Long finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_FINALIZACAO(" +
+                    "F_COD_SOCORRO_ROTA := ?," +
+                    "F_COD_COLABORADOR_FINALIZACAO := ?," +
+                    "F_MOTIVO_FINALIZACAO := ?::TEXT," +
+                    "F_DATA_HORA_FINALIZACAO := ?," +
+                    "F_URL_FOTO_1_FINALIZACAO := ?::TEXT," +
+                    "F_URL_FOTO_2_FINALIZACAO := ?::TEXT," +
+                    "F_URL_FOTO_3_FINALIZACAO := ?::TEXT," +
+                    "F_LATITUDE_FINALIZACAO := ?::TEXT," +
+                    "F_LONGITUDE_FINALIZACAO := ?::TEXT," +
+                    "F_PRECISAO_LOCALIZACAO_FINALIZACAO_METROS := ?," +
+                    "F_ENDERECO_AUTOMATICO := ?::TEXT," +
+                    "F_VERSAO_APP_MOMENTO_FINALIZACAO := ?," +
+                    "F_DEVICE_ID_FINALIZACAO := ?::TEXT," +
+                    "F_DEVICE_IMEI_FINALIZACAO := ?::TEXT," +
+                    "F_DEVICE_UPTIME_MILLIS_FINALIZACAO := ?," +
+                    "F_ANDROID_API_VERSION_FINALIZACAO := ?," +
+                    "F_MARCA_DEVICE_FINALIZACAO := ?::TEXT," +
+                    "F_MODELO_DEVICE_FINALIZACAO := ?::TEXT) AS CODIGO;");
+            final Long codUnidade = socorroRotaFinalizacao.getCodUnidade();
+            stmt.setLong(1, socorroRotaFinalizacao.getCodSocorroRota());
+            stmt.setLong(2, socorroRotaFinalizacao.getCodColaborador());
+            stmt.setString(3, socorroRotaFinalizacao.getObservacaoFinalizacao());
+            // Ignoramos a data hora do objeto e usamos a do WS
+            stmt.setObject(4, Now.offsetDateTimeUtc());
+            stmt.setString(5, socorroRotaFinalizacao.getUrlFoto1Finalizacao());
+            stmt.setString(6, socorroRotaFinalizacao.getUrlFoto2Finalizacao());
+            stmt.setString(7, socorroRotaFinalizacao.getUrlFoto3Finalizacao());
+            stmt.setString(8, socorroRotaFinalizacao.getLocalizacao().getLatitude());
+            stmt.setString(9, socorroRotaFinalizacao.getLocalizacao().getLongitude());
+            stmt.setObject(10, socorroRotaFinalizacao.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
+            stmt.setString(11, socorroRotaFinalizacao.getEnderecoAutomatico());
+            stmt.setLong(12, socorroRotaFinalizacao.getVersaoAppAtual());
+            stmt.setString(13, socorroRotaFinalizacao.getDeviceId());
+            stmt.setString(14, socorroRotaFinalizacao.getDeviceImei());
+            stmt.setLong(15, socorroRotaFinalizacao.getDeviceUptimeMillis());
+            stmt.setInt(16, socorroRotaFinalizacao.getAndroidApiVersion());
+            stmt.setString(17, socorroRotaFinalizacao.getMarcaDevice());
+            stmt.setString(18, socorroRotaFinalizacao.getModeloDevice());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new Throwable("Erro ao finalizar esta solitação de socorro");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

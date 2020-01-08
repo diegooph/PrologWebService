@@ -104,4 +104,15 @@ public final class SocorroRotaResource {
     public ResponseWithCod atendimentoSocorro(@Required final SocorroRotaAtendimento socorroRotaAtendimento) {
         return service.atendimentoSocorro(socorroRotaAtendimento);
     }
+
+    /**
+     * Resource para realizar a finalização de uma solicitação de socorro.
+     */
+    @POST
+    @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/finalizacao")
+    public ResponseWithCod finalizacaoSocorro(@Required final SocorroRotaFinalizacao socorroRotaFinalizacao) {
+        return service.finalizacaoSocorro(socorroRotaFinalizacao);
+    }
 }

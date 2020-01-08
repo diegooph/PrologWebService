@@ -121,4 +121,20 @@ public final class SocorroRotaService {
                             "tente novamente.");
         }
     }
+
+
+    @NotNull
+    ResponseWithCod finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) throws ProLogException {
+        try {
+            return ResponseWithCod.ok(
+                    "Solicitação de socorro finalizada com sucesso.",
+                    dao.finalizacaoSocorro(socorroRotaFinalizacao));
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao finalizar uma solitação de socorro.", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível realizar a finalização desta solicitação de socorro, " +
+                            "tente novamente.");
+        }
+    }
 }
