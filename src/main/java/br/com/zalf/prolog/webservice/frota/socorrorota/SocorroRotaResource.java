@@ -42,7 +42,7 @@ public final class SocorroRotaResource {
     * Resource para buscar as unidades disponíveis para a abertura de socorro por colaborador
     * */
     @GET
-    @Path("/unidades-selecao")
+    @Path("/abertura/unidades-selecao")
     public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(
             @QueryParam("codColaborador") @Required final Long codColaborador){
 
@@ -53,7 +53,7 @@ public final class SocorroRotaResource {
      * Resource para buscar os veículos disponíveis para a abertura de socorro por unidade
      * */
     @GET
-    @Path("/veiculos-selecao")
+    @Path("/abertura/veiculos-selecao")
     public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
             @QueryParam("codUnidade") @Required final Long codUnidade) {
 
@@ -64,7 +64,7 @@ public final class SocorroRotaResource {
      * Resource para buscar as opções de problemas disponíveis para a abertura de socorro por empresa
      * */
     @GET
-    @Path("/opcoes-problemas")
+    @Path("/abertura/opcoes-problemas")
     public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa){
 
