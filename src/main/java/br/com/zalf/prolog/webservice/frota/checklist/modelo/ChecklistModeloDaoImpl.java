@@ -109,44 +109,38 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean podeMudarCodigosPerguntasEAlternativas,
+            final boolean podeMudarCodigoContextoPerguntasEAlternativas,
             @NotNull final String userToken) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
 
-            if (podeMudarCodigosPerguntasEAlternativas) {
-                final AnaliseMudancaModeloChecklist analiseModelo = realizaAnaliseMudancaModeloChecklist(
-                        conn,
-                        codModelo,
-                        modeloChecklist);
-
-                if (analiseModelo.isAlgoMudouNoModelo()) {
-                    if (analiseModelo.isDeveCriarNovaVersaoModelo()) {
-
-                        criaNovaVersaoModelo(conn, modeloChecklist, analiseModelo, userToken);
-                    } else {
-                        atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
-                        for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
-                            atualizaPergunta(conn, codModelo, pergunta);
-                            for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
-                                atualizaAlternativa(conn, codModelo, alternativa);
-                            }
-                        }
-                    }
+            final AnaliseMudancaModeloChecklist analiseModelo = realizaAnaliseMudancaModeloChecklist(
+                    conn,
+                    codModelo,
+                    modeloChecklist);
+            if (analiseModelo.isAlgoMudouNoModelo()) {
+                if (analiseModelo.isDeveCriarNovaVersaoModelo()) {
+                    criaNovaVersaoModelo(
+                            conn,
+                            modeloChecklist,
+                            analiseModelo,
+                            // Se o código de contexto não pode mudar, significa que iremos mudar apenas o variável e
+                            // manter o mesmo de contexto em diferentes versões.
+                            !podeMudarCodigoContextoPerguntasEAlternativas,
+                            userToken);
                 } else {
                     atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
-                }
-            } else {
-                // Devemos atualizar todas as informações de perguntas e alternativas sem recriar nada no modelo.
-                atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
-                for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
-                    atualizaPergunta(conn, codModelo, pergunta);
-                    for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
-                        atualizaAlternativa(conn, codModelo, alternativa);
+                    for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
+                        atualizaPergunta(conn, codModelo, pergunta);
+                        for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
+                            atualizaAlternativa(conn, codModelo, alternativa);
+                        }
                     }
                 }
+            } else {
+                atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
             }
 
             // Notificamos o Listener que ouve atualização no modelo de checklist.
@@ -471,12 +465,11 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     private void criaNovaVersaoModelo(@NotNull final Connection conn,
                                       @NotNull final ModeloChecklistEdicao modeloChecklist,
                                       @NotNull final AnaliseMudancaModeloChecklist analiseModelo,
+                                      final boolean usarMesmoCodigoDeContexto,
                                       @NotNull final String userToken) throws Throwable {
         // 1 -> Geramos o novo código de versão do modelo.
         final Long novaVersaoModelo = geraNovoCodigoVersaoModelo(conn, modeloChecklist, userToken);
-
         for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
-
             // 2 -> Agora iremos tratar cada caso de uma pergunta.
             if (pergunta instanceof PerguntaModeloChecklistEdicaoInsere) {
                 // 2.1 -> Quando uma pergunta é nova, inserimos a pergunta, sem usar um código de contexto existente,
@@ -487,7 +480,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         modeloChecklist.getCodModelo(),
                         novaVersaoModelo,
                         pergunta,
-                        false);
+                        usarMesmoCodigoDeContexto);
                 for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
                     // 2.1.1 -> E então inserimos todas as alterantivas, também sem um código de contexto,
                     // pelo mesmo motivo.
@@ -498,7 +491,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                             novaVersaoModelo,
                             codPergunta,
                             alternativa,
-                            false);
+                            usarMesmoCodigoDeContexto);
                 }
             } else {
                 final AnaliseItemModeloChecklist analisePergunta = analiseModelo.getPergunta(pergunta.getCodigo());
@@ -510,13 +503,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                             modeloChecklist.getCodModelo(),
                             novaVersaoModelo,
                             pergunta,
-                            false);
+                            usarMesmoCodigoDeContexto);
                     for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
                         // 2.2.1 -> As alternativas de uma pergunta que muda de contexto podem tanto ser novas ou terem
                         // mudado de contexto. Alternativas deletadas nem serão recebidas.
                         final AnaliseItemModeloChecklist analiseAlternativa =
                                 analiseModelo.getAlternativa(alternativa.getCodigo());
-
                         insertAlternativaChecklis(
                                 conn,
                                 modeloChecklist.getCodUnidade(),
@@ -536,7 +528,6 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                             novaVersaoModelo,
                             pergunta,
                             true);
-
                     for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
                         if (alternativa instanceof AlternativaModeloChecklistEdicaoInsere) {
                             insertAlternativaChecklis(
@@ -546,11 +537,10 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                     novaVersaoModelo,
                                     codPergunta,
                                     alternativa,
-                                    false);
+                                    usarMesmoCodigoDeContexto);
                         } else {
                             final AnaliseItemModeloChecklist analiseAlternativa =
                                     analiseModelo.getAlternativa(alternativa.getCodigo());
-
                             insertAlternativaChecklis(
                                     conn,
                                     modeloChecklist.getCodUnidade(),
