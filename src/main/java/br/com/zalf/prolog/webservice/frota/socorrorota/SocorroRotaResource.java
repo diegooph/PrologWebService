@@ -34,7 +34,7 @@ public final class SocorroRotaResource {
     @Secured(permissions = Pilares.Frota.SocorroRota.SOLICITAR_SOCORRO)
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/abertura")
-    public ResponseWithCod invalidacaoSocorro(@Required final SocorroRotaAbertura socorroRotaAbertura) {
+    public ResponseWithCod aberturaSocorro(@Required final SocorroRotaAbertura socorroRotaAbertura) {
         return service.aberturaSocorro(socorroRotaAbertura);
     }
 
@@ -94,4 +94,14 @@ public final class SocorroRotaResource {
         return service.invalidacaoSocorro(socorroRotaInvalidacao);
     }
 
+    /**
+     * Resource para realizar o atendimento de uma solicitação de socorro.
+     */
+    @POST
+    @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/atendimento")
+    public ResponseWithCod atendimentoSocorro(@Required final SocorroRotaAtendimento socorroRotaAtendimento) {
+        return service.atendimentoSocorro(socorroRotaAtendimento);
+    }
 }

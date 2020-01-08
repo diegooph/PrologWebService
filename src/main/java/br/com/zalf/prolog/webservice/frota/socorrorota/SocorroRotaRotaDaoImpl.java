@@ -246,4 +246,56 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             close(conn, stmt, rSet);
         }
     }
+
+    @NotNull
+    @Override
+    public Long atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_ATENDIMENTO(" +
+                    "F_COD_SOCORRO_ROTA := ?," +
+                    "F_COD_COLABORADOR_ATENDIMENTO := ?," +
+                    "F_OBSERVACAO_ATENDIMENTO := ?::TEXT," +
+                    "F_DATA_HORA_ATENDIMENTO := ?," +
+                    "F_LATITUDE_ATENDIMENTO := ?::TEXT," +
+                    "F_LONGITUDE_ATENDIMENTO := ?::TEXT," +
+                    "F_PRECISAO_LOCALIZACAO_ATENDIMENTO_METROS := ?," +
+                    "F_ENDERECO_AUTOMATICO := ?::TEXT," +
+                    "F_VERSAO_APP_MOMENTO_ATENDIMENTO := ?," +
+                    "F_DEVICE_ID_ATENDIMENTO := ?::TEXT," +
+                    "F_DEVICE_IMEI_ATENDIMENTO := ?::TEXT," +
+                    "F_DEVICE_UPTIME_MILLIS_ATENDIMENTO := ?," +
+                    "F_ANDROID_API_VERSION_ATENDIMENTO := ?," +
+                    "F_MARCA_DEVICE_ATENDIMENTO := ?::TEXT," +
+                    "F_MODELO_DEVICE_ATENDIMENTO := ?::TEXT) AS CODIGO;");
+            final Long codUnidade = socorroRotaAtendimento.getCodUnidade();
+            stmt.setLong(1, socorroRotaAtendimento.getCodSocorroRota());
+            stmt.setLong(2, socorroRotaAtendimento.getCodColaborador());
+            stmt.setString(3, socorroRotaAtendimento.getObservacaoAtendimento());
+            // Ignoramos a data hora do objeto e usamos a do WS
+            stmt.setObject(4, Now.offsetDateTimeUtc());
+            stmt.setString(5, socorroRotaAtendimento.getLocalizacao().getLatitude());
+            stmt.setString(6, socorroRotaAtendimento.getLocalizacao().getLongitude());
+            stmt.setObject(7, socorroRotaAtendimento.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
+            stmt.setString(8, socorroRotaAtendimento.getEnderecoAutomatico());
+            stmt.setLong(9, socorroRotaAtendimento.getVersaoAppAtual());
+            stmt.setString(10, socorroRotaAtendimento.getDeviceId());
+            stmt.setString(11, socorroRotaAtendimento.getDeviceImei());
+            stmt.setLong(12, socorroRotaAtendimento.getDeviceUptimeMillis());
+            stmt.setInt(13, socorroRotaAtendimento.getAndroidApiVersion());
+            stmt.setString(14, socorroRotaAtendimento.getMarcaDevice());
+            stmt.setString(15, socorroRotaAtendimento.getModeloDevice());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new Throwable("Erro ao atender esta solitação de socorro");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

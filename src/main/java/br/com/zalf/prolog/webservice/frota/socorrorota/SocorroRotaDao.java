@@ -80,4 +80,14 @@ public interface SocorroRotaDao {
      */
     @NotNull
     Long invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) throws Throwable;
+
+    /**
+     * Atende uma solicitação de socorro no banco de dados.
+     *
+     * @param socorroRotaAtendimento Objeto contendo as informações para atendimento de um socorro.
+     * @return Código gerado pelo BD para o atendimento do socorro.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    Long atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) throws Throwable;
 }

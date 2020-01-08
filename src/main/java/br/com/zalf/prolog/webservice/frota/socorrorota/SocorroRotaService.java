@@ -102,7 +102,22 @@ public final class SocorroRotaService {
             Log.e(TAG, "Erro ao invalidar uma solitação de socorro.", t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Não foi possível realizar a abertura desta solicitação de socorro, " +
+                    .map(t, "Não foi possível realizar a invalidação desta solicitação de socorro, " +
+                            "tente novamente.");
+        }
+    }
+
+    @NotNull
+    ResponseWithCod atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) throws ProLogException {
+        try {
+            return ResponseWithCod.ok(
+                    "Solicitação de socorro atendida com sucesso.",
+                    dao.atendimentoSocorro(socorroRotaAtendimento));
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atender uma solitação de socorro.", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível realizar o atendimento desta solicitação de socorro, " +
                             "tente novamente.");
         }
     }
