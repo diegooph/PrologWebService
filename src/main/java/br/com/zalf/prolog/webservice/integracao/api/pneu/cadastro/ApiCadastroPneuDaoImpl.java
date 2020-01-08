@@ -222,7 +222,10 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final Long codEmpresa = getCodEmpresaByToken(conn, tokenIntegracao);
+            final Long codEmpresa =
+                    Injection
+                            .provideIntegracaoDao()
+                            .getCodEmpresaByTokenIntegracao(conn, tokenIntegracao);
             final List<Long> codPneusTransferidos =
                     Injection
                             .providePneuDao()
@@ -263,33 +266,6 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             throw t;
         } finally {
             close(conn);
-        }
-    }
-
-    @NotNull
-    private Long getCodEmpresaByToken(@NotNull final Connection conn,
-                                      @NotNull final String tokenIntegracao) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT TI.COD_EMPRESA " +
-                    "FROM INTEGRACAO.TOKEN_INTEGRACAO TI WHERE TI.TOKEN_INTEGRACAO = ?;");
-            stmt.setString(1, tokenIntegracao);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final long codEmpresa = rSet.getLong("COD_EMPRESA");
-                if (codEmpresa <= 0) {
-                    throw new SQLException("Não foi possível buscar o código da empresa para o token:\n" +
-                            "tokenIntegracao: " + tokenIntegracao + "\n" +
-                            "codEmpresa: " + codEmpresa);
-                }
-                return codEmpresa;
-            } else {
-                throw new SQLException("Não foi possível buscar o código da empresa para o token:\n" +
-                        "tokenIntegracao: " + tokenIntegracao);
-            }
-        } finally {
-            close(stmt, rSet);
         }
     }
 }
