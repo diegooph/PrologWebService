@@ -298,7 +298,7 @@ public abstract class Router implements OperacoesIntegradas {
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean sobrescreverPerguntasAlternativas,
+            final boolean podeMudarCodigosPerguntasEAlternativas,
             @NotNull final String userToken) throws Throwable {
         if (getSistema() != null) {
             getSistema().updateModeloChecklist(
@@ -306,7 +306,7 @@ public abstract class Router implements OperacoesIntegradas {
                     codModelo,
                     modeloChecklist,
                     checklistOfflineListener,
-                    sobrescreverPerguntasAlternativas,
+                    podeMudarCodigosPerguntasEAlternativas,
                     userToken);
         } else {
             integradorProLog.updateModeloChecklist(
@@ -314,7 +314,7 @@ public abstract class Router implements OperacoesIntegradas {
                     codModelo,
                     modeloChecklist,
                     checklistOfflineListener,
-                    sobrescreverPerguntasAlternativas,
+                    podeMudarCodigosPerguntasEAlternativas,
                     userToken);
         }
     }

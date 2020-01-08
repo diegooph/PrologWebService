@@ -363,14 +363,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean sobrescreverPerguntasAlternativas,
+            final boolean podeMudarCodigosPerguntasEAlternativas,
             @NotNull final String userToken) throws Throwable {
         checklistModeloDao.updateModeloChecklist(
                 codUnidade,
                 codModelo,
                 modeloChecklist,
                 checklistOfflineListener,
-                sobrescreverPerguntasAlternativas,
+                podeMudarCodigosPerguntasEAlternativas,
                 userToken);
     }
 

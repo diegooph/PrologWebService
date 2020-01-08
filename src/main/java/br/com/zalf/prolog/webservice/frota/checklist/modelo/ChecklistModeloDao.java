@@ -51,17 +51,17 @@ public interface ChecklistModeloDao {
      * * {@link ModeloChecklistEdicao#tiposVeiculoLiberados}.
      * * {@link ModeloChecklistEdicao#perguntas}.
      *
-     * @param codUnidade                                 Código da Unidade.
-     * @param codModelo                                  Código do modelo.
-     * @param modeloChecklist                            O novo {@link ModeloChecklistEdicao} que será inserido.
-     * @param checklistOfflineListener                   Listener utilizado para notificar sobre a atualização de modelos de
-     *                                                   checklist.
-     * @param sobrescreverDescricaoPerguntasAlternativas Esta propriedade é utilizada para dizer se as perguntas presentes na
-     *                                                   edição do modelo serão sobrescritas e manterão os mesmos códigos ou se
-     *                                                   devem ser desativadas e criadas novamente, gerando novos códigos. Essa
-     *                                                   propriedade é utilizada por integrações onde há o vínculo com códigos
-     *                                                   em tabelas DE-PARA, assim não pode-se alterar os códigos.
-     * @param userToken                                  O token do usuário que fez a requisição.
+     * @param codUnidade                             Código da Unidade.
+     * @param codModelo                              Código do modelo.
+     * @param modeloChecklist                        O novo {@link ModeloChecklistEdicao} que será inserido.
+     * @param checklistOfflineListener               Listener utilizado para notificar sobre a atualização de modelos de
+     *                                               checklist.
+     * @param podeMudarCodigosPerguntasEAlternativas Esta propriedade é utilizada para dizer se as perguntas presentes na
+     *                                               edição do modelo serão sobrescritas e manterão os mesmos códigos ou
+     *                                               se podem ser recriadas alterando o código. Essa propriedade é
+     *                                               utilizada por integrações onde há o vínculo com códigos em tabelas
+     *                                               DE-PARA, assim não pode-se alterar os códigos.
+     * @param userToken                              O token do usuário que fez a requisição.
      * @throws Throwable Se algum erro acontecer na atualização dos dados.
      */
     void updateModeloChecklist(
@@ -69,7 +69,7 @@ public interface ChecklistModeloDao {
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean sobrescreverDescricaoPerguntasAlternativas,
+            final boolean podeMudarCodigosPerguntasEAlternativas,
             @NotNull final String userToken) throws Throwable;
 
     /**
@@ -164,12 +164,12 @@ public interface ChecklistModeloDao {
     /**
      * Busca os modelos de checklist disponíveis para seleção (e posterior realização) em uma unidade. É buscado
      * apenas os modelos que o cargo do colaborador que faz a requisição tem acesso (através do <code>codCargo</code>).
-     *
+     * <p>
      * Além disso, serão buscados apenas modelos que tenham tipos de veículos vinculados e que esses tipos tenham, pelo
      * menos, uma placa vinculada e não deletada.
      *
      * @param codUnidade O código da unidade da qual buscar os modelos de checklist.
-     * @param codCargo O código do cargo do usuário que irá realizar o checklist.
+     * @param codCargo   O código do cargo do usuário que irá realizar o checklist.
      * @return Os modelos de checklist disponíveis para realização.
      * @throws Throwable Caso algum erro ocorrer.
      */

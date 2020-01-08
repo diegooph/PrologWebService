@@ -109,35 +109,43 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean sobrescreverDescricaoPerguntasAlternativas,
+            final boolean podeMudarCodigosPerguntasEAlternativas,
             @NotNull final String userToken) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
 
-            final AnaliseMudancaModeloChecklist analiseModelo = realizaAnaliseMudancaModeloChecklist(
-                    conn,
-                    codModelo,
-                    modeloChecklist);
+            if (podeMudarCodigosPerguntasEAlternativas) {
+                final AnaliseMudancaModeloChecklist analiseModelo = realizaAnaliseMudancaModeloChecklist(
+                        conn,
+                        codModelo,
+                        modeloChecklist);
 
-            if (analiseModelo.isAlgoMudouNoModelo()) {
-                if (analiseModelo.isDeveCriarNovaVersaoModelo()) {
+                if (analiseModelo.isAlgoMudouNoModelo()) {
+                    if (analiseModelo.isDeveCriarNovaVersaoModelo()) {
 
-                    criaNovaVersaoModelo(conn, modeloChecklist, analiseModelo, userToken);
-                } else {
-                    atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
-                    for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
-                        atualizaPergunta(conn, codModelo, pergunta);
-                        for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
-                            atualizaAlternativa(conn, codModelo, alternativa);
+                        criaNovaVersaoModelo(conn, modeloChecklist, analiseModelo, userToken);
+                    } else {
+                        atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
+                        for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
+                            atualizaPergunta(conn, codModelo, pergunta);
+                            for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
+                                atualizaAlternativa(conn, codModelo, alternativa);
+                            }
                         }
                     }
+                } else {
+                    atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
                 }
             } else {
-                atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
-                // Nada a fazer, só retornarmos.
-                conn.commit();
+                // Devemos atualizar todas as informações de perguntas e alternativas sem recriar nada no modelo.
+                for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
+                    atualizaPergunta(conn, codModelo, pergunta);
+                    for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
+                        atualizaAlternativa(conn, codModelo, alternativa);
+                    }
+                }
             }
 
             // Notificamos o Listener que ouve atualização no modelo de checklist.

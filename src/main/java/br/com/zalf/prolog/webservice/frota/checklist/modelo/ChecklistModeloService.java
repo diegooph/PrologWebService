@@ -72,7 +72,7 @@ public final class ChecklistModeloService {
                             codModelo,
                             modeloChecklist,
                             Injection.provideDadosChecklistOfflineChangedListener(),
-                            false,
+                            true,
                             TokenCleaner.getOnlyToken(userToken));
             return Response.ok("Modelo de checklist atualizado com sucesso");
         } catch (final Throwable t) {

@@ -43,7 +43,7 @@ public final class SistemaTransportTranslecchi extends Sistema {
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean sobrescreverPerguntasAlternativas,
+            final boolean podeMudarCodigosPerguntasEAlternativas,
             @NotNull final String userToken) throws Throwable {
         // Ignoramos a propriedade sobrescreverPerguntasAlternativas pois queremos que para essa integração todas as
         // edições de perguntas e alternativas sobrescrevam os valores antigos sem alterar os códigos existentes.
@@ -53,7 +53,7 @@ public final class SistemaTransportTranslecchi extends Sistema {
                         codModelo,
                         modeloChecklist,
                         checklistOfflineListener,
-                        true,
+                        false,
                         userToken);
     }
 
