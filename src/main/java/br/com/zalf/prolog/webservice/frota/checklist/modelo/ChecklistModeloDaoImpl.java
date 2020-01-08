@@ -140,6 +140,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                 }
             } else {
                 // Devemos atualizar todas as informações de perguntas e alternativas sem recriar nada no modelo.
+                atualizaModeloChecklistInfosGerais(conn, codUnidade, codModelo, modeloChecklist);
                 for (final PerguntaModeloChecklistEdicao pergunta : modeloChecklist.getPerguntas()) {
                     atualizaPergunta(conn, codModelo, pergunta);
                     for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
