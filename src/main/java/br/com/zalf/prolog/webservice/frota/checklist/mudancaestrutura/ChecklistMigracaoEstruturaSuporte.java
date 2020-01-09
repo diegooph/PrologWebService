@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  */
 public final class ChecklistMigracaoEstruturaSuporte {
     private static final String TAG = ChecklistMigracaoEstruturaSuporte.class.getSimpleName();
-    private static final int VERSION_CODE_APP_NOVA_ESTRUTURA = 89;
+    private static final int VERSION_CODE_APP_NOVA_ESTRUTURA = 93;
 
     @NotNull
     public static Long getCodVersaoAtualModeloChecklist(@NotNull final Long codModelo)
