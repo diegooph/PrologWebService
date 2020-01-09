@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.stream.IntStream;
 
 /**
  * Created on 13/08/2018
@@ -25,6 +26,19 @@ public final class StatementUtils {
             stmt.setObject(parameterIndex, object);
         } else {
             stmt.setNull(parameterIndex, sqlType.asIntTypeJava());
+        }
+    }
+
+    public static void executeBatchAndValidate(@NotNull final PreparedStatement stmt,
+                                               final int allMatchWith,
+                                               @NotNull final String messageIfFailed) throws SQLException {
+        // Executa o batch de operações.
+        // Se o batch estiver vazio, um array vazio será retornado e não teremos problema com esse caso.
+        final boolean allOk = IntStream
+                .of(stmt.executeBatch())
+                .allMatch(rowsAffectedCount -> rowsAffectedCount == allMatchWith);
+        if (!allOk) {
+            throw new IllegalStateException(messageIfFailed);
         }
     }
 }
