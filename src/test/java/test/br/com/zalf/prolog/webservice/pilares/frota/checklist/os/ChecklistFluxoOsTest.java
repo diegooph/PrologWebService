@@ -236,6 +236,8 @@ public class ChecklistFluxoOsTest extends BaseTest {
             // Compara as propriedades do checklist inserido com o buscado.
             final Checklist checklist = checklistService.getByCod(codChecklistInserido, token);
 
+            // A data/hora de realização não é comparada pois para um checklist online, o WS ignora a data/hora do
+            // objeto e pega a atual.
             assertThat(checklist).isNotNull();
             assertThat(checklist.getCodigo()).isEqualTo(codChecklistInserido);
             assertThat(checklist.getCodModelo()).isEqualTo(result.getCodModeloChecklistInserido());
@@ -245,7 +247,6 @@ public class ChecklistFluxoOsTest extends BaseTest {
             assertThat(checklist.getTipo()).isEqualTo(TipoChecklist.SAIDA.asChar());
             assertThat(checklist.getKmAtualVeiculo()).isEqualTo(112);
             assertThat(checklist.getTempoRealizacaoCheckInMillis()).isEqualTo(10000);
-            assertThat(checklist.getData()).isEqualTo(ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"));
             assertThat(checklist.getQtdItensOk()).isEqualTo(0);
             assertThat(checklist.getQtdItensNok()).isEqualTo(2);
             assertThat(checklist.getQtdAlternativasOk()).isEqualTo(2);
