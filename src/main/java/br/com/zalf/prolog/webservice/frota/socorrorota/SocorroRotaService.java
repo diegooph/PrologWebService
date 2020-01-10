@@ -137,4 +137,17 @@ public final class SocorroRotaService {
                             "tente novamente.");
         }
     }
+
+    @NotNull
+    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
+            @NotNull final Long codSocorroRota) throws ProLogException {
+        try {
+            return dao.getVisualizacaoSocorroRota(codSocorroRota);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar as informações deste socorro em rota.", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao buscar as informações deste socorro em rota, tente novamente.");
+        }
+    }
 }
