@@ -173,7 +173,7 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_LISTAGEM(" +
                     "F_COD_UNIDADES := ?, " +
-                    "F_DATA_INICIAL :=?," +
+                    "F_DATA_INICIAL := ?," +
                     "F_DATA_FINAL := ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setObject(2, dataInicial);
