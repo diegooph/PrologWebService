@@ -6,6 +6,7 @@ Change Log
 
 ### Refactors
 * Adiciona configuração para bloquear processo de aferição (PL-1934)
+* Adiciona nova permissão para busca de relatório de entrega
 
 <a name="v1.0.10"></a>
 ## Version [v1.0.10](https://github.com/luizfp/PrologWebService/compare/v1.0.9...v1.0.10) (2020-01-07)
