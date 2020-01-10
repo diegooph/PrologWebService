@@ -28,7 +28,7 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO RECAPADORA (NOME, COD_EMPRESA, DATA_HORA_CADASTRO, CPF_CADASTRO) " +
-                    "VALUES (?, ?, ?, (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?))  CODIGO;");
+                    "VALUES (?, ?, ?, (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?)) RETURNING CODIGO;");
             stmt.setString(1, recapadora.getNome());
             stmt.setLong(2, recapadora.getCodEmpresa());
             stmt.setTimestamp(3, Now.timestampUtc());

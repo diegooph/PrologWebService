@@ -48,7 +48,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO AFERICAO_MANUTENCAO(COD_AFERICAO, COD_PNEU, " +
-                    "COD_UNIDADE, TIPO_SERVICO) VALUES(?, ?, ?, ?)  CODIGO;");
+                    "COD_UNIDADE, TIPO_SERVICO) VALUES(?, ?, ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, codAfericao);
             stmt.setLong(2, codPneu);
             stmt.setLong(3, codUnidade);
