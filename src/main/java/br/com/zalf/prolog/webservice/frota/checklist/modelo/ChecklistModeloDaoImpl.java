@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
@@ -474,30 +475,31 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             if (pergunta instanceof PerguntaModeloChecklistEdicaoInsere) {
                 // 2.1 -> Quando uma pergunta é nova, inserimos a pergunta, sem usar um código de contexto existente,
                 // pois não temos um.
-                final Long codPergunta = insertApenasPerguntaEdicao(
+                final Long codPergunta = insertPerguntaChecklist(
                         conn,
                         modeloChecklist.getCodUnidade(),
                         modeloChecklist.getCodModelo(),
                         novaVersaoModelo,
                         pergunta,
-                        usarMesmoCodigoDeContexto);
+                        false);
                 for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
                     // 2.1.1 -> E então inserimos todas as alterantivas, também sem um código de contexto,
                     // pelo mesmo motivo.
-                    insertAlternativaChecklis(
+                    insertAlternativaChecklist(
                             conn,
                             modeloChecklist.getCodUnidade(),
                             modeloChecklist.getCodModelo(),
                             novaVersaoModelo,
                             codPergunta,
                             alternativa,
-                            usarMesmoCodigoDeContexto);
+                            false);
                 }
             } else {
+                // Pergunta está sendo atualizada.
                 final AnaliseItemModeloChecklist analisePergunta = analiseModelo.getPergunta(pergunta.getCodigo());
                 if (analisePergunta.isItemMudouContexto()) {
                     // 2.2 -> Se pergunta mudou de contexto, troca o código de contexto.
-                    final Long codPergunta = insertApenasPerguntaEdicao(
+                    final Long codPergunta = insertPerguntaChecklist(
                             conn,
                             modeloChecklist.getCodUnidade(),
                             modeloChecklist.getCodModelo(),
@@ -509,19 +511,24 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         // mudado de contexto. Alternativas deletadas nem serão recebidas.
                         final AnaliseItemModeloChecklist analiseAlternativa =
                                 analiseModelo.getAlternativa(alternativa.getCodigo());
-                        insertAlternativaChecklis(
+                        // O contexto da alternativa é mantido se ela for uma atualização e tivermos forçando manter o
+                        // contexto ou se ela mesmo editada não mudou de contexto.
+                        final boolean manterContextoAlternativa =
+                                alternativa instanceof AlternativaModeloChecklistEdicaoAtualiza
+                                && (usarMesmoCodigoDeContexto || !analiseAlternativa.isItemMudouContexto());
+                        insertAlternativaChecklist(
                                 conn,
                                 modeloChecklist.getCodUnidade(),
                                 modeloChecklist.getCodModelo(),
                                 novaVersaoModelo,
                                 codPergunta,
                                 alternativa,
-                                !analiseAlternativa.isItemMudouContexto());
+                                manterContextoAlternativa);
                     }
                 } else {
                     // 2.3 -> Nesse caso, a pergunta pode ou não ter mudado, mas manteve seu contexto,
                     // então podemos apenas atualizar as informações com segurança.
-                    final Long codPergunta = insertApenasPerguntaEdicao(
+                    final Long codPergunta = insertPerguntaChecklist(
                             conn,
                             modeloChecklist.getCodUnidade(),
                             modeloChecklist.getCodModelo(),
@@ -530,25 +537,30 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                             true);
                     for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
                         if (alternativa instanceof AlternativaModeloChecklistEdicaoInsere) {
-                            insertAlternativaChecklis(
+                            insertAlternativaChecklist(
                                     conn,
                                     modeloChecklist.getCodUnidade(),
                                     modeloChecklist.getCodModelo(),
                                     novaVersaoModelo,
                                     codPergunta,
                                     alternativa,
-                                    usarMesmoCodigoDeContexto);
+                                    false);
                         } else {
                             final AnaliseItemModeloChecklist analiseAlternativa =
                                     analiseModelo.getAlternativa(alternativa.getCodigo());
-                            insertAlternativaChecklis(
+                            // Como já estmaos em uma alternativa que foi atualizada, nós mantemos o contexto se
+                            // tivermos forçando manter (através da flag usarMesmoCodigoDeContexto) ou se ela mesmo
+                            // editada não mudou de contexto.
+                            final boolean manterContextoAlternativa =
+                                    (usarMesmoCodigoDeContexto || !analiseAlternativa.isItemMudouContexto());
+                            insertAlternativaChecklist(
                                     conn,
                                     modeloChecklist.getCodUnidade(),
                                     modeloChecklist.getCodModelo(),
                                     novaVersaoModelo,
                                     codPergunta,
                                     alternativa,
-                                    !analiseAlternativa.isItemMudouContexto());
+                                    manterContextoAlternativa);
                         }
                     }
                 }
@@ -771,19 +783,15 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                                       @NotNull final Long codModelo,
                                                       @NotNull final Long codVersaoModelo) throws Throwable {
         for (final PerguntaModeloChecklistInsercao pergunta : modeloChecklist.getPerguntas()) {
-            final Long codPergunta = internalInsertPerguntas(
+            final Long codPergunta = insertPerguntaChecklist(
                     conn,
                     modeloChecklist.getCodUnidade(),
                     codModelo,
                     codVersaoModelo,
-                    pergunta.getDescricao(),
-                    pergunta.getCodImagem(),
-                    pergunta.getOrdemExibicao(),
-                    pergunta.isSingleChoice(),
-                    false,
-                    null);
+                    pergunta,
+                    false);
             for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
-                insertAlternativaChecklis(
+                insertAlternativaChecklist(
                         conn,
                         modeloChecklist.getCodUnidade(),
                         codModelo,
@@ -796,36 +804,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     }
 
     @NotNull
-    private Long insertApenasPerguntaEdicao(@NotNull final Connection conn,
-                                            @NotNull final Long codUnidade,
-                                            @NotNull final Long codModelo,
-                                            @NotNull final Long codVersaoModelo,
-                                            @NotNull final PerguntaModeloChecklistEdicao pergunta,
-                                            final boolean usarMesmoCodigoContexto) throws Throwable {
-        return internalInsertPerguntas(
-                conn,
-                codUnidade,
-                codModelo,
-                codVersaoModelo,
-                pergunta.getDescricao(),
-                pergunta.getCodImagem(),
-                pergunta.getOrdemExibicao(),
-                pergunta.isSingleChoice(),
-                usarMesmoCodigoContexto,
-                pergunta.getCodigoContexto());
-    }
-
-    @NotNull
-    private Long internalInsertPerguntas(@NotNull final Connection conn,
+    private Long insertPerguntaChecklist(@NotNull final Connection conn,
                                          @NotNull final Long codUnidade,
                                          @NotNull final Long codModelo,
                                          @NotNull final Long codVersaoModelo,
-                                         @NotNull final String descricao,
-                                         @Nullable final Long codImagem,
-                                         final int ordemExibicao,
-                                         final boolean singleChoice,
-                                         final boolean usarMesmoCodigoDeContexto,
-                                         @Nullable final Long codigoDeContexto) throws Throwable {
+                                         @NotNull final PerguntaModeloChecklist pergunta,
+                                         final boolean usarMesmoCodigoDeContexto) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -842,12 +826,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             stmt.setLong(3, codVersaoModelo);
-            stmt.setInt(4, ordemExibicao);
-            stmt.setString(5, descricao);
-            bindValueOrNull(stmt, 6, codImagem, SqlType.BIGINT);
-            stmt.setBoolean(7, singleChoice);
+            stmt.setInt(4, pergunta.getOrdemExibicao());
+            stmt.setString(5, pergunta.getDescricao());
+            bindValueOrNull(stmt, 6, pergunta.getCodImagem(), SqlType.BIGINT);
+            stmt.setBoolean(7, pergunta.isSingleChoice());
             if (usarMesmoCodigoDeContexto) {
-                stmt.setLong(8, codigoDeContexto);
+                stmt.setLong(8, pergunta.getCodigoContexto());
             }
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -862,13 +846,13 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         }
     }
 
-    private void insertAlternativaChecklis(@NotNull final Connection conn,
-                                           @NotNull final Long codUnidade,
-                                           @NotNull final Long codModelo,
-                                           @NotNull final Long codVersaoModelo,
-                                           @NotNull final Long codPergunta,
-                                           @NotNull final AlternativaModeloChecklist alternativa,
-                                           final boolean usarMesmoCodigoDeContexto) throws Throwable {
+    private void insertAlternativaChecklist(@NotNull final Connection conn,
+                                            @NotNull final Long codUnidade,
+                                            @NotNull final Long codModelo,
+                                            @NotNull final Long codVersaoModelo,
+                                            @NotNull final Long codPergunta,
+                                            @NotNull final AlternativaModeloChecklist alternativa,
+                                            final boolean usarMesmoCodigoDeContexto) throws Throwable {
         PreparedStatement stmt = null;
         try {
             if (usarMesmoCodigoDeContexto) {
