@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -352,6 +353,61 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             } else {
                 throw new Throwable("Erro ao finalizar esta solitação de socorro");
             }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+
+    @NotNull
+    @Override
+    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
+            @NotNull final Long codSocorroRota) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_VISUALIZACAO(F_COD_SOCORRO_ROTA := ?);");
+            stmt.setLong(1, codSocorroRota);
+            rSet = stmt.executeQuery();
+
+            if (rSet.next()) {
+                final SocorroRotaAberturaVisualizacao socorroRotaAberturaVisualizacao =
+                        SocorroRotaConverter.createSocorroRotaAberturaVisualizacao(rSet);
+
+                SocorroRotaAtendimentoVisualizacao socorroRotaAtendimentoVisualizacao = null;
+                if(rSet.getObject("DATA_HORA_ATENDIMENTO", LocalDateTime.class) != null) {
+                    socorroRotaAtendimentoVisualizacao =
+                            SocorroRotaConverter.createSocorroRotaAtendimentoVisualizacao(rSet);
+                }
+
+                SocorroRotaInvalidacaoVisualizacao socorroRotaInvalidacaoVisualizacao = null;
+                if(rSet.getObject("DATA_HORA_INVALIDACAO", LocalDateTime.class) != null) {
+                    socorroRotaInvalidacaoVisualizacao =
+                            SocorroRotaConverter.createSocorroRotaInvalidacaoVisualizacao(rSet);
+                }
+
+                SocorroRotaFinalizacaoVisualizacao socorroRotaFinalizacaoVisualizacao = null;
+                if(rSet.getObject("DATA_HORA_FINALIZACAO", LocalDateTime.class) != null) {
+                    socorroRotaFinalizacaoVisualizacao =
+                            SocorroRotaConverter.createSocorroRotaFinalizacaoVisualizacao(rSet);
+                }
+
+                final SocorroRotaVisualizacao socorrosRota = new SocorroRotaVisualizacao(
+                        rSet.getLong("COD_SOCORRO_ROTA"),
+                        StatusSocorroRota.fromString(rSet.getString("STATUS_SOCORRO_ROTA")),
+                        socorroRotaAberturaVisualizacao,
+                        socorroRotaAtendimentoVisualizacao,
+                        socorroRotaFinalizacaoVisualizacao,
+                        socorroRotaInvalidacaoVisualizacao
+                );
+                return socorrosRota;
+            } else {
+                throw new Throwable("Erro ao finalizar esta solitação de socorro");
+            }
+
+
         } finally {
             close(conn, stmt, rSet);
         }

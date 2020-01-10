@@ -43,6 +43,7 @@ public class SocorroRotaConverter {
                 rSet.getString("DESCRICAO"),
                 rSet.getBoolean("OBRIGA_DESCRICAO"));
     }
+
     @NotNull
     public static SocorroRotaListagem createSocorroRotaListagem(
             @NotNull final ResultSet rSet) throws SQLException {
@@ -55,6 +56,79 @@ public class SocorroRotaConverter {
                 rSet.getObject("DATA_HORA_ABERTURA_SOCORRO", LocalDateTime.class),
                 rSet.getString("ENDERECO_AUTOMATICO_ABERTURA_SOCORRO"),
                 StatusSocorroRota.fromString(rSet.getString("STATUS_ATUAL_SOCORRO_ROTA"))
+        );
+    }
+
+    @NotNull
+    public static SocorroRotaAberturaVisualizacao createSocorroRotaAberturaVisualizacao(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new SocorroRotaAberturaVisualizacao(
+                rSet.getString("PLACA_VEICULO_ABERTURA"),
+                rSet.getLong("COD_COLABORADOR_ABERTURA"),
+                rSet.getString("NOME_RESPONSAVEL_ABERTURA"),
+                rSet.getString("DESCRICAO_OPCAO_PROBLEMA_ABERTURA"),
+                rSet.getObject("DATA_HORA_ABERTURA", LocalDateTime.class),
+                new LocalizacaoSocorroRota(
+                        rSet.getString("LATITUDE_ABERTURA"),
+                        rSet.getString("LONGITUDE_ABERTURA"),
+                        0F),
+                rSet.getString("ENDERECO_AUTOMATICO_ABERTURA"),
+                rSet.getString("MARCA_APARELHO_ABERTURA"),
+                rSet.getString("MODELO_APARELHO_ABERTURA"),
+                rSet.getString("IMEI_APARELHO_ABERTURA")
+        );
+    }
+
+    @NotNull
+    public static SocorroRotaAtendimentoVisualizacao createSocorroRotaAtendimentoVisualizacao(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new SocorroRotaAtendimentoVisualizacao(
+                rSet.getString("NOME_RESPONSAVEL_ATENDIMENTO"),
+                rSet.getObject("DATA_HORA_ATENDIMENTO", LocalDateTime.class),
+                new LocalizacaoSocorroRota(
+                        rSet.getString("LATITUDE_ATENDIMENTO"),
+                        rSet.getString("LONGITUDE_ATENDIMENTO"),
+                        0F),
+                rSet.getString("ENDERECO_AUTOMATICO_ATENDIMENTO"),
+                rSet.getString("MARCA_APARELHO_ATENDIMENTO"),
+                rSet.getString("MODELO_APARELHO_ATENDIMENTO"),
+                rSet.getString("IMEI_APARELHO_ATENDIMENTO")
+        );
+    }
+
+
+    @NotNull
+    public static SocorroRotaInvalidacaoVisualizacao createSocorroRotaInvalidacaoVisualizacao(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new SocorroRotaInvalidacaoVisualizacao(
+                rSet.getString("NOME_RESPONSAVEL_INVALIDACAO"),
+                rSet.getObject("DATA_HORA_INVALIDACAO", LocalDateTime.class),
+                new LocalizacaoSocorroRota(
+                        rSet.getString("LATITUDE_INVALIDACAO"),
+                        rSet.getString("LONGITUDE_INVALIDACAO"),
+                        0F),
+                rSet.getString("ENDERECO_AUTOMATICO_INVALIDACAO"),
+                rSet.getString("MARCA_APARELHO_INVALIDACAO"),
+                rSet.getString("MODELO_APARELHO_INVALIDACAO"),
+                rSet.getString("IMEI_APARELHO_INVALIDACAO")
+        );
+    }
+
+
+    @NotNull
+    public static SocorroRotaFinalizacaoVisualizacao createSocorroRotaFinalizacaoVisualizacao(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new SocorroRotaFinalizacaoVisualizacao(
+                rSet.getString("NOME_RESPONSAVEL_FINALIZACAO"),
+                rSet.getObject("DATA_HORA_FINALIZACAO", LocalDateTime.class),
+                new LocalizacaoSocorroRota(
+                        rSet.getString("LATITUDE_FINALIZACAO"),
+                        rSet.getString("LONGITUDE_FINALIZACAO"),
+                        0F),
+                rSet.getString("ENDERECO_AUTOMATICO_FINALIZACAO"),
+                rSet.getString("MARCA_APARELHO_FINALIZACAO"),
+                rSet.getString("MODELO_APARELHO_FINALIZACAO"),
+                rSet.getString("IMEI_APARELHO_FINALIZACAO")
         );
     }
 }

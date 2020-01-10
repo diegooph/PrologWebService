@@ -75,6 +75,8 @@ public final class SocorroRotaResource {
      * Resource para buscar uma lista de socorros em rota por data inicial, final e unidades
      * */
     @GET
+    @Secured(permissions = {Pilares.Frota.SocorroRota.VISUALIZAR_SOCORROS_E_RELATORIOS})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/")
     public List<SocorroRotaListagem> getListagemSocorroRota(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
@@ -114,5 +116,17 @@ public final class SocorroRotaResource {
     @Path("/finalizacao")
     public ResponseWithCod finalizacaoSocorro(@Required final SocorroRotaFinalizacao socorroRotaFinalizacao) {
         return service.finalizacaoSocorro(socorroRotaFinalizacao);
+    }
+
+    /**
+     * Resource para realizar a visualização de uma solicitação de socorro.
+     */
+    @GET
+    @Secured(permissions = {Pilares.Frota.SocorroRota.VISUALIZAR_SOCORROS_E_RELATORIOS})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/visualizacao")
+    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
+            @QueryParam("codSocorroRota") @Required final Long codSocorroRota){
+        return service.getVisualizacaoSocorroRota(codSocorroRota);
     }
 }

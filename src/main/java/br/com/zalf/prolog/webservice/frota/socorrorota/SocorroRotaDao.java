@@ -100,4 +100,15 @@ public interface SocorroRotaDao {
      */
     @NotNull
     Long finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) throws Throwable;
+
+    /**
+     * Busca as informações do socorro em rota através do código
+     *
+     * @param codSocorroRota código do socorro em rota a ser buscado
+     * @return Uma visualização geral de {@link SocorroRotaVisualizacao socorro em rota}
+     * @throws Throwable Se algo der errado na busca.
+     */
+    @NotNull
+    SocorroRotaVisualizacao getVisualizacaoSocorroRota(
+            @NotNull final Long codSocorroRota) throws Throwable;
 }
