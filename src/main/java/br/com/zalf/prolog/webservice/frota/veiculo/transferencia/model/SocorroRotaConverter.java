@@ -50,7 +50,9 @@ public class SocorroRotaConverter {
         return new SocorroRotaListagem(
                 rSet.getLong("COD_SOCORRO_ROTA"),
                 rSet.getString("PLACA_VEICULO"),
+                rSet.getBoolean("VEICULO_DELETADO"),
                 rSet.getString("NOME_RESPONSAVEL_ABERTURA_SOCORRO"),
+                rSet.getBoolean("COLABORADOR_DELETADO"),
                 rSet.getString("DESCRICAO_FORNECIDA_ABERTURA_SOCORRO"),
                 rSet.getString("DESCRICAO_OPCAO_PROBLEMA_ABERTURA_SOCORRO"),
                 rSet.getObject("DATA_HORA_ABERTURA_SOCORRO", LocalDateTime.class),

@@ -16,8 +16,10 @@ public final class SocorroRotaListagem {
     private final Long codSocorroRota;
     @NotNull
     private final String placaVeiculo;
+    private final boolean isPlacaDeletada;
     @NotNull
     private final String nomeResponsavelAberturaSocorro;
+    private final boolean isColaboradorDeletado;
     @Nullable
     private final String descricaoFornecidaAberturaSocorro;
     @NotNull
@@ -31,7 +33,9 @@ public final class SocorroRotaListagem {
 
     public SocorroRotaListagem(@NotNull final Long codSocorroRota,
                                @NotNull final String placaVeiculo,
+                               final boolean isPlacaDeletada,
                                @NotNull final String nomeResponsavelAberturaSocorro,
+                               final boolean isColaboradorDeletado,
                                @Nullable final String descricaoFornecidaAberturaSocorro,
                                @NotNull final String descricaoOpcaoProblemaAberturaSocorro,
                                @NotNull final LocalDateTime dataHoraAberturaSocorro,
@@ -39,7 +43,9 @@ public final class SocorroRotaListagem {
                                @NotNull final StatusSocorroRota statusAtualSocorroRota) {
         this.codSocorroRota = codSocorroRota;
         this.placaVeiculo = placaVeiculo;
+        this.isPlacaDeletada = isPlacaDeletada;
         this.nomeResponsavelAberturaSocorro = nomeResponsavelAberturaSocorro;
+        this.isColaboradorDeletado = isColaboradorDeletado;
         this.descricaoFornecidaAberturaSocorro = descricaoFornecidaAberturaSocorro;
         this.descricaoOpcaoProblemaAberturaSocorro = descricaoOpcaoProblemaAberturaSocorro;
         this.dataHoraAberturaSocorro = dataHoraAberturaSocorro;
@@ -55,10 +61,14 @@ public final class SocorroRotaListagem {
         return placaVeiculo;
     }
 
+    public boolean isPlacaDeletada() { return isPlacaDeletada; }
+
     @NotNull
     public String getNomeResponsavelAberturaSocorro() {
         return nomeResponsavelAberturaSocorro;
     }
+
+    public boolean isColaboradorDeletado() { return isColaboradorDeletado; }
 
     @Nullable
     public String getDescricaoFornecidaAberturaSocorro() { return descricaoFornecidaAberturaSocorro; }
