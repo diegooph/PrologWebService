@@ -230,14 +230,14 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement(
                     "SELECT * FROM PICCOLOTUR.FUNC_CHECK_OS_INSERE_ITEM_OS_ABERTA( " +
-                            "F_COD_OS_GLOBUS                     := ?, " +
-                            "F_COD_UNIDADE_OS                    := ?, " +
-                            "F_COD_CHECKLIST                     := ?, " +
-                            "F_COD_ITEM_OS_GLOBUS                := ?, " +
-                            "F_COD_PERGUNTA_CHECKLIST            := ?, " +
-                            "F_COD_ALTERNATIVA_CHECKLIST         := ?, " +
-                            "F_DATA_HORA_SINCRONIZACAO_PENDENCIA := ?, " +
-                            "F_TOKEN_INTEGRACAO                  := ?);");
+                            "F_COD_OS_GLOBUS                      := ?, " +
+                            "F_COD_UNIDADE_OS                     := ?, " +
+                            "F_COD_CHECKLIST                      := ?, " +
+                            "F_COD_ITEM_OS_GLOBUS                 := ?, " +
+                            "F_COD_CONTEXTO_PERGUNTA_CHECKLIST    := ?, " +
+                            "F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST := ?, " +
+                            "F_DATA_HORA_SINCRONIZACAO_PENDENCIA  := ?, " +
+                            "F_TOKEN_INTEGRACAO                   := ?);");
             final OffsetDateTime dataHoraAtualUtc = Now.offsetDateTimeUtc();
             int totalItensNoBatch = 0;
             for (final OrdemServicoAbertaGlobus ordemServicoAberta : ordensServicoAbertas) {
@@ -255,8 +255,8 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                 // Depois inserimos as informações de cada item da O.S..
                 for (final ItemOSAbertaGlobus itemOSAbertaGlobus : itensOSAbertaGlobus) {
                     stmt.setLong(4, itemOSAbertaGlobus.getCodItemGlobus());
-                    stmt.setLong(5, itemOSAbertaGlobus.getCodPerguntaItemOs());
-                    stmt.setLong(6, itemOSAbertaGlobus.getCodAlternativaItemOs());
+                    stmt.setLong(5, itemOSAbertaGlobus.getCodContextoPerguntaItemOs());
+                    stmt.setLong(6, itemOSAbertaGlobus.getCodContextoAlternativaItemOs());
                     stmt.setObject(7, dataHoraAtualUtc);
                     stmt.setString(8, tokenIntegracao);
                     stmt.addBatch();

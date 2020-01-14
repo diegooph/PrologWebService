@@ -12,10 +12,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class AlternativaNokGlobus {
     /**
-     * Código único de identificação da alternativa selecionada pelo colaborador.
+     * Código de contexto da alternativa. Este código é utilizado na integração como código único de identificação da
+     * alternativa selecionada pelo colaborador.
      */
     @NotNull
-    private final Long codAlternativaNok;
+    private final Long codContextoAlternativaNok;
     /**
      * Texto que descreve a alternativa.
      */
@@ -28,10 +29,10 @@ public final class AlternativaNokGlobus {
     @NotNull
     private final PrioridadeAlternativaGlobus prioridadeAlternativaNok;
 
-    public AlternativaNokGlobus(@NotNull final Long codAlternativaNok,
+    public AlternativaNokGlobus(@NotNull final Long codContextoAlternativaNok,
                                 @NotNull final String descricaoAlternativaNok,
                                 @NotNull final PrioridadeAlternativaGlobus prioridadeAlternativaNok) {
-        this.codAlternativaNok = codAlternativaNok;
+        this.codContextoAlternativaNok = codContextoAlternativaNok;
         this.descricaoAlternativaNok = descricaoAlternativaNok;
         this.prioridadeAlternativaNok = prioridadeAlternativaNok;
     }
@@ -45,8 +46,8 @@ public final class AlternativaNokGlobus {
     }
 
     @NotNull
-    public Long getCodAlternativaNok() {
-        return codAlternativaNok;
+    public Long getCodContextoAlternativaNok() {
+        return codContextoAlternativaNok;
     }
 
     @NotNull

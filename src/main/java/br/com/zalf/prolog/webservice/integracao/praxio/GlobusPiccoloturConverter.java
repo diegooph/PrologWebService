@@ -38,6 +38,7 @@ public final class GlobusPiccoloturConverter {
         final List<PerguntaNokGlobus> perguntasNok = new ArrayList<>();
         for (final PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
             final List<AlternativaNokGlobus> alternativasNok = new ArrayList<>();
+            Long codContextoPergunta = null;
             for (final AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
                 // Uma alternativa selecionada quer dizer uma alternativa NOK
                 if (alternativa.selected) {
@@ -46,23 +47,31 @@ public final class GlobusPiccoloturConverter {
                     final List<InfosAlternativaAberturaOrdemServico> infosAlternativaAberturaOrdemServicos =
                             alternativasStatus.get(alternativa.getCodigo());
                     if (infosAlternativaAberturaOrdemServicos != null
-                            && infosAlternativaAberturaOrdemServicos.size() > 0
-                            && infosAlternativaAberturaOrdemServicos.get(0).isDeveAbrirOrdemServico()
-                            && infosAlternativaAberturaOrdemServicos.get(0).getCodItemOrdemServico() <= 0) {
-                        final String descricao = alternativa.isTipoOutros()
-                                ? alternativa.getRespostaOutros()
-                                : alternativa.getAlternativa();
-                        alternativasNok.add(new AlternativaNokGlobus(
-                                alternativa.getCodigo(),
-                                descricao,
-                                getPrioridadeAlternativaGlobus(
-                                        infosAlternativaAberturaOrdemServicos.get(0).getPrioridadeAlternativa())));
+                            && infosAlternativaAberturaOrdemServicos.size() > 0) {
+                        final InfosAlternativaAberturaOrdemServico infosAlternativaAberturaOrdemServico =
+                                infosAlternativaAberturaOrdemServicos.get(0);
+                        if (infosAlternativaAberturaOrdemServico.isDeveAbrirOrdemServico()
+                                && infosAlternativaAberturaOrdemServico.getCodItemOrdemServico() <= 0) {
+                            final String descricao = alternativa.isTipoOutros()
+                                    ? alternativa.getRespostaOutros()
+                                    : alternativa.getAlternativa();
+                            alternativasNok.add(new AlternativaNokGlobus(
+                                    infosAlternativaAberturaOrdemServico.getCodContextoAlternativa(),
+                                    descricao,
+                                    getPrioridadeAlternativaGlobus(
+                                            infosAlternativaAberturaOrdemServico.getPrioridadeAlternativa())));
+                            codContextoPergunta = infosAlternativaAberturaOrdemServico.getCodContextoPergunta();
+                        }
+
                     }
                 }
             }
             if (!alternativasNok.isEmpty()) {
                 perguntasNok.add(new PerguntaNokGlobus(
-                        resposta.getCodigo(),
+                        // Podemos inserir o código de contexto da pergunta com segurança, pois, se existir uma
+                        // alternativa criada, com certeza o código de contexto da pergunta existirá. E se não existir
+                        // nenhuma alternativa, o fluxo não chega nesse ponto.
+                        codContextoPergunta,
                         resposta.getPergunta(),
                         alternativasNok));
             }
@@ -168,7 +177,7 @@ public final class GlobusPiccoloturConverter {
         final ArrayOfPerguntasNokVO arrayOfPerguntasNokVO = factory.createArrayOfPerguntasNokVO();
         for (final PerguntaNokGlobus perguntaNokGlobus : perguntasNok) {
             final PerguntasNokVO perguntaNokVO = factory.createPerguntasNokVO();
-            perguntaNokVO.setCodPerguntaNok(perguntaNokGlobus.getCodPerguntaNok().intValue());
+            perguntaNokVO.setCodPerguntaNok(perguntaNokGlobus.getCodContextoPerguntaNok().intValue());
             perguntaNokVO.setDescricaoPerguntaNok(perguntaNokGlobus.getDescricaoPerguntaNok());
             perguntaNokVO.setListaAlternativasNok(convertAlternativas(factory, perguntaNokGlobus.getAlternativasNok()));
             arrayOfPerguntasNokVO.getPerguntasNokVO().add(perguntaNokVO);
@@ -183,7 +192,7 @@ public final class GlobusPiccoloturConverter {
         final ArrayOfAlternativasNokVO arrayOfAlternativasNokVO = factory.createArrayOfAlternativasNokVO();
         for (final AlternativaNokGlobus alternativaNokGlobus : alternativasNok) {
             final AlternativasNokVO alternativaNokVO = factory.createAlternativasNokVO();
-            alternativaNokVO.setCodAlternativaNok(alternativaNokGlobus.getCodAlternativaNok().intValue());
+            alternativaNokVO.setCodAlternativaNok(alternativaNokGlobus.getCodContextoAlternativaNok().intValue());
             alternativaNokVO.setDescricaoAlternativaNok(alternativaNokGlobus.getDescricaoAlternativaNok());
             alternativaNokVO.setPrioridadeAlternativaNok(alternativaNokGlobus.getPrioridadeAlternativaNok().asString());
             arrayOfAlternativasNokVO.getAlternativasNokVO().add(alternativaNokVO);
