@@ -416,4 +416,26 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             close(conn, stmt, rSet);
         }
     }
+
+    @NotNull
+    @Override
+    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
+            @NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareCall("{CALL FUNC_SOCORRO_ROTA_OPCOES_PROBLEMAS_LISTAGEM(F_COD_EMPRESA := ?)}");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            final List<OpcaoProblemaSocorroRota> opcoesProblemas = new ArrayList<>();
+            while (rSet.next()) {
+                opcoesProblemas.add(SocorroRotaConverter.createOpcaoProblemaSocorroRota(rSet));
+            }
+            return opcoesProblemas;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

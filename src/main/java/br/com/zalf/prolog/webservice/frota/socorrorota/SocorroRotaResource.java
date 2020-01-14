@@ -132,4 +132,14 @@ public final class SocorroRotaResource {
             @QueryParam("codSocorroRota") @Required final Long codSocorroRota){
         return service.getVisualizacaoSocorroRota(codSocorroRota);
     }
+
+    /**
+     * Resource para buscar as opções de problemas por empresa.
+     * */
+    @GET
+    @Path("/opcoes-problemas/")
+    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa){
+        return service.getOpcoesProblemasSocorroRotaByEmpresa(codEmpresa);
+    }
 }

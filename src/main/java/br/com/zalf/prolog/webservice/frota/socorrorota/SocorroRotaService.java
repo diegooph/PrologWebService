@@ -152,4 +152,18 @@ public final class SocorroRotaService {
                     .map(e, "Erro ao buscar as informações deste socorro em rota, tente novamente.");
         }
     }
+
+
+    @NotNull
+    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
+            @NotNull final Long codEmpresa) throws ProLogException {
+        try {
+            return dao.getOpcoesProblemasSocorroRotaByEmpresa(codEmpresa);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar as opções de problema.", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao buscar as opções de problema, tente novamente");
+        }
+    }
 }

@@ -112,4 +112,15 @@ public interface SocorroRotaDao {
     @NotNull
     SocorroRotaVisualizacao getVisualizacaoSocorroRota(
             @NotNull final Long codSocorroRota) throws Throwable;
+
+    /**
+     * Busca as opções de problema por empresa
+     *
+     * @param codEmpresa Código da empresa
+     * @return Uma lista de {@link OpcaoProblemaSocorroRota opções de problema}
+     * @throws Throwable Se algo der errado na busca.
+     */
+    @NotNull
+    List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
+            @NotNull final Long codEmpresa) throws Throwable;
 }

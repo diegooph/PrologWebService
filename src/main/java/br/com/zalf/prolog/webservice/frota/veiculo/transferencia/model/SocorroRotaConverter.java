@@ -133,4 +133,14 @@ public class SocorroRotaConverter {
                 rSet.getString("IMEI_APARELHO_FINALIZACAO")
         );
     }
+
+    @NotNull
+    public static OpcaoProblemaSocorroRota createOpcaoProblemaSocorroRota(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new OpcaoProblemaSocorroRota(
+                rSet.getLong("COD_OPCAO_PROBLEMA"),
+                rSet.getString("DESCRICAO"),
+                rSet.getBoolean("OBRIGA_DESCRICAO"),
+                rSet.getBoolean("STATUS_ATIVO"));
+    }
 }
