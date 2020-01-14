@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.socorrorota;
 
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
@@ -166,7 +167,8 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
     public List<SocorroRotaListagem> getListagemSocorroRota(
             @NotNull final List<Long> codUnidades,
             @NotNull final LocalDate dataInicial,
-            @NotNull final LocalDate dataFinal) throws Throwable {
+            @NotNull final LocalDate dataFinal,
+            @NotNull final String userToken) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -175,10 +177,12 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_LISTAGEM(" +
                     "F_COD_UNIDADES := ?, " +
                     "F_DATA_INICIAL := ?," +
-                    "F_DATA_FINAL := ?);");
+                    "F_DATA_FINAL := ?," +
+                    "F_TOKEN := ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setObject(2, dataInicial);
             stmt.setObject(3, dataFinal);
+            stmt.setString(4, TokenCleaner.getOnlyToken(userToken));
             rSet = stmt.executeQuery();
             final List<SocorroRotaListagem> socorrosRota = new ArrayList<>();
             while (rSet.next()) {

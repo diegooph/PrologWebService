@@ -78,12 +78,14 @@ public final class SocorroRotaService {
     public List<SocorroRotaListagem> getListagemSocorroRota(
             @NotNull final List<Long> codUnidades,
             @NotNull final String dataInicial,
-            @NotNull final String dataFinal) throws ProLogException {
+            @NotNull final String dataFinal,
+            @NotNull final String userToken) throws ProLogException {
         try {
             return dao.getListagemSocorroRota(
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    ProLogDateParser.toLocalDate(dataFinal),
+                    userToken);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar a lista de socorros em rota.", e);
             throw Injection

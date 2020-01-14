@@ -69,7 +69,8 @@ public interface SocorroRotaDao {
     List<SocorroRotaListagem> getListagemSocorroRota(
             @NotNull final List<Long> codUnidades,
             @NotNull final LocalDate dataInicial,
-            @NotNull final LocalDate dataFinal) throws Throwable;
+            @NotNull final LocalDate dataFinal,
+            @NotNull final String userToken) throws Throwable;
 
     /**
      * Invalida uma solicitação de socorro no banco de dados.
