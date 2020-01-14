@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -13,229 +16,230 @@ import java.time.LocalDateTime;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ItemPendenteIntegracaoTransport {
-    private String placaVeiculo;
-    private Long kmAberturaServico;
-    private Long codOrdemServico;
-    private Long codUnidadeOrdemServico;
-    private StatusOrdemServico statusOrdemServico;
-    private LocalDateTime dataHoraAberturaServico;
-    private Long codItemOrdemServico;
-    private Long codUnidadeItemOrdemServico;
-    private LocalDateTime dataHoraPrimeiroApontamento;
-    private StatusItemOrdemServico statusItemOrdemServico;
-    private Integer prazoResolucaoItemHoras;
-    private Integer qtdApontamentos;
-    private Long codChecklistPrimeiroApontamento;
-    private Long codPergunta;
-    private String descricaoPergunta;
-    private Long codAlternativaPergunta;
-    private String descricaoAlternativa;
-    private Boolean isTipoOutros;
-    private String descricaoTipoOutros;
-    private PrioridadeAlternativa prioridadeAlternativa;
+    @NotNull
+    private final String placaVeiculo;
+    @NotNull
+    private final Long kmAberturaServico;
+    @NotNull
+    private final Long codOrdemServico;
+    @NotNull
+    private final Long codUnidadeOrdemServico;
+    @NotNull
+    private final StatusOrdemServico statusOrdemServico;
+    @NotNull
+    private final LocalDateTime dataHoraAberturaServico;
+    @NotNull
+    private final Long codItemOrdemServico;
+    @NotNull
+    private final Long codUnidadeItemOrdemServico;
+    @NotNull
+    private final LocalDateTime dataHoraPrimeiroApontamento;
+    @NotNull
+    private final StatusItemOrdemServico statusItemOrdemServico;
+    @NotNull
+    private final Integer prazoResolucaoItemHoras;
+    @NotNull
+    private final Integer qtdApontamentos;
+    @NotNull
+    private final Long codChecklistPrimeiroApontamento;
+    @NotNull
+    @SerializedName("codPergunta")
+    private final Long codContextoPergunta;
+    @NotNull
+    private final String descricaoPergunta;
+    @NotNull
+    @SerializedName("codAlternativaPergunta")
+    private final Long codContextoAlternativa;
+    @NotNull
+    private final String descricaoAlternativa;
+    private final boolean isTipoOutros;
+    @Nullable
+    private final String descricaoTipoOutros;
+    @NotNull
+    private final PrioridadeAlternativa prioridadeAlternativa;
 
-    ItemPendenteIntegracaoTransport() {
+    ItemPendenteIntegracaoTransport(@NotNull final String placaVeiculo,
+                                    @NotNull final Long kmAberturaServico,
+                                    @NotNull final Long codOrdemServico,
+                                    @NotNull final Long codUnidadeOrdemServico,
+                                    @NotNull final LocalDateTime dataHoraAberturaServico,
+                                    @NotNull final Long codItemOrdemServico,
+                                    @NotNull final Long codUnidadeItemOrdemServico,
+                                    @NotNull final LocalDateTime dataHoraPrimeiroApontamento,
+                                    @NotNull final Integer prazoResolucaoItemHoras,
+                                    @NotNull final Integer qtdApontamentos,
+                                    @NotNull final Long codChecklistPrimeiroApontamento,
+                                    @NotNull final Long codContextoPergunta,
+                                    @NotNull final String descricaoPergunta,
+                                    @NotNull final Long codContextoAlternativa,
+                                    @NotNull final String descricaoAlternativa,
+                                    @NotNull final Boolean isTipoOutros,
+                                    @Nullable final String descricaoTipoOutros,
+                                    @NotNull final PrioridadeAlternativa prioridadeAlternativa) {
+        this.placaVeiculo = placaVeiculo;
+        this.kmAberturaServico = kmAberturaServico;
+        this.codOrdemServico = codOrdemServico;
+        this.codUnidadeOrdemServico = codUnidadeOrdemServico;
+        this.dataHoraAberturaServico = dataHoraAberturaServico;
+        this.codItemOrdemServico = codItemOrdemServico;
+        this.codUnidadeItemOrdemServico = codUnidadeItemOrdemServico;
+        this.dataHoraPrimeiroApontamento = dataHoraPrimeiroApontamento;
+        this.prazoResolucaoItemHoras = prazoResolucaoItemHoras;
+        this.qtdApontamentos = qtdApontamentos;
+        this.codChecklistPrimeiroApontamento = codChecklistPrimeiroApontamento;
+        this.codContextoPergunta = codContextoPergunta;
+        this.descricaoPergunta = descricaoPergunta;
+        this.codContextoAlternativa = codContextoAlternativa;
+        this.descricaoAlternativa = descricaoAlternativa;
+        this.isTipoOutros = isTipoOutros;
+        this.descricaoTipoOutros = descricaoTipoOutros;
+        this.prioridadeAlternativa = prioridadeAlternativa;
         statusOrdemServico = StatusOrdemServico.ABERTA;
         statusItemOrdemServico = StatusItemOrdemServico.PENDENTE;
     }
 
     @NotNull
     static ItemPendenteIntegracaoTransport getDummy() {
-        final ItemPendenteIntegracaoTransport item = new ItemPendenteIntegracaoTransport();
-        item.setPlacaVeiculo("PRO0001");
-        item.setKmAberturaServico(90051L);
-        item.setCodOrdemServico(94L);
-        item.setCodUnidadeOrdemServico(5L);
-        item.setDataHoraAberturaServico(LocalDateTime.now());
-        item.setCodItemOrdemServico(106851L);
-        item.setCodUnidadeItemOrdemServico(5L);
-        item.setDataHoraPrimeiroApontamento(LocalDateTime.now());
-        item.setPrazoResolucaoItemHoras(1);
-        item.setQtdApontamentos(1);
-        item.setCodChecklistPrimeiroApontamento(80931L);
-        item.setCodPergunta(1130L);
-        item.setDescricaoPergunta("Cintos de segurança e sensor");
-        item.setCodAlternativaPergunta(294L);
-        item.setDescricaoAlternativa("Sensor com problema");
-        item.setTipoOutros(false);
-        item.setDescricaoTipoOutros(null);
-        item.setPrioridadeAlternativa(PrioridadeAlternativa.CRITICA);
-        return item;
+        return new ItemPendenteIntegracaoTransport(
+                "PRO0001",
+                90051L,
+                94L,
+                5L,
+                Now.localDateTimeUtc(),
+                106851L,
+                5L,
+                Now.localDateTimeUtc(),
+                1,
+                1,
+                80931L,
+                1130L,
+                "Cintos de segurança e sensor",
+                294L,
+                "Sensor com problema",
+                false,
+                null,
+                PrioridadeAlternativa.CRITICA);
     }
 
     @NotNull
     static ItemPendenteIntegracaoTransport getDummyTipoOutros() {
-        final ItemPendenteIntegracaoTransport item = new ItemPendenteIntegracaoTransport();
-        item.setPlacaVeiculo("PRO0001");
-        item.setKmAberturaServico(854966L);
-        item.setCodOrdemServico(65L);
-        item.setCodUnidadeOrdemServico(5L);
-        item.setDataHoraAberturaServico(LocalDateTime.now());
-        item.setCodItemOrdemServico(26304L);
-        item.setCodUnidadeItemOrdemServico(5L);
-        item.setDataHoraPrimeiroApontamento(LocalDateTime.now());
-        item.setPrazoResolucaoItemHoras(720);
-        item.setQtdApontamentos(1);
-        item.setCodChecklistPrimeiroApontamento(80931L);
-        item.setCodPergunta(1163L);
-        item.setDescricaoPergunta("Tampa da buzina, painel, porta luvas");
-        item.setCodAlternativaPergunta(381L);
-        item.setDescricaoAlternativa("Outros");
-        item.setTipoOutros(true);
-        item.setDescricaoTipoOutros("Luz do painel estragada");
-        item.setPrioridadeAlternativa(PrioridadeAlternativa.BAIXA);
-        return item;
+        return new ItemPendenteIntegracaoTransport(
+                "PRO0001",
+                854966L,
+                65L,
+                5L,
+                Now.localDateTimeUtc(),
+                26304L,
+                5L,
+                Now.localDateTimeUtc(),
+                720,
+                1,
+                80931L,
+                1163L,
+                "Tampa da buzina, painel, porta luvas",
+                381L,
+                "Outros",
+                true,
+                "Luz do painel estragada",
+                PrioridadeAlternativa.BAIXA);
     }
 
+    @NotNull
     public String getPlacaVeiculo() {
         return placaVeiculo;
     }
 
-    public void setPlacaVeiculo(final String placaVeiculo) {
-        this.placaVeiculo = placaVeiculo;
-    }
-
+    @NotNull
     public Long getKmAberturaServico() {
         return kmAberturaServico;
     }
 
-    public void setKmAberturaServico(final Long kmAberturaServico) {
-        this.kmAberturaServico = kmAberturaServico;
-    }
-
+    @NotNull
     public Long getCodOrdemServico() {
         return codOrdemServico;
     }
 
-    public void setCodOrdemServico(final Long codOrdemServico) {
-        this.codOrdemServico = codOrdemServico;
-    }
-
+    @NotNull
     public Long getCodUnidadeOrdemServico() {
         return codUnidadeOrdemServico;
     }
 
-    public void setCodUnidadeOrdemServico(final Long codUnidadeOrdemServico) {
-        this.codUnidadeOrdemServico = codUnidadeOrdemServico;
-    }
-
+    @NotNull
     public StatusOrdemServico getStatusOrdemServico() {
         return statusOrdemServico;
     }
 
+    @NotNull
     public LocalDateTime getDataHoraAberturaServico() {
         return dataHoraAberturaServico;
     }
 
-    public void setDataHoraAberturaServico(final LocalDateTime dataHoraAberturaServico) {
-        this.dataHoraAberturaServico = dataHoraAberturaServico;
-    }
-
+    @NotNull
     public Long getCodItemOrdemServico() {
         return codItemOrdemServico;
     }
 
-    public void setCodItemOrdemServico(final Long codItemOrdemServico) {
-        this.codItemOrdemServico = codItemOrdemServico;
-    }
-
+    @NotNull
     public Long getCodUnidadeItemOrdemServico() {
         return codUnidadeItemOrdemServico;
     }
 
-    public void setCodUnidadeItemOrdemServico(final Long codUnidadeItemOrdemServico) {
-        this.codUnidadeItemOrdemServico = codUnidadeItemOrdemServico;
-    }
-
+    @NotNull
     public LocalDateTime getDataHoraPrimeiroApontamento() {
         return dataHoraPrimeiroApontamento;
     }
 
-    public void setDataHoraPrimeiroApontamento(final LocalDateTime dataHoraPrimeiroApontamento) {
-        this.dataHoraPrimeiroApontamento = dataHoraPrimeiroApontamento;
-    }
-
+    @NotNull
     public StatusItemOrdemServico getStatusItemOrdemServico() {
         return statusItemOrdemServico;
     }
 
+    @NotNull
     public Integer getPrazoResolucaoItemHoras() {
         return prazoResolucaoItemHoras;
     }
 
-    public void setPrazoResolucaoItemHoras(final Integer prazoResolucaoItemHoras) {
-        this.prazoResolucaoItemHoras = prazoResolucaoItemHoras;
-    }
-
+    @NotNull
     public Integer getQtdApontamentos() {
         return qtdApontamentos;
     }
 
-    public void setQtdApontamentos(final Integer qtdApontamentos) {
-        this.qtdApontamentos = qtdApontamentos;
-    }
-
+    @NotNull
     public Long getCodChecklistPrimeiroApontamento() {
         return codChecklistPrimeiroApontamento;
     }
 
-    public void setCodChecklistPrimeiroApontamento(final Long codChecklistPrimeiroApontamento) {
-        this.codChecklistPrimeiroApontamento = codChecklistPrimeiroApontamento;
+    @NotNull
+    public Long getCodContextoPergunta() {
+        return codContextoPergunta;
     }
 
-    public Long getCodPergunta() {
-        return codPergunta;
-    }
-
-    public void setCodPergunta(final Long codPergunta) {
-        this.codPergunta = codPergunta;
-    }
-
+    @NotNull
     public String getDescricaoPergunta() {
         return descricaoPergunta;
     }
 
-    public void setDescricaoPergunta(final String descricaoPergunta) {
-        this.descricaoPergunta = descricaoPergunta;
+    @NotNull
+    public Long getCodContextoAlternativa() {
+        return codContextoAlternativa;
     }
 
-    public Long getCodAlternativaPergunta() {
-        return codAlternativaPergunta;
-    }
-
-    public void setCodAlternativaPergunta(final Long codAlternativaPergunta) {
-        this.codAlternativaPergunta = codAlternativaPergunta;
-    }
-
+    @NotNull
     public String getDescricaoAlternativa() {
         return descricaoAlternativa;
     }
 
-    public void setDescricaoAlternativa(final String descricaoAlternativa) {
-        this.descricaoAlternativa = descricaoAlternativa;
-    }
-
-    public Boolean getTipoOutros() {
+    public boolean getTipoOutros() {
         return isTipoOutros;
     }
 
-    public void setTipoOutros(final Boolean tipoOutros) {
-        isTipoOutros = tipoOutros;
-    }
-
+    @Nullable
     public String getDescricaoTipoOutros() {
         return descricaoTipoOutros;
     }
 
-    public void setDescricaoTipoOutros(final String descricaoTipoOutros) {
-        this.descricaoTipoOutros = descricaoTipoOutros;
-    }
-
+    @NotNull
     public PrioridadeAlternativa getPrioridadeAlternativa() {
         return prioridadeAlternativa;
-    }
-
-    public void setPrioridadeAlternativa(final PrioridadeAlternativa prioridadeAlternativa) {
-        this.prioridadeAlternativa = prioridadeAlternativa;
     }
 }
