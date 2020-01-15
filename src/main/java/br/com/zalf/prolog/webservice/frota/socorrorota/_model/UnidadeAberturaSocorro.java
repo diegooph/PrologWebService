@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 /**
  * Created on 12/19/19
  *
