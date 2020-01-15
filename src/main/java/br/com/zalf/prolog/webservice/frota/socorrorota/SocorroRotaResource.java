@@ -137,6 +137,9 @@ public final class SocorroRotaResource {
      * Resource para buscar as opções de problemas por empresa.
      * */
     @GET
+    @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO,
+                            Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/opcoes-problemas/")
     public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa){
