@@ -153,7 +153,6 @@ public final class SocorroRotaService {
         }
     }
 
-
     @NotNull
     public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
             @NotNull final Long codEmpresa) throws ProLogException {
@@ -164,6 +163,22 @@ public final class SocorroRotaService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao buscar as opções de problema, tente novamente");
+        }
+    }
+
+    @NotNull
+    ResponseWithCod insertOpcoesProblemas(
+            @NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) throws ProLogException {
+        try {
+            return ResponseWithCod.ok(
+                    "Opção de problema inserida com sucesso",
+                    dao.insertOpcoesProblemas(opcaoProblemaSocorroRotaCadastro));
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir a opção de problema", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível inserir esta opção de problema, " +
+                            "tente novamente");
         }
     }
 }

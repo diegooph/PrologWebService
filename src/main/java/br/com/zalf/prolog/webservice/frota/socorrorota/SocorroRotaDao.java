@@ -123,4 +123,15 @@ public interface SocorroRotaDao {
     @NotNull
     List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
             @NotNull final Long codEmpresa) throws Throwable;
+
+    /**
+     * Cria uma nova opção de problema no banco de dados.
+     *
+     * @param opcaoProblemaSocorroRotaCadastro Objeto contendo as informações da opção de problema.
+     * @return Código gerado pelo BD para a nova opção de problema.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    Long insertOpcoesProblemas(
+            @NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) throws Throwable;
 }

@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -144,5 +145,17 @@ public final class SocorroRotaResource {
     public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa){
         return service.getOpcoesProblemasSocorroRotaByEmpresa(codEmpresa);
+    }
+
+    /**
+     * Resource para adicionar uma opção de problema.
+     */
+    @POST
+    @Secured(permissions = Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS)
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/opcoes-problemas/")
+    public ResponseWithCod insertOpcoesProblemas(
+            @Required @Valid final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) {
+        return service.insertOpcoesProblemas(opcaoProblemaSocorroRotaCadastro);
     }
 }
