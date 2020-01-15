@@ -42,8 +42,8 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algo der errado na busca.
      */
     @NotNull
-    List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
-            @NotNull final Long codUnidade) throws Throwable;
+    List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(@NotNull final Long codUnidade)
+            throws Throwable;
 
     /**
      * Busca as opções de problema disponíveis para a abertura de socorro em rota por empresa
@@ -66,11 +66,10 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algo der errado na busca.
      */
     @NotNull
-    List<SocorroRotaListagem> getListagemSocorroRota(
-            @NotNull final List<Long> codUnidades,
-            @NotNull final LocalDate dataInicial,
-            @NotNull final LocalDate dataFinal,
-            @NotNull final String userToken) throws Throwable;
+    List<SocorroRotaListagem> getListagemSocorroRota(@NotNull final List<Long> codUnidades,
+                                                     @NotNull final LocalDate dataInicial,
+                                                     @NotNull final LocalDate dataFinal,
+                                                     @NotNull final String userToken) throws Throwable;
 
     /**
      * Invalida uma solicitação de socorro no banco de dados.
@@ -110,8 +109,7 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algo der errado na busca.
      */
     @NotNull
-    SocorroRotaVisualizacao getVisualizacaoSocorroRota(
-            @NotNull final Long codSocorroRota) throws Throwable;
+    SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codSocorroRota) throws Throwable;
 
     /**
      * Busca as opções de problema por empresa
@@ -121,6 +119,6 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algo der errado na busca.
      */
     @NotNull
-    List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
-            @NotNull final Long codEmpresa) throws Throwable;
+    List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(@NotNull final Long codEmpresa)
+            throws Throwable;
 }

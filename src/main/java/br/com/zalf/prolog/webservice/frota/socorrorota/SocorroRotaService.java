@@ -49,8 +49,8 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
-            @NotNull final Long codUnidade) throws ProLogException {
+    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(@NotNull final Long codUnidade)
+            throws ProLogException {
         try {
             return dao.getVeiculosDisponiveisAberturaSocorroByUnidade(codUnidade);
         } catch (final Throwable e) {
@@ -75,11 +75,10 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public List<SocorroRotaListagem> getListagemSocorroRota(
-            @NotNull final List<Long> codUnidades,
-            @NotNull final String dataInicial,
-            @NotNull final String dataFinal,
-            @NotNull final String userToken) throws ProLogException {
+    public List<SocorroRotaListagem> getListagemSocorroRota(@NotNull final List<Long> codUnidades,
+                                                            @NotNull final String dataInicial,
+                                                            @NotNull final String dataFinal,
+                                                            @NotNull final String userToken) throws ProLogException {
         try {
             return dao.getListagemSocorroRota(
                     codUnidades,
@@ -95,7 +94,8 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    ResponseWithCod invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) throws ProLogException {
+    ResponseWithCod invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao)
+            throws ProLogException {
         try {
             return ResponseWithCod.ok(
                     "Solicitação de socorro invalidada com sucesso.",
@@ -110,7 +110,8 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    ResponseWithCod atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) throws ProLogException {
+    ResponseWithCod atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento)
+            throws ProLogException {
         try {
             return ResponseWithCod.ok(
                     "Solicitação de socorro atendida com sucesso.",
@@ -126,7 +127,8 @@ public final class SocorroRotaService {
 
 
     @NotNull
-    ResponseWithCod finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) throws ProLogException {
+    ResponseWithCod finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao)
+            throws ProLogException {
         try {
             return ResponseWithCod.ok(
                     "Solicitação de socorro finalizada com sucesso.",
@@ -141,8 +143,8 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
-            @NotNull final Long codSocorroRota) throws ProLogException {
+    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codSocorroRota)
+            throws ProLogException {
         try {
             return dao.getVisualizacaoSocorroRota(codSocorroRota);
         } catch (final Throwable e) {
@@ -155,8 +157,8 @@ public final class SocorroRotaService {
 
 
     @NotNull
-    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
-            @NotNull final Long codEmpresa) throws ProLogException {
+    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(@NotNull final Long codEmpresa)
+            throws ProLogException {
         try {
             return dao.getOpcoesProblemasSocorroRotaByEmpresa(codEmpresa);
         } catch (final Throwable e) {
