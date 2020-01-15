@@ -146,6 +146,9 @@ public final class Pilares {
             public static final int TRATAR_SOCORRO = 146;
 
             public static final int VISUALIZAR_SOCORROS_E_RELATORIOS = 147;
+
+            // Listar, criar, editar, ativar e inativar opções de problemas
+            public static final int GERENCIAR_OPCOES_PROBLEMAS = 148;
         }
     }
 
