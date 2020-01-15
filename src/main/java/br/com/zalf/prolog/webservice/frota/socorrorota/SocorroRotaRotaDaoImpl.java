@@ -436,4 +436,35 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             close(conn, stmt, rSet);
         }
     }
+
+    @NotNull
+    @Override
+    public Long insertOpcoesProblemas(
+            @NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_INSERT_OPCOES_PROBLEMAS(" +
+                    "F_COD_EMPRESA := ?," +
+                    "F_DESCRICAO := ?," +
+                    "F_OBRIGA_DESCRICAO := ?," +
+                    "F_COD_COLABORADOR := ?," +
+                    "F_DATA_HORA := ?) AS CODIGO;");
+            stmt.setLong(1, opcaoProblemaSocorroRotaCadastro.getCodEmpresa());
+            stmt.setString(2, opcaoProblemaSocorroRotaCadastro.getDescricao());
+            stmt.setBoolean(3, opcaoProblemaSocorroRotaCadastro.isObrigaDescricao());
+            stmt.setLong(4, opcaoProblemaSocorroRotaCadastro.getCodColaborador());
+            stmt.setObject(5, Now.localDateTimeUtc());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new Throwable("Erro ao inserir uma opção de problema");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

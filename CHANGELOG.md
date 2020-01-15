@@ -14,6 +14,7 @@ Change Log
 * Implementa a invalidação de socorros em rota (PL-2427)
 * Implementa a finalização de socorros em rota (PL-2428)
 * Implementa a listagem de opções de problemas (PL-2465)
+* Implementa o cadastro de opções de problemas (PL-2466)
 
 <a name="v1.0.9"></a>
 ## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (release-date) [unreleased]
