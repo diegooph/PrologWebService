@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.11"></a>
-## Version [v1.0.11](https://github.com/luizfp/PrologWebService/compare/v1.0.10...v1.0.11) (release-date) [unreleased]
+## Version [v1.0.11](https://github.com/luizfp/PrologWebService/compare/v1.0.10...v1.0.11) (2020-01-15)
 
 ### Refactors
 * Adiciona configuração para bloquear processo de aferição (PL-1934)
