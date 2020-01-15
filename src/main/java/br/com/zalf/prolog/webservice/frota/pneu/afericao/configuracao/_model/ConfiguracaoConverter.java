@@ -27,7 +27,9 @@ public final class ConfiguracaoConverter {
                 rSet.getLong("COD_UNIDADE"),
                 rSet.getString("NOME_UNIDADE"),
                 rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
-                rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"));
+                rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"),
+                rSet.getBoolean("BLOQUEAR_VALORES_MENORES"),
+                rSet.getBoolean("BLOQUEAR_VALORES_MAIORES"));
     }
 
     @NotNull

@@ -33,6 +33,16 @@ public final class VeiculoTransferenciaPraxio {
     }
 
     @NotNull
+    public static VeiculoTransferenciaPraxio getDummy() {
+        return new VeiculoTransferenciaPraxio(
+                5L,
+                10L,
+                "03383283194",
+                "PRO0001",
+                "teste");
+    }
+
+    @NotNull
     public Long getCodUnidadeOrigem() {
         return codUnidadeOrigem;
     }

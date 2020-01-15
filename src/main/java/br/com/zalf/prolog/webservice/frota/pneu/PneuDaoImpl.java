@@ -497,13 +497,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT " +
-                    "  P.CODIGO AS COD_PNEU " +
-                    "FROM PNEU P " +
-                    "WHERE P.COD_UNIDADE IN (SELECT U.CODIGO " +
-                    "                        FROM UNIDADE U " +
-                    "                        WHERE U.COD_EMPRESA = ?) " +
-                    "      AND P.CODIGO_CLIENTE LIKE ANY(?);");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_PNEU_GET_COD_PNEU_BY_CODIGO_CLIENTE(F_COD_EMPRESA => ?, F_COD_CLIENTE => ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, codigoClientePneus));
             rSet = stmt.executeQuery();
