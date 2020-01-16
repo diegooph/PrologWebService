@@ -418,7 +418,7 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
-    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(@NotNull final Long codEmpresa)
+    public List<OpcaoProblemaSocorroRotaListagem> getOpcoesProblemasSocorroRotaByEmpresa(@NotNull final Long codEmpresa)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -428,7 +428,7 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
             stmt = conn.prepareCall("{CALL FUNC_SOCORRO_ROTA_OPCOES_PROBLEMAS_LISTAGEM(F_COD_EMPRESA := ?)}");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
-            final List<OpcaoProblemaSocorroRota> opcoesProblemas = new ArrayList<>();
+            final List<OpcaoProblemaSocorroRotaListagem> opcoesProblemas = new ArrayList<>();
             while (rSet.next()) {
                 opcoesProblemas.add(SocorroRotaConverter.createOpcaoProblemaSocorroRota(rSet));
             }

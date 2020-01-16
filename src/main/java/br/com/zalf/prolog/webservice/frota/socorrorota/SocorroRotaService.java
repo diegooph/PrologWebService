@@ -151,7 +151,7 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(@NotNull final Long codEmpresa) {
+    public List<OpcaoProblemaSocorroRotaListagem> getOpcoesProblemasSocorroRotaByEmpresa(@NotNull final Long codEmpresa) {
         try {
             return dao.getOpcoesProblemasSocorroRotaByEmpresa(codEmpresa);
         } catch (final Throwable e) {

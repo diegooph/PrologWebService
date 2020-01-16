@@ -135,9 +135,9 @@ public class SocorroRotaConverter {
     }
 
     @NotNull
-    public static OpcaoProblemaSocorroRota createOpcaoProblemaSocorroRota(
+    public static OpcaoProblemaSocorroRotaListagem createOpcaoProblemaSocorroRota(
             @NotNull final ResultSet rSet) throws SQLException {
-        return new OpcaoProblemaSocorroRota(
+        return new OpcaoProblemaSocorroRotaListagem(
                 rSet.getLong("COD_OPCAO_PROBLEMA"),
                 rSet.getString("DESCRICAO"),
                 rSet.getBoolean("OBRIGA_DESCRICAO"),
