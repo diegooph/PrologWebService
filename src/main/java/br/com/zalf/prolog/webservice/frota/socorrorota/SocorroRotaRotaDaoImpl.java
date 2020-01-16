@@ -117,8 +117,8 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
-    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
-            @NotNull final Long codUnidade) throws Throwable {
+    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(@NotNull final Long codUnidade)
+            throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -165,11 +165,10 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
-    public List<SocorroRotaListagem> getListagemSocorroRota(
-            @NotNull final List<Long> codUnidades,
-            @NotNull final LocalDate dataInicial,
-            @NotNull final LocalDate dataFinal,
-            @NotNull final String userToken) throws Throwable {
+    public List<SocorroRotaListagem> getListagemSocorroRota(@NotNull final List<Long> codUnidades,
+                                                            @NotNull final LocalDate dataInicial,
+                                                            @NotNull final LocalDate dataFinal,
+                                                            @NotNull final String userToken) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -366,8 +365,7 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
-    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
-            @NotNull final Long codSocorroRota) throws Throwable {
+    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codSocorroRota) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -382,19 +380,19 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
                         SocorroRotaConverter.createSocorroRotaAberturaVisualizacao(rSet);
 
                 SocorroRotaAtendimentoVisualizacao socorroRotaAtendimentoVisualizacao = null;
-                if(rSet.getObject("DATA_HORA_ATENDIMENTO", LocalDateTime.class) != null) {
+                if (rSet.getObject("DATA_HORA_ATENDIMENTO", LocalDateTime.class) != null) {
                     socorroRotaAtendimentoVisualizacao =
                             SocorroRotaConverter.createSocorroRotaAtendimentoVisualizacao(rSet);
                 }
 
                 SocorroRotaInvalidacaoVisualizacao socorroRotaInvalidacaoVisualizacao = null;
-                if(rSet.getObject("DATA_HORA_INVALIDACAO", LocalDateTime.class) != null) {
+                if (rSet.getObject("DATA_HORA_INVALIDACAO", LocalDateTime.class) != null) {
                     socorroRotaInvalidacaoVisualizacao =
                             SocorroRotaConverter.createSocorroRotaInvalidacaoVisualizacao(rSet);
                 }
 
                 SocorroRotaFinalizacaoVisualizacao socorroRotaFinalizacaoVisualizacao = null;
-                if(rSet.getObject("DATA_HORA_FINALIZACAO", LocalDateTime.class) != null) {
+                if (rSet.getObject("DATA_HORA_FINALIZACAO", LocalDateTime.class) != null) {
                     socorroRotaFinalizacaoVisualizacao =
                             SocorroRotaConverter.createSocorroRotaFinalizacaoVisualizacao(rSet);
                 }
@@ -420,8 +418,8 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
-    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
-            @NotNull final Long codEmpresa) throws Throwable {
+    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(@NotNull final Long codEmpresa)
+            throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -442,8 +440,8 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
-    public Long insertOpcoesProblemas(
-            @NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) throws Throwable {
+    public Long insertOpcoesProblemas(@NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro)
+            throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

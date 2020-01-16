@@ -37,8 +37,7 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(
-            @NotNull final Long codColaborador) {
+    public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(@NotNull final Long codColaborador) {
         try {
             return dao.getUnidadesDisponiveisAberturaSocorroByCodColaborador(codColaborador);
         } catch (final Throwable e) {
@@ -50,8 +49,7 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
-            @NotNull final Long codUnidade) {
+    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(@NotNull final Long codUnidade) {
         try {
             return dao.getVeiculosDisponiveisAberturaSocorroByUnidade(codUnidade);
         } catch (final Throwable e) {
@@ -76,11 +74,10 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public List<SocorroRotaListagem> getListagemSocorroRota(
-            @NotNull final List<Long> codUnidades,
-            @NotNull final String dataInicial,
-            @NotNull final String dataFinal,
-            @NotNull final String userToken) {
+    public List<SocorroRotaListagem> getListagemSocorroRota(@NotNull final List<Long> codUnidades,
+                                                            @NotNull final String dataInicial,
+                                                            @NotNull final String dataFinal,
+                                                            @NotNull final String userToken) {
         try {
             return dao.getListagemSocorroRota(
                     codUnidades,
@@ -142,8 +139,7 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
-            @NotNull final Long codSocorroRota) {
+    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codSocorroRota) {
         try {
             return dao.getVisualizacaoSocorroRota(codSocorroRota);
         } catch (final Throwable e) {
@@ -155,8 +151,7 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
-            @NotNull final Long codEmpresa) {
+    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(@NotNull final Long codEmpresa) {
         try {
             return dao.getOpcoesProblemasSocorroRotaByEmpresa(codEmpresa);
         } catch (final Throwable e) {
