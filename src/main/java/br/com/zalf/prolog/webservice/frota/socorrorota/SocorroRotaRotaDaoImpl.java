@@ -439,8 +439,8 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
-    public Long insertOpcoesProblemas(
-            @NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) throws Throwable {
+    public Long insertOpcoesProblemas(@NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro)
+            throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
