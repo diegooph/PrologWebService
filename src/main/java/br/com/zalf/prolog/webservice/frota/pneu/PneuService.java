@@ -68,6 +68,7 @@ public final class PneuService {
                            @NotNull final Long codOriginal,
                            @NotNull final Pneu pneu) throws ProLogException {
         try {
+            PneuValidator.validacaoAtributosPneu(pneu,codUnidade,false);
             RouterPneu
                     .create(dao, userToken)
                     .update(pneu, codUnidade, codOriginal);
