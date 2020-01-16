@@ -143,7 +143,7 @@ public final class SocorroRotaResource {
                             Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/opcoes-problemas/")
-    public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
+    public List<OpcaoProblemaSocorroRotaListagem> getOpcoesProblemasSocorroRotaByEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa){
         return service.getOpcoesProblemasSocorroRotaByEmpresa(codEmpresa);
     }

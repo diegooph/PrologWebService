@@ -115,11 +115,11 @@ public interface SocorroRotaDao {
      * Busca as opções de problema por empresa
      *
      * @param codEmpresa Código da empresa
-     * @return Uma lista de {@link OpcaoProblemaSocorroRota opções de problema}
+     * @return Uma lista de {@link OpcaoProblemaSocorroRotaListagem opções de problema}
      * @throws Throwable Se algo der errado na busca.
      */
     @NotNull
-    List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(@NotNull final Long codEmpresa)
+    List<OpcaoProblemaSocorroRotaListagem> getOpcoesProblemasSocorroRotaByEmpresa(@NotNull final Long codEmpresa)
             throws Throwable;
 
     /**

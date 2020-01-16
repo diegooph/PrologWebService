@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public class OpcaoProblemaSocorroRota {
+public class OpcaoProblemaSocorroRotaListagem {
     /*
     * Código único para identificação do problema
     * */
@@ -30,7 +30,7 @@ public class OpcaoProblemaSocorroRota {
     * */
     private final boolean ativo;
 
-    public OpcaoProblemaSocorroRota(@NotNull final Long codigo,
+    public OpcaoProblemaSocorroRotaListagem(@NotNull final Long codigo,
                                     @NotNull final String descricao,
                                     final boolean obrigaDescricao,
                                     final boolean ativo) {
