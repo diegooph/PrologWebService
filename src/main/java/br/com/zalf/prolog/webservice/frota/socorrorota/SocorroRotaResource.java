@@ -149,6 +149,19 @@ public final class SocorroRotaResource {
     }
 
     /**
+     * Resource para buscar uma opção de problema específica.
+     * */
+    @GET
+    @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO,
+            Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/opcao-problema/")
+    public OpcaoProblemaSocorroRotaVisualizacao getOpcaoProblemaSocorroRotaVisualizacao(
+            @QueryParam("codOpcaoProblema") @Required final Long codOpcaoProblema){
+        return service.getOpcaoProblemaSocorroRotaVisualizacao(codOpcaoProblema);
+    }
+
+    /**
      * Resource para adicionar uma opção de problema.
      */
     @POST

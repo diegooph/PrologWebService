@@ -162,6 +162,18 @@ public final class SocorroRotaService {
         }
     }
 
+    public OpcaoProblemaSocorroRotaVisualizacao getOpcaoProblemaSocorroRotaVisualizacao(
+            @NotNull final Long codOpcaoProblema) {
+        try {
+            return dao.getOpcaoProblemaSocorroRotaVisualizacao(codOpcaoProblema);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar a opção de problema.", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao buscar a opção de problema, tente novamente");
+        }
+    }
+
     @NotNull
     ResponseWithCod insertOpcoesProblemas(
             @NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) {

@@ -123,6 +123,17 @@ public interface SocorroRotaDao {
             throws Throwable;
 
     /**
+     * Busca as opções de problema por empresa
+     *
+     * @param codOpcaoProblema Código da empresa
+     * @return Uma {@link OpcaoProblemaSocorroRotaVisualizacao opção de problema específica}
+     * @throws Throwable Se algo der errado na busca.
+     */
+    @NotNull
+    OpcaoProblemaSocorroRotaVisualizacao getOpcaoProblemaSocorroRotaVisualizacao(@NotNull final Long codOpcaoProblema)
+            throws Throwable;
+
+    /**
      * Cria uma nova opção de problema no banco de dados.
      *
      * @param opcaoProblemaSocorroRotaCadastro Objeto contendo as informações da opção de problema.

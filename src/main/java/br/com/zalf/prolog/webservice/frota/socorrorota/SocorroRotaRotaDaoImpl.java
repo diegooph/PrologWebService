@@ -6,13 +6,11 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
-import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.SocorroRotaConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -436,6 +434,27 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    @Override
+    public OpcaoProblemaSocorroRotaVisualizacao getOpcaoProblemaSocorroRotaVisualizacao(
+            @NotNull final Long codOpcaoProblema) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareCall("{CALL FUNC_SOCORRO_ROTA_OPCAO_PROBLEMA_ITEM(F_COD_OPCAO_PROBLEMA := ?)}");
+            stmt.setLong(1, codOpcaoProblema);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return SocorroRotaConverter.createOpcaoProblemaSocorroRotaVisualizacao(rSet);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return null;
     }
 
     @NotNull
