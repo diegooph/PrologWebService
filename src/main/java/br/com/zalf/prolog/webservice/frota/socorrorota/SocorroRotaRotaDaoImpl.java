@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -464,6 +465,41 @@ public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements 
                 return rSet.getLong("CODIGO");
             } else {
                 throw new Throwable("Erro ao inserir uma opção de problema");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void updateOpcoesProblemas(
+            @NotNull final OpcaoProblemaSocorroRotaEdicao opcaoProblemaSocorroRotaEdicao) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_UPDATE_OPCOES_PROBLEMAS(" +
+                    "F_COD_OPCAO_PROBLEMA := ?," +
+                    "F_COD_EMPRESA := ?," +
+                    "F_COD_COLABORADOR := ?," +
+                    "F_DESCRICAO := ?," +
+                    "F_OBRIGA_DESCRICAO := ?," +
+                    "F_DATA_HORA := ?) AS CODIGO;");
+            stmt.setLong(1, opcaoProblemaSocorroRotaEdicao.getCodOpcaoProblema());
+            stmt.setLong(2, opcaoProblemaSocorroRotaEdicao.getCodEmpresa());
+            stmt.setLong(3, opcaoProblemaSocorroRotaEdicao.getCodColaborador());
+            stmt.setString(4, opcaoProblemaSocorroRotaEdicao.getDescricao());
+            stmt.setBoolean(5, opcaoProblemaSocorroRotaEdicao.isObrigaDescricao());
+            stmt.setObject(6, Now.localDateTimeUtc());
+
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                if (!rSet.getBoolean(1)) {
+                    throw new IllegalStateException("Erro ao editar esta opção de problema.");
+                }
+            } else {
+                throw new IllegalStateException("Erro ao editar esta opção de problema.");
             }
         } finally {
             close(conn, stmt, rSet);

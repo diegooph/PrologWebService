@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -157,5 +158,16 @@ public final class SocorroRotaResource {
     public ResponseWithCod insertOpcoesProblemas(
             @Required @Valid final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) {
         return service.insertOpcoesProblemas(opcaoProblemaSocorroRotaCadastro);
+    }
+
+    /**
+     * Resource para editar uma opção de problema.
+     */
+    @PUT
+    @Secured(permissions = Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS)
+    @Path("/opcoes-problemas/")
+    public Response updateOpcoesProblemas(
+            @Required @Valid final OpcaoProblemaSocorroRotaEdicao opcaoProblemaSocorroRotaEdicao) {
+        return service.updateOpcoesProblemas(opcaoProblemaSocorroRotaEdicao);
     }
 }

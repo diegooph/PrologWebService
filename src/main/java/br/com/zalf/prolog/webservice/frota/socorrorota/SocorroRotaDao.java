@@ -134,4 +134,15 @@ public interface SocorroRotaDao {
     @NotNull
     Long insertOpcoesProblemas(
             @NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) throws Throwable;
+
+    /**
+     * Edita uma nova opção de problema no banco de dados.
+     *
+     * @param opcaoProblemaSocorroRotaEdicao Objeto contendo as informações da opção de problema.
+     * @return Código gerado pelo BD para a nova opção de problema.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    void updateOpcoesProblemas(
+            @NotNull final OpcaoProblemaSocorroRotaEdicao opcaoProblemaSocorroRotaEdicao) throws Throwable;
 }

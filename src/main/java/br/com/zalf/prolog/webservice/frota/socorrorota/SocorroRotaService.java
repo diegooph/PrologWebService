@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
@@ -21,7 +22,7 @@ public final class SocorroRotaService {
     private final SocorroRotaDao dao = Injection.provideSocorroDao();
 
     @NotNull
-    ResponseWithCod aberturaSocorro(@NotNull final SocorroRotaAbertura socorroRotaAbertura) throws ProLogException {
+    ResponseWithCod aberturaSocorro(@NotNull final SocorroRotaAbertura socorroRotaAbertura) {
         try {
             return ResponseWithCod.ok(
                     "Solicitação de socorro aberta com sucesso",
@@ -37,7 +38,7 @@ public final class SocorroRotaService {
 
     @NotNull
     public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(
-            @NotNull final Long codColaborador) throws ProLogException {
+            @NotNull final Long codColaborador) {
         try {
             return dao.getUnidadesDisponiveisAberturaSocorroByCodColaborador(codColaborador);
         } catch (final Throwable e) {
@@ -50,7 +51,7 @@ public final class SocorroRotaService {
 
     @NotNull
     public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
-            @NotNull final Long codUnidade) throws ProLogException {
+            @NotNull final Long codUnidade) {
         try {
             return dao.getVeiculosDisponiveisAberturaSocorroByUnidade(codUnidade);
         } catch (final Throwable e) {
@@ -63,7 +64,7 @@ public final class SocorroRotaService {
 
     @NotNull
     public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
-            @NotNull final Long codEmpresa) throws ProLogException {
+            @NotNull final Long codEmpresa) {
         try {
             return dao.getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(codEmpresa);
         } catch (final Throwable e) {
@@ -79,7 +80,7 @@ public final class SocorroRotaService {
             @NotNull final List<Long> codUnidades,
             @NotNull final String dataInicial,
             @NotNull final String dataFinal,
-            @NotNull final String userToken) throws ProLogException {
+            @NotNull final String userToken) {
         try {
             return dao.getListagemSocorroRota(
                     codUnidades,
@@ -95,7 +96,7 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    ResponseWithCod invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) throws ProLogException {
+    ResponseWithCod invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) {
         try {
             return ResponseWithCod.ok(
                     "Solicitação de socorro invalidada com sucesso.",
@@ -110,7 +111,7 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    ResponseWithCod atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) throws ProLogException {
+    ResponseWithCod atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) {
         try {
             return ResponseWithCod.ok(
                     "Solicitação de socorro atendida com sucesso.",
@@ -126,7 +127,7 @@ public final class SocorroRotaService {
 
 
     @NotNull
-    ResponseWithCod finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) throws ProLogException {
+    ResponseWithCod finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) {
         try {
             return ResponseWithCod.ok(
                     "Solicitação de socorro finalizada com sucesso.",
@@ -142,7 +143,7 @@ public final class SocorroRotaService {
 
     @NotNull
     public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
-            @NotNull final Long codSocorroRota) throws ProLogException {
+            @NotNull final Long codSocorroRota) {
         try {
             return dao.getVisualizacaoSocorroRota(codSocorroRota);
         } catch (final Throwable e) {
@@ -155,7 +156,7 @@ public final class SocorroRotaService {
 
     @NotNull
     public List<OpcaoProblemaSocorroRota> getOpcoesProblemasSocorroRotaByEmpresa(
-            @NotNull final Long codEmpresa) throws ProLogException {
+            @NotNull final Long codEmpresa) {
         try {
             return dao.getOpcoesProblemasSocorroRotaByEmpresa(codEmpresa);
         } catch (final Throwable e) {
@@ -168,7 +169,7 @@ public final class SocorroRotaService {
 
     @NotNull
     ResponseWithCod insertOpcoesProblemas(
-            @NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) throws ProLogException {
+            @NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) {
         try {
             return ResponseWithCod.ok(
                     "Opção de problema inserida com sucesso",
@@ -178,6 +179,21 @@ public final class SocorroRotaService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível inserir esta opção de problema, " +
+                            "tente novamente");
+        }
+    }
+
+    @NotNull
+    Response updateOpcoesProblemas(
+            @NotNull final OpcaoProblemaSocorroRotaEdicao opcaoProblemaSocorroRotaEdicao) {
+        try {
+            dao.updateOpcoesProblemas(opcaoProblemaSocorroRotaEdicao);
+            return Response.ok("Opção de problema editada com sucesso!");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao editar a opção de problema", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível editar esta opção de problema, " +
                             "tente novamente");
         }
     }
