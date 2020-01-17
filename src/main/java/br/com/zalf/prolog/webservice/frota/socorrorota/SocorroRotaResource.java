@@ -183,4 +183,17 @@ public final class SocorroRotaResource {
             @Required @Valid final OpcaoProblemaSocorroRotaEdicao opcaoProblemaSocorroRotaEdicao) {
         return service.updateOpcoesProblemas(opcaoProblemaSocorroRotaEdicao);
     }
+
+    /**
+     * Resource para ativar/inativar uma opção de problema.
+     */
+    @PUT
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS)
+    @Path("/opcoes-problemas/status-ativo")
+    public Response updateStatusOpcoesProblemas(
+            @Required final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus,
+            @HeaderParam("Authorization") @Required final String userToken) {
+        return service.updateStatusOpcoesProblemas(opcaoProblemaSocorroRotaStatus, userToken);
+    }
 }

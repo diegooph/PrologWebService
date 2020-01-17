@@ -155,4 +155,13 @@ public interface SocorroRotaDao {
     @NotNull
     void updateOpcoesProblemas(
             @NotNull final OpcaoProblemaSocorroRotaEdicao opcaoProblemaSocorroRotaEdicao) throws Throwable;
+
+    /**
+     * Marca um {@link OpcaoProblemaSocorroRotaVisualizacao} como ativo ou inativo.
+     * @param opcaoProblemaSocorroRotaStatus  Objeto com o código da opção de problema e seu novo status indicando se a
+     *                                        opção será ativada ou inativada.
+     * @throws Throwable Caso ocorrer erro no banco.
+     */
+    void updateStatusAtivo(@NotNull final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus,
+                           @NotNull final String userToken) throws Throwable;
 }

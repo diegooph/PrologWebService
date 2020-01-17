@@ -204,4 +204,17 @@ public final class SocorroRotaService {
                             "tente novamente");
         }
     }
+
+    Response updateStatusOpcoesProblemas
+            (@NotNull final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus, @NotNull final String userToken) {
+        try {
+            dao.updateStatusAtivo(opcaoProblemaSocorroRotaStatus, userToken);
+            return Response.ok("Status de opção de problema " + (opcaoProblemaSocorroRotaStatus.isStatusAtivo() ? "ativado" : "inativado"));
+        } catch (Throwable t) {
+            Log.e(TAG, "Erro ao ativar/inativar a opcao de problema " + opcaoProblemaSocorroRotaStatus.getCodOpcaoProblema(), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao ativar/inativar a opcao de problema, tente novamente");
+        }
+    }
 }
