@@ -87,7 +87,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio.ServicoRelator
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.frota.socorrorota.SocorroRotaDao;
-import br.com.zalf.prolog.webservice.frota.socorrorota.SocorroRotaRotaDaoImpl;
+import br.com.zalf.prolog.webservice.frota.socorrorota.SocorroRotaDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
@@ -182,7 +182,7 @@ public final class Injection {
 
     @NotNull
     public static SocorroRotaDao provideSocorroDao() {
-        return new SocorroRotaRotaDaoImpl();
+        return new SocorroRotaDaoImpl();
     }
 
     public static VeiculoConferenciaDao provideVeiculoConferenciaDao() {

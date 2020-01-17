@@ -22,7 +22,7 @@ import java.util.List;
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 
-public final class SocorroRotaRotaDaoImpl extends DatabaseConnection implements SocorroRotaDao {
+public final class SocorroRotaDaoImpl extends DatabaseConnection implements SocorroRotaDao {
 
     @NotNull
     @Override
