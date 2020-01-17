@@ -534,7 +534,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             stmt = conn.prepareCall("{CALL FUNC_SOCORRO_ROTA_UPDATE_STATUS_OPCAO_PROBLEMA(" +
                     "F_COD_EMPRESA  := ?," +
                     "F_COD_OPCAO_PROBLEMA   := ?," +
-                    "F_STATUS_ATIVO := ?" +
+                    "F_STATUS_ATIVO := ?," +
                     "F_TOKEN := ?)}");
             stmt.setLong(1, opcaoProblemaSocorroRotaStatus.getCodEmpresa());
             stmt.setLong(2, opcaoProblemaSocorroRotaStatus.getCodOpcaoProblema());
