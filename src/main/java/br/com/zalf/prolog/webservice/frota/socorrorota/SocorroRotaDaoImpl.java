@@ -450,11 +450,12 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return SocorroRotaConverter.createOpcaoProblemaSocorroRotaVisualizacao(rSet);
+            } else {
+                throw new Throwable("Erro ao buscar opção de problema pelo código: " + codOpcaoProblema);
             }
         } finally {
             close(conn, stmt, rSet);
         }
-        return null;
     }
 
     @NotNull

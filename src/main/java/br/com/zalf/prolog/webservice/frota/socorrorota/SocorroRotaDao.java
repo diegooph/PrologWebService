@@ -123,9 +123,9 @@ public interface SocorroRotaDao {
             throws Throwable;
 
     /**
-     * Busca as opções de problema por empresa
+     * Busca uma opção de problema específica
      *
-     * @param codOpcaoProblema Código da empresa
+     * @param codOpcaoProblema Código da Opção de Problema
      * @return Uma {@link OpcaoProblemaSocorroRotaVisualizacao opção de problema específica}
      * @throws Throwable Se algo der errado na busca.
      */
