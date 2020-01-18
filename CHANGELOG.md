@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.12"></a>
-## Version [v1.0.12](https://github.com/luizfp/PrologWebService/compare/v1.0.11...v1.0.12) (release-date) [unreleased]
+## Version [v1.0.12](https://github.com/luizfp/PrologWebService/compare/v1.0.11...v1.0.12) (2020-01-18)
 
 ### Features
 * Cria testes para validar criação e edição de modelos de checklist (PL-2305)
