@@ -8,16 +8,41 @@ import java.util.List;
 /**
  * Created by jean on 20/04/16.
  */
+@Deprecated
 public class NovoChecklistHolder {
     private List<PerguntaRespostaChecklist> listPerguntas;
     private Veiculo veiculo;
+    private String nomeModeloChecklist;
+    private Long codUnidaedModeloChecklist;
+
     /**
      * Código do modelo de checklist do qual as perguntas {@link #listPerguntas} são referentes.
      */
     private Long codigoModeloChecklist;
 
+    /**
+     * Código da versão atual do modelo de checklist.
+     */
+    private Long codigoVersaoAtualModeloChecklist;
+
     public NovoChecklistHolder() {
 
+    }
+
+    public String getNomeModeloChecklist() {
+        return nomeModeloChecklist;
+    }
+
+    public void setNomeModeloChecklist(final String nomeModeloChecklist) {
+        this.nomeModeloChecklist = nomeModeloChecklist;
+    }
+
+    public Long getCodUnidaedModeloChecklist() {
+        return codUnidaedModeloChecklist;
+    }
+
+    public void setCodUnidaedModeloChecklist(final Long codUnidaedModeloChecklist) {
+        this.codUnidaedModeloChecklist = codUnidaedModeloChecklist;
     }
 
     public List<PerguntaRespostaChecklist> getListPerguntas() {
@@ -42,6 +67,14 @@ public class NovoChecklistHolder {
 
     public void setCodigoModeloChecklist(Long codigoModeloChecklist) {
         this.codigoModeloChecklist = codigoModeloChecklist;
+    }
+
+    public Long getCodigoVersaoAtualModeloChecklist() {
+        return codigoVersaoAtualModeloChecklist;
+    }
+
+    public void setCodigoVersaoAtualModeloChecklist(final Long codigoVersaoAtualModeloChecklist) {
+        this.codigoVersaoAtualModeloChecklist = codigoVersaoAtualModeloChecklist;
     }
 
     @Override

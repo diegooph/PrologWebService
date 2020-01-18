@@ -28,11 +28,9 @@ public class ChecklistOfflineResource {
     @POST
     public ResponseWithCod insertChecklistOffline(
             @HeaderParam(ChecklistOfflineSupport.HEADER_TOKEN_CHECKLIST) @Required final String tokenSincronizacao,
-            @HeaderParam(ChecklistOfflineSupport.HEADER_VERSAO_DADOS_CHECKLIST) @Required final long versaoDadosChecklsitApp,
             @Required final ChecklistInsercao checklist) throws ProLogException {
         return service.insertChecklistOffline(
                 tokenSincronizacao,
-                versaoDadosChecklsitApp,
                 checklist);
     }
 

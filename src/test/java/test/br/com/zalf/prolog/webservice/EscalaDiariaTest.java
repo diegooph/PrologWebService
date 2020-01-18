@@ -28,7 +28,7 @@ public class EscalaDiariaTest extends BaseTest {
     public void testGetEscalasDiarias() throws SQLException {
         final EscalaDiariaDao escalaDiariaDao = Injection.provideEscalaDiariaDao();
         final List<EscalaDiaria> escalasDiarias =
-                escalaDiariaDao.getEscalasDiarias(COD_UNIDADE, DATA_INICIAL, DATA_FINAL);
+                escalaDiariaDao.getEscalasDiarias(5L, DATA_INICIAL, DATA_FINAL);
 
         System.out.println(escalasDiarias);
         Assert.assertFalse(escalasDiarias.isEmpty());

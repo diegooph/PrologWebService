@@ -6,13 +6,16 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
@@ -51,7 +54,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -345,52 +347,56 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 offset);
     }
 
+    @NotNull
     @Override
-    public void insertModeloChecklist(
+    public ResultInsertModeloChecklist insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean statusAtivo) throws Throwable {
-        checklistModeloDao.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo);
+            final boolean statusAtivo,
+            @NotNull final String userToken) throws Throwable {
+        return checklistModeloDao.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
     }
 
     @Override
     public void updateModeloChecklist(
-            @NotNull final String token,
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean sobrescreverPerguntasAlternativas) throws Throwable {
+            final boolean podeMudarCodigoContextoPerguntasEAlternativas,
+            @NotNull final String userToken) throws Throwable {
         checklistModeloDao.updateModeloChecklist(
-                token,
                 codUnidade,
                 codModelo,
                 modeloChecklist,
                 checklistOfflineListener,
-                sobrescreverPerguntasAlternativas);
+                podeMudarCodigoContextoPerguntasEAlternativas,
+                userToken);
     }
 
     @NotNull
     @Override
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
-                                                                                    @NotNull Long codFuncao)
-            throws Exception {
-        return checklistDao.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
+    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                                    @NotNull final Long codCargo) throws Throwable {
+        return checklistModeloDao.getModelosSelecaoRealizacao(codUnidade, codCargo);
     }
 
     @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidadeModelo,
-                                                      @NotNull Long codModelo,
-                                                      @NotNull String placaVeiculo,
-                                                      char tipoChecklist) throws Exception {
-        return checklistDao.getNovoChecklistHolder(codUnidadeModelo, codModelo, placaVeiculo, tipoChecklist);
+    public ModeloChecklistRealizacao getModeloChecklistRealizacao(
+            final @NotNull Long codModeloChecklist,
+            final @NotNull Long codVeiculo,
+            final @NotNull String placaVeiculo,
+            final @NotNull TipoChecklist tipoChecklist) throws Throwable {
+        return checklistModeloDao.getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
     }
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
-        return checklistDao.insert(checklist);
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
+        return checklistDao.insert(checklist, foiOffline, deveAbrirOs);
     }
 
     @NotNull

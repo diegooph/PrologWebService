@@ -1,8 +1,9 @@
 package test.br.com.zalf.prolog.webservice.integracao.avilan;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
@@ -18,7 +19,8 @@ import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static test.br.com.zalf.prolog.webservice.integracao.avilan.AvaCorpAvilanConstants.*;
+import static test.br.com.zalf.prolog.webservice.integracao.avilan.AvaCorpAvilanConstants.DEFAULT_TIMEOUT_MILLIS;
+import static test.br.com.zalf.prolog.webservice.integracao.avilan.AvaCorpAvilanConstants.PROLOG_TOKEN;
 
 /**
  * Created by luiz on 01/08/17.
@@ -62,13 +64,16 @@ public class AvaCorpAvilanSistemaTest {
     }
 
     @Test
-    public void testBuscarSelecaoModeloChecklistPlacaVeiculo() throws Exception {
-        assertNotNull(sistema.getSelecaoModeloChecklistPlacaVeiculo(0L, 0L));
+    public void testBuscarSelecaoModeloChecklistPlacaVeiculo() throws Throwable {
+        assertNotNull(ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaSelecaoModelo(
+                sistema.getModelosSelecaoRealizacao(0L, 0L)));
     }
 
     @Test
-    public void testBuscarNovoChecklistHolder() throws Exception {
-        final Map<ModeloChecklist, List<String>> map = sistema.getSelecaoModeloChecklistPlacaVeiculo(0L, 0L);
+    public void testBuscarNovoChecklistHolder() throws Throwable {
+        final Map<ModeloChecklist, List<String>> map =
+                ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaSelecaoModelo(
+                        sistema.getModelosSelecaoRealizacao(0L, 0L));
         // Não pode ser nulo
         assertNotNull(map);
         // Esperamos que venha algum questionário
@@ -85,16 +90,16 @@ public class AvaCorpAvilanSistemaTest {
         assertTrue(!placas.isEmpty());
 
 
-        assertNotNull(sistema.getNovoChecklistHolder(
-                0L,
+        assertNotNull(sistema.getModeloChecklistRealizacao(
                 modeloChecklist.getCodigo(),
+                -1L,
                 /* Já que deve existir pelo menos um veículo, pegamos o primeiro da lista */
                 placas.get(0),
-                Checklist.TIPO_SAIDA));
+                TipoChecklist.SAIDA));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Throwable.class)
     public void testInsertChecklist() throws Throwable {
-        sistema.insertChecklist(new Checklist());
+        sistema.insertChecklist(null, false, false);
     }
 }

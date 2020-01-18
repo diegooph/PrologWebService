@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD;
 
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

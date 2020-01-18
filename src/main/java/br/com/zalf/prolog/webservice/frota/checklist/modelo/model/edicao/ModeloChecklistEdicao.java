@@ -1,5 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -8,62 +11,77 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ModeloChecklistEdicao {
-    private Long codigo;
-    private String nome;
-    private List<Long> tiposVeiculoLiberados;
-    private List<Long> cargosLiberados;
+    @NotNull
+    private final Long codUnidade;
+    @NotNull
+    private final Long codModelo;
+    @NotNull
+    private final Long codVersaoModelo;
+    @NotNull
+    private final String nome;
+    @NotNull
+    private final List<Long> tiposVeiculoLiberados;
+    @NotNull
+    private final List<Long> cargosLiberados;
+    @NotNull
     private List<PerguntaModeloChecklistEdicao> perguntas;
-    private boolean ativo;
+    private final boolean ativo;
 
-    public ModeloChecklistEdicao() {
-
+    public ModeloChecklistEdicao(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo,
+            @NotNull final Long codVersaoModelo,
+            @NotNull final String nome,
+            @NotNull final List<Long> tiposVeiculoLiberados,
+            @NotNull final List<Long> cargosLiberados,
+            @Nullable final List<PerguntaModeloChecklistEdicao> perguntas,
+            final boolean ativo) {
+        this.codUnidade = codUnidade;
+        this.codModelo = codModelo;
+        this.codVersaoModelo = codVersaoModelo;
+        this.nome = nome;
+        this.tiposVeiculoLiberados = tiposVeiculoLiberados;
+        this.cargosLiberados = cargosLiberados;
+        this.perguntas = perguntas;
+        this.ativo = ativo;
     }
 
-    public Long getCodigo() {
-        return codigo;
+    @NotNull
+    public Long getCodUnidade() {
+        return codUnidade;
     }
 
-    public void setCodigo(final Long codigo) {
-        this.codigo = codigo;
+    @NotNull
+    public Long getCodModelo() {
+        return codModelo;
     }
 
+    @NotNull
+    public Long getCodVersaoModelo() {
+        return codVersaoModelo;
+    }
+
+    @NotNull
     public String getNome() {
         return nome;
     }
 
-    public void setNome(final String nome) {
-        this.nome = nome;
-    }
-
+    @NotNull
     public List<Long> getTiposVeiculoLiberados() {
         return tiposVeiculoLiberados;
     }
 
-    public void setTiposVeiculoLiberados(final List<Long> tiposVeiculoLiberados) {
-        this.tiposVeiculoLiberados = tiposVeiculoLiberados;
-    }
-
+    @NotNull
     public List<Long> getCargosLiberados() {
         return cargosLiberados;
-    }
-
-    public void setCargosLiberados(final List<Long> cargosLiberados) {
-        this.cargosLiberados = cargosLiberados;
-    }
-
-    public List<PerguntaModeloChecklistEdicao> getPerguntas() {
-        return perguntas;
-    }
-
-    public void setPerguntas(final List<PerguntaModeloChecklistEdicao> perguntas) {
-        this.perguntas = perguntas;
     }
 
     public boolean isAtivo() {
         return ativo;
     }
 
-    public void setAtivo(final boolean ativo) {
-        this.ativo = ativo;
+    @NotNull
+    public List<PerguntaModeloChecklistEdicao> getPerguntas() {
+        return perguntas;
     }
 }

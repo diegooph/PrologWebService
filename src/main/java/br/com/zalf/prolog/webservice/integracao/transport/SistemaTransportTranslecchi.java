@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.transport;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
@@ -24,33 +25,36 @@ public final class SistemaTransportTranslecchi extends Sistema {
         super(integradorProLog, sistemaKey, userToken);
     }
 
+    @NotNull
     @Override
-    public void insertModeloChecklist(
+    public ResultInsertModeloChecklist insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean statusAtivo) throws Throwable {
+            final boolean statusAtivo,
+            @NotNull final String userToken) throws Throwable {
         // Ignoramos o statusAtivo repassado pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
-        getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, false);
+        return getIntegradorProLog()
+                .insertModeloChecklist(modeloChecklist, checklistOfflineListener, false, userToken);
     }
 
     @Override
     public void updateModeloChecklist(
-            @NotNull final String token,
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
             @NotNull final ModeloChecklistEdicao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean sobrescreverPerguntasAlternativas) throws Throwable {
+            final boolean podeMudarCodigoContextoPerguntasEAlternativas,
+            @NotNull final String userToken) throws Throwable {
         // Ignoramos a propriedade sobrescreverPerguntasAlternativas pois queremos que para essa integração todas as
         // edições de perguntas e alternativas sobrescrevam os valores antigos sem alterar os códigos existentes.
         getIntegradorProLog()
                 .updateModeloChecklist(
-                        token,
                         codUnidade,
                         codModelo,
                         modeloChecklist,
                         checklistOfflineListener,
-                        true);
+                        false,
+                        userToken);
     }
 
     @Override

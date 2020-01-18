@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -183,7 +184,7 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static Map<ModeloChecklist, List<String>> convert(ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
+    public static Map<ModeloChecklist, List<String>> convert(Long codUnidade, ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
         checkNotNull(arrayOfQuestionarioVeiculos, "arrayOfQuestionarioVeiculos não pode ser null!");
 
         final Map<ModeloChecklist, List<String>> map = new HashMap<>();
@@ -194,6 +195,7 @@ public final class AvaCorpAvilanConverter {
             final Questionario questionario = questionarioVeiculos.getQuestionario();
             modeloChecklist.setCodigo(Long.valueOf(questionario.getCodigoQuestionario()));
             modeloChecklist.setNome(questionario.getDescricao());
+            modeloChecklist.setCodUnidade(codUnidade);
 
             // cria placa dos veículos
             final List<String> placasVeiculo = new ArrayList<>();
@@ -207,6 +209,7 @@ public final class AvaCorpAvilanConverter {
 
     @VisibleForTesting
     public static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculosQuestoes,
+                                              Long codUnidade,
                                               Map<Long, String> mapCodPerguntUrlImagem,
                                               String placaVeiculo) {
         checkNotNull(veiculosQuestoes, "veiculosQuestoes não pode ser null!");
@@ -214,6 +217,7 @@ public final class AvaCorpAvilanConverter {
         checkNotNull(placaVeiculo, "placaVeiculo não pode ser null!");
 
         final NovoChecklistHolder novoChecklistHolder = new NovoChecklistHolder();
+        novoChecklistHolder.setCodUnidaedModeloChecklist(codUnidade);
 
         // Seta informações Veículo.
         final Veiculo veiculo = new Veiculo();
@@ -233,9 +237,10 @@ public final class AvaCorpAvilanConverter {
         final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
         final ArrayOfQuestao arrayOfQuestao = veiculoQuestao.getQuestoes();
         for (final Questao questao : arrayOfQuestao.getQuestao()) {
-            // Todas as questões em uma mesma lista possuem o mesmo código de avaliação.
+            // Todas as questões em uma mesma lista possuem o mesmo código de avaliação e nome.
             // Deixamos setar para cada iteração porque assim é mais fácil.
             novoChecklistHolder.setCodigoModeloChecklist((long) questao.getCodigoAvaliacao());
+            novoChecklistHolder.setNomeModeloChecklist(questao.getDescricao());
 
             final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
             pergunta.setCodigo((long) questao.getSequenciaQuestao());

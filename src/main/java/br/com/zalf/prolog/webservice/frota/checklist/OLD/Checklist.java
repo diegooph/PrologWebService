@@ -1,9 +1,7 @@
-package br.com.zalf.prolog.webservice.frota.checklist.model;
+package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +18,7 @@ public class Checklist {
 	public static final char TIPO_SAIDA = 'S';
 	public static final char TIPO_RETORNO = 'R';
 	private Long codModelo;
+	private Long codVersaoModeloChecklist;
 	private Long codigo;
 	private Colaborador colaborador;
 	private LocalDateTime data;
@@ -59,6 +58,14 @@ public class Checklist {
 
 	public void setCodModelo(Long codModelo) {
 		this.codModelo = codModelo;
+	}
+
+	public Long getCodVersaoModeloChecklist() {
+		return codVersaoModeloChecklist;
+	}
+
+	public void setCodVersaoModeloChecklist(Long codVersaoModeloChecklist) {
+		this.codVersaoModeloChecklist = codVersaoModeloChecklist;
 	}
 
 	public long getTempoRealizacaoCheckInMillis() {

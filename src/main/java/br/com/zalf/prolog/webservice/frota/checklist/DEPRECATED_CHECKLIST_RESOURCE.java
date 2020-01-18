@@ -3,14 +3,20 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
@@ -24,6 +30,11 @@ import java.util.Map;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Deprecated
+@AppVersionCodeHandler(
+		implementation = DefaultAppVersionCodeHandler.class,
+		targetVersionCode = 80,
+		versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+		actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class DEPRECATED_CHECKLIST_RESOURCE {
 
 	private ChecklistService service = new ChecklistService();
@@ -32,12 +43,7 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public Response insert(@HeaderParam("Authorization") @Required final String userToken,
 						   @Required final Checklist checklist) throws ProLogException {
-		final Long codChecklist = service.insert(userToken, checklist);
-		if (codChecklist != null) {
-			return Response.ok("Checklist inserido com sucesso");
-		} else {
-			return Response.error("Erro ao inserir checklist");
-		}
+		return null;
 	}
 
 	/**
@@ -85,16 +91,6 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 	}
 
 	@GET
-	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
-	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-			@PathParam("codUnidade") Long codUnidade,
-			@PathParam("codFuncaoColaborador") Long codFuncao,
-			@HeaderParam("Authorization") String userToken) {
-		return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao, userToken);
-	}
-
-	@GET
 	@Path("/novo/{codUnidade}/{codModelo}/{placa}")
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public NovoChecklistHolder getNovoChecklistHolder(
@@ -109,7 +105,24 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 		if (codUnidade.equals(4L) || codUnidade.equals(3L) || codUnidade.equals(2L)) {
 			throw new IllegalStateException("É preciso atualizar o aplicativo para usar a nova versão do checklist");
 		}
-		return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
+
+		throw new GenericException("Atualize o aplicativo para utilizar a nova versão do checklist");
+	}
+
+	/**
+	 * @deprecated at 2019-08-18. Use {@link ChecklistModeloResource#getModelosSelecaoRealizacao(Long, Long, String)}
+	 * instead.
+	 */
+	@GET
+	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
+	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("codFuncaoColaborador") Long codFuncao,
+			@HeaderParam("Authorization") String userToken) {
+		// Esse método já está redirecionando para o novo Service.
+		return ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaSelecaoModelo(
+				new ChecklistModeloService().getModelosSelecaoRealizacao(codUnidade, codFuncao, userToken));
 	}
 
 	/**

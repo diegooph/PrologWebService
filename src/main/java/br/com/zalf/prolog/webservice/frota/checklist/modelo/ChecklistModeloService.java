@@ -11,11 +11,14 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterModeloChecklist;
 import org.apache.commons.io.FilenameUtils;
@@ -34,21 +37,49 @@ public final class ChecklistModeloService {
     private final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
 
     @NotNull
-    Response insertModeloChecklist(@NotNull final String token,
-                                   @NotNull final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
+    public ResultInsertModeloChecklist insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
+                                                             @NotNull final String userToken) throws ProLogException {
         try {
-            RouterModeloChecklist
-                    .create(dao, token)
+            ChecklistModeloValidator.validaModelo(modeloChecklist);
+
+            return RouterModeloChecklist
+                    .create(dao, userToken)
                     .insertModeloChecklist(
                             modeloChecklist,
                             Injection.provideDadosChecklistOfflineChangedListener(),
-                            true);
-            return Response.ok("Modelo de checklist inserido com sucesso");
+                            true,
+                            TokenCleaner.getOnlyToken(userToken));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir modelo de checklist", t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir modelo de checklist, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Response updateModeloChecklist(final Long codUnidade,
+                                          final Long codModelo,
+                                          final ModeloChecklistEdicao modeloChecklist,
+                                          final String userToken) throws ProLogException {
+        try {
+            ChecklistModeloValidator.validaModelo(modeloChecklist);
+
+            RouterModeloChecklist
+                    .create(dao, userToken)
+                    .updateModeloChecklist(
+                            codUnidade,
+                            codModelo,
+                            modeloChecklist,
+                            Injection.provideDadosChecklistOfflineChangedListener(),
+                            true,
+                            TokenCleaner.getOnlyToken(userToken));
+            return Response.ok("Modelo de checklist atualizado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar modelo de checklist", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar modelo de checklist, tente novamente");
         }
     }
 
@@ -66,8 +97,8 @@ public final class ChecklistModeloService {
     }
 
     @NotNull
-    ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
-                                                   @NotNull final Long codModelo) throws ProLogException {
+    public ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
+                                                          @NotNull final Long codModelo) throws ProLogException {
         try {
             return dao.getModeloChecklist(codUnidade, codModelo);
         } catch (final Throwable t) {
@@ -75,30 +106,6 @@ public final class ChecklistModeloService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar modelo de checklist, tente novamente");
-        }
-    }
-
-    @NotNull
-    Response updateModeloChecklist(final String token,
-                                   final Long codUnidade,
-                                   final Long codModelo,
-                                   final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
-        try {
-            RouterModeloChecklist
-                    .create(dao, token)
-                    .updateModeloChecklist(
-                            TokenCleaner.getOnlyToken(token),
-                            codUnidade,
-                            codModelo,
-                            modeloChecklist,
-                            Injection.provideDadosChecklistOfflineChangedListener(),
-                            false);
-            return Response.ok("Modelo de checklist atualizado com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao atualizar modelo de checklist", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao atualizar modelo de checklist, tente novamente");
         }
     }
 
@@ -197,16 +204,47 @@ public final class ChecklistModeloService {
     }
 
     @NotNull
-    @Deprecated
-    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
-                                                        @NotNull final Long codModelo) throws ProLogException {
+    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                                    @NotNull final Long codCargo,
+                                                                    @NotNull final String userToken) {
         try {
-            return dao.getPerguntas(codUnidade, codModelo);
+            return RouterModeloChecklist
+                    .create(dao, userToken)
+                    .getModelosSelecaoRealizacao(codUnidade, codCargo);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar perguntas do modelo de checklist " + codModelo, t);
+            Log.e(TAG, "Erro ao buscar os modelos de checklist para seleção." +
+                    "\ncodUnidade: " + codUnidade +
+                    "\ncodCargo: " + codCargo, t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar perguntas do modelo de checklist, tente novamente");
+                    .map(t, "Erro ao buscar os modelos de checklist para seleção, tente novamente");
+        }
+    }
+
+    @NotNull
+    public ModeloChecklistRealizacao getModeloChecklistRealizacao(@NotNull final Long codModeloChecklist,
+                                                                  @NotNull final Long codVeiculo,
+                                                                  @NotNull final String placaVeiculo,
+                                                                  @NotNull final String tipoChecklist,
+                                                                  @NotNull final String userToken) {
+        try {
+            return RouterModeloChecklist
+                    .create(dao, userToken)
+                    .getModeloChecklistRealizacao(
+                            codModeloChecklist,
+                            codVeiculo,
+                            placaVeiculo,
+                            TipoChecklist.fromString(tipoChecklist));
+        } catch (final Throwable throwable) {
+            final String errorMessage = String.format("Erro ao buscar modelo de checklist para realização.\n" +
+                    "codModeloChecklist: %d\n" +
+                    "codVeiculo: %d\n" +
+                    "placaVeiculo: %s\n" +
+                    "tipoChecklist: %s\n", codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
+            Log.e(TAG, errorMessage, throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao iniciar checklist, tente novamente");
         }
     }
 }

@@ -3,9 +3,11 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
@@ -45,7 +47,9 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull final Checklist checklist) throws Throwable {
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklistNew,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         Connection conn = null;
         try {
@@ -53,7 +57,13 @@ public final class SistemaGlobusPiccolotur extends Sistema {
             conn.setAutoCommit(false);
             // TODO - Mover para o integradorProLog
             // Insere checklist na base de dados do ProLog
-            final Long codChecklistProLog = Injection.provideChecklistDao().insert(conn, checklist, false);
+            final Long codChecklistProLog = Injection
+                    .provideChecklistDao()
+                    .insert(conn, checklistNew, foiOffline, false);
+
+            // TODO: o fluxo da integração continua usando o objeto antigo.
+            final Checklist checklist = checklistNew.getChecklistAntigo();
+
             // Se o checklist tem pelo menos um item NOK, precisamos disparar o envio para a integração.
             if (checklist.getQtdItensNok() > 0) {
                 // Marcamos que o checklist precisa ser sincronizado. Isso será útil para que o processamento disparado
@@ -82,31 +92,33 @@ public final class SistemaGlobusPiccolotur extends Sistema {
         }
     }
 
+    @NotNull
     @Override
-    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
-                                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-                                      final boolean statusAtivo) throws Throwable {
+    public ResultInsertModeloChecklist insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
+                                                             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+                                                             final boolean statusAtivo,
+                                                             @NotNull final String token) throws Throwable {
         // Ignoramos o statusAtivo repassado pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
-        getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, false);
+        return getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, false, token);
     }
 
     @Override
-    public void updateModeloChecklist(@NotNull final String token,
-                                      @NotNull final Long codUnidade,
+    public void updateModeloChecklist(@NotNull final Long codUnidade,
                                       @NotNull final Long codModelo,
                                       @NotNull final ModeloChecklistEdicao modeloChecklist,
                                       @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-                                      final boolean sobrescreverPerguntasAlternativas) throws Throwable {
+                                      final boolean podeMudarCodigoContextoPerguntasEAlternativas,
+                                      @NotNull final String token) throws Throwable {
         // Ignoramos a propriedade sobrescreverPerguntasAlternativas pois queremos que para essa integração todas as
         // edições de perguntas e alternativas sobrescrevam os valores antigos sem alterar os códigos existentes.
         getIntegradorProLog()
                 .updateModeloChecklist(
-                        token,
                         codUnidade,
                         codModelo,
                         modeloChecklist,
                         checklistOfflineListener,
-                        true);
+                        false,
+                        token);
     }
 
     @Override
