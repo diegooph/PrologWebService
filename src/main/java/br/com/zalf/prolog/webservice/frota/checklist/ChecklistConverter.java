@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.*;
@@ -56,6 +57,7 @@ public final class ChecklistConverter {
         final Checklist checklist = new Checklist();
         checklist.setCodigo(rSet.getLong("COD_CHECKLIST"));
         checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
+        checklist.setCodVersaoModeloChecklist(rSet.getLong("COD_VERSAO_CHECKLIST_MODELO"));
         checklist.setColaborador(createColaborador(rSet));
         checklist.setData(rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class));
         checklist.setDataHoraImportadoProLog(rSet.getObject("DATA_HORA_IMPORTADO_PROLOG", LocalDateTime.class));
@@ -103,18 +105,6 @@ public final class ChecklistConverter {
         pergunta.setAlternativasResposta(alternativas);
         perguntas.add(pergunta);
         return perguntas;
-    }
-
-    @NotNull
-    static AlternativaChecklistStatus createAlternativaChecklistStatus(
-            @NotNull final ResultSet rSet) throws SQLException {
-        return new AlternativaChecklistStatus(
-                rSet.getLong("COD_ALTERNATIVA"),
-                rSet.getLong("COD_ITEM_ORDEM_SERVICO"),
-                rSet.getBoolean("TEM_ITEM_OS_PENDENTE"),
-                rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
-                rSet.getInt("QTD_APONTAMENTOS_ITEM"),
-                PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
     }
 
     @NotNull
@@ -328,22 +318,20 @@ public final class ChecklistConverter {
         alternativa.setOrdemExibicao(rSet.getInt("ORDEM_ALTERNATIVA"));
         if (alternativa.getAlternativa().equals("Outros")) {
             alternativa.setTipo(AlternativaChecklist.TIPO_OUTROS);
-            alternativa.setRespostaOutros(rSet.getString("RESPOSTA"));
         }
         return alternativa;
     }
 
-    // remonta as alternativas de uma Pergunta
     private static void setRespostaAlternativa(@NotNull final AlternativaChecklist alternativa,
                                                @NotNull final ResultSet rSet) throws SQLException {
-        if (rSet.getString("RESPOSTA").equals("NOK")) {
+        if (rSet.getBoolean("ALTERNATIVA_SELECIONADA")) {
             alternativa.selected = true;
-        } else if (rSet.getString("RESPOSTA").equals("OK")) {
-            alternativa.selected = false;
+            if (rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS")) {
+                alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
+                alternativa.respostaOutros = rSet.getString("RESPOSTA_OUTROS");
+            }
         } else {
-            alternativa.selected = true;
-            alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
-            alternativa.respostaOutros = rSet.getString("RESPOSTA");
+            alternativa.selected = false;
         }
     }
 }

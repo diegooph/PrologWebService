@@ -158,7 +158,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     }
 
     @NotNull
-    SuccessResponseIntegracao inserirOrdensServicoGlobus(
+    public SuccessResponseIntegracao inserirOrdensServicoGlobus(
             final String tokenIntegracao,
             final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws ProLogException {
         try {
@@ -182,7 +182,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     }
 
     @NotNull
-    SuccessResponseIntegracao resolverMultiplosItens(
+    public SuccessResponseIntegracao resolverMultiplosItens(
             final String tokenIntegracao,
             final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
         try {

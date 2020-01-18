@@ -2,16 +2,19 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.*;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
+import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -20,8 +23,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
@@ -34,19 +40,22 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     @NotNull
     @Override
     public Long insert(@NotNull final Connection conn,
-                       @NotNull final Checklist checklist,
+                       @NotNull final ChecklistInsercao checklist,
+                       final boolean foiOffline,
                        final boolean deveAbrirOs) throws Throwable {
-        return internalInsertChecklist(conn, checklist, deveAbrirOs);
+        return internalInsertChecklist(conn, checklist, foiOffline, deveAbrirOs);
     }
 
     @NotNull
     @Override
-    public Long insert(Checklist checklist) throws SQLException {
+    public Long insert(@NotNull final ChecklistInsercao checklist,
+                       final boolean foiOffline,
+                       final boolean deveAbrirOs) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final Long codChecklist = internalInsertChecklist(conn, checklist, true);
+            final Long codChecklist = internalInsertChecklist(conn, checklist, foiOffline, deveAbrirOs);
             conn.commit();
             return codChecklist;
         } catch (final Throwable t) {
@@ -54,9 +63,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                 conn.rollback();
             }
 
-            // Como esse método ainda não está refatorado para retornar um Throwable, encapsulamos o retorno em uma
-            // SQLException.
-            throw new SQLException(t);
+            throw t;
         } finally {
             close(conn);
         }
@@ -64,64 +71,149 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
     @NotNull
     private Long internalInsertChecklist(@NotNull final Connection conn,
-                                         @NotNull final Checklist checklist,
+                                         @NotNull final ChecklistInsercao checklist,
+                                         final boolean foiOffline,
                                          final boolean deveAbrirOs) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            // É preciso calcular antes do insert pois as informações de quantidade de ok/nok são inseridas.
-            checklist.calculaQtdOkOrNok();
-            stmt = conn.prepareStatement("INSERT INTO CHECKLIST(" +
-                    "  COD_UNIDADE, " +
-                    "  COD_CHECKLIST_MODELO, " +
-                    "  DATA_HORA, " +
-                    "  FONTE_DATA_HORA_REALIZACAO, " +
-                    "  DATA_HORA_SINCRONIZACAO, " +
-                    "  CPF_COLABORADOR, " +
-                    "  PLACA_VEICULO, " +
-                    "  TIPO, " +
-                    "  KM_VEICULO, " +
-                    "  TEMPO_REALIZACAO," +
-                    "  FOI_OFFLINE," +
-                    "  TOTAL_PERGUNTAS_OK," +
-                    "  TOTAL_PERGUNTAS_NOK," +
-                    "  TOTAL_ALTERNATIVAS_OK," +
-                    "  TOTAL_ALTERNATIVAS_NOK) " +
-                    "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
-                    "RETURNING CODIGO, COD_UNIDADE;");
-            stmt.setString(1, checklist.getPlacaVeiculo());
+
+            // Isso é necessário pois apps antigos não tem a versão do modelo de checklist e portanto nós não recebemos
+            // ela. Nessa etapa buscamos o código da versão do modelo com base no código de uma alternativa
+            if (!ChecklistMigracaoEstruturaSuporte.isAppNovaEstruturaChecklist(checklist)) {
+                checklist.setCodVersaoModeloChecklist(ChecklistMigracaoEstruturaSuporte
+                        .encontraCodVersaoModeloChecklist(conn, checklist));
+            }
+
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(" +
+                    "F_COD_UNIDADE_CHECKLIST              := ?," +
+                    "F_COD_MODELO_CHECKLIST               := ?," +
+                    "F_COD_VERSAO_MODELO_CHECKLIST        := ?," +
+                    "F_DATA_HORA_REALIZACAO               := ?," +
+                    "F_COD_COLABORADOR                    := ?," +
+                    "F_COD_VEICULO                        := ?," +
+                    "F_PLACA_VEICULO                      := ?," +
+                    "F_TIPO_CHECKLIST                     := ?," +
+                    "F_KM_COLETADO                        := ?," +
+                    "F_TEMPO_REALIZACAO                   := ?," +
+                    "F_DATA_HORA_SINCRONIZACAO            := ?," +
+                    "F_FONTE_DATA_HORA_REALIZACAO         := ?," +
+                    "F_VERSAO_APP_MOMENTO_REALIZACAO      := ?," +
+                    "F_VERSAO_APP_MOMENTO_SINCRONIZACAO   := ?," +
+                    "F_DEVICE_ID                          := ?," +
+                    "F_DEVICE_IMEI                        := ?," +
+                    "F_DEVICE_UPTIME_REALIZACAO_MILLIS    := ?," +
+                    "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS := ?," +
+                    "F_FOI_OFFLINE                        := ?," +
+                    "F_TOTAL_PERGUNTAS_OK                 := ?," +
+                    "F_TOTAL_PERGUNTAS_NOK                := ?," +
+                    "F_TOTAL_ALTERNATIVAS_OK              := ?," +
+                    "F_TOTAL_ALTERNATIVAS_NOK             := ?) " +
+                    "AS CODIGO;");
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
+            stmt.setLong(1, checklist.getCodUnidade());
             stmt.setLong(2, checklist.getCodModelo());
-            stmt.setObject(3, checklist.getData().atOffset(ZoneOffset.UTC));
-            stmt.setString(4, FonteDataHora.SERVIDOR.asString());
-            stmt.setObject(5, checklist.getData().atOffset(ZoneOffset.UTC));
-            stmt.setLong(6, checklist.getColaborador().getCpf());
+            stmt.setLong(3, checklist.getCodVersaoModeloChecklist());
+            // Se foi um checklist offline salvamos a data/hora realização que recebemos do App. Senão, salvamos a
+            // data/hora atual do servidor.
+            // TODO: Se a data/hora do WS estiver incorreta, iremos salvar informação errada no check off.
+            final OffsetDateTime dataHoraRealizacao = foiOffline
+                    ? checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime()
+                    : Now.offsetDateTimeUtc();
+            stmt.setObject(4, dataHoraRealizacao);
+            stmt.setLong(5, checklist.getCodColaborador());
+            stmt.setLong(6, checklist.getCodVeiculo());
             stmt.setString(7, checklist.getPlacaVeiculo());
-            stmt.setString(8, String.valueOf(checklist.getTipo()));
-            stmt.setLong(9, checklist.getKmAtualVeiculo());
+            stmt.setString(8, String.valueOf(checklist.getTipo().asChar()));
+            stmt.setLong(9, checklist.getKmColetadoVeiculo());
             stmt.setLong(10, checklist.getTempoRealizacaoCheckInMillis());
-            stmt.setBoolean(11, false);
-            stmt.setInt(12, checklist.getQtdItensOk());
-            stmt.setInt(13, checklist.getQtdItensNok());
-            stmt.setInt(14, checklist.getQtdAlternativasOk());
-            stmt.setInt(15, checklist.getQtdAlternativasNok());
+            stmt.setObject(11, Now.offsetDateTimeUtc());
+            stmt.setString(12, checklist.getFonteDataHoraRealizacao().asString());
+            stmt.setInt(13, checklist.getVersaoAppMomentoRealizacao());
+            stmt.setInt(14, checklist.getVersaoAppMomentoSincronizacao());
+            stmt.setString(15, checklist.getDeviceId());
+            stmt.setString(16, checklist.getDeviceImei());
+            stmt.setLong(17, checklist.getDeviceUptimeRealizacaoMillis());
+            stmt.setLong(18, checklist.getDeviceUptimeSincronizacaoMillis());
+            stmt.setBoolean(19, foiOffline);
+            stmt.setInt(20, checklist.getQtdPerguntasOk());
+            stmt.setInt(21, checklist.getQtdPerguntasNok());
+            stmt.setInt(22, checklist.getQtdAlternativasOk());
+            stmt.setInt(23, checklist.getQtdAlternativasNok());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                checklist.setCodigo(rSet.getLong("CODIGO"));
-                final Long codUnidade = rSet.getLong("COD_UNIDADE");
-                insertRespostas(conn, codUnidade, checklist);
+                final Long codChecklistInserido = rSet.getLong("CODIGO");
+
+                // Só precisamos inserir as respostas se houver alguma NOK.
+                if (checklist.getQtdAlternativasNok() > 0) {
+                    insertChecklistRespostasNok(
+                            conn,
+                            checklist.getCodUnidade(),
+                            checklist.getCodModelo(),
+                            checklist.getCodVersaoModeloChecklist(),
+                            codChecklistInserido,
+                            checklist.getRespostas());
+                }
+
+                // Após inserir o checklist devemos abrir as Ordens de Serviços, caso necessário.
                 if (deveAbrirOs) {
                     Injection
                             .provideOrdemServicoDao()
-                            .processaChecklistRealizado(conn, codUnidade, checklist);
+                            .processaChecklistRealizado(conn, codChecklistInserido, checklist);
                 }
-                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo(), conn);
-                return checklist.getCodigo();
+
+                return codChecklistInserido;
             } else {
-                throw new SQLException("Erro ao inserir o checklist");
+                throw new SQLException("Erro ao salvar checklist");
             }
         } finally {
             close(stmt, rSet);
+        }
+    }
+
+    private void insertChecklistRespostasNok(@NotNull final Connection conn,
+                                             @NotNull final Long codUnidadeChecklist,
+                                             @NotNull final Long codModeloChecklist,
+                                             @NotNull final Long codVersaoModeloChecklist,
+                                             @NotNull final Long codChecklistInserido,
+                                             @NotNull final List<ChecklistResposta> respostas) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_CHECKLIST_INSERT_RESPOSTAS_CHECKLIST(" +
+                            "F_COD_UNIDADE_CHECKLIST       := ?," +
+                            "F_COD_MODELO_CHECKLIST        := ?," +
+                            "F_COD_VERSAO_MODELO_CHECKLIST := ?," +
+                            "F_COD_CHECKLIST               := ?," +
+                            "F_COD_PERGUNTA                := ?," +
+                            "F_COD_ALTERNATIVA             := ?," +
+                            "F_RESPOSTA_OUTROS             := ?);");
+            stmt.setLong(1, codUnidadeChecklist);
+            stmt.setLong(2, codModeloChecklist);
+            stmt.setLong(3, codVersaoModeloChecklist);
+            stmt.setLong(4, codChecklistInserido);
+            int linhasParaExecutar = 0;
+            for (final ChecklistResposta resposta : respostas) {
+                for (final ChecklistAlternativaResposta alternativa : resposta.getAlternativasRespostas()) {
+                    if (alternativa.isAlternativaSelecionada()) {
+                        stmt.setLong(5, resposta.getCodPergunta());
+                        stmt.setLong(6, alternativa.getCodAlternativa());
+                        if (alternativa.isTipoOutros()) {
+                            stmt.setString(7, StringUtils.trimToNull(alternativa.getRespostaTipoOutros()));
+                        } else {
+                            stmt.setNull(7, SqlType.TEXT.asIntTypeJava());
+                        }
+                        stmt.addBatch();
+                        linhasParaExecutar++;
+                    }
+                }
+            }
+            if (stmt.executeBatch().length != linhasParaExecutar) {
+                throw new SQLException("Não foi possível salvar todas as respostas do checklist");
+            }
+        } finally {
+            close(stmt);
         }
     }
 
@@ -330,86 +422,6 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
     @NotNull
     @Override
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codFuncao) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                            "  CM.CODIGO, " +
-                            "  CM.NOME, " +
-                            "  V.PLACA, " +
-                            "  V.KM " +
-                            "FROM CHECKLIST_MODELO CM " +
-                            "  JOIN CHECKLIST_MODELO_FUNCAO CMF " +
-                            "    ON CMF.COD_CHECKLIST_MODELO = CM.CODIGO AND CM.COD_UNIDADE = CMF.COD_UNIDADE " +
-                            "  JOIN CHECKLIST_MODELO_VEICULO_TIPO CMVT " +
-                            "    ON CMVT.COD_MODELO = CM.CODIGO AND CMVT.COD_UNIDADE = CM.COD_UNIDADE " +
-                            "  JOIN VEICULO_TIPO VT " +
-                            "    ON VT.CODIGO = CMVT.COD_TIPO_VEICULO " +
-                            "  JOIN VEICULO V " +
-                            "    ON V.COD_TIPO = VT.CODIGO AND V.COD_UNIDADE = CM.COD_UNIDADE " +
-                            "WHERE CM.COD_UNIDADE = ? " +
-                            "      AND CMF.COD_FUNCAO = ? " +
-                            "      AND CM.STATUS_ATIVO = TRUE " +
-                            "      AND V.STATUS_ATIVO = TRUE " +
-                            "ORDER BY CM.CODIGO, V.PLACA;",
-                    ResultSet.TYPE_SCROLL_SENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codFuncao);
-            rSet = stmt.executeQuery();
-            final Map<ModeloChecklist, List<String>> modeloPlaca = new LinkedHashMap<>();
-            ModeloChecklist modelo = null;
-            List<String> placas = new ArrayList<>();
-            while (rSet.next()) {
-                // Primeira linha do Rset, cria o modelo, add a primeira placa.
-                if (modelo == null) {
-                    modelo = new ModeloChecklist();
-                    modelo.setCodigo(rSet.getLong("CODIGO"));
-                    modelo.setNome(rSet.getString("NOME"));
-                    placas.add(rSet.getString("PLACA"));
-                } else {
-                    // Verificar se o prox modelo é igual ao ja criado.
-                    if (modelo.getCodigo().equals(rSet.getLong("CODIGO"))) {
-                        placas.add(rSet.getString("PLACA"));
-                    } else {
-                        // Modelo diferente, deve setar adicionar tudo ao map e zerar os valores.
-                        modeloPlaca.put(modelo, placas);
-                        modelo = new ModeloChecklist();
-                        placas = new ArrayList<>();
-                        modelo.setCodigo(rSet.getLong("CODIGO"));
-                        modelo.setNome(rSet.getString("NOME"));
-                        placas.add(rSet.getString("PLACA"));
-                    }
-                }
-            }
-            if (modelo != null) {
-                modeloPlaca.put(modelo, placas);
-            }
-            return modeloPlaca;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidadeModelo, Long codModelo, String placa, char
-            tipoChecklis) throws SQLException {
-        final NovoChecklistHolder holder = new NovoChecklistHolder();
-        final ChecklistModeloDao checklistModeloDaoImpl = Injection.provideChecklistModeloDao();
-        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        holder.setCodigoModeloChecklist(codModelo);
-        holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidadeModelo, codModelo));
-        holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));
-        return holder;
-    }
-
-    @NotNull
-    @Override
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
                                                       @NotNull final LocalDate dataInicial,
                                                       @NotNull final LocalDate dataFinal,
@@ -419,13 +431,11 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_FAROL_CHECKLIST(?, ?, ?, ?, ?);");
-            final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_FAROL_CHECKLIST(?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, dataInicial);
             stmt.setObject(3, dataFinal);
             stmt.setBoolean(4, itensCriticosRetroativos);
-            stmt.setString(5, zoneId);
             rSet = stmt.executeQuery();
             return ChecklistConverter.createFarolChecklist(rSet);
         } finally {
@@ -456,71 +466,6 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    @Override
-    public Map<Long, AlternativaChecklistStatus> getItensStatus(@NotNull final Connection conn,
-                                                                @NotNull final Long codModelo,
-                                                                @NotNull final String placaVeiculo) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(?, ?);");
-            stmt.setLong(1, codModelo);
-            stmt.setString(2, placaVeiculo);
-            rSet = stmt.executeQuery();
-            final Map<Long, AlternativaChecklistStatus> alternativas = new HashMap<>();
-            while (rSet.next()) {
-                alternativas.put(
-                        rSet.getLong("COD_ALTERNATIVA"),
-                        ChecklistConverter.createAlternativaChecklistStatus(rSet));
-            }
-            return alternativas;
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    private void insertRespostas(@NotNull final Connection conn,
-                                 @NotNull final Long codUnidade,
-                                 @NotNull final Checklist checklist) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("INSERT INTO CHECKLIST_RESPOSTAS "
-                    + "(COD_UNIDADE, COD_CHECKLIST_MODELO, COD_CHECKLIST, COD_PERGUNTA, COD_ALTERNATIVA, RESPOSTA) "
-                    + "VALUES (?, ?, ?, ?, ?, ?)");
-            for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
-                stmt.setLong(1, codUnidade);
-                stmt.setLong(2, checklist.getCodModelo());
-                stmt.setLong(3, checklist.getCodigo());
-                stmt.setLong(4, resposta.getCodigo());
-                for (AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
-                    stmt.setLong(5, alternativa.codigo);
-                    //se a alternativa esta selecionada
-                    if (alternativa.selected) {
-                        // se a alternativa é do tipo Outros
-                        if (alternativa.tipo == AlternativaChecklist.TIPO_OUTROS) {
-                            // salva a resposta escrita do usuário
-                            stmt.setString(6, alternativa.respostaOutros);
-                        } else {
-                            // se a alternativa esta MARCADA e não é do tipo Outros
-                            stmt.setString(6, "NOK");
-                        }
-                        // alternativa esta desmarcada
-                    } else {
-                        // salva OK, indicando que o item NÃO tem problema
-                        stmt.setString(6, "OK");
-                    }
-                    int count = stmt.executeUpdate();
-                    if (count == 0) {
-                        throw new SQLException("Erro ao inserir resposta");
-                    }
-                }
-            }
-        } finally {
-            closeStatement(stmt);
-        }
-    }
-
-    @NotNull
     private List<PerguntaRespostaChecklist> getPerguntasRespostas(@NotNull final Checklist checklist)
             throws SQLException {
         Connection conn = null;
@@ -529,33 +474,31 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                            "CP.CODIGO              AS COD_PERGUNTA," +
-                            "CP.ORDEM               AS ORDEM_PERGUNTA," +
-                            "CP.PERGUNTA            AS DESCRICAO_PERGUNTA," +
-                            "CP.SINGLE_CHOICE       AS PERGUNTA_SINGLE_CHOICE," +
-                            "CAP.CODIGO             AS COD_ALTERNATIVA," +
-                            "CAP.PRIORIDADE :: TEXT AS PRIORIDADE_ALTERNATIVA," +
-                            "CAP.ORDEM              AS ORDEM_ALTERNATIVA," +
-                            "CAP.ALTERNATIVA        AS DESCRICAO_ALTERNATIVA," +
-                            "CGI.COD_IMAGEM         AS COD_IMAGEM," +
-                            "CGI.URL_IMAGEM         AS URL_IMAGEM," +
-                            "CR.RESPOSTA            AS RESPOSTA " +
+                            "       CP.CODIGO                   AS COD_PERGUNTA," +
+                            "       CP.ORDEM                    AS ORDEM_PERGUNTA," +
+                            "       CP.PERGUNTA                 AS DESCRICAO_PERGUNTA," +
+                            "       CP.SINGLE_CHOICE            AS PERGUNTA_SINGLE_CHOICE," +
+                            "       CAP.CODIGO                  AS COD_ALTERNATIVA," +
+                            "       CAP.PRIORIDADE :: TEXT      AS PRIORIDADE_ALTERNATIVA," +
+                            "       CAP.ORDEM                   AS ORDEM_ALTERNATIVA," +
+                            "       CAP.ALTERNATIVA             AS DESCRICAO_ALTERNATIVA," +
+                            "       CAP.ALTERNATIVA_TIPO_OUTROS AS ALTERNATIVA_TIPO_OUTROS," +
+                            "       CGI.COD_IMAGEM              AS COD_IMAGEM," +
+                            "       CGI.URL_IMAGEM              AS URL_IMAGEM," +
+                            "       CRN.CODIGO IS NOT NULL      AS ALTERNATIVA_SELECIONADA," +
+                            "       CRN.RESPOSTA_OUTROS         AS RESPOSTA_OUTROS " +
                             "FROM CHECKLIST C " +
-                            "  JOIN CHECKLIST_RESPOSTAS CR " +
-                            "    ON C.CODIGO = CR.COD_CHECKLIST " +
-                            "       AND CR.COD_CHECKLIST_MODELO = C.COD_CHECKLIST_MODELO " +
-                            "       AND C.COD_UNIDADE = CR.COD_UNIDADE " +
-                            "  JOIN CHECKLIST_PERGUNTAS CP " +
-                            "    ON CP.CODIGO = CR.COD_PERGUNTA " +
-                            "       AND CP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO " +
-                            "       AND CP.CODIGO = CR.COD_PERGUNTA " +
-                            "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP " +
-                            "    ON CAP.CODIGO = CR.COD_ALTERNATIVA " +
-                            "       AND CAP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO " +
-                            "       AND CAP.COD_PERGUNTA = CR.COD_PERGUNTA " +
-                            "  LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
-                            "    ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
-                            "WHERE C.CODIGO = ? AND C.CPF_COLABORADOR = ? " +
+                            "         JOIN CHECKLIST_PERGUNTAS CP" +
+                            "              ON CP.COD_VERSAO_CHECKLIST_MODELO = C.COD_VERSAO_CHECKLIST_MODELO" +
+                            "         JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP" +
+                            "              ON CAP.COD_PERGUNTA = CP.CODIGO" +
+                            "         LEFT JOIN CHECKLIST_RESPOSTAS_NOK CRN" +
+                            "                   ON C.CODIGO = CRN.COD_CHECKLIST" +
+                            "                       AND CAP.CODIGO = CRN.COD_ALTERNATIVA" +
+                            "         LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI" +
+                            "                   ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
+                            "WHERE C.CODIGO = ? " +
+                            "  AND C.CPF_COLABORADOR = ? " +
                             "ORDER BY CP.ORDEM, CAP.ORDEM;",
                     ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);

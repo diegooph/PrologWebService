@@ -1,10 +1,15 @@
 package test.br.com.zalf.prolog.webservice;
 
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import com.google.gson.stream.JsonReader;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
+import java.io.File;
+import java.io.FileReader;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +22,6 @@ import java.time.LocalDate;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public abstract class BaseTest {
-    protected static Long COD_UNIDADE = 5L;
     protected static String USER_TOKEN = "TOKEN";
     protected static LocalDate DATA_INICIAL = LocalDate.parse("2018-03-18");
     protected static LocalDate DATA_FINAL = LocalDate.parse("2018-04-19");
@@ -30,6 +34,27 @@ public abstract class BaseTest {
     @AfterAll
     public void destroy() {
         // Do nothing.
+    }
+
+    @NotNull
+    protected <T> T readJsonResource(@NotNull final Class currentTestClass,
+                                     @NotNull final String resourceName,
+                                     @NotNull final Class<T> jsonType) {
+        final URL resource = currentTestClass.getResource(resourceName);
+        if (resource == null) {
+            throw new IllegalArgumentException("Resource not found with name: " + resourceName);
+        }
+
+        try {
+            return GsonUtils
+                    .getGson()
+                    .fromJson(
+                            new JsonReader(
+                                    new FileReader(
+                                            new File(resource.toURI()))), jsonType);
+        } catch (final Throwable t) {
+            throw new RuntimeException("Error to parse JSON resource", t);
+        }
     }
 
     @NotNull

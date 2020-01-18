@@ -2,18 +2,13 @@ package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AcaoEdicaoAlternativa;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Zalf on 07/01/17.
  */
 @Deprecated
 public class AlternativaChecklist extends Alternativa {
-
-    /**
-     * Atributo restrito a ser apenas {@code DELETADA}/{@code ALTERADA}/{@code CRIADA}
-     */
-    public AcaoEdicaoAlternativa acaoEdicao;
 
     public PrioridadeAlternativa prioridade;
 
@@ -26,12 +21,21 @@ public class AlternativaChecklist extends Alternativa {
 
     }
 
-    public AcaoEdicaoAlternativa getAcaoEdicao() {
-        return acaoEdicao;
-    }
-
-    public void setAcaoEdicao(final AcaoEdicaoAlternativa acaoEdicao) {
-        this.acaoEdicao = acaoEdicao;
+    @NotNull
+    public static AlternativaChecklist create(@NotNull final Long codigo,
+                                              @NotNull final String descricao,
+                                              final boolean tipoOutros,
+                                              final int ordemExibicao,
+                                              @NotNull final PrioridadeAlternativa prioridade) {
+        final AlternativaChecklist a = new AlternativaChecklist();
+        a.codigo = codigo;
+        a.alternativa = descricao;
+        if (tipoOutros) {
+            a.tipo = TIPO_OUTROS;
+        }
+        a.ordemExibicao = ordemExibicao;
+        a.prioridade = prioridade;
+        return a;
     }
 
     public PrioridadeAlternativa getPrioridade() {
@@ -53,7 +57,6 @@ public class AlternativaChecklist extends Alternativa {
     @Override
     public String toString() {
         return "AlternativaChecklist{" +
-                "acaoEdicao='" + acaoEdicao + '\'' +
                 ", selected=" + selected +
                 super.toString() +
                 '}';

@@ -7,9 +7,9 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.*;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResponseInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.ChecklistOfflineSupport;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.OrdemServicoVisualizacao;
@@ -65,6 +65,8 @@ public final class GsonUtils {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
                 .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
                 .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+                .registerTypeAdapter(PerguntaModeloChecklistEdicao.class, new PergundaEdicaoSerializerDeserializer())
+                .registerTypeAdapter(AlternativaModeloChecklistEdicao.class, new AlternativaEdicaoSerializerDeserializer())
                 .registerTypeAdapter(Color.class, new ColorSerializer())
                 .setExclusionStrategies(new AnnotationExclusionStrategy())
                 .setLenient()
@@ -107,7 +109,8 @@ public final class GsonUtils {
                 .registerSubtype(Response.class)
                 .registerSubtype(ResponseWithCod.class)
                 .registerSubtype(ResponseIntervalo.class)
-                .registerSubtype(ResponseImagemChecklist.class);
+                .registerSubtype(ResponseImagemChecklist.class)
+                .registerSubtype(ResponseInsertModeloChecklist.class);
 
         RuntimeTypeAdapterFactory<Motivo> adapterMotivo = RuntimeTypeAdapterFactory
                 .of(Motivo.class, "tipo")
@@ -132,8 +135,6 @@ public final class GsonUtils {
         builder.registerTypeAdapterFactory(OrdemServicoListagem.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(OrdemServicoVisualizacao.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(ItemOrdemServicoVisualizacao.provideTypeAdapterFactory());
-        builder.registerTypeAdapterFactory(PerguntaModeloChecklist.provideTypeAdapterFactory());
-        builder.registerTypeAdapterFactory(AlternativaModeloChecklist.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(ChecklistOfflineSupport.provideTypeAdapterFactory());
 
         builder.registerTypeAdapterFactory(ApiPneuAlteracaoStatus.provideTypeAdapterFactory());

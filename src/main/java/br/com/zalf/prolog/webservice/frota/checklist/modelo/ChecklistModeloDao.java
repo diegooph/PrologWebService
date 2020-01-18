@@ -5,10 +5,13 @@ import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
@@ -30,12 +33,46 @@ public interface ChecklistModeloDao {
      * @param statusAtivo              Propriedade que diz se o modelo de checklist será adicionado como ativo ou
      *                                 inativo. É utilizado a inserção com <code>statusAtivo = false</code> para as
      *                                 integrações onde é necessário uma parametrização com tabelas DE-PARA.
+     * @param userToken                O token do usuário que fez a requisição.
+     * @return Um objeto contendo o código do modelo de checklist inserido e o código da versão do modelo.
      * @throws Throwable Caso ocorrer algum erro ao salvar os dados.
      */
-    void insertModeloChecklist(
+    @NotNull
+    ResultInsertModeloChecklist insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean statusAtivo) throws Throwable;
+            final boolean statusAtivo,
+            @NotNull final String userToken) throws Throwable;
+
+    /**
+     * Atualiza um {@link ModeloChecklistEdicao} específico. Essa atualização pode ser:
+     * * {@link ModeloChecklistEdicao#nome}.
+     * * {@link ModeloChecklistEdicao#cargosLiberados}.
+     * * {@link ModeloChecklistEdicao#tiposVeiculoLiberados}.
+     * * {@link ModeloChecklistEdicao#perguntas}.
+     *
+     * @param codUnidade                                    Código da Unidade.
+     * @param codModelo                                     Código do modelo.
+     * @param modeloChecklist                               O novo {@link ModeloChecklistEdicao} que será inserido.
+     * @param checklistOfflineListener                      Listener utilizado para notificar sobre a atualização de modelos de
+     *                                                      checklist.
+     * @param podeMudarCodigoContextoPerguntasEAlternativas Esta propriedade é utilizada para dizer se as perguntas e
+     *                                                      alternativas presentes na edição do modelo serão
+     *                                                      sobrescritas e manterão os mesmos códigos de contexto ou se
+     *                                                      podem ser recriadas alterando o código de contexto. Essa
+     *                                                      propriedade é utilizada por integrações onde  há o vínculo
+     *                                                      com códigos em tabelas DE-PARA, assim não pode-se alterar
+     *                                                      esses códigos.
+     * @param userToken                                     O token do usuário que fez a requisição.
+     * @throws Throwable Se algum erro acontecer na atualização dos dados.
+     */
+    void updateModeloChecklist(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codModelo,
+            @NotNull final ModeloChecklistEdicao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean podeMudarCodigoContextoPerguntasEAlternativas,
+            @NotNull final String userToken) throws Throwable;
 
     /**
      * Busca a listagem de {@link ModeloChecklistListagem modelos de checklist}
@@ -51,7 +88,7 @@ public interface ChecklistModeloDao {
 
     /**
      * Busca um {@link ModeloChecklistVisualizacao modelo de checklist} através do
-     * {@link ModeloChecklistVisualizacao#getCodigo()} e {@link Unidade#getCodigo()}.
+     * {@link ModeloChecklistVisualizacao#getCodModelo()} e {@link Unidade#getCodigo()}.
      *
      * @param codUnidade Código da unidade.
      * @param codModelo  Código do modelo do checklist.
@@ -61,47 +98,6 @@ public interface ChecklistModeloDao {
     @NotNull
     ModeloChecklistVisualizacao getModeloChecklist(@NotNull final Long codUnidade,
                                                    @NotNull final Long codModelo) throws Throwable;
-
-    /**
-     * Atualiza um {@link ModeloChecklistEdicao} específico. Essa atualização pode ser:
-     * * {@link ModeloChecklistEdicao#nome}.
-     * * {@link ModeloChecklistEdicao#cargosLiberados}.
-     * * {@link ModeloChecklistEdicao#tiposVeiculoLiberados}.
-     * * {@link ModeloChecklistEdicao#perguntas}.
-     *
-     * @param token                             Token do usuário que está solicitando a alteração do
-     *                                          {@link ModeloChecklistEdicao modelo}.
-     * @param codUnidade                        Código da Unidade.
-     * @param codModelo                         Código do modelo.
-     * @param modeloChecklist                   O novo {@link ModeloChecklistEdicao} que será inserido.
-     * @param checklistOfflineListener          Listener utilizado para notificar sobre a atualização de modelos de
-     *                                          checklist.
-     * @param sobrescreverPerguntasAlternativas Esta propriedade é utilizada para dizer se as perguntas presentes na
-     *                                          edição do modelo serão sobrescritas e manterão os mesmos códigos ou se
-     *                                          devem ser desativadas e criadas novamente, gerando novos códigos. Essa
-     *                                          propriedade é utilizada por integrações onde há o vínculo com códigos
-     *                                          em tabelas DE-PARA, assim não pode-se alterar os códigos.
-     * @throws Throwable Se algum erro acontecer na atualização dos dados.
-     */
-    void updateModeloChecklist(
-            @NotNull final String token,
-            @NotNull final Long codUnidade,
-            @NotNull final Long codModelo,
-            @NotNull final ModeloChecklistEdicao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean sobrescreverPerguntasAlternativas) throws Throwable;
-
-    /**
-     * Busca as {@link PerguntaRespostaChecklist perguntas} que compoẽm o checklist.
-     *
-     * @param codUnidadeModelo Código da {@link Unidade unidade} do modelo.
-     * @param codModelo        Código do modelo.
-     * @return Lista de {@link PerguntaRespostaChecklist perguntas}.
-     * @throws SQLException Se ocorrer erro na execução.
-     */
-    @NotNull
-    List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidadeModelo,
-                                                 @NotNull final Long codModelo) throws SQLException;
 
     /**
      * Marca um {@link ModeloChecklistVisualizacao} como ativo ou inativo.
@@ -123,6 +119,17 @@ public interface ChecklistModeloDao {
      */
     @NotNull
     List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws Throwable;
+
+    /**
+     * Método que insere uma imagem na {@link Galeria} da {@link Empresa}.
+     *
+     * @param codEmpresa   Código da empresa a qual devemos inserir a imagem.
+     * @param imagemProLog Imagem que deve ser inserida.
+     * @return Código da imagem que foi inserida.
+     * @throws SQLException Caso algum erro na query ocorrer.
+     */
+    @NotNull
+    Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws Throwable;
 
     /**
      * Busca a URLs das imagens das perguntas.
@@ -157,13 +164,24 @@ public interface ChecklistModeloDao {
     Galeria getGaleriaImagensEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     /**
-     * Método que insere uma imagem na {@link Galeria} da {@link Empresa}.
+     * Busca os modelos de checklist disponíveis para seleção (e posterior realização) em uma unidade. É buscado
+     * apenas os modelos que o cargo do colaborador que faz a requisição tem acesso (através do <code>codCargo</code>).
+     * <p>
+     * Além disso, serão buscados apenas modelos que tenham tipos de veículos vinculados e que esses tipos tenham, pelo
+     * menos, uma placa vinculada e não deletada.
      *
-     * @param codEmpresa   Código da empresa a qual devemos inserir a imagem.
-     * @param imagemProLog Imagem que deve ser inserida.
-     * @return Código da imagem que foi inserida.
-     * @throws SQLException Caso algum erro na query ocorrer.
+     * @param codUnidade O código da unidade da qual buscar os modelos de checklist.
+     * @param codCargo   O código do cargo do usuário que irá realizar o checklist.
+     * @return Os modelos de checklist disponíveis para realização.
+     * @throws Throwable Caso algum erro ocorrer.
      */
     @NotNull
-    Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws Throwable;
+    List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                             @NotNull final Long codCargo) throws Throwable;
+
+    @NotNull
+    ModeloChecklistRealizacao getModeloChecklistRealizacao(final @NotNull Long codModeloChecklist,
+                                                           final @NotNull Long codVeiculo,
+                                                           final @NotNull String placaVeiculo,
+                                                           final @NotNull TipoChecklist tipoChecklist) throws Throwable;
 }

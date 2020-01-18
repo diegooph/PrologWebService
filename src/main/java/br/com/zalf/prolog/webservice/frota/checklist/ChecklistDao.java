@@ -1,12 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +12,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Contém os métodos para manipular os checklists no banco de dados
@@ -27,13 +24,15 @@ public interface ChecklistDao {
      *
      * @param conn        Conexão que será utilizada para inserir o checklist.
      * @param checklist   Um checklist respondido pelo usuário.
+     * @param foiOffline  Indica se esse checklist foi realizado de forma offline.
      * @param deveAbrirOs Valor que indica se o checklist deve abrir Ordem de Serviço ou não.
      * @return código do checklist recém inserido.
      * @throws SQLException caso não seja possível inserir o checklist no banco de dados
      */
     @NotNull
     Long insert(@NotNull final Connection conn,
-                @NotNull final Checklist checklist,
+                @NotNull final ChecklistInsercao checklist,
+                final boolean foiOffline,
                 final boolean deveAbrirOs) throws Throwable;
 
     /**
@@ -41,11 +40,15 @@ public interface ChecklistDao {
      * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS.
      *
      * @param checklist um checklist
+     * @param foiOffline  Indica se esse checklist foi realizado de forma offline.
+     * @param deveAbrirOs Valor que indica se o checklist deve abrir Ordem de Serviço ou não.
      * @return código do checklist recém inserido
      * @throws SQLException caso não seja possível inserir o checklist no banco de dados
      */
     @NotNull
-    Long insert(Checklist checklist) throws SQLException;
+    Long insert(@NotNull final ChecklistInsercao checklist,
+                final boolean foiOffline,
+                final boolean deveAbrirOs) throws Throwable;
 
     /**
      * Busca um checklist pelo seu código único.
@@ -98,27 +101,6 @@ public interface ChecklistDao {
     @NotNull
     FiltroRegionalUnidadeChecklist getRegionaisUnidadesSelecao(@NotNull final Long codColaborador) throws Throwable;
 
-    //TODO - adicionar comentário javadoc
-    @NotNull
-    Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codFuncao) throws SQLException;
-
-    /**
-     * busca um novo checklist de perguntas
-     *
-     * @param codUnidadeModelo código da unidade do modelo de checklist.
-     * @param codModelo        código do modelo
-     * @param placa            placa do veículo
-     * @param tipoChecklist    o tipo do {@link Checklist checklist} sendo realizado
-     * @return retorno um novo checklist
-     * @throws SQLException caso ocorrer erro no banco
-     */
-    NovoChecklistHolder getNovoChecklistHolder(Long codUnidadeModelo,
-                                               Long codModelo,
-                                               String placa,
-                                               char tipoChecklist) throws SQLException;
-
     /**
      * Método utilizado para buscar o {@link DeprecatedFarolChecklist} contendo todas as placas e as informações
      * de liberação. Caso a propriedade {@code itensCriticosRetroativos} seja marcada, o farol irá exibir as
@@ -149,24 +131,4 @@ public interface ChecklistDao {
      * @throws Throwable Caso ocorrer algum erro na busca dos dados.
      */
     boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;
-
-    /**
-     * Método responsável por buscar o 'status das alternativas' de um modelo de checklist. O Status da alternativa
-     * consiste, neste contexto, nas informações de Ordens de Serviço Abertas para cada alternativa.
-     * O método recebe como parâmetro o {@code codModelo código do modelo} a qual as alternativas serão analisadas e
-     * também a {@code placaVeiculo placa do veículo} que será utilizada como base para saber se tem algum serviço
-     * pendente.
-     * Para cada alternativa do modelo, o método irá verificar se existe algum serviço para ser realizado na placa com
-     * o mesmo código de alternativa.
-     *
-     * @param conn         Conexão com o bando para buscar os dados.
-     * @param codModelo    Código do modelo de checklist para analisar as alternativas.
-     * @param placaVeiculo Placa do veículo para buscar itens em aberto.
-     * @return Um dicionário de informações listando o código das anternativas e qual as informações referentes.
-     * @throws Throwable Se algum erro ocorrer.
-     */
-    @NotNull
-    Map<Long, AlternativaChecklistStatus> getItensStatus(@NotNull final Connection conn,
-                                                         @NotNull final Long codModelo,
-                                                         @NotNull final String placaVeiculo) throws Throwable;
 }

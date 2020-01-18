@@ -7,23 +7,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaMod
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class AlternativaModeloChecklistEdicao extends AlternativaModeloChecklist {
-    public static final String TIPO_SERIALIZACAO = "ALTERNATIVA_MODELO_CHECKLIST_EDICAO";
+public abstract class AlternativaModeloChecklistEdicao extends AlternativaModeloChecklist {
 
-    /**
-     * Quando um modelo de checklist é editado, indica qual foi a operação de edição realizada nessa alternativa.
-     */
-    private AcaoEdicaoAlternativa acaoEdicao;
-
-    public AlternativaModeloChecklistEdicao() {
-        super(TIPO_SERIALIZACAO);
-    }
-
-    public AcaoEdicaoAlternativa getAcaoEdicao() {
-        return acaoEdicao;
-    }
-
-    public void setAcaoEdicao(final AcaoEdicaoAlternativa acaoEdicao) {
-        this.acaoEdicao = acaoEdicao;
-    }
 }

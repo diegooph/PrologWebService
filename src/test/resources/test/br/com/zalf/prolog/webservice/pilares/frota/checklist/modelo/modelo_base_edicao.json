@@ -1,0 +1,72 @@
+{
+  "nome": "MODELO BASE",
+  "codUnidade": 5,
+  "tiposVeiculoLiberados": [579, 610],
+  "cargosLiberados": [158, 45],
+  "perguntas": [
+    {
+      "descricao": "Farol",
+      "codImagem": 1,
+      "ordemExibicao": 1,
+      "singleChoice": false,
+      "alternativas": [
+        {
+          "descricao": "Fora de foco",
+          "prioridade": "CRITICA",
+          "tipoOutros": false,
+          "ordemExibicao": 1,
+          "deveAbrirOrdemServico": true
+        },
+        {
+          "descricao": "Lâmpada queimada",
+          "prioridade": "CRITICA",
+          "tipoOutros": false,
+          "ordemExibicao": 2,
+          "deveAbrirOrdemServico": true
+        },
+        {
+          "descricao": "Lanterna quebrada",
+          "prioridade": "CRITICA",
+          "tipoOutros": false,
+          "ordemExibicao": 3,
+          "deveAbrirOrdemServico": true
+        },
+        {
+          "descricao": "Outros",
+          "prioridade": "BAIXA",
+          "tipoOutros": true,
+          "ordemExibicao": 4,
+          "deveAbrirOrdemServico": false
+        }
+      ]
+    },
+    {
+      "descricao": "Cinto de segurança",
+      "ordemExibicao": 2,
+      "singleChoice": false,
+      "alternativas": [
+        {
+          "descricao": "Não trava",
+          "prioridade": "CRITICA",
+          "tipoOutros": false,
+          "ordemExibicao": 1,
+          "deveAbrirOrdemServico": true
+        },
+        {
+          "descricao": "Sensor não funciona",
+          "prioridade": "ALTA",
+          "tipoOutros": false,
+          "ordemExibicao": 2,
+          "deveAbrirOrdemServico": true
+        },
+        {
+          "descricao": "Outros",
+          "prioridade": "BAIXA",
+          "tipoOutros": true,
+          "ordemExibicao": 3,
+          "deveAbrirOrdemServico": false
+        }
+      ]
+    }
+  ]
+}

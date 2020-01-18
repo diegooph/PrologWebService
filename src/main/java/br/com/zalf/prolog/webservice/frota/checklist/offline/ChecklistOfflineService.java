@@ -25,7 +25,6 @@ public class ChecklistOfflineService {
 
     @NotNull
     public ResponseWithCod insertChecklistOffline(final String tokenSincronizacao,
-                                                  final long versaoDadosChecklsitApp,
                                                   final ChecklistInsercao checklist) throws ProLogException {
         try {
             // Precisamos verificar o token para ter certeza se o usuário é apto a utilizar os métodos.
@@ -37,10 +36,8 @@ public class ChecklistOfflineService {
         } catch (Throwable t) {
             Log.e(TAG, String.format(
                     "Não foi possível inserir o checklist offline:\n" +
-                            "tokenSincronizacao = %s\n" +
-                            "versaoDadosChecklsitApp = %d",
-                    tokenSincronizacao,
-                    versaoDadosChecklsitApp), t);
+                            "tokenSincronizacao = %s\n",
+                    tokenSincronizacao), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível inserir o checklist, tente novamente");

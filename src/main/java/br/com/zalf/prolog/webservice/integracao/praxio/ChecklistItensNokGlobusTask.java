@@ -4,9 +4,9 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.integracao.agendador.SincroniaChecklistListener;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDao;
@@ -76,16 +76,22 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
 
             // Dentro do checklist realizado buscamos os itens apontados como NOK que devem abrir O.S ou incrementar a
             // quantidade apontamentos.
-            final Map<Long, AlternativaChecklistStatus> alternativasStatus =
+            final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus =
                     Injection
-                            .provideChecklistDao()
-                            .getItensStatus(conn, checklist.getCodModelo(), checklist.getPlacaVeiculo());
-            final List<Long> codItensOsIncrementaQtdApontamentos =
+                            .provideOrdemServicoDao()
+                            .getItensStatus(
+                                    conn,
+                                    checklist.getCodModelo(),
+                                    checklist.getCodVersaoModeloChecklist(),
+                                    checklist.getPlacaVeiculo());
+            final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos =
                     getItensIncrementaApontamentos(alternativasStatus, checklist.getListRespostas());
 
             // Verificamos se tem algum item que deve incrementar a quantidade de apontamentos em alguma O.S.
-            if (!codItensOsIncrementaQtdApontamentos.isEmpty()) {
-                Injection.provideOrdemServicoDao().incrementaQtdApontamentos(conn, codItensOsIncrementaQtdApontamentos);
+            if (!itensOsIncrementaQtdApontamentos.isEmpty()) {
+                Injection
+                        .provideOrdemServicoDao()
+                        .incrementaQtdApontamentos(conn, codChecklistProLog, itensOsIncrementaQtdApontamentos);
             }
 
             final Long codUnidadeProLog = Injection
@@ -115,16 +121,21 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 return;
             }
 
+            // IMPORTANTE: Deixamos essas duas linhas antes de enviar a requisição para Globus, assim evitamos que,
+            // após enviar ao Globus ocorra um erro e o ProLog fique com um estado do dado e o Globus com outro.
+            // Assumimos que a requisição será sucesso assim, salvamos quais foram os itens enviados para poder
+            // consultar. Se a requisição para o Globus retornar erro, será feito rollback e será como se esse código
+            // não tivesse executado.
+            sistema.insertItensNokEnviadosGlobus(conn, checklistItensNokGlobus);
+            // Também marcamos o checklist como sincronizado, pois as informações já estão no sistema integrado.
+            sistema.marcaChecklistSincronizado(conn, codChecklistProLog);
+
             final Long codOsAbertaGlobus =
                     requester.insertItensNok(GlobusPiccoloturConverter.convert(checklistItensNokGlobus));
             if (codOsAbertaGlobus <= 0) {
                 throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Globus retornou um código de O.S inválido");
             }
 
-            // Após enviar os Itens NOK para a integração, salvamos quais foram os itens enviados para poder consultar.
-            sistema.insertItensNokEnviadosGlobus(conn, checklistItensNokGlobus);
-            // Também marcamos o checklist como sincronizado, pois as informações já estão no sistema integrado.
-            sistema.marcaChecklistSincronizado(conn, codChecklistProLog);
             conn.commit();
             // Avismos que os itens foram sincronizados com sucesso.
             if (listener != null) {
@@ -152,22 +163,23 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
     }
 
     @NotNull
-    private List<Long> getItensIncrementaApontamentos(
-            @NotNull final Map<Long, AlternativaChecklistStatus> alternativasStatus,
+    private List<InfosAlternativaAberturaOrdemServico> getItensIncrementaApontamentos(
+            @NotNull final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus,
             @NotNull final List<PerguntaRespostaChecklist> respostas) {
-        final List<Long> codItensOsIncrementaQtdApontamentos = new ArrayList<>();
+        final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos = new ArrayList<>();
         for (final PerguntaRespostaChecklist pergunta : respostas) {
             for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
-                final AlternativaChecklistStatus alternativaChecklistStatus =
+                final List<InfosAlternativaAberturaOrdemServico> infosAlternativaAberturaOrdemServicos =
                         alternativasStatus.get(alternativa.getCodigo());
-                if (alternativaChecklistStatus != null
-                        && alternativaChecklistStatus.getQtdApontamentosItemOs() > 0
-                        && alternativaChecklistStatus.isDeveAbrirOrdemServico()) {
-                    codItensOsIncrementaQtdApontamentos.add(alternativaChecklistStatus.getCodItemOsAlternativa());
+                if (infosAlternativaAberturaOrdemServicos != null
+                        && infosAlternativaAberturaOrdemServicos.size() > 0
+                        && infosAlternativaAberturaOrdemServicos.get(0).isDeveAbrirOrdemServico()
+                        && infosAlternativaAberturaOrdemServicos.get(0).getQtdApontamentosItem() > 0) {
+                    itensOsIncrementaQtdApontamentos.add(infosAlternativaAberturaOrdemServicos.get(0));
                 }
             }
         }
-        return codItensOsIncrementaQtdApontamentos;
+        return itensOsIncrementaQtdApontamentos;
     }
 
     @NotNull

@@ -50,7 +50,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
     @Test
     public void fluxoCompletoDeTransferenciaTest() throws Throwable {
         // Busca placas da Unidade.
-        final List<String> placas = veiculoDao.getPlacasVeiculosByTipo(COD_UNIDADE, COD_TIPO_TOCO);
+        final List<String> placas = veiculoDao.getPlacasVeiculosByTipo(5L, COD_TIPO_TOCO);
         Collections.shuffle(placas);
 
         // Busca Veículos a serem transferidos.
@@ -112,7 +112,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
 
     @Test
     public void insertTransferenciaVeiculoTest() throws Throwable {
-        List<String> placas = veiculoDao.getPlacasVeiculosByTipo(COD_UNIDADE, COD_TIPO_TOCO);
+        List<String> placas = veiculoDao.getPlacasVeiculosByTipo(5L, COD_TIPO_TOCO);
         Collections.shuffle(placas);
 
         final String placa1 = placas.get(0);
@@ -172,7 +172,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
 
         return new ProcessoTransferenciaVeiculoRealizacao(
                 3L,
-                COD_UNIDADE,
+                5L,
                 COD_UNIDADE_DESTINO,
                 COD_COLABORADOR,
                 veiculosTransferencia,
