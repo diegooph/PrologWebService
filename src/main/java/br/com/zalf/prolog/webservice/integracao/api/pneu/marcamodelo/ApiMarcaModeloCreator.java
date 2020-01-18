@@ -17,10 +17,10 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class ApiPneuCreator {
+final class ApiMarcaModeloCreator {
 
-    private ApiPneuCreator() {
-        throw new IllegalStateException(ApiPneuCreator.class.getSimpleName() + "cannot be instantiated");
+    private ApiMarcaModeloCreator() {
+        throw new IllegalStateException(ApiMarcaModeloCreator.class.getSimpleName() + "cannot be instantiated");
     }
 
     @NotNull
@@ -31,22 +31,22 @@ final class ApiPneuCreator {
             ApiMarcaPneu marcaPneu = null;
             do {
                 if (marcaPneu == null) {
-                    marcaPneu = ApiPneuCreator.createApiMarcaPneu(rSet, modelosPneu);
+                    marcaPneu = ApiMarcaModeloCreator.createApiMarcaPneu(rSet, modelosPneu);
                     if (temModeloPneu(rSet)) {
-                        modelosPneu.add(ApiPneuCreator.createApiModeloPneu(rSet));
+                        modelosPneu.add(ApiMarcaModeloCreator.createApiModeloPneu(rSet));
                     }
                 } else {
                     if (marcaPneu.getCodigo() == rSet.getLong("COD_MARCA_PNEU")) {
                         if (temModeloPneu(rSet)) {
-                            modelosPneu.add(ApiPneuCreator.createApiModeloPneu(rSet));
+                            modelosPneu.add(ApiMarcaModeloCreator.createApiModeloPneu(rSet));
                         }
                     } else {
                         marcasPneu.add(marcaPneu);
                         modelosPneu = new ArrayList<>();
                         if (temModeloPneu(rSet)) {
-                            modelosPneu.add(ApiPneuCreator.createApiModeloPneu(rSet));
+                            modelosPneu.add(ApiMarcaModeloCreator.createApiModeloPneu(rSet));
                         }
-                        marcaPneu = ApiPneuCreator.createApiMarcaPneu(rSet, modelosPneu);
+                        marcaPneu = ApiMarcaModeloCreator.createApiMarcaPneu(rSet, modelosPneu);
                     }
                 }
             } while (rSet.next());
@@ -62,7 +62,7 @@ final class ApiPneuCreator {
         if (rSet.next()) {
             final List<ApiModeloPneu> modelosPneu = new ArrayList<>();
             do {
-                modelosPneu.add(ApiPneuCreator.createApiModeloPneu(rSet));
+                modelosPneu.add(ApiMarcaModeloCreator.createApiModeloPneu(rSet));
             } while (rSet.next());
             return modelosPneu;
         } else {
@@ -78,22 +78,22 @@ final class ApiPneuCreator {
             ApiMarcaBanda marcaBanda = null;
             do {
                 if (marcaBanda == null) {
-                    marcaBanda = ApiPneuCreator.createApiMarcaBanda(rSet, modelosBanda);
+                    marcaBanda = ApiMarcaModeloCreator.createApiMarcaBanda(rSet, modelosBanda);
                     if (temModeloBanda(rSet)) {
-                        modelosBanda.add(ApiPneuCreator.createApiModeloBanda(rSet));
+                        modelosBanda.add(ApiMarcaModeloCreator.createApiModeloBanda(rSet));
                     }
                 } else {
                     if (marcaBanda.getCodigo() == rSet.getLong("COD_MARCA_BANDA")) {
                         if (temModeloBanda(rSet)) {
-                            modelosBanda.add(ApiPneuCreator.createApiModeloBanda(rSet));
+                            modelosBanda.add(ApiMarcaModeloCreator.createApiModeloBanda(rSet));
                         }
                     } else {
                         marcasBanda.add(marcaBanda);
                         modelosBanda = new ArrayList<>();
                         if (temModeloBanda(rSet)) {
-                            modelosBanda.add(ApiPneuCreator.createApiModeloBanda(rSet));
+                            modelosBanda.add(ApiMarcaModeloCreator.createApiModeloBanda(rSet));
                         }
-                        marcaBanda = ApiPneuCreator.createApiMarcaBanda(rSet, modelosBanda);
+                        marcaBanda = ApiMarcaModeloCreator.createApiMarcaBanda(rSet, modelosBanda);
                     }
                 }
             } while (rSet.next());
@@ -109,7 +109,7 @@ final class ApiPneuCreator {
         if (rSet.next()) {
             final List<ApiModeloBanda> modelosBanda = new ArrayList<>();
             do {
-                modelosBanda.add(ApiPneuCreator.createApiModeloBanda(rSet));
+                modelosBanda.add(ApiMarcaModeloCreator.createApiModeloBanda(rSet));
             } while (rSet.next());
             return modelosBanda;
         } else {
@@ -134,7 +134,7 @@ final class ApiPneuCreator {
                 rSet.getLong("COD_MARCA_BANDA"),
                 rSet.getLong("COD_MODELO_BANDA"),
                 rSet.getString("NOME_MODELO_BANDA"),
-                rSet.getInt("QTS_SULCOS_MODELO_BANDA"),
+                rSet.getInt("QTD_SULCOS_MODELO_BANDA"),
                 rSet.getDouble("ALTURA_SULCOS_MODELO_BANDA"),
                 rSet.getBoolean("STATUS_ATIVO_MODELO_BANDA"));
     }

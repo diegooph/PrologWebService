@@ -164,11 +164,13 @@ public interface ColaboradorDao {
      * para identificar qual código irá retornar.
      *
      * @param conn           Conexão com o banco de dados que será utilizada para buscar o código.
+     * @param codEmpresa     Código da empresa que o colaborador está vinculado.
      * @param cpfColaborador Cpf que será utilizado para buscar o código do colaborador.
      * @return O código único de identificação do colaborador no sistema.
      * @throws Throwable Se algum erro acontecer.
      */
     @NotNull
     Long getCodColaboradorByCpf(@NotNull final Connection conn,
+                                @NotNull final Long codEmpresa,
                                 @NotNull final String cpfColaborador) throws Throwable;
 }

@@ -95,7 +95,10 @@ public class RelatorioEntregaResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
+    @Secured(permissions = {
+            Pilares.Entrega.Relatorios.PRODUTIVIDADE,
+            Pilares.Entrega.Relatorios.INDICADORES,
+            Pilares.Entrega.Upload.VERIFICACAO_DADOS})
     @Path("/mapas/estratificados/{codUnidade}/csv")
     public StreamingOutput getEstratificacaoMapasCsv(@PathParam("codUnidade") Long codUnidade,
                                                      @QueryParam("dataInicial") Long dataInicial,
@@ -104,7 +107,10 @@ public class RelatorioEntregaResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
+    @Secured(permissions = {
+            Pilares.Entrega.Relatorios.PRODUTIVIDADE,
+            Pilares.Entrega.Relatorios.INDICADORES,
+            Pilares.Entrega.Upload.VERIFICACAO_DADOS})
     @Path("/mapas/estratificados/{codUnidade}/report")
     public Report getEstratificacaoMapasReport(@PathParam("codUnidade") Long codUnidade,
                                                @QueryParam("dataInicial") Long dataInicial,

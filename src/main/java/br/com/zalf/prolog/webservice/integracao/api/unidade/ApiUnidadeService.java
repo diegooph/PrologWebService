@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api.unidade;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,9 @@ public final class ApiUnidadeService extends BaseIntegracaoService {
             ensureValidToken(tokenIntegracao, TAG);
             return dao.getUnidades(tokenIntegracao, apenasUnidadesAtivas);
         } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao listar unidades do ProLog:\n" +
+                    "tokenIntegracao: " + tokenIntegracao + "\n" +
+                    "apenasUnidadesAtivas: " + apenasUnidadesAtivas, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao listar unidades do ProLog");
