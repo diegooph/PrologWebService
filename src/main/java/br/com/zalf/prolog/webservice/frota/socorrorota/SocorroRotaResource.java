@@ -30,7 +30,7 @@ public final class SocorroRotaResource {
     private SocorroRotaService service = new SocorroRotaService();
 
     /**
-     * Resource para realizar a abertura de uma solicitação de socorro.
+     * Resource para abrir uma solicitação de socorro.
      */
     @POST
     @Secured(permissions = Pilares.Frota.SocorroRota.SOLICITAR_SOCORRO)
@@ -81,7 +81,7 @@ public final class SocorroRotaResource {
     }
 
     /**
-     * Resource para realizar a invalidação de uma solicitação de socorro.
+     * Resource para invalidar uma solicitação de socorro.
      */
     @POST
     @Secured(permissions = {Pilares.Frota.SocorroRota.SOLICITAR_SOCORRO, Pilares.Frota.SocorroRota.TRATAR_SOCORRO})
@@ -92,7 +92,7 @@ public final class SocorroRotaResource {
     }
 
     /**
-     * Resource para realizar o atendimento de uma solicitação de socorro.
+     * Resource para atender uma solicitação de socorro.
      */
     @POST
     @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO})
@@ -103,7 +103,7 @@ public final class SocorroRotaResource {
     }
 
     /**
-     * Resource para realizar a finalização de uma solicitação de socorro.
+     * Resource para finalizar uma solicitação de socorro.
      */
     @POST
     @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO})
@@ -114,7 +114,7 @@ public final class SocorroRotaResource {
     }
 
     /**
-     * Resource para realizar a visualização de uma solicitação de socorro.
+     * Resource para visualizar uma solicitação de socorro.
      */
     @GET
     @Secured(permissions = {Pilares.Frota.SocorroRota.VISUALIZAR_SOCORROS_E_RELATORIOS})
