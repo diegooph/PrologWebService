@@ -570,7 +570,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         try {
             stmt = conn.prepareCall("{CALL FUNC_MOVIMENTACAO_INSERT_MOVIMENTACAO_VEICULO_DESTINO(" +
                     "F_COD_MOVIMENTACAO := ?, " +
-                    "F_TIPO_MOVIMENTACAO := ?, " +
+                    "F_TIPO_DESTINO := ?, " +
                     "F_PLACA_VEICULO := ?, " +
                     "F_KM_ATUAL := ?, " +
                     "F_POSICAO_PROLOG := ?)}");
