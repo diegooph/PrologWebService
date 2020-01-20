@@ -137,6 +137,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                                 .provideColaboradorDao()
                                 .getCodColaboradorByCpf(
                                         conn,
+                                        codEmpresa,
                                         veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia());
             } catch (final Throwable t) {
                 throw new GenericException(

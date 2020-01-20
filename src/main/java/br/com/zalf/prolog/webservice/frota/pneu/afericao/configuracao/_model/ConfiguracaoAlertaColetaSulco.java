@@ -53,16 +53,30 @@ public final class ConfiguracaoAlertaColetaSulco {
      */
     private final double variacaoAceitaSulcoMaiorMilimetros;
 
+    /**
+     * Parametrização que define se uma aferição que ultrapassou o limite de variação menor será bloqueada.
+     */
+    private final boolean bloqueiaValoresMenores;
+
+    /**
+     * Parametrização que define se uma aferição que ultrapassou o limite de variação maior será bloqueada.
+     */
+    private final boolean bloqueiaValoresMaiores;
+
     public ConfiguracaoAlertaColetaSulco(@Nullable final Long codigo,
                                          @NotNull final Long codUnidadeReferente,
                                          @NotNull final String nomeUnidadeReferente,
                                          final double variacaoAceitaSulcoMenorMilimetros,
-                                         final double variacaoAceitaSulcoMaiorMilimetros) {
+                                         final double variacaoAceitaSulcoMaiorMilimetros,
+                                         final boolean bloqueiaValoresMenores,
+                                         final boolean bloqueiaValoresMaiores) {
         this.codigo = codigo;
         this.codUnidadeReferente = codUnidadeReferente;
         this.nomeUnidadeReferente = nomeUnidadeReferente;
         this.variacaoAceitaSulcoMenorMilimetros = variacaoAceitaSulcoMenorMilimetros;
         this.variacaoAceitaSulcoMaiorMilimetros = variacaoAceitaSulcoMaiorMilimetros;
+        this.bloqueiaValoresMenores = bloqueiaValoresMenores;
+        this.bloqueiaValoresMaiores = bloqueiaValoresMaiores;
     }
 
     @Nullable
@@ -86,5 +100,13 @@ public final class ConfiguracaoAlertaColetaSulco {
 
     public double getVariacaoAceitaSulcoMaiorMilimetros() {
         return variacaoAceitaSulcoMaiorMilimetros;
+    }
+
+    public boolean isBloqueiaValoresMenores() {
+        return bloqueiaValoresMenores;
+    }
+
+    public boolean isBloqueiaValoresMaiores() {
+        return bloqueiaValoresMaiores;
     }
 }

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
+package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu;
 
 import br.com.zalf.prolog.webservice.implantacao.conferencia.ConferenciaDao;
 import br.com.zalf.prolog.webservice.implantacao.conferencia.ConferenciaDaoImpl;
@@ -15,36 +15,32 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
 
 /**
- * Created on 23/07/19.
+ * Created on 19/11/19.
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
+public final class PneuConferenciaDaoImpl implements PneuConferenciaDao {
     @NotNull
     private ConferenciaDao dao = new ConferenciaDaoImpl();
 
     @Override
-    public void importPlanilhaVeiculos(@NotNull final Long codEmpresa,
-                                       @NotNull final Long codUnidade,
-                                       @NotNull final String usuario,
-                                       @NotNull final String jsonPlanilha,
-                                       @NotNull final TipoImport tipoImportVeiculo) throws Throwable {
+    public void importPlanilhaPneus(@NotNull final Long codEmpresa,
+                                    @NotNull final Long codUnidade,
+                                    @NotNull final String usuario,
+                                    @NotNull final String jsonPlanilha,
+                                    @NotNull final TipoImport tipoImportPneu) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            final ConferenciaDadosTabelaImport conferenciaDadosTabelaImport = dao.createDadosTabelaImport(
-                    codEmpresa,
-                    codUnidade,
-                    usuario,
-                    tipoImportVeiculo);
+            final ConferenciaDadosTabelaImport conferenciaDadosTabelaImport = dao.createDadosTabelaImport(codEmpresa, codUnidade, usuario, tipoImportPneu);
 
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM IMPLANTACAO.FUNC_VEICULO_INSERE_PLANILHA_IMPORTACAO(" +
+            stmt = conn.prepareStatement("SELECT * FROM IMPLANTACAO.FUNC_PNEU_INSERE_PLANILHA_IMPORTACAO(" +
                     "F_COD_DADOS_AUTOR_IMPORT := ?," +
                     "F_NOME_TABELA_IMPORT := ?," +
                     "F_COD_UNIDADE   := ?," +
-                    "F_JSON_VEICULOS := ?);");
+                    "F_JSON_PNEUS := ?);");
             stmt.setLong(1, conferenciaDadosTabelaImport.getCodDadosAutorImport());
             stmt.setString(2, conferenciaDadosTabelaImport.getNomeTabelaImport());
             stmt.setLong(3, codUnidade);

@@ -36,14 +36,19 @@ public class ListagemMarcasModelosPneuTest extends BaseTest {
 
     @Test
     public void listagemMarcasPneuTest() {
-        final List<ApiMarcaPneu> marcasPneu = service.getMarcasPneu(TOKEN_INTEGRACAO, false);
+        DatabaseManager.init();
+        final List<ApiMarcaPneu> marcasPneu =
+                new ApiMarcaModeloPneuService().getMarcasPneu(TOKEN_INTEGRACAO, false);
         assertThat(marcasPneu).isNotNull();
         assertThat(marcasPneu).isNotEmpty();
+        DatabaseManager.finish();
     }
 
     @Test
     public void litagemModeloPneuTest() {
-        List<ApiMarcaPneu> marcasPneu = service.getMarcasPneu(TOKEN_INTEGRACAO, false);
+        DatabaseManager.init();
+        List<ApiMarcaPneu> marcasPneu =
+                new ApiMarcaModeloPneuService().getMarcasPneu(TOKEN_INTEGRACAO, false);
         assertThat(marcasPneu).isNotNull();
         assertThat(marcasPneu).isNotEmpty();
         Collections.shuffle(marcasPneu);
@@ -51,8 +56,10 @@ public class ListagemMarcasModelosPneuTest extends BaseTest {
         final ApiMarcaPneu marcaPneu = marcasPneu.get(0);
 
         final List<ApiModeloPneu> modelosPneu =
-                service.getModelosPneu(TOKEN_INTEGRACAO, marcaPneu.getCodigo(), false);
+                new ApiMarcaModeloPneuService()
+                        .getModelosPneu(TOKEN_INTEGRACAO, marcaPneu.getCodigo(), false);
         assertThat(modelosPneu).isNotNull();
         assertThat(modelosPneu.size()).isEqualTo(marcaPneu.getModelos().size());
+        DatabaseManager.finish();
     }
 }
