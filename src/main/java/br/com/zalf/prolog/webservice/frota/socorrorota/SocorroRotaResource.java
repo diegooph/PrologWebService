@@ -71,6 +71,7 @@ public final class SocorroRotaResource {
             Pilares.Frota.SocorroRota.TRATAR_SOCORRO,
             Pilares.Frota.SocorroRota.VISUALIZAR_SOCORROS_E_RELATORIOS})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/listagem")
     public List<SocorroRotaListagem> getListagemSocorroRota(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
