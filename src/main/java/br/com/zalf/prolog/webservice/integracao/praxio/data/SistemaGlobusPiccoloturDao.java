@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistItensNokGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistToSyncGlobus;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -11,6 +12,10 @@ import java.sql.Connection;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public interface SistemaGlobusPiccoloturDao {
+
+    @NotNull
+    ChecklistToSyncGlobus getChecklistToSyncGlobus(@NotNull final Connection conn,
+                                                   @NotNull final Long codChecklistProLog) throws Throwable;
 
     /**
      * Método utilizado exclusivamente para a integração entre ProLog e Globus.

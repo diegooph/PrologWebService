@@ -3,15 +3,16 @@ package br.com.zalf.prolog.webservice.integracao.praxio.data;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.AlternativaNokGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistItensNokGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.PerguntaNokGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 /**
@@ -20,6 +21,73 @@ import java.util.stream.IntStream;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection implements SistemaGlobusPiccoloturDao {
+    @Override
+    @NotNull
+    public ChecklistToSyncGlobus getChecklistToSyncGlobus(@NotNull final Connection conn,
+                                                          @NotNull final Long codChecklistProLog) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM PICCOLOTUR.FUNC_CHECK_BUSCA_CHECKLIST_ITENS_NOK(F_COD_CHECKLIST_PROLOG => ?);");
+            stmt.setLong(1, codChecklistProLog);
+            rSet = stmt.executeQuery();
+            ChecklistToSyncGlobus checklistToSyncGlobus = null;
+            ChecklistItensNokGlobus checklistItensNokGlobus = null;
+            PerguntaNokGlobus perguntaNokGlobus = null;
+            final List<PerguntaNokGlobus> perguntasNok = new ArrayList<>();
+            Long codPerguntaAnterior = null;
+            Long codPerguntaAtual = null;
+            while (rSet.next()) {
+                if (checklistItensNokGlobus == null) {
+                    checklistItensNokGlobus = new ChecklistItensNokGlobus(
+                            rSet.getLong("COD_UNIDADE_CHECKLIST"),
+                            codChecklistProLog,
+                            rSet.getString("CPF_COLABORADOR_REALIZACAO"),
+                            rSet.getString("PLACA_VEICULO_CHECKLIST"),
+                            rSet.getLong("KM_COLETADO_CHECKLIST"),
+                            TipoChecklistGlobus.fromString(rSet.getString("TIPO_CHECKLIST")),
+                            rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class),
+                            perguntasNok);
+                    // Cria objeto que será retornado contendo as informações do checklist para sincronizar.
+                    checklistToSyncGlobus = new ChecklistToSyncGlobus(
+                            rSet.getLong("COD_MODELO_CHECKLIST"),
+                            rSet.getLong("COD_VERSAO_MODELO_CHECKLIST"),
+                            rSet.getString("PLACA_VEICULO_CHECKLIST"),
+                            checklistItensNokGlobus);
+
+                    if (rSet.getInt("TOTAL_ALTERNATIVAS_NOK") <= 0) {
+                        break;
+                    }
+                    perguntaNokGlobus = createPerguntaNokGlobus(rSet);
+                }
+
+                codPerguntaAtual = rSet.getLong("COD_CONTEXTO_PERGUNTA_NOK");
+                if (codPerguntaAnterior == null) {
+                    codPerguntaAnterior = codPerguntaAtual;
+                }
+
+                if (codPerguntaAnterior.equals(codPerguntaAtual)) {
+                    // Cria mais uma alternativa na pergunta atual.
+                    perguntaNokGlobus.getAlternativasNok().add(createAlternativaNokGlobus(rSet));
+                } else {
+                    // Cria nova pergunta.
+                    perguntaNokGlobus = createPerguntaNokGlobus(rSet);
+                    // Cria primeira alternativa da nova pergunta.
+                    perguntaNokGlobus.getAlternativasNok().add(createAlternativaNokGlobus(rSet));
+                }
+                codPerguntaAnterior = codPerguntaAtual;
+            }
+            if (checklistToSyncGlobus == null) {
+                throw new IllegalStateException("Nenhum checklist existente para o código:\n" +
+                        "codChecklistProLog: " + codChecklistProLog);
+            }
+            return checklistToSyncGlobus;
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
     @Override
     public void insertItensNokPendentesParaSincronizar(
             @NotNull final Connection conn,
@@ -136,5 +204,22 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
         } finally {
             close(conn, stmt);
         }
+    }
+
+    @NotNull
+    private AlternativaNokGlobus createAlternativaNokGlobus(@NotNull final ResultSet rSet) throws SQLException {
+        return new AlternativaNokGlobus(
+                rSet.getLong("COD_ALTERNATIVA_NOK"),
+                rSet.getLong("COD_CONTEXTO_ALTERNATIVA_NOK"),
+                rSet.getString("DESCRICAO_ALTERNATIVA_NOK"),
+                PrioridadeAlternativaGlobus.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA_NOK")));
+    }
+
+    @NotNull
+    private PerguntaNokGlobus createPerguntaNokGlobus(@NotNull final ResultSet rSet) throws SQLException {
+        return new PerguntaNokGlobus(
+                rSet.getLong("COD_CONTEXTO_PERGUNTA_NOK"),
+                rSet.getString("DESCRICAO_PERGUNTA_NOK"),
+                new ArrayList<>());
     }
 }

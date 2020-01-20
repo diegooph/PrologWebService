@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.agendador;
 
 
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,11 +10,11 @@ import org.jetbrains.annotations.Nullable;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public interface SincroniaChecklistListener {
-    void onSincroniaOk(@NotNull final Checklist checklist, @NotNull final Boolean isLastChecklist);
+    void onSincroniaOk(@NotNull final Long codChecklist, @NotNull final Boolean isLastChecklist);
 
-    void onSincroniaNaoExecutada(@NotNull final Checklist checklist, @NotNull final Boolean isLastChecklist);
+    void onSincroniaNaoExecutada(@NotNull final Long codChecklist, @NotNull final Boolean isLastChecklist);
 
-    void onErroSincronia(@NotNull final Checklist checklist,
+    void onErroSincronia(@NotNull final Long codChecklist,
                          @NotNull final Boolean isLastChecklist,
                          @Nullable final Throwable t);
 }

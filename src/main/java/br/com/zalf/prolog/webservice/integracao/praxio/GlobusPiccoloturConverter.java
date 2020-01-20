@@ -56,6 +56,7 @@ public final class GlobusPiccoloturConverter {
                                     ? alternativa.getRespostaOutros()
                                     : alternativa.getAlternativa();
                             alternativasNok.add(new AlternativaNokGlobus(
+                                    infosAlternativaAberturaOrdemServico.getCodAlternativa(),
                                     infosAlternativaAberturaOrdemServico.getCodContextoAlternativa(),
                                     descricao,
                                     getPrioridadeAlternativaGlobus(
