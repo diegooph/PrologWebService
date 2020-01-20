@@ -525,8 +525,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
     }
 
     @Override
-    public void updateStatusAtivo(@NotNull final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus,
-                                  @NotNull final String userToken) throws Throwable {
+    public void updateStatusAtivo(@NotNull final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -534,12 +533,10 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             stmt = conn.prepareCall("{CALL FUNC_SOCORRO_ROTA_UPDATE_STATUS_OPCAO_PROBLEMA(" +
                     "F_COD_EMPRESA  := ?," +
                     "F_COD_OPCAO_PROBLEMA   := ?," +
-                    "F_STATUS_ATIVO := ?," +
-                    "F_TOKEN := ?)}");
+                    "F_STATUS_ATIVO := ?)}");
             stmt.setLong(1, opcaoProblemaSocorroRotaStatus.getCodEmpresa());
             stmt.setLong(2, opcaoProblemaSocorroRotaStatus.getCodOpcaoProblema());
             stmt.setBoolean(3, opcaoProblemaSocorroRotaStatus.isStatusAtivo());
-            stmt.setString(4, userToken);
             stmt.execute();
         } finally {
             close(conn, stmt);

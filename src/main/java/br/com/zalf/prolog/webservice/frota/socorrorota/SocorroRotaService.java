@@ -206,9 +206,9 @@ public final class SocorroRotaService {
     }
 
     Response updateStatusOpcoesProblemas
-            (@NotNull final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus, @NotNull final String userToken) {
+            (@NotNull final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus) {
         try {
-            dao.updateStatusAtivo(opcaoProblemaSocorroRotaStatus, userToken);
+            dao.updateStatusAtivo(opcaoProblemaSocorroRotaStatus);
             return Response.ok("Status de opção de problema " + (opcaoProblemaSocorroRotaStatus.isStatusAtivo() ? "ativado" : "inativado"));
         } catch (Throwable t) {
             Log.e(TAG, "Erro ao ativar/inativar a opcao de problema " + opcaoProblemaSocorroRotaStatus.getCodOpcaoProblema(), t);

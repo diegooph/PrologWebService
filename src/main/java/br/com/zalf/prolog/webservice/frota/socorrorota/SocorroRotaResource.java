@@ -192,8 +192,7 @@ public final class SocorroRotaResource {
     @Secured(permissions = Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS)
     @Path("/opcoes-problemas/status-ativo")
     public Response updateStatusOpcoesProblemas(
-            @Required final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus,
-            @HeaderParam("Authorization") @Required final String userToken) {
-        return service.updateStatusOpcoesProblemas(opcaoProblemaSocorroRotaStatus, userToken);
+            @Required final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus) {
+        return service.updateStatusOpcoesProblemas(opcaoProblemaSocorroRotaStatus);
     }
 }

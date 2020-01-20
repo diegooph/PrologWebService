@@ -161,6 +161,6 @@ public interface SocorroRotaDao {
      *                                        opção será ativada ou inativada.
      * @throws Throwable Caso ocorrer erro no banco.
      */
-    void updateStatusAtivo(@NotNull final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus,
-                           @NotNull final String userToken) throws Throwable;
+    void updateStatusAtivo(@NotNull final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus)
+            throws Throwable;
 }
