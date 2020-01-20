@@ -63,17 +63,6 @@ public final class SocorroRotaResource {
     }
 
     /**
-     * Resource para buscar as opções de problemas disponíveis para a abertura de socorro por empresa
-     * */
-    @GET
-    @Path("/abertura/opcoes-problemas")
-    public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
-            @QueryParam("codEmpresa") @Required final Long codEmpresa){
-
-        return service.getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(codEmpresa);
-    }
-
-    /**
      * Resource para buscar uma lista de socorros em rota por data inicial, final e unidades
      * */
     @GET
@@ -133,66 +122,5 @@ public final class SocorroRotaResource {
     public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
             @QueryParam("codSocorroRota") @Required final Long codSocorroRota){
         return service.getVisualizacaoSocorroRota(codSocorroRota);
-    }
-
-    /**
-     * Resource para buscar as opções de problemas por empresa.
-     * */
-    @GET
-    @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO,
-                            Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS})
-    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    @Path("/opcoes-problemas/")
-    public List<OpcaoProblemaSocorroRotaListagem> getOpcoesProblemasSocorroRotaByEmpresa(
-            @QueryParam("codEmpresa") @Required final Long codEmpresa){
-        return service.getOpcoesProblemasSocorroRotaByEmpresa(codEmpresa);
-    }
-
-    /**
-     * Resource para buscar uma opção de problema específica.
-     * */
-    @GET
-    @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO,
-            Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS})
-    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    @Path("/opcao-problema/")
-    public OpcaoProblemaSocorroRotaVisualizacao getOpcaoProblemaSocorroRotaVisualizacao(
-            @QueryParam("codOpcaoProblema") @Required final Long codOpcaoProblema){
-        return service.getOpcaoProblemaSocorroRotaVisualizacao(codOpcaoProblema);
-    }
-
-    /**
-     * Resource para adicionar uma opção de problema.
-     */
-    @POST
-    @Secured(permissions = Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS)
-    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    @Path("/opcoes-problemas/")
-    public ResponseWithCod insertOpcoesProblemas(
-            @Required @Valid final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) {
-        return service.insertOpcoesProblemas(opcaoProblemaSocorroRotaCadastro);
-    }
-
-    /**
-     * Resource para editar uma opção de problema.
-     */
-    @PUT
-    @Secured(permissions = Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS)
-    @Path("/opcoes-problemas/")
-    public Response updateOpcoesProblemas(
-            @Required @Valid final OpcaoProblemaSocorroRotaEdicao opcaoProblemaSocorroRotaEdicao) {
-        return service.updateOpcoesProblemas(opcaoProblemaSocorroRotaEdicao);
-    }
-
-    /**
-     * Resource para ativar/inativar uma opção de problema.
-     */
-    @PUT
-    @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS)
-    @Path("/opcoes-problemas/status-ativo")
-    public Response updateStatusOpcoesProblemas(
-            @Required final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus) {
-        return service.updateStatusOpcoesProblemas(opcaoProblemaSocorroRotaStatus);
     }
 }

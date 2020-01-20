@@ -37,15 +37,6 @@ public class SocorroRotaConverter {
     }
 
     @NotNull
-    public static OpcaoProblemaAberturaSocorro createOpcaoProblemaAberturaSocorro(
-            @NotNull final ResultSet rSet) throws SQLException {
-        return new OpcaoProblemaAberturaSocorro(
-                rSet.getLong("CODIGO"),
-                rSet.getString("DESCRICAO"),
-                rSet.getBoolean("OBRIGA_DESCRICAO"));
-    }
-
-    @NotNull
     public static SocorroRotaListagem createSocorroRotaListagem(
             @NotNull final ResultSet rSet) throws SQLException {
         return new SocorroRotaListagem(
@@ -133,26 +124,5 @@ public class SocorroRotaConverter {
                 rSet.getString("MODELO_APARELHO_FINALIZACAO"),
                 rSet.getString("IMEI_APARELHO_FINALIZACAO")
         );
-    }
-
-    @NotNull
-    public static OpcaoProblemaSocorroRotaListagem createOpcaoProblemaSocorroRota(
-            @NotNull final ResultSet rSet) throws SQLException {
-        return new OpcaoProblemaSocorroRotaListagem(
-                rSet.getLong("COD_OPCAO_PROBLEMA"),
-                rSet.getString("DESCRICAO"),
-                rSet.getBoolean("OBRIGA_DESCRICAO"),
-                rSet.getBoolean("STATUS_ATIVO"));
-    }
-
-    public static OpcaoProblemaSocorroRotaVisualizacao createOpcaoProblemaSocorroRotaVisualizacao(
-            @NotNull final ResultSet rSet) throws SQLException {
-        return new OpcaoProblemaSocorroRotaVisualizacao(
-                rSet.getLong("COD_OPCAO_PROBLEMA"),
-                rSet.getString("DESCRICAO"),
-                rSet.getBoolean("OBRIGA_DESCRICAO"),
-                rSet.getBoolean("STATUS_ATIVO"),
-                rSet.getString("NOME_COLABORADOR_ULTIMA_ATUALIZACAO"),
-                rSet.getString("DATA_HORA_ULTIMA_ATUALIZACAO"));
     }
 }

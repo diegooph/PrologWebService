@@ -29,12 +29,11 @@ public final class OpcaoProblemaResource {
     @NotNull
     private OpcaoProblemaService service = new OpcaoProblemaService();
 
-
     /**
      * Resource para buscar as opções de problemas disponíveis para a abertura de socorro por empresa
      * */
     @GET
-    @Path("/abertura/opcoes-problemas")
+    @Path("/listagem-abertura-socorro")
     public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa){
 
@@ -45,6 +44,7 @@ public final class OpcaoProblemaResource {
      * Resource para buscar as opções de problemas por empresa.
      * */
     @GET
+    @Path("/listagem")
     @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO,
                             Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
@@ -60,7 +60,7 @@ public final class OpcaoProblemaResource {
     @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO,
             Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    @Path("/opcao-problema/")
+    @Path("/visualizacao")
     public OpcaoProblemaSocorroRotaVisualizacao getOpcaoProblemaSocorroRotaVisualizacao(
             @QueryParam("codOpcaoProblema") @Required final Long codOpcaoProblema){
         return service.getOpcaoProblemaSocorroRotaVisualizacao(codOpcaoProblema);
@@ -70,9 +70,9 @@ public final class OpcaoProblemaResource {
      * Resource para adicionar uma opção de problema.
      */
     @POST
+    @Path("/adicionar")
     @Secured(permissions = Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS)
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    @Path("/opcoes-problemas/")
     public ResponseWithCod insertOpcoesProblemas(
             @Required @Valid final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro) {
         return service.insertOpcoesProblemas(opcaoProblemaSocorroRotaCadastro);
@@ -82,8 +82,8 @@ public final class OpcaoProblemaResource {
      * Resource para editar uma opção de problema.
      */
     @PUT
+    @Path("/atualizar")
     @Secured(permissions = Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS)
-    @Path("/opcoes-problemas/")
     public Response updateOpcoesProblemas(
             @Required @Valid final OpcaoProblemaSocorroRotaEdicao opcaoProblemaSocorroRotaEdicao) {
         return service.updateOpcoesProblemas(opcaoProblemaSocorroRotaEdicao);
@@ -95,7 +95,7 @@ public final class OpcaoProblemaResource {
     @PUT
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Frota.SocorroRota.GERENCIAR_OPCOES_PROBLEMAS)
-    @Path("/opcoes-problemas/status-ativo")
+    @Path("/status-ativo")
     public Response updateStatusOpcoesProblemas(
             @Required final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus) {
         return service.updateStatusOpcoesProblemas(opcaoProblemaSocorroRotaStatus);
