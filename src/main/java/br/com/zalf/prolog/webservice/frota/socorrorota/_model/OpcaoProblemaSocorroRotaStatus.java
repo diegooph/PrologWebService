@@ -15,6 +15,11 @@ public class OpcaoProblemaSocorroRotaStatus {
     @NotNull
     private final Long codEmpresa;
     /*
+     * Código do colaborador
+     * */
+    @NotNull
+    private final Long codColaborador;
+    /*
      * Código da opção de problema
      * */
     @NotNull
@@ -24,10 +29,13 @@ public class OpcaoProblemaSocorroRotaStatus {
      * */
     private final boolean isStatusAtivo;
 
+
     public OpcaoProblemaSocorroRotaStatus(@NotNull final Long codEmpresa,
+                                          @NotNull final Long codColaborador,
                                           @NotNull final Long codOpcaoProblema,
                                           final boolean isStatusAtivo) {
         this.codEmpresa = codEmpresa;
+        this.codColaborador = codColaborador;
         this.codOpcaoProblema = codOpcaoProblema;
         this.isStatusAtivo = isStatusAtivo;
     }
@@ -37,6 +45,9 @@ public class OpcaoProblemaSocorroRotaStatus {
         return codEmpresa;
     }
 
+    public Long getCodColaborador() {
+        return codColaborador;
+    }
     @NotNull
     public Long getCodOpcaoProblema() {
         return codOpcaoProblema;
