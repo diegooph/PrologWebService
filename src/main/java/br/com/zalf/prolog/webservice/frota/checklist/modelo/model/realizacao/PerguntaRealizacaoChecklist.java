@@ -85,12 +85,12 @@ public final class PerguntaRealizacaoChecklist {
         return ordemExibicao;
     }
 
-    @NotNull
+    @Nullable
     public Long getCodImagem() {
         return codImagem;
     }
 
-    @NotNull
+    @Nullable
     public String getUrlImagem() {
         return urlImagem;
     }
