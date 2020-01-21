@@ -37,7 +37,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             PerguntaNokGlobus perguntaNokGlobus = null;
             final List<PerguntaNokGlobus> perguntasNok = new ArrayList<>();
             Long codPerguntaAnterior = null;
-            Long codPerguntaAtual = null;
+            Long codPerguntaAtual;
             while (rSet.next()) {
                 if (checklistItensNokGlobus == null) {
                     checklistItensNokGlobus = new ChecklistItensNokGlobus(
@@ -60,6 +60,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                         break;
                     }
                     perguntaNokGlobus = createPerguntaNokGlobus(rSet);
+                    perguntasNok.add(perguntaNokGlobus);
                 }
 
                 codPerguntaAtual = rSet.getLong("COD_CONTEXTO_PERGUNTA_NOK");
@@ -73,6 +74,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                 } else {
                     // Cria nova pergunta.
                     perguntaNokGlobus = createPerguntaNokGlobus(rSet);
+                    perguntasNok.add(perguntaNokGlobus);
                     // Cria primeira alternativa da nova pergunta.
                     perguntaNokGlobus.getAlternativasNok().add(createAlternativaNokGlobus(rSet));
                 }

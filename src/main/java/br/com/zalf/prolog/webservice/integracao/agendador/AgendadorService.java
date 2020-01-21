@@ -32,16 +32,16 @@ public final class AgendadorService implements SincroniaChecklistListener {
             if (!checklistParaSincronizar.temChecklistParaSincronizar()) {
                 return;
             }
-            final Long codChecklistParaSincronizar = checklistParaSincronizar.getCodChecklist();
             // Executamos a sincronia utilizando a thread específica para esse serviço.
             Executors.newSingleThreadExecutor().execute(
                     new ChecklistItensNokGlobusTask(
-                            codChecklistParaSincronizar,
+                            checklistParaSincronizar.getCodChecklist(),
                             checklistParaSincronizar.isLastCod(),
                             new SistemaGlobusPiccoloturDaoImpl(),
                             new GlobusPiccoloturRequesterImpl(),
                             this));
         } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao tentar sincronizar o checklist através do agendador", t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao tentar sincronizar o checklist");

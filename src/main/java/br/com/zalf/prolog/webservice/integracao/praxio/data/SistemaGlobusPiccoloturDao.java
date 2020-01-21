@@ -12,7 +12,14 @@ import java.sql.Connection;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public interface SistemaGlobusPiccoloturDao {
-
+    /**
+     * Método utilizado para buscar as informações do checklist que deverá ser sincronizado.
+     *
+     * @param conn               Conexão com o banco para buscar as informações do checklist.
+     * @param codChecklistProLog Código do checklist que será sincronizado.
+     * @return Um objeto contendo as informações do checklist para sincronizar.
+     * @throws Throwable Se algum erro acontecer.
+     */
     @NotNull
     ChecklistToSyncGlobus getChecklistToSyncGlobus(@NotNull final Connection conn,
                                                    @NotNull final Long codChecklistProLog) throws Throwable;
