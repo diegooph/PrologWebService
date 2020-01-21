@@ -4,6 +4,8 @@ Change Log
 <a name="v1.0.13"></a>
 ## Version [v1.0.13](https://github.com/luizfp/PrologWebService/compare/v1.0.12...v1.0.13) (release-date) [unreleased]
 
+### Bug Fixes
+* Corrige problema com uso indevido de anotação @NotNull em objeto de pergunta do check
 
 <a name="v1.0.12"></a>
 ## Version [v1.0.12](https://github.com/luizfp/PrologWebService/compare/v1.0.11...v1.0.12) (2020-01-18)
