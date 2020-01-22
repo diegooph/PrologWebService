@@ -1,18 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema;
 
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
+import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

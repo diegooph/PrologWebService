@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema;
 
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
+import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema._model.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**

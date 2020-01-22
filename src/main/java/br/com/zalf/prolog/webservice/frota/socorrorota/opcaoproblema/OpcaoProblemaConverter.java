@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema;
 
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
+import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema._model.OpcaoProblemaAberturaSocorro;
+import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema._model.OpcaoProblemaSocorroRotaListagem;
+import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema._model.OpcaoProblemaSocorroRotaVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.VeiculoTransferenciaConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 /**
  * Created on 12/19/19

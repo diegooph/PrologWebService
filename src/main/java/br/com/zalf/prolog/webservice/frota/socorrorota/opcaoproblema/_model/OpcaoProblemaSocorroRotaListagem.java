@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.socorrorota._model;
+package br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema._model;
 
 import org.jetbrains.annotations.NotNull;
 

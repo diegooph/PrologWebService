@@ -4,8 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
+import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
