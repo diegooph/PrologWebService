@@ -58,9 +58,9 @@ public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements Op
             rSet = stmt.executeQuery();
             final List<OpcaoProblemaSocorroRotaListagem> opcoesProblemas = new ArrayList<>();
             if (rSet.next()) {
-                while (rSet.next()) {
+                do {
                     opcoesProblemas.add(OpcaoProblemaConverter.createOpcaoProblemaSocorroRota(rSet));
-                }
+                } while (rSet.next());
                 return opcoesProblemas;
             } else {
                 throw new SQLException("Erro ao buscar opções de problemas");
