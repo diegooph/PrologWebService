@@ -465,7 +465,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-
     private void insertMovimentacaoOrigemAnalise(@NotNull final Connection conn,
                                                  @NotNull final Long codUnidade,
                                                  @NotNull final Movimentacao movimentacao) throws Throwable {
