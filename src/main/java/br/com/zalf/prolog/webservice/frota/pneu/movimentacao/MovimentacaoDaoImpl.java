@@ -311,7 +311,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 insertMovimentacaoOrigemEstoque(conn, codUnidade, movimentacao);
                 break;
             case ANALISE:
-                insertMovimentacaoOrigemAnalise(conn, codUnidade, movimentacao);
+                insertMovimentacaoOrigemAnalise(conn, movimentacao);
                 // Apenas movimentações da ANALISE para o ESTOQUE possuem serviços realizados no pneu
                 if (movimentacao.isTo(OrigemDestinoEnum.ESTOQUE)) {
                     insertServicosRealizadosPneu(conn, pneuDao, pneuServicoRealizadoDao, codUnidade, movimentacao);
@@ -465,30 +465,19 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
+
     private void insertMovimentacaoOrigemAnalise(@NotNull final Connection conn,
-                                                 @NotNull final Long codUnidade,
                                                  @NotNull final Movimentacao movimentacao) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, COD_MOVIMENTACAO) " +
-                    "VALUES ((SELECT P.STATUS " +
-                    "         FROM PNEU P " +
-                    "         WHERE P.CODIGO = ? " +
-                    "               AND COD_UNIDADE = ? " +
-                    "               AND ? IN (SELECT P.STATUS FROM PNEU P " +
-                    "         WHERE P.CODIGO = ? " +
-                    "               AND P.COD_UNIDADE = ?)), ?);");
+            stmt = conn.prepareCall("{ call FUNC_MOVIMENTACAO_INSERT_MOVIMENTACAO_ORIGEM_POR_TIPO(" +
+                    "F_TIPO_ORIGEM := ?, " +
+                    "F_COD_MOVIMENTACAO := ?)}");
             final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
             final Long codPneu = movimentacao.getPneu().getCodigo();
-            stmt.setLong(1, codPneu);
-            stmt.setLong(2, codUnidade);
-            stmt.setString(3, origemAnalise.getTipo().asString());
-            stmt.setLong(4, codPneu);
-            stmt.setLong(5, codUnidade);
-            stmt.setLong(6, movimentacao.getCodigo());
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao inserir a origem análise da movimentação");
-            }
+            stmt.setString(1, origemAnalise.getTipo().toString());
+            stmt.setLong(2, movimentacao.getCodigo());
+            stmt.execute();
         } finally {
             close(stmt);
         }
