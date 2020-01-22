@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,10 +57,14 @@ public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements Op
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             final List<OpcaoProblemaSocorroRotaListagem> opcoesProblemas = new ArrayList<>();
-            while (rSet.next()) {
-                opcoesProblemas.add(OpcaoProblemaConverter.createOpcaoProblemaSocorroRota(rSet));
+            if (rSet.next()) {
+                while (rSet.next()) {
+                    opcoesProblemas.add(OpcaoProblemaConverter.createOpcaoProblemaSocorroRota(rSet));
+                }
+                return opcoesProblemas;
+            } else {
+                throw new SQLException("Erro ao buscar opções de problemas");
             }
-            return opcoesProblemas;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -89,7 +94,8 @@ public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements Op
 
     @NotNull
     @Override
-    public Long insertOpcoesProblemas(@NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro)
+    public Long insertOpcoesProblemas(
+            @NotNull final OpcaoProblemaSocorroRotaCadastro opcaoProblemaSocorroRotaCadastro)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -154,7 +160,8 @@ public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements Op
     }
 
     @Override
-    public void updateStatusAtivo(@NotNull final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus) throws Throwable {
+    public void updateStatusAtivo(@NotNull final OpcaoProblemaSocorroRotaStatus opcaoProblemaSocorroRotaStatus) throws
+            Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
