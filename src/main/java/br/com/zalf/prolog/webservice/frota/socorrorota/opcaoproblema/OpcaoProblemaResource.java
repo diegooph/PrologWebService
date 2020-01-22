@@ -36,7 +36,6 @@ public final class OpcaoProblemaResource {
     @Path("/listagem-abertura-socorro")
     public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa){
-
         return service.getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(codEmpresa);
     }
 
