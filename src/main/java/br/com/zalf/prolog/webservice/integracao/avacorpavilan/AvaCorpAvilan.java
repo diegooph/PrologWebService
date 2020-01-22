@@ -343,6 +343,8 @@ public final class AvaCorpAvilan extends Sistema {
         novaAfericao.setDeveAferirEstepes(true);
         novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(config.getVariacaoAceitaSulcoMenorMilimetros());
         novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(config.getVariacaoAceitaSulcoMaiorMilimetros());
+        novaAfericao.setBloqueiaValoresMenores(config.isBloqueiaValoresMenores());
+        novaAfericao.setBloqueiaValoresMaiores(config.isBloqueiaValoresMaiores());
         return novaAfericao;
     }
 

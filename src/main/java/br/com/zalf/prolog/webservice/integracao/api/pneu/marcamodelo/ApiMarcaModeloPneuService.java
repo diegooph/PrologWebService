@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiMarcaBanda;
@@ -29,6 +30,9 @@ public final class ApiMarcaModeloPneuService extends BaseIntegracaoService {
             ensureValidToken(tokenIntegracao, TAG);
             return dao.getMarcasPneu(tokenIntegracao, apenasMarcasPneuAtivas);
         } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível buscar as marcas de pneu disponíveis:\n" +
+                    "tokenIntegracao: " + tokenIntegracao + "\n" +
+                    "apenasMarcasPneuAtivas: " + apenasMarcasPneuAtivas, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível buscar as marcas de pneu disponíveis");
@@ -43,6 +47,10 @@ public final class ApiMarcaModeloPneuService extends BaseIntegracaoService {
             ensureValidToken(tokenIntegracao, TAG);
             return dao.getModelosPneu(tokenIntegracao, codMarcaPneu, apenasModelosPneuAtivos);
         } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível buscar os modelos de pneu disponíveis:\n" +
+                    "tokenIntegracao: " + tokenIntegracao + "\n" +
+                    "codMarcaPneu: " + codMarcaPneu + "\n" +
+                    "apenasModelosPneuAtivos: " + apenasModelosPneuAtivos, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível buscar os modelos de pneu disponíveis");
@@ -56,6 +64,9 @@ public final class ApiMarcaModeloPneuService extends BaseIntegracaoService {
             ensureValidToken(tokenIntegracao, TAG);
             return dao.getMarcasBanda(tokenIntegracao, apenasMarcasBandaAtivas);
         } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível buscar as marcas de banda disponíveis:\n" +
+                    "tokenIntegracao: " + tokenIntegracao + "\n" +
+                    "apenasMarcasBandaAtivas: " + apenasMarcasBandaAtivas, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível buscar as marcas de banda disponíveis");
@@ -70,6 +81,10 @@ public final class ApiMarcaModeloPneuService extends BaseIntegracaoService {
             ensureValidToken(tokenIntegracao, TAG);
             return dao.getModelosBanda(tokenIntegracao, codMarcaBanda, apenasModelosBandaAtivos);
         } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível buscar os modelos de banda disponíveis:\n" +
+                    "tokenIntegracao: " + tokenIntegracao + "\n" +
+                    "codMarcaBanda: " + codMarcaBanda + "\n" +
+                    "apenasModelosBandaAtivos: " + apenasModelosBandaAtivos, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível buscar os modelos de banda disponíveis");

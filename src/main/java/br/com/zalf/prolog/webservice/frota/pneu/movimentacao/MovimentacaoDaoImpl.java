@@ -427,7 +427,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU_SERVICO_REALIZADO " +
-                    "(COD_MOVIMENTACAO, COD_PNEU_SERVICO_REALIZADO) " +
+                    "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO) " +
                     "VALUES (?, ?);");
             stmt.setLong(1, codMovimentacao);
             stmt.setLong(2, codServicoRealizado);
@@ -447,7 +447,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU_SERVICO_REALIZADO_RECAPADORA " +
-                    "(COD_MOVIMENTACAO, COD_PNEU_SERVICO_REALIZADO, COD_RECAPADORA) " +
+                    "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO_MOVIMENTACAO, COD_RECAPADORA) " +
                     "VALUES (?, ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
                     "FROM MOVIMENTACAO_DESTINO AS MD " +
                     "JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +

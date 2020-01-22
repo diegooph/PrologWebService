@@ -26,6 +26,22 @@ import java.util.Map;
 public interface RelatorioPneuDao {
 
     /**
+     * Método para gerar um relatório contendo as quantidades e percentuais de pneus que estão aplicados (atualmente) e
+     * foram aferidos em um range de data.
+     * Para fins de exportação em CSV.
+     * <p>
+     * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param dataInicial  - Data inicial do período de filtro.
+     * @param dataFinal    - Data final do período de filtro.
+     * @throws Throwable - Se algum erro ocorrer na busca dos dados.
+     */
+    void getFarolAfericaoCsv(@NotNull final OutputStream outputStream,
+                             @NotNull final List<Long> codUnidades,
+                             @NotNull final LocalDate dataInicial,
+                             @NotNull final LocalDate dataFinal) throws Throwable;
+
+    /**
      * Método para gerar um relatório contendo os pneus que possuem algum desgaste irregular, dentro dos desgastes
      * atualmente analisados pelo ProLog e respeitando as unidades e status filtrados.
      * <p>

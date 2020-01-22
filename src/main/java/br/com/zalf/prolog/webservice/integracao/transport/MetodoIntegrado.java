@@ -8,7 +8,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public enum MetodoIntegrado {
-    INSERT_MOVIMENTACAO("INSERT_MOVIMENTACAO");
+    INSERT_MOVIMENTACAO("INSERT_MOVIMENTACAO"),
+    GET_AUTENTICACAO("GET_AUTENTICACAO");
 
     @NotNull
     private final String key;

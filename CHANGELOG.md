@@ -1,8 +1,48 @@
 Change Log
 ==========
 
+<a name="v1.0.12"></a>
+## Version [v1.0.12](https://github.com/luizfp/PrologWebService/compare/v1.0.11...v1.0.12) (release-date) [unreleased]
+
+
+<a name="v1.0.11"></a>
+## Version [v1.0.11](https://github.com/luizfp/PrologWebService/compare/v1.0.10...v1.0.11) (2020-01-15)
+
+### Refactors
+* Adiciona configuração para bloquear processo de aferição (PL-1934)
+* Adiciona nova permissão para busca de relatório de entrega
+
+<a name="v1.0.10"></a>
+## Version [v1.0.10](https://github.com/luizfp/PrologWebService/compare/v1.0.9...v1.0.10) (2020-01-07)
+
+### Bug Fixes
+* Adicionado TZ da unidade nas buscas de colaborador que tinham problemas (PL-2367)
+
+<a name="v1.0.9"></a>
+## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (2020-01-06)
+
+### Features
+* Cria import automatizado de pneus (PL-2320)
+
+### Refactors
+* Altera tratamento de erro da VeiculoService para utilizar tratador específico
+* Retorna TZ da unidade no objeto colaborador
+
 <a name="v1.0.8"></a>
-## Version [v1.0.8](https://github.com/luizfp/PrologWebService/compare/v1.0.7...v1.0.8) (release-date) [unreleased]
+## Version [v1.0.8](https://github.com/luizfp/PrologWebService/compare/v1.0.7...v1.0.8) (2019-12-02)
+
+### Features
+* Cria relatório de farol de aferições (PL-2379)
+* Adiciona a configuração de restrições de pneus para o cronograma e serviços (PL-1989 / PL-2011)
+
+### Refactors
+* Remove validação de CPF no cadastro / edição de colaborador (PL-2400)
+* Altera forma de autenticar o envio de movimentações com a Praxio (PLI-41) 
+* Melhora código da estrutura de metas (PL-2232)
+* Altera nome de coluna de serviço realizado de pneu (PL-2295) 
+
+### Bug fixes
+* Corrige problema para buscar valor de meta do apontamento do tracking (PL-2232)
 
 ### Refactors
 * Modifica estrutura para a inserção de uma nova aferição, adicionando cod_diagrama (PL-1899)

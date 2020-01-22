@@ -1,8 +1,7 @@
 package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.implantacao.conferencia._model.TipoImport;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.OutputStream;
 
 /**
  * Created on 23/07/19.
@@ -16,10 +15,12 @@ public interface VeiculoConferenciaDao {
      *
      * @param codUnidade   Código da unidade para a qual as informações serão conferidas.
      * @param jsonPlanilha Informações da planilha de import de veículos em formato Json.
+     * @param tipoImportVeiculo Informação do tipo de import.
      * @throws Throwable Se algum erro ocorrer.
      */
     void importPlanilhaVeiculos(@NotNull final Long codEmpresa,
                                 @NotNull final Long codUnidade,
                                 @NotNull final String usuario,
-                                @NotNull final String jsonPlanilha) throws Throwable;
+                                @NotNull final String jsonPlanilha,
+                                @NotNull final TipoImport tipoImportVeiculo) throws Throwable;
 }

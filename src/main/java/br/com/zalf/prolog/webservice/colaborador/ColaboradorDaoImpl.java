@@ -261,7 +261,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "R.REGIAO AS NOME_REGIONAL, R.CODIGO AS COD_REGIONAL, U.NOME AS NOME_UNIDADE, U.CODIGO AS " +
                     "COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
                     + "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
+                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, U.TIMEZONE AS TZ_UNIDADE "
                     + "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
                     + " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
                     + " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
@@ -287,7 +287,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 return c;
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return null;
     }
@@ -307,7 +307,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "R.REGIAO AS NOME_REGIONAL, R.CODIGO AS COD_REGIONAL, U.NOME AS NOME_UNIDADE, U.CODIGO AS " +
                     "COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
                     + "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
+                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, U.TIMEZONE AS TZ_UNIDADE "
                     + "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
                     + " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
                     + " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
@@ -374,7 +374,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "  S.CODIGO        AS COD_SETOR, " +
                     "  C.COD_FUNCAO, " +
                     "  F.NOME          AS NOME_FUNCAO, " +
-                    "  C.COD_PERMISSAO AS PERMISSAO " +
+                    "  C.COD_PERMISSAO AS PERMISSAO, " +
+                    "  U.TIMEZONE      AS TZ_UNIDADE " +
                     "FROM COLABORADOR C " +
                     "  JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO " +
                     "  JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE " +
@@ -522,12 +523,17 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     @NotNull
     @Override
     public Long getCodColaboradorByCpf(@NotNull final Connection conn,
+                                       @NotNull final Long codEmpresa,
                                        @NotNull final String cpfColaborador) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT C.CODIGO FROM COLABORADOR C WHERE C.CPF = ?;");
+            stmt = conn.prepareStatement("SELECT C.CODIGO " +
+                    "FROM COLABORADOR C " +
+                    "WHERE C.CPF = ? " +
+                    "AND C.COD_EMPRESA = ?;");
             stmt.setLong(1, Colaborador.formatCpf(cpfColaborador));
+            stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codColaborador = rSet.getLong("CODIGO");
@@ -574,7 +580,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             }
             return colaboradores;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -664,6 +670,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
         c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
         c.setCodPermissao(rSet.getInt("PERMISSAO"));
+        c.setTzUnidade(rSet.getString("TZ_UNIDADE"));
         return c;
     }
 }

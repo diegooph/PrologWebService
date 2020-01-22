@@ -30,7 +30,8 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            removePneusAplicados(conn, pneusAtualizacaoStatus);
+            conn.setAutoCommit(false);
+            removePneusAplicados(conn, tokenIntegracao, pneusAtualizacaoStatus);
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_ATUALIZA_STATUS_PNEU_PROLOG(" +
                     "F_COD_PNEU_SISTEMA_INTEGRADO := ?, " +
                     "F_CODIGO_PNEU_CLIENTE := ?, " +
@@ -74,6 +75,12 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
             if (stmt.executeBatch().length != pneusAtualizacaoStatus.size()) {
                 throw new SQLException("Não foi possível atualizar o status dos pneus");
             }
+            conn.commit();
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
         } finally {
             close(conn, stmt);
         }
@@ -81,14 +88,17 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
 
     private void removePneusAplicados(
             @NotNull final Connection conn,
+            @NotNull final String tokenIntegracao,
             @NotNull final List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) throws Throwable {
         PreparedStatement stmt = null;
         try {
             final List<Long> codSistemaIntegradoPneus =
                     ApiPneuAlteracaoStatus.getCodigoSistemaIntegradoPneus(pneusAtualizacaoStatus);
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_REMOVE_VINCULO_PNEU_PLACA_POSICAO(" +
+                    "F_TOKEN_INTEGRACAO := ?, " +
                     "F_COD_SISTEMA_INTEGRADO_PNEUS := ?)");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codSistemaIntegradoPneus));
+            stmt.setString(1, tokenIntegracao);
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codSistemaIntegradoPneus));
             if (!stmt.execute()) {
                 throw new SQLException("Não foi possível remover os vínculos dos pneus com os veículos");
             }

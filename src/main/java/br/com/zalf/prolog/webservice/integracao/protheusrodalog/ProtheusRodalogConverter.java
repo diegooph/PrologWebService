@@ -67,6 +67,8 @@ final class ProtheusRodalogConverter {
         novaAfericaoPlaca.setRestricao(convertRestricao(novaAfericaoRodalog.getRestricao()));
         novaAfericaoPlaca.setVeiculo(convertVeiculo(novaAfericaoRodalog, diagramaVeiculo));
         novaAfericaoPlaca.setEstepesVeiculo(convertPneus(novaAfericaoRodalog.getEstepesVeiculo()));
+        novaAfericaoPlaca.setBloqueiaValoresMenores(false);
+        novaAfericaoPlaca.setBloqueiaValoresMaiores(false);
         return novaAfericaoPlaca;
     }
 
