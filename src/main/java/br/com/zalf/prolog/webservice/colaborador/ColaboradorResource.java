@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.webservice.autenticacao.Autenticacao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoResource;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorInsercao;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -29,8 +30,8 @@ public class ColaboradorResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Secured(permissions = Pilares.Gente.Colaborador.CADASTRAR)
-	public Response insert(Colaborador colaborador) throws Throwable {
-		service.insert(colaborador);
+	public Response insert(ColaboradorInsercao colaborador, @HeaderParam("Authorization") String userToken) throws Throwable {
+		service.insert(colaborador, userToken);
 		return Response.ok("Colaborador inserido com sucesso");
 	}
 	

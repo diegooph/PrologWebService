@@ -4,9 +4,11 @@ import br.com.zalf.prolog.webservice.AmazonCredentialsProvider;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorValidator;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorInsercao;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineService;
@@ -29,13 +31,13 @@ public class ColaboradorService {
     @NotNull
     private final ColaboradorDao dao = Injection.provideColaboradorDao();
 
-    public void insert(Colaborador colaborador) throws ProLogException {
+    public void insert(@NotNull final ColaboradorInsercao colaborador, @NotNull final String userToken) {
         try {
-            ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.insert(
                     colaborador,
                     Injection.provideDadosIntervaloChangedListener(),
-                    Injection.provideDadosChecklistOfflineChangedListener());
+                    Injection.provideDadosChecklistOfflineChangedListener(),
+                    TokenCleaner.getOnlyToken(userToken));
         } catch (Throwable e) {
             final String errorMessage = "Erro ao inserir o colaborador";
             Log.e(TAG, errorMessage, e);

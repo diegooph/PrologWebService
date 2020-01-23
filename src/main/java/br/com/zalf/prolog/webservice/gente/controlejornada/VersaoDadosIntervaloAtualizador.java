@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorInsercao;
 import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.permissao.Visao;
@@ -61,10 +62,10 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
     @Override
     public void onColaboradorInserido(@NotNull final Connection connection,
                                       @NotNull final EmpresaDao empresaDao,
-                                      @NotNull final Colaborador colaborador) throws Throwable {
+                                      @NotNull final ColaboradorInsercao colaborador) throws Throwable {
         final Visao visaoCargoColaborador = empresaDao.getVisaoCargo(
-                colaborador.getUnidade().getCodigo(),
-                colaborador.getFuncao().getCodigo());
+                colaborador.getCodUnidade(),
+                colaborador.getCodFuncao());
 
         if (visaoCargoColaborador == null)
             throw new IllegalStateException();
@@ -72,7 +73,7 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
         // Se o cargo no qual esse colaborador foi adicionado tem permissão para marcar intervalo, precisamos
         // incrementar a versão dos dados para invalidar o BD dos aplicativos.
         if (visaoCargoColaborador.hasAccessToFunction(Pilares.GENTE, MARCAR_INTERVALO)) {
-            incrementaVersaoDadosUnidade(connection, colaborador.getUnidade().getCodigo());
+            incrementaVersaoDadosUnidade(connection, colaborador.getCodUnidade());
         }
     }
 

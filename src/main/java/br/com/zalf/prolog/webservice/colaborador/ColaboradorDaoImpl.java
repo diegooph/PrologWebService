@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
@@ -19,51 +20,64 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+
 /**
  * Classe ColaboradorDaoImpl, responsavel pela execução da lógica e comunicação com a interface de dados
  */
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
 
     @Override
-    public void insert(@NotNull final Colaborador colaborador,
+    public void insert(@NotNull final ColaboradorInsercao colaborador,
                        @NotNull final DadosIntervaloChangedListener intervaloListener,
-                       @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+                       @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+                       @NotNull final String userToken) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
-                    + "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO, "
-                    + "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, "
-                    + "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, "
-                    + "COD_EMPRESA, COD_EQUIPE, PIS, COD_UNIDADE_CADASTRO) VALUES "
-                    + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
-            stmt.setLong(1, colaborador.getCpf());
-            if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
-                stmt.setNull(2, Types.INTEGER);
-            } else {
-                stmt.setInt(2, colaborador.getMatriculaAmbev());
-            }
-            if (colaborador.getMatriculaTrans() == null || colaborador.getMatriculaTrans().equals(0)) {
-                stmt.setNull(3, Types.INTEGER);
-            } else {
-                stmt.setInt(3, colaborador.getMatriculaTrans());
-            }
-            stmt.setDate(4, DateUtils.toSqlDate(colaborador.getDataNascimento()));
-            stmt.setDate(5, DateUtils.toSqlDate(colaborador.getDataAdmissao()));
-            stmt.setNull(6, Types.DATE);
-            stmt.setBoolean(7, colaborador.isAtivo());
-            stmt.setString(8, colaborador.getNome());
-            stmt.setLong(9, colaborador.getSetor().getCodigo());
-            stmt.setLong(10, colaborador.getFuncao().getCodigo());
-            stmt.setLong(11, colaborador.getCodUnidade());
-            stmt.setLong(12, colaborador.getCodPermissao());
-            stmt.setLong(13, colaborador.getCodEmpresa());
-            stmt.setLong(14, colaborador.getEquipe().getCodigo());
-            stmt.setString(15, colaborador.getPis());
-            stmt.setLong(16, colaborador.getCodUnidade());
+            stmt = conn.prepareStatement("SELECT FUNC_COLABORADOR_INSERE_COLABORADOR("
+                    + "F_CPF := ?,"
+                    + "F_MATRICULA_AMBEV := ?,"
+                    + "F_MATRICULA_TRANS := ?,"
+                    + "F_DATA_NASCIMENTO := ?,"
+                    + "F_DATA_ADMISSAO := ?,"
+                    + "F_DATA_DEMISSAO := ?,"
+                    + "F_NOME := ?,"
+                    + "F_COD_SETOR := ?,"
+                    + "F_COD_FUNCAO := ?,"
+                    + "F_COD_UNIDADE := ?,"
+                    + "F_COD_PERMISSAO := ?,"
+                    + "F_COD_EMPRESA := ?,"
+                    + "F_COD_EQUIPE := ?,"
+                    + "F_PIS := ?,"
+                    + "F_PREFIXO_PAIS := ?,"
+                    + "F_TELEFONE := ?,"
+                    + "F_EMAIL := ?,"
+                    + "F_COD_UNIDADE_CADASTRO := ?,"
+                    + "F_TOKEN := ?) AS CODIGO");
+            stmt.setLong(1, Long.parseLong(colaborador.getCpf()));
+            bindValueOrNull(stmt, 2, colaborador.getMatriculaAmbev(), SqlType.INTEGER);
+            bindValueOrNull(stmt, 3, colaborador.getMatriculaTrans(), SqlType.INTEGER);
+            stmt.setObject(4, colaborador.getDataNascimento());
+            stmt.setObject(5, colaborador.getDataAdmissao());
+            stmt.setObject(6, colaborador.getDataDemissao());
+            stmt.setString(7, colaborador.getNome());
+            stmt.setLong(8, colaborador.getCodSetor());
+            stmt.setInt(9, colaborador.getCodFuncao());
+            stmt.setInt(9, colaborador.getCodUnidade());
+            stmt.setLong(10, colaborador.getCodPermissao());
+            stmt.setLong(11, colaborador.getCodEmpresa());
+            stmt.setLong(12, colaborador.getCodEquipe());
+            stmt.setString(13, colaborador.getPis());
+            stmt.setInt(14, colaborador.getColaboradorTelefone().getPrefixoPais());
+            stmt.setString(15, colaborador.getColaboradorTelefone().getTelefone());
+            stmt.setString(16, colaborador.getEmail());
+            stmt.setInt(17, colaborador.getCodUnidade());
+            stmt.setString(18, userToken);
+
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codColaboradorInserido = rSet.getLong("CODIGO");

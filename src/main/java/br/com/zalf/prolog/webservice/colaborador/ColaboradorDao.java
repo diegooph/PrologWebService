@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorInsercao;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
@@ -17,7 +18,7 @@ import java.util.List;
 public interface ColaboradorDao {
 
     /**
-     * Insere um {@link Colaborador colaborador} no bando de dados.
+     * Insere um {@link ColaboradorInsercao colaborador} no bando de dados.
      *
      * @param colaborador              Dados do colaborador a ser inserido.
      * @param intervaloListener        Listener para repassar informações do colaborador inserido no contexto
@@ -26,9 +27,10 @@ public interface ColaboradorDao {
      *                                 da realização do checklist offline.
      * @throws Throwable Caso não seja possível inserir no banco de dados.
      */
-    void insert(@NotNull final Colaborador colaborador,
+    void insert(@NotNull final ColaboradorInsercao colaborador,
                 @NotNull final DadosIntervaloChangedListener intervaloListener,
-                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+                @NotNull final String userToken) throws Throwable;
 
     /**
      * Atualiza os dados de um {@link Colaborador colaborador}.
