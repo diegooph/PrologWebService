@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +29,7 @@ public abstract class ApiPneuAlteracaoStatus {
     @NotNull
     private String cpfColaboradorAlteracaoStatus;
     @NotNull
-    private OffsetDateTime dataHoraAlteracaoStatusUtc;
+    private LocalDateTime dataHoraAlteracaoStatusUtc;
     private boolean trocouDeBanda;
     @Nullable
     private Long codNovoModeloBanda;
@@ -45,7 +45,7 @@ public abstract class ApiPneuAlteracaoStatus {
                                   @NotNull final String codigoCliente,
                                   @NotNull final Long codUnidadePneu,
                                   @NotNull final String cpfColaboradorAlteracaoStatus,
-                                  @NotNull final OffsetDateTime dataHoraAlteracaoStatusUtc,
+                                  @NotNull final LocalDateTime dataHoraAlteracaoStatusUtc,
                                   final boolean trocouDeBanda,
                                   @Nullable final Long codNovoModeloBanda,
                                   @Nullable final BigDecimal valorNovaBandaPneu) {
@@ -106,7 +106,7 @@ public abstract class ApiPneuAlteracaoStatus {
     }
 
     @NotNull
-    public OffsetDateTime getDataHoraAlteracaoStatusUtc() {
+    public LocalDateTime getDataHoraAlteracaoStatusUtc() {
         return dataHoraAlteracaoStatusUtc;
     }
 

@@ -52,7 +52,7 @@ public class AlteracaoStatusPneuTest extends BaseTest {
                 "PN005",
                 96L,
                 "03383283194",
-                Now.offsetDateTimeUtc(),
+                Now.localDateTimeUtc(),
                 "FYN8859",
                 222,
                 true,
