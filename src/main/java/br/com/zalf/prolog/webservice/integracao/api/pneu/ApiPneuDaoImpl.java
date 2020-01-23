@@ -50,7 +50,7 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
             for (final ApiPneuAlteracaoStatus pneuAlteracaoStatus : pneusAtualizacaoStatus) {
                 // Devemos buscar o ZoneId a cada pneu, pois podemos receber pneus de unidades diferentes.
                 final ZoneId zoneId =
-                        TimeZoneManager.getZoneIdForCodUnidade(5L, conn);
+                        TimeZoneManager.getZoneIdForCodUnidade(pneuAlteracaoStatus.getCodUnidadePneu(), conn);
                 stmt.setLong(1, pneuAlteracaoStatus.getCodigoSistemaIntegrado());
                 stmt.setString(2, pneuAlteracaoStatus.getCodigoCliente());
                 stmt.setLong(3, pneuAlteracaoStatus.getCodUnidadePneu());
