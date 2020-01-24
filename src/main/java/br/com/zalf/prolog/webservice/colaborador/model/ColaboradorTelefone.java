@@ -10,19 +10,19 @@ public class ColaboradorTelefone {
     private Integer prefixoPais;
 
     @NotNull
-    private String telefone;
+    private String numero;
 
     public ColaboradorTelefone(@NotNull Integer prefixoPais,
-                               @NotNull String telefone) {
+                               @NotNull String numero) {
         this.prefixoPais = prefixoPais;
-        this.telefone = telefone;
+        this.numero = numero;
     }
 
     public Integer getPrefixoPais() {
         return prefixoPais;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public String getNumero() {
+        return numero;
     }
 }

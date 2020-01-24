@@ -42,22 +42,22 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "F_CPF := ?,"
                     + "F_MATRICULA_AMBEV := ?,"
                     + "F_MATRICULA_TRANS := ?,"
-                    + "F_DATA_NASCIMENTO := ?,"
-                    + "F_DATA_ADMISSAO := ?,"
-                    + "F_DATA_DEMISSAO := ?,"
-                    + "F_NOME := ?,"
+                    + "F_DATA_NASCIMENTO := ?::DATE,"
+                    + "F_DATA_ADMISSAO := ?::DATE,"
+                    + "F_DATA_DEMISSAO := ?::DATE,"
+                    + "F_NOME := ?::VARCHAR,"
                     + "F_COD_SETOR := ?,"
-                    + "F_COD_FUNCAO := ?,"
-                    + "F_COD_UNIDADE := ?,"
+                    + "F_COD_FUNCAO := ?::INTEGER,"
+                    + "F_COD_UNIDADE := ?::INTEGER,"
                     + "F_COD_PERMISSAO := ?,"
                     + "F_COD_EMPRESA := ?,"
                     + "F_COD_EQUIPE := ?,"
-                    + "F_PIS := ?,"
+                    + "F_PIS := ?::VARCHAR,"
                     + "F_PREFIXO_PAIS := ?,"
-                    + "F_TELEFONE := ?,"
-                    + "F_EMAIL := ?,"
-                    + "F_COD_UNIDADE_CADASTRO := ?,"
-                    + "F_TOKEN := ?) AS CODIGO");
+                    + "F_TELEFONE := ?::TEXT,"
+                    + "F_EMAIL := ?::EMAIL,"
+                    + "F_COD_UNIDADE_CADASTRO := ?::INTEGER,"
+                    + "F_TOKEN := ?::TEXT) AS CODIGO");
             stmt.setLong(1, Long.parseLong(colaborador.getCpf()));
             bindValueOrNull(stmt, 2, colaborador.getMatriculaAmbev(), SqlType.INTEGER);
             bindValueOrNull(stmt, 3, colaborador.getMatriculaTrans(), SqlType.INTEGER);
@@ -66,17 +66,19 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setObject(6, colaborador.getDataDemissao());
             stmt.setString(7, colaborador.getNome());
             stmt.setLong(8, colaborador.getCodSetor());
-            stmt.setInt(9, colaborador.getCodFuncao());
-            stmt.setInt(9, colaborador.getCodUnidade());
-            stmt.setLong(10, colaborador.getCodPermissao());
-            stmt.setLong(11, colaborador.getCodEmpresa());
-            stmt.setLong(12, colaborador.getCodEquipe());
-            stmt.setString(13, colaborador.getPis());
-            stmt.setInt(14, colaborador.getColaboradorTelefone().getPrefixoPais());
-            stmt.setString(15, colaborador.getColaboradorTelefone().getTelefone());
-            stmt.setString(16, colaborador.getEmail());
-            stmt.setInt(17, colaborador.getCodUnidade());
-            stmt.setString(18, userToken);
+            stmt.setLong(9, colaborador.getCodFuncao());
+            stmt.setLong(10, colaborador.getCodUnidade());
+            stmt.setLong(11, colaborador.getCodPermissao());
+            stmt.setLong(12, colaborador.getCodEmpresa());
+            stmt.setLong(13, colaborador.getCodEquipe());
+            stmt.setString(14, colaborador.getPis());
+            bindValueOrNull(stmt, 15,
+                    colaborador.getTelefone() != null ? colaborador.getTelefone().getPrefixoPais() : null, SqlType.INTEGER);
+            bindValueOrNull(stmt, 16,
+                    colaborador.getTelefone() != null ? colaborador.getTelefone().getNumero() : null, SqlType.TEXT);
+            bindValueOrNull(stmt, 17, colaborador.getEmail(), SqlType.TEXT);
+            stmt.setLong(18, colaborador.getCodUnidade());
+            stmt.setString(19, userToken);
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {

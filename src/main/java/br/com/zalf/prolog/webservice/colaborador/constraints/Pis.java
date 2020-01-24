@@ -38,7 +38,7 @@ import javax.validation.Payload;
 
 public @interface Pis {
 
-	String message() default "PIS inválido, deve conter 11 dígitos";
+	String message() default "PIS inválido.";
 
 	Class<?>[] groups() default { };
 

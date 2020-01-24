@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ColaboradorResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Secured(permissions = Pilares.Gente.Colaborador.CADASTRAR)
-	public Response insert(ColaboradorInsercao colaborador, @HeaderParam("Authorization") String userToken) throws Throwable {
+	public Response insert(@Valid ColaboradorInsercao colaborador, @HeaderParam("Authorization") String userToken) throws Throwable {
 		service.insert(colaborador, userToken);
 		return Response.ok("Colaborador inserido com sucesso");
 	}

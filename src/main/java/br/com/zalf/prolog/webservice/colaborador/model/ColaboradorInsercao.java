@@ -2,11 +2,11 @@ package br.com.zalf.prolog.webservice.colaborador.model;
 
 import br.com.zalf.prolog.webservice.colaborador.constraints.Pis;
 import br.com.zalf.prolog.webservice.colaborador.constraints.Telefone;
+import org.hibernate.validator.constraints.Length;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Informações do colaborador.
@@ -16,7 +16,7 @@ public class ColaboradorInsercao {
      * A validação do CPF só está considerando 11 caracteres devido às operações no Paraguai
      * */
     @NotNull(message = "Você precisa fornecer o CPF.")
-    @Size(min = 11, max = 11, message = "Número CPF inválido.")
+    @Length(min = 11, max = 11, message = "CPF inválido, deve conter 11 dígitos.")
     private String cpf;
 
     @Nullable
@@ -29,7 +29,7 @@ public class ColaboradorInsercao {
 
     @NotNull(message = "Por favor, selecione um cargo.")
     @Positive(message = "O cargo selecionado é inválido.")
-    private Integer codFuncao;
+    private Long codFuncao;
 
     @NotNull
     @Positive(message = "O setor selecionado é inválido.")
@@ -37,7 +37,7 @@ public class ColaboradorInsercao {
 
     @NotNull
     @NotBlank(message = "O nome do colaborador não pode estar vazio.")
-    @Pattern(regexp = "^[a-zA-Z]*$", message = "É permitido somente caracteres alfabéticos no nome do colaborador.")
+    @Pattern(regexp = "^[a-zA-Z ]*$", message = "É permitido somente caracteres alfabéticos no nome do colaborador.")
     private String nome;
 
     @Nullable
@@ -50,17 +50,17 @@ public class ColaboradorInsercao {
 
     @NotNull(message = "A data de admissão não pode estar vazia.")
     @PastOrPresent(message = "Data de admissão fornecida é inválida.")
-    private Date dataAdmissao;
+    private LocalDate dataAdmissao;
 
     @Nullable
-    private Date dataDemissao;
+    private LocalDate dataDemissao;
 
     @NotNull
     private Long codEmpresa;
 
     @NotNull(message = "Por favor, selecione uma unidade.")
     @Positive(message = "A unidade selecionada é inválida.")
-    private Integer codUnidade;
+    private Long codUnidade;
 
     @NotNull(message = "Por favor, selecione uma equipe.")
     @Positive(message = "A equipe selecionada é inválida.")
@@ -82,15 +82,15 @@ public class ColaboradorInsercao {
     public ColaboradorInsercao(@NotNull final String cpf,
                                @Nullable final String pis,
                                @NotNull final LocalDate dataNascimento,
-                               @NotNull final Integer codFuncao,
+                               @NotNull final Long codFuncao,
                                @NotNull final Long codSetor,
                                @NotNull final String nome,
                                @Nullable final Integer matriculaAmbev,
                                @Nullable final Integer matriculaTrans,
-                               @NotNull final Date dataAdmissao,
-                               @Nullable final Date dataDemissao,
+                               @NotNull final LocalDate dataAdmissao,
+                               @Nullable final LocalDate dataDemissao,
                                @NotNull final Long codEmpresa,
-                               @NotNull final Integer codUnidade,
+                               @NotNull final Long codUnidade,
                                @NotNull final Long codEquipe,
                                @NotNull final Long codPermissao,
                                @Nullable final ColaboradorTelefone telefone,
@@ -125,7 +125,7 @@ public class ColaboradorInsercao {
         return dataNascimento;
     }
 
-    public Integer getCodFuncao() {
+    public Long getCodFuncao() {
         return codFuncao;
     }
 
@@ -145,11 +145,11 @@ public class ColaboradorInsercao {
         return matriculaTrans;
     }
 
-    public Date getDataAdmissao() {
+    public LocalDate getDataAdmissao() {
         return dataAdmissao;
     }
 
-    public Date getDataDemissao() {
+    public LocalDate getDataDemissao() {
         return dataDemissao;
     }
 
@@ -157,7 +157,7 @@ public class ColaboradorInsercao {
         return codEmpresa;
     }
 
-    public Integer getCodUnidade() {
+    public Long getCodUnidade() {
         return codUnidade;
     }
 
@@ -169,7 +169,7 @@ public class ColaboradorInsercao {
         return codPermissao;
     }
 
-    public ColaboradorTelefone getColaboradorTelefone() {
+    public ColaboradorTelefone getTelefone() {
         return telefone;
     }
 

@@ -22,12 +22,16 @@ public class TelefoneValidator implements ConstraintValidator<Telefone, Colabora
 
     @Override
     public boolean isValid(ColaboradorTelefone colaboradorTelefone, ConstraintValidatorContext constraintValidatorContext) {
+        if(colaboradorTelefone == null){
+            return true;
+        }
+
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
         String regionCode = phoneUtil.getRegionCodeForCountryCode(colaboradorTelefone.getPrefixoPais());
 
         try {
-            PhoneNumber numberProto = phoneUtil.parse(colaboradorTelefone.getTelefone(), regionCode);
+            PhoneNumber numberProto = phoneUtil.parse(colaboradorTelefone.getNumero(), regionCode);
             return phoneUtil.isValidNumber(numberProto);
         } catch (NumberParseException e) {
             System.err.println("NumberParseException was thrown: " + e.toString());
