@@ -150,6 +150,8 @@ import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegra
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
+import br.com.zalf.prolog.webservice.push.PushDao;
+import br.com.zalf.prolog.webservice.push.PushDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDao;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.relatorios.RaizenProdutividadeRelatorioDao;
@@ -190,6 +192,11 @@ public final class Injection {
     @NotNull
     public static OpcaoProblemaDao provideOpcaoProblemaDao() {
         return new OpcaoProblemaDaoImpl();
+    }
+
+    @NotNull
+    public static PushDao providePushDao() {
+        return new PushDaoImpl();
     }
 
     public static VeiculoConferenciaDao provideVeiculoConferenciaDao() {
