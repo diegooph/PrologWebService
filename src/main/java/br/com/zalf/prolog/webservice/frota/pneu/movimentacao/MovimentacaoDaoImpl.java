@@ -42,7 +42,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
-                       @NotNull final LocalDateTime dataHoraMovimentacao,
+                       @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         Connection conn = null;
         try {
@@ -71,7 +71,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     public Long insert(@NotNull final Connection conn,
                        @NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
-                       @NotNull final LocalDateTime dataHoraMovimentacao,
+                       @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         validaMovimentacoes(processoMovimentacao.getMovimentacoes());
         PreparedStatement stmt = null;
@@ -79,7 +79,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         try {
             stmt = conn.prepareStatement(
                     "INSERT INTO MOVIMENTACAO_PROCESSO(COD_UNIDADE, DATA_HORA, CPF_RESPONSAVEL, OBSERVACAO) " +
-                    "VALUES (?, ?, ?, ?) RETURNING codigo;");
+                            "VALUES (?, ?, ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, processoMovimentacao.getUnidade().getCodigo());
             stmt.setObject(2, dataHoraMovimentacao);
             stmt.setLong(3, processoMovimentacao.getColaborador().getCpf());
@@ -194,7 +194,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     private void insertMovimentacoes(@NotNull final Connection conn,
                                      @NotNull final ServicoDao servicoDao,
                                      @NotNull final ProcessoMovimentacao processoMov,
-                                     @NotNull final LocalDateTime dataHoraMovimentacao,
+                                     @NotNull final OffsetDateTime dataHoraMovimentacao,
                                      boolean fecharServicosAutomaticamente) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
@@ -651,7 +651,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                     @NotNull final Long codUnidade,
                                     @NotNull final Long codProcessoMovimentacao,
                                     @NotNull final Movimentacao movimentacao,
-                                    @NotNull final LocalDateTime dataHoraMovimentacao) throws Throwable {
+                                    @NotNull final OffsetDateTime dataHoraMovimentacao) throws Throwable {
         if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
             Log.d(TAG, "O pneu " + movimentacao.getPneu().getCodigo()
                     + " está sendo movido dentro do mesmo veículo, não é preciso fechar seus serviços");

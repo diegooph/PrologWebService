@@ -16,7 +16,6 @@ import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -122,7 +121,7 @@ public final class SistemaApiProLog extends Sistema {
 
     @Override
     public void fechaServico(@NotNull final Long codUnidade,
-                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                             @NotNull final OffsetDateTime dataHorafechamentoServico,
                              @NotNull final Servico servico) throws Throwable {
         if (servico.getTipoServico().equals(TipoServico.MOVIMENTACAO)) {
             throw new BloqueadoIntegracaoException(

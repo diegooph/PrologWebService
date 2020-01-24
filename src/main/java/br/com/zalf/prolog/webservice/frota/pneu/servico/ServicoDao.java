@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface ServicoDao {
@@ -84,7 +84,7 @@ public interface ServicoDao {
     List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico) throws SQLException;
 
     void fechaServico(@NotNull final Long codUnidade,
-                      @NotNull final LocalDateTime dataHorafechamentoServico,
+                      @NotNull final OffsetDateTime dataHorafechamentoServico,
                       @NotNull final Servico servico) throws Throwable;
 
     Servico getServicoByCod(final Long codUnidade, final Long codServico) throws SQLException;
@@ -135,7 +135,7 @@ public interface ServicoDao {
                                           @NotNull final Long codUnidade,
                                           @NotNull final Long codPneu,
                                           @NotNull final Long codProcessoMovimentacao,
-                                          @NotNull final LocalDateTime dataHorafechamentoServico,
+                                          @NotNull final OffsetDateTime dataHorafechamentoServico,
                                           final long kmColetadoVeiculo) throws SQLException;
 
     /**
