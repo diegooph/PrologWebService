@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -14,6 +15,7 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -84,6 +86,47 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                 return rSet.getLong("CODIGO");
             } else {
                 throw new Throwable("Erro ao abrir uma solitação de socorro");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<ColaboradorNotificacaoAberturaSocorro> getColaboradoresNotificacaoAbertura(
+            @NotNull final Long codUnidade,
+            final int codFuncaoProLog) throws Throwable {
+        Preconditions.checkNotNull(codUnidade, "codUnidade não pode ser null!");
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT " +
+                    "PCT.TOKEN_PUSH_FIREBASE " +
+                    "FROM COLABORADOR C " +
+                    "JOIN CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_UNIDADE = CFP.COD_UNIDADE " +
+                    "AND C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR " +
+                    "JOIN FUNCAO F ON F.CODIGO = C.COD_FUNCAO AND " +
+                    "F.CODIGO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_EMPRESA = F.COD_EMPRESA " +
+                    "JOIN MESSAGING.PUSH_COLABORADOR_TOKEN PCT ON C.CODIGO = PCT.COD_COLABORADOR " +
+                    "WHERE C.COD_UNIDADE = ? " +
+                    "AND CFP.COD_FUNCAO_PROLOG = ? " +
+                    "AND C.STATUS_ATIVO = TRUE;");
+            stmt.setLong(1, codUnidade);
+            stmt.setInt(2, codFuncaoProLog);
+            rSet = stmt.executeQuery();
+            if (!rSet.next()) {
+                return Collections.emptyList();
+            } else {
+                final List<ColaboradorNotificacaoAberturaSocorro> colaboradores = new ArrayList<>();
+                do {
+                    colaboradores.add(new ColaboradorNotificacaoAberturaSocorro(
+                            rSet.getString("TOKEN_PUSH_FIREBASE")));
+                } while (rSet.next());
+                return colaboradores;
             }
         } finally {
             close(conn, stmt, rSet);

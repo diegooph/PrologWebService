@@ -1,14 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.push.send.FirebasePushMessageSender;
+import br.com.zalf.prolog.webservice.push.send.PushDestination;
+import br.com.zalf.prolog.webservice.push.send.PushMessage;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,9 +27,21 @@ public final class SocorroRotaService {
     @NotNull
     ResponseWithCod aberturaSocorro(@NotNull final SocorroRotaAbertura socorroRotaAbertura) {
         try {
-            return ResponseWithCod.ok(
-                    "Solicitação de socorro aberta com sucesso",
-                    dao.aberturaSocorro(socorroRotaAbertura));
+            final Long codSocorro = dao.aberturaSocorro(socorroRotaAbertura);
+
+            final List<ColaboradorNotificacaoAberturaSocorro> colaboradores = dao.getColaboradoresNotificacaoAbertura(
+                    socorroRotaAbertura.getCodUnidade(),
+                    Pilares.Frota.SocorroRota.TRATAR_SOCORRO);
+            final List<PushDestination> destinations = new ArrayList<>();
+            for (final ColaboradorNotificacaoAberturaSocorro colaborador : colaboradores) {
+                destinations.add(new PushDestination(colaborador.getTokenPushFirebase()));
+            }
+
+            new FirebasePushMessageSender().deliver(
+                    destinations,
+                    new PushMessage("ATENÇÃO!", "Um socorro em rota foi solicitado na sua unidade."));
+
+            return ResponseWithCod.ok("Solicitação de socorro aberta com sucesso", codSocorro);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao abrir uma solitação de socorro", t);
             throw Injection
