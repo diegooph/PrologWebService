@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
@@ -50,7 +51,9 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
                 stmt.setString(2, pneuAlteracaoStatus.getCodigoCliente());
                 stmt.setLong(3, pneuAlteracaoStatus.getCodUnidadePneu());
                 stmt.setString(4, pneuAlteracaoStatus.getCpfColaboradorAlteracaoStatus());
-                stmt.setObject(5, pneuAlteracaoStatus.getDataHoraAlteracaoStatusUtc());
+                stmt.setObject(
+                        5,
+                        pneuAlteracaoStatus.getDataHoraAlteracaoStatusUtc().atZone(ZoneOffset.UTC).toOffsetDateTime());
                 stmt.setString(6, pneuAlteracaoStatus.getStatusPneu().asString());
                 stmt.setBoolean(7, pneuAlteracaoStatus.isTrocouDeBanda());
                 if (pneuAlteracaoStatus.isTrocouDeBanda()) {

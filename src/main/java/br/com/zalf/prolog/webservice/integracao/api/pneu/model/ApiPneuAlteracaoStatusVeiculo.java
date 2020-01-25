@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 /**
  * Created on 21/08/19.
@@ -27,7 +26,7 @@ public final class ApiPneuAlteracaoStatusVeiculo extends ApiPneuAlteracaoStatus 
                                          @NotNull final String codigoPneuCliente,
                                          @NotNull final Long codUnidadePneu,
                                          @NotNull final String cpfColaboradorAlteracaoStatus,
-                                         @NotNull final OffsetDateTime dataHoraAlteracaoStatus,
+                                         @NotNull final LocalDateTime dataHoraAlteracaoStatus,
                                          @NotNull final String placaVeiculoPneuAplicado,
                                          @NotNull final Integer posicaoVeiculoPneuAplicado,
                                          final boolean trocouDeBanda,
