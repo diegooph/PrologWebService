@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu;
 
-import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -12,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
@@ -48,16 +47,13 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
                     "F_POSICAO_VEICULO_PNEU_APLICADO := ?, " +
                     "F_TOKEN_INTEGRACAO := ?) AS COD_PNEU_PROLOG;");
             for (final ApiPneuAlteracaoStatus pneuAlteracaoStatus : pneusAtualizacaoStatus) {
-                // Devemos buscar o ZoneId a cada pneu, pois podemos receber pneus de unidades diferentes.
-                final ZoneId zoneId =
-                        TimeZoneManager.getZoneIdForCodUnidade(pneuAlteracaoStatus.getCodUnidadePneu(), conn);
                 stmt.setLong(1, pneuAlteracaoStatus.getCodigoSistemaIntegrado());
                 stmt.setString(2, pneuAlteracaoStatus.getCodigoCliente());
                 stmt.setLong(3, pneuAlteracaoStatus.getCodUnidadePneu());
                 stmt.setString(4, pneuAlteracaoStatus.getCpfColaboradorAlteracaoStatus());
                 stmt.setObject(
                         5,
-                        pneuAlteracaoStatus.getDataHoraAlteracaoStatusUtc().atZone(zoneId).toOffsetDateTime());
+                        pneuAlteracaoStatus.getDataHoraAlteracaoStatusUtc().atZone(ZoneOffset.UTC).toOffsetDateTime());
                 stmt.setString(6, pneuAlteracaoStatus.getStatusPneu().asString());
                 stmt.setBoolean(7, pneuAlteracaoStatus.isTrocouDeBanda());
                 if (pneuAlteracaoStatus.isTrocouDeBanda()) {
