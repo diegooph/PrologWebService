@@ -57,7 +57,7 @@ public class MovimentacaoService {
                             .create(dao, userToken)
                             .insert(Injection.provideServicoDao(),
                                     movimentacao,
-                                    Now.localDateTimeUtc(),
+                                    Now.offsetDateTimeUtc(),
                                     true);
             return ResponseWithCod.ok("Movimentações realizadas com sucesso", codigo);
         } catch (final Throwable throwable) {

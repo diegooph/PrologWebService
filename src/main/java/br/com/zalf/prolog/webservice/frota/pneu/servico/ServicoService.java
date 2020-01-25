@@ -66,7 +66,7 @@ public class ServicoService {
         try {
             RouterAfericaoServico
                     .create(dao, userToken)
-                    .fechaServico(codUnidade, Now.localDateTimeUtc(), servico);
+                    .fechaServico(codUnidade, Now.offsetDateTimeUtc(), servico);
             return Response.ok("Serviço consertado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o conserto de um item\n" +

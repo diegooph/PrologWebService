@@ -51,7 +51,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -487,7 +486,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @Override
     public void fechaServico(@NotNull final Long codUnidade,
-                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                             @NotNull final OffsetDateTime dataHorafechamentoServico,
                              @NotNull final Servico servico) throws Throwable {
         afericaoServicoDao.fechaServico(codUnidade, dataHorafechamentoServico, servico);
     }
@@ -496,7 +495,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
-                       @NotNull final LocalDateTime dataHoraMovimentacao,
+                       @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         return movimentacaoDao
                 .insert(servicoDao, processoMovimentacao, dataHoraMovimentacao, fecharServicosAutomaticamente);
