@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.14"></a>
-## Version [v1.0.14](https://github.com/luizfp/PrologWebService/compare/v1.0.13...v1.0.14) (release-date) [unreleased]
+## Version [v1.0.14](https://github.com/luizfp/PrologWebService/compare/v1.0.13...v1.0.14) (2020-01-26)
 
 ### Bug Fixes
 * Corrige data/hora setada incorretamente nos processos de movimentação e fechamento de serviços de aferição (PL-2490)
