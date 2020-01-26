@@ -15,7 +15,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
-import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
@@ -25,7 +24,7 @@ import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.concurrent.Executors;
 
 /**
@@ -135,7 +134,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
-                       @NotNull final LocalDateTime dataHoraMovimentacao,
+                       @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         // Garantimos que apenas movimentações válidas foram feitas para essa integração.
         for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
@@ -198,7 +197,8 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                     getIntegradorProLog()
                             .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.INSERT_MOVIMENTACAO),
                     autenticacaoResponse.getFormattedBearerToken(),
-                    GlobusPiccoloturConverter.convert(processoMovimentacao, dataHoraMovimentacao));
+                    // Convertemos a dataHoraMovimentacao para LocalDateTime pois usamos assim na integração.
+                    GlobusPiccoloturConverter.convert(processoMovimentacao, dataHoraMovimentacao.toLocalDateTime()));
             if (!response.isSucesso()) {
                 throw new GlobusPiccoloturException(
                         "[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado\n" + response.getPrettyErrors());

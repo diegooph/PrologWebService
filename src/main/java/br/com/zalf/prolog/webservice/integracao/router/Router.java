@@ -37,7 +37,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -498,7 +497,7 @@ public abstract class Router implements OperacoesIntegradas {
 
     @Override
     public void fechaServico(@NotNull final Long codUnidade,
-                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                             @NotNull final OffsetDateTime dataHorafechamentoServico,
                              @NotNull final Servico servico) throws Throwable {
         if (getSistema() != null) {
             getSistema().fechaServico(codUnidade, dataHorafechamentoServico, servico);
@@ -511,7 +510,7 @@ public abstract class Router implements OperacoesIntegradas {
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
-                       @NotNull final LocalDateTime dataHoraMovimentacao,
+                       @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         if (getSistema() != null) {
             return getSistema()

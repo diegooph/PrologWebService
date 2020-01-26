@@ -12,7 +12,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
 /**
@@ -328,7 +328,7 @@ final class ServicoQueryBinder {
 
     @NotNull
     static PreparedStatement fechaCalibragem(@NotNull final Connection connection,
-                                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                                             @NotNull final OffsetDateTime dataHorafechamentoServico,
                                              @NotNull final ServicoCalibragem servico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -351,7 +351,7 @@ final class ServicoQueryBinder {
 
     @NotNull
     static PreparedStatement fechaInspecao(@NotNull final Connection connection,
-                                           @NotNull final LocalDateTime dataHorafechamentoServico,
+                                           @NotNull final OffsetDateTime dataHorafechamentoServico,
                                            @NotNull final ServicoInspecao servico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -376,7 +376,7 @@ final class ServicoQueryBinder {
 
     @NotNull
     static PreparedStatement fechaMovimentacao(@NotNull final Connection connection,
-                                               @NotNull final LocalDateTime dataHorafechamentoServico,
+                                               @NotNull final OffsetDateTime dataHorafechamentoServico,
                                                @NotNull final ServicoMovimentacao servico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -419,7 +419,7 @@ final class ServicoQueryBinder {
                                                                @NotNull final Long codUnidade,
                                                                @NotNull final Long codProcessoMovimentacao,
                                                                @NotNull final Long codPneu,
-                                                               @NotNull final LocalDateTime dataHorafechamentoServico,
+                                                               @NotNull final OffsetDateTime dataHorafechamentoServico,
                                                                final long kmColetadoVeiculo) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
