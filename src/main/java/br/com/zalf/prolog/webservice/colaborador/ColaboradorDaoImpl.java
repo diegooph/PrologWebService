@@ -38,7 +38,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("SELECT FUNC_COLABORADOR_INSERE_COLABORADOR("
+            stmt = conn.prepareStatement("SELECT FUNC_COLABORADOR_INSERT_COLABORADOR("
                     + "F_CPF := ?,"
                     + "F_MATRICULA_AMBEV := ?,"
                     + "F_MATRICULA_TRANS := ?,"
