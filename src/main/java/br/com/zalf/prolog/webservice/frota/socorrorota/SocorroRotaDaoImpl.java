@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,8 +96,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
     @NotNull
     @Override
     public List<ColaboradorNotificacaoAberturaSocorro> getColaboradoresNotificacaoAbertura(
-            @NotNull final Long codUnidade,
-            final int codFuncaoProLog) throws Throwable {
+            @NotNull final Long codUnidade) throws Throwable {
         Preconditions.checkNotNull(codUnidade, "codUnidade não pode ser null!");
 
         Connection conn = null;
@@ -116,7 +116,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "AND CFP.COD_FUNCAO_PROLOG = ? " +
                     "AND C.STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codUnidade);
-            stmt.setInt(2, codFuncaoProLog);
+            stmt.setInt(2, Pilares.Frota.SocorroRota.TRATAR_SOCORRO);
             rSet = stmt.executeQuery();
             if (!rSet.next()) {
                 return Collections.emptyList();

@@ -5,9 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.push.send.FirebasePushMessageSender;
-import br.com.zalf.prolog.webservice.push.send.PushDestination;
 import br.com.zalf.prolog.webservice.push.send.PushMessage;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,16 +28,16 @@ public final class SocorroRotaService {
             final Long codSocorro = dao.aberturaSocorro(socorroRotaAbertura);
 
             final List<ColaboradorNotificacaoAberturaSocorro> colaboradores = dao.getColaboradoresNotificacaoAbertura(
-                    socorroRotaAbertura.getCodUnidade(),
-                    Pilares.Frota.SocorroRota.TRATAR_SOCORRO);
-            final List<PushDestination> destinations = new ArrayList<>();
-            for (final ColaboradorNotificacaoAberturaSocorro colaborador : colaboradores) {
-                destinations.add(new PushDestination(colaborador.getTokenPushFirebase()));
-            }
+                    socorroRotaAbertura.getCodUnidade());
 
-            new FirebasePushMessageSender().deliver(
-                    destinations,
-                    new PushMessage("ATENÇÃO!", "Um socorro em rota foi solicitado na sua unidade."));
+            if (!colaboradores.isEmpty()) {
+                // Envia notificação via firebase
+                new FirebasePushMessageSender().deliver(
+                        new ArrayList<>(colaboradores),
+                        new PushMessage("ATENÇÃO!", "Um socorro em rota foi solicitado na sua unidade."));
+            } else {
+                Log.d(TAG, "Nenhum token para notificar sobre abertura do socorro");
+            }
 
             return ResponseWithCod.ok("Solicitação de socorro aberta com sucesso", codSocorro);
         } catch (final Throwable t) {

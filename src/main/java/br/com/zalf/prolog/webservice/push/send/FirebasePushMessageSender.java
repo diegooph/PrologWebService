@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.push.send;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class FirebasePushMessageSender {
+    private static final String TAG = FirebasePushMessageSender.class.getSimpleName();
 
     public FirebasePushMessageSender() {
 
@@ -28,7 +30,7 @@ public final class FirebasePushMessageSender {
         initializeFirebase();
 
         // This registration token comes from the client FCM SDKs.
-        final String registrationToken = destination.getTokenPushFirebase();
+        final String registrationToken = destination.provideTokenPushFirebase();
 
         // See documentation on defining a message payload.
         final Message message = Message.builder()
@@ -48,17 +50,21 @@ public final class FirebasePushMessageSender {
 
     public void deliver(@NotNull final List<PushDestination> destinations,
                         @NotNull final PushMessage pushMessage) throws IOException, FirebaseMessagingException {
+        Log.d(TAG, String.format("Enviando mensagem push para %d destinatários", destinations.size()));
         initializeFirebase();
 
         // These registration tokens come from the client FCM SDKs.
         final List<String> registrationTokens = destinations
                 .stream()
-                .map(PushDestination::getTokenPushFirebase)
+                .map(PushDestination::provideTokenPushFirebase)
                 .collect(Collectors.toList());
 
         final MulticastMessage message = MulticastMessage.builder()
-                .putData("score", "850")
-                .putData("time", "2:45")
+                .setNotification(Notification
+                        .builder()
+                        .setTitle(pushMessage.getTitle())
+                        .setBody(pushMessage.getBody())
+                        .build())
                 .addAllTokens(registrationTokens)
                 .build();
         final BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
@@ -72,7 +78,9 @@ public final class FirebasePushMessageSender {
                 }
             }
 
-            System.out.println("List of tokens that caused failures: " + failedTokens);
+            Log.d(TAG, "List of tokens that caused failures: " + failedTokens);
+        } else {
+            Log.d(TAG, "Todos as mensagens foram enviadas com sucesso");
         }
     }
 
@@ -84,7 +92,8 @@ public final class FirebasePushMessageSender {
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .setDatabaseUrl("https://prolog-debug.firebaseio.com")
                 .build();
-
-        FirebaseApp.initializeApp(options);
+        if (FirebaseApp.getApps().isEmpty()) {
+            FirebaseApp.initializeApp(options);
+        }
     }
 }

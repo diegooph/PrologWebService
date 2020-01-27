@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
+import br.com.zalf.prolog.webservice.push.send.PushDestination;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -7,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ColaboradorNotificacaoAberturaSocorro {
+public final class ColaboradorNotificacaoAberturaSocorro implements PushDestination {
     @NotNull
     private final String tokenPushFirebase;
 
@@ -18,5 +19,11 @@ public final class ColaboradorNotificacaoAberturaSocorro {
     @NotNull
     public String getTokenPushFirebase() {
         return tokenPushFirebase;
+    }
+
+    @NotNull
+    @Override
+    public String provideTokenPushFirebase() {
+        return getTokenPushFirebase();
     }
 }

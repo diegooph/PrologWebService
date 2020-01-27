@@ -7,16 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class PushDestination {
+public interface PushDestination {
     @NotNull
-    private final String tokenPushFirebase;
-
-    public PushDestination(@NotNull final String tokenPushFirebase) {
-        this.tokenPushFirebase = tokenPushFirebase;
-    }
-
-    @NotNull
-    public String getTokenPushFirebase() {
-        return tokenPushFirebase;
-    }
+    String provideTokenPushFirebase();
 }
