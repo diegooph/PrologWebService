@@ -5,8 +5,8 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
-import br.com.zalf.prolog.webservice.push.send.FirebasePushMessageSender;
-import br.com.zalf.prolog.webservice.push.send.PushMessage;
+import br.com.zalf.prolog.webservice.messaging.send.FirebasePushMessageSender;
+import br.com.zalf.prolog.webservice.messaging.send.PushMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public final class SocorroRotaService {
                 // Envia notificação via firebase
                 new FirebasePushMessageSender().deliver(
                         new ArrayList<>(colaboradores),
-                        new PushMessage("ATENÇÃO!", "Um socorro em rota foi solicitado na sua unidade."));
+                        new PushMessage("ATENÇÃO!", "Um socorro em rota foi solicitado na sua unidade"));
             } else {
                 Log.d(TAG, "Nenhum token para notificar sobre abertura do socorro");
             }

@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.push;
+package br.com.zalf.prolog.webservice.messaging;
 
-import br.com.zalf.prolog.webservice.push._model.PushColaboradorCadastro;
+import br.com.zalf.prolog.webservice.messaging._model.PushColaboradorCadastro;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
-import br.com.zalf.prolog.webservice.push.send.PushDestination;
+import br.com.zalf.prolog.webservice.messaging.send.PushDestination;
 import org.jetbrains.annotations.NotNull;
 
 /**

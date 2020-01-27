@@ -1,8 +1,8 @@
-package br.com.zalf.prolog.webservice.push;
+package br.com.zalf.prolog.webservice.messaging;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.push._model.PushColaboradorCadastro;
+import br.com.zalf.prolog.webservice.messaging._model.PushColaboradorCadastro;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;

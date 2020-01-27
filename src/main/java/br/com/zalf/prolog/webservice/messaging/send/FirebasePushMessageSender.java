@@ -1,14 +1,9 @@
-package br.com.zalf.prolog.webservice.push.send;
+package br.com.zalf.prolog.webservice.messaging.send;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,8 +21,7 @@ public final class FirebasePushMessageSender {
     }
 
     public void deliver(@NotNull final PushDestination destination,
-                        @NotNull final PushMessage pushMessage) throws IOException, FirebaseMessagingException {
-        initializeFirebase();
+                        @NotNull final PushMessage pushMessage) throws FirebaseMessagingException {
 
         // This registration token comes from the client FCM SDKs.
         final String registrationToken = destination.provideTokenPushFirebase();
@@ -49,9 +43,8 @@ public final class FirebasePushMessageSender {
     }
 
     public void deliver(@NotNull final List<PushDestination> destinations,
-                        @NotNull final PushMessage pushMessage) throws IOException, FirebaseMessagingException {
+                        @NotNull final PushMessage pushMessage) throws FirebaseMessagingException {
         Log.d(TAG, String.format("Enviando mensagem push para %d destinatários", destinations.size()));
-        initializeFirebase();
 
         // These registration tokens come from the client FCM SDKs.
         final List<String> registrationTokens = destinations
@@ -81,19 +74,6 @@ public final class FirebasePushMessageSender {
             Log.d(TAG, "List of tokens that caused failures: " + failedTokens);
         } else {
             Log.d(TAG, "Todos as mensagens foram enviadas com sucesso");
-        }
-    }
-
-    private void initializeFirebase() throws IOException {
-        final FileInputStream serviceAccount =
-                new FileInputStream("/Users/luiz/Downloads/prolog-debug-firebase-adminsdk.json");
-
-        final FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://prolog-debug.firebaseio.com")
-                .build();
-        if (FirebaseApp.getApps().isEmpty()) {
-            FirebaseApp.initializeApp(options);
         }
     }
 }

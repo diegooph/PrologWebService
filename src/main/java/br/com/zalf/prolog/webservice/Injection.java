@@ -150,8 +150,8 @@ import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegra
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
-import br.com.zalf.prolog.webservice.push.PushDao;
-import br.com.zalf.prolog.webservice.push.PushDaoImpl;
+import br.com.zalf.prolog.webservice.messaging.PushDao;
+import br.com.zalf.prolog.webservice.messaging.PushDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDao;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.relatorios.RaizenProdutividadeRelatorioDao;
