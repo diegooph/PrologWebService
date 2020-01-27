@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.colaborador.model;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -32,6 +33,12 @@ public class Colaborador {
 	private Visao visao;
 	private Integer codPermissao;
 	private String tzUnidade;
+
+	@Nullable
+	private ColaboradorTelefone telefone;
+
+	@Nullable
+	private String email;
 
 	@Deprecated
 	private Long codEmpresa;
@@ -219,6 +226,14 @@ public class Colaborador {
 	public void setTzUnidade(String tzUnidade) { this.tzUnidade = tzUnidade; }
 
 	public String getTzUnidade(){ return this.tzUnidade; }
+
+	public ColaboradorTelefone getTelefone() { return telefone; }
+
+	public void setTelefone(ColaboradorTelefone telefone) { this.telefone = telefone; }
+
+	public String getEmail() { return email; }
+
+	public void setEmail(String email) { this.email = email; }
 
 	public String getDataNascimentoAsString() {
 		final Format formatter = new SimpleDateFormat(DATA_FORMATTER);
