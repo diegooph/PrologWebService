@@ -18,6 +18,7 @@ Change Log
 * Implementa a edição de opções de problemas (PL-2467)
 * Implementa a visualziação de uma opção de problema específica (PL-2468)
 * Implementa a ativação/inativação de uma opção de problema (PL-2478)
+* Adiciona telefone e e-mail no cadastro de colaboradores (PL-2471)
 
 <a name="v1.0.9"></a>
 ## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (release-date) [unreleased]
