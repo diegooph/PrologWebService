@@ -32,6 +32,16 @@ public final class VeiculoEdicaoPraxio {
     }
 
     @NotNull
+    public static VeiculoEdicaoPraxio getDummy() {
+        return new VeiculoEdicaoPraxio(
+                5L,
+                "PRO0001",
+                12345L,
+                10L,
+                20L);
+    }
+
+    @NotNull
     public Long getCodUnidadeAlocado() {
         return codUnidadeAlocado;
     }

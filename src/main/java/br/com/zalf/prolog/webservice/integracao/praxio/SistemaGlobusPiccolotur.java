@@ -3,9 +3,11 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
@@ -13,7 +15,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
-import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
@@ -23,7 +24,7 @@ import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.concurrent.Executors;
 
 /**
@@ -45,7 +46,9 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull final Checklist checklist) throws Throwable {
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklistNew,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         Connection conn = null;
         try {
@@ -53,7 +56,13 @@ public final class SistemaGlobusPiccolotur extends Sistema {
             conn.setAutoCommit(false);
             // TODO - Mover para o integradorProLog
             // Insere checklist na base de dados do ProLog
-            final Long codChecklistProLog = Injection.provideChecklistDao().insert(conn, checklist, false);
+            final Long codChecklistProLog = Injection
+                    .provideChecklistDao()
+                    .insert(conn, checklistNew, foiOffline, false);
+
+            // TODO: o fluxo da integração continua usando o objeto antigo.
+            final Checklist checklist = checklistNew.getChecklistAntigo();
+
             // Se o checklist tem pelo menos um item NOK, precisamos disparar o envio para a integração.
             if (checklist.getQtdItensNok() > 0) {
                 // Marcamos que o checklist precisa ser sincronizado. Isso será útil para que o processamento disparado
@@ -82,31 +91,33 @@ public final class SistemaGlobusPiccolotur extends Sistema {
         }
     }
 
+    @NotNull
     @Override
-    public void insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
-                                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-                                      final boolean statusAtivo) throws Throwable {
+    public ResultInsertModeloChecklist insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
+                                                             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+                                                             final boolean statusAtivo,
+                                                             @NotNull final String token) throws Throwable {
         // Ignoramos o statusAtivo repassado pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
-        getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, false);
+        return getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, false, token);
     }
 
     @Override
-    public void updateModeloChecklist(@NotNull final String token,
-                                      @NotNull final Long codUnidade,
+    public void updateModeloChecklist(@NotNull final Long codUnidade,
                                       @NotNull final Long codModelo,
                                       @NotNull final ModeloChecklistEdicao modeloChecklist,
                                       @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-                                      final boolean sobrescreverPerguntasAlternativas) throws Throwable {
+                                      final boolean podeMudarCodigoContextoPerguntasEAlternativas,
+                                      @NotNull final String token) throws Throwable {
         // Ignoramos a propriedade sobrescreverPerguntasAlternativas pois queremos que para essa integração todas as
         // edições de perguntas e alternativas sobrescrevam os valores antigos sem alterar os códigos existentes.
         getIntegradorProLog()
                 .updateModeloChecklist(
-                        token,
                         codUnidade,
                         codModelo,
                         modeloChecklist,
                         checklistOfflineListener,
-                        true);
+                        false,
+                        token);
     }
 
     @Override
@@ -123,7 +134,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
-                       @NotNull final LocalDateTime dataHoraMovimentacao,
+                       @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         // Garantimos que apenas movimentações válidas foram feitas para essa integração.
         for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
@@ -186,7 +197,8 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                     getIntegradorProLog()
                             .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.INSERT_MOVIMENTACAO),
                     autenticacaoResponse.getFormattedBearerToken(),
-                    GlobusPiccoloturConverter.convert(processoMovimentacao, dataHoraMovimentacao));
+                    // Convertemos a dataHoraMovimentacao para LocalDateTime pois usamos assim na integração.
+                    GlobusPiccoloturConverter.convert(processoMovimentacao, dataHoraMovimentacao.toLocalDateTime()));
             if (!response.isSucesso()) {
                 throw new GlobusPiccoloturException(
                         "[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado\n" + response.getPrettyErrors());

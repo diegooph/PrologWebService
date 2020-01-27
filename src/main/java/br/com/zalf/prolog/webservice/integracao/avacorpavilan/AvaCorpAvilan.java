@@ -4,10 +4,13 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
+import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
@@ -116,52 +119,58 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
         throw new IllegalStateException("O sistema " + AvaCorpAvilan.class.getSimpleName() +
                 " não possui integração com o ProLog.");
     }
 
     @NotNull
     @Override
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
-                                                                                    @NotNull Long codFuncao)
-            throws Exception {
-        return AvaCorpAvilanConverter.convert(requester.getSelecaoModeloChecklistPlacaVeiculo(getCpf(), getDataNascimento()));
+    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                                    @NotNull final Long codCargo) throws Throwable {
+        return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaSelecaoModelo(
+                AvaCorpAvilanConverter.convert(codUnidade, requester.getSelecaoModeloChecklistPlacaVeiculo(
+                        getCpf(),
+                        getDataNascimento())));
     }
 
     @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidadeModelo,
-                                                      @NotNull Long codModelo,
-                                                      @NotNull String placaVeiculo,
-                                                      char tipoChecklist) throws Exception {
+    public ModeloChecklistRealizacao getModeloChecklistRealizacao(
+            final @NotNull Long codModeloChecklist,
+            final @NotNull Long codVeiculo,
+            final @NotNull String placaVeiculo,
+            final @NotNull TipoChecklist tipoChecklist) throws Throwable {
         final ArrayOfVeiculoQuestao questoesVeiculo = requester.getQuestoesVeiculo(
-                Math.toIntExact(codModelo),
+                Math.toIntExact(codModeloChecklist),
                 placaVeiculo,
-                AvacorpAvilanTipoChecklist.fromTipoProLog(tipoChecklist),
+                AvacorpAvilanTipoChecklist.fromTipoProLog(tipoChecklist.asChar()),
                 getCpf(),
                 getDataNascimento());
         final Map<Long, String> mapCodPerguntUrlImagem =
-                getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModelo);
+                getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModeloChecklist);
 
-        return AvaCorpAvilanConverter.convert(
-                questoesVeiculo,
-                mapCodPerguntUrlImagem,
-                placaVeiculo);
+        return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaRealizacaoModelo(
+                AvaCorpAvilanConverter.convert(
+                        questoesVeiculo,
+                        getCodUnidade(),
+                        mapCodPerguntUrlImagem,
+                        placaVeiculo));
     }
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
-
-        if (checklist.getKmAtualVeiculo() == 0) {
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
+        if (checklist.getKmColetadoVeiculo() == 0) {
             throw new AvaCorpAvilanException(
                     "O KM enviado não pode ser 0!",
                     "A integração com a Avilan não aceita mais KMs 0");
         }
 
         return requester.insertChecklist(
-                AvaCorpAvilanConverter.convert(checklist, getCpf(), getDataNascimento()),
+                AvaCorpAvilanConverter.convert(checklist.getChecklistAntigo(), getCpf(), getDataNascimento()),
                 getCpf(),
                 getDataNascimento());
     }
@@ -343,6 +352,8 @@ public final class AvaCorpAvilan extends Sistema {
         novaAfericao.setDeveAferirEstepes(true);
         novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(config.getVariacaoAceitaSulcoMenorMilimetros());
         novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(config.getVariacaoAceitaSulcoMaiorMilimetros());
+        novaAfericao.setBloqueiaValoresMenores(config.isBloqueiaValoresMenores());
+        novaAfericao.setBloqueiaValoresMaiores(config.isBloqueiaValoresMaiores());
         return novaAfericao;
     }
 

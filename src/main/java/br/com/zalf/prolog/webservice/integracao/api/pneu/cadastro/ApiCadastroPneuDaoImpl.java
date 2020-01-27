@@ -1,17 +1,20 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.errorhandling.sql.SqlErrorCodes;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PSQLException;
 
-import java.sql.*;
-import java.time.LocalDateTime;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +58,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     "F_DATA_HORA_PNEU_CADASTRO := ?, " +
                     "F_TOKEN_INTEGRACAO := ?) AS COD_PNEU_PROLOG;");
             final List<ApiPneuCargaInicialResponse> pneuCargaInicialResponses = new ArrayList<>();
-            final LocalDateTime dataHoraAtual = Now.localDateTimeUtc();
+            final OffsetDateTime dataHoraAtual = Now.offsetDateTimeUtc();
             for (final ApiPneuCargaInicial pneuCargaInicial : pneusCargaInicial) {
                 try {
                     stmt.setLong(1, pneuCargaInicial.getCodigoSistemaIntegrado());
@@ -69,23 +72,13 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     bindValueOrNull(stmt, 9, pneuCargaInicial.getDotPneu(), SqlType.VARCHAR);
                     stmt.setBigDecimal(10, pneuCargaInicial.getValorPneu());
                     stmt.setBoolean(11, pneuCargaInicial.getPneuNovoNuncaRodado());
-                    if (pneuCargaInicial.getCodModeloBanda() == null) {
-                        stmt.setNull(12, SqlType.BIGINT.asIntTypeJava());
-                        stmt.setNull(13, SqlType.NUMERIC.asIntTypeJava());
-                    } else {
-                        bindValueOrNull(stmt, 12, pneuCargaInicial.getCodModeloBanda(), SqlType.BIGINT);
-                        bindValueOrNull(stmt, 13, pneuCargaInicial.getValorBandaPneu(), SqlType.NUMERIC);
-                    }
+                    bindValueOrNull(stmt, 12, pneuCargaInicial.getCodModeloBanda(), SqlType.BIGINT);
+                    bindValueOrNull(stmt, 13, pneuCargaInicial.getValorBandaPneu(), SqlType.NUMERIC);
                     stmt.setString(14, pneuCargaInicial.getStatusPneu().asString());
-                    if (pneuCargaInicial.getPlacaVeiculoPneuAplicado() == null) {
-                        stmt.setNull(15, SqlType.VARCHAR.asIntTypeJava());
-                        stmt.setNull(16, SqlType.INTEGER.asIntTypeJava());
-                    } else {
-                        bindValueOrNull(stmt, 15,
-                                pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.VARCHAR);
-                        bindValueOrNull(stmt, 16,
-                                pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
-                    }
+                    bindValueOrNull(stmt, 15,
+                            pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.VARCHAR);
+                    bindValueOrNull(stmt, 16,
+                            pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
                     stmt.setObject(17, dataHoraAtual);
                     stmt.setString(18, tokenIntegracao);
                     rSet = stmt.executeQuery();
@@ -106,7 +99,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     pneuCargaInicialResponses.add(ApiPneuCargaInicialResponse.error(
                             pneuCargaInicial.getCodigoSistemaIntegrado(),
                             pneuCargaInicial.getCodigoCliente(),
-                            getPSQLErrorMessage(sqlException)));
+                            PostgresUtils.getPSQLErrorMessage(sqlException, ApiPneuCargaInicialResponse.ERROR_MESSAGE)));
                 } catch (final Throwable t) {
                     pneuCargaInicialResponses.add(ApiPneuCargaInicialResponse.error(
                             pneuCargaInicial.getCodigoSistemaIntegrado(),
@@ -164,8 +157,8 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setBigDecimal(10, pneuCadastro.getValorPneu());
             stmt.setBoolean(11, pneuCadastro.getPneuNovoNuncaRodado());
             bindValueOrNull(stmt, 12, pneuCadastro.getCodModeloBanda(), SqlType.BIGINT);
-            bindValueOrNull(stmt, 13, pneuCadastro.getValorBandaPneu(), SqlType.REAL);
-            stmt.setObject(14, Now.localDateTimeUtc());
+            bindValueOrNull(stmt, 13, pneuCadastro.getValorBandaPneu(), SqlType.NUMERIC);
+            stmt.setObject(14, Now.offsetDateTimeUtc());
             stmt.setString(15, tokenIntegracao);
             rSet = stmt.executeQuery();
             final long codPneuProlog;
@@ -229,12 +222,16 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
+            final Long codEmpresa =
+                    Injection
+                            .provideIntegracaoDao()
+                            .getCodEmpresaByTokenIntegracao(conn, tokenIntegracao);
             final List<Long> codPneusTransferidos =
                     Injection
                             .providePneuDao()
                             .getCodPneuByCodCliente(
                                     conn,
-                                    getCodEmpresaByToken(conn, tokenIntegracao),
+                                    codEmpresa,
                                     pneuTransferencia.getCodPneusTransferidos());
             final Long codColaborador;
             try {
@@ -243,6 +240,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                                 .provideColaboradorDao()
                                 .getCodColaboradorByCpf(
                                         conn,
+                                        codEmpresa,
                                         pneuTransferencia.getCpfColaboradorRealizacaoTransferencia());
             } catch (final Throwable t) {
                 throw new GenericException(
@@ -269,46 +267,5 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
         } finally {
             close(conn);
         }
-    }
-
-    @NotNull
-    private Long getCodEmpresaByToken(@NotNull final Connection conn,
-                                      @NotNull final String tokenIntegracao) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT TI.COD_EMPRESA " +
-                    "FROM INTEGRACAO.TOKEN_INTEGRACAO TI WHERE TI.TOKEN_INTEGRACAO = ?;");
-            stmt.setString(1, tokenIntegracao);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final long codEmpresa = rSet.getLong("COD_EMPRESA");
-                if (codEmpresa <= 0) {
-                    throw new SQLException("Não foi possível buscar o código da empresa para o token:\n" +
-                            "tokenIntegracao: " + tokenIntegracao + "\n" +
-                            "codEmpresa: " + codEmpresa);
-                }
-                return codEmpresa;
-            } else {
-                throw new SQLException("Não foi possível buscar o código da empresa para o token:\n" +
-                        "tokenIntegracao: " + tokenIntegracao);
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    private String getPSQLErrorMessage(@NotNull final SQLException sqlException) {
-        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.BD_GENERIC_ERROR_CODE.getErrorCode())) {
-            if (sqlException instanceof PSQLException) {
-                return ((PSQLException) sqlException).getServerErrorMessage().getMessage();
-            } else if (sqlException instanceof BatchUpdateException) {
-                if (sqlException.getNextException() instanceof PSQLException) {
-                    return ((PSQLException) sqlException.getNextException()).getServerErrorMessage().getMessage();
-                }
-            }
-        }
-        return ApiPneuCargaInicialResponse.ERROR_MESSAGE;
     }
 }

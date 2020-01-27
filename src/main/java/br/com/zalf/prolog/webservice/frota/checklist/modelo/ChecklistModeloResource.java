@@ -7,10 +7,13 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResponseInsertModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -36,10 +39,26 @@ public final class ChecklistModeloResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    public Response insertModeloChecklist(
+    public ResponseInsertModeloChecklist insertModeloChecklist(
             @HeaderParam("Authorization") @Required final String token,
             @Required final ModeloChecklistInsercao modeloChecklist) throws ProLogException {
-        return service.insertModeloChecklist(token, modeloChecklist);
+        final ResultInsertModeloChecklist result = service.insertModeloChecklist(modeloChecklist, token);
+        return ResponseInsertModeloChecklist.ok(result, "Modelo de checklist inserido com sucesso");
+    }
+
+    @PUT
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = {
+            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
+            Pilares.Frota.Checklist.Modelo.ALTERAR,
+            Pilares.Frota.Checklist.Modelo.CADASTRAR})
+    @Path("/{codUnidade}/{codModelo}")
+    public Response updateModeloChecklist(
+            @HeaderParam("Authorization") @Required final String token,
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codModelo") @Required final Long codModelo,
+            @Required final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
+        return service.updateModeloChecklist(codUnidade, codModelo, modeloChecklist, token);
     }
 
     @GET
@@ -69,21 +88,6 @@ public final class ChecklistModeloResource {
 
     @PUT
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = {
-            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
-            Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    @Path("/{codUnidade}/{codModelo}")
-    public Response updateModeloChecklist(
-            @HeaderParam("Authorization") @Required final String token,
-            @PathParam("codUnidade") @Required final Long codUnidade,
-            @PathParam("codModelo") @Required final Long codModelo,
-            @Required final ModeloChecklistEdicao modeloChecklist) throws ProLogException {
-        return service.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
-    }
-
-    @PUT
-    @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR})
     @Path("/{codUnidade}/{codModelo}/status-ativo")
     public Response updateStatus(
@@ -99,6 +103,29 @@ public final class ChecklistModeloResource {
     @Path("/prolog")
     public List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws ProLogException {
         return service.getModelosChecklistProLog();
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured(permissions = {Pilares.Frota.Checklist.REALIZAR})
+    @Path("/selecao-realizacao")
+    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("codCargo") @Required final Long codCargo,
+            @HeaderParam("Authorization") final String userToken) {
+        return service.getModelosSelecaoRealizacao(codUnidade, codCargo, userToken);
+    }
+
+    @GET
+    @Path("/realizacao")
+    @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+    public ModeloChecklistRealizacao getModeloChecklistRealizacao(
+            @QueryParam("codModeloChecklist") @Required final Long codModeloChecklist,
+            @QueryParam("codVeiculo") @Required final Long codVeiculo,
+            @QueryParam("placaVeiculo") @Required final String placaVeiculo,
+            @QueryParam("tipoChecklist") @Required final String tipoChecklist,
+            @HeaderParam("Authorization") @Required final String userToken) {
+        return service.getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist, userToken);
     }
 
     //
@@ -143,23 +170,5 @@ public final class ChecklistModeloResource {
             @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) throws ProLogException {
         Preconditions.checkNotNull(codEmpresa, "Código da empresa não pode ser null!");
         return service.insertImagem(codEmpresa, fileInputStream, fileDetail);
-    }
-
-    //
-    // Métodos depreciados.
-    //
-    @GET
-    @Consumes({MediaType.MULTIPART_FORM_DATA})
-    @Secured(permissions = {
-            Pilares.Frota.Checklist.Modelo.VISUALIZAR,
-            Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR,
-            Pilares.Frota.Checklist.REALIZAR})
-    @Path("/perguntas/{codUnidade}/{codModelo}")
-    @Deprecated
-    public List<PerguntaRespostaChecklist> getPerguntas(
-            @PathParam("codUnidade") @Required final Long codUnidade,
-            @PathParam("codModelo") @Required final Long codModelo) throws ProLogException {
-        return service.getPerguntas(codUnidade, codModelo);
     }
 }

@@ -29,7 +29,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -196,7 +196,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     @Override
     public void fechaServico(@NotNull final Long codUnidade,
-                             @NotNull final LocalDateTime dataHorafechamentoServico,
+                             @NotNull final OffsetDateTime dataHorafechamentoServico,
                              @NotNull final Servico servico) throws Throwable {
         Connection conn = null;
         try {
@@ -402,7 +402,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                                                  @NotNull final Long codUnidade,
                                                  @NotNull final Long codPneu,
                                                  @NotNull final Long codProcessoMovimentacao,
-                                                 @NotNull final LocalDateTime dataHorafechamentoServico,
+                                                 @NotNull final OffsetDateTime dataHorafechamentoServico,
                                                  final long kmColetadoVeiculo) throws SQLException {
         PreparedStatement stmt = null;
         try {
@@ -525,7 +525,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     private void fechaCalibragem(@NotNull final Connection conn,
                                  @NotNull final PneuDao pneuDao,
-                                 @NotNull final LocalDateTime dataHorafechamentoServico,
+                                 @NotNull final OffsetDateTime dataHorafechamentoServico,
                                  @NotNull final ServicoCalibragem servico) throws Throwable {
         PreparedStatement stmt = null;
         try {
@@ -546,7 +546,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     private void fechaInspecao(@NotNull final Connection conn,
                                @NotNull final PneuDao pneuDao,
-                               @NotNull final LocalDateTime dataHorafechamentoServico,
+                               @NotNull final OffsetDateTime dataHorafechamentoServico,
                                @NotNull final ServicoInspecao servico) throws Throwable {
         PreparedStatement stmt = null;
         try {
@@ -567,7 +567,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     private void fechaMovimentacao(@NotNull final Connection conn,
                                    @NotNull final PneuDao pneuDao,
-                                   @NotNull final LocalDateTime dataHorafechamentoServico,
+                                   @NotNull final OffsetDateTime dataHorafechamentoServico,
                                    @NotNull final ServicoMovimentacao servico) throws Throwable {
         PreparedStatement stmt = null;
         try {

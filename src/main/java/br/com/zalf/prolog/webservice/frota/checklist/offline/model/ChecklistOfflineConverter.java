@@ -2,10 +2,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,21 +25,11 @@ public final class ChecklistOfflineConverter {
     }
 
     @NotNull
-    public static Checklist toChecklist(@NotNull final Long codChecklistInserido,
-                                        @NotNull final ChecklistInsercao checklistInsercao) {
-        final Checklist checklist = new Checklist();
-        checklist.setCodModelo(checklistInsercao.getCodModelo());
-        checklist.setCodigo(codChecklistInserido);
-        checklist.setPlacaVeiculo(checklistInsercao.getPlacaVeiculo());
-        checklist.setListRespostas(toPerguntasRespostas(checklistInsercao.getRespostas()));
-        return checklist;
-    }
-
-    @NotNull
     public static AlternativaModeloChecklistOffline createAlternativaModeloChecklistOffline(
             @NotNull final ResultSet rSet) throws SQLException {
         return new AlternativaModeloChecklistOffline(
                 rSet.getLong("COD_ALTERNATIVA"),
+                rSet.getLong("COD_CONTEXTO_ALTERNATIVA"),
                 rSet.getString("DESCRICAO_ALTERNATIVA"),
                 rSet.getBoolean("TIPO_OUTROS"),
                 rSet.getInt("ALTERNATIVA_ORDEM_EXIBICAO"),
@@ -54,6 +42,7 @@ public final class ChecklistOfflineConverter {
             @NotNull final List<AlternativaModeloChecklistOffline> alternativas) throws SQLException {
         return new PerguntaModeloChecklistOffline(
                 rSet.getLong("COD_PERGUNTA"),
+                rSet.getLong("COD_CONTEXTO_PERGUNTA"),
                 rSet.getString("DESCRICAO_PERGUNTA"),
                 rSet.getLong("COD_IMAGEM"),
                 rSet.getString("URL_IMAGEM"),
@@ -66,12 +55,14 @@ public final class ChecklistOfflineConverter {
     public static ModeloChecklistOffline createModeloChecklistOffline(
             @NotNull final Long codUnidadeModeloChecklist,
             @NotNull final Long codModeloCheklist,
+            @NotNull final Long codVersaoModeloChecklist,
             @NotNull final String nomeModeloChecklist,
             @NotNull final List<CargoChecklistOffline> cargosLiberados,
             @NotNull final List<TipoVeiculoChecklistOffline> tiposVeiculosLiberados,
             @NotNull final List<PerguntaModeloChecklistOffline> perguntas) {
         return new ModeloChecklistOffline(
                 codModeloCheklist,
+                codVersaoModeloChecklist,
                 nomeModeloChecklist,
                 codUnidadeModeloChecklist,
                 cargosLiberados,

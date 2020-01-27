@@ -9,6 +9,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
+@Deprecated
 public class DeprecatedFarolChecklist {
     @NotNull
     private final List<DeprecatedFarolVeiculoDia> farolVeiculos;

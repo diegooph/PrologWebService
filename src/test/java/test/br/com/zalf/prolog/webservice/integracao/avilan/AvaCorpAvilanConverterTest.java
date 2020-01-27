@@ -3,6 +3,7 @@ package test.br.com.zalf.prolog.webservice.integracao.avilan;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
@@ -173,7 +174,7 @@ public class AvaCorpAvilanConverterTest {
         assertNotNull(questionarios);
         assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
 
-        final Map<ModeloChecklist, List<String>> map = AvaCorpAvilanConverter.convert(questionarios);
+        final Map<ModeloChecklist, List<String>> map = AvaCorpAvilanConverter.convert(-1L, questionarios);
         assertNotNull(map);
         assertTrue(!map.isEmpty());
 
@@ -233,7 +234,11 @@ public class AvaCorpAvilanConverterTest {
 
         final Map<Long, String> mapCodPerguntUrlImagem = new AvaCorpAvilanDaoImpl().getMapeamentoCodPerguntaUrlImagem(codQuestionario);
 
-        final NovoChecklistHolder novoChecklistHolder = AvaCorpAvilanConverter.convert(veiculosQuestoes, mapCodPerguntUrlImagem, veiculoUtilizado);
+        final NovoChecklistHolder novoChecklistHolder = AvaCorpAvilanConverter.convert(
+                veiculosQuestoes,
+                5L,
+                mapCodPerguntUrlImagem,
+                veiculoUtilizado);
         assertNotNull(novoChecklistHolder);
         assertNotNull(novoChecklistHolder.getVeiculo());
         assertNotNull(novoChecklistHolder.getListPerguntas());
@@ -287,6 +292,7 @@ public class AvaCorpAvilanConverterTest {
         final Map<Long, String> mapCodPerguntUrlImagem = new AvaCorpAvilanDaoImpl().getMapeamentoCodPerguntaUrlImagem((long) codigoQuestionarioModelo);
         final NovoChecklistHolder holder = AvaCorpAvilanConverter.convert(
                 arrayOfVeiculoQuestao,
+                5L,
                 mapCodPerguntUrlImagem,
                 veiculoUtilizado);
         assertNotNull(holder);
@@ -306,7 +312,7 @@ public class AvaCorpAvilanConverterTest {
         checklist.setTempoRealizacaoCheckInMillis(tempoRealizacaoMillis);
         checklist.setKmAtualVeiculo(kmVeiculo);
         checklist.setPlacaVeiculo(veiculoUtilizado);
-        assertTrue(holder.getCodigoModeloChecklist().equals(checklist.getCodModelo()));
+        assertEquals(holder.getCodigoModeloChecklist(), checklist.getCodModelo());
         // Não precisamos setar o tipo pois o ERP da Avilan não lida com essa informação. Ele seta automaticamente
         // o tipo do checklist
 //        checklist.setTipo();

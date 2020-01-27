@@ -6,44 +6,57 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ConfiguracaoNovaAfericaoPlaca extends ConfiguracaoNovaAfericao {
-    private boolean podeAferirSulco;
-    private boolean podeAferirPressao;
-    private boolean podeAferirSulcoPressao;
-    private boolean podeAferirEstepe;
+    private final boolean podeAferirSulco;
+    private final boolean podeAferirPressao;
+    private final boolean podeAferirSulcoPressao;
+    private final boolean podeAferirEstepe;
 
-    public ConfiguracaoNovaAfericaoPlaca() {
-
+    public ConfiguracaoNovaAfericaoPlaca(
+            final boolean podeAferirSulco,
+            final boolean podeAferirPressao,
+            final boolean podeAferirSulcoPressao,
+            final boolean podeAferirEstepe,
+            final double sulcoMinimoDescarte,
+            final double sulcoMinimoRecape,
+            final double toleranciaInspecao,
+            final double toleranciaCalibragem,
+            final int periodoDiasAfericaoSulco,
+            final int periodoDiasAfericaoPressao,
+            final double variacaoAceitaSulcoMenorMilimetros,
+            final double variacaoAceitaSulcoMaiorMilimetros,
+            final boolean usaDefaultProLog,
+            final boolean bloqueiaValoresMenores,
+            final boolean bloqueiaValoresMaiores) {
+        super(sulcoMinimoDescarte,
+                sulcoMinimoRecape,
+                toleranciaInspecao,
+                toleranciaCalibragem,
+                periodoDiasAfericaoSulco,
+                periodoDiasAfericaoPressao,
+                variacaoAceitaSulcoMenorMilimetros,
+                variacaoAceitaSulcoMaiorMilimetros,
+                usaDefaultProLog,
+                bloqueiaValoresMenores,
+                bloqueiaValoresMaiores);
+        this.podeAferirSulco = podeAferirSulco;
+        this.podeAferirPressao = podeAferirPressao;
+        this.podeAferirSulcoPressao = podeAferirSulcoPressao;
+        this.podeAferirEstepe = podeAferirEstepe;
     }
 
     public boolean isPodeAferirSulco() {
         return podeAferirSulco;
     }
 
-    public void setPodeAferirSulco(final boolean podeAferirSulco) {
-        this.podeAferirSulco = podeAferirSulco;
-    }
-
     public boolean isPodeAferirPressao() {
         return podeAferirPressao;
-    }
-
-    public void setPodeAferirPressao(final boolean podeAferirPressao) {
-        this.podeAferirPressao = podeAferirPressao;
     }
 
     public boolean isPodeAferirSulcoPressao() {
         return podeAferirSulcoPressao;
     }
 
-    public void setPodeAferirSulcoPressao(final boolean podeAferirSulcoPressao) {
-        this.podeAferirSulcoPressao = podeAferirSulcoPressao;
-    }
-
     public boolean isPodeAferirEstepe() {
         return podeAferirEstepe;
-    }
-
-    public void setPodeAferirEstepe(final boolean podeAferirEstepe) {
-        this.podeAferirEstepe = podeAferirEstepe;
     }
 }

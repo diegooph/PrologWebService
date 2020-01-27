@@ -3,10 +3,7 @@ package br.com.zalf.prolog.webservice.commons.util.date;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
-import java.time.Clock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.*;
 
 /**
  * Created on 04/03/2018
@@ -41,5 +38,10 @@ public final class Now {
     @NotNull
     public static OffsetDateTime offsetDateTimeUtc() {
         return OffsetDateTime.now(Clock.systemUTC());
+    }
+
+    @NotNull
+    public static ZonedDateTime zonedDateTimeTzAware(@NotNull final ZoneId zoneId) {
+        return ZonedDateTime.now(zoneId);
     }
 }

@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovi
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Created on 14/10/19.
@@ -15,6 +15,6 @@ public interface OperacoesIntegradasMovimentacao {
     @NotNull
     Long insert(@NotNull final ServicoDao servicoDao,
                 @NotNull final ProcessoMovimentacao processoMovimentacao,
-                @NotNull final LocalDateTime dataHoraMovimentacao,
+                @NotNull final OffsetDateTime dataHoraMovimentacao,
                 final boolean fecharServicosAutomaticamente) throws Throwable;
 }

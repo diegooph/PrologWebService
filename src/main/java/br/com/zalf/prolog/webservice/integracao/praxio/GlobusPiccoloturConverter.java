@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklistStatus;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
@@ -34,7 +34,7 @@ public final class GlobusPiccoloturConverter {
             @NotNull final Long codUnidadeProLog,
             @NotNull final Long codChecklistProLog,
             @NotNull final Checklist checklist,
-            @NotNull final Map<Long, AlternativaChecklistStatus> alternativasStatus) {
+            @NotNull final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus) {
         final List<PerguntaNokGlobus> perguntasNok = new ArrayList<>();
         for (final PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
             final List<AlternativaNokGlobus> alternativasNok = new ArrayList<>();
@@ -43,17 +43,20 @@ public final class GlobusPiccoloturConverter {
                 if (alternativa.selected) {
                     // O Map irá conter todas as alternativas do modelo (ativas e inativas) isso garante que nunca
                     // retornará null em um get.
-                    final AlternativaChecklistStatus alternativaChecklistStatus =
+                    final List<InfosAlternativaAberturaOrdemServico> infosAlternativaAberturaOrdemServicos =
                             alternativasStatus.get(alternativa.getCodigo());
-                    if (!alternativaChecklistStatus.isTemItemOsPendente()
-                            && alternativaChecklistStatus.isDeveAbrirOrdemServico()) {
+                    if (infosAlternativaAberturaOrdemServicos != null
+                            && infosAlternativaAberturaOrdemServicos.size() > 0
+                            && infosAlternativaAberturaOrdemServicos.get(0).isDeveAbrirOrdemServico()
+                            && infosAlternativaAberturaOrdemServicos.get(0).getCodItemOrdemServico() <= 0) {
                         final String descricao = alternativa.isTipoOutros()
                                 ? alternativa.getRespostaOutros()
                                 : alternativa.getAlternativa();
                         alternativasNok.add(new AlternativaNokGlobus(
                                 alternativa.getCodigo(),
                                 descricao,
-                                getPrioridadeAlternativaGlobus(alternativaChecklistStatus.getPrioridadeAlternativa())));
+                                getPrioridadeAlternativaGlobus(
+                                        infosAlternativaAberturaOrdemServicos.get(0).getPrioridadeAlternativa())));
                     }
                 }
             }

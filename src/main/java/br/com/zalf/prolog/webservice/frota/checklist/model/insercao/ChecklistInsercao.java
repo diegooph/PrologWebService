@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.frota.checklist.model.insercao;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +22,13 @@ public final class ChecklistInsercao {
 
     @NotNull
     private final Long codModelo;
+
+    /**
+     * Versão do modelo que o checklist realizado referencia.
+     * TODO: Será provisoriamente não-final para funcionar no processo de migração dos apps antigos para a nova estrutura.
+     */
+    @Nullable
+    private Long codVersaoModeloChecklist;
 
     @NotNull
     private final Long codColaborador;
@@ -92,25 +101,35 @@ public final class ChecklistInsercao {
     @Exclude
     private ChecklistInsercaoMetadata cachedMetadata;
 
-    public ChecklistInsercao(@NotNull final Long codUnidade,
-                             @NotNull final Long codModelo,
-                             @NotNull final Long codColaborador,
-                             @NotNull final Long codVeiculo,
-                             @NotNull final String placaVeiculo,
-                             @NotNull final TipoChecklist tipo,
+    /**
+     * Irá existir temporariamente, pois as integrações ainda usam os objetos antigos. Assim, como já criamos esse
+     * objeto no Resource, podemos armazená-lo aqui evitando de realizaar uma nova conversão quando uma integração
+     * precisar.
+     */
+    @Nullable
+    private Checklist checklistAntigo;
+
+    public ChecklistInsercao(@NotNull  final Long codUnidade,
+                             @NotNull  final Long codModelo,
+                             @Nullable final Long codVersaoModeloChecklist,
+                             @NotNull  final Long codColaborador,
+                             @NotNull  final Long codVeiculo,
+                             @NotNull  final String placaVeiculo,
+                             @NotNull  final TipoChecklist tipo,
                              final long kmColetadoVeiculo,
                              final long tempoRealizacaoCheckInMillis,
-                             @NotNull final List<ChecklistResposta> respostas,
-                             @NotNull final LocalDateTime dataHoraRealizacao,
-                             @NotNull final FonteDataHora fonteDataHoraRealizacao,
-                             @NotNull final Integer versaoAppMomentoRealizacao,
-                             @NotNull final Integer versaoAppMomentoSincronizacao,
+                             @NotNull  final List<ChecklistResposta> respostas,
+                             @NotNull  final LocalDateTime dataHoraRealizacao,
+                             @NotNull  final FonteDataHora fonteDataHoraRealizacao,
+                             @NotNull  final Integer versaoAppMomentoRealizacao,
+                             @NotNull  final Integer versaoAppMomentoSincronizacao,
                              @Nullable final String deviceId,
                              @Nullable final String deviceImei,
-                             final long deviceUptimeRealizacaoMillis,
-                             final long deviceUptimeSincronizacaoMillis) {
+                             final     long deviceUptimeRealizacaoMillis,
+                             final     long deviceUptimeSincronizacaoMillis) {
         this.codUnidade = codUnidade;
         this.codModelo = codModelo;
+        this.codVersaoModeloChecklist = codVersaoModeloChecklist;
         this.codColaborador = codColaborador;
         this.codVeiculo = codVeiculo;
         this.placaVeiculo = placaVeiculo;
@@ -137,6 +156,15 @@ public final class ChecklistInsercao {
     @NotNull
     public Long getCodModelo() {
         return codModelo;
+    }
+
+    @Nullable
+    public Long getCodVersaoModeloChecklist() {
+        return codVersaoModeloChecklist;
+    }
+
+    public void setCodVersaoModeloChecklist(@NotNull final Long codVersaoModeloChecklist) {
+        this.codVersaoModeloChecklist = codVersaoModeloChecklist;
     }
 
     @NotNull
@@ -230,6 +258,21 @@ public final class ChecklistInsercao {
         return cachedMetadata.getQtdAlternativasNok();
     }
 
+    public void setChecklistAntigo(@Nullable final Checklist checklistAntigo) {
+        this.checklistAntigo = checklistAntigo;
+    }
+
+    @NotNull
+    public Checklist getChecklistAntigo() {
+        if (checklistAntigo != null) {
+            // Já foi convertido e setado no Service.
+            return checklistAntigo;
+        } else {
+            checklistAntigo = ChecklistMigracaoEstruturaSuporte.toChecklistAntigo(this);
+            return checklistAntigo;
+        }
+    }
+
     private void ensureMetadataCreated() {
         //noinspection ConstantConditions
         if (cachedMetadata == null) {
@@ -244,9 +287,11 @@ public final class ChecklistInsercao {
         int qtdAlternativasOk = 0;
         int qtdAlternativasNok = 0;
         boolean perguntaTeveAlternativasNok = false;
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < respostas.size(); i++) {
             final ChecklistResposta checklistResposta = respostas.get(i);
             final List<ChecklistAlternativaResposta> alternativasRespostas = checklistResposta.getAlternativasRespostas();
+            //noinspection ForLoopReplaceableByForEach
             for (int j = 0; j < alternativasRespostas.size(); j++) {
                 final ChecklistAlternativaResposta alternativaResposta = alternativasRespostas.get(j);
                 if (alternativaResposta.isAlternativaSelecionada()) {
