@@ -44,7 +44,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "F_MATRICULA_TRANS := ?,"
                     + "F_DATA_NASCIMENTO := ?::DATE,"
                     + "F_DATA_ADMISSAO := ?::DATE,"
-                    + "F_DATA_DEMISSAO := ?::DATE,"
                     + "F_NOME := ?::VARCHAR,"
                     + "F_COD_SETOR := ?,"
                     + "F_COD_FUNCAO := ?::INTEGER,"
@@ -63,22 +62,21 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             bindValueOrNull(stmt, 3, colaborador.getMatriculaTrans(), SqlType.INTEGER);
             stmt.setObject(4, colaborador.getDataNascimento());
             stmt.setObject(5, colaborador.getDataAdmissao());
-            stmt.setObject(6, colaborador.getDataDemissao());
-            stmt.setString(7, colaborador.getNome());
-            stmt.setLong(8, colaborador.getCodSetor());
-            stmt.setLong(9, colaborador.getCodFuncao());
-            stmt.setLong(10, colaborador.getCodUnidade());
-            stmt.setLong(11, colaborador.getCodPermissao());
-            stmt.setLong(12, colaborador.getCodEmpresa());
-            stmt.setLong(13, colaborador.getCodEquipe());
-            stmt.setString(14, colaborador.getPis());
-            bindValueOrNull(stmt, 15,
+            stmt.setString(6, colaborador.getNome());
+            stmt.setLong(7, colaborador.getCodSetor());
+            stmt.setLong(8, colaborador.getCodFuncao());
+            stmt.setLong(9, colaborador.getCodUnidade());
+            stmt.setLong(10, colaborador.getCodPermissao());
+            stmt.setLong(11, colaborador.getCodEmpresa());
+            stmt.setLong(12, colaborador.getCodEquipe());
+            stmt.setString(13, colaborador.getPis());
+            bindValueOrNull(stmt, 14,
                     colaborador.getTelefone() != null ? colaborador.getTelefone().getPrefixoPais() : null, SqlType.INTEGER);
-            bindValueOrNull(stmt, 16,
+            bindValueOrNull(stmt, 15,
                     colaborador.getTelefone() != null ? colaborador.getTelefone().getNumero() : null, SqlType.TEXT);
-            bindValueOrNull(stmt, 17, colaborador.getEmail(), SqlType.TEXT);
-            stmt.setLong(18, colaborador.getCodUnidade());
-            stmt.setString(19, userToken);
+            bindValueOrNull(stmt, 16, colaborador.getEmail(), SqlType.TEXT);
+            stmt.setLong(17, colaborador.getCodUnidade());
+            stmt.setString(18, userToken);
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {

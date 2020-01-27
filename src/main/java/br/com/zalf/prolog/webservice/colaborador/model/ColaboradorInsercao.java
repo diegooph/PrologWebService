@@ -52,9 +52,6 @@ public class ColaboradorInsercao {
     @PastOrPresent(message = "Data de admissão fornecida é inválida.")
     private LocalDate dataAdmissao;
 
-    @Nullable
-    private LocalDate dataDemissao;
-
     @NotNull
     private Long codEmpresa;
 
@@ -88,7 +85,6 @@ public class ColaboradorInsercao {
                                @Nullable final Integer matriculaAmbev,
                                @Nullable final Integer matriculaTrans,
                                @NotNull final LocalDate dataAdmissao,
-                               @Nullable final LocalDate dataDemissao,
                                @NotNull final Long codEmpresa,
                                @NotNull final Long codUnidade,
                                @NotNull final Long codEquipe,
@@ -104,7 +100,6 @@ public class ColaboradorInsercao {
         this.matriculaAmbev = matriculaAmbev;
         this.matriculaTrans = matriculaTrans;
         this.dataAdmissao = dataAdmissao;
-        this.dataDemissao = dataDemissao;
         this.codEmpresa = codEmpresa;
         this.codUnidade = codUnidade;
         this.codEquipe = codEquipe;
@@ -149,10 +144,6 @@ public class ColaboradorInsercao {
         return dataAdmissao;
     }
 
-    public LocalDate getDataDemissao() {
-        return dataDemissao;
-    }
-
     public Long getCodEmpresa() {
         return codEmpresa;
     }
@@ -190,7 +181,6 @@ public class ColaboradorInsercao {
                 ", matriculaAmbev=" + matriculaAmbev +
                 ", matriculaTrans=" + matriculaTrans +
                 ", dataAdmissao=" + dataAdmissao +
-                ", dataDemissao=" + dataDemissao +
                 ", empresa=" + codEmpresa +
                 ", unidade=" + codUnidade +
                 ", equipe=" + codEquipe +
