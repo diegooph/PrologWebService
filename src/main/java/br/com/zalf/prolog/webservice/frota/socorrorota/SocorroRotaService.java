@@ -5,6 +5,9 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
+import br.com.zalf.prolog.webservice.messaging.AndroidAppScreens;
+import br.com.zalf.prolog.webservice.messaging.AndroidLargeIcon;
+import br.com.zalf.prolog.webservice.messaging.AndroidSmallIcon;
 import br.com.zalf.prolog.webservice.messaging.send.FirebasePushMessageSender;
 import br.com.zalf.prolog.webservice.messaging.send.PushMessage;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +37,14 @@ public final class SocorroRotaService {
                 // Envia notificação via firebase
                 new FirebasePushMessageSender().deliver(
                         new ArrayList<>(colaboradores),
-                        new PushMessage("ATENÇÃO!", "Um socorro em rota foi solicitado na sua unidade"));
+                        PushMessage.builder()
+                                .withTitle("ATENÇÃO! Pedido de Socorro!")
+                                .withBody("Clique para visualizar as informações")
+                                .withAndroidSmallIcon(AndroidSmallIcon.SOS_NOTIFICATION)
+                                .withAndroidLargeIcon(AndroidLargeIcon.SOS_NOTIFICATION)
+                                .withScreenToNavigate(AndroidAppScreens.VISUALIZAR_SOCORRO_ROTA)
+                                .withMetadataScreen(String.valueOf(codSocorro))
+                                .build());
             } else {
                 Log.d(TAG, "Nenhum token para notificar sobre abertura do socorro");
             }

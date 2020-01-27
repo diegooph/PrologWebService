@@ -21,7 +21,6 @@ public final class FirebaseLifecycleManager implements ServletContextListener {
 
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
-        Log.d(TAG, "FirebaseApp iniciando");
         if (FirebaseApp.getApps().isEmpty()) {
             final FileInputStream serviceAccount;
             try {

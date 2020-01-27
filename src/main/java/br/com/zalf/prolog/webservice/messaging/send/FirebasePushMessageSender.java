@@ -44,7 +44,7 @@ public final class FirebasePushMessageSender {
 
     public void deliver(@NotNull final List<PushDestination> destinations,
                         @NotNull final PushMessage pushMessage) throws FirebaseMessagingException {
-        Log.d(TAG, String.format("Enviando mensagem push para %d destinatários", destinations.size()));
+        Log.d(TAG, String.format("Enviando mensagem push para %d destinatário(s): %s", destinations.size(), pushMessage));
 
         // These registration tokens come from the client FCM SDKs.
         final List<String> registrationTokens = destinations
@@ -52,12 +52,9 @@ public final class FirebasePushMessageSender {
                 .map(PushDestination::provideTokenPushFirebase)
                 .collect(Collectors.toList());
 
-        final MulticastMessage message = MulticastMessage.builder()
-                .setNotification(Notification
-                        .builder()
-                        .setTitle(pushMessage.getTitle())
-                        .setBody(pushMessage.getBody())
-                        .build())
+        final MulticastMessage message = MulticastMessage
+                .builder()
+                .putAllData(pushMessage.getData())
                 .addAllTokens(registrationTokens)
                 .build();
         final BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
