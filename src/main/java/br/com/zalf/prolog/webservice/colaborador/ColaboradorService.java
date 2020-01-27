@@ -3,10 +3,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.webservice.AmazonCredentialsProvider;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorValidator;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorInsercao;
-import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
-import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
+import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -47,17 +44,16 @@ public class ColaboradorService {
         }
     }
 
-    public void update(Long cpfAntigo, Colaborador colaborador) throws ProLogException {
+    public void update(@NotNull final ColaboradorEdicao colaborador, @NotNull final String userToken) {
         try {
-            ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.update(
-                    cpfAntigo,
                     colaborador,
                     Injection.provideDadosIntervaloChangedListener(),
-                    Injection.provideDadosChecklistOfflineChangedListener());
+                    Injection.provideDadosChecklistOfflineChangedListener(),
+                    TokenCleaner.getOnlyToken(userToken));
         } catch (Throwable e) {
             final String errorMessage = "Erro ao atualizar colaborador";
-            Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
+            Log.e(TAG, String.format("Erro ao atualizar o colaborador de código: %d", colaborador.getCodigo()), e);
             throw Injection
                     .provideColaboradorExceptionHandler()
                     .map(e, errorMessage);

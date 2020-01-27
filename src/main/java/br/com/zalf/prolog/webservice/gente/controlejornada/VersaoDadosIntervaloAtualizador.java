@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorEdicao;
 import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorInsercao;
 import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
@@ -81,7 +82,7 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
     public void onColaboradorAtualizado(@NotNull final Connection connection,
                                         @NotNull final EmpresaDao empresaDao,
                                         @NotNull final ColaboradorDao colaboradorDao,
-                                        @NotNull final Colaborador colaborador,
+                                        @NotNull final ColaboradorEdicao colaborador,
                                         @NotNull final Long cpfAntigo) throws Throwable {
         // Como atualização ainda não foi concretizada, essa busca retorna se o cargo antigo do colaborador lhe dava
         // ou não acesso a marcação de intervalo.
@@ -90,8 +91,8 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
 
         // O colaborador pode ter tido seu cargo alterado nesse update. Através do código do cargo, buscamos a sua visão.
         final Visao visaoCargoColaborador = empresaDao.getVisaoCargo(
-                colaborador.getUnidade().getCodigo(),
-                colaborador.getFuncao().getCodigo());
+                colaborador.getCodUnidade(),
+                colaborador.getCodFuncao());
 
         if (visaoCargoColaborador == null)
             throw new IllegalStateException();
@@ -102,7 +103,7 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                 && !visaoCargoColaborador.hasAccessToFunction(Pilares.GENTE, MARCAR_INTERVALO)
                 || !colaboradorTemAcessoMarcacaoIntervalo
                 && visaoCargoColaborador.hasAccessToFunction(Pilares.GENTE, MARCAR_INTERVALO)) {
-            incrementaVersaoDadosUnidade(connection, colaborador.getUnidade().getCodigo());
+            incrementaVersaoDadosUnidade(connection, colaborador.getCodUnidade());
         }
     }
 
