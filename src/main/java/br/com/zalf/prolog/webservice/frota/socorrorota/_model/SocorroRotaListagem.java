@@ -14,6 +14,8 @@ public final class SocorroRotaListagem {
     @NotNull
     private final Long codSocorroRota;
     @NotNull
+    private final String unidade;
+    @NotNull
     private final String placaVeiculo;
     private final boolean isPlacaDeletada;
     @NotNull
@@ -31,6 +33,7 @@ public final class SocorroRotaListagem {
     private final StatusSocorroRota statusAtualSocorroRota;
 
     public SocorroRotaListagem(@NotNull final Long codSocorroRota,
+                               @NotNull final String unidade,
                                @NotNull final String placaVeiculo,
                                final boolean isPlacaDeletada,
                                @NotNull final String nomeResponsavelAberturaSocorro,
@@ -41,6 +44,7 @@ public final class SocorroRotaListagem {
                                @Nullable final String enderecoAutomaticoAberturaSocorro,
                                @NotNull final StatusSocorroRota statusAtualSocorroRota) {
         this.codSocorroRota = codSocorroRota;
+        this.unidade = unidade;
         this.placaVeiculo = placaVeiculo;
         this.isPlacaDeletada = isPlacaDeletada;
         this.nomeResponsavelAberturaSocorro = nomeResponsavelAberturaSocorro;
@@ -54,6 +58,9 @@ public final class SocorroRotaListagem {
 
     @NotNull
     public Long getCodSocorroRota() { return codSocorroRota; }
+
+    @NotNull
+    public String getUnidade() { return unidade; }
 
     @NotNull
     public String getPlacaVeiculo() {

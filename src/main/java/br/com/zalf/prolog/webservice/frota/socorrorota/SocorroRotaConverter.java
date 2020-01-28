@@ -41,6 +41,7 @@ public class SocorroRotaConverter {
             @NotNull final ResultSet rSet) throws SQLException {
         return new SocorroRotaListagem(
                 rSet.getLong("COD_SOCORRO_ROTA"),
+                rSet.getString("UNIDADE"),
                 rSet.getString("PLACA_VEICULO"),
                 rSet.getBoolean("VEICULO_DELETADO"),
                 rSet.getString("NOME_RESPONSAVEL_ABERTURA_SOCORRO"),
