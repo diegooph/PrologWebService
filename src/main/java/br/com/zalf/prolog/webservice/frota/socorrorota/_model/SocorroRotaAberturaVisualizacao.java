@@ -30,6 +30,12 @@ public final class SocorroRotaAberturaVisualizacao {
     private final String modeloAparelhoAberturaSocorro;
     @Nullable
     private final String imeiAparelhoAberturaSocorro;
+    @Nullable
+    private final String urlFoto1Abertura;
+    @Nullable
+    private final String urlFoto2Abertura;
+    @Nullable
+    private final String urlFoto3Abertura;
 
     public SocorroRotaAberturaVisualizacao(@NotNull final String placaVeiculo,
                                            @NotNull final Long codColaboradorResponsavelAbertura,
@@ -40,7 +46,10 @@ public final class SocorroRotaAberturaVisualizacao {
                                            @Nullable final String enderecoAutomaticoAberturaSocorro,
                                            @Nullable final String marcaAparelhoAberturaSocorro,
                                            @Nullable final String modeloAparelhoAberturaSocorro,
-                                           @Nullable final String imeiAparelhoAberturaSocorro) {
+                                           @Nullable final String imeiAparelhoAberturaSocorro,
+                                           @Nullable final String urlFoto1Abertura,
+                                           @Nullable final String urlFoto2Abertura,
+                                           @Nullable final String urlFoto3Abertura) {
         this.placaVeiculo = placaVeiculo;
         this.codColaboradorResponsavelAbertura = codColaboradorResponsavelAbertura;
         this.nomeResponsavelAberturaSocorro = nomeResponsavelAberturaSocorro;
@@ -51,6 +60,9 @@ public final class SocorroRotaAberturaVisualizacao {
         this.marcaAparelhoAberturaSocorro = marcaAparelhoAberturaSocorro;
         this.modeloAparelhoAberturaSocorro = modeloAparelhoAberturaSocorro;
         this.imeiAparelhoAberturaSocorro = imeiAparelhoAberturaSocorro;
+        this.urlFoto1Abertura = urlFoto1Abertura;
+        this.urlFoto2Abertura = urlFoto2Abertura;
+        this.urlFoto3Abertura = urlFoto3Abertura;
     }
 
     @NotNull
@@ -92,4 +104,13 @@ public final class SocorroRotaAberturaVisualizacao {
     public StatusSocorroRota getStatusReferencia() {
         return StatusSocorroRota.ABERTO;
     }
+
+    @Nullable
+    public String getUrlFoto1Abertura() { return urlFoto1Abertura; }
+
+    @Nullable
+    public String getUrlFoto2Abertura() { return urlFoto2Abertura; }
+
+    @Nullable
+    public String getUrlFoto3Abertura() { return urlFoto3Abertura; }
 }

@@ -70,7 +70,10 @@ public class SocorroRotaConverter {
                 rSet.getString("ENDERECO_AUTOMATICO_ABERTURA"),
                 rSet.getString("MARCA_APARELHO_ABERTURA"),
                 rSet.getString("MODELO_APARELHO_ABERTURA"),
-                rSet.getString("IMEI_APARELHO_ABERTURA")
+                rSet.getString("IMEI_APARELHO_ABERTURA"),
+                rSet.getString("URL_FOTO_1_ABERTURA"),
+                rSet.getString("URL_FOTO_2_ABERTURA"),
+                rSet.getString("URL_FOTO_3_ABERTURA")
         );
     }
 
@@ -105,7 +108,10 @@ public class SocorroRotaConverter {
                 rSet.getString("ENDERECO_AUTOMATICO_INVALIDACAO"),
                 rSet.getString("MARCA_APARELHO_INVALIDACAO"),
                 rSet.getString("MODELO_APARELHO_INVALIDACAO"),
-                rSet.getString("IMEI_APARELHO_INVALIDACAO")
+                rSet.getString("IMEI_APARELHO_INVALIDACAO"),
+                rSet.getString("URL_FOTO_1_INVALIDACAO"),
+                rSet.getString("URL_FOTO_2_INVALIDACAO"),
+                rSet.getString("URL_FOTO_3_INVALIDACAO")
         );
     }
 
@@ -123,7 +129,10 @@ public class SocorroRotaConverter {
                 rSet.getString("ENDERECO_AUTOMATICO_FINALIZACAO"),
                 rSet.getString("MARCA_APARELHO_FINALIZACAO"),
                 rSet.getString("MODELO_APARELHO_FINALIZACAO"),
-                rSet.getString("IMEI_APARELHO_FINALIZACAO")
+                rSet.getString("IMEI_APARELHO_FINALIZACAO"),
+                rSet.getString("URL_FOTO_1_FINALIZACAO"),
+                rSet.getString("URL_FOTO_2_FINALIZACAO"),
+                rSet.getString("URL_FOTO_3_FINALIZACAO")
         );
     }
 }

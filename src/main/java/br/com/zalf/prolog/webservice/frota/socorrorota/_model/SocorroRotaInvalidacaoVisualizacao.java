@@ -24,6 +24,12 @@ public final class SocorroRotaInvalidacaoVisualizacao {
     private final String modeloAparelhoInvalidacaoSocorro;
     @Nullable
     private final String imeiAparelhoInvalidacaoSocorro;
+    @Nullable
+    private final String urlFoto1Invalidacao;
+    @Nullable
+    private final String urlFoto2Invalidacao;
+    @Nullable
+    private final String urlFoto3Invalidacao;
 
 
     public SocorroRotaInvalidacaoVisualizacao(@NotNull final String nomeResponsavelInvalidacaoSocorro,
@@ -32,7 +38,10 @@ public final class SocorroRotaInvalidacaoVisualizacao {
                                               @Nullable final String enderecoAutomaticoInvalidacaoSocorro,
                                               @Nullable final String marcaAparelhoInvalidacaoSocorro,
                                               @Nullable final String modeloAparelhoInvalidacaoSocorro,
-                                              @Nullable final String imeiAparelhoInvalidacaoSocorro) {
+                                              @Nullable final String imeiAparelhoInvalidacaoSocorro,
+                                              @Nullable final String urlFoto1Invalidacao,
+                                              @Nullable final String urlFoto2Invalidacao,
+                                              @Nullable final String urlFoto3Invalidacao) {
         this.nomeResponsavelInvalidacaoSocorro = nomeResponsavelInvalidacaoSocorro;
         this.dataHoraInvalidacaoSocorro = dataHoraInvalidacaoSocorro;
         this.localizacaoInvalidacaoScorro = localizacaoInvalidacaoScorro;
@@ -40,6 +49,9 @@ public final class SocorroRotaInvalidacaoVisualizacao {
         this.marcaAparelhoInvalidacaoSocorro = marcaAparelhoInvalidacaoSocorro;
         this.modeloAparelhoInvalidacaoSocorro = modeloAparelhoInvalidacaoSocorro;
         this.imeiAparelhoInvalidacaoSocorro = imeiAparelhoInvalidacaoSocorro;
+        this.urlFoto1Invalidacao = urlFoto1Invalidacao;
+        this.urlFoto2Invalidacao = urlFoto2Invalidacao;
+        this.urlFoto3Invalidacao = urlFoto3Invalidacao;
     }
 
     @NotNull
@@ -66,4 +78,13 @@ public final class SocorroRotaInvalidacaoVisualizacao {
     public StatusSocorroRota getStatusReferencia() {
         return StatusSocorroRota.INVALIDO;
     }
+
+    @Nullable
+    public String getUrlFoto1Invalidacao() { return urlFoto1Invalidacao; }
+
+    @Nullable
+    public String getUrlFoto2Invalidacao() { return urlFoto2Invalidacao; }
+
+    @Nullable
+    public String getUrlFoto3Invalidacao() { return urlFoto3Invalidacao; }
 }
