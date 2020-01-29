@@ -24,6 +24,12 @@ public final class SocorroRotaFinalizacaoVisualizacao {
     private final String modeloAparelhoFinalizacaoSocorro;
     @Nullable
     private final String imeiAparelhoFinalizacaoSocorro;
+    @Nullable
+    private final String urlFoto1Finalizacao;
+    @Nullable
+    private final String urlFoto2Finalizacao;
+    @Nullable
+    private final String urlFoto3Finalizacao;
 
 
     public SocorroRotaFinalizacaoVisualizacao(@NotNull final String nomeResponsavelFinalizacaoSocorro,
@@ -32,7 +38,10 @@ public final class SocorroRotaFinalizacaoVisualizacao {
                                               @Nullable final String enderecoAutomaticoFinalizacaoSocorro,
                                               @Nullable final String marcaAparelhoFinalizacaoSocorro,
                                               @Nullable final String modeloAparelhoFinalizacaoSocorro,
-                                              @Nullable final String imeiAparelhoFinalizacaoSocorro) {
+                                              @Nullable final String imeiAparelhoFinalizacaoSocorro,
+                                              @Nullable final String urlFoto1Finalizacao,
+                                              @Nullable final String urlFoto2Finalizacao,
+                                              @Nullable final String urlFoto3Finalizacao) {
         this.nomeResponsavelFinalizacaoSocorro = nomeResponsavelFinalizacaoSocorro;
         this.dataHoraFinalizacaoSocorro = dataHoraFinalizacaoSocorro;
         this.localizacaoFinalizacaoScorro = localizacaoFinalizacaoScorro;
@@ -40,6 +49,9 @@ public final class SocorroRotaFinalizacaoVisualizacao {
         this.marcaAparelhoFinalizacaoSocorro = marcaAparelhoFinalizacaoSocorro;
         this.modeloAparelhoFinalizacaoSocorro = modeloAparelhoFinalizacaoSocorro;
         this.imeiAparelhoFinalizacaoSocorro = imeiAparelhoFinalizacaoSocorro;
+        this.urlFoto1Finalizacao = urlFoto1Finalizacao;
+        this.urlFoto2Finalizacao = urlFoto2Finalizacao;
+        this.urlFoto3Finalizacao = urlFoto3Finalizacao;
     }
 
     @NotNull
@@ -66,4 +78,13 @@ public final class SocorroRotaFinalizacaoVisualizacao {
     public StatusSocorroRota getStatusReferencia() {
         return StatusSocorroRota.FINALIZADO;
     }
+
+    @Nullable
+    public String getUrlFoto1Finalizacao() { return urlFoto1Finalizacao; }
+
+    @Nullable
+    public String getUrlFoto2Finalizacao() { return urlFoto2Finalizacao; }
+
+    @Nullable
+    public String getUrlFoto3Finalizacao() { return urlFoto3Finalizacao; }
 }
