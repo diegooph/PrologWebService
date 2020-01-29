@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
 import br.com.zalf.prolog.webservice.messaging.AndroidAppScreens;
 import br.com.zalf.prolog.webservice.messaging.AndroidLargeIcon;
 import br.com.zalf.prolog.webservice.messaging.AndroidSmallIcon;
-import br.com.zalf.prolog.webservice.messaging.send.FirebasePushMessageSender;
+import br.com.zalf.prolog.webservice.messaging.send.FirebasePushMessageApi;
 import br.com.zalf.prolog.webservice.messaging.send.PushMessage;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,15 +27,24 @@ public final class SocorroRotaService {
 
     @NotNull
     ResponseWithCod aberturaSocorro(@NotNull final SocorroRotaAbertura socorroRotaAbertura) {
+        final Long codSocorro;
         try {
-            final Long codSocorro = dao.aberturaSocorro(socorroRotaAbertura);
+            codSocorro = dao.aberturaSocorro(socorroRotaAbertura);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao abrir uma solitação de socorro", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível realizar a abertura desta solicitação de socorro, " +
+                            "tente novamente");
+        }
 
+        try {
             final List<ColaboradorNotificacaoAberturaSocorro> colaboradores = dao.getColaboradoresNotificacaoAbertura(
                     socorroRotaAbertura.getCodUnidade());
 
             if (!colaboradores.isEmpty()) {
                 // Envia notificação via firebase
-                new FirebasePushMessageSender().deliver(
+                new FirebasePushMessageApi().deliver(
                         new ArrayList<>(colaboradores),
                         PushMessage.builder()
                                 .withTitle("ATENÇÃO! Pedido de Socorro!")
@@ -48,15 +57,12 @@ public final class SocorroRotaService {
             } else {
                 Log.d(TAG, "Nenhum token para notificar sobre abertura do socorro");
             }
-
-            return ResponseWithCod.ok("Solicitação de socorro aberta com sucesso", codSocorro);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao abrir uma solitação de socorro", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Não foi possível realizar a abertura desta solicitação de socorro, " +
-                            "tente novamente");
+            Log.e(TAG, "Erro ao buscar colaboradores para notificação de abertura de socorro em rota\n" +
+                    "codSocorro: " + codSocorro, t);
         }
+
+        return ResponseWithCod.ok("Solicitação de socorro aberta com sucesso", codSocorro);
     }
 
     @NotNull

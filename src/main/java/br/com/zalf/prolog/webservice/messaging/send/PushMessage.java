@@ -28,7 +28,7 @@ public final class PushMessage {
     @Nullable
     private final AndroidAppScreens screenToNavigate;
     @Nullable
-    private final String metadataScreen;
+    private final String screenMetadata;
 
     public PushMessage(@NotNull final String title,
                        @NotNull final String body,
@@ -36,14 +36,14 @@ public final class PushMessage {
                        @Nullable final AndroidLargeIcon androidLargeIcon,
                        @Nullable final String imageUrl,
                        @Nullable final AndroidAppScreens screenToNavigate,
-                       @Nullable final String metadataScreen) {
+                       @Nullable final String screenMetadata) {
         this.title = title;
         this.body = body;
         this.androidSmallIcon = androidSmallIcon;
         this.androidLargeIcon = androidLargeIcon;
         this.imageUrl = imageUrl;
         this.screenToNavigate = screenToNavigate;
-        this.metadataScreen = metadataScreen;
+        this.screenMetadata = screenMetadata;
     }
 
     @NotNull
@@ -77,8 +77,8 @@ public final class PushMessage {
     }
 
     @Nullable
-    public String getMetadataScreen() {
-        return metadataScreen;
+    public String getScreenMetadata() {
+        return screenMetadata;
     }
 
     @NotNull
@@ -98,10 +98,15 @@ public final class PushMessage {
         if (screenToNavigate != null) {
             map.put("screenToNavigate", screenToNavigate.getScreenIdAsString());
         }
-        if (metadataScreen != null) {
-            map.put("metadataScreen", metadataScreen);
+        if (screenMetadata != null) {
+            map.put("screenMetadata", screenMetadata);
         }
         return map;
+    }
+
+    @NotNull
+    public String getFullMessageAsString() {
+        return toString();
     }
 
     @NotNull
@@ -118,7 +123,7 @@ public final class PushMessage {
                 ", androidLargeIcon=" + androidLargeIcon +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", screenToNavigate=" + screenToNavigate +
-                ", metadataScreen='" + metadataScreen + '\'' +
+                ", screenMetadata='" + screenMetadata + '\'' +
                 '}';
     }
 

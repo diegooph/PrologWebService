@@ -105,6 +105,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
+                    "C.CODIGO, " +
                     "PCT.TOKEN_PUSH_FIREBASE " +
                     "FROM COLABORADOR C " +
                     "JOIN CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_UNIDADE = CFP.COD_UNIDADE " +
@@ -124,6 +125,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                 final List<ColaboradorNotificacaoAberturaSocorro> colaboradores = new ArrayList<>();
                 do {
                     colaboradores.add(new ColaboradorNotificacaoAberturaSocorro(
+                            rSet.getLong("CODIGO"),
                             rSet.getString("TOKEN_PUSH_FIREBASE")));
                 } while (rSet.next());
                 return colaboradores;

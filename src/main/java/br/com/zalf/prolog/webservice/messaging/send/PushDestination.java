@@ -9,5 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface PushDestination {
     @NotNull
-    String provideTokenPushFirebase();
+    String getTokenPushFirebase();
+    @NotNull
+    String getUserIdAssociatedWithToken();
 }

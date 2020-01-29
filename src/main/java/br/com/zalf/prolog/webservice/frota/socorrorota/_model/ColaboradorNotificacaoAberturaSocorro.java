@@ -10,20 +10,30 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ColaboradorNotificacaoAberturaSocorro implements PushDestination {
     @NotNull
+    private final Long codColaborador;
+    @NotNull
     private final String tokenPushFirebase;
 
-    public ColaboradorNotificacaoAberturaSocorro(@NotNull final String tokenPushFirebase) {
+    public ColaboradorNotificacaoAberturaSocorro(@NotNull final Long codColaborador,
+                                                 @NotNull final String tokenPushFirebase) {
+        this.codColaborador = codColaborador;
         this.tokenPushFirebase = tokenPushFirebase;
     }
 
     @NotNull
+    public Long getCodColaborador() {
+        return codColaborador;
+    }
+
+    @NotNull
+    @Override
     public String getTokenPushFirebase() {
         return tokenPushFirebase;
     }
 
     @NotNull
     @Override
-    public String provideTokenPushFirebase() {
-        return getTokenPushFirebase();
+    public String getUserIdAssociatedWithToken() {
+        return String.valueOf(codColaborador);
     }
 }
