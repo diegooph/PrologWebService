@@ -334,13 +334,16 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "R.REGIAO AS NOME_REGIONAL, R.CODIGO AS COD_REGIONAL, U.NOME AS NOME_UNIDADE, U.CODIGO AS " +
                     "COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
                     + "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, U.TIMEZONE AS TZ_UNIDADE "
+                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, U.TIMEZONE AS TZ_UNIDADE, "
+                    + "CT.PREFIXO_PAIS, CT.NUMERO_TELEFONE, CE.EMAIL "
                     + "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
                     + " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
                     + " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
                     + " JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA "
                     + " JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL "
                     + " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
+                    + " LEFT JOIN COLABORADOR_TELEFONE CT ON C.CODIGO = CT.COD_COLABORADOR "
+                    + " LEFT JOIN COLABORADOR_EMAIL CE ON C.CODIGO = CE.COD_COLABORADOR "
                     + " JOIN TOKEN_AUTENTICACAO TA ON TA.TOKEN = ? AND TA.CPF_COLABORADOR = C.CPF "
                     + "WHERE C.STATUS_ATIVO = TRUE");
             stmt.setString(1, token);
@@ -402,7 +405,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "  C.COD_FUNCAO, " +
                     "  F.NOME          AS NOME_FUNCAO, " +
                     "  C.COD_PERMISSAO AS PERMISSAO, " +
-                    "  U.TIMEZONE      AS TZ_UNIDADE " +
+                    "  U.TIMEZONE      AS TZ_UNIDADE, " +
+                    "  CT.PREFIXO_PAIS, CT.NUMERO_TELEFONE, CE.EMAIL " +
                     "FROM COLABORADOR C " +
                     "  JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO " +
                     "  JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE " +
@@ -410,6 +414,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "  JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA " +
                     "  JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL " +
                     "  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE " +
+                    "  LEFT JOIN COLABORADOR_TELEFONE CT ON C.CODIGO = CT.COD_COLABORADOR " +
+                    "  LEFT JOIN COLABORADOR_EMAIL CE ON C.CODIGO = CE.COD_COLABORADOR " +
                     "  JOIN unidade_funcao_produtividade UFP ON UFP.cod_unidade = C.cod_unidade AND " +
                     "                                           (C.cod_funcao = UFP.cod_funcao_ajudante OR " +
                     "                                            C.COD_FUNCAO = UFP.cod_funcao_motorista) " +
