@@ -115,6 +115,8 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "JOIN MESSAGING.PUSH_COLABORADOR_TOKEN PCT ON C.CODIGO = PCT.COD_COLABORADOR " +
                     "WHERE C.COD_UNIDADE = ? " +
                     "AND CFP.COD_FUNCAO_PROLOG = ? " +
+                    // Apenas busca os colaboradores que tenham tokens para os aplicativos do Prolog.
+                    "AND PCT.APLICACAO_REFERENCIA_TOKEN IN ('PROLOG_ANDROID_DEBUG', 'PROLOG_ANDROID_PROD') " +
                     "AND C.STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codUnidade);
             stmt.setInt(2, Pilares.Frota.SocorroRota.TRATAR_SOCORRO);

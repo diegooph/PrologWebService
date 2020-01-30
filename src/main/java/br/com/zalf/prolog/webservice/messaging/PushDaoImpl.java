@@ -22,12 +22,14 @@ public final class PushDaoImpl extends DatabaseConnection implements PushDao {
         try {
             conn = getConnection();
             stmt = conn.prepareCall("{CALL MESSAGING.FUNC_PUSH_SALVA_TOKEN_COLABORADOR(" +
-                    "F_COD_COLABORADOR     := ?," +
-                    "F_TOKEN_PUSH_FIREBASE := ?," +
-                    "F_DATA_HORA_ATUAL     := ?)}");
+                    "F_COD_COLABORADOR            => ?," +
+                    "F_APLICACAO_REFERENCIA_TOKEN => ? :: MESSAGING.APLICACAO_REFERENCIA_TOKEN_TYPE," +
+                    "F_TOKEN_PUSH_FIREBASE        => ?," +
+                    "F_DATA_HORA_ATUAL            => ?)}");
             stmt.setLong(1, pushColaborador.getCodColaborador());
-            stmt.setString(2, pushColaborador.getTokenPushFirebase());
-            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setString(2, pushColaborador.getAplicacaoReferenciaToken().asString());
+            stmt.setString(3, pushColaborador.getTokenPushFirebase());
+            stmt.setObject(4, Now.offsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(conn, stmt);
