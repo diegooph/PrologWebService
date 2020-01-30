@@ -21,6 +21,6 @@ public final class FirebasePushMessageApi {
                         @NotNull final PushMessage pushMessage) {
         Log.d(TAG, String.format("Enviando mensagem push para %d destinatário(s): %s", destinations.size(), pushMessage));
 
-        new FirebasePushMessageWorker(destinations, pushMessage).start();
+        new FirebasePushMessageWorker(destinations, pushMessage).execute();
     }
 }

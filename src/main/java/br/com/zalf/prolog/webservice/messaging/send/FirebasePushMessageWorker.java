@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-final class FirebasePushMessageWorker extends Thread {
+final class FirebasePushMessageWorker {
     private static final String TAG = FirebasePushMessageWorker.class.getSimpleName();
     @NotNull
     private final List<PushDestination> destinations;
@@ -28,8 +28,7 @@ final class FirebasePushMessageWorker extends Thread {
         this.pushMessage = pushMessage;
     }
 
-    @Override
-    public void run() {
+    public void execute() {
         Throwable sendException = null;
         BatchResponse batchResponse = null;
         try {

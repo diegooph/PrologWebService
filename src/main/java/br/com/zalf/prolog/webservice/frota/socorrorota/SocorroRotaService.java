@@ -5,14 +5,8 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
-import br.com.zalf.prolog.webservice.messaging.AndroidAppScreens;
-import br.com.zalf.prolog.webservice.messaging.AndroidLargeIcon;
-import br.com.zalf.prolog.webservice.messaging.AndroidSmallIcon;
-import br.com.zalf.prolog.webservice.messaging.send.FirebasePushMessageApi;
-import br.com.zalf.prolog.webservice.messaging.send.PushMessage;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,29 +32,9 @@ public final class SocorroRotaService {
                             "tente novamente");
         }
 
-        try {
-            final List<ColaboradorNotificacaoAberturaSocorro> colaboradores = dao.getColaboradoresNotificacaoAbertura(
-                    socorroRotaAbertura.getCodUnidade());
-
-            if (!colaboradores.isEmpty()) {
-                // Envia notificação via firebase
-                new FirebasePushMessageApi().deliver(
-                        new ArrayList<>(colaboradores),
-                        PushMessage.builder()
-                                .withTitle("ATENÇÃO! Pedido de Socorro!")
-                                .withBody("Clique para visualizar as informações")
-                                .withAndroidSmallIcon(AndroidSmallIcon.SOS_NOTIFICATION)
-                                .withAndroidLargeIcon(AndroidLargeIcon.SOS_NOTIFICATION)
-                                .withScreenToNavigate(AndroidAppScreens.VISUALIZAR_SOCORRO_ROTA)
-                                .withMetadataScreen(String.valueOf(codSocorro))
-                                .build());
-            } else {
-                Log.d(TAG, "Nenhum token para notificar sobre abertura do socorro");
-            }
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar colaboradores para notificação de abertura de socorro em rota\n" +
-                    "codSocorro: " + codSocorro, t);
-        }
+        // Notifica os usuários responsáveis sobre a abertura do socorro.
+        new NotificadorAberturaSocorro()
+                .notificarColaboradores(dao, socorroRotaAbertura.getCodUnidade(), codSocorro);
 
         return ResponseWithCod.ok("Solicitação de socorro aberta com sucesso", codSocorro);
     }
