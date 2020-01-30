@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.15"></a>
-## Version [v1.0.15](https://github.com/luizfp/PrologWebService/compare/v1.0.14...v1.0.15) (release-date) [unreleased]
+## Version [v1.0.15](https://github.com/luizfp/PrologWebService/compare/v1.0.14...v1.0.15) (2020-01-30)
 
 ### Refactors
 * Reestrutra integrações de ordem de serviço (PLI-66)
