@@ -17,6 +17,12 @@ public final class AlternativaNokGlobus {
     @NotNull
     private final Long codAlternativaNok;
     /**
+     * Código de contexto da alternativa. Este código é utilizado na integração como código único de identificação da
+     * alternativa selecionada pelo colaborador.
+     */
+    @NotNull
+    private final Long codContextoAlternativaNok;
+    /**
      * Texto que descreve a alternativa.
      */
     @NotNull
@@ -29,9 +35,11 @@ public final class AlternativaNokGlobus {
     private final PrioridadeAlternativaGlobus prioridadeAlternativaNok;
 
     public AlternativaNokGlobus(@NotNull final Long codAlternativaNok,
+                                @NotNull final Long codContextoAlternativaNok,
                                 @NotNull final String descricaoAlternativaNok,
                                 @NotNull final PrioridadeAlternativaGlobus prioridadeAlternativaNok) {
         this.codAlternativaNok = codAlternativaNok;
+        this.codContextoAlternativaNok = codContextoAlternativaNok;
         this.descricaoAlternativaNok = descricaoAlternativaNok;
         this.prioridadeAlternativaNok = prioridadeAlternativaNok;
     }
@@ -39,6 +47,7 @@ public final class AlternativaNokGlobus {
     @NotNull
     public static AlternativaNokGlobus getDummy() {
         return new AlternativaNokGlobus(
+                10L,
                 1010L,
                 "Farol quebrado",
                 PrioridadeAlternativaGlobus.CRITICA);
@@ -47,6 +56,11 @@ public final class AlternativaNokGlobus {
     @NotNull
     public Long getCodAlternativaNok() {
         return codAlternativaNok;
+    }
+
+    @NotNull
+    public Long getCodContextoAlternativaNok() {
+        return codContextoAlternativaNok;
     }
 
     @NotNull

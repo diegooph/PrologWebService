@@ -431,10 +431,10 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                 if (itemOS.getCodItemGlobus() <= 0) {
                     throw new GenericException("A propriedade 'codItemGlobus' deve ser um número positivo");
                 }
-                if (itemOS.getCodPerguntaItemOs() <= 0) {
+                if (itemOS.getCodContextoPerguntaItemOs() <= 0) {
                     throw new GenericException("A propriedade 'codPerguntaItemOs' deve ser um número positivo");
                 }
-                if (itemOS.getCodAlternativaItemOs() <= 0) {
+                if (itemOS.getCodContextoAlternativaItemOs() <= 0) {
                     throw new GenericException("A propriedade 'codAlternativaItemOs' deve ser um número positivo");
                 }
             }

@@ -3,14 +3,14 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.integracao.agendador.SincroniaChecklistListener;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDao;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.AlternativaNokGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistItensNokGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistToSyncGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.PerguntaNokGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,8 +33,6 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
     @NotNull
     private final Boolean isLastChecklist;
     @NotNull
-    private final Checklist checklist;
-    @NotNull
     private final SistemaGlobusPiccoloturDao sistema;
     @NotNull
     private final GlobusPiccoloturRequester requester;
@@ -43,12 +41,10 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
 
     public ChecklistItensNokGlobusTask(@NotNull final Long codChecklistProLog,
                                        @NotNull final Boolean isLastChecklist,
-                                       @NotNull final Checklist checklist,
                                        @NotNull final SistemaGlobusPiccoloturDao sistema,
                                        @NotNull final GlobusPiccoloturRequester requester,
                                        @Nullable final SincroniaChecklistListener listener) {
         this.codChecklistProLog = codChecklistProLog;
-        this.checklist = checklist;
         this.sistema = sistema;
         this.requester = requester;
         this.listener = listener;
@@ -62,14 +58,19 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
         try {
             conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
+
+            final ChecklistToSyncGlobus checklistToSyncGlobus =
+                    sistema.getChecklistToSyncGlobus(conn, codChecklistProLog);
+            final ChecklistItensNokGlobus checklistItensNokGlobus = checklistToSyncGlobus.getChecklistItensNokGlobus();
+
             // Apenas por garantia, verificamos novamente se é necessário enviar alguma coisa para a integração.
-            if (checklist.getQtdItensNok() <= 0) {
+            if (checklistItensNokGlobus.getPerguntasNok().size() <= 0) {
                 // Marca checklist como não precisa ser sincronizado.
                 sistema.marcaChecklistNaoPrecisaSincronizar(conn, codChecklistProLog);
                 conn.commit();
                 // Avisamos que a sincronia não foi necessária para o checklist em questão.
                 if (listener != null) {
-                    listener.onSincroniaNaoExecutada(checklist, isLastChecklist);
+                    listener.onSincroniaNaoExecutada(codChecklistProLog, isLastChecklist);
                 }
                 return;
             }
@@ -81,11 +82,11 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                             .provideOrdemServicoDao()
                             .getItensStatus(
                                     conn,
-                                    checklist.getCodModelo(),
-                                    checklist.getCodVersaoModeloChecklist(),
-                                    checklist.getPlacaVeiculo());
+                                    checklistToSyncGlobus.getCodModeloChecklist(),
+                                    checklistToSyncGlobus.getCodVersaoModeloChecklist(),
+                                    checklistToSyncGlobus.getPlacaVeiculoChecklist());
             final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos =
-                    getItensIncrementaApontamentos(alternativasStatus, checklist.getListRespostas());
+                    getItensIncrementaApontamentos(alternativasStatus, checklistItensNokGlobus.getPerguntasNok());
 
             // Verificamos se tem algum item que deve incrementar a quantidade de apontamentos em alguma O.S.
             if (!itensOsIncrementaQtdApontamentos.isEmpty()) {
@@ -93,16 +94,6 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                         .provideOrdemServicoDao()
                         .incrementaQtdApontamentos(conn, codChecklistProLog, itensOsIncrementaQtdApontamentos);
             }
-
-            final Long codUnidadeProLog = Injection
-                    .provideVeiculoDao()
-                    .getCodUnidadeByPlaca(conn, checklist.getPlacaVeiculo());
-            final ChecklistItensNokGlobus checklistItensNokGlobus =
-                    GlobusPiccoloturConverter.createChecklistItensNokGlobus(
-                            codUnidadeProLog,
-                            codChecklistProLog,
-                            checklist,
-                            alternativasStatus);
 
             // Pode acontecer de o checklist ter itens NOK apontados, porém, ou estes itens não devem abrir O.S ou
             // eles já estão abertos em outra O.S e não precisam ser lançados na integração. Para essa situação
@@ -116,7 +107,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 conn.commit();
                 // Avisamos que a sincronia não foi necessária para o checklist em questão.
                 if (listener != null) {
-                    listener.onSincroniaNaoExecutada(checklist, isLastChecklist);
+                    listener.onSincroniaNaoExecutada(codChecklistProLog, isLastChecklist);
                 }
                 return;
             }
@@ -139,7 +130,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             conn.commit();
             // Avismos que os itens foram sincronizados com sucesso.
             if (listener != null) {
-                listener.onSincroniaOk(checklist, isLastChecklist);
+                listener.onSincroniaOk(codChecklistProLog, isLastChecklist);
             }
         } catch (final Throwable t) {
             try {
@@ -148,7 +139,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 sistema.erroAoSicronizarChecklist(codChecklistProLog, getErrorMessage(t));
                 // Avisamos sobre o erro ao sincronizar o checklist.
                 if (listener != null) {
-                    listener.onErroSincronia(checklist, isLastChecklist, t);
+                    listener.onErroSincronia(codChecklistProLog, isLastChecklist, t);
                 }
                 if (conn != null) {
                     conn.rollback();
@@ -165,12 +156,12 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
     @NotNull
     private List<InfosAlternativaAberturaOrdemServico> getItensIncrementaApontamentos(
             @NotNull final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus,
-            @NotNull final List<PerguntaRespostaChecklist> respostas) {
+            @NotNull final List<PerguntaNokGlobus> perguntasNokGlobus) {
         final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos = new ArrayList<>();
-        for (final PerguntaRespostaChecklist pergunta : respostas) {
-            for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
+        for (final PerguntaNokGlobus pergunta : perguntasNokGlobus) {
+            for (final AlternativaNokGlobus alternativa : pergunta.getAlternativasNok()) {
                 final List<InfosAlternativaAberturaOrdemServico> infosAlternativaAberturaOrdemServicos =
-                        alternativasStatus.get(alternativa.getCodigo());
+                        alternativasStatus.get(alternativa.getCodAlternativaNok());
                 if (infosAlternativaAberturaOrdemServicos != null
                         && infosAlternativaAberturaOrdemServicos.size() > 0
                         && infosAlternativaAberturaOrdemServicos.get(0).isDeveAbrirOrdemServico()

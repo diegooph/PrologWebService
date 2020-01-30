@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.integracao.agendador;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.integracao.praxio.ChecklistItensNokGlobusTask;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
@@ -33,21 +32,16 @@ public final class AgendadorService implements SincroniaChecklistListener {
             if (!checklistParaSincronizar.temChecklistParaSincronizar()) {
                 return;
             }
-            final Long codChecklistParaSincronizar = checklistParaSincronizar.getCodChecklist();
-            final Checklist checklist =
-                    Injection
-                            .provideChecklistDao()
-                            .getByCod(codChecklistParaSincronizar);
             // Executamos a sincronia utilizando a thread específica para esse serviço.
             Executors.newSingleThreadExecutor().execute(
                     new ChecklistItensNokGlobusTask(
-                            codChecklistParaSincronizar,
+                            checklistParaSincronizar.getCodChecklist(),
                             checklistParaSincronizar.isLastCod(),
-                            checklist,
                             new SistemaGlobusPiccoloturDaoImpl(),
                             new GlobusPiccoloturRequesterImpl(),
                             this));
         } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao tentar sincronizar o checklist através do agendador", t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao tentar sincronizar o checklist");
@@ -55,15 +49,15 @@ public final class AgendadorService implements SincroniaChecklistListener {
     }
 
     @Override
-    public void onSincroniaOk(@NotNull final Checklist checklist, @NotNull final Boolean isLastChecklist) {
+    public void onSincroniaOk(@NotNull final Long codChecklist, @NotNull final Boolean isLastChecklist) {
         // Se a sincronia ocorreu com sucesso o sistema integrado irá devolver ao ProLog uma O.S Aberta. Neste momento
         // iremos disparar a sincronia de um novo checklist, não devemos fazer neste callback.
-        Log.d(TAG, "Checklist sincronizado com sucesso: " + checklist.getCodigo());
+        Log.d(TAG, "Checklist sincronizado com sucesso: " + codChecklist);
     }
 
     @Override
-    public void onSincroniaNaoExecutada(@NotNull final Checklist checklist, @NotNull final Boolean isLastChecklist) {
-        Log.d(TAG, "Não foi preciso sincronizar o checklist: " + checklist.getCodigo());
+    public void onSincroniaNaoExecutada(@NotNull final Long codChecklist, @NotNull final Boolean isLastChecklist) {
+        Log.d(TAG, "Não foi preciso sincronizar o checklist: " + codChecklist);
         // Se a sincronia não foi executada, significa que não foi enviado um checklist para o sistema integrado, logo
         // não haverá uma resposta de O.S Aberta e o sistema não irá disparar a sincronia do próximo checklist. Por
         // esse motivo, forçamos a sincronia do próximo checklist, apenas caso não for o último.
@@ -73,10 +67,10 @@ public final class AgendadorService implements SincroniaChecklistListener {
     }
 
     @Override
-    public void onErroSincronia(@NotNull final Checklist checklist,
+    public void onErroSincronia(@NotNull final Long codChecklist,
                                 @NotNull final Boolean isLastChecklist,
                                 @Nullable final Throwable t) {
-        Log.d(TAG, "Não foi possível sincronizar o checklist: " + checklist.getCodigo());
+        Log.d(TAG, "Não foi possível sincronizar o checklist: " + codChecklist);
         // Se ocorreu erro na sincronia, significa que não foi enviado um checklist para o sistema integrado, logo
         // não haverá uma resposta de O.S Aberta e o sistema não irá disparar a sincronia do próximo checklist. Por
         // esse motivo, forçamos a sincronia do próximo checklist, apenas caso não for o último.

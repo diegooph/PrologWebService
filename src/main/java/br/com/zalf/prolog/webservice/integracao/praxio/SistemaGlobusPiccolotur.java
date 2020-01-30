@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
@@ -34,6 +33,10 @@ import java.util.concurrent.Executors;
  */
 public final class SistemaGlobusPiccolotur extends Sistema {
     @NotNull
+    private static final Long COD_MODELO_LIBERADO = 501L;
+    @NotNull
+    private static final Long COD_UNIDADE_LIBERADA = 107L;
+    @NotNull
     private final GlobusPiccoloturRequester requester;
 
     public SistemaGlobusPiccolotur(@NotNull final GlobusPiccoloturRequester requester,
@@ -52,19 +55,26 @@ public final class SistemaGlobusPiccolotur extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         Connection conn = null;
         try {
+            // Devemos enviar para o Globus apenas se for o modelo 501 e a unidade 107, pois foram apenas estas
+            // liberadas nesse primeiro momento, onde faremos um teste.
+            final boolean deveEnviarParaGlobus =
+                    checklistNew.getCodModelo().equals(COD_MODELO_LIBERADO)
+                            && checklistNew.getCodUnidade().equals(COD_UNIDADE_LIBERADA);
             conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
-            // TODO - Mover para o integradorProLog
             // Insere checklist na base de dados do ProLog
+            // Se deve enviar para o Globus, então não abrimos O.S pois ela virá da integração.
             final Long codChecklistProLog = Injection
                     .provideChecklistDao()
-                    .insert(conn, checklistNew, foiOffline, false);
+                    .insert(conn, checklistNew, foiOffline, !deveEnviarParaGlobus);
 
-            // TODO: o fluxo da integração continua usando o objeto antigo.
-            final Checklist checklist = checklistNew.getChecklistAntigo();
+            // Se não devemos enviar para o Globus, então retornamos. Já fizemos tudo o que deveríamos!
+            if (!deveEnviarParaGlobus) {
+                return codChecklistProLog;
+            }
 
             // Se o checklist tem pelo menos um item NOK, precisamos disparar o envio para a integração.
-            if (checklist.getQtdItensNok() > 0) {
+            if (checklistNew.getQtdAlternativasNok() > 0) {
                 // Marcamos que o checklist precisa ser sincronizado. Isso será útil para que o processamento disparado
                 // pelo agendador consiga distinguir quais checklists são necessários serem sincronizados.
                 getSistemaGlobusPiccoloturDaoImpl().insertItensNokPendentesParaSincronizar(conn, codChecklistProLog);
@@ -74,7 +84,6 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                         new ChecklistItensNokGlobusTask(
                                 codChecklistProLog,
                                 true,
-                                checklist,
                                 getSistemaGlobusPiccoloturDaoImpl(),
                                 requester,
                                 null));
