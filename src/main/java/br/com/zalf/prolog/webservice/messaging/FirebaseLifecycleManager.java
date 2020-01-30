@@ -31,7 +31,13 @@ public final class FirebaseLifecycleManager implements ServletContextListener {
             try {
                 inputStream = new FileInputStream(EnvironmentHelper.GOOGLE_APPLICATION_CREDENTIALS);
             } catch (final Throwable t) {
-                Log.e(TAG, "Erro ao iniciar FirebaseApp", t);
+                // Em debug damos apenas um warning, pois não será necessário ter o firebase rodando para a maioria dos
+                // casos.
+                if (ProLogUtils.isDebug()) {
+                    Log.w(TAG, "Erro ao iniciar firebase!");
+                } else {
+                    Log.e(TAG, "Erro ao iniciar FirebaseApp", t);
+                }
                 return;
             }
 
