@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
@@ -22,19 +21,12 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.Pergu
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.AlternativaItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoResolvido;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.PerguntaItemOrdemServico;
-import br.com.zalf.prolog.webservice.integracao.praxio.GlobusPiccoloturConverter;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDaoImpl;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistItensNokGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemOSAbertaGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
@@ -48,7 +40,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -98,9 +89,10 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     void testInsercaoChecklistRoteamentoIntegracao() throws Throwable {
         final long codUnidade = 96L;
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
-        final ResultInsertModeloChecklist resultModeloChecklist = criaModeloChecklist(codUnidade, "Modelo Teste Inserção Checklist Roteado ");
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(codUnidade, "Modelo Teste Inserção Checklist Roteado ");
 
-        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
+        // ################################## ETAPA 2 - Insere um checklist do modelo ##################################
         final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(codUnidade, resultModeloChecklist);
 
         final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
@@ -155,7 +147,8 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     @Test
     void testAberturaOrdemServicoIntegracao() throws Throwable {
         final long codUnidade = 96L;
-        final ResultInsertModeloChecklist resultModeloChecklist = criaModeloChecklist(codUnidade, "Modelo Abertura Ordem Serviço Integração ");
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(codUnidade, "Modelo Abertura Ordem Serviço Integração ");
 
         // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
         final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(codUnidade, resultModeloChecklist);
@@ -163,37 +156,46 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
 
         // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
-        final Checklist checklistByCod = checklistService.getByCod(codChecklistInserido, tokenIntegrado);
-        marcarChecklistComoSincronizado(codUnidade, checklistInsercao, codChecklistInserido, checklistByCod);
+        final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
+        marcarChecklistComoSincronizado(codChecklistInserido, sistemaGlobusPiccoloturDao);
 
         // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
         final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
         final long nextCodOs = getNextCodOsUnidade(codUnidade);
+        final List<Long> codsAlaternativasOS = new ArrayList<>();
 
         { // region Insere a Ordem de Serviço Globus a partir do checklist
-            final PerguntaRespostaChecklist pergunta1 = checklistByCod.getListRespostas().get(0);
+            final ChecklistItensNokGlobus checklistItensNokGlobus =
+                    getChecklistToSyncGlobus(codChecklistInserido, sistemaGlobusPiccoloturDao)
+                            .getChecklistItensNokGlobus();
+
+            final PerguntaNokGlobus pergunta1 = checklistItensNokGlobus.getPerguntasNok().get(1);
             // Adiciona item 1
             itensOSAbertaGlobus.add(
                     new ItemOSAbertaGlobus(
                             1L,
-                            pergunta1.getCodigo(),
-                            pergunta1.getAlternativasResposta().get(0).getCodigo()));
+                            pergunta1.getCodContextoPerguntaNok(),
+                            pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
+            codsAlaternativasOS.add(pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok());
 
-            final PerguntaRespostaChecklist pergunta2 = checklistByCod.getListRespostas().get(1);
+            final PerguntaNokGlobus pergunta2 = checklistItensNokGlobus.getPerguntasNok().get(0);
             // Adiciona item 1
             itensOSAbertaGlobus.add(
                     new ItemOSAbertaGlobus(
                             2L,
-                            pergunta2.getCodigo(),
-                            pergunta2.getAlternativasResposta().get(0).getCodigo()));
+                            pergunta2.getCodContextoPerguntaNok(),
+                            pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
+            codsAlaternativasOS.add(pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok());
 
             // Adiciona item 1
             itensOSAbertaGlobus.add(
                     new ItemOSAbertaGlobus(
                             3L,
-                            pergunta2.getCodigo(),
-                            pergunta2.getAlternativasResposta().get(1).getCodigo()));
+                            pergunta2.getCodContextoPerguntaNok(),
+                            pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok()));
+            codsAlaternativasOS.add(pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok());
         }
+
         final OrdemServicoAbertaGlobus ordemServicoAbertaGlobus =
                 new OrdemServicoAbertaGlobus(
                         nextCodOs,
@@ -244,25 +246,8 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 boolean rSetHasData = false;
                 while (rSet.next()) {
                     rSetHasData = true;
-                    assertThat(rSet.getLong("COD_CHECKLIST_OS_PROLOG")).isEqualTo(codChecklistInserido);
-                    assertThat(rSet.getLong("COD_ITEM_OS_PROLOG"))
-                            .isIn(itens
-                                    .stream()
-                                    .map(ItemOrdemServicoVisualizacao::getCodigo)
-                                    .collect(Collectors.toList()));
-                    assertThat(rSet.getLong("COD_PERGUNTA_OS_PROLOG"))
-                            .isIn(itens
-                                    .stream()
-                                    .map(ItemOrdemServicoVisualizacao::getPergunta)
-                                    .map(PerguntaItemOrdemServico::getCodPergunta)
-                                    .collect(Collectors.toList()));
-                    assertThat(rSet.getLong("COD_ALTERNATIVA_OS_PROLOG"))
-                            .isIn(itens
-                                    .stream()
-                                    .map(ItemOrdemServicoVisualizacao::getPergunta)
-                                    .map(PerguntaItemOrdemServico::getAlternativaMarcada)
-                                    .map(AlternativaItemOrdemServico::getCodAlteranativa)
-                                    .collect(Collectors.toList()));
+                    assertThat(rSet.getLong("COD_CONTEXTO_ALTERNATIVA_OS_PROLOG"))
+                            .isIn(codsAlaternativasOS);
                 }
                 assertThat(rSetHasData).isTrue();
 
@@ -296,7 +281,8 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     public void testFechamentoOrdemServicoIntegracao() throws Throwable {
         final long codUnidade = 96L;
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
-        final ResultInsertModeloChecklist resultModeloChecklist = criaModeloChecklist(codUnidade, "Modelo Abertura Ordem Serviço Integração ");
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(codUnidade, "Modelo Abertura Ordem Serviço Integração ");
 
         // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
         final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(codUnidade, resultModeloChecklist);
@@ -304,37 +290,44 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
 
         // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
-        final Checklist checklistByCod = checklistService.getByCod(codChecklistInserido, tokenIntegrado);
-        marcarChecklistComoSincronizado(codUnidade, checklistInsercao, codChecklistInserido, checklistByCod);
+        final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
+        marcarChecklistComoSincronizado(codChecklistInserido, sistemaGlobusPiccoloturDao);
 
         // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
         final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
         final long nextCodOs = getNextCodOsUnidade(codUnidade);
+        final List<Long> codsAlaternativasOS = new ArrayList<>();
 
         { // region Insere a Ordem de Serviço Globus a partir do checklist
-            final Checklist byCod = checklistService.getByCod(codChecklistInserido, tokenIntegrado);
-            final PerguntaRespostaChecklist pergunta1 = byCod.getListRespostas().get(0);
+            final ChecklistItensNokGlobus checklistItensNokGlobus =
+                    getChecklistToSyncGlobus(codChecklistInserido, sistemaGlobusPiccoloturDao)
+                            .getChecklistItensNokGlobus();
+
+            final PerguntaNokGlobus pergunta1 = checklistItensNokGlobus.getPerguntasNok().get(1);
             // Adiciona item 1
             itensOSAbertaGlobus.add(
                     new ItemOSAbertaGlobus(
                             1L,
-                            pergunta1.getCodigo(),
-                            pergunta1.getAlternativasResposta().get(0).getCodigo()));
+                            pergunta1.getCodContextoPerguntaNok(),
+                            pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
+            codsAlaternativasOS.add(pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok());
 
-            final PerguntaRespostaChecklist pergunta2 = byCod.getListRespostas().get(1);
+            final PerguntaNokGlobus pergunta2 = checklistItensNokGlobus.getPerguntasNok().get(0);
             // Adiciona item 1
             itensOSAbertaGlobus.add(
                     new ItemOSAbertaGlobus(
                             2L,
-                            pergunta2.getCodigo(),
-                            pergunta2.getAlternativasResposta().get(0).getCodigo()));
+                            pergunta2.getCodContextoPerguntaNok(),
+                            pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
+            codsAlaternativasOS.add(pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok());
 
             // Adiciona item 1
             itensOSAbertaGlobus.add(
                     new ItemOSAbertaGlobus(
                             3L,
-                            pergunta2.getCodigo(),
-                            pergunta2.getAlternativasResposta().get(1).getCodigo()));
+                            pergunta2.getCodContextoPerguntaNok(),
+                            pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok()));
+            codsAlaternativasOS.add(pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok());
         }
         final OrdemServicoAbertaGlobus ordemServicoAbertaGlobus =
                 new OrdemServicoAbertaGlobus(
@@ -344,11 +337,10 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                         itensOSAbertaGlobus);
 
         final IntegracaoPraxioService integracaoPraxioService = new IntegracaoPraxioService();
-        final SuccessResponseIntegracao successResponseIntegracao =
-                integracaoPraxioService
-                        .inserirOrdensServicoGlobus(
-                                TOKEN_PICCOLOTUR,
-                                Collections.singletonList(ordemServicoAbertaGlobus));
+        integracaoPraxioService
+                .inserirOrdensServicoGlobus(
+                        TOKEN_PICCOLOTUR,
+                        Collections.singletonList(ordemServicoAbertaGlobus));
 
         // ################################## ETAPA 5 - Fecha a O.S Globus no ProLog ###################################
         final List<ItemResolvidoGlobus> itensResolvidos = new ArrayList<>();
@@ -423,24 +415,8 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 while (rSet.next()) {
                     rSetHasData = true;
                     assertThat(rSet.getLong("COD_CHECKLIST_OS_PROLOG")).isEqualTo(codChecklistInserido);
-                    assertThat(rSet.getLong("COD_ITEM_OS_PROLOG"))
-                            .isIn(itens
-                                    .stream()
-                                    .map(ItemOrdemServicoVisualizacao::getCodigo)
-                                    .collect(Collectors.toList()));
-                    assertThat(rSet.getLong("COD_PERGUNTA_OS_PROLOG"))
-                            .isIn(itens
-                                    .stream()
-                                    .map(ItemOrdemServicoVisualizacao::getPergunta)
-                                    .map(PerguntaItemOrdemServico::getCodPergunta)
-                                    .collect(Collectors.toList()));
-                    assertThat(rSet.getLong("COD_ALTERNATIVA_OS_PROLOG"))
-                            .isIn(itens
-                                    .stream()
-                                    .map(ItemOrdemServicoVisualizacao::getPergunta)
-                                    .map(PerguntaItemOrdemServico::getAlternativaMarcada)
-                                    .map(AlternativaItemOrdemServico::getCodAlteranativa)
-                                    .collect(Collectors.toList()));
+                    assertThat(rSet.getLong("COD_CONTEXTO_ALTERNATIVA_OS_PROLOG"))
+                            .isIn(codsAlaternativasOS);
                     assertThat(rSet.getTimestamp("DATA_HORA_SINCRONIA_RESOLUCAO")).isNotNull();
                 }
                 assertThat(rSetHasData).isTrue();
@@ -451,32 +427,17 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         }
     }
 
-    private void marcarChecklistComoSincronizado(final long codUnidade,
-                                                 final ChecklistInsercao checklistInsercao,
-                                                 final Long codChecklistInserido,
-                                                 final Checklist checklistByCod) throws Throwable {
+    private void marcarChecklistComoSincronizado(final Long codChecklistInserido,
+                                                 final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao) throws Throwable {
         // region Atualiza informações do checklist integrado
-        final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
         final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
         Connection conn = null;
         try {
             conn = provider.provideDatabaseConnection();
-            //noinspection ConstantConditions
-            final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus =
-                    Injection
-                            .provideOrdemServicoDao()
-                            .getItensStatus(
-                                    conn,
-                                    checklistInsercao.getCodModelo(),
-                                    checklistInsercao.getCodVersaoModeloChecklist(),
-                                    checklistInsercao.getPlacaVeiculo());
-
+            final ChecklistToSyncGlobus checklistToSyncGlobus =
+                    sistemaGlobusPiccoloturDao.getChecklistToSyncGlobus(conn, codChecklistInserido);
             final ChecklistItensNokGlobus checklistItensNokGlobus =
-                    GlobusPiccoloturConverter.createChecklistItensNokGlobus(
-                            codUnidade,
-                            codChecklistInserido,
-                            checklistByCod,
-                            alternativasStatus);
+                    checklistToSyncGlobus.getChecklistItensNokGlobus();
             sistemaGlobusPiccoloturDao.insertItensNokEnviadosGlobus(conn, checklistItensNokGlobus);
             sistemaGlobusPiccoloturDao.marcaChecklistSincronizado(conn, codChecklistInserido);
         } finally {
@@ -485,7 +446,20 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     }
 
     @NotNull
-    private ResultInsertModeloChecklist criaModeloChecklist(final long codUnidade, final String s) {
+    private ChecklistToSyncGlobus getChecklistToSyncGlobus(final Long codChecklistInserido,
+                                                           final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao) throws Throwable {
+        final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
+        Connection conn = null;
+        try {
+            conn = provider.provideDatabaseConnection();
+            return sistemaGlobusPiccoloturDao.getChecklistToSyncGlobus(conn, codChecklistInserido);
+        } finally {
+            provider.closeResources(conn);
+        }
+    }
+
+    @NotNull
+    private ResultInsertModeloChecklist criaModeloChecklist(final long codUnidade, final String nomeModeloChecklist) {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
         final List<PerguntaModeloChecklistInsercao> perguntasModelo = new ArrayList<>();
         { // region Criação Pergunta 1.
@@ -542,7 +516,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
 
         // Inserimos o modelo de checklist
         final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
-                s + new Random().nextInt(999),
+                nomeModeloChecklist + new Random().nextInt(999),
                 codUnidade,
                 Arrays.asList(326L, 327L, 397L, 399L, 400L, 412L, 419L, 483L, 484L),
                 Collections.singletonList(507L),
@@ -551,7 +525,8 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     }
 
     @NotNull
-    private ChecklistInsercao insertChecklistModeloCriado(final long codUnidade, final ResultInsertModeloChecklist resultModeloChecklist) {
+    private ChecklistInsercao insertChecklistModeloCriado(final long codUnidade,
+                                                          final ResultInsertModeloChecklist resultModeloChecklist) {
         final ModeloChecklistVisualizacao modeloBuscado = modeloChecklistService.getModeloChecklist(
                 codUnidade,
                 resultModeloChecklist.getCodModeloChecklistInserido());
@@ -612,7 +587,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 23246L,
                 "EBX2850",
                 TipoChecklist.SAIDA,
-                112,
+                11222,
                 10000,
                 respostas,
                 ProLogDateParser.toLocalDateTime("2019-12-11T09:35:10"),

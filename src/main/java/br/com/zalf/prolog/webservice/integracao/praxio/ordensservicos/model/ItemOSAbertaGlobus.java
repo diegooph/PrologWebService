@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model;
 
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,21 +27,23 @@ public final class ItemOSAbertaGlobus {
      * Este código deve ser o mesmo presente no {@link PerguntaNokGlobus#codPerguntaNok}.
      */
     @NotNull
-    private final Long codPerguntaItemOs;
+    @SerializedName("codPerguntaItemOs")
+    private final Long codContextoPerguntaItemOs;
     /**
      * Código de identificação da Alternativa marcada que descreve este item.
      * <p>
      * Este código deve ser o mesmo presente no {@link AlternativaNokGlobus#codAlternativaNok}.
      */
     @NotNull
-    private final Long codAlternativaItemOs;
+    @SerializedName("codAlternativaItemOs")
+    private final Long codContextoAlternativaItemOs;
 
     public ItemOSAbertaGlobus(@NotNull final Long codItemGlobus,
-                              @NotNull final Long codPerguntaItemOs,
-                              @NotNull final Long codAlternativaItemOs) {
+                              @NotNull final Long codContextoPerguntaItemOs,
+                              @NotNull final Long codContextoAlternativaItemOs) {
         this.codItemGlobus = codItemGlobus;
-        this.codPerguntaItemOs = codPerguntaItemOs;
-        this.codAlternativaItemOs = codAlternativaItemOs;
+        this.codContextoPerguntaItemOs = codContextoPerguntaItemOs;
+        this.codContextoAlternativaItemOs = codContextoAlternativaItemOs;
     }
 
     @NotNull
@@ -57,12 +60,12 @@ public final class ItemOSAbertaGlobus {
     }
 
     @NotNull
-    public Long getCodPerguntaItemOs() {
-        return codPerguntaItemOs;
+    public Long getCodContextoPerguntaItemOs() {
+        return codContextoPerguntaItemOs;
     }
 
     @NotNull
-    public Long getCodAlternativaItemOs() {
-        return codAlternativaItemOs;
+    public Long getCodContextoAlternativaItemOs() {
+        return codContextoAlternativaItemOs;
     }
 }

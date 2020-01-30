@@ -74,7 +74,7 @@ public class IntegracaoOrdemServicoTransportTest extends BaseTest {
             assertNotNull(itemPendenteIntegracaoTransport.getStatusItemOrdemServico());
             assertEquals(itemPendenteIntegracaoTransport.getStatusItemOrdemServico(), StatusItemOrdemServico.PENDENTE);
             assertNotNull(itemPendenteIntegracaoTransport.getPrazoResolucaoItemHoras());
-            final Integer prazo = itemPendenteIntegracaoTransport.getPrazoResolucaoItemHoras();
+            final int prazo = itemPendenteIntegracaoTransport.getPrazoResolucaoItemHoras();
             assertTrue(
                     prazo == PrioridadeAlternativa.CRITICA.getPrazoResolucaoHoras()
                             || prazo == PrioridadeAlternativa.ALTA.getPrazoResolucaoHoras()
@@ -83,15 +83,14 @@ public class IntegracaoOrdemServicoTransportTest extends BaseTest {
             assertTrue(itemPendenteIntegracaoTransport.getQtdApontamentos() > 0);
             assertNotNull(itemPendenteIntegracaoTransport.getCodChecklistPrimeiroApontamento());
             assertTrue(itemPendenteIntegracaoTransport.getCodChecklistPrimeiroApontamento() > 0);
-            assertNotNull(itemPendenteIntegracaoTransport.getCodPergunta());
-            assertTrue(itemPendenteIntegracaoTransport.getCodPergunta() > 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getCodContextoPergunta());
+            assertTrue(itemPendenteIntegracaoTransport.getCodContextoPergunta() > 0);
             assertNotNull(itemPendenteIntegracaoTransport.getDescricaoPergunta());
             assertFalse(itemPendenteIntegracaoTransport.getDescricaoPergunta().isEmpty());
-            assertNotNull(itemPendenteIntegracaoTransport.getCodAlternativaPergunta());
-            assertTrue(itemPendenteIntegracaoTransport.getCodAlternativaPergunta() > 0);
+            assertNotNull(itemPendenteIntegracaoTransport.getCodContextoAlternativa());
+            assertTrue(itemPendenteIntegracaoTransport.getCodContextoAlternativa() > 0);
             assertNotNull(itemPendenteIntegracaoTransport.getDescricaoAlternativa());
             assertFalse(itemPendenteIntegracaoTransport.getDescricaoAlternativa().isEmpty());
-            assertNotNull(itemPendenteIntegracaoTransport.getTipoOutros());
             if (itemPendenteIntegracaoTransport.getTipoOutros()) {
                 assertNotNull(itemPendenteIntegracaoTransport.getDescricaoTipoOutros());
             } else {
