@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -10,7 +9,6 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -117,7 +115,10 @@ public final class SocorroRotaResource {
      * Resource para visualizar uma solicitação de socorro.
      */
     @GET
-    @Secured(permissions = {Pilares.Frota.SocorroRota.VISUALIZAR_SOCORROS_E_RELATORIOS})
+    @Secured(permissions = {
+            Pilares.Frota.SocorroRota.SOLICITAR_SOCORRO,
+            Pilares.Frota.SocorroRota.TRATAR_SOCORRO,
+            Pilares.Frota.SocorroRota.VISUALIZAR_SOCORROS_E_RELATORIOS})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/visualizacao")
     public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
