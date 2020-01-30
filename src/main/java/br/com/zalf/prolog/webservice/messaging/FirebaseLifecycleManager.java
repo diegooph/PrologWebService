@@ -19,10 +19,10 @@ import java.io.IOException;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class FirebaseLifecycleManager implements ServletContextListener {
+    private final String TAG = FirebaseLifecycleManager.class.getSimpleName();
     private static final String DATABASE_URL_DEBUG = "https://prolog-debug.firebaseio.com";
     private static final String DATABASE_URL_PROD = "https://prolog-prod.firebaseio.com";
     private static final String DATABASE_URL = ProLogUtils.isDebug() ? DATABASE_URL_DEBUG : DATABASE_URL_PROD;
-    private final String TAG = FirebaseLifecycleManager.class.getSimpleName();
 
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
@@ -30,8 +30,8 @@ public final class FirebaseLifecycleManager implements ServletContextListener {
             final FileInputStream inputStream;
             try {
                 inputStream = new FileInputStream(EnvironmentHelper.GOOGLE_APPLICATION_CREDENTIALS);
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "Erro ao iniciar FirebaseApp", e);
+            } catch (final Throwable t) {
+                Log.e(TAG, "Erro ao iniciar FirebaseApp", t);
                 return;
             }
 
