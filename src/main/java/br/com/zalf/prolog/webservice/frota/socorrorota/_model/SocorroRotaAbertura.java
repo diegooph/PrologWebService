@@ -15,6 +15,10 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
     private final Long codVeiculoProblema;
     private final long kmVeiculoAbertura;
     @NotNull
+    private final String placaVeiculoProblema;
+    @NotNull
+    private final String nomeColaboradorAbertura;
+    @NotNull
     private final Long codProblemaSocorroRota;
     @Nullable
     private final String descricaoProblema;
@@ -30,6 +34,8 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
     public SocorroRotaAbertura(@NotNull final Long codUnidadeAbertura,
                                @NotNull final Long codVeiculoProblema,
                                final long kmVeiculoAbertura,
+                               @NotNull final String placaVeiculoProblema,
+                               @NotNull final String nomeColaboradorAbertura,
                                @NotNull final Long codProblemaSocorroRota,
                                @Nullable final String descricaoProblema,
                                @Nullable final String urlFoto1Abertura,
@@ -62,6 +68,8 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
                 modeloDevice);
         this.codVeiculoProblema = codVeiculoProblema;
         this.kmVeiculoAbertura = kmVeiculoAbertura;
+        this.placaVeiculoProblema = placaVeiculoProblema;
+        this.nomeColaboradorAbertura = nomeColaboradorAbertura;
         this.codProblemaSocorroRota = codProblemaSocorroRota;
         this.descricaoProblema = descricaoProblema;
         this.urlFoto1Abertura = urlFoto1Abertura;
@@ -77,6 +85,16 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
 
     public long getKmVeiculoAbertura() {
         return kmVeiculoAbertura;
+    }
+
+    @NotNull
+    public String getPlacaVeiculoProblema() {
+        return placaVeiculoProblema;
+    }
+
+    @NotNull
+    public String getNomeColaboradorAbertura() {
+        return nomeColaboradorAbertura;
     }
 
     @NotNull

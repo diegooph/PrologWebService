@@ -33,8 +33,12 @@ public final class SocorroRotaService {
         }
 
         // Notifica os usuários responsáveis sobre a abertura do socorro.
-        new NotificadorAberturaSocorro()
-                .notificarColaboradores(dao, socorroRotaAbertura.getCodUnidade(), codSocorro);
+        new NotificadorAberturaSocorro().notificarColaboradores(
+                        dao,
+                        socorroRotaAbertura.getCodUnidade(),
+                        socorroRotaAbertura.getNomeColaboradorAbertura(),
+                        socorroRotaAbertura.getPlacaVeiculoProblema(),
+                        codSocorro);
 
         return ResponseWithCod.ok("Solicitação de socorro aberta com sucesso", codSocorro);
     }

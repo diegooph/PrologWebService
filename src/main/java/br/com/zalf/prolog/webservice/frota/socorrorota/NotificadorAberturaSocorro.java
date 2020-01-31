@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import static br.com.zalf.prolog.webservice.commons.util.StringUtils.removeExtraSpaces;
+import static br.com.zalf.prolog.webservice.commons.util.StringUtils.stripSpecialCharacters;
+
 /**
  * Created on 2020-01-30
  *
@@ -23,6 +26,7 @@ import java.util.concurrent.Executors;
  */
 final class NotificadorAberturaSocorro {
     private static final String TAG = NotificadorAberturaSocorro.class.getSimpleName();
+    private static final int MAX_LENGTH_NOME_COLABORADOR = 20;
     @NotNull
     private final ListeningExecutorService service;
 
@@ -33,13 +37,15 @@ final class NotificadorAberturaSocorro {
     @SuppressWarnings("UnstableApiUsage")
     void notificarColaboradores(@NotNull final SocorroRotaDao socorroRotaDao,
                                 @NotNull final Long codUnidadeSocorro,
+                                @NotNull final String nomeColaboradorAbertura,
+                                @NotNull final String placaVeiculoProblema,
                                 @NotNull final Long codSocorro) {
         Log.d(TAG, "notificarColaboradores(...) on thread: " + Thread.currentThread().getName());
         try {
             // Se estourar algo nessa chamada, não será logado no BD a tentativa de envio de mensagem. Além desse caso,
             // também não será logado no BD se acontecer um erro na busca dos colaboradores para notificar.
             final ListenableFuture<Void> future = Futures.submit(
-                    () -> innerRun(socorroRotaDao, codUnidadeSocorro, codSocorro),
+                    () -> innerRun(socorroRotaDao, codUnidadeSocorro, nomeColaboradorAbertura, placaVeiculoProblema, codSocorro),
                     service);
             Futures.addCallback(
                     future,
@@ -69,6 +75,8 @@ final class NotificadorAberturaSocorro {
 
     private void innerRun(@NotNull final SocorroRotaDao socorroDao,
                           @NotNull final Long codUnidadeSocorro,
+                          @NotNull final String nomeColaboradorAbertura,
+                          @NotNull final String placaVeiculoProblema,
                           @NotNull final Long codSocorro) {
         Log.d(TAG, "innerRun(...) on thread: " + Thread.currentThread().getName());
         final List<ColaboradorNotificacaoAberturaSocorro> colaboradores;
@@ -81,11 +89,15 @@ final class NotificadorAberturaSocorro {
 
         if (!colaboradores.isEmpty()) {
             // Envia notificação via firebase
+            final String messageBody = String.format(
+                    "%s solicitou um socorro para o veículo %s. Clique para ver mais.",
+                    formataNomeColaborador(nomeColaboradorAbertura),
+                    placaVeiculoProblema.trim());
             new FirebasePushMessageApi().deliver(
                     new ArrayList<>(colaboradores),
                     PushMessage.builder()
                             .withTitle("ATENÇÃO! Pedido de Socorro!")
-                            .withBody("Clique para visualizar as informações")
+                            .withBody(messageBody)
                             .withAndroidSmallIcon(AndroidSmallIcon.SOS_NOTIFICATION)
                             .withAndroidLargeIcon(AndroidLargeIcon.SOS_NOTIFICATION)
                             .withScreenToNavigate(AndroidAppScreens.VISUALIZAR_SOCORRO_ROTA)
@@ -93,6 +105,30 @@ final class NotificadorAberturaSocorro {
                             .build());
         } else {
             Log.d(TAG, "Nenhum token para notificar sobre abertura do socorro");
+        }
+    }
+
+    @NotNull
+    private String formataNomeColaborador(@NotNull final String nomeColaboradorAbertura) {
+        final String[] words = stripSpecialCharacters(
+                removeExtraSpaces(nomeColaboradorAbertura.trim()))
+                // Split it on any whitespace character (space, tab, newline, cr).
+                .split("\\s");
+
+        // Transforma em uppercase a primeira letra de cada palavra.
+        for (int i = 0; i < words.length; i++) {
+            words[i] = words[i].substring(0, 1).toUpperCase() + words[i].substring(1).toLowerCase();
+        }
+
+        return limitaNomeLength(String.join(" ", words));
+    }
+
+    @NotNull
+    private String limitaNomeLength(@NotNull final String nomeColaboradorAbertura) {
+        if (nomeColaboradorAbertura.length() > MAX_LENGTH_NOME_COLABORADOR) {
+            return nomeColaboradorAbertura.substring(0, MAX_LENGTH_NOME_COLABORADOR - 1).trim().concat(".");
+        } else {
+            return nomeColaboradorAbertura;
         }
     }
 }
