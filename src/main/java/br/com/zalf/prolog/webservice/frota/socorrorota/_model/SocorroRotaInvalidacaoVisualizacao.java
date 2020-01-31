@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
  */
 public final class SocorroRotaInvalidacaoVisualizacao {
     @NotNull
+    private final Long codColaboradorResponsavelInvalidacao;
+    @NotNull
     private final String nomeResponsavelInvalidacaoSocorro;
     @NotNull
     private final LocalDateTime dataHoraInvalidacaoSocorro;
@@ -32,7 +34,8 @@ public final class SocorroRotaInvalidacaoVisualizacao {
     private final String urlFoto3Invalidacao;
 
 
-    public SocorroRotaInvalidacaoVisualizacao(@NotNull final String nomeResponsavelInvalidacaoSocorro,
+    public SocorroRotaInvalidacaoVisualizacao(@NotNull final Long codColaboradorResponsavelInvalidacao,
+                                              @NotNull final String nomeResponsavelInvalidacaoSocorro,
                                               @NotNull final LocalDateTime dataHoraInvalidacaoSocorro,
                                               @NotNull final LocalizacaoSocorroRota localizacaoInvalidacaoScorro,
                                               @Nullable final String enderecoAutomaticoInvalidacaoSocorro,
@@ -42,6 +45,7 @@ public final class SocorroRotaInvalidacaoVisualizacao {
                                               @Nullable final String urlFoto1Invalidacao,
                                               @Nullable final String urlFoto2Invalidacao,
                                               @Nullable final String urlFoto3Invalidacao) {
+        this.codColaboradorResponsavelInvalidacao = codColaboradorResponsavelInvalidacao;
         this.nomeResponsavelInvalidacaoSocorro = nomeResponsavelInvalidacaoSocorro;
         this.dataHoraInvalidacaoSocorro = dataHoraInvalidacaoSocorro;
         this.localizacaoInvalidacaoScorro = localizacaoInvalidacaoScorro;
@@ -53,6 +57,9 @@ public final class SocorroRotaInvalidacaoVisualizacao {
         this.urlFoto2Invalidacao = urlFoto2Invalidacao;
         this.urlFoto3Invalidacao = urlFoto3Invalidacao;
     }
+
+    @NotNull
+    public Long getCodColaboradorResponsavelInvalidacao() { return codColaboradorResponsavelInvalidacao; }
 
     @NotNull
     public String getNomeResponsavelInvalidacaoSocorro() {

@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
  */
 public final class SocorroRotaFinalizacaoVisualizacao {
     @NotNull
+    private final Long codColaboradorResponsavelFinalizacao;
+    @NotNull
     private final String nomeResponsavelFinalizacaoSocorro;
     @NotNull
     private final LocalDateTime dataHoraFinalizacaoSocorro;
@@ -32,7 +34,8 @@ public final class SocorroRotaFinalizacaoVisualizacao {
     private final String urlFoto3Finalizacao;
 
 
-    public SocorroRotaFinalizacaoVisualizacao(@NotNull final String nomeResponsavelFinalizacaoSocorro,
+    public SocorroRotaFinalizacaoVisualizacao(@NotNull final Long codColaboradorResponsavelFinalizacao,
+                                              @NotNull final String nomeResponsavelFinalizacaoSocorro,
                                               @NotNull final LocalDateTime dataHoraFinalizacaoSocorro,
                                               @NotNull final LocalizacaoSocorroRota localizacaoFinalizacaoScorro,
                                               @Nullable final String enderecoAutomaticoFinalizacaoSocorro,
@@ -42,6 +45,7 @@ public final class SocorroRotaFinalizacaoVisualizacao {
                                               @Nullable final String urlFoto1Finalizacao,
                                               @Nullable final String urlFoto2Finalizacao,
                                               @Nullable final String urlFoto3Finalizacao) {
+        this.codColaboradorResponsavelFinalizacao = codColaboradorResponsavelFinalizacao;
         this.nomeResponsavelFinalizacaoSocorro = nomeResponsavelFinalizacaoSocorro;
         this.dataHoraFinalizacaoSocorro = dataHoraFinalizacaoSocorro;
         this.localizacaoFinalizacaoScorro = localizacaoFinalizacaoScorro;
@@ -53,6 +57,9 @@ public final class SocorroRotaFinalizacaoVisualizacao {
         this.urlFoto2Finalizacao = urlFoto2Finalizacao;
         this.urlFoto3Finalizacao = urlFoto3Finalizacao;
     }
+
+    @NotNull
+    public Long getCodColaboradorResponsavelFinalizacao() { return codColaboradorResponsavelFinalizacao; }
 
     @NotNull
     public String getNomeResponsavelFinalizacaoSocorro() {
