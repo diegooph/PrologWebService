@@ -104,22 +104,9 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "C.CODIGO, " +
-                    "PCT.TOKEN_PUSH_FIREBASE " +
-                    "FROM COLABORADOR C " +
-                    "JOIN CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_UNIDADE = CFP.COD_UNIDADE " +
-                    "AND C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR " +
-                    "JOIN FUNCAO F ON F.CODIGO = C.COD_FUNCAO AND " +
-                    "F.CODIGO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_EMPRESA = F.COD_EMPRESA " +
-                    "JOIN MESSAGING.PUSH_COLABORADOR_TOKEN PCT ON C.CODIGO = PCT.COD_COLABORADOR " +
-                    "WHERE C.COD_UNIDADE = ? " +
-                    "AND CFP.COD_FUNCAO_PROLOG = ? " +
-                    // Apenas busca os colaboradores que tenham tokens para os aplicativos do Prolog.
-                    "AND PCT.APLICACAO_REFERENCIA_TOKEN IN ('PROLOG_ANDROID_DEBUG', 'PROLOG_ANDROID_PROD') " +
-                    "AND C.STATUS_ATIVO = TRUE;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_ABERTURA_GET_COLABORADORES_NOTIFICACAO(" +
+                    "F_COD_UNIDADE => ?);");
             stmt.setLong(1, codUnidade);
-            stmt.setInt(2, Pilares.Frota.SocorroRota.TRATAR_SOCORRO);
             rSet = stmt.executeQuery();
             if (!rSet.next()) {
                 return Collections.emptyList();
@@ -127,7 +114,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                 final List<ColaboradorNotificacaoAberturaSocorro> colaboradores = new ArrayList<>();
                 do {
                     colaboradores.add(new ColaboradorNotificacaoAberturaSocorro(
-                            rSet.getLong("CODIGO"),
+                            rSet.getLong("COD_COLABORADOR"),
                             rSet.getString("TOKEN_PUSH_FIREBASE")));
                 } while (rSet.next());
                 return colaboradores;
