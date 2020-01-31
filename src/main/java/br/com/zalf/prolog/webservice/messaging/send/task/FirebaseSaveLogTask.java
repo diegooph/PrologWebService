@@ -45,22 +45,23 @@ public final class FirebaseSaveLogTask {
         final String pushMessageString = pushMessage.getFullMessageAsString();
         final String fatalSendExceptionString = getFatalSendExceptionAsStringOrNull(fatalSendException);
 
-        final PreparedStatement stmt = connection.prepareCall("{CALL MESSAGING.FUNC_PUSH_SALVA_LOG(" +
+        try (final PreparedStatement stmt = connection.prepareCall("{CALL MESSAGING.FUNC_PUSH_SALVA_LOG(" +
                 "F_DATA_HORA_ATUAL           => ?," +
                 "F_PUSH_MESSAGE_SENT         => ?," +
                 "F_MESSAGE_TYPE              => ? :: MESSAGING.PUSH_MESSAGE_TYPE," +
                 "F_PLATAFORM_DESTINATION     => ? :: MESSAGING.PUSH_PLATAFORM_DESTINATION," +
                 "F_REQUEST_RESPONSE_FIREBASE => ?," +
-                "F_FATAL_SEND_EXCEPTION      => ?)}");
-        stmt.setObject(1, Now.offsetDateTimeUtc());
-        stmt.setString(2, pushMessageString);
-        // Enviamos apenas Multicast por enquanto.
-        stmt.setString(3, FirebaseMessageType.MULTICAST.asString());
-        // Enviamos apenas para o Android por enquanto.
-        stmt.setString(4, FirebasePlataformDestination.ANDROID.asString());
-        stmt.setObject(5, PostgresUtils.toJsonb(createLogRequestResponseAsJson(destinations, batchResponse)));
-        bindValueOrNull(stmt, 6, fatalSendExceptionString, SqlType.TEXT);
-        stmt.execute();
+                "F_FATAL_SEND_EXCEPTION      => ?)}")) {
+            stmt.setObject(1, Now.offsetDateTimeUtc());
+            stmt.setString(2, pushMessageString);
+            // Enviamos apenas Multicast por enquanto.
+            stmt.setString(3, FirebaseMessageType.MULTICAST.asString());
+            // Enviamos apenas para o Android por enquanto.
+            stmt.setString(4, FirebasePlataformDestination.ANDROID.asString());
+            stmt.setObject(5, PostgresUtils.toJsonb(createLogRequestResponseAsJson(destinations, batchResponse)));
+            bindValueOrNull(stmt, 6, fatalSendExceptionString, SqlType.TEXT);
+            stmt.execute();
+        }
     }
 
     @NotNull
