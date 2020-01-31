@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
  */
 public final class SocorroRotaAtendimentoVisualizacao {
     @NotNull
+    private final Long codColaboradorResponsavelAtendimento;
+    @NotNull
     private final String nomeResponsavelAtendimentoSocorro;
     @NotNull
     private final LocalDateTime dataHoraAtendimentoSocorro;
@@ -25,13 +27,15 @@ public final class SocorroRotaAtendimentoVisualizacao {
     @Nullable
     private final String imeiAparelhoAtendimentoSocorro;
 
-    public SocorroRotaAtendimentoVisualizacao(@NotNull final String nomeResponsavelAtendimentoSocorro,
+    public SocorroRotaAtendimentoVisualizacao(@NotNull final Long codColaboradorResponsavelAtendimento,
+                                              @NotNull final String nomeResponsavelAtendimentoSocorro,
                                               @NotNull final LocalDateTime dataHoraAtendimentoSocorro,
                                               @NotNull final LocalizacaoSocorroRota localizacaoAtendimentoScorro,
                                               @Nullable final String enderecoAutomaticoAtendimentoSocorro,
                                               @Nullable final String marcaAparelhoAtendimentoSocorro,
                                               @Nullable final String modeloAparelhoAtendimentoSocorro,
                                               @Nullable final String imeiAparelhoAtendimentoSocorro) {
+        this.codColaboradorResponsavelAtendimento = codColaboradorResponsavelAtendimento;
         this.nomeResponsavelAtendimentoSocorro = nomeResponsavelAtendimentoSocorro;
         this.dataHoraAtendimentoSocorro = dataHoraAtendimentoSocorro;
         this.localizacaoAtendimentoScorro = localizacaoAtendimentoScorro;
@@ -40,6 +44,9 @@ public final class SocorroRotaAtendimentoVisualizacao {
         this.modeloAparelhoAtendimentoSocorro = modeloAparelhoAtendimentoSocorro;
         this.imeiAparelhoAtendimentoSocorro = imeiAparelhoAtendimentoSocorro;
     }
+
+    @NotNull
+    public Long getCodColaboradorResponsavelAtendimento() { return codColaboradorResponsavelAtendimento; }
 
     @NotNull
     public String getNomeResponsavelAtendimentoSocorro() {

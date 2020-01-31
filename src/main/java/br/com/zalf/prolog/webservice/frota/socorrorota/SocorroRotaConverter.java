@@ -81,6 +81,7 @@ public class SocorroRotaConverter {
     public static SocorroRotaAtendimentoVisualizacao createSocorroRotaAtendimentoVisualizacao(
             @NotNull final ResultSet rSet) throws SQLException {
         return new SocorroRotaAtendimentoVisualizacao(
+                rSet.getLong("COD_COLABORADOR_ATENDIMENTO"),
                 rSet.getString("NOME_RESPONSAVEL_ATENDIMENTO"),
                 rSet.getObject("DATA_HORA_ATENDIMENTO", LocalDateTime.class),
                 new LocalizacaoSocorroRota(
@@ -99,6 +100,7 @@ public class SocorroRotaConverter {
     public static SocorroRotaInvalidacaoVisualizacao createSocorroRotaInvalidacaoVisualizacao(
             @NotNull final ResultSet rSet) throws SQLException {
         return new SocorroRotaInvalidacaoVisualizacao(
+                rSet.getLong("COD_COLABORADOR_INVALIDACAO"),
                 rSet.getString("NOME_RESPONSAVEL_INVALIDACAO"),
                 rSet.getObject("DATA_HORA_INVALIDACAO", LocalDateTime.class),
                 new LocalizacaoSocorroRota(
@@ -120,6 +122,7 @@ public class SocorroRotaConverter {
     public static SocorroRotaFinalizacaoVisualizacao createSocorroRotaFinalizacaoVisualizacao(
             @NotNull final ResultSet rSet) throws SQLException {
         return new SocorroRotaFinalizacaoVisualizacao(
+                rSet.getLong("COD_COLABORADOR_FINALIZACAO"),
                 rSet.getString("NOME_RESPONSAVEL_FINALIZACAO"),
                 rSet.getObject("DATA_HORA_FINALIZACAO", LocalDateTime.class),
                 new LocalizacaoSocorroRota(
