@@ -23,6 +23,13 @@ public interface SocorroRotaDao {
     @NotNull
     Long aberturaSocorro(@NotNull final SocorroRotaAbertura socorroRotaAbertura) throws Throwable;
 
+    /**
+     * Busca os colaboradores da unidade informada que devem ser notificados de uma abertura de socorro.
+     *
+     * @param codUnidade Código da unidade onde o socorro foi aberto.
+     * @return Lista de colaboradores que devem ser notificados da abertura do socorro.
+     * @throws Throwable Se algum erro ocorrer.
+     */
     @NotNull
     List<ColaboradorNotificacaoAberturaSocorro> getColaboradoresNotificacaoAbertura(
             @NotNull final Long codUnidade) throws Throwable;
