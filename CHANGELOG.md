@@ -19,6 +19,8 @@ Change Log
 * Implementa a visualziação de uma opção de problema específica (PL-2468)
 * Implementa a ativação/inativação de uma opção de problema (PL-2478)
 * Adiciona telefone e e-mail no cadastro, edição e visualização de colaboradores (PL-2471)
+* Cria estrutura para enviar notificações em push do firebase (PL-2496)
+* Envia notificações push com firebase para informar abertura de socorro (PL-2496)
 
 
 <a name="v1.0.15"></a>
