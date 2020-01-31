@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.messaging;
 import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -26,6 +27,13 @@ public final class FirebaseLifecycleManager implements ServletContextListener {
 
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
+        // Estando em debug, não faz mal se não tivermos as credenciais, apenas ignoramos a inicialização do app do
+        // Firebase.
+        if (ProLogUtils.isDebug() && StringUtils.isNullOrEmpty(EnvironmentHelper.GOOGLE_APPLICATION_CREDENTIALS)) {
+            Log.d(TAG, "Sem credenciais do google para iniciar o firebase!");
+            return;
+        }
+
         if (FirebaseApp.getApps().isEmpty()) {
             final FileInputStream inputStream;
             try {
