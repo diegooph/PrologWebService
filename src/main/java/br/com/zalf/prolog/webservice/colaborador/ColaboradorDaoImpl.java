@@ -406,7 +406,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "  F.NOME          AS NOME_FUNCAO, " +
                     "  C.COD_PERMISSAO AS PERMISSAO, " +
                     "  U.TIMEZONE      AS TZ_UNIDADE, " +
-                    "  CT.PREFIXO_PAIS, CT.NUMERO_TELEFONE, CE.EMAIL " +
+                    "  CT.PREFIXO_PAIS, " +
+                    "  CT.NUMERO_TELEFONE, " +
+                    "  CE.EMAIL " +
                     "FROM COLABORADOR C " +
                     "  JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO " +
                     "  JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE " +
@@ -428,7 +430,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 list.add(c);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return list;
     }
@@ -705,15 +707,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         c.setCodPermissao(rSet.getInt("PERMISSAO"));
         c.setTzUnidade(rSet.getString("TZ_UNIDADE"));
 
-        if(rSet.getString("NUMERO_TELEFONE") != null){
-            final ColaboradorTelefone telefone = new ColaboradorTelefone(rSet.getInt("PREFIXO_PAIS"),
-                    rSet.getString("NUMERO_TELEFONE"));
-            c.setTelefone(telefone);
+        if (rSet.getString("NUMERO_TELEFONE") != null) {
+            c.setTelefone(new ColaboradorTelefone(
+                    rSet.getInt("PREFIXO_PAIS"),
+                    rSet.getString("NUMERO_TELEFONE")));
         }
 
-        if(rSet.getString("EMAIL") != null){
-            c.setEmail(rSet.getString("EMAIL"));
-        }
+        c.setEmail(rSet.getString("EMAIL"));
 
         return c;
     }

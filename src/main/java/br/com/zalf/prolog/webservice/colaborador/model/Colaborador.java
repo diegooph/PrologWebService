@@ -227,13 +227,15 @@ public class Colaborador {
 
 	public String getTzUnidade(){ return this.tzUnidade; }
 
+	@Nullable
 	public ColaboradorTelefone getTelefone() { return telefone; }
 
-	public void setTelefone(ColaboradorTelefone telefone) { this.telefone = telefone; }
+	public void setTelefone(@Nullable final ColaboradorTelefone telefone) { this.telefone = telefone; }
 
+	@Nullable
 	public String getEmail() { return email; }
 
-	public void setEmail(String email) { this.email = email; }
+	public void setEmail(@Nullable final String email) { this.email = email; }
 
 	public String getDataNascimentoAsString() {
 		final Format formatter = new SimpleDateFormat(DATA_FORMATTER);
