@@ -36,7 +36,7 @@ public class ColaboradorResource {
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
+	@Secured(permissions = {Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR})
 	public Response update(@Valid ColaboradorEdicao colaborador, @HeaderParam("Authorization") String userToken)
 			throws Throwable{
 		service.update(colaborador, userToken);

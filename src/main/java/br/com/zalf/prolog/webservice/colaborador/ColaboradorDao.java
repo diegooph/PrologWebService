@@ -34,14 +34,14 @@ public interface ColaboradorDao {
                 @NotNull final String userToken) throws Throwable;
 
     /**
-     * Atualiza os dados de um {@link Colaborador colaborador}.
+     * Atualiza os dados de um {@link ColaboradorEdicao colaborador}.
      *
      * @param colaborador              Novos dados do colaborador a ser atualizado.
      * @param intervaloListener        Listener para repassar informações do colaborador atualizado no contexto
      *                                 das marcações de jornada.
      * @param checklistOfflineListener Listener para repassar informações do colaborador atualizado no contexto
      *                                 da realização do checklist offline.
-     * @param userToken                CPF do colaborador a ser atualizado.
+     * @param userToken                Token do colaborador realizando a atualização.
      * @throws Throwable Caso não seja possível atualizar as informações.
      */
     void update(@NotNull final ColaboradorEdicao colaborador,

@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.AmazonCredentialsProvider;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorValidator;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
@@ -36,7 +35,7 @@ public class ColaboradorService {
                     Injection.provideDadosChecklistOfflineChangedListener(),
                     TokenCleaner.getOnlyToken(userToken));
         } catch (Throwable e) {
-            final String errorMessage = "Erro ao inserir o colaborador";
+            final String errorMessage = "Erro ao inserir o colaborador, tente novamente.";
             Log.e(TAG, errorMessage, e);
             throw Injection
                     .provideColaboradorExceptionHandler()
@@ -52,7 +51,7 @@ public class ColaboradorService {
                     Injection.provideDadosChecklistOfflineChangedListener(),
                     TokenCleaner.getOnlyToken(userToken));
         } catch (Throwable e) {
-            final String errorMessage = "Erro ao atualizar colaborador";
+            final String errorMessage = "Erro ao atualizar colaborador, tente novamente.";
             Log.e(TAG, String.format("Erro ao atualizar o colaborador de código: %d", colaborador.getCodigo()), e);
             throw Injection
                     .provideColaboradorExceptionHandler()

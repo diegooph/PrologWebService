@@ -26,34 +26,28 @@ import javax.validation.Constraint;
 
 import javax.validation.Payload;
 
+/**
+ * Created on 2020-01-22
+ *
+ * @author Wellington Moraes (https://github.com/wvinim)
+ */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
-
 @Retention(RUNTIME)
-
 @Repeatable(Pis.List.class)
-
 @Documented
-
 @Constraint(validatedBy = { })
-
 public @interface Pis {
 
-	String message() default "PIS inválido.";
+	String message() default "PIS inválido";
 
 	Class<?>[] groups() default { };
 
 	Class<? extends Payload>[] payload() default { };
 
 	@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
-
 	@Retention(RUNTIME)
-
 	@Documented
-
 	@interface List {
-
 		Pis[] value();
-
 	}
-
 }

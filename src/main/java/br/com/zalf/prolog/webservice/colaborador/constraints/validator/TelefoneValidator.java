@@ -15,27 +15,22 @@ import javax.validation.ConstraintValidatorContext;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public class TelefoneValidator implements ConstraintValidator<Telefone, ColaboradorTelefone> {
-    @Override
-    public void initialize(Telefone value) {
-    }
+public final class TelefoneValidator implements ConstraintValidator<Telefone, ColaboradorTelefone> {
 
     @Override
-    public boolean isValid(ColaboradorTelefone colaboradorTelefone, ConstraintValidatorContext constraintValidatorContext) {
-        if(colaboradorTelefone == null){
+    public boolean isValid(ColaboradorTelefone colaboradorTelefone,
+                           ConstraintValidatorContext constraintValidatorContext) {
+        if (colaboradorTelefone == null) {
             return true;
         }
 
-        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-
-        String regionCode = phoneUtil.getRegionCodeForCountryCode(colaboradorTelefone.getPrefixoPais());
+        final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        final String regionCode = phoneUtil.getRegionCodeForCountryCode(colaboradorTelefone.getPrefixoPais());
 
         try {
-            PhoneNumber numberProto = phoneUtil.parse(colaboradorTelefone.getNumero(), regionCode);
+            final PhoneNumber numberProto = phoneUtil.parse(colaboradorTelefone.getNumero(), regionCode);
             return phoneUtil.isValidNumber(numberProto);
-        } catch (NumberParseException e) {
-            System.err.println("NumberParseException was thrown: " + e.toString());
-        }
+        } catch (final NumberParseException ignored) {}
 
         return false;
     }

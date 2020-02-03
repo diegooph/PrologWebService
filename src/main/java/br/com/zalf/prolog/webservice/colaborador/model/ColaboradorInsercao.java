@@ -9,72 +9,74 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 /**
- * Informações do colaborador.
+ * Created on 2020-01-22
+ *
+ * @author Wellington Moraes (https://github.com/wvinim)
  */
-public class ColaboradorInsercao {
+public final class ColaboradorInsercao {
     /*
-     * A validação do CPF só está considerando 11 caracteres devido às operações no Paraguai
+     * A validação do CPF só está considerando 11 caracteres devido às operações no Paraguai.
      * */
     @NotNull(message = "Você precisa fornecer o CPF.")
     @Length(min = 11, max = 11, message = "CPF inválido, deve conter 11 dígitos.")
-    private String cpf;
+    private final String cpf;
 
     @Nullable
     @Pis
-    private String pis;
+    private final String pis;
 
     @NotNull(message = "A data de nascimento não pode estar vazia.")
-    @PastOrPresent(message = "Data de nascimento fornecida é inválida.")
-    private LocalDate dataNascimento;
+    @PastOrPresent(message = "A data de nascimento fornecida é inválida.")
+    private final LocalDate dataNascimento;
 
     @NotNull(message = "Por favor, selecione um cargo.")
     @Positive(message = "O cargo selecionado é inválido.")
-    private Long codFuncao;
+    private final Long codFuncao;
 
-    @NotNull
+    @NotNull(message = "Por favor, selecione um setor.")
     @Positive(message = "O setor selecionado é inválido.")
-    private Long codSetor;
+    private final Long codSetor;
 
-    @NotNull
+    @NotNull(message = "O nome do colaborador não pode estar vazio.")
     @NotBlank(message = "O nome do colaborador não pode estar vazio.")
-    @Pattern(regexp = "^[a-zA-Z ]*$", message = "É permitido somente caracteres alfabéticos no nome do colaborador.")
-    private String nome;
+    @Pattern(regexp = "^[a-zA-Z ]*$", message = "É permitido somente letras no nome do colaborador.")
+    private final String nome;
 
     @Nullable
     @Positive(message = "A Matrícula Ambev fornecida é inválida.")
-    private Integer matriculaAmbev;
+    private final Integer matriculaAmbev;
 
     @Nullable
     @Positive(message = "A Matrícula Transportadora fornecida é inválida.")
-    private Integer matriculaTrans;
+    private final Integer matriculaTrans;
 
     @NotNull(message = "A data de admissão não pode estar vazia.")
-    @PastOrPresent(message = "Data de admissão fornecida é inválida.")
-    private LocalDate dataAdmissao;
+    @PastOrPresent(message = "A data de admissão fornecida é inválida.")
+    private final LocalDate dataAdmissao;
 
     @NotNull
-    private Long codEmpresa;
+    private final Long codEmpresa;
 
     @NotNull(message = "Por favor, selecione uma unidade.")
     @Positive(message = "A unidade selecionada é inválida.")
-    private Long codUnidade;
+    private final Long codUnidade;
 
     @NotNull(message = "Por favor, selecione uma equipe.")
     @Positive(message = "A equipe selecionada é inválida.")
-    private Long codEquipe;
+    private final Long codEquipe;
 
     @NotNull(message = "Por favor, selecione o nível de acesso à informação.")
     @Min(message = "O nível de acesso selecionado é inválido", value = 0)
     @Max(message = "O nível de acesso selecionado é inválido", value = 3)
-    private Long codPermissao;
+    private final Long codPermissao;
 
     @Nullable
-    @Telefone
-    private ColaboradorTelefone telefone;
+    @Telefone(message = "O telefone fornecido é inválido.")
+    private final ColaboradorTelefone telefone;
 
     @Nullable
-    @Email(message = "Por favor, digite um e-mail válido.")
-    private String email;
+    @Email(message = "O e-mail fornecido é inválido.")
+    private final String email;
 
     public ColaboradorInsercao(@NotNull final String cpf,
                                @Nullable final String pis,
@@ -112,6 +114,7 @@ public class ColaboradorInsercao {
         return cpf;
     }
 
+    @Nullable
     public String getPis() {
         return pis;
     }
@@ -132,10 +135,12 @@ public class ColaboradorInsercao {
         return nome;
     }
 
+    @Nullable
     public Integer getMatriculaAmbev() {
         return matriculaAmbev;
     }
 
+    @Nullable
     public Integer getMatriculaTrans() {
         return matriculaTrans;
     }
@@ -160,10 +165,12 @@ public class ColaboradorInsercao {
         return codPermissao;
     }
 
+    @Nullable
     public ColaboradorTelefone getTelefone() {
         return telefone;
     }
 
+    @Nullable
     public String getEmail() {
         return email;
     }

@@ -10,14 +10,11 @@ import javax.validation.ConstraintValidatorContext;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public class PisValidator implements ConstraintValidator<Pis, CharSequence> {
-    @Override
-    public void initialize(Pis value) {
-    }
+public final class PisValidator implements ConstraintValidator<Pis, CharSequence> {
 
     @Override
     public boolean isValid(CharSequence pis, ConstraintValidatorContext constraintValidatorContext) {
-        // Pis é Nullable
+        // Pis é Nullable.
         if (pis == null) {
             return true;
         }
