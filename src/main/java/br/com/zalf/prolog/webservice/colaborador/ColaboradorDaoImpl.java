@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
@@ -57,12 +58,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "F_EMAIL := ?::EMAIL,"
                     + "F_COD_UNIDADE_CADASTRO := ?::INTEGER,"
                     + "F_TOKEN := ?::TEXT) AS CODIGO");
-            stmt.setLong(1, Long.parseLong(colaborador.getCpf()));
+            stmt.setLong(1, Long.parseLong(colaborador.getCpf().trim()));
             bindValueOrNull(stmt, 2, colaborador.getMatriculaAmbev(), SqlType.INTEGER);
             bindValueOrNull(stmt, 3, colaborador.getMatriculaTrans(), SqlType.INTEGER);
             stmt.setObject(4, colaborador.getDataNascimento());
             stmt.setObject(5, colaborador.getDataAdmissao());
-            stmt.setString(6, colaborador.getNome());
+            stmt.setString(6, StringUtils.trimToNull(colaborador.getNome()));
             stmt.setLong(7, colaborador.getCodSetor());
             stmt.setLong(8, colaborador.getCodFuncao());
             stmt.setLong(9, colaborador.getCodUnidade());
@@ -136,12 +137,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "F_EMAIL := ?::EMAIL,"
                     + "F_TOKEN := ?::TEXT) AS CODIGO");
             stmt.setLong(1, colaborador.getCodigo());
-            stmt.setLong(2, Long.parseLong(colaborador.getCpf()));
+            stmt.setLong(2, Long.parseLong(colaborador.getCpf().trim()));
             bindValueOrNull(stmt, 3, colaborador.getMatriculaAmbev(), SqlType.INTEGER);
             bindValueOrNull(stmt, 4, colaborador.getMatriculaTrans(), SqlType.INTEGER);
             stmt.setObject(5, colaborador.getDataNascimento());
             stmt.setObject(6, colaborador.getDataAdmissao());
-            stmt.setString(7, colaborador.getNome());
+            stmt.setString(7, StringUtils.trimToNull(colaborador.getNome()));
             stmt.setLong(8, colaborador.getCodSetor());
             stmt.setLong(9, colaborador.getCodFuncao());
             stmt.setLong(10, colaborador.getCodUnidade());
