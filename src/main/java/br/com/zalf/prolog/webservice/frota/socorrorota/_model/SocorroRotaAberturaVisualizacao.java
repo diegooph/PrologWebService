@@ -20,6 +20,8 @@ public final class SocorroRotaAberturaVisualizacao {
     private final String descricaoOpcaoProblemaAberturaSocorro;
     @Nullable
     private final String descricaoFornecidaAberturaSocorro;
+    @Nullable
+    private final String pontoReferenciaFornecidoAbertura;
     @NotNull
     private final LocalDateTime dataHoraAberturaSocorro;
     @NotNull
@@ -43,7 +45,8 @@ public final class SocorroRotaAberturaVisualizacao {
                                            @NotNull final Long codColaboradorResponsavelAbertura,
                                            @NotNull final String nomeResponsavelAberturaSocorro,
                                            @NotNull final String descricaoOpcaoProblemaAberturaSocorro,
-                                           @NotNull final String descricaoFornecidaAberturaSocorro,
+                                           @Nullable final String descricaoFornecidaAberturaSocorro,
+                                           @Nullable final String pontoReferenciaFornecidoAbertura,
                                            @NotNull final LocalDateTime dataHoraAberturaSocorro,
                                            @NotNull final LocalizacaoSocorroRota localizacaoAberturaScorro,
                                            @Nullable final String enderecoAutomaticoAberturaSocorro,
@@ -58,6 +61,7 @@ public final class SocorroRotaAberturaVisualizacao {
         this.nomeResponsavelAberturaSocorro = nomeResponsavelAberturaSocorro;
         this.descricaoOpcaoProblemaAberturaSocorro = descricaoOpcaoProblemaAberturaSocorro;
         this.descricaoFornecidaAberturaSocorro = descricaoFornecidaAberturaSocorro;
+        this.pontoReferenciaFornecidoAbertura = pontoReferenciaFornecidoAbertura;
         this.dataHoraAberturaSocorro = dataHoraAberturaSocorro;
         this.localizacaoAberturaScorro = localizacaoAberturaScorro;
         this.enderecoAutomaticoAberturaSocorro = enderecoAutomaticoAberturaSocorro;
@@ -89,8 +93,11 @@ public final class SocorroRotaAberturaVisualizacao {
         return descricaoOpcaoProblemaAberturaSocorro;
     }
 
-    @NotNull
+    @Nullable
     public String getDescricaoFornecidaAberturaSocorro() { return descricaoFornecidaAberturaSocorro; }
+
+    @Nullable
+    public String getPontoReferenciaFornecidoAbertura() { return pontoReferenciaFornecidoAbertura; }
 
     @NotNull
     public LocalDateTime getDataHoraAberturaSocorro() {
