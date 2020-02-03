@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotific
 import br.com.zalf.prolog.webservice.messaging.AndroidAppScreens;
 import br.com.zalf.prolog.webservice.messaging.AndroidLargeIcon;
 import br.com.zalf.prolog.webservice.messaging.AndroidSmallIcon;
+import br.com.zalf.prolog.webservice.messaging.PushMessageScope;
 import br.com.zalf.prolog.webservice.messaging.send.FirebasePushMessageApi;
 import br.com.zalf.prolog.webservice.messaging.send.PushMessage;
 import com.google.common.util.concurrent.*;
@@ -95,6 +96,7 @@ final class NotificadorAberturaSocorro {
                     placaVeiculoProblema.trim());
             new FirebasePushMessageApi().deliver(
                     new ArrayList<>(colaboradores),
+                    PushMessageScope.ABERTURA_SOCORRO_ROTA,
                     PushMessage.builder()
                             .withTitle("ATENÇÃO! Pedido de Socorro!")
                             .withBody(messageBody)

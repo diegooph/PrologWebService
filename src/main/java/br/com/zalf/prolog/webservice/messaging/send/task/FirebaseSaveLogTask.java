@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.messaging.FirebaseMessageType;
 import br.com.zalf.prolog.webservice.messaging.FirebasePlataformDestination;
+import br.com.zalf.prolog.webservice.messaging.PushMessageScope;
 import br.com.zalf.prolog.webservice.messaging.send.PushDestination;
 import br.com.zalf.prolog.webservice.messaging.send.PushMessage;
 import com.google.common.base.Throwables;
@@ -38,28 +39,31 @@ public final class FirebaseSaveLogTask {
 
     public void saveToDatabase(@NotNull final Connection connection,
                                @NotNull final List<PushDestination> destinations,
+                               @NotNull final PushMessageScope messageScope,
                                @NotNull final PushMessage pushMessage,
                                @Nullable final Throwable fatalSendException,
                                @Nullable final BatchResponse batchResponse) throws Throwable {
         logResponseToTerminalIfInDebug(destinations, batchResponse);
-        final String pushMessageString = pushMessage.getFullMessageAsString();
+        final String pushMessageString = GsonUtils.getGson().toJson(pushMessage);
         final String fatalSendExceptionString = getFatalSendExceptionAsStringOrNull(fatalSendException);
 
         try (final PreparedStatement stmt = connection.prepareCall("{CALL MESSAGING.FUNC_PUSH_SALVA_LOG(" +
                 "F_DATA_HORA_ATUAL           => ?," +
+                "F_PUSH_MESSAGE_SCOPE        => ?," +
                 "F_PUSH_MESSAGE_SENT         => ?," +
                 "F_MESSAGE_TYPE              => ? :: MESSAGING.PUSH_MESSAGE_TYPE," +
                 "F_PLATAFORM_DESTINATION     => ? :: MESSAGING.PUSH_PLATAFORM_DESTINATION," +
                 "F_REQUEST_RESPONSE_FIREBASE => ?," +
                 "F_FATAL_SEND_EXCEPTION      => ?)}")) {
             stmt.setObject(1, Now.offsetDateTimeUtc());
-            stmt.setString(2, pushMessageString);
+            stmt.setString(2, messageScope.asString());
+            stmt.setObject(3, PostgresUtils.toJsonb(pushMessageString));
             // Enviamos apenas Multicast por enquanto.
-            stmt.setString(3, FirebaseMessageType.MULTICAST.asString());
+            stmt.setString(4, FirebaseMessageType.MULTICAST.asString());
             // Enviamos apenas para o Android por enquanto.
-            stmt.setString(4, FirebasePlataformDestination.ANDROID.asString());
-            stmt.setObject(5, PostgresUtils.toJsonb(createLogRequestResponseAsJson(destinations, batchResponse)));
-            bindValueOrNull(stmt, 6, fatalSendExceptionString, SqlType.TEXT);
+            stmt.setString(5, FirebasePlataformDestination.ANDROID.asString());
+            stmt.setObject(6, PostgresUtils.toJsonb(createLogRequestResponseAsJson(destinations, batchResponse)));
+            bindValueOrNull(stmt, 7, fatalSendExceptionString, SqlType.TEXT);
             stmt.execute();
         }
     }

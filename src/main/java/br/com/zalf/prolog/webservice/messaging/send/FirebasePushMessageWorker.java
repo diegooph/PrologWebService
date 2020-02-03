@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.messaging.send;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.messaging.PushMessageScope;
 import br.com.zalf.prolog.webservice.messaging.send.task.FirebaseSaveLogTask;
 import br.com.zalf.prolog.webservice.messaging.send.task.FirebaseSendMulticastTask;
 import com.google.firebase.messaging.BatchResponse;
@@ -20,11 +21,15 @@ final class FirebasePushMessageWorker {
     @NotNull
     private final List<PushDestination> destinations;
     @NotNull
+    private final PushMessageScope messageScope;
+    @NotNull
     private final PushMessage pushMessage;
 
     FirebasePushMessageWorker(@NotNull final List<PushDestination> destinations,
+                              @NotNull final PushMessageScope messageScope,
                               @NotNull final PushMessage pushMessage) {
         this.destinations = destinations;
+        this.messageScope = messageScope;
         this.pushMessage = pushMessage;
     }
 
@@ -49,6 +54,7 @@ final class FirebasePushMessageWorker {
             saveLogTask.saveToDatabase(
                     connection,
                     destinations,
+                    messageScope,
                     pushMessage,
                     sendException,
                     batchResponse);
