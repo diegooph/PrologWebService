@@ -18,6 +18,8 @@ public final class SocorroRotaAberturaVisualizacao {
     private final String nomeResponsavelAberturaSocorro;
     @NotNull
     private final String descricaoOpcaoProblemaAberturaSocorro;
+    @Nullable
+    private final String descricaoFornecidaAberturaSocorro;
     @NotNull
     private final LocalDateTime dataHoraAberturaSocorro;
     @NotNull
@@ -41,6 +43,7 @@ public final class SocorroRotaAberturaVisualizacao {
                                            @NotNull final Long codColaboradorResponsavelAbertura,
                                            @NotNull final String nomeResponsavelAberturaSocorro,
                                            @NotNull final String descricaoOpcaoProblemaAberturaSocorro,
+                                           @NotNull final String descricaoFornecidaAberturaSocorro,
                                            @NotNull final LocalDateTime dataHoraAberturaSocorro,
                                            @NotNull final LocalizacaoSocorroRota localizacaoAberturaScorro,
                                            @Nullable final String enderecoAutomaticoAberturaSocorro,
@@ -54,6 +57,7 @@ public final class SocorroRotaAberturaVisualizacao {
         this.codColaboradorResponsavelAbertura = codColaboradorResponsavelAbertura;
         this.nomeResponsavelAberturaSocorro = nomeResponsavelAberturaSocorro;
         this.descricaoOpcaoProblemaAberturaSocorro = descricaoOpcaoProblemaAberturaSocorro;
+        this.descricaoFornecidaAberturaSocorro = descricaoFornecidaAberturaSocorro;
         this.dataHoraAberturaSocorro = dataHoraAberturaSocorro;
         this.localizacaoAberturaScorro = localizacaoAberturaScorro;
         this.enderecoAutomaticoAberturaSocorro = enderecoAutomaticoAberturaSocorro;
@@ -84,6 +88,9 @@ public final class SocorroRotaAberturaVisualizacao {
     public String getDescricaoOpcaoProblemaAberturaSocorro() {
         return descricaoOpcaoProblemaAberturaSocorro;
     }
+
+    @NotNull
+    public String getDescricaoFornecidaAberturaSocorro() { return descricaoFornecidaAberturaSocorro; }
 
     @NotNull
     public LocalDateTime getDataHoraAberturaSocorro() {

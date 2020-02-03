@@ -62,6 +62,7 @@ public class SocorroRotaConverter {
                 rSet.getLong("COD_COLABORADOR_ABERTURA"),
                 rSet.getString("NOME_RESPONSAVEL_ABERTURA"),
                 rSet.getString("DESCRICAO_OPCAO_PROBLEMA_ABERTURA"),
+                rSet.getString("DESCRICAO_FORNECIDA_ABERTURA"),
                 rSet.getObject("DATA_HORA_ABERTURA", LocalDateTime.class),
                 new LocalizacaoSocorroRota(
                         rSet.getString("LATITUDE_ABERTURA"),
