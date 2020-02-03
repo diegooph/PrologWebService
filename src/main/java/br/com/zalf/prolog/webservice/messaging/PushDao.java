@@ -10,5 +10,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface PushDao {
 
-    void salvarTokenPushColaborador(@NotNull final PushColaboradorCadastro pushColaborador) throws Throwable;
+    void salvarTokenPushColaborador(@NotNull final PushColaboradorCadastro pushColaborador,
+                                    @NotNull final String userToken) throws Throwable;
 }

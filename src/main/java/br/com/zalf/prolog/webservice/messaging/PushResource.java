@@ -9,10 +9,7 @@ import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.messaging._model.PushColaboradorCadastro;
 
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -31,8 +28,9 @@ public final class PushResource {
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    public Response salvarTokenPushColaborador(@Required final PushColaboradorCadastro pushColaborador) {
-        service.salvarTokenPushColaborador(pushColaborador);
+    public Response salvarTokenPushColaborador(@Required final PushColaboradorCadastro pushColaborador,
+                                               @HeaderParam("Authorization") @Required final String userToken) {
+        service.salvarTokenPushColaborador(pushColaborador, userToken);
         return Response.ok("Token salvo com sucesso!");
     }
 }
