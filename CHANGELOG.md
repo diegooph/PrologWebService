@@ -1,51 +1,9 @@
 Change Log
 ==========
 
-<a name="v1.0.16"></a>
-## Version [v1.0.16](https://github.com/luizfp/PrologWebService/compare/v1.0.15...v1.0.16) (release-date) [unreleased]
-
-
-
-<a name="v1.0.15"></a>
-## Version [v1.0.15](https://github.com/luizfp/PrologWebService/compare/v1.0.14...v1.0.15) (2020-01-30)
-
-### Refactors
-* Reestrutra integrações de ordem de serviço (PLI-66)
-
-<a name="v1.0.14"></a>
-## Version [v1.0.14](https://github.com/luizfp/PrologWebService/compare/v1.0.13...v1.0.14) (2020-01-26)
-
-### Bug Fixes
-* Corrige data/hora setada incorretamente nos processos de movimentação e fechamento de serviços de aferição (PL-2490)
-* Corrige uso da data/hora na API de pneus (PLI-67)
-
-<a name="v1.0.13"></a>
-## Version [v1.0.13](https://github.com/luizfp/PrologWebService/compare/v1.0.12...v1.0.13) (2020-01-21)
-
-### Bug Fixes
-* Corrige problema com uso indevido de anotação @NotNull em objeto de pergunta do check
-
 <a name="v1.0.12"></a>
-## Version [v1.0.12](https://github.com/luizfp/PrologWebService/compare/v1.0.11...v1.0.12) (2020-01-18)
+## Version [v1.0.12](https://github.com/luizfp/PrologWebService/compare/v1.0.11...v1.0.12) (release-date) [unreleased]
 
-### Features
-* Cria testes para validar criação e edição de modelos de checklist (PL-2305)
-* Implementa o uso da tabela de histórico de checklists realizados e itens apontamentos (PL-2370) 
-
-### Refactors
-* Os método de busca de modelos de checklist para seleção foi recriado com novos objetos (PL-2228)
-* Os métodos de início de um novo checklist foram recriados com novos objetos (PL-2228)
-* Altera métodos de insert de checklist online e offline para novos objetos e estrutura (PL-2227)
-* Altera integração com Avilan e com Piccolotur para utilizar novo objeto de checklist (PL-2227)
-* Altera os fluxos de insert e edição de modelos de checklist para nova estrutura (PL-2231)
-* Altera o fluxo de processamento de ordens de serviço para considerar a versão do modelo de checklist (PL-2346)
-* Altera busca dos dados de checklist para realização offline incluindo novas informações 
-(versão modelo e código context) PL-2349 
-* Altera o fluxo de realização de checklist na integração ao Globus (PL-2369)
-* Altera forma de processar abertura de OSs e considera texto das alternativas tipo_outros para abrir ou não 
-um item (PL-2389)
-* Altera método de busca das URLs das perguntas do checklist (PL-2386)
-* Altera busca do farol do checklist (PL-2417)
 
 <a name="v1.0.11"></a>
 ## Version [v1.0.11](https://github.com/luizfp/PrologWebService/compare/v1.0.10...v1.0.11) (2020-01-15)
