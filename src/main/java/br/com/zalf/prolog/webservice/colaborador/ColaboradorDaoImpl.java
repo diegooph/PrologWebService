@@ -53,6 +53,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "F_COD_EMPRESA := ?,"
                     + "F_COD_EQUIPE := ?,"
                     + "F_PIS := ?::VARCHAR,"
+                    + "F_SIGLA_ISO2 := ?::VARCHAR,"
                     + "F_PREFIXO_PAIS := ?,"
                     + "F_TELEFONE := ?::TEXT,"
                     + "F_EMAIL := ?::EMAIL,"
@@ -72,12 +73,14 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(12, colaborador.getCodEquipe());
             bindValueOrNull(stmt, 13, colaborador.getPis(), SqlType.TEXT);
             bindValueOrNull(stmt, 14,
-                    colaborador.getTelefone() != null ? colaborador.getTelefone().getPrefixoPais() : null, SqlType.INTEGER);
+                    colaborador.getTelefone() != null ? colaborador.getTelefone().getSiglaIso2() : null, SqlType.VARCHAR);
             bindValueOrNull(stmt, 15,
+                    colaborador.getTelefone() != null ? colaborador.getTelefone().getPrefixoPais() : null, SqlType.INTEGER);
+            bindValueOrNull(stmt, 16,
                     colaborador.getTelefone() != null ? colaborador.getTelefone().getNumero() : null, SqlType.TEXT);
-            bindValueOrNull(stmt, 16, colaborador.getEmail(), SqlType.TEXT);
-            stmt.setLong(17, colaborador.getCodUnidade());
-            stmt.setString(18, userToken);
+            bindValueOrNull(stmt, 17, colaborador.getEmail(), SqlType.TEXT);
+            stmt.setLong(18, colaborador.getCodUnidade());
+            stmt.setString(19, userToken);
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -132,6 +135,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "F_COD_EMPRESA := ?,"
                     + "F_COD_EQUIPE := ?,"
                     + "F_PIS := ?::VARCHAR,"
+                    + "F_SIGLA_ISO2 := ?::VARCHAR,"
                     + "F_PREFIXO_PAIS := ?,"
                     + "F_TELEFONE := ?::TEXT,"
                     + "F_EMAIL := ?::EMAIL,"
@@ -151,11 +155,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(13, colaborador.getCodEquipe());
             bindValueOrNull(stmt, 14, colaborador.getPis(), SqlType.TEXT);
             bindValueOrNull(stmt, 15,
-                    colaborador.getTelefone() != null ? colaborador.getTelefone().getPrefixoPais() : null, SqlType.INTEGER);
+                    colaborador.getTelefone() != null ? colaborador.getTelefone().getSiglaIso2() : null, SqlType.VARCHAR);
             bindValueOrNull(stmt, 16,
+                    colaborador.getTelefone() != null ? colaborador.getTelefone().getPrefixoPais() : null, SqlType.INTEGER);
+            bindValueOrNull(stmt, 17,
                     colaborador.getTelefone() != null ? colaborador.getTelefone().getNumero() : null, SqlType.TEXT);
-            bindValueOrNull(stmt, 17, colaborador.getEmail(), SqlType.TEXT);
-            stmt.setString(18, userToken);
+            bindValueOrNull(stmt, 18, colaborador.getEmail(), SqlType.TEXT);
+            stmt.setString(19, userToken);
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -287,7 +293,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
                     + "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
                     + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, U.TIMEZONE AS TZ_UNIDADE, "
-                    + "CT.PREFIXO_PAIS, CT.NUMERO_TELEFONE, CE.EMAIL "
+                    + "CT.SIGLA_ISO2, CT.PREFIXO_PAIS, CT.NUMERO_TELEFONE, CE.EMAIL "
                     + "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
                     + " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
                     + " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
@@ -336,7 +342,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
                     + "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
                     + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, U.TIMEZONE AS TZ_UNIDADE, "
-                    + "CT.PREFIXO_PAIS, CT.NUMERO_TELEFONE, CE.EMAIL "
+                    + "CT.SIGLA_ISO2, CT.PREFIXO_PAIS, CT.NUMERO_TELEFONE, CE.EMAIL "
                     + "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
                     + " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
                     + " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
@@ -407,6 +413,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "  F.NOME          AS NOME_FUNCAO, " +
                     "  C.COD_PERMISSAO AS PERMISSAO, " +
                     "  U.TIMEZONE      AS TZ_UNIDADE, " +
+                    "  CT.SIGLA_ISO2, " +
                     "  CT.PREFIXO_PAIS, " +
                     "  CT.NUMERO_TELEFONE, " +
                     "  CE.EMAIL " +
@@ -710,6 +717,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
         if (rSet.getString("NUMERO_TELEFONE") != null) {
             c.setTelefone(new ColaboradorTelefone(
+                    rSet.getString("SIGLA_ISO2"),
                     rSet.getInt("PREFIXO_PAIS"),
                     rSet.getString("NUMERO_TELEFONE")));
         }

@@ -11,15 +11,22 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ColaboradorTelefone {
     @NotNull
+    private final String siglaIso2;
+    @NotNull
     private final Integer prefixoPais;
     @NotNull
     private final String numero;
 
-    public ColaboradorTelefone(@NotNull final Integer prefixoPais,
+    public ColaboradorTelefone(@NotNull final String siglaIso2,
+                               @NotNull final Integer prefixoPais,
                                @NotNull final String numero) {
+        this.siglaIso2 = siglaIso2;
         this.prefixoPais = prefixoPais;
         this.numero = numero;
     }
+
+    @NotNull
+    public String getSiglaIso2() { return siglaIso2; }
 
     @NotNull
     public Integer getPrefixoPais() {
