@@ -4,6 +4,9 @@ Change Log
 <a name="v1.0.12"></a>
 ## Version [v1.0.12](https://github.com/luizfp/PrologWebService/compare/v1.0.11...v1.0.12) (release-date) [unreleased]
 
+### Refactors
+* Modifica estrutura para a inserção de uma nova aferição, adicionando cod_diagrama (PL-1899)
+* Modifica estrutura para a inserção de uma nova movimentação, adicionando cod_diagrama (PL-1899)
 
 <a name="v1.0.11"></a>
 ## Version [v1.0.11](https://github.com/luizfp/PrologWebService/compare/v1.0.10...v1.0.11) (2020-01-15)
