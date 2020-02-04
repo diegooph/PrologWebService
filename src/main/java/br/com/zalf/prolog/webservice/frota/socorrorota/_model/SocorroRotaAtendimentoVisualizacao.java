@@ -14,6 +14,8 @@ public final class SocorroRotaAtendimentoVisualizacao {
     private final Long codColaboradorResponsavelAtendimento;
     @NotNull
     private final String nomeResponsavelAtendimentoSocorro;
+    @Nullable
+    private final String observacaoAtendimento;
     @NotNull
     private final LocalDateTime dataHoraAtendimentoSocorro;
     @NotNull
@@ -29,6 +31,7 @@ public final class SocorroRotaAtendimentoVisualizacao {
 
     public SocorroRotaAtendimentoVisualizacao(@NotNull final Long codColaboradorResponsavelAtendimento,
                                               @NotNull final String nomeResponsavelAtendimentoSocorro,
+                                              @Nullable final String observacaoAtendimento,
                                               @NotNull final LocalDateTime dataHoraAtendimentoSocorro,
                                               @NotNull final LocalizacaoSocorroRota localizacaoAtendimentoScorro,
                                               @Nullable final String enderecoAutomaticoAtendimentoSocorro,
@@ -37,6 +40,7 @@ public final class SocorroRotaAtendimentoVisualizacao {
                                               @Nullable final String imeiAparelhoAtendimentoSocorro) {
         this.codColaboradorResponsavelAtendimento = codColaboradorResponsavelAtendimento;
         this.nomeResponsavelAtendimentoSocorro = nomeResponsavelAtendimentoSocorro;
+        this.observacaoAtendimento = observacaoAtendimento;
         this.dataHoraAtendimentoSocorro = dataHoraAtendimentoSocorro;
         this.localizacaoAtendimentoScorro = localizacaoAtendimentoScorro;
         this.enderecoAutomaticoAtendimentoSocorro = enderecoAutomaticoAtendimentoSocorro;
@@ -52,6 +56,9 @@ public final class SocorroRotaAtendimentoVisualizacao {
     public String getNomeResponsavelAtendimentoSocorro() {
         return nomeResponsavelAtendimentoSocorro;
     }
+
+    @Nullable
+    public String getObservacaoAtendimento() { return observacaoAtendimento; }
 
     @NotNull
     public LocalDateTime getDataHoraAtendimentoSocorro() {

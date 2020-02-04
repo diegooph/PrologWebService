@@ -15,6 +15,8 @@ public final class SocorroRotaInvalidacaoVisualizacao {
     @NotNull
     private final String nomeResponsavelInvalidacaoSocorro;
     @NotNull
+    private final String motivoInvalidacao;
+    @NotNull
     private final LocalDateTime dataHoraInvalidacaoSocorro;
     @NotNull
     private final LocalizacaoSocorroRota localizacaoInvalidacaoScorro;
@@ -36,6 +38,7 @@ public final class SocorroRotaInvalidacaoVisualizacao {
 
     public SocorroRotaInvalidacaoVisualizacao(@NotNull final Long codColaboradorResponsavelInvalidacao,
                                               @NotNull final String nomeResponsavelInvalidacaoSocorro,
+                                              @NotNull final String motivoInvalidacao,
                                               @NotNull final LocalDateTime dataHoraInvalidacaoSocorro,
                                               @NotNull final LocalizacaoSocorroRota localizacaoInvalidacaoScorro,
                                               @Nullable final String enderecoAutomaticoInvalidacaoSocorro,
@@ -47,6 +50,7 @@ public final class SocorroRotaInvalidacaoVisualizacao {
                                               @Nullable final String urlFoto3Invalidacao) {
         this.codColaboradorResponsavelInvalidacao = codColaboradorResponsavelInvalidacao;
         this.nomeResponsavelInvalidacaoSocorro = nomeResponsavelInvalidacaoSocorro;
+        this.motivoInvalidacao = motivoInvalidacao;
         this.dataHoraInvalidacaoSocorro = dataHoraInvalidacaoSocorro;
         this.localizacaoInvalidacaoScorro = localizacaoInvalidacaoScorro;
         this.enderecoAutomaticoInvalidacaoSocorro = enderecoAutomaticoInvalidacaoSocorro;
@@ -65,6 +69,9 @@ public final class SocorroRotaInvalidacaoVisualizacao {
     public String getNomeResponsavelInvalidacaoSocorro() {
         return nomeResponsavelInvalidacaoSocorro;
     }
+
+    @NotNull
+    public String getMotivoInvalidacao() { return motivoInvalidacao; }
 
     @NotNull
     public LocalDateTime getDataHoraInvalidacaoSocorro() {

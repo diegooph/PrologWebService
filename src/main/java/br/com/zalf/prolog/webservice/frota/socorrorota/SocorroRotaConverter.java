@@ -85,6 +85,7 @@ public class SocorroRotaConverter {
         return new SocorroRotaAtendimentoVisualizacao(
                 rSet.getLong("COD_COLABORADOR_ATENDIMENTO"),
                 rSet.getString("NOME_RESPONSAVEL_ATENDIMENTO"),
+                rSet.getString("OBSERVACAO_ATENDIMENTO"),
                 rSet.getObject("DATA_HORA_ATENDIMENTO", LocalDateTime.class),
                 new LocalizacaoSocorroRota(
                         rSet.getString("LATITUDE_ATENDIMENTO"),
@@ -104,6 +105,7 @@ public class SocorroRotaConverter {
         return new SocorroRotaInvalidacaoVisualizacao(
                 rSet.getLong("COD_COLABORADOR_INVALIDACAO"),
                 rSet.getString("NOME_RESPONSAVEL_INVALIDACAO"),
+                rSet.getString("MOTIVO_INVALIDACAO"),
                 rSet.getObject("DATA_HORA_INVALIDACAO", LocalDateTime.class),
                 new LocalizacaoSocorroRota(
                         rSet.getString("LATITUDE_INVALIDACAO"),
@@ -126,6 +128,7 @@ public class SocorroRotaConverter {
         return new SocorroRotaFinalizacaoVisualizacao(
                 rSet.getLong("COD_COLABORADOR_FINALIZACAO"),
                 rSet.getString("NOME_RESPONSAVEL_FINALIZACAO"),
+                rSet.getString("OBSERVACAO_FINALIZACAO"),
                 rSet.getObject("DATA_HORA_FINALIZACAO", LocalDateTime.class),
                 new LocalizacaoSocorroRota(
                         rSet.getString("LATITUDE_FINALIZACAO"),

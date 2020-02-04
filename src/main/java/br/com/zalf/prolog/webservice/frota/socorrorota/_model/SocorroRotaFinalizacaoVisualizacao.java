@@ -15,6 +15,8 @@ public final class SocorroRotaFinalizacaoVisualizacao {
     @NotNull
     private final String nomeResponsavelFinalizacaoSocorro;
     @NotNull
+    private final String observacaoFinalizacao;
+    @NotNull
     private final LocalDateTime dataHoraFinalizacaoSocorro;
     @NotNull
     private final LocalizacaoSocorroRota localizacaoFinalizacaoScorro;
@@ -36,6 +38,7 @@ public final class SocorroRotaFinalizacaoVisualizacao {
 
     public SocorroRotaFinalizacaoVisualizacao(@NotNull final Long codColaboradorResponsavelFinalizacao,
                                               @NotNull final String nomeResponsavelFinalizacaoSocorro,
+                                              @NotNull final String observacaoFinalizacao,
                                               @NotNull final LocalDateTime dataHoraFinalizacaoSocorro,
                                               @NotNull final LocalizacaoSocorroRota localizacaoFinalizacaoScorro,
                                               @Nullable final String enderecoAutomaticoFinalizacaoSocorro,
@@ -47,6 +50,7 @@ public final class SocorroRotaFinalizacaoVisualizacao {
                                               @Nullable final String urlFoto3Finalizacao) {
         this.codColaboradorResponsavelFinalizacao = codColaboradorResponsavelFinalizacao;
         this.nomeResponsavelFinalizacaoSocorro = nomeResponsavelFinalizacaoSocorro;
+        this.observacaoFinalizacao = observacaoFinalizacao;
         this.dataHoraFinalizacaoSocorro = dataHoraFinalizacaoSocorro;
         this.localizacaoFinalizacaoScorro = localizacaoFinalizacaoScorro;
         this.enderecoAutomaticoFinalizacaoSocorro = enderecoAutomaticoFinalizacaoSocorro;
@@ -65,6 +69,9 @@ public final class SocorroRotaFinalizacaoVisualizacao {
     public String getNomeResponsavelFinalizacaoSocorro() {
         return nomeResponsavelFinalizacaoSocorro;
     }
+
+    @NotNull
+    public String getObservacaoFinalizacao() { return observacaoFinalizacao; }
 
     @NotNull
     public LocalDateTime getDataHoraFinalizacaoSocorro() {
