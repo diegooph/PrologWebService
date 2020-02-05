@@ -16,21 +16,21 @@ public final class PushService {
     @NotNull
     private final PushDao dao = Injection.providePushDao();
 
-    public void salvarTokenPushColaborador(@NotNull final PushColaboradorCadastro pushColaborador,
-                                           @NotNull final String userToken) {
+    public void salvarTokenPushColaborador(@NotNull final String userToken,
+                                           @NotNull final PushColaboradorCadastro pushColaborador) {
         try {
-            dao.salvarTokenPushColaborador(pushColaborador, TokenCleaner.getOnlyToken(userToken));
-        } catch (final Throwable e) {
-            Log.e(TAG, String.format("Erro ao salvar o token de push para o colaborador." +
-                    "Colaborador: %d" +
-                    "Token Prolog: %s" +
-                    "Token push: %s",
+            dao.salvarTokenPushColaborador(TokenCleaner.getOnlyToken(userToken), pushColaborador);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao salvar o token de push para o colaborador.\n" +
+                            "Colaborador: %d\n" +
+                            "Token Prolog: %s\n" +
+                            "Token push: %s",
                     pushColaborador.getCodColaborador(),
                     userToken,
-                    pushColaborador.getTokenPushFirebase()), e);
+                    pushColaborador.getTokenPushFirebase()), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(e, "Erro ao salvar token de push para o colaborador");
+                    .map(t, "Erro ao salvar token de push para o colaborador");
         }
     }
 }

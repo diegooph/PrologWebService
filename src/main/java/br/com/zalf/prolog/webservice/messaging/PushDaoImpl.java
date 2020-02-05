@@ -16,8 +16,8 @@ import java.sql.PreparedStatement;
 public final class PushDaoImpl extends DatabaseConnection implements PushDao {
 
     @Override
-    public void salvarTokenPushColaborador(@NotNull final PushColaboradorCadastro pushColaborador,
-                                           @NotNull final String userToken) throws Throwable {
+    public void salvarTokenPushColaborador(@NotNull final String userToken,
+                                           @NotNull final PushColaboradorCadastro pushColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {

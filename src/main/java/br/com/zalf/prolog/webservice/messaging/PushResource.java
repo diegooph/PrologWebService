@@ -28,9 +28,9 @@ public final class PushResource {
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
-    public Response salvarTokenPushColaborador(@Required final PushColaboradorCadastro pushColaborador,
-                                               @HeaderParam("Authorization") @Required final String userToken) {
-        service.salvarTokenPushColaborador(pushColaborador, userToken);
+    public Response salvarTokenPushColaborador(@HeaderParam("Authorization") @Required final String userToken,
+                                               @Required final PushColaboradorCadastro pushColaborador) {
+        service.salvarTokenPushColaborador(userToken, pushColaborador);
         return Response.ok("Token salvo com sucesso!");
     }
 }

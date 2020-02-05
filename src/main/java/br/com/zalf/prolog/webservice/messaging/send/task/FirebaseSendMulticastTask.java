@@ -30,7 +30,6 @@ public final class FirebaseSendMulticastTask {
                 .stream()
                 .map(PushDestination::getTokenPushFirebase)
                 .collect(Collectors.toList());
-
         final MulticastMessage message = MulticastMessage
                 .builder()
                 .putAllData(pushMessage.getData())

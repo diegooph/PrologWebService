@@ -46,7 +46,12 @@ final class NotificadorAberturaSocorro {
             // Se estourar algo nessa chamada, não será logado no BD a tentativa de envio de mensagem. Além desse caso,
             // também não será logado no BD se acontecer um erro na busca dos colaboradores para notificar.
             final ListenableFuture<Void> future = Futures.submit(
-                    () -> innerRun(socorroRotaDao, codUnidadeSocorro, nomeColaboradorAbertura, placaVeiculoProblema, codSocorro),
+                    () -> innerRun(
+                            socorroRotaDao,
+                            codUnidadeSocorro,
+                            nomeColaboradorAbertura,
+                            placaVeiculoProblema,
+                            codSocorro),
                     service);
             Futures.addCallback(
                     future,
@@ -84,7 +89,8 @@ final class NotificadorAberturaSocorro {
         try {
             colaboradores = socorroDao.getColaboradoresNotificacaoAbertura(codUnidadeSocorro);
         } catch (final Throwable t) {
-            throw new IllegalStateException("Erro ao buscar colaboradores para notificação de abertura de socorro em rota\n" +
+            throw new IllegalStateException(
+                    "Erro ao buscar colaboradores para notificação de abertura de socorro em rota\n" +
                     "codSocorro: " + codSocorro, t);
         }
 

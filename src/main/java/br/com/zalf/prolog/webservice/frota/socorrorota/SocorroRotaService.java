@@ -39,7 +39,6 @@ public final class SocorroRotaService {
                         socorroRotaAbertura.getNomeColaboradorAbertura(),
                         socorroRotaAbertura.getPlacaVeiculoProblema(),
                         codSocorro);
-
         return ResponseWithCod.ok("Solicitação de socorro aberta com sucesso", codSocorro);
     }
 
