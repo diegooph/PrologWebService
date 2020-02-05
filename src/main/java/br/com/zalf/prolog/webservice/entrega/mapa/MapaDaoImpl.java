@@ -59,7 +59,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             }
             return true;
         } finally {
-            closeConnection(conn, null, null);
+            close(conn);
         }
     }
 
@@ -86,7 +86,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
                     + "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,"
                     + "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,  ?,  ?,  ?,  ?,"
                     + " ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,"
-                    + " ?,  ?)");
+                    + " ?,  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             stmt.setDate(1, DateUtils.toSqlDate(mapa.data));
             stmt.setInt(2, mapa.transp);
             stmt.setString(3, mapa.entrega);
@@ -191,12 +191,36 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             stmt.setTimestamp(102, DateUtils.toTimestamp(mapa.hrPCFisica));
             stmt.setTimestamp(103, DateUtils.toTimestamp(mapa.hrPCFinanceira));
             stmt.setString(104, mapa.stMapa);
+            stmt.setString(105, mapa.classificacaoRoadShow);
+            if (mapa.dataEntrega != null) {
+                stmt.setDate(106, DateUtils.toSqlDate(mapa.dataEntrega));
+            } else {
+                stmt.setDate(106, null);
+            }
+            stmt.setInt(107, mapa.qtdEntregasCarregRv);
+            stmt.setInt(108, mapa.qtdEntregasEntregRv);
+            stmt.setDouble(109, mapa.indiceDevEntregas);
+            stmt.setObject(110, mapa.cpfMotorista);
+            stmt.setObject(111, mapa.cpfAjudante1);
+            stmt.setObject(112, mapa.cpfAjudante2);
+            if (mapa.inicioRota != null) {
+                stmt.setTimestamp(113, DateUtils.toTimestamp(mapa.inicioRota));
+            } else {
+                stmt.setTimestamp(113, null);
+            }
+            if (mapa.terminoRota != null) {
+                stmt.setTimestamp(114, DateUtils.toTimestamp(mapa.terminoRota));
+            } else {
+                stmt.setTimestamp(114, null);
+            }
+            stmt.setString(115, mapa.motoristaJt12x36);
+            stmt.setString(116, mapa.retira);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o mapa " + mapa + " na tabela");
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
         return true;
     }
@@ -213,7 +237,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
                 throw new SQLException("Erro ao inserir o mapa_colaborador: " + mapa + " matricula: " + matricula);
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
         return true;
     }
@@ -232,7 +256,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
                 return rSet.getBoolean("EXISTS");
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
         return true;
     }
@@ -344,7 +368,19 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
                     + "HrPCFinanceira= ?, "
                     + "StMapa= ?, "
                     + "cod_unidade= ?, "
-                    + "data_hora_import= ? "
+                    + "data_hora_import= ?, "
+                    + "classificacao_roadshow= ?,"
+                    + "data_entrega= ?,"
+                    + "qt_entregas_carreg_rv= ?,"
+                    + "qt_entregas_entreg_rv= ?,"
+                    + "indice_dev_entregas= ?,"
+                    + "cpf_motorista= ?,"
+                    + "cpf_ajudante_1= ?,"
+                    + "cpf_ajudante_2= ?,"
+                    + "inicio_rota= ?,"
+                    + "termino_rota= ?,"
+                    + "motorista_jt_12x36= ?,"
+                    + "retira= ?"
                     + " WHERE Mapa = ? AND cod_unidade = ?;");
 
             stmt.setDate(1, DateUtils.toSqlDate(mapa.data));
@@ -450,15 +486,39 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             stmt.setString(101, mapa.stMapa);
             stmt.setLong(102, codUnidade);
             stmt.setTimestamp(103, Now.timestampUtc());
+            stmt.setString(104, mapa.classificacaoRoadShow);
+            if (mapa.dataEntrega != null) {
+                stmt.setDate(105, DateUtils.toSqlDate(mapa.dataEntrega));
+            } else {
+                stmt.setDate(105, null);
+            }
+            stmt.setInt(106, mapa.qtdEntregasCarregRv);
+            stmt.setInt(107, mapa.qtdEntregasEntregRv);
+            stmt.setDouble(108, mapa.indiceDevEntregas);
+            stmt.setObject(109, mapa.cpfMotorista);
+            stmt.setObject(110, mapa.cpfAjudante1);
+            stmt.setObject(111, mapa.cpfAjudante2);
+            if (mapa.inicioRota != null) {
+                stmt.setTimestamp(112, DateUtils.toTimestamp(mapa.inicioRota));
+            } else {
+                stmt.setTimestamp(112, null);
+            }
+            if (mapa.terminoRota != null) {
+                stmt.setTimestamp(113, DateUtils.toTimestamp(mapa.terminoRota));
+            } else {
+                stmt.setTimestamp(113, null);
+            }
+            stmt.setString(114, mapa.motoristaJt12x36);
+            stmt.setString(115, mapa.retira);
             // condição do where:
-            stmt.setInt(104, mapa.mapa);
-            stmt.setLong(105, codUnidade);
+            stmt.setInt(116, mapa.mapa);
+            stmt.setLong(117, codUnidade);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 return false;
             }
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
         return true;
     }
@@ -571,7 +631,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.recarga = linha.get(65).replace(" ", "");
         mapa.hrMatinal = toTime(linha.get(66));
         mapa.hrJornadaLiq = toTime(linha.get(67));
-        if(linha.get(68).equals("0")) {
+        if (linha.get(68).equals("0")) {
             mapa.hrMetaJornada = new Time(0);
         } else {
             mapa.hrMetaJornada = toTime(linha.get(68));
@@ -609,6 +669,42 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.hrPCFisica = toTimestamp(linha.get(99));
         mapa.hrPCFinanceira = toTimestamp(linha.get(100));
         mapa.stMapa = linha.get(101);
+        if (!linha.get(102).isEmpty()) {
+            mapa.dataEntrega = toDate(linha.get(102));
+        } else {
+            mapa.dataEntrega = null;
+        }
+        mapa.qtdEntregasCarregRv = Integer.parseInt(linha.get(103));
+        mapa.qtdEntregasEntregRv = Integer.parseInt(linha.get(104));
+        mapa.indiceDevEntregas = Double.parseDouble(linha.get(105).replace(",", "."));
+        if (!linha.get(106).trim().isEmpty()) {
+            mapa.cpfMotorista = Long.valueOf(linha.get(106).trim());
+        } else {
+            mapa.cpfMotorista = null;
+        }
+        if (!linha.get(107).trim().isEmpty()) {
+            mapa.cpfAjudante1 = Long.valueOf(linha.get(107).trim());
+        } else {
+            mapa.cpfAjudante1 = null;
+        }
+        if (!linha.get(108).trim().isEmpty()) {
+            mapa.cpfAjudante2 = Long.valueOf(linha.get(108));
+        } else {
+            mapa.cpfAjudante2 = null;
+        }
+        if (!linha.get(109).isEmpty()) {
+            mapa.inicioRota = toTimestamp(linha.get(109));
+        } else {
+            mapa.inicioRota = null;
+        }
+        if (!linha.get(110).isEmpty()) {
+            mapa.terminoRota = toTimestamp(linha.get(110));
+        } else {
+            mapa.terminoRota = null;
+        }
+        mapa.motoristaJt12x36 = linha.get(111);
+        mapa.retira = linha.get(112);
+        mapa.classificacaoRoadShow = linha.get(113);
         return mapa;
     }
 
