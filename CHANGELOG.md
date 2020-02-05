@@ -7,6 +7,7 @@ Change Log
 ### Refactors
 * Modifica estrutura para a inserção de uma nova aferição, adicionando cod_diagrama (PL-1899)
 * Modifica estrutura para a inserção de uma nova movimentação, adicionando cod_diagrama (PL-1899)
+* Adiciona novas informações no mapa (PL-2409)
 
 <a name="v1.0.11"></a>
 ## Version [v1.0.11](https://github.com/luizfp/PrologWebService/compare/v1.0.10...v1.0.11) (2020-01-15)
