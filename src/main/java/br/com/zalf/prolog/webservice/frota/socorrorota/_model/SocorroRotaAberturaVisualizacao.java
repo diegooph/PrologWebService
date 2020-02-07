@@ -16,6 +16,7 @@ public final class SocorroRotaAberturaVisualizacao {
     private final Long codColaboradorResponsavelAbertura;
     @NotNull
     private final String nomeResponsavelAberturaSocorro;
+    private final long kmVeiculoColetadoAbertura;
     @NotNull
     private final String descricaoOpcaoProblemaAberturaSocorro;
     @Nullable
@@ -44,6 +45,7 @@ public final class SocorroRotaAberturaVisualizacao {
     public SocorroRotaAberturaVisualizacao(@NotNull final String placaVeiculo,
                                            @NotNull final Long codColaboradorResponsavelAbertura,
                                            @NotNull final String nomeResponsavelAberturaSocorro,
+                                           final long kmVeiculoColetadoAbertura,
                                            @NotNull final String descricaoOpcaoProblemaAberturaSocorro,
                                            @Nullable final String descricaoFornecidaAberturaSocorro,
                                            @Nullable final String pontoReferenciaFornecidoAbertura,
@@ -59,6 +61,7 @@ public final class SocorroRotaAberturaVisualizacao {
         this.placaVeiculo = placaVeiculo;
         this.codColaboradorResponsavelAbertura = codColaboradorResponsavelAbertura;
         this.nomeResponsavelAberturaSocorro = nomeResponsavelAberturaSocorro;
+        this.kmVeiculoColetadoAbertura = kmVeiculoColetadoAbertura;
         this.descricaoOpcaoProblemaAberturaSocorro = descricaoOpcaoProblemaAberturaSocorro;
         this.descricaoFornecidaAberturaSocorro = descricaoFornecidaAberturaSocorro;
         this.pontoReferenciaFornecidoAbertura = pontoReferenciaFornecidoAbertura;
@@ -87,6 +90,8 @@ public final class SocorroRotaAberturaVisualizacao {
     public String getNomeResponsavelAberturaSocorro() {
         return nomeResponsavelAberturaSocorro;
     }
+
+    public long getKmVeiculoColetadoAbertura() { return kmVeiculoColetadoAbertura; }
 
     @NotNull
     public String getDescricaoOpcaoProblemaAberturaSocorro() {

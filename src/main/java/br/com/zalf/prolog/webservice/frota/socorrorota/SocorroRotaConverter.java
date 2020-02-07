@@ -61,6 +61,7 @@ public class SocorroRotaConverter {
                 rSet.getString("PLACA_VEICULO_ABERTURA"),
                 rSet.getLong("COD_COLABORADOR_ABERTURA"),
                 rSet.getString("NOME_RESPONSAVEL_ABERTURA"),
+                rSet.getLong("KM_VEICULO_COLETADO_ABERTURA"),
                 rSet.getString("DESCRICAO_OPCAO_PROBLEMA_ABERTURA"),
                 rSet.getString("DESCRICAO_FORNECIDA_ABERTURA"),
                 rSet.getString("PONTO_REFERENCIA_FORNECIDO_ABERTURA"),
