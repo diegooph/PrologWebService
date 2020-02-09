@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-<a name="v1.0.15"></a>
-## Version [v1.0.15](https://github.com/luizfp/PrologWebService/compare/v1.0.14...v1.0.15) (release-date) [unreleased]
+<a name="v1.0.16"></a>
+## Version [v1.0.16](https://github.com/luizfp/PrologWebService/compare/v1.0.15...v1.0.16) (release-date) [unreleased]
 
 ### Features
 * Cria objetos base do Socorro em Rota (PL-2421)
@@ -28,6 +28,12 @@ Change Log
 * Modifica estrutura para a inserção de uma nova aferição, adicionando cod_diagrama (PL-1899)
 * Modifica estrutura para a inserção de uma nova movimentação, adicionando cod_diagrama (PL-1899)
 * Adiciona novas informações no mapa (PL-2409)
+
+<a name="v1.0.15"></a>
+## Version [v1.0.15](https://github.com/luizfp/PrologWebService/compare/v1.0.14...v1.0.15) (2020-01-30)
+
+### Refactors
+* Reestrutra integrações de ordem de serviço (PLI-66)
 
 <a name="v1.0.14"></a>
 ## Version [v1.0.14](https://github.com/luizfp/PrologWebService/compare/v1.0.13...v1.0.14) (2020-01-26)
