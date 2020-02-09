@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.16"></a>
-## Version [v1.0.16](https://github.com/luizfp/PrologWebService/compare/v1.0.15...v1.0.16) (release-date) [unreleased]
+## Version [v1.0.16](https://github.com/luizfp/PrologWebService/compare/v1.0.15...v1.0.16) (2020-02-09)
 
 ### Features
 * Cria objetos base do Socorro em Rota (PL-2421)
