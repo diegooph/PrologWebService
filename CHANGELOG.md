@@ -1,6 +1,34 @@
 Change Log
 ==========
 
+<a name="v1.0.16"></a>
+## Version [v1.0.16](https://github.com/luizfp/PrologWebService/compare/v1.0.15...v1.0.16) (2020-02-09)
+
+### Features
+* Cria objetos base do Socorro em Rota (PL-2421)
+* Implementa solicitação de socorro em rota (PL-2423)
+* Implementa a listagem de unidades dispoíveis na abertura de um socorro em rota (PL-2445)
+* Implementa a listagem de veículos dispoíveis na abertura de um socorro em rota (PL-2446)
+* Implementa a listagem de opções de problema disponíveis na abertura de um socorro em rota (PL-2447)
+* Implementa a listagem de socorros em rota (PL-2424)
+* Implementa a visualização de um socorro em rota (PL-2425)
+* Implementa o atendimento de socorros em rota (PL-2426)
+* Implementa a invalidação de socorros em rota (PL-2427)
+* Implementa a finalização de socorros em rota (PL-2428)
+* Implementa a listagem de opções de problemas (PL-2465)
+* Implementa o cadastro de opções de problemas (PL-2466)
+* Implementa a edição de opções de problemas (PL-2467)
+* Implementa a visualziação de uma opção de problema específica (PL-2468)
+* Implementa a ativação/inativação de uma opção de problema (PL-2478)
+* Adiciona telefone e e-mail no cadastro, edição e visualização de colaboradores (PL-2471)
+* Cria estrutura para enviar notificações em push do firebase (PL-2496)
+* Envia notificações push com firebase para informar abertura de socorro (PL-2496)
+
+### Refactors
+* Modifica estrutura para a inserção de uma nova aferição, adicionando cod_diagrama (PL-1899)
+* Modifica estrutura para a inserção de uma nova movimentação, adicionando cod_diagrama (PL-1899)
+* Adiciona novas informações no mapa (PL-2409)
+
 <a name="v1.0.15"></a>
 ## Version [v1.0.15](https://github.com/luizfp/PrologWebService/compare/v1.0.14...v1.0.15) (2020-01-30)
 
@@ -54,6 +82,7 @@ um item (PL-2389)
 
 ### Bug Fixes
 * Adicionado TZ da unidade nas buscas de colaborador que tinham problemas (PL-2367)
+
 
 <a name="v1.0.9"></a>
 ## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (2020-01-06)

@@ -2,9 +2,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.autenticacao.Autenticacao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoResource;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
-import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
+import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
@@ -14,6 +12,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -29,17 +28,18 @@ public class ColaboradorResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Secured(permissions = Pilares.Gente.Colaborador.CADASTRAR)
-	public Response insert(Colaborador colaborador) throws Throwable {
-		service.insert(colaborador);
+	public Response insert(@Valid ColaboradorInsercao colaborador, @HeaderParam("Authorization") String userToken)
+			throws Throwable {
+		service.insert(colaborador, userToken);
 		return Response.ok("Colaborador inserido com sucesso");
 	}
 	
 	@PUT
-	@Path("/{cpf}")
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
-	public Response update(@PathParam("cpf") Long cpfAntigo, Colaborador colaborador) throws Throwable{
-		service.update(cpfAntigo, colaborador);
+	@Secured(permissions = {Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR})
+	public Response update(@Valid ColaboradorEdicao colaborador, @HeaderParam("Authorization") String userToken)
+			throws Throwable{
+		service.update(colaborador, userToken);
 		return Response.ok("Colaborador atualizado com sucesso");
 	}
 

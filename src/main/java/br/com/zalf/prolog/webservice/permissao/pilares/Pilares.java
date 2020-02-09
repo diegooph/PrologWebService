@@ -117,7 +117,6 @@ public final class Pilares {
 
             public static final int PNEU = 110;
             public static final int CHECKLIST = 121;
-            public static final int VEICULO = 122;
         }
 
         public final class Recapadora {
@@ -135,6 +134,21 @@ public final class Pilares {
                 public static final int VISUALIZACAO = 134;
                 public static final int EDICAO = 135;
             }
+        }
+
+        public final class SocorroRota {
+            private SocorroRota() {
+            }
+
+            public static final int SOLICITAR_SOCORRO = 145;
+
+            // Assumir um socorro. Invalidar um socorro. Finalizar um socorro.
+            public static final int TRATAR_SOCORRO = 146;
+
+            public static final int VISUALIZAR_SOCORROS_E_RELATORIOS = 147;
+
+            // Listar, criar, editar, ativar e inativar opções de problemas
+            public static final int GERENCIAR_OPCOES_PROBLEMAS = 148;
         }
     }
 

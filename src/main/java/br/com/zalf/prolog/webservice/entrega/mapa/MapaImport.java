@@ -1,14 +1,11 @@
 package br.com.zalf.prolog.webservice.entrega.mapa;
-
 import java.sql.Time;
 import java.util.Date;
-
 /**
  * Created by jean on 18/01/16.
  * Contém os dados de uma linha da tabela 2art (mapa)
  */
 public class MapaImport {
-
     public Date data;
     public int transp;
     public String entrega;
@@ -111,7 +108,18 @@ public class MapaImport {
     public Date hrPCFisica;
     public Date hrPCFinanceira;
     public String stMapa;
-
+    public String classificacaoRoadShow;
+    public Date dataEntrega;
+    public int qtdEntregasCarregRv;
+    public int qtdEntregasEntregRv;
+    public double indiceDevEntregas;
+    public Long cpfMotorista;
+    public Long cpfAjudante1;
+    public Long cpfAjudante2;
+    public Date inicioRota;
+    public Date terminoRota;
+    public String motoristaJt12x36;
+    public String retira;
     @Override
     public String toString() {
         return "MapaImport{" +
@@ -217,6 +225,18 @@ public class MapaImport {
                 ", hrPCFisica=" + hrPCFisica +
                 ", hrPCFinanceira=" + hrPCFinanceira +
                 ", stMapa='" + stMapa + '\'' +
+                ", classificacaoRoadShow = '" + classificacaoRoadShow + '\''+
+                ", dataEntrega=" + dataEntrega +
+                ", qtdEntregasCarregRv=" + qtdEntregasCarregRv +
+                ", qtdEntregasEntregRv=" + qtdEntregasEntregRv +
+                ", indiceDevEntregas=" + indiceDevEntregas +
+                ", cpfMotorista=" + cpfMotorista +
+                ", cpfAjudante1=" + cpfAjudante1 +
+                ", cpfAjudante2=" + cpfAjudante2 +
+                ", inicioRota=" + inicioRota +
+                ", terminoRota=" + terminoRota +
+                ", motoristaJt12x36='" + motoristaJt12x36 + '\''+
+                ", retira='" + retira + '\''+
                 '}';
     }
 }
