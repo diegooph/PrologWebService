@@ -86,6 +86,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio.ServicoRelator
 import br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio.ServicoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.frota.socorrorota.SocorroRotaDao;
+import br.com.zalf.prolog.webservice.frota.socorrorota.SocorroRotaDaoImpl;
+import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema.OpcaoProblemaDao;
+import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema.OpcaoProblemaDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
@@ -148,6 +152,8 @@ import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegra
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
+import br.com.zalf.prolog.webservice.messaging.PushDao;
+import br.com.zalf.prolog.webservice.messaging.PushDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDao;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.relatorios.RaizenProdutividadeRelatorioDao;
@@ -178,6 +184,21 @@ public final class Injection {
     @NotNull
     public static VeiculoDao provideVeiculoDao() {
         return new VeiculoDaoImpl();
+    }
+
+    @NotNull
+    public static SocorroRotaDao provideSocorroDao() {
+        return new SocorroRotaDaoImpl();
+    }
+
+    @NotNull
+    public static OpcaoProblemaDao provideOpcaoProblemaDao() {
+        return new OpcaoProblemaDaoImpl();
+    }
+
+    @NotNull
+    public static PushDao providePushDao() {
+        return new PushDaoImpl();
     }
 
     public static VeiculoConferenciaDao provideVeiculoConferenciaDao() {

@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorEdicao;
+import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorInsercao;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
@@ -17,7 +19,7 @@ import java.util.List;
 public interface ColaboradorDao {
 
     /**
-     * Insere um {@link Colaborador colaborador} no bando de dados.
+     * Insere um {@link ColaboradorInsercao colaborador} no bando de dados.
      *
      * @param colaborador              Dados do colaborador a ser inserido.
      * @param intervaloListener        Listener para repassar informações do colaborador inserido no contexto
@@ -26,25 +28,26 @@ public interface ColaboradorDao {
      *                                 da realização do checklist offline.
      * @throws Throwable Caso não seja possível inserir no banco de dados.
      */
-    void insert(@NotNull final Colaborador colaborador,
+    void insert(@NotNull final ColaboradorInsercao colaborador,
                 @NotNull final DadosIntervaloChangedListener intervaloListener,
-                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+                @NotNull final String userToken) throws Throwable;
 
     /**
-     * Atualiza os dados de um {@link Colaborador colaborador}.
+     * Atualiza os dados de um {@link ColaboradorEdicao colaborador}.
      *
-     * @param cpfAntigo                CPF do colaborador a ser atualizado.
-     * @param colaborador              Novos dados do colaborador a ser inserido.
+     * @param colaborador              Novos dados do colaborador a ser atualizado.
      * @param intervaloListener        Listener para repassar informações do colaborador atualizado no contexto
      *                                 das marcações de jornada.
      * @param checklistOfflineListener Listener para repassar informações do colaborador atualizado no contexto
      *                                 da realização do checklist offline.
+     * @param userToken                Token do colaborador realizando a atualização.
      * @throws Throwable Caso não seja possível atualizar as informações.
      */
-    void update(@NotNull final Long cpfAntigo,
-                @NotNull final Colaborador colaborador,
+    void update(@NotNull final ColaboradorEdicao colaborador,
                 @NotNull final DadosIntervaloChangedListener intervaloListener,
-                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+                @NotNull final String userToken) throws Throwable;
 
     /**
      * Método para atualizar o status (ativo ou inativo) de um colaborador.

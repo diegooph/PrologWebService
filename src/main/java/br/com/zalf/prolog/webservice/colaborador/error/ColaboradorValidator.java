@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 
+@Deprecated
 public class ColaboradorValidator {
     private static final int MAX_LENGTH_CPF = 11;
     private static final int ANO_MINIMO_PERMITIDO = 1900;

@@ -1,13 +1,68 @@
 Change Log
 ==========
 
-<a name="v1.0.12"></a>
-## Version [v1.0.12](https://github.com/luizfp/PrologWebService/compare/v1.0.11...v1.0.12) (release-date) [unreleased]
+<a name="v1.0.15"></a>
+## Version [v1.0.15](https://github.com/luizfp/PrologWebService/compare/v1.0.14...v1.0.15) (release-date) [unreleased]
+
+### Features
+* Cria objetos base do Socorro em Rota (PL-2421)
+* Implementa solicitação de socorro em rota (PL-2423)
+* Implementa a listagem de unidades dispoíveis na abertura de um socorro em rota (PL-2445)
+* Implementa a listagem de veículos dispoíveis na abertura de um socorro em rota (PL-2446)
+* Implementa a listagem de opções de problema disponíveis na abertura de um socorro em rota (PL-2447)
+* Implementa a listagem de socorros em rota (PL-2424)
+* Implementa a visualização de um socorro em rota (PL-2425)
+* Implementa o atendimento de socorros em rota (PL-2426)
+* Implementa a invalidação de socorros em rota (PL-2427)
+* Implementa a finalização de socorros em rota (PL-2428)
+* Implementa a listagem de opções de problemas (PL-2465)
+* Implementa o cadastro de opções de problemas (PL-2466)
+* Implementa a edição de opções de problemas (PL-2467)
+* Implementa a visualziação de uma opção de problema específica (PL-2468)
+* Implementa a ativação/inativação de uma opção de problema (PL-2478)
+* Adiciona telefone e e-mail no cadastro, edição e visualização de colaboradores (PL-2471)
+* Cria estrutura para enviar notificações em push do firebase (PL-2496)
+* Envia notificações push com firebase para informar abertura de socorro (PL-2496)
 
 ### Refactors
 * Modifica estrutura para a inserção de uma nova aferição, adicionando cod_diagrama (PL-1899)
 * Modifica estrutura para a inserção de uma nova movimentação, adicionando cod_diagrama (PL-1899)
 * Adiciona novas informações no mapa (PL-2409)
+
+<a name="v1.0.14"></a>
+## Version [v1.0.14](https://github.com/luizfp/PrologWebService/compare/v1.0.13...v1.0.14) (2020-01-26)
+
+### Bug Fixes
+* Corrige data/hora setada incorretamente nos processos de movimentação e fechamento de serviços de aferição (PL-2490)
+* Corrige uso da data/hora na API de pneus (PLI-67)
+
+<a name="v1.0.13"></a>
+## Version [v1.0.13](https://github.com/luizfp/PrologWebService/compare/v1.0.12...v1.0.13) (2020-01-21)
+
+### Bug Fixes
+* Corrige problema com uso indevido de anotação @NotNull em objeto de pergunta do check
+
+<a name="v1.0.12"></a>
+## Version [v1.0.12](https://github.com/luizfp/PrologWebService/compare/v1.0.11...v1.0.12) (2020-01-18)
+
+### Features
+* Cria testes para validar criação e edição de modelos de checklist (PL-2305)
+* Implementa o uso da tabela de histórico de checklists realizados e itens apontamentos (PL-2370) 
+
+### Refactors
+* Os método de busca de modelos de checklist para seleção foi recriado com novos objetos (PL-2228)
+* Os métodos de início de um novo checklist foram recriados com novos objetos (PL-2228)
+* Altera métodos de insert de checklist online e offline para novos objetos e estrutura (PL-2227)
+* Altera integração com Avilan e com Piccolotur para utilizar novo objeto de checklist (PL-2227)
+* Altera os fluxos de insert e edição de modelos de checklist para nova estrutura (PL-2231)
+* Altera o fluxo de processamento de ordens de serviço para considerar a versão do modelo de checklist (PL-2346)
+* Altera busca dos dados de checklist para realização offline incluindo novas informações 
+(versão modelo e código context) PL-2349 
+* Altera o fluxo de realização de checklist na integração ao Globus (PL-2369)
+* Altera forma de processar abertura de OSs e considera texto das alternativas tipo_outros para abrir ou não 
+um item (PL-2389)
+* Altera método de busca das URLs das perguntas do checklist (PL-2386)
+* Altera busca do farol do checklist (PL-2417)
 
 <a name="v1.0.11"></a>
 ## Version [v1.0.11](https://github.com/luizfp/PrologWebService/compare/v1.0.10...v1.0.11) (2020-01-15)
@@ -21,6 +76,7 @@ Change Log
 
 ### Bug Fixes
 * Adicionado TZ da unidade nas buscas de colaborador que tinham problemas (PL-2367)
+
 
 <a name="v1.0.9"></a>
 ## Version [v1.0.9](https://github.com/luizfp/PrologWebService/compare/v1.0.8...v1.0.9) (2020-01-06)

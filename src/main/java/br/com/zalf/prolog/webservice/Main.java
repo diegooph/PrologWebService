@@ -1,46 +1,39 @@
 package br.com.zalf.prolog.webservice;
 
-import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.database.DatabaseManager;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteService;
-import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
-import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.inconsistencias.MarcacaoInconsistencia;
-import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.inconsistencias.TipoInconsistenciaMarcacao;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
+import org.jetbrains.annotations.NotNull;
 
 public class Main {
+    private static final int MAX_LENGTH_NOME_COLABORADOR = 20;
 
     public static void main(String[] args) {
-        DatabaseManager.init();
-        ControleJornadaAjusteService service = new ControleJornadaAjusteService();
-        inconsistencias(service);
-    }
+        final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        final String regionCode = phoneUtil.getRegionCodeForCountryCode(1246);
 
-    private static void inconsistencias(final ControleJornadaAjusteService service) {
         try {
-            final List<MarcacaoInconsistencia> inconsistencias = service.getInconsistenciasColaboradorDia(
-                    2272L,
-                    "2018-02-27",
-                    TipoInconsistenciaMarcacao.SEM_VINCULO.asString());
-            System.out.println(GsonUtils.getGson().toJson(inconsistencias));
-        } catch (ProLogException e) {
-            e.printStackTrace();
+            final Phonenumber.PhoneNumber numberProto = phoneUtil.parse("246-437-2326", regionCode);
+            System.out.println(phoneUtil.isValidNumber(numberProto));
+        } catch (final NumberParseException ignored) {
+            ignored.printStackTrace();
         }
     }
 
-    private static void historico(final ControleJornadaAjusteService service) {
-        final List<Long> codMarcacoes = new ArrayList<>();
-        codMarcacoes.add(66381L);
-        codMarcacoes.add(59397L);
-        codMarcacoes.add(66389L);
-        try {
-            final List<MarcacaoAjusteHistoricoExibicao> historicos = service.getHistoricoAjusteMarcacoes(codMarcacoes);
-            System.out.println(GsonUtils.getGson().toJson(historicos));
-        } catch (ProLogException e) {
-            e.printStackTrace();
+    @SuppressWarnings("Duplicates")
+    @NotNull
+    private static String formataNomeColaborador(@NotNull final String nomeColaboradorAbertura) {
+        return verificaNomeMaxLength(String.join(" ", new String[]{}));
+    }
+
+    @SuppressWarnings("Duplicates")
+    @NotNull
+    private static String verificaNomeMaxLength(@NotNull final String nomeColaboradorAbertura) {
+        if (nomeColaboradorAbertura.length() > MAX_LENGTH_NOME_COLABORADOR) {
+            return nomeColaboradorAbertura.substring(0, MAX_LENGTH_NOME_COLABORADOR - 1).trim().concat(".");
+        } else {
+            return nomeColaboradorAbertura;
         }
     }
 }

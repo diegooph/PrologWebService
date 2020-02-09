@@ -30,7 +30,7 @@ public final class ConstraintViolationExceptionMapper implements ExceptionMapper
                 .collect(Collectors.joining("\n"));
 
         final String errorMessage = String.format(
-                "%d erro(s) encontrado(s)\n\n%s",
+                totalErrors > 1 ? "%d erros encontrados\n\n%s" : "%d erro encontrado\n\n%s",
                 totalErrors,
                 constraintErrorMessages);
 
