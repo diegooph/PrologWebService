@@ -93,6 +93,21 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 Injection
                         .provideOrdemServicoDao()
                         .incrementaQtdApontamentos(conn, codChecklistProLog, itensOsIncrementaQtdApontamentos);
+
+                // Após incrementar a quantidade de apontamento das perguntas necessárias, removemos elas da lista de
+                // que perguntas que será enviada para o Globus. Assim, evitamos que um item incremente apontamente e
+                // gere uma nova O.S.
+                itensOsIncrementaQtdApontamentos.forEach(item -> {
+                    checklistItensNokGlobus.getPerguntasNok().removeIf(pergunta -> {
+                        for (final AlternativaNokGlobus alternativa : pergunta.getAlternativasNok()) {
+                            if (item.getCodContextoPergunta() == pergunta.getCodContextoPerguntaNok() &&
+                                    item.getCodContextoAlternativa() == alternativa.getCodContextoAlternativaNok()) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    });
+                });
             }
 
             // Pode acontecer de o checklist ter itens NOK apontados, porém, ou estes itens não devem abrir O.S ou
