@@ -7,6 +7,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige problema ao sincronizar checklists realizados na integração com Avilan (PLI-74)
+* Corrige envio de itens NOK para o Globus na integração de O.S (PLI-76)
 
 <a name="v1.0.16"></a>
 ## Version [v1.0.16](https://github.com/luizfp/PrologWebService/compare/v1.0.15...v1.0.16) (2020-02-09)
