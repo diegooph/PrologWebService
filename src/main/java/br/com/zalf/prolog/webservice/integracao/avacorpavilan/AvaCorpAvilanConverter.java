@@ -49,6 +49,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @VisibleForTesting
 public final class AvaCorpAvilanConverter {
+    private static final int CODIGO_RESPOSTA_OK = 1;
+    private static final int CODIGO_RESPOSTA_NOK = 2;
 
     private AvaCorpAvilanConverter() {
         throw new IllegalStateException(AvaCorpAvilanConverter.class.getSimpleName() + " cannot be instantiated!");
@@ -267,7 +269,7 @@ public final class AvaCorpAvilanConverter {
             // Nós vamos ignorar quaisquer alternativas que sejam enviadas e vamos sempre enviar apenas uma alternativa:
             // a de tipo OUTROS. Que permite ao colaborador digitar a resposta.
             final AlternativaChecklist alternativa = new AlternativaChecklist();
-            alternativa.setOrdemExibicao(respostaOk.getCodigoResposta());
+            // Poderia setar o código tanto da resposta OK quanto da NOK, pois na hora de sincronizar fixamos o código.
             alternativa.setCodigo(respostaNok.getCodigoResposta());
             alternativa.setPrioridade(PrioridadeAlternativa.BAIXA);
             alternativa.setTipo(Alternativa.TIPO_OUTROS);
@@ -300,9 +302,9 @@ public final class AvaCorpAvilanConverter {
             // Sempre terá apenas uma alternativa.
             final Alternativa alternativa = resposta.getAlternativasResposta().get(0);
             if (resposta.respondeuOk()) {
-                respostaAval.setCodigoResposta(alternativa.getOrdemExibicao());
+                respostaAval.setCodigoResposta(CODIGO_RESPOSTA_OK);
             } else {
-                respostaAval.setCodigoResposta(Math.toIntExact(alternativa.getCodigo()));
+                respostaAval.setCodigoResposta(CODIGO_RESPOSTA_NOK);
                 respostaAval.setObservacao(alternativa.getRespostaOutros());
             }
 
