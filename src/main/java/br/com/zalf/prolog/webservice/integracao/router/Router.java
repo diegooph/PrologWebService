@@ -152,11 +152,11 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
+    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getTiposVeiculosByEmpresa(codEmpresa);
+            return getSistema().getTiposVeiculosFiltroChecklist(codEmpresa);
         } else {
-            return integradorProLog.getTiposVeiculosByEmpresa(codEmpresa);
+            return integradorProLog.getTiposVeiculosFiltroChecklist(codEmpresa);
         }
     }
 
