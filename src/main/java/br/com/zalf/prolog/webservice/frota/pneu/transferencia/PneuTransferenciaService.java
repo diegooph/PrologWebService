@@ -26,7 +26,7 @@ public final class PneuTransferenciaService {
     private final PneuTransferenciaDao dao = Injection.providePneuTransferenciaDao();
 
     @NotNull
-    ResponseWithCod insertTransferencia(
+    public ResponseWithCod insertTransferencia(
             @NotNull final String userToken,
             @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
         try {

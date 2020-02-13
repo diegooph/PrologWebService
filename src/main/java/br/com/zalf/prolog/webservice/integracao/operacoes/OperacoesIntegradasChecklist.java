@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.Resul
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,6 +51,9 @@ interface OperacoesIntegradasChecklist {
     Long insertChecklist(@NotNull final ChecklistInsercao checklist,
                          final boolean foiOffline,
                          final boolean deveAbrirOs) throws Throwable;
+
+    @NotNull
+    List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable;
 
     @NotNull
     Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception;

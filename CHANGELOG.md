@@ -1,9 +1,16 @@
 Change Log
 ==========
 
+<a name="v1.0.18"></a>
+## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (release-date) [unreleased]
+
+### Recators
+* Remove roteamento de tipos de veículos e cria busca específica para checklists (PL-2536)
+* Cria bloqueio de integração por unidades (PLI-71)
+
+
 <a name="v1.0.17"></a>
 ## Version [v1.0.17](https://github.com/luizfp/PrologWebService/compare/v1.0.16...v1.0.17) (2020-02-11)
-
 
 ### Bug Fixes
 * Corrige problema ao sincronizar checklists realizados na integração com Avilan (PLI-74)

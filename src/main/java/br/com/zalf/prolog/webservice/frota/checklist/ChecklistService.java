@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +37,22 @@ public final class ChecklistService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir checklist, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(final String userToken, final Long codEmpresa) {
+        try {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getTiposVeiculosFiltroChecklist(codEmpresa);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar os tipos de veículos para filtros do check.\n" +
+                    "Empresa: %d\n" +
+                    "userToken: %s", codEmpresa, userToken), throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar os tipos de veículos, tente novamente");
         }
     }
 

@@ -103,8 +103,8 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByEmpresa(@NotNull Long codEmpresa) throws Throwable {
-        return getIntegradorProLog().getTiposVeiculosByEmpresa(codEmpresa);
+    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull Long codEmpresa) throws Throwable {
+        return getIntegradorProLog().getTiposVeiculosFiltroChecklist(codEmpresa);
     }
 
     @NotNull
