@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
-import br.com.zalf.prolog.webservice.integracao.router.RouterTipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -52,9 +51,7 @@ public final class TipoVeiculoService {
     @NotNull
     public List<TipoVeiculo> getTiposVeiculosByEmpresa(final String userToken, final Long codEmpresa) throws ProLogException {
         try {
-            return RouterTipoVeiculo
-                    .create(dao, userToken)
-                    .getTiposVeiculosByEmpresa(codEmpresa);
+            return dao.getTiposVeiculosByEmpresa(codEmpresa);
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar os tipos de veículos ativos da empresa.\n" +
                     "Empresa: %d\n" +
@@ -99,9 +96,7 @@ public final class TipoVeiculoService {
     @Deprecated
     List<TipoVeiculo> getTiposVeiculosByUnidade(final String userToken, final Long codUnidade) {
         try {
-            return RouterTipoVeiculo
-                    .create(dao, userToken)
-                    .getTiposVeiculosByEmpresa(Injection.provideEmpresaDao().getCodEmpresaByCodUnidade(codUnidade));
+            return dao.getTiposVeiculosByEmpresa(Injection.provideEmpresaDao().getCodEmpresaByCodUnidade(codUnidade));
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os tipos de veículos ativos da unidade. \n" +
                     "Unidade: %d\n" +
