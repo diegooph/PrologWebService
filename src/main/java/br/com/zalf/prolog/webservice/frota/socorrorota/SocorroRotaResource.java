@@ -32,18 +32,17 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class SocorroRotaResource {
     @NotNull
-    private SocorroRotaService service = new SocorroRotaService();
+    private final SocorroRotaService service = new SocorroRotaService();
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(permissions = Pilares.Frota.SocorroRota.SOLICITAR_SOCORRO)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Path("/abertura/image-upload")
-    public AbstractResponse insertImagemGaleria(
+    public SuccessResponseSocorroRotaUploadImagem uploadImagemSocorroRotaAbertura(
             @FormDataParam("upload") @Required final InputStream fileInputStream,
             @FormDataParam("upload") @Required final FormDataContentDisposition fileDetail) {
-        System.out.println("Arquivo recebido");
-        return Response.ok("Arquivo recebido");
+        return service.uploadImagemSocorroRotaAbertura(fileInputStream, fileDetail);
     }
 
     /**
