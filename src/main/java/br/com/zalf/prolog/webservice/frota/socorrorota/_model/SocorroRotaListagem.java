@@ -29,6 +29,12 @@ public final class SocorroRotaListagem {
     private final LocalDateTime dataHoraAberturaSocorro;
     @Nullable
     private final String enderecoAutomaticoAberturaSocorro;
+    @Nullable
+    private final String urlFoto1Abertura;
+    @Nullable
+    private final String urlFoto2Abertura;
+    @Nullable
+    private final String urlFoto3Abertura;
     @NotNull
     private final StatusSocorroRota statusAtualSocorroRota;
 
@@ -42,6 +48,9 @@ public final class SocorroRotaListagem {
                                @NotNull final String descricaoOpcaoProblemaAberturaSocorro,
                                @NotNull final LocalDateTime dataHoraAberturaSocorro,
                                @Nullable final String enderecoAutomaticoAberturaSocorro,
+                               @Nullable final String urlFoto1Abertura,
+                               @Nullable final String urlFoto2Abertura,
+                               @Nullable final String urlFoto3Abertura,
                                @NotNull final StatusSocorroRota statusAtualSocorroRota) {
         this.codSocorroRota = codSocorroRota;
         this.nomeUnidade = nomeUnidade;
@@ -53,6 +62,9 @@ public final class SocorroRotaListagem {
         this.descricaoOpcaoProblemaAberturaSocorro = descricaoOpcaoProblemaAberturaSocorro;
         this.dataHoraAberturaSocorro = dataHoraAberturaSocorro;
         this.enderecoAutomaticoAberturaSocorro = enderecoAutomaticoAberturaSocorro;
+        this.urlFoto1Abertura = urlFoto1Abertura;
+        this.urlFoto2Abertura = urlFoto2Abertura;
+        this.urlFoto3Abertura = urlFoto3Abertura;
         this.statusAtualSocorroRota = statusAtualSocorroRota;
     }
 
@@ -92,6 +104,21 @@ public final class SocorroRotaListagem {
     @Nullable
     public String getEnderecoAutomaticoAberturaSocorro() {
         return enderecoAutomaticoAberturaSocorro;
+    }
+
+    @Nullable
+    public String getUrlFoto1Abertura() {
+        return urlFoto1Abertura;
+    }
+
+    @Nullable
+    public String getUrlFoto2Abertura() {
+        return urlFoto2Abertura;
+    }
+
+    @Nullable
+    public String getUrlFoto3Abertura() {
+        return urlFoto3Abertura;
     }
 
     @NotNull
