@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeoutException;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ChecklistItensNokGlobusTask implements Runnable {
+    private static final String TAG = ChecklistItensNokGlobusTask.class.getSimpleName();
     @NotNull
     private final Long codChecklistProLog;
     @NotNull
@@ -142,6 +144,8 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Globus retornou um código de O.S inválido");
             }
 
+            // Precisamos que esse commit seja feito apenas após a sincronia com o Globus, para que possamos fazer
+            // rollback das informações com segurança e evitar incompatibilidade das informações.
             conn.commit();
             // Avismos que os itens foram sincronizados com sucesso.
             if (listener != null) {
@@ -195,8 +199,10 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             errorMessage = ((ProLogException) t).getMessage();
         } else if (t instanceof SQLException || t instanceof IllegalStateException) {
             errorMessage = "Erro Interno. Algo deu errado ao processar o envio localmente.";
+            Log.e(TAG, errorMessage, t);
         } else if (t instanceof TimeoutException) {
             errorMessage = "Erro no Globus. O Globus não respondeu a mensagem a tempo.";
+            Log.e(TAG, errorMessage, t);
         }
         return errorMessage;
     }
