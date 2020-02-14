@@ -9,7 +9,7 @@ public class AmazonConstants {
 
     private static final String BUCKET_TEST_TREINAMENTO = "prolog-teste/treinamento";
     private static final String BUCKET_TEST_CHECKLIST = "prolog-teste/checklist";
-    private static final String BUCKET_TEST_SOCORRO_ROTA = "prolog-teste/socorro_rota";
+    private static final String BUCKET_TEST_SOCORRO_ROTA = "prolog-teste/socorro-rota";
 
     public static final String BUCKET_NAME_PDF_TREINAMENTOS = BuildConfig.DEBUG
             ? BUCKET_TEST_TREINAMENTO
@@ -22,7 +22,7 @@ public class AmazonConstants {
             : "prolog-geral/checklist/galeria-empresas";
     public static final String BUCKET_SOCORRO_ROTA_IMAGENS = BuildConfig.DEBUG
             ? BUCKET_TEST_SOCORRO_ROTA
-            : "prolog-geral/socorro_rota";
+            : "prolog-geral/socorro-rota";
 
     private AmazonConstants() {
         throw new IllegalStateException(AmazonConstants.class.getSimpleName() + " cannot be instantiated!");
