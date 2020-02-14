@@ -57,7 +57,9 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "F_DEVICE_UPTIME_MILLIS_ABERTURA := ?," +
                     "F_ANDROID_API_VERSION_ABERTURA := ?," +
                     "F_MARCA_DEVICE_ABERTURA := ?::TEXT," +
-                    "F_MODELO_DEVICE_ABERTURA := ?::TEXT) AS CODIGO;");
+                    "F_MODELO_DEVICE_ABERTURA := ?::TEXT," +
+                    "F_PLATAFORMA_ORIGEM := ?::PROLOG_PLATAFORMA_ORIGEM_TYPE" +
+                    "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT) AS CODIGO;");
             final Long codUnidade = socorroRotaAbertura.getCodUnidade();
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, socorroRotaAbertura.getCodColaborador());
@@ -75,13 +77,14 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             stmt.setObject(13, socorroRotaAbertura.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
             stmt.setString(14, socorroRotaAbertura.getEnderecoAutomatico());
             stmt.setString(15, socorroRotaAbertura.getPontoReferencia());
-            stmt.setLong(16, socorroRotaAbertura.getVersaoAppAtual());
-            stmt.setString(17, socorroRotaAbertura.getDeviceId());
-            stmt.setString(18, socorroRotaAbertura.getDeviceImei());
-            stmt.setLong(19, socorroRotaAbertura.getDeviceUptimeMillis());
-            stmt.setInt(20, socorroRotaAbertura.getAndroidApiVersion());
-            stmt.setString(21, socorroRotaAbertura.getMarcaDevice());
-            stmt.setString(22, socorroRotaAbertura.getModeloDevice());
+            stmt.setString(16, socorroRotaAbertura.getDeviceId());
+            stmt.setString(17, socorroRotaAbertura.getDeviceImei());
+            stmt.setLong(18, socorroRotaAbertura.getDeviceUptimeMillis());
+            stmt.setInt(19, socorroRotaAbertura.getAndroidApiVersion());
+            stmt.setString(20, socorroRotaAbertura.getMarcaDevice());
+            stmt.setString(21, socorroRotaAbertura.getModeloDevice());
+            stmt.setObject(22, socorroRotaAbertura.getPlataformaOrigem());
+            stmt.setString(23, socorroRotaAbertura.getVersaoPlataformaOrigem());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -241,13 +244,12 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             stmt.setString(9, socorroRotaInvalidacao.getLocalizacao().getLongitude());
             stmt.setObject(10, socorroRotaInvalidacao.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
             stmt.setString(11, socorroRotaInvalidacao.getEnderecoAutomatico());
-            stmt.setLong(12, socorroRotaInvalidacao.getVersaoAppAtual());
-            stmt.setString(13, socorroRotaInvalidacao.getDeviceId());
-            stmt.setString(14, socorroRotaInvalidacao.getDeviceImei());
-            stmt.setLong(15, socorroRotaInvalidacao.getDeviceUptimeMillis());
-            stmt.setInt(16, socorroRotaInvalidacao.getAndroidApiVersion());
-            stmt.setString(17, socorroRotaInvalidacao.getMarcaDevice());
-            stmt.setString(18, socorroRotaInvalidacao.getModeloDevice());
+            stmt.setString(12, socorroRotaInvalidacao.getDeviceId());
+            stmt.setString(13, socorroRotaInvalidacao.getDeviceImei());
+            stmt.setLong(14, socorroRotaInvalidacao.getDeviceUptimeMillis());
+            stmt.setInt(15, socorroRotaInvalidacao.getAndroidApiVersion());
+            stmt.setString(16, socorroRotaInvalidacao.getMarcaDevice());
+            stmt.setString(17, socorroRotaInvalidacao.getModeloDevice());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -293,13 +295,12 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             stmt.setString(6, socorroRotaAtendimento.getLocalizacao().getLongitude());
             stmt.setObject(7, socorroRotaAtendimento.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
             stmt.setString(8, socorroRotaAtendimento.getEnderecoAutomatico());
-            stmt.setLong(9, socorroRotaAtendimento.getVersaoAppAtual());
-            stmt.setString(10, socorroRotaAtendimento.getDeviceId());
-            stmt.setString(11, socorroRotaAtendimento.getDeviceImei());
-            stmt.setLong(12, socorroRotaAtendimento.getDeviceUptimeMillis());
-            stmt.setInt(13, socorroRotaAtendimento.getAndroidApiVersion());
-            stmt.setString(14, socorroRotaAtendimento.getMarcaDevice());
-            stmt.setString(15, socorroRotaAtendimento.getModeloDevice());
+            stmt.setString(9, socorroRotaAtendimento.getDeviceId());
+            stmt.setString(10, socorroRotaAtendimento.getDeviceImei());
+            stmt.setLong(11, socorroRotaAtendimento.getDeviceUptimeMillis());
+            stmt.setInt(12, socorroRotaAtendimento.getAndroidApiVersion());
+            stmt.setString(13, socorroRotaAtendimento.getMarcaDevice());
+            stmt.setString(14, socorroRotaAtendimento.getModeloDevice());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -351,13 +352,12 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             stmt.setString(9, socorroRotaFinalizacao.getLocalizacao().getLongitude());
             stmt.setObject(10, socorroRotaFinalizacao.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
             stmt.setString(11, socorroRotaFinalizacao.getEnderecoAutomatico());
-            stmt.setLong(12, socorroRotaFinalizacao.getVersaoAppAtual());
-            stmt.setString(13, socorroRotaFinalizacao.getDeviceId());
-            stmt.setString(14, socorroRotaFinalizacao.getDeviceImei());
-            stmt.setLong(15, socorroRotaFinalizacao.getDeviceUptimeMillis());
-            stmt.setInt(16, socorroRotaFinalizacao.getAndroidApiVersion());
-            stmt.setString(17, socorroRotaFinalizacao.getMarcaDevice());
-            stmt.setString(18, socorroRotaFinalizacao.getModeloDevice());
+            stmt.setString(12, socorroRotaFinalizacao.getDeviceId());
+            stmt.setString(13, socorroRotaFinalizacao.getDeviceImei());
+            stmt.setLong(14, socorroRotaFinalizacao.getDeviceUptimeMillis());
+            stmt.setInt(15, socorroRotaFinalizacao.getAndroidApiVersion());
+            stmt.setString(16, socorroRotaFinalizacao.getMarcaDevice());
+            stmt.setString(17, socorroRotaFinalizacao.getModeloDevice());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
