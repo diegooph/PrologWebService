@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## Stage
+### Features
+* Cria método de upload de fotos da abertura para o S3 (PL-2518)
+
 <a name="v1.0.18"></a>
 ## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (release-date) [unreleased]
 
