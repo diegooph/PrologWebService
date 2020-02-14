@@ -12,6 +12,8 @@ Change Log
 <a name="v1.0.19"></a>
 ## Version [v1.0.19](https://github.com/luizfp/PrologWebService/compare/v1.0.18...v1.0.19) (release-date) [unreleased]
 
+### Features
+* Cria relatório de dados gerais de socorros em rotas (PL-2523)
 
 <a name="v1.0.18"></a>
 ## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (release-date) [unreleased]
