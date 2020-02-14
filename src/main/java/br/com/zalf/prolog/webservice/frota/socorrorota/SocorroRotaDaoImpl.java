@@ -132,7 +132,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_ATENDIMENTO_GET_DESTINATARIOS_NOTIFICACAO(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_ATENDIMENTO_GET_COLABORADORES_NOTIFICACAO(" +
                     "F_COD_SOCORRO_ROTA => ?);");
             stmt.setLong(1, codSocorroRota);
             rSet = stmt.executeQuery();
