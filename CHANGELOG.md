@@ -1,3 +1,9 @@
+Stage
+==========
+
+### Refactors
+* Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
+
 Change Log
 ==========
 
