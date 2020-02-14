@@ -136,7 +136,7 @@ public final class VeiculoService {
             return Response.ok("Veículo inserido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
-                    "userToken: %s" +
+                    "userToken: %s\n" +
                     "codUnidade: %d", userToken, veiculo.getCodUnidadeAlocado()), t);
             throw Injection
                     .provideVeiculoExceptionHandler()
