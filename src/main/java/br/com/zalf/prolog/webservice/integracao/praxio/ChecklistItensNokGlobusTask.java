@@ -151,7 +151,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             try {
                 // Se tivemos um erro ao logar o checklist, precisamos logar para saber como proceder na solução do
                 // erro e conseguir sincronizar esse checklist.
-                sistema.erroAoSicronizarChecklist(codChecklistProLog, getErrorMessage(t));
+                sistema.erroAoSicronizarChecklist(codChecklistProLog, getErrorMessage(t), t);
                 // Avisamos sobre o erro ao sincronizar o checklist.
                 if (listener != null) {
                     listener.onErroSincronia(codChecklistProLog, isLastChecklist, t);

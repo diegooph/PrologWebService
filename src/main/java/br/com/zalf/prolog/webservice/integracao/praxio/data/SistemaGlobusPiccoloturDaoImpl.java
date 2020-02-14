@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -96,15 +97,10 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             @NotNull final Long codChecklistParaSincronizar) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR(" +
-                    "COD_CHECKLIST_PARA_SINCRONIZAR) " +
-                    "VALUES (?);");
+            stmt = conn.prepareCall(
+                    "{CALL PICCOLOTUR.FUNC_INSERE_CHECKLIST_PENDENTE_SINCRONIA(F_COD_CHECKLIST => ?)}");
             stmt.setLong(1, codChecklistParaSincronizar);
-            if (stmt.executeUpdate() <= 0) {
-                throw new SQLException(
-                        "Não foi possível inserir o código do checklist na tabela de checks para sincronizar:\n" +
-                                "codChecklistParaSincronizar: " + codChecklistParaSincronizar);
-            }
+            stmt.execute();
         } finally {
             close(stmt);
         }
@@ -156,15 +152,12 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             @NotNull final Long codChecklistNaoPrecisaSincronizar) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR " +
-                    "SET PRECISA_SER_SINCRONIZADO = FALSE " +
-                    "WHERE COD_CHECKLIST_PARA_SINCRONIZAR = ?;");
+            stmt = conn.prepareCall("{CALL PICCOLOTUR.FUNC_MARCA_CHECKLIST_NAO_PRECISA_SINCRONIZAR(" +
+                    "F_COD_CHECKLIST => ?, " +
+                    "F_DATA_HORA_ATUALIZACAO => ?)}");
             stmt.setLong(1, codChecklistNaoPrecisaSincronizar);
-            if (stmt.executeUpdate() <= 0) {
-                throw new SQLException(
-                        "Não foi possível marcar o checklist para não precisar sincronizar:\n" +
-                                "codChecklistNaoPrecisaSincronizar: " + codChecklistNaoPrecisaSincronizar);
-            }
+            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.execute();
         } finally {
             close(stmt);
         }
@@ -175,15 +168,12 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                                            @NotNull final Long codChecklistSincronizado) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR " +
-                    "SET SINCRONIZADO = TRUE " +
-                    "WHERE COD_CHECKLIST_PARA_SINCRONIZAR = ?;");
+            stmt = conn.prepareStatement("{CALL PICCOLOTUR.FUNC_MARCA_CHECKLIST_COMO_SINCRONIZADO(" +
+                    "F_COD_CHECKLIST => ?, " +
+                    "F_DATA_HORA_ATUALIZACAO => ?)}");
             stmt.setLong(1, codChecklistSincronizado);
-            if (stmt.executeUpdate() <= 0) {
-                throw new SQLException(
-                        "Não foi possível marcar o checklist para sincronizado:\n" +
-                                "codChecklistSincronizado: " + codChecklistSincronizado);
-            }
+            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.execute();
         } finally {
             close(stmt);
         }
@@ -191,17 +181,21 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
 
     @Override
     public void erroAoSicronizarChecklist(@NotNull final Long codChecklistProLog,
-                                          @NotNull final String errorMessage) throws Throwable {
+                                          @NotNull final String errorMessage,
+                                          @NotNull final Throwable throwable) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR " +
-                    "SET " +
-                    "  MENSAGEM_ERRO_AO_SINCRONIZAR = ? " +
-                    "WHERE COD_CHECKLIST_PARA_SINCRONIZAR = ?;");
-            stmt.setString(1, errorMessage);
-            stmt.setLong(2, codChecklistProLog);
+            stmt = conn.prepareStatement(
+                    "{CALL PICCOLOTUR.FUNC_INSERE_ERRO_SINCRONIA_CHECKLIST(F_COD_CHECKLIST => ?, " +
+                            "F_ERROR_MESSAGE => ?, " +
+                            "F_STACKTRACE => ?, " +
+                            "F_DATA_HORA_ATUALIZACAO => ?)}");
+            stmt.setLong(1, codChecklistProLog);
+            stmt.setString(2, errorMessage);
+            stmt.setString(3, ExceptionUtils.getStackTrace(throwable));
+            stmt.setObject(4, Now.offsetDateTimeUtc());
             stmt.executeUpdate();
         } finally {
             close(conn, stmt);
