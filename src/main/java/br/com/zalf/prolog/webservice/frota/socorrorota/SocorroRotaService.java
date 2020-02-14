@@ -33,7 +33,7 @@ public final class SocorroRotaService {
         }
 
         // Notifica os usuários responsáveis sobre a abertura do socorro.
-        new NotificadorAberturaSocorro().notificarColaboradores(
+        new NotificadorSocorroRota().notificaSobreAbertura(
                         dao,
                         socorroRotaAbertura.getCodUnidade(),
                         socorroRotaAbertura.getNomeColaboradorAbertura(),
@@ -103,9 +103,7 @@ public final class SocorroRotaService {
     @NotNull
     ResponseWithCod atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) {
         try {
-            return ResponseWithCod.ok(
-                    "Solicitação de socorro atendida com sucesso.",
-                    dao.atendimentoSocorro(socorroRotaAtendimento));
+            dao.atendimentoSocorro(socorroRotaAtendimento);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atender uma solitação de socorro.", t);
             throw Injection
@@ -113,8 +111,14 @@ public final class SocorroRotaService {
                     .map(t, "Não foi possível realizar o atendimento desta solicitação de socorro, " +
                             "tente novamente.");
         }
-    }
 
+        // Notifica os usuários responsáveis sobre o atendimento do socorro.
+        final Long codSocorro = socorroRotaAtendimento.getCodSocorroRota();
+        new NotificadorSocorroRota().notificaSobreAtendimento(dao, codSocorro);
+        return ResponseWithCod.ok(
+                "Solicitação de socorro atendida com sucesso.",
+                codSocorro);
+    }
 
     @NotNull
     ResponseWithCod finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) {

@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
@@ -93,12 +92,11 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @NotNull
     @Override
-    public List<ColaboradorNotificacaoAberturaSocorro> getColaboradoresNotificacaoAbertura(
+    public List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAbertura(
             @NotNull final Long codUnidade) throws Throwable {
-        Preconditions.checkNotNull(codUnidade, "codUnidade não pode ser null!");
-
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -111,9 +109,39 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             if (!rSet.next()) {
                 return Collections.emptyList();
             } else {
-                final List<ColaboradorNotificacaoAberturaSocorro> colaboradores = new ArrayList<>();
+                final List<ColaboradorNotificacaoSocorroRota> colaboradores = new ArrayList<>();
                 do {
-                    colaboradores.add(new ColaboradorNotificacaoAberturaSocorro(
+                    colaboradores.add(new ColaboradorNotificacaoSocorroRota(
+                            rSet.getLong("COD_COLABORADOR"),
+                            rSet.getString("TOKEN_PUSH_FIREBASE")));
+                } while (rSet.next());
+                return colaboradores;
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    @NotNull
+    @Override
+    public List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAtendimento(
+            @NotNull final Long codSocorroRota) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_ATENDIMENTO_GET_DESTINATARIOS_NOTIFICACAO(" +
+                    "F_COD_SOCORRO_ROTA => ?);");
+            stmt.setLong(1, codSocorroRota);
+            rSet = stmt.executeQuery();
+            if (!rSet.next()) {
+                return Collections.emptyList();
+            } else {
+                final List<ColaboradorNotificacaoSocorroRota> colaboradores = new ArrayList<>();
+                do {
+                    colaboradores.add(new ColaboradorNotificacaoSocorroRota(
                             rSet.getLong("COD_COLABORADOR"),
                             rSet.getString("TOKEN_PUSH_FIREBASE")));
                 } while (rSet.next());

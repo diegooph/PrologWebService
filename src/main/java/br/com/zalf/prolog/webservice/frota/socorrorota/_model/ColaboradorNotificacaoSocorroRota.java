@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ColaboradorNotificacaoAberturaSocorro implements PushDestination {
+public final class ColaboradorNotificacaoSocorroRota implements PushDestination {
     @NotNull
     private final Long codColaborador;
     @NotNull
     private final String tokenPushFirebase;
 
-    public ColaboradorNotificacaoAberturaSocorro(@NotNull final Long codColaborador,
-                                                 @NotNull final String tokenPushFirebase) {
+    public ColaboradorNotificacaoSocorroRota(@NotNull final Long codColaborador,
+                                             @NotNull final String tokenPushFirebase) {
         this.codColaborador = codColaborador;
         this.tokenPushFirebase = tokenPushFirebase;
     }

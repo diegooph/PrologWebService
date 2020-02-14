@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## Stage
+### Features
+* Notifica responsável pela abertura que o socorro foi atendido (PL-2541)
+
 <a name="v1.0.19"></a>
 ## Version [v1.0.19](https://github.com/luizfp/PrologWebService/compare/v1.0.18...v1.0.19) (release-date) [unreleased]
 
