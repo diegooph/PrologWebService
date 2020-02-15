@@ -1,12 +1,21 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
+import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
+import org.apache.commons.io.FilenameUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -18,6 +27,31 @@ public final class SocorroRotaService {
     private static final String TAG = SocorroRotaService.class.getSimpleName();
     @NotNull
     private final SocorroRotaDao dao = Injection.provideSocorroDao();
+
+    @NotNull
+    SuccessResponseSocorroRotaUploadImagem uploadImagemSocorroRotaAbertura(
+            @NotNull final InputStream fileInputStream,
+            @NotNull final FormDataContentDisposition fileDetail) {
+        try {
+            final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
+            final ImagemProLog imagemProLog = UploadImageHelper.uploadCompressedImagem(
+                    fileInputStream,
+                    AmazonConstants.BUCKET_SOCORRO_ROTA_IMAGENS,
+                    imageType);
+            return new SuccessResponseSocorroRotaUploadImagem(imagemProLog.getUrlImagem());
+        } catch (final FileFormatNotSupportException e) {
+            Log.e(TAG, "Arquivo recebido não é uma imagem", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao processar imagem, tente novamente");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir a imagem", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao salvar a imagem, tente novamente");
+        }
+
+    }
 
     @NotNull
     ResponseWithCod aberturaSocorro(@NotNull final SocorroRotaAbertura socorroRotaAbertura) {
@@ -33,7 +67,7 @@ public final class SocorroRotaService {
         }
 
         // Notifica os usuários responsáveis sobre a abertura do socorro.
-        new NotificadorAberturaSocorro().notificarColaboradores(
+        new NotificadorSocorroRota().notificaSobreAbertura(
                         dao,
                         socorroRotaAbertura.getCodUnidade(),
                         socorroRotaAbertura.getNomeColaboradorAbertura(),
@@ -103,9 +137,7 @@ public final class SocorroRotaService {
     @NotNull
     ResponseWithCod atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) {
         try {
-            return ResponseWithCod.ok(
-                    "Solicitação de socorro atendida com sucesso.",
-                    dao.atendimentoSocorro(socorroRotaAtendimento));
+            dao.atendimentoSocorro(socorroRotaAtendimento);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atender uma solitação de socorro.", t);
             throw Injection
@@ -113,8 +145,14 @@ public final class SocorroRotaService {
                     .map(t, "Não foi possível realizar o atendimento desta solicitação de socorro, " +
                             "tente novamente.");
         }
-    }
 
+        // Notifica os usuários responsáveis sobre o atendimento do socorro.
+        final Long codSocorro = socorroRotaAtendimento.getCodSocorroRota();
+        new NotificadorSocorroRota().notificaSobreAtendimento(dao, codSocorro);
+        return ResponseWithCod.ok(
+                "Solicitação de socorro atendida com sucesso.",
+                codSocorro);
+    }
 
     @NotNull
     ResponseWithCod finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) {

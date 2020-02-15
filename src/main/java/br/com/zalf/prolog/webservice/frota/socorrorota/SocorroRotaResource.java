@@ -1,17 +1,24 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import com.google.common.base.Preconditions;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -25,7 +32,18 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class SocorroRotaResource {
     @NotNull
-    private SocorroRotaService service = new SocorroRotaService();
+    private final SocorroRotaService service = new SocorroRotaService();
+
+    @POST
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured(permissions = Pilares.Frota.SocorroRota.SOLICITAR_SOCORRO)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Path("/abertura/image-upload")
+    public SuccessResponseSocorroRotaUploadImagem uploadImagemSocorroRotaAbertura(
+            @FormDataParam("upload") @Required final InputStream fileInputStream,
+            @FormDataParam("upload") @Required final FormDataContentDisposition fileDetail) {
+        return service.uploadImagemSocorroRotaAbertura(fileInputStream, fileDetail);
+    }
 
     /**
      * Resource para abrir uma solicitação de socorro.

@@ -9,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum AndroidLargeIcon {
     PROLOG(1),
-    SOS_NOTIFICATION(2);
+    SOS_NOTIFICATION(2),
+    HELPING_HAND(3);
 
     private final int iconId;
 
