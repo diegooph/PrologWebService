@@ -1,17 +1,12 @@
 Change Log
 ==========
 
-## Stage
-### Features
-* Cria método de upload de fotos da abertura para o S3 (PL-2518)
-
-## Stage
-### Features
-* Notifica responsável pela abertura que o socorro foi atendido (PL-2541)
-
 <a name="v1.0.19"></a>
 ## Version [v1.0.19](https://github.com/luizfp/PrologWebService/compare/v1.0.18...v1.0.19) (release-date) [unreleased]
 
+### Features
+* Notifica responsável pela abertura que o socorro foi atendido (PL-2541)
+* Cria método de upload de fotos da abertura para o S3 (PL-2518)
 
 <a name="v1.0.18"></a>
 ## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (release-date) [unreleased]
