@@ -10,7 +10,7 @@ Change Log
 * Cria relatório de dados gerais de socorros em rotas (PL-2523)
 
 <a name="v1.0.18"></a>
-## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (release-date) [unreleased]
+## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (2020-02-13)
 
 ### Recators
 * Remove roteamento de tipos de veículos e cria busca específica para checklists (PL-2536)
