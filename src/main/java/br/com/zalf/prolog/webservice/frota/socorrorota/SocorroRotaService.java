@@ -5,11 +5,9 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -50,7 +48,6 @@ public final class SocorroRotaService {
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao salvar a imagem, tente novamente");
         }
-
     }
 
     @NotNull
@@ -68,11 +65,11 @@ public final class SocorroRotaService {
 
         // Notifica os usuários responsáveis sobre a abertura do socorro.
         new NotificadorSocorroRota().notificaSobreAbertura(
-                        dao,
-                        socorroRotaAbertura.getCodUnidade(),
-                        socorroRotaAbertura.getNomeColaboradorAbertura(),
-                        socorroRotaAbertura.getPlacaVeiculoProblema(),
-                        codSocorro);
+                dao,
+                socorroRotaAbertura.getCodUnidade(),
+                socorroRotaAbertura.getNomeColaboradorAbertura(),
+                socorroRotaAbertura.getPlacaVeiculoProblema(),
+                codSocorro);
         return ResponseWithCod.ok("Solicitação de socorro aberta com sucesso", codSocorro);
     }
 

@@ -1,17 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import com.google.common.base.Preconditions;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -57,19 +53,19 @@ public final class SocorroRotaResource {
     }
 
     /**
-    * Resource para buscar as unidades disponíveis para a abertura de socorro por colaborador
-    * */
+     * Resource para buscar as unidades disponíveis para a abertura de socorro por colaborador
+     */
     @GET
     @Path("/abertura/unidades-selecao")
     public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(
-            @QueryParam("codColaborador") @Required final Long codColaborador){
+            @QueryParam("codColaborador") @Required final Long codColaborador) {
 
         return service.getUnidadesDisponiveisAberturaSocorroByCodColaborador(codColaborador);
     }
 
     /**
      * Resource para buscar os veículos disponíveis para a abertura de socorro por unidade
-     * */
+     */
     @GET
     @Path("/abertura/veiculos-selecao")
     public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(
@@ -80,7 +76,7 @@ public final class SocorroRotaResource {
 
     /**
      * Resource para buscar uma lista de socorros em rota por data inicial, final e unidades
-     * */
+     */
     @GET
     @Secured(permissions = {
             Pilares.Frota.SocorroRota.SOLICITAR_SOCORRO,
@@ -92,7 +88,7 @@ public final class SocorroRotaResource {
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal,
-            @HeaderParam("Authorization") @Required final String userToken){
+            @HeaderParam("Authorization") @Required final String userToken) {
         return service.getListagemSocorroRota(codUnidades, dataInicial, dataFinal, userToken);
     }
 
@@ -140,7 +136,7 @@ public final class SocorroRotaResource {
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/visualizacao")
     public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
-            @QueryParam("codSocorroRota") @Required final Long codSocorroRota){
+            @QueryParam("codSocorroRota") @Required final Long codSocorroRota) {
         return service.getVisualizacaoSocorroRota(codSocorroRota);
     }
 }
