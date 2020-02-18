@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -49,13 +48,14 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "F_PRECISAO_LOCALIZACAO_ABERTURA_METROS := ?," +
                     "F_ENDERECO_AUTOMATICO := ?," +
                     "F_PONTO_REFERENCIA := ?::TEXT," +
-                    "F_VERSAO_APP_MOMENTO_ABERTURA := ?," +
                     "F_DEVICE_ID_ABERTURA := ?::TEXT," +
                     "F_DEVICE_IMEI_ABERTURA := ?::TEXT," +
                     "F_DEVICE_UPTIME_MILLIS_ABERTURA := ?," +
                     "F_ANDROID_API_VERSION_ABERTURA := ?," +
                     "F_MARCA_DEVICE_ABERTURA := ?::TEXT," +
-                    "F_MODELO_DEVICE_ABERTURA := ?::TEXT) AS CODIGO;");
+                    "F_MODELO_DEVICE_ABERTURA := ?::TEXT," +
+                    "F_PLATAFORMA_ORIGEM := ?::PROLOG_PLATAFORMA_ORIGEM_TYPE," +
+                    "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT) AS CODIGO;");
             final Long codUnidade = socorroRotaAbertura.getCodUnidade();
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, socorroRotaAbertura.getCodColaborador());
@@ -73,13 +73,14 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             stmt.setObject(13, socorroRotaAbertura.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
             stmt.setString(14, socorroRotaAbertura.getEnderecoAutomatico());
             stmt.setString(15, socorroRotaAbertura.getPontoReferencia());
-            stmt.setLong(16, socorroRotaAbertura.getVersaoAppAtual());
-            stmt.setString(17, socorroRotaAbertura.getDeviceId());
-            stmt.setString(18, socorroRotaAbertura.getDeviceImei());
-            stmt.setLong(19, socorroRotaAbertura.getDeviceUptimeMillis());
-            stmt.setInt(20, socorroRotaAbertura.getAndroidApiVersion());
-            stmt.setString(21, socorroRotaAbertura.getMarcaDevice());
-            stmt.setString(22, socorroRotaAbertura.getModeloDevice());
+            stmt.setString(16, socorroRotaAbertura.getDeviceId());
+            stmt.setString(17, socorroRotaAbertura.getDeviceImei());
+            stmt.setLong(18, socorroRotaAbertura.getDeviceUptimeMillis());
+            stmt.setInt(19, socorroRotaAbertura.getAndroidApiVersion());
+            stmt.setString(20, socorroRotaAbertura.getMarcaDevice());
+            stmt.setString(21, socorroRotaAbertura.getModeloDevice());
+            stmt.setString(22, socorroRotaAbertura.getPlataformaOrigem().asString());
+            stmt.setString(23, socorroRotaAbertura.getVersaoPlataformaOrigem());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -230,74 +231,6 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
 
     @NotNull
     @Override
-    public Long aberturaSocorro(@NotNull final SocorroRotaAbertura socorroRotaAbertura) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_ABERTURA(" +
-                    "F_COD_UNIDADE := ?," +
-                    "F_COD_COLABORADOR_ABERTURA := ?," +
-                    "F_COD_VEICULO_PROBLEMA := ?," +
-                    "F_KM_VEICULO_ABERTURA := ?," +
-                    "F_COD_PROBLEMA_SOCORRO_ROTA := ?," +
-                    "F_DESCRICAO_PROBLEMA := ?::TEXT," +
-                    "F_DATA_HORA_ABERTURA := ?," +
-                    "F_URL_FOTO_1_ABERTURA := ?::TEXT," +
-                    "F_URL_FOTO_2_ABERTURA := ?::TEXT," +
-                    "F_URL_FOTO_3_ABERTURA := ?::TEXT," +
-                    "F_LATITUDE_ABERTURA := ?::TEXT," +
-                    "F_LONGITUDE_ABERTURA := ?::TEXT," +
-                    "F_PRECISAO_LOCALIZACAO_ABERTURA_METROS := ?," +
-                    "F_ENDERECO_AUTOMATICO := ?," +
-                    "F_PONTO_REFERENCIA := ?::TEXT," +
-                    "F_DEVICE_ID_ABERTURA := ?::TEXT," +
-                    "F_DEVICE_IMEI_ABERTURA := ?::TEXT," +
-                    "F_DEVICE_UPTIME_MILLIS_ABERTURA := ?," +
-                    "F_ANDROID_API_VERSION_ABERTURA := ?," +
-                    "F_MARCA_DEVICE_ABERTURA := ?::TEXT," +
-                    "F_MODELO_DEVICE_ABERTURA := ?::TEXT," +
-                    "F_PLATAFORMA_ORIGEM := ?::PROLOG_PLATAFORMA_ORIGEM_TYPE," +
-                    "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT) AS CODIGO;");
-            final Long codUnidade = socorroRotaAbertura.getCodUnidade();
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, socorroRotaAbertura.getCodColaborador());
-            stmt.setLong(3, socorroRotaAbertura.getCodVeiculoProblema());
-            stmt.setLong(4, socorroRotaAbertura.getKmVeiculoAbertura());
-            stmt.setLong(5, socorroRotaAbertura.getCodProblemaSocorroRota());
-            stmt.setString(6, socorroRotaAbertura.getDescricaoProblema());
-            // Ignoramos a data/hora do objeto e usamos a do WS.
-            stmt.setObject(7, Now.offsetDateTimeUtc());
-            stmt.setString(8, socorroRotaAbertura.getUrlFoto1Abertura());
-            stmt.setString(9, socorroRotaAbertura.getUrlFoto2Abertura());
-            stmt.setString(10, socorroRotaAbertura.getUrlFoto3Abertura());
-            stmt.setString(11, socorroRotaAbertura.getLocalizacao().getLatitude());
-            stmt.setString(12, socorroRotaAbertura.getLocalizacao().getLongitude());
-            stmt.setObject(13, socorroRotaAbertura.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
-            stmt.setString(14, socorroRotaAbertura.getEnderecoAutomatico());
-            stmt.setString(15, socorroRotaAbertura.getPontoReferencia());
-            stmt.setString(16, socorroRotaAbertura.getDeviceId());
-            stmt.setString(17, socorroRotaAbertura.getDeviceImei());
-            stmt.setLong(18, socorroRotaAbertura.getDeviceUptimeMillis());
-            stmt.setInt(19, socorroRotaAbertura.getAndroidApiVersion());
-            stmt.setString(20, socorroRotaAbertura.getMarcaDevice());
-            stmt.setString(21, socorroRotaAbertura.getModeloDevice());
-            stmt.setString(22, socorroRotaAbertura.getPlataformaOrigem().asString());
-            stmt.setString(23, socorroRotaAbertura.getVersaoPlataformaOrigem());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
-            } else {
-                throw new Throwable("Erro ao abrir uma solitação de socorro");
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
     public Long atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -321,11 +254,10 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "F_MODELO_DEVICE_ATENDIMENTO := ?::TEXT," +
                     "F_PLATAFORMA_ORIGEM := ?::PROLOG_PLATAFORMA_ORIGEM_TYPE," +
                     "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT) AS CODIGO;");
-            final Long codUnidade = socorroRotaAtendimento.getCodUnidade();
             stmt.setLong(1, socorroRotaAtendimento.getCodSocorroRota());
             stmt.setLong(2, socorroRotaAtendimento.getCodColaborador());
             stmt.setString(3, socorroRotaAtendimento.getObservacaoAtendimento());
-            // Ignoramos a data hora do objeto e usamos a do WS
+            // Ignoramos a data hora do objeto e usamos a do WS.
             stmt.setObject(4, Now.offsetDateTimeUtc());
             stmt.setString(5, socorroRotaAtendimento.getLocalizacao().getLatitude());
             stmt.setString(6, socorroRotaAtendimento.getLocalizacao().getLongitude());
@@ -382,7 +314,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             stmt.setLong(1, socorroRotaInvalidacao.getCodSocorroRota());
             stmt.setLong(2, socorroRotaInvalidacao.getCodColaborador());
             stmt.setString(3, socorroRotaInvalidacao.getMotivoInvalidacao());
-            // Ignoramos a data hora do objeto e usamos a do WS
+            // Ignoramos a data hora do objeto e usamos a do WS.
             stmt.setObject(4, Now.offsetDateTimeUtc());
             stmt.setString(5, socorroRotaInvalidacao.getUrlFoto1());
             stmt.setString(6, socorroRotaInvalidacao.getUrlFoto2());
@@ -442,7 +374,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             stmt.setLong(1, socorroRotaFinalizacao.getCodSocorroRota());
             stmt.setLong(2, socorroRotaFinalizacao.getCodColaborador());
             stmt.setString(3, socorroRotaFinalizacao.getObservacaoFinalizacao());
-            // Ignoramos a data hora do objeto e usamos a do WS
+            // Ignoramos a data hora do objeto e usamos a do WS.
             stmt.setObject(4, Now.offsetDateTimeUtc());
             stmt.setString(5, socorroRotaFinalizacao.getUrlFoto1Finalizacao());
             stmt.setString(6, socorroRotaFinalizacao.getUrlFoto2Finalizacao());
