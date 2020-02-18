@@ -4,8 +4,10 @@ import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
@@ -18,6 +20,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -59,6 +62,19 @@ public final class ChecklistResource {
         } else {
             return Response.error("Erro ao inserir checklist");
         }
+    }
+
+    @GET
+    @Path("/filtros-tipos-veiculos")
+    @Secured(permissions = {
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.Relatorios.CHECKLIST})
+    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
+    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(
+            @HeaderParam("Authorization") @Required final String userToken,
+            @QueryParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
+        return service.getTiposVeiculosFiltroChecklist(userToken, codEmpresa);
     }
 
     @GET

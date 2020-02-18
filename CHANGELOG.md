@@ -7,13 +7,28 @@ Stage
 Change Log
 ==========
 
+<a name="v1.0.20"></a>
+## Version [v1.0.20](https://github.com/luizfp/PrologWebService/compare/v1.0.19...v1.0.20) (release-date) [unreleased]
+
+
+<a name="v1.0.19"></a>
+## Version [v1.0.19](https://github.com/luizfp/PrologWebService/compare/v1.0.18...v1.0.19) (2020-02-15)
+
+### Features
+* Notifica responsável pela abertura que o socorro foi atendido (PL-2541)
+* Cria método de upload de fotos da abertura para o S3 (PL-2518)
+* Cria relatório de dados gerais de socorros em rotas (PL-2523)
+
 <a name="v1.0.18"></a>
-## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (release-date) [unreleased]
+## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (2020-02-13)
+
+### Recators
+* Remove roteamento de tipos de veículos e cria busca específica para checklists (PL-2536)
+* Cria bloqueio de integração por unidades (PLI-71)
 
 
 <a name="v1.0.17"></a>
 ## Version [v1.0.17](https://github.com/luizfp/PrologWebService/compare/v1.0.16...v1.0.17) (2020-02-11)
-
 
 ### Bug Fixes
 * Corrige problema ao sincronizar checklists realizados na integração com Avilan (PLI-74)

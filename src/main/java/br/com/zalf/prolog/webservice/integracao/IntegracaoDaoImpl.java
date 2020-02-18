@@ -13,6 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by luiz on 18/07/17.
@@ -184,6 +186,28 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             }
         } finally {
             close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM INTEGRACAO.FUNC_GERAL_BUSCA_UNIDADES_BLOQUEADAS_INTEGRACAO(F_USER_TOKEN => ?);");
+            stmt.setString(1, userToken);
+            rSet = stmt.executeQuery();
+            final List<Long> codUnidadesBloqueadas = new ArrayList<>();
+            while (rSet.next()) {
+                codUnidadesBloqueadas.add(rSet.getLong("COD_UNIDADE_BLOQUEADA"));
+            }
+            return codUnidadesBloqueadas;
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 }

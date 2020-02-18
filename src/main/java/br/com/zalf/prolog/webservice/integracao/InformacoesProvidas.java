@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -48,4 +49,7 @@ public interface InformacoesProvidas {
                                                    @NotNull final Long codEmpresa,
                                                    @NotNull final SistemaKey sistemaKey,
                                                    @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
+
+    @NotNull
+    List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken) throws Throwable;
 }

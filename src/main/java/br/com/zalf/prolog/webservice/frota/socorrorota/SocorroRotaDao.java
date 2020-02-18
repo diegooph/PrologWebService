@@ -31,8 +31,22 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    List<ColaboradorNotificacaoAberturaSocorro> getColaboradoresNotificacaoAbertura(
+    List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAbertura(
             @NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Busca o colaborador responsável pela abertura do socorro que será notificado sobre seu atendimento.
+     *
+     * O retorno é uma lista pois o colaborador pode ter mais de um token de push cadastrado.
+     *
+     * @param codSocorroRota Código do socorro em rota.
+     * @return Lista dos destinatários que irão receber a notificação de atendimento.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAtendimento(
+            @NotNull final Long codSocorroRota) throws Throwable;
+
 
     /**
      * Busca as unidades disponíveis para a abertura de socorro em rota por colaborador

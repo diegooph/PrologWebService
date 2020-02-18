@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
+import java.util.List;
 
 /**
  * DAO que conterá todos os métodos necessários para que as integrações funcionem.
@@ -93,6 +94,8 @@ public interface IntegracaoDao {
                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 
     /**
+     * Holder contendo as informações necessárias para autenticação de requisições.
+     *
      * @param conn            Conexão que será utilizada para buscar os dados.
      * @param codEmpresa      Código da empresa integrada que iremos buscar as informações para autenticar.
      * @param sistemaKey      Chave do Sistema que a empresa utiliza.
@@ -106,4 +109,14 @@ public interface IntegracaoDao {
                                                    @NotNull final Long codEmpresa,
                                                    @NotNull final SistemaKey sistemaKey,
                                                    @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
+
+    /**
+     * Método utilizado para buscar as unidades da empresa do colaborador que possuem a integração bloqueada.
+     *
+     * @param userToken Token do usuário, utilizado para saber a qual empresa ele pertence.
+     * @return Uma lista de unidades bloqueadas.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken) throws Throwable;
 }

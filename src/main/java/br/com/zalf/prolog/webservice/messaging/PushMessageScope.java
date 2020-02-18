@@ -8,7 +8,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public enum PushMessageScope {
-    ABERTURA_SOCORRO_ROTA("ABERTURA_SOCORRO_ROTA");
+    ABERTURA_SOCORRO_ROTA("ABERTURA_SOCORRO_ROTA"),
+    ATENDIMENTO_SOCORRO_ROTA("ATENDIMENTO_SOCORRO_ROTA");
 
     @NotNull
     private final String stringRepresentation;

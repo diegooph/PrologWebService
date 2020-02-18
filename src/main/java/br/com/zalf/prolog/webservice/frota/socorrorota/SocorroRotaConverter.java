@@ -50,6 +50,9 @@ public class SocorroRotaConverter {
                 rSet.getString("DESCRICAO_OPCAO_PROBLEMA_ABERTURA_SOCORRO"),
                 rSet.getObject("DATA_HORA_ABERTURA_SOCORRO", LocalDateTime.class),
                 rSet.getString("ENDERECO_AUTOMATICO_ABERTURA_SOCORRO"),
+                rSet.getString("URL_FOTO_1_ABERTURA"),
+                rSet.getString("URL_FOTO_2_ABERTURA"),
+                rSet.getString("URL_FOTO_3_ABERTURA"),
                 StatusSocorroRota.fromString(rSet.getString("STATUS_ATUAL_SOCORRO_ROTA"))
         );
     }
