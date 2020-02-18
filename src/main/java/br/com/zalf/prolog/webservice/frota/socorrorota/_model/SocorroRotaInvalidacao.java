@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
-import br.com.zalf.prolog.webservice.commons.util.PrologPlatform;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +38,7 @@ public final class SocorroRotaInvalidacao extends SocorroRotaAcao {
                                   final long deviceUptimeMillis,
                                   @Nullable final String marcaDevice,
                                   @Nullable final String modeloDevice,
-                                  @NotNull final PrologPlatform plataformaOrigem,
+                                  @NotNull final PrologPlatformSocorroRota plataformaOrigem,
                                   @NotNull final String versaoPlataformaOrigem) {
         super(  codUnidadeInvalidacao,
                 StatusSocorroRota.INVALIDO,

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Wellington Vinícius (https://github.com/wvinim)
  */
-public enum PrologPlatform {
+public enum PrologPlatformSocorroRota {
     WEBSITE("WEBSITE"),
     ANDROID("ANDROID"),
     INTEGRACOES("INTEGRACOES");
@@ -15,7 +15,7 @@ public enum PrologPlatform {
     @NotNull
     private final String stringRepresentation;
 
-    PrologPlatform(@NotNull final String stringRepresentation) {
+    PrologPlatformSocorroRota(@NotNull final String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 

@@ -23,7 +23,6 @@ import java.util.List;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-
 public final class SocorroRotaDaoImpl extends DatabaseConnection implements SocorroRotaDao {
 
     @NotNull
@@ -351,6 +350,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @NotNull
     @Override
     public Long invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) throws Throwable {
@@ -379,7 +379,6 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "F_MODELO_DEVICE_INVALIDACAO := ?::TEXT," +
                     "F_PLATAFORMA_ORIGEM := ?::PROLOG_PLATAFORMA_ORIGEM_TYPE," +
                     "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT) AS CODIGO;");
-            final Long codUnidade = socorroRotaInvalidacao.getCodUnidade();
             stmt.setLong(1, socorroRotaInvalidacao.getCodSocorroRota());
             stmt.setLong(2, socorroRotaInvalidacao.getCodColaborador());
             stmt.setString(3, socorroRotaInvalidacao.getMotivoInvalidacao());
@@ -411,6 +410,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @NotNull
     @Override
     public Long finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) throws Throwable {
@@ -439,7 +439,6 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "F_MODELO_DEVICE_FINALIZACAO := ?::TEXT," +
                     "F_PLATAFORMA_ORIGEM := ?::PROLOG_PLATAFORMA_ORIGEM_TYPE," +
                     "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT) AS CODIGO;");
-            final Long codUnidade = socorroRotaFinalizacao.getCodUnidade();
             stmt.setLong(1, socorroRotaFinalizacao.getCodSocorroRota());
             stmt.setLong(2, socorroRotaFinalizacao.getCodColaborador());
             stmt.setString(3, socorroRotaFinalizacao.getObservacaoFinalizacao());
@@ -470,7 +469,6 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             close(conn, stmt, rSet);
         }
     }
-
 
     @NotNull
     @Override
@@ -506,7 +504,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                             SocorroRotaConverter.createSocorroRotaFinalizacaoVisualizacao(rSet);
                 }
 
-                final SocorroRotaVisualizacao socorrosRota = new SocorroRotaVisualizacao(
+                return new SocorroRotaVisualizacao(
                         rSet.getLong("COD_SOCORRO_ROTA"),
                         StatusSocorroRota.fromString(rSet.getString("STATUS_SOCORRO_ROTA")),
                         socorroRotaAberturaVisualizacao,
@@ -514,12 +512,9 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                         socorroRotaFinalizacaoVisualizacao,
                         socorroRotaInvalidacaoVisualizacao
                 );
-                return socorrosRota;
             } else {
                 throw new Throwable("Erro ao finalizar esta solitação de socorro");
             }
-
-
         } finally {
             close(conn, stmt, rSet);
         }

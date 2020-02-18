@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
-import br.com.zalf.prolog.webservice.commons.util.PrologPlatform;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,7 +76,7 @@ public abstract class SocorroRotaAcao {
      * A plataforma de origem. Exemplos: ANDROID, WEBSITE
      * */
     @NotNull
-    private final PrologPlatform plataformaOrigem;
+    private final PrologPlatformSocorroRota plataformaOrigem;
 
     /**
      * A versão da plataforma de origem. Exemplo: v0.0.77 (WEBSITE)
@@ -97,7 +96,7 @@ public abstract class SocorroRotaAcao {
                               final long deviceUptimeMillis,
                               @Nullable final String marcaDevice,
                               @Nullable final String modeloDevice,
-                              @NotNull final PrologPlatform plataformaOrigem,
+                              @NotNull final PrologPlatformSocorroRota plataformaOrigem,
                               @NotNull final String versaoPlataformaOrigem) {
         this.codUnidade = codUnidade;
         this.statusSocorroRota = statusSocorroRota;
@@ -174,7 +173,7 @@ public abstract class SocorroRotaAcao {
     }
 
     @NotNull
-    public PrologPlatform getPlataformaOrigem() { return plataformaOrigem; }
+    public PrologPlatformSocorroRota getPlataformaOrigem() { return plataformaOrigem; }
 
     @NotNull
     public String getVersaoPlataformaOrigem() { return versaoPlataformaOrigem; }
