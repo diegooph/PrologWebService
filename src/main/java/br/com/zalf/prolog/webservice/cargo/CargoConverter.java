@@ -24,7 +24,8 @@ public final class CargoConverter {
     static CargoSelecao createCargoTodosUnidade(@NotNull final ResultSet rSet) throws Throwable {
         return new CargoSelecao(
                 rSet.getLong("COD_CARGO"),
-                rSet.getString("NOME_CARGO"));
+                rSet.getString("NOME_CARGO"),
+                rSet.getInt("QTD_PERMISSOES"));
     }
 
     @NotNull

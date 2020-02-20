@@ -12,18 +12,22 @@ public final class CargoSelecao {
     private final Long codigo;
     @NotNull
     private final String nome;
+    private final int qtdPermissoes;
 
     public CargoSelecao(@NotNull final Long codigo,
-                        @NotNull final String nome) {
+                        @NotNull final String nome,
+                        final int qtdPermissoes) {
         this.codigo = codigo;
         this.nome = nome;
+        this.qtdPermissoes = qtdPermissoes;
     }
 
     @NotNull
     public static CargoSelecao createDummy() {
         return new CargoSelecao(
                 1L,
-                "Motorista");
+                "Motorista",
+                2);
     }
 
     @NotNull
@@ -35,4 +39,6 @@ public final class CargoSelecao {
     public String getNome() {
         return nome;
     }
+
+    public int getQtdPermissoes() {return qtdPermissoes;}
 }
