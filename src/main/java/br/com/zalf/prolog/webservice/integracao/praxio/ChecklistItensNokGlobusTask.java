@@ -151,21 +151,22 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             if (listener != null) {
                 listener.onSincroniaOk(codChecklistProLog, isLastChecklist);
             }
-        } catch (final Throwable t) {
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao tentar sincronizar o checklist com o Globus", throwable);
             try {
                 // Se tivemos um erro ao logar o checklist, precisamos logar para saber como proceder na solução do
                 // erro e conseguir sincronizar esse checklist.
-                sistema.erroAoSicronizarChecklist(codChecklistProLog, getErrorMessage(t), t);
+                sistema.erroAoSicronizarChecklist(codChecklistProLog, getErrorMessage(throwable), throwable);
                 // Avisamos sobre o erro ao sincronizar o checklist.
                 if (listener != null) {
-                    listener.onErroSincronia(codChecklistProLog, isLastChecklist, t);
+                    listener.onErroSincronia(codChecklistProLog, isLastChecklist, throwable);
                 }
                 if (conn != null) {
                     conn.rollback();
                 }
-                throw t;
-            } catch (final Throwable ignored) {
+            } catch (final Throwable t) {
                 // Here you die, quietly! Indeed, i don't know what to do.
+                Log.e(TAG, "Algo deu errado no fluxo de rollback da sincronia de checklist", t);
             }
         } finally {
             connectionProvider.closeResources(conn);
