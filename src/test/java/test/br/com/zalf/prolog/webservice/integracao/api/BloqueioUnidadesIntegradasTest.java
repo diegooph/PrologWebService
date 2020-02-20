@@ -4,12 +4,16 @@ import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuService;
+import br.com.zalf.prolog.webservice.frota.pneu._model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoService;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaService;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoService;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaService;
@@ -19,10 +23,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -59,10 +63,9 @@ final class BloqueioUnidadesIntegradasTest {
                 1L,
                 1111L);
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new VeiculoService().insert(USER_TOKEN_INTEGRADO, veiculoCadastro);
-        });
-        assertTrue(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class, () -> new VeiculoService().insert(USER_TOKEN_INTEGRADO, veiculoCadastro));
+        assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
@@ -76,10 +79,9 @@ final class BloqueioUnidadesIntegradasTest {
                 1L,
                 1111L);
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new VeiculoService().insert(USER_TOKEN_INTEGRADO, veiculoCadastro);
-        });
-        assertFalse(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class, () -> new VeiculoService().insert(USER_TOKEN_INTEGRADO, veiculoCadastro));
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
@@ -89,10 +91,10 @@ final class BloqueioUnidadesIntegradasTest {
         veiculo.setCodUnidadeAlocado(COD_UNIDADE_LIBERADA);
 
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new VeiculoService().update(USER_TOKEN_INTEGRADO, "PRO-001", veiculo);
-        });
-        assertTrue(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new VeiculoService().update(USER_TOKEN_INTEGRADO, "PRO-001", veiculo));
+        assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
@@ -101,10 +103,10 @@ final class BloqueioUnidadesIntegradasTest {
         veiculo.setPlaca("PRO-002");
         veiculo.setCodUnidadeAlocado(COD_UNIDADE_BLOQUEADA);
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new VeiculoService().update(USER_TOKEN_INTEGRADO, "PRO-001", veiculo);
-        });
-        assertFalse(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new VeiculoService().update(USER_TOKEN_INTEGRADO, "PRO-001", veiculo));
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
@@ -114,10 +116,11 @@ final class BloqueioUnidadesIntegradasTest {
         veiculo.setCodUnidadeAlocado(COD_UNIDADE_LIBERADA);
 
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new VeiculoService().updateStatus(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, "PRO-001", veiculo);
-        });
-        assertTrue(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new VeiculoService()
+                        .updateStatus(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, "PRO-001", veiculo));
+        assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
@@ -126,48 +129,77 @@ final class BloqueioUnidadesIntegradasTest {
         veiculo.setPlaca("PRO-002");
         veiculo.setCodUnidadeAlocado(COD_UNIDADE_BLOQUEADA);
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new VeiculoService().updateStatus(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, "PRO-001", veiculo);
-        });
-        assertFalse(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new VeiculoService()
+                        .updateStatus(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, "PRO-001", veiculo));
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
     void testDeleteVeiculoUnidadeLiberada() {
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new VeiculoService().delete(USER_TOKEN_INTEGRADO, "BUP8601");
-        });
-        assertTrue(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class, () -> new VeiculoService().delete(USER_TOKEN_INTEGRADO, "BUP8601"));
+        assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
     void testDeleteVeiculoUnidadeBloqueada() {
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new VeiculoService().delete(USER_TOKEN_INTEGRADO, "PRO-001");
-        });
-        assertFalse(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class, () -> new VeiculoService().delete(USER_TOKEN_INTEGRADO, "PRO-001"));
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
     void testInsertPneuUnidadeLiberada() {
         final Pneu pneu = new PneuComum();
+        pneu.setCodigoCliente("1223");
         pneu.setCodUnidadeAlocado(COD_UNIDADE_LIBERADA);
+        final Marca marca = new Marca();
+        marca.setCodigo(312L);
+        pneu.setMarca(marca);
+        final ModeloPneu modelo = new ModeloPneu();
+        modelo.setCodigo(12L);
+        pneu.setModelo(modelo);
+        pneu.setValor(new BigDecimal(1));
+        pneu.setVidaAtual(1);
+        pneu.setVidasTotal(3);
+        pneu.setPressaoCorreta(120.0);
+        final Pneu.Dimensao dimensao = new Pneu.Dimensao();
+        dimensao.setCodigo(1L);
+        pneu.setDimensao(dimensao);
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new PneuService().insert(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, pneu, true);
-        });
-        assertTrue(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new PneuService()
+                        .insert(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, pneu, true));
+        assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
     void testInsertPneuUnidadeBloqueada() {
         final Pneu pneu = new PneuComum();
-        pneu.setCodUnidadeAlocado(COD_UNIDADE_LIBERADA);
+        pneu.setCodigoCliente("1223");
+        pneu.setCodUnidadeAlocado(COD_UNIDADE_BLOQUEADA);
+        final Marca marca = new Marca();
+        marca.setCodigo(312L);
+        pneu.setMarca(marca);
+        final ModeloPneu modelo = new ModeloPneu();
+        modelo.setCodigo(12L);
+        pneu.setModelo(modelo);
+        pneu.setValor(new BigDecimal(1));
+        pneu.setVidaAtual(1);
+        pneu.setVidasTotal(3);
+        pneu.setPressaoCorreta(120.0);
+        final Pneu.Dimensao dimensao = new Pneu.Dimensao();
+        dimensao.setCodigo(1L);
+        pneu.setDimensao(dimensao);
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new PneuService().insert(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, pneu, true);
-        });
-        assertFalse(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new PneuService()
+                        .insert(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, pneu, true));
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
@@ -175,10 +207,11 @@ final class BloqueioUnidadesIntegradasTest {
         final Pneu pneu = new PneuComum();
         pneu.setCodUnidadeAlocado(COD_UNIDADE_LIBERADA);
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new PneuService().update(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, COD_UNIDADE_LIBERADA, pneu);
-        });
-        assertTrue(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new PneuService()
+                        .update(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, COD_UNIDADE_LIBERADA, pneu));
+        assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
@@ -186,10 +219,11 @@ final class BloqueioUnidadesIntegradasTest {
         final Pneu pneu = new PneuComum();
         pneu.setCodUnidadeAlocado(COD_UNIDADE_LIBERADA);
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new PneuService().update(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, COD_UNIDADE_BLOQUEADA, pneu);
-        });
-        assertFalse(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new PneuService()
+                        .update(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, COD_UNIDADE_BLOQUEADA, pneu));
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
@@ -202,10 +236,11 @@ final class BloqueioUnidadesIntegradasTest {
                         new ArrayList<>(),
                         "teste");
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new PneuTransferenciaService().insertTransferencia(USER_TOKEN_INTEGRADO, pneuTransferenciaRealizacao);
-        });
-        assertTrue(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new PneuTransferenciaService()
+                        .insertTransferencia(USER_TOKEN_INTEGRADO, pneuTransferenciaRealizacao));
+        assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
@@ -218,10 +253,8 @@ final class BloqueioUnidadesIntegradasTest {
                         new ArrayList<>(),
                         "teste");
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new PneuTransferenciaService().insertTransferencia(USER_TOKEN_INTEGRADO, pneuTransferenciaRealizacao);
-        });
-        assertFalse(throwable instanceof BloqueadoIntegracaoException);
+        assertThat(new PneuTransferenciaService()
+                .insertTransferencia(USER_TOKEN_INTEGRADO, pneuTransferenciaRealizacao)).isNotNull();
     }
 
     @Test
@@ -235,10 +268,11 @@ final class BloqueioUnidadesIntegradasTest {
                         new ArrayList<>(),
                         "teste");
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new VeiculoTransferenciaService().insertProcessoTransferenciaVeiculo(USER_TOKEN_INTEGRADO, transferenciaVeiculoRealizacao);
-        });
-        assertTrue(throwable instanceof BloqueadoIntegracaoException);
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new VeiculoTransferenciaService()
+                        .insertProcessoTransferenciaVeiculo(USER_TOKEN_INTEGRADO, transferenciaVeiculoRealizacao));
+        assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
@@ -252,25 +286,29 @@ final class BloqueioUnidadesIntegradasTest {
                         new ArrayList<>(),
                         "teste");
 
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new VeiculoTransferenciaService().insertProcessoTransferenciaVeiculo(USER_TOKEN_INTEGRADO, transferenciaVeiculoRealizacao);
-        });
-        assertFalse(throwable instanceof BloqueadoIntegracaoException);
+        assertThat(new VeiculoTransferenciaService()
+                .insertProcessoTransferenciaVeiculo(USER_TOKEN_INTEGRADO, transferenciaVeiculoRealizacao)).isNotNull();
     }
 
     @Test
-    void testAberturaServicoPneuUnidadeLiberada() {
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new ServicoService().getVeiculoAberturaServico(USER_TOKEN_INTEGRADO, 101L, "BUP8601");
-        });
-        assertTrue(throwable instanceof BloqueadoIntegracaoException);
+    void testFechaServicoPneuUnidadeLiberada() {
+        final Servico servico = new ServicoMovimentacao();
+        servico.setCodUnidade(COD_UNIDADE_LIBERADA);
+
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new ServicoService().fechaServico(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, servico));
+        assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
-    void testAberturaServicoPneuUnidadeBloqueada() {
-        final Throwable throwable = assertThrows(ProLogException.class, () -> {
-            new ServicoService().getVeiculoAberturaServico(USER_TOKEN_INTEGRADO, 101L, "KUU8785");
-        });
-        assertFalse(throwable instanceof BloqueadoIntegracaoException);
+    void testFechaServicoPneuUnidadeBloqueada() {
+        final Servico servico = new ServicoMovimentacao();
+        servico.setCodUnidade(COD_UNIDADE_BLOQUEADA);
+
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new ServicoService().fechaServico(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, servico));
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 }

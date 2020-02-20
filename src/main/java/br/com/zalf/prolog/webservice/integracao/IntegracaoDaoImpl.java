@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -201,11 +202,15 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                     "FROM INTEGRACAO.FUNC_GERAL_BUSCA_UNIDADES_BLOQUEADAS_INTEGRACAO(F_USER_TOKEN => ?);");
             stmt.setString(1, userToken);
             rSet = stmt.executeQuery();
-            final List<Long> codUnidadesBloqueadas = new ArrayList<>();
-            while (rSet.next()) {
-                codUnidadesBloqueadas.add(rSet.getLong("COD_UNIDADE_BLOQUEADA"));
+            if (rSet.next()) {
+                final List<Long> codUnidadesBloqueadas = new ArrayList<>();
+                do {
+                    codUnidadesBloqueadas.add(rSet.getLong("COD_UNIDADE_BLOQUEADA"));
+                } while (rSet.next());
+                return codUnidadesBloqueadas;
+            } else {
+                return Collections.emptyList();
             }
-            return codUnidadesBloqueadas;
         } finally {
             close(conn, stmt, rSet);
         }
