@@ -50,7 +50,7 @@ public interface CargoDao {
      * um cargo como <b>em uso</b>.
      *
      * @param codUnidade Código da unidade utilizada para filtrar os cargos.
-     * @return Uma lista contendo os {@link CargoSelecao cargos} que estão em uso.
+     * @return Uma lista contendo os {@link CargoEmUso cargos} que estão em uso.
      * @throws Throwable Caso qualquer erro aconteça.
      */
     @NotNull
