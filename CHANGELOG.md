@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
 
+### Refactors
+* Modifica update do pneu, permitindo atualizar vida total (PL-2145)
+
 <a name="v1.0.19"></a>
 ## Version [v1.0.19](https://github.com/luizfp/PrologWebService/compare/v1.0.18...v1.0.19) (2020-02-15)
 
@@ -105,7 +108,6 @@ um item (PL-2389)
 ### Refactors
 * Adiciona configuração para bloquear processo de aferição (PL-1934)
 * Adiciona nova permissão para busca de relatório de entrega
-* Modifica update do pneu, permitindo atualizar vida total (PL-2145)
 
 <a name="v1.0.10"></a>
 ## Version [v1.0.10](https://github.com/luizfp/PrologWebService/compare/v1.0.9...v1.0.10) (2020-01-07)
