@@ -154,15 +154,28 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao tentar sincronizar o checklist com o Globus", throwable);
             try {
-                // Se tivemos um erro ao logar o checklist, precisamos logar para saber como proceder na solução do
-                // erro e conseguir sincronizar esse checklist.
-                sistema.erroAoSicronizarChecklist(codChecklistProLog, getErrorMessage(throwable), throwable);
+                // Se tivemos um erro ao sincronizar o checklist, precisamos logar para saber como proceder na solução
+                // do erro e conseguir sincronizar esse checklist.
+                if (conn != null) {
+                    conn.rollback();
+                    // IMPORTANTE: É necessário que o 'conn.rollback()' seja executado antes da chamada do sistema,
+                    // para liberar todas as tabelas e não termos deadlock.
+                    // O rollback irá desfazer as alterações e também liberar todos os Locks nas tabelas, assim
+                    // poderemos salvar o log de erro recebido sem nenhum problema.
+                    try {
+                        sistema.erroAoSicronizarChecklist(
+                                conn,
+                                codChecklistProLog,
+                                getErrorMessage(throwable),
+                                throwable);
+                    } catch (final Throwable ignore) {
+                        // Caso ocorra algum erro ao salvar os logs de erro, fazemos rollback também.
+                        conn.rollback();
+                    }
+                }
                 // Avisamos sobre o erro ao sincronizar o checklist.
                 if (listener != null) {
                     listener.onErroSincronia(codChecklistProLog, isLastChecklist, throwable);
-                }
-                if (conn != null) {
-                    conn.rollback();
                 }
             } catch (final Throwable t) {
                 // Here you die, quietly! Indeed, i don't know what to do.
