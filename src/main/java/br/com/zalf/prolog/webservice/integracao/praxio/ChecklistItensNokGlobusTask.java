@@ -97,8 +97,8 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                         .incrementaQtdApontamentos(conn, codChecklistProLog, itensOsIncrementaQtdApontamentos);
 
                 // Após incrementar a quantidade de apontamento das perguntas necessárias, removemos elas da lista de
-                // que perguntas que será enviada para o Globus. Assim, evitamos que um item incremente apontamente e
-                // gere uma nova O.S.
+                // perguntas que será enviada para o Globus. Assim, evitamos que um item incremente apontamente e gere
+                // uma nova O.S.
                 itensOsIncrementaQtdApontamentos.forEach(item -> {
                     checklistItensNokGlobus.getPerguntasNok().removeIf(pergunta -> {
                         for (final AlternativaNokGlobus alternativa : pergunta.getAlternativasNok()) {
@@ -112,12 +112,12 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 });
             }
 
-            // Pode acontecer de o checklist ter itens NOK apontados, porém, ou estes itens não devem abrir O.S ou
-            // eles já estão abertos em outra O.S e não precisam ser lançados na integração. Para essa situação
+            // Pode acontecer de o checklist ter itens NOK apontados, porém, ou estes itens não devem abrir O.S. ou
+            // eles já estão abertos em outra O.S. e não precisam ser lançados na integração. Para essa situação
             // consideramos que o checklist não precisa mais ser sincronizado.
             // Outra situação que pode ocorrer onde este if se torna necessário é a alteração de um modelo de checklist
-            // onde alternativas que deveriam abrir O.S passam a não abrir mais, neste ponto, o checklist tem itens NOK
-            // apontados na realização, porém nenhum deles devem configurar uma nova O.S neste momento.
+            // onde alternativas que deveriam abrir O.S. passam a não abrir mais, neste ponto, o checklist tem itens NOK
+            // apontados na realização, porém nenhum deles devem configurar uma nova O.S. neste momento.
             if (checklistItensNokGlobus.getPerguntasNok().size() <= 0) {
                 // Marca checklist como não precisa ser sincronizado.
                 sistema.marcaChecklistNaoPrecisaSincronizar(conn, codChecklistProLog);
