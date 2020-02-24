@@ -168,7 +168,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                                            @NotNull final Long codChecklistSincronizado) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("{CALL PICCOLOTUR.FUNC_MARCA_CHECKLIST_COMO_SINCRONIZADO(" +
+            stmt = conn.prepareCall("{CALL PICCOLOTUR.FUNC_MARCA_CHECKLIST_COMO_SINCRONIZADO(" +
                     "F_COD_CHECKLIST => ?, " +
                     "F_DATA_HORA_ATUALIZACAO => ?)}");
             stmt.setLong(1, codChecklistSincronizado);
@@ -180,14 +180,13 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
     }
 
     @Override
-    public void erroAoSicronizarChecklist(@NotNull final Long codChecklistProLog,
+    public void erroAoSicronizarChecklist(@NotNull final Connection conn,
+                                          @NotNull final Long codChecklistProLog,
                                           @NotNull final String errorMessage,
                                           @NotNull final Throwable throwable) throws Throwable {
-        Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = getConnection();
-            stmt = conn.prepareStatement(
+            stmt = conn.prepareCall(
                     "{CALL PICCOLOTUR.FUNC_INSERE_ERRO_SINCRONIA_CHECKLIST(F_COD_CHECKLIST => ?, " +
                             "F_ERROR_MESSAGE => ?, " +
                             "F_STACKTRACE => ?, " +
@@ -196,9 +195,9 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             stmt.setString(2, errorMessage);
             stmt.setString(3, ExceptionUtils.getStackTrace(throwable));
             stmt.setObject(4, Now.offsetDateTimeUtc());
-            stmt.executeUpdate();
+            stmt.execute();
         } finally {
-            close(conn, stmt);
+            close(stmt);
         }
     }
 
