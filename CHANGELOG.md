@@ -3,6 +3,7 @@ Stage
 
 ### Refactors
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
+* Notifica via e-mail quando um socorro em rota é aberto (PL-2522)
 
 Change Log
 ==========
