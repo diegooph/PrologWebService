@@ -9,7 +9,7 @@
         <listener-class>br.com.zalf.prolog.webservice.database.DataSourceLifecycleManager</listener-class>
     </listener>
     <listener>
-        <listener-class>br.com.zalf.prolog.webservice.messaging.FirebaseLifecycleManager</listener-class>
+        <listener-class>br.com.zalf.prolog.webservice.messaging.push.FirebaseLifecycleManager</listener-class>
     </listener>
     <listener>
         <listener-class>br.com.zalf.prolog.webservice.ProLogConsoleTextMaker</listener-class>
