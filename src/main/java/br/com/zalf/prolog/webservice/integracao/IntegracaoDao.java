@@ -119,4 +119,6 @@ public interface IntegracaoDao {
      */
     @NotNull
     List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken) throws Throwable;
+
+    boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable;
 }

@@ -228,6 +228,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getCodUnidadesIntegracaoBloqueada(userToken);
     }
 
+    @Override
+    public boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+        return integracaoDao.getConfigAberturaServicoPneuIntegracao(codUnidade);
+    }
+
     //
     //
     // Operações Integradas

@@ -150,9 +150,9 @@ public final class SistemaApiProLog extends Sistema {
     public Long insertAfericao(@NotNull final Long codUnidade,
                                @NotNull final Afericao afericao,
                                final boolean deveAbrirServico) throws Throwable {
-        // Se a unidade está integrada então, a flag deveAbrirServico é setada como false pois não queremos serviços.
-        // TODO - buscar configuração para saber se a empresa abre serviços;
-        return getIntegradorProLog().insertAfericao(codUnidade, afericao, !unidadeEstaComIntegracaoAtiva(codUnidade));
+        //TODO - Validar a condição desse booleano.
+        final boolean abrirServico = !unidadeEstaComIntegracaoAtiva(codUnidade) && deveAbrirServicoPneu(codUnidade);
+        return getIntegradorProLog().insertAfericao(codUnidade, afericao, abrirServico);
     }
 
     @Override
@@ -171,6 +171,10 @@ public final class SistemaApiProLog extends Sistema {
         // Caso o código da unidade está contido na lista de unidades bloqueadas, significa que a unidade
         // NÃO ESTÁ integrada.
         return !getIntegradorProLog().getCodUnidadesIntegracaoBloqueada(getUserToken()).contains(codUnidade);
+    }
+
+    private boolean deveAbrirServicoPneu(@NotNull final Long codUnidade) throws Throwable {
+        return getIntegradorProLog().getConfigAberturaServicoPneuIntegracao(codUnidade);
     }
 
     @NotNull

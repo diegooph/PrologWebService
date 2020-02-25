@@ -215,4 +215,25 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             close(conn, stmt, rSet);
         }
     }
+
+    @Override
+    public boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM INTEGRACAO.FUNC_GERAL_BUSCA_CONFIG_ABERTURA_SERVICO_PNEU(F_COD_UNIDADE => ?)");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("DEVE_ABRIR_SERVICO_PNEU");
+            } else {
+                throw new SQLException("Erro ao buscar configuração para a unidade");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }
