@@ -32,11 +32,6 @@ public abstract class SocorroRotaAcao {
     private final String enderecoAutomatico;
 
     /**
-     * Versão do aplicativo no momento que a marcação foi sincronizada.
-     */
-    private final int versaoAppAtual;
-
-    /**
      * Identificador único do aparelho. No Android, é equivalente ao Android ID.
      *
      * @see <a href="Android Docs">https://developer.android.com/reference/android/provider/Settings.Secure.html#ANDROID_ID</a>
@@ -77,32 +72,46 @@ public abstract class SocorroRotaAcao {
     @Nullable
     private final String modeloDevice;
 
+    /**
+     * A plataforma de origem. Exemplos: ANDROID, WEBSITE
+     * */
+    @NotNull
+    private final PrologPlatformSocorroRota plataformaOrigem;
+
+    /**
+     * A versão da plataforma de origem. Exemplo: v0.0.77 (WEBSITE)
+     * */
+    @NotNull
+    private final String versaoPlataformaOrigem;
+
     protected SocorroRotaAcao(@NotNull final Long codUnidade,
                               @NotNull final StatusSocorroRota statusSocorroRota,
                               @NotNull final Long codColaborador,
                               @NotNull final LocalDateTime dataHora,
                               @NotNull final LocalizacaoSocorroRota localizacao,
                               @Nullable final String enderecoAutomatico,
-                              final int versaoAppAtual,
                               @Nullable final String deviceId,
                               @Nullable final String deviceImei,
                               final int androidApiVersion,
                               final long deviceUptimeMillis,
                               @Nullable final String marcaDevice,
-                              @Nullable final String modeloDevice) {
+                              @Nullable final String modeloDevice,
+                              @NotNull final PrologPlatformSocorroRota plataformaOrigem,
+                              @NotNull final String versaoPlataformaOrigem) {
         this.codUnidade = codUnidade;
         this.statusSocorroRota = statusSocorroRota;
         this.codColaborador = codColaborador;
         this.dataHora = dataHora;
         this.localizacao = localizacao;
         this.enderecoAutomatico = enderecoAutomatico;
-        this.versaoAppAtual = versaoAppAtual;
         this.deviceId = deviceId;
         this.deviceImei = deviceImei;
         this.androidApiVersion = androidApiVersion;
         this.deviceUptimeMillis = deviceUptimeMillis;
         this.marcaDevice = marcaDevice;
         this.modeloDevice = modeloDevice;
+        this.plataformaOrigem = plataformaOrigem;
+        this.versaoPlataformaOrigem = versaoPlataformaOrigem;
     }
     
     @NotNull
@@ -135,10 +144,6 @@ public abstract class SocorroRotaAcao {
         return enderecoAutomatico;
     }
 
-    public int getVersaoAppAtual() {
-        return versaoAppAtual;
-    }
-
     @Nullable
     public String getDeviceId() {
         return deviceId;
@@ -166,4 +171,10 @@ public abstract class SocorroRotaAcao {
     public String getModeloDevice() {
         return modeloDevice;
     }
+
+    @NotNull
+    public PrologPlatformSocorroRota getPlataformaOrigem() { return plataformaOrigem; }
+
+    @NotNull
+    public String getVersaoPlataformaOrigem() { return versaoPlataformaOrigem; }
 }
