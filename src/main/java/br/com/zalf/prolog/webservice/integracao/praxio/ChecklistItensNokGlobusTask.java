@@ -157,20 +157,21 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 // Se tivemos um erro ao sincronizar o checklist, precisamos logar para saber como proceder na solução
                 // do erro e conseguir sincronizar esse checklist.
                 if (conn != null) {
-                    conn.rollback();
                     // IMPORTANTE: É necessário que o 'conn.rollback()' seja executado antes da chamada do sistema,
                     // para liberar todas as tabelas e não termos deadlock.
                     // O rollback irá desfazer as alterações e também liberar todos os Locks nas tabelas, assim
                     // poderemos salvar o log de erro recebido sem nenhum problema.
+                    conn.rollback();
                     try {
                         sistema.erroAoSicronizarChecklist(
                                 conn,
                                 codChecklistProLog,
                                 getErrorMessage(throwable),
                                 throwable);
-                    } catch (final Throwable ignore) {
+                    } catch (final Throwable error) {
                         // Caso ocorra algum erro ao salvar os logs de erro, fazemos rollback também.
                         conn.rollback();
+                        Log.e(TAG, "Erro ao salvar mensagem de erro ao sincronizar checklist", error);
                     }
                 }
                 // Avisamos sobre o erro ao sincronizar o checklist.
