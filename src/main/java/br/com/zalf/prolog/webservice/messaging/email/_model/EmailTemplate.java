@@ -8,17 +8,15 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public enum EmailTemplate {
-    ABERTURA_SOCORRO_ROTA("1255647");
+    ABERTURA_SOCORRO_ROTA(1255647);
 
-    @NotNull
-    private final String templateId;
+    private final int templateId;
 
-    EmailTemplate(@NotNull final String templateId) {
+    EmailTemplate(final int templateId) {
         this.templateId = templateId;
     }
 
-    @NotNull
-    public String getTemplateId() {
+    public int getTemplateId() {
         return templateId;
     }
 }
