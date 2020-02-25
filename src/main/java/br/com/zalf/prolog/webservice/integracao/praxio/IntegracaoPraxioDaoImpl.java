@@ -353,7 +353,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM PICCOLOTUR.FUNC_CHECK_GET_NEXT_COD_CHECKLIST_PARA_SINCRONIZAR();");
+                    "FROM PICCOLOTUR.FUNC_CHECK_OS_GET_NEXT_COD_CHECKLIST_PARA_SINCRONIZAR();");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new ChecklistParaSincronizar(

@@ -30,7 +30,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM PICCOLOTUR.FUNC_CHECK_BUSCA_CHECKLIST_ITENS_NOK(F_COD_CHECKLIST_PROLOG => ?);");
+                    "FROM PICCOLOTUR.FUNC_CHECK_OS_BUSCA_CHECKLIST_ITENS_NOK(F_COD_CHECKLIST_PROLOG => ?);");
             stmt.setLong(1, codChecklistProLog);
             rSet = stmt.executeQuery();
             ChecklistToSyncGlobus checklistToSyncGlobus = null;
@@ -98,7 +98,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall(
-                    "{CALL PICCOLOTUR.FUNC_INSERE_CHECKLIST_PENDENTE_SINCRONIA(F_COD_CHECKLIST => ?)}");
+                    "{CALL PICCOLOTUR.FUNC_CHECK_OS_INSERE_CHECKLIST_PENDENTE_SINCRONIA(F_COD_CHECKLIST => ?)}");
             stmt.setLong(1, codChecklistParaSincronizar);
             stmt.execute();
         } finally {
@@ -152,7 +152,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             @NotNull final Long codChecklistNaoPrecisaSincronizar) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareCall("{CALL PICCOLOTUR.FUNC_MARCA_CHECKLIST_NAO_PRECISA_SINCRONIZAR(" +
+            stmt = conn.prepareCall("{CALL PICCOLOTUR.FUNC_CHECK_OS_MARCA_CHECKLIST_NAO_PRECISA_SINCRONIZAR(" +
                     "F_COD_CHECKLIST => ?, " +
                     "F_DATA_HORA_ATUALIZACAO => ?)}");
             stmt.setLong(1, codChecklistNaoPrecisaSincronizar);
@@ -168,7 +168,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                                            @NotNull final Long codChecklistSincronizado) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareCall("{CALL PICCOLOTUR.FUNC_MARCA_CHECKLIST_COMO_SINCRONIZADO(" +
+            stmt = conn.prepareCall("{CALL PICCOLOTUR.FUNC_CHECK_OS_MARCA_CHECKLIST_COMO_SINCRONIZADO(" +
                     "F_COD_CHECKLIST => ?, " +
                     "F_DATA_HORA_ATUALIZACAO => ?)}");
             stmt.setLong(1, codChecklistSincronizado);
@@ -187,7 +187,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall(
-                    "{CALL PICCOLOTUR.FUNC_INSERE_ERRO_SINCRONIA_CHECKLIST(F_COD_CHECKLIST => ?, " +
+                    "{CALL PICCOLOTUR.FUNC_CHECK_OS_INSERE_ERRO_SINCRONIA_CHECKLIST(F_COD_CHECKLIST => ?, " +
                             "F_ERROR_MESSAGE => ?, " +
                             "F_STACKTRACE => ?, " +
                             "F_DATA_HORA_ATUALIZACAO => ?)}");
