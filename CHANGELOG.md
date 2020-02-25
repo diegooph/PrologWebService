@@ -6,6 +6,9 @@ Change Log
 ### Recators
 * Reestrutura mensagens de erro na sincronização dos checklists integrados (PLI-70)
 
+### Bug Fixes
+* Hotfix - Corrige erro de cast da function de atualização de status do pneu (PLI-87)
+
 <a name="v1.0.19"></a>
 ## Version [v1.0.19](https://github.com/luizfp/PrologWebService/compare/v1.0.18...v1.0.19) (release-date) [unreleased]
 
