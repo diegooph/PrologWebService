@@ -713,14 +713,15 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                     @NotNull final Long codPneu,
                                     final int posicaoPneuVeiculo) throws Throwable {
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO veiculo_pneu (placa, cod_pneu, cod_unidade, posicao) " +
-                    "VALUES (?, ?, ?, ?)");
-            stmt.setString(1, placa);
-            stmt.setLong(2, codPneu);
-            stmt.setLong(3, codUnidade);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_INSERE_VEICULO_PNEU(?, ?, ?, ?) AS RESULT;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, placa);
+            stmt.setLong(3, codPneu);
             stmt.setInt(4, posicaoPneuVeiculo);
-            if (stmt.executeUpdate() == 0) {
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || !rSet.getBoolean("RESULT")) {
                 throw new SQLException("Erro ao aplicar o pneu " + codPneu + " ao veículo " + placa);
             }
         } finally {
