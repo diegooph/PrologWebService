@@ -3,17 +3,18 @@ package br.com.zalf.prolog.webservice.messaging;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created on 2020-01-29
+ * Created on 2020-02-03
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum FirebaseMessageType {
-    MULTICAST("MULTICAST");
+public enum MessageScope {
+    ABERTURA_SOCORRO_ROTA("ABERTURA_SOCORRO_ROTA"),
+    ATENDIMENTO_SOCORRO_ROTA("ATENDIMENTO_SOCORRO_ROTA");
 
     @NotNull
     private final String stringRepresentation;
 
-    FirebaseMessageType(@NotNull final String stringRepresentation) {
+    MessageScope(@NotNull final String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 

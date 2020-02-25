@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.messaging.send.task;
+package br.com.zalf.prolog.webservice.messaging.push._model;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-final class FirebaseLogRequestResponse {
+public final class FirebaseLogRequestResponse {
     @NotNull
     private final String tokenDestinationFirebase;
     @NotNull
@@ -20,7 +20,7 @@ final class FirebaseLogRequestResponse {
     @Nullable
     private final String stackTraceRequestException;
 
-    FirebaseLogRequestResponse(@NotNull final String tokenDestinationFirebase,
+    public FirebaseLogRequestResponse(@NotNull final String tokenDestinationFirebase,
                                @NotNull final String userIdAssociatedWithTokenDestination,
                                final boolean success,
                                @Nullable final String messageId,

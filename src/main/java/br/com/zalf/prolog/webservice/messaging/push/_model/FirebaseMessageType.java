@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.messaging;
+package br.com.zalf.prolog.webservice.messaging.push._model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,13 +7,13 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum FirebasePlataformDestination {
-    ANDROID("ANDROID");
+public enum FirebaseMessageType {
+    MULTICAST("MULTICAST");
 
     @NotNull
     private final String stringRepresentation;
 
-    FirebasePlataformDestination(@NotNull final String stringRepresentation) {
+    FirebaseMessageType(@NotNull final String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 

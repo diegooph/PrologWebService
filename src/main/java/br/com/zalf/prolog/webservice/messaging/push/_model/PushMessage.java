@@ -1,8 +1,5 @@
-package br.com.zalf.prolog.webservice.messaging.send;
+package br.com.zalf.prolog.webservice.messaging.push._model;
 
-import br.com.zalf.prolog.webservice.messaging.AndroidAppScreens;
-import br.com.zalf.prolog.webservice.messaging.AndroidLargeIcon;
-import br.com.zalf.prolog.webservice.messaging.AndroidSmallIcon;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

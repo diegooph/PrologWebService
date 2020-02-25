@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.messaging.send.task;
+package br.com.zalf.prolog.webservice.messaging.push.send.task;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -6,11 +6,8 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
-import br.com.zalf.prolog.webservice.messaging.FirebaseMessageType;
-import br.com.zalf.prolog.webservice.messaging.FirebasePlataformDestination;
-import br.com.zalf.prolog.webservice.messaging.PushMessageScope;
-import br.com.zalf.prolog.webservice.messaging.send.PushDestination;
-import br.com.zalf.prolog.webservice.messaging.send.PushMessage;
+import br.com.zalf.prolog.webservice.messaging.MessageScope;
+import br.com.zalf.prolog.webservice.messaging.push._model.*;
 import com.google.common.base.Throwables;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.SendResponse;
@@ -39,7 +36,7 @@ public final class FirebaseSaveLogTask {
 
     public void saveToDatabase(@NotNull final Connection connection,
                                @NotNull final List<PushDestination> destinations,
-                               @NotNull final PushMessageScope messageScope,
+                               @NotNull final MessageScope messageScope,
                                @NotNull final PushMessage pushMessage,
                                @Nullable final Throwable fatalSendException,
                                @Nullable final BatchResponse batchResponse) throws Throwable {

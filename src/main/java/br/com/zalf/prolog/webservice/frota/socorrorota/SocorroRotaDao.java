@@ -31,7 +31,7 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAbertura(
+    List<ColaboradorNotificacaoAberturaSocorroRota> getColaboradoresNotificacaoAbertura(
             @NotNull final Long codUnidade) throws Throwable;
 
     /**
@@ -44,7 +44,7 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAtendimento(
+    List<ColaboradorNotificacaoAtendimentoSocorroRota> getColaboradoresNotificacaoAtendimento(
             @NotNull final Long codSocorroRota) throws Throwable;
 
 

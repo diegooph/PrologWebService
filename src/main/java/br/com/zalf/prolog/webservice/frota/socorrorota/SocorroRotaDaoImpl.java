@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -95,7 +94,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
     @SuppressWarnings("Duplicates")
     @NotNull
     @Override
-    public List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAbertura(
+    public List<ColaboradorNotificacaoAberturaSocorroRota> getColaboradoresNotificacaoAbertura(
             @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -109,11 +108,15 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             if (!rSet.next()) {
                 return Collections.emptyList();
             } else {
-                final List<ColaboradorNotificacaoSocorroRota> colaboradores = new ArrayList<>();
+                final List<ColaboradorNotificacaoAberturaSocorroRota> colaboradores = new ArrayList<>();
                 do {
-                    colaboradores.add(new ColaboradorNotificacaoSocorroRota(
+                    final String[] tokensFirebase = (String[]) rSet
+                            .getArray("TOKENS_PUSH_FIREBASE")
+                            .getArray();
+                    colaboradores.add(new ColaboradorNotificacaoAberturaSocorroRota(
                             rSet.getLong("COD_COLABORADOR"),
-                            rSet.getString("TOKEN_PUSH_FIREBASE")));
+                            rSet.getString("EMAIL_COLABORADOR"),
+                            tokensFirebase));
                 } while (rSet.next());
                 return colaboradores;
             }
@@ -125,7 +128,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
     @SuppressWarnings("Duplicates")
     @NotNull
     @Override
-    public List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAtendimento(
+    public List<ColaboradorNotificacaoAtendimentoSocorroRota> getColaboradoresNotificacaoAtendimento(
             @NotNull final Long codSocorroRota) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -139,9 +142,9 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             if (!rSet.next()) {
                 return Collections.emptyList();
             } else {
-                final List<ColaboradorNotificacaoSocorroRota> colaboradores = new ArrayList<>();
+                final List<ColaboradorNotificacaoAtendimentoSocorroRota> colaboradores = new ArrayList<>();
                 do {
-                    colaboradores.add(new ColaboradorNotificacaoSocorroRota(
+                    colaboradores.add(new ColaboradorNotificacaoAtendimentoSocorroRota(
                             rSet.getLong("COD_COLABORADOR"),
                             rSet.getString("TOKEN_PUSH_FIREBASE")));
                 } while (rSet.next());
