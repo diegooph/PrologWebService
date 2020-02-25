@@ -32,26 +32,28 @@ public final class SocorroRotaFinalizacao extends SocorroRotaAcao {
                                   @NotNull final LocalDateTime dataHora,
                                   @NotNull final LocalizacaoSocorroRota localizacao,
                                   @Nullable final String enderecoAutomatico,
-                                  final int versaoAppAtual,
                                   @Nullable final String deviceId,
                                   @Nullable final String deviceImei,
                                   final int androidApiVersion,
                                   final long deviceUptimeMillis,
                                   @Nullable final String marcaDevice,
-                                  @Nullable final String modeloDevice) {
+                                  @Nullable final String modeloDevice,
+                                  @NotNull final PrologPlatformSocorroRota plataformaOrigem,
+                                  @NotNull final String versaoPlataformaOrigem) {
         super(  codUnidadeAbertura,
                 StatusSocorroRota.FINALIZADO,
                 codColaborador,
                 dataHora,
                 localizacao,
                 enderecoAutomatico,
-                versaoAppAtual,
                 deviceId,
                 deviceImei,
                 androidApiVersion,
                 deviceUptimeMillis,
                 marcaDevice,
-                modeloDevice);
+                modeloDevice,
+                plataformaOrigem,
+                versaoPlataformaOrigem);
         this.codSocorroRota = codSocorroRota;
         this.observacaoFinalizacao = observacaoFinalizacao;
         this.urlFoto1Finalizacao = urlFoto1Finalizacao;

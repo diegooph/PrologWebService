@@ -46,26 +46,28 @@ public final class SocorroRotaAbertura extends SocorroRotaAcao {
                                @NotNull final LocalDateTime dataHora,
                                @Nullable final String enderecoAutomatico,
                                @NotNull final LocalizacaoSocorroRota localizacao,
-                               final int versaoAppAtual,
                                @Nullable final String deviceId,
                                @Nullable final String deviceImei,
                                final int androidApiVersion,
                                final long deviceUptimeMillis,
                                @Nullable final String marcaDevice,
-                               @Nullable final String modeloDevice) {
+                               @Nullable final String modeloDevice,
+                               @NotNull final PrologPlatformSocorroRota plataformaOrigem,
+                               @NotNull final String versaoPlataformaOrigem) {
         super(  codUnidadeAbertura,
                 StatusSocorroRota.ABERTO,
                 codColaborador,
                 dataHora,
                 localizacao,
                 enderecoAutomatico,
-                versaoAppAtual,
                 deviceId,
                 deviceImei,
                 androidApiVersion,
                 deviceUptimeMillis,
                 marcaDevice,
-                modeloDevice);
+                modeloDevice,
+                plataformaOrigem,
+                versaoPlataformaOrigem);
         this.codVeiculoProblema = codVeiculoProblema;
         this.kmVeiculoAbertura = kmVeiculoAbertura;
         this.placaVeiculoProblema = placaVeiculoProblema;
