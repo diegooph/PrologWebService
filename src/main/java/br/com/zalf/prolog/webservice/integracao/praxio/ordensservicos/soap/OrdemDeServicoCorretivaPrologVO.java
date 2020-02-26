@@ -16,6 +16,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *       &lt;sequence>
  *         &lt;element name="CodUnidadeChecklist" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="CodChecklistRealizado" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="CodModeloChecklist" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="CpfColaboradorRealizacao" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="PlacaVeiculoChecklist" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="KmColetadoChecklist" type="{http://www.w3.org/2001/XMLSchema}int"/>
@@ -35,6 +36,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
         propOrder = {
                 "codUnidadeChecklist",
                 "codChecklistRealizado",
+                "codModeloChecklist",
                 "cpfColaboradorRealizacao",
                 "placaVeiculoChecklist",
                 "kmColetadoChecklist",
@@ -48,6 +50,8 @@ public class OrdemDeServicoCorretivaPrologVO {
     protected int codUnidadeChecklist;
     @XmlElement(name = "CodChecklistRealizado")
     protected int codChecklistRealizado;
+    @XmlElement(name = "CodModeloChecklist")
+    protected int codModeloChecklist;
     @XmlElement(name = "CpfColaboradorRealizacao")
     protected String cpfColaboradorRealizacao;
     @XmlElement(name = "PlacaVeiculoChecklist")
@@ -90,6 +94,20 @@ public class OrdemDeServicoCorretivaPrologVO {
      */
     public void setCodChecklistRealizado(int value) {
         this.codChecklistRealizado = value;
+    }
+
+    /**
+     * Obtém o valor da propriedade codModeloChecklist.
+     */
+    public int getCodModeloChecklist() {
+        return codModeloChecklist;
+    }
+
+    /**
+     * Define o valor da propriedade codModeloChecklist.
+     */
+    public void setCodModeloChecklist(final int codModeloChecklist) {
+        this.codModeloChecklist = codModeloChecklist;
     }
 
     /**
