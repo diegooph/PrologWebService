@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeoutException;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ChecklistItensNokGlobusTask implements Runnable {
+    private static final String TAG = ChecklistItensNokGlobusTask.class.getSimpleName();
     @NotNull
     private final Long codChecklistProLog;
     @NotNull
@@ -95,8 +97,8 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                         .incrementaQtdApontamentos(conn, codChecklistProLog, itensOsIncrementaQtdApontamentos);
 
                 // Após incrementar a quantidade de apontamento das perguntas necessárias, removemos elas da lista de
-                // que perguntas que será enviada para o Globus. Assim, evitamos que um item incremente apontamente e
-                // gere uma nova O.S.
+                // perguntas que será enviada para o Globus. Assim, evitamos que um item incremente apontamente e gere
+                // uma nova O.S.
                 itensOsIncrementaQtdApontamentos.forEach(item -> {
                     checklistItensNokGlobus.getPerguntasNok().removeIf(pergunta -> {
                         for (final AlternativaNokGlobus alternativa : pergunta.getAlternativasNok()) {
@@ -110,12 +112,12 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 });
             }
 
-            // Pode acontecer de o checklist ter itens NOK apontados, porém, ou estes itens não devem abrir O.S ou
-            // eles já estão abertos em outra O.S e não precisam ser lançados na integração. Para essa situação
+            // Pode acontecer de o checklist ter itens NOK apontados, porém, ou estes itens não devem abrir O.S. ou
+            // eles já estão abertos em outra O.S. e não precisam ser lançados na integração. Para essa situação
             // consideramos que o checklist não precisa mais ser sincronizado.
             // Outra situação que pode ocorrer onde este if se torna necessário é a alteração de um modelo de checklist
-            // onde alternativas que deveriam abrir O.S passam a não abrir mais, neste ponto, o checklist tem itens NOK
-            // apontados na realização, porém nenhum deles devem configurar uma nova O.S neste momento.
+            // onde alternativas que deveriam abrir O.S. passam a não abrir mais, neste ponto, o checklist tem itens NOK
+            // apontados na realização, porém nenhum deles devem configurar uma nova O.S. neste momento.
             if (checklistItensNokGlobus.getPerguntasNok().size() <= 0) {
                 // Marca checklist como não precisa ser sincronizado.
                 sistema.marcaChecklistNaoPrecisaSincronizar(conn, codChecklistProLog);
@@ -142,26 +144,43 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Globus retornou um código de O.S inválido");
             }
 
+            // Precisamos que esse commit seja feito apenas após a sincronia com o Globus, para que possamos fazer
+            // rollback das informações com segurança e evitar incompatibilidade das informações.
             conn.commit();
             // Avismos que os itens foram sincronizados com sucesso.
             if (listener != null) {
                 listener.onSincroniaOk(codChecklistProLog, isLastChecklist);
             }
-        } catch (final Throwable t) {
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao tentar sincronizar o checklist com o Globus", throwable);
             try {
-                // Se tivemos um erro ao logar o checklist, precisamos logar para saber como proceder na solução do
-                // erro e conseguir sincronizar esse checklist.
-                sistema.erroAoSicronizarChecklist(codChecklistProLog, getErrorMessage(t));
+                // Se tivemos um erro ao sincronizar o checklist, precisamos logar para saber como proceder na solução
+                // do erro e conseguir sincronizar esse checklist.
+                if (conn != null) {
+                    // IMPORTANTE: É necessário que o 'conn.rollback()' seja executado antes da chamada do sistema,
+                    // para liberar todas as tabelas e não termos deadlock.
+                    // O rollback irá desfazer as alterações e também liberar todos os Locks nas tabelas, assim
+                    // poderemos salvar o log de erro recebido sem nenhum problema.
+                    conn.rollback();
+                    try {
+                        sistema.erroAoSicronizarChecklist(
+                                conn,
+                                codChecklistProLog,
+                                getErrorMessage(throwable),
+                                throwable);
+                    } catch (final Throwable error) {
+                        // Caso ocorra algum erro ao salvar os logs de erro, fazemos rollback também.
+                        conn.rollback();
+                        Log.e(TAG, "Erro ao salvar mensagem de erro ao sincronizar checklist", error);
+                    }
+                }
                 // Avisamos sobre o erro ao sincronizar o checklist.
                 if (listener != null) {
-                    listener.onErroSincronia(codChecklistProLog, isLastChecklist, t);
+                    listener.onErroSincronia(codChecklistProLog, isLastChecklist, throwable);
                 }
-                if (conn != null) {
-                    conn.rollback();
-                }
-                throw t;
-            } catch (final Throwable ignored) {
+            } catch (final Throwable t) {
                 // Here you die, quietly! Indeed, i don't know what to do.
+                Log.e(TAG, "Algo deu errado no fluxo de rollback da sincronia de checklist", t);
             }
         } finally {
             connectionProvider.closeResources(conn);
@@ -195,8 +214,10 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             errorMessage = ((ProLogException) t).getMessage();
         } else if (t instanceof SQLException || t instanceof IllegalStateException) {
             errorMessage = "Erro Interno. Algo deu errado ao processar o envio localmente.";
+            Log.e(TAG, errorMessage, t);
         } else if (t instanceof TimeoutException) {
             errorMessage = "Erro no Globus. O Globus não respondeu a mensagem a tempo.";
+            Log.e(TAG, errorMessage, t);
         }
         return errorMessage;
     }

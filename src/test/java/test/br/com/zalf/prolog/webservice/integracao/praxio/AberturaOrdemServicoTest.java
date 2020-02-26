@@ -24,7 +24,9 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.P
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoResolvido;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
+import br.com.zalf.prolog.webservice.integracao.praxio.ChecklistItensNokGlobusTask;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
@@ -40,6 +42,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.Executors;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -51,6 +54,7 @@ import static com.google.common.truth.Truth.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class AberturaOrdemServicoTest extends BaseTest {
     private static final String TOKEN_PICCOLOTUR = "kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck";
+    private static final Long COD_UNIDADE = 5L;
     private ChecklistModeloService modeloChecklistService;
     private ChecklistService checklistService;
     private String tokenIntegrado;
@@ -60,7 +64,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         DatabaseManager.init();
         modeloChecklistService = new ChecklistModeloService();
         checklistService = new ChecklistService();
-        tokenIntegrado = getValidToken("35262190871");
+        tokenIntegrado = getValidToken("3383283194");
     }
 
     @AfterAll
@@ -87,13 +91,12 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      */
     @Test
     void testInsercaoChecklistRoteamentoIntegracao() throws Throwable {
-        final long codUnidade = 96L;
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
         final ResultInsertModeloChecklist resultModeloChecklist =
-                criaModeloChecklist(codUnidade, "Modelo Teste Inserção Checklist Roteado ");
+                criaModeloChecklist(COD_UNIDADE, "Modelo Teste Inserção Checklist Roteado ");
 
         // ################################## ETAPA 2 - Insere um checklist do modelo ##################################
-        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(codUnidade, resultModeloChecklist);
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
 
         final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
         assertThat(codChecklistInserido).isNotNull();
@@ -146,12 +149,11 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      */
     @Test
     void testAberturaOrdemServicoIntegracao() throws Throwable {
-        final long codUnidade = 96L;
         final ResultInsertModeloChecklist resultModeloChecklist =
-                criaModeloChecklist(codUnidade, "Modelo Abertura Ordem Serviço Integração ");
+                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura Ordem Serviço Integração ");
 
         // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
-        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(codUnidade, resultModeloChecklist);
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
 
         final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
 
@@ -161,7 +163,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
 
         // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
         final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
-        final long nextCodOs = getNextCodOsUnidade(codUnidade);
+        final long nextCodOs = getNextCodOsUnidade(COD_UNIDADE);
         final List<Long> codsAlaternativasOS = new ArrayList<>();
 
         { // region Insere a Ordem de Serviço Globus a partir do checklist
@@ -199,7 +201,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         final OrdemServicoAbertaGlobus ordemServicoAbertaGlobus =
                 new OrdemServicoAbertaGlobus(
                         nextCodOs,
-                        codUnidade,
+                        COD_UNIDADE,
                         codChecklistInserido,
                         itensOSAbertaGlobus);
 
@@ -217,7 +219,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
             final HolderResolucaoOrdemServico ordemServico =
                     Injection
                             .provideOrdemServicoDao()
-                            .getHolderResolucaoOrdemServico(codUnidade, nextCodOs);
+                            .getHolderResolucaoOrdemServico(COD_UNIDADE, nextCodOs);
 
             assertThat(ordemServico).isNotNull();
             assertThat(ordemServico.getOrdemServico()).isNotNull();
@@ -239,7 +241,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                         "FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO " +
                         "WHERE COD_UNIDADE = ? " +
                         "  AND COD_OS_GLOBUS = ?;");
-                stmt.setLong(1, codUnidade);
+                stmt.setLong(1, COD_UNIDADE);
                 stmt.setLong(2, nextCodOs);
                 rSet = stmt.executeQuery();
 
@@ -279,13 +281,12 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      */
     @Test
     public void testFechamentoOrdemServicoIntegracao() throws Throwable {
-        final long codUnidade = 96L;
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
         final ResultInsertModeloChecklist resultModeloChecklist =
-                criaModeloChecklist(codUnidade, "Modelo Abertura Ordem Serviço Integração ");
+                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura Ordem Serviço Integração ");
 
         // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
-        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(codUnidade, resultModeloChecklist);
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
 
         final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
 
@@ -295,7 +296,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
 
         // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
         final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
-        final long nextCodOs = getNextCodOsUnidade(codUnidade);
+        final long nextCodOs = getNextCodOsUnidade(COD_UNIDADE);
         final List<Long> codsAlaternativasOS = new ArrayList<>();
 
         { // region Insere a Ordem de Serviço Globus a partir do checklist
@@ -332,7 +333,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         final OrdemServicoAbertaGlobus ordemServicoAbertaGlobus =
                 new OrdemServicoAbertaGlobus(
                         nextCodOs,
-                        codUnidade,
+                        COD_UNIDADE,
                         codChecklistInserido,
                         itensOSAbertaGlobus);
 
@@ -348,7 +349,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         { // region Informações para fechamento de O.S Globus no Prolog
             for (final ItemOSAbertaGlobus itemGlobus : itensOSAbertaGlobus) {
                 itensResolvidos.add(new ItemResolvidoGlobus(
-                        codUnidade,
+                        COD_UNIDADE,
                         nextCodOs,
                         itemGlobus.getCodItemGlobus(),
                         "35262190871",
@@ -372,7 +373,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
             final HolderResolucaoOrdemServico ordemServico =
                     Injection
                             .provideOrdemServicoDao()
-                            .getHolderResolucaoOrdemServico(codUnidade, nextCodOs);
+                            .getHolderResolucaoOrdemServico(COD_UNIDADE, nextCodOs);
 
             assertThat(ordemServico).isNotNull();
             assertThat(ordemServico.getOrdemServico()).isNotNull();
@@ -407,7 +408,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                         "FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO " +
                         "WHERE COD_UNIDADE = ? " +
                         "  AND COD_OS_GLOBUS = ?;");
-                stmt.setLong(1, codUnidade);
+                stmt.setLong(1, COD_UNIDADE);
                 stmt.setLong(2, nextCodOs);
                 rSet = stmt.executeQuery();
 
@@ -425,6 +426,64 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 provider.closeResources(conn, stmt, rSet);
             }
         }
+    }
+
+    /**
+     * Método que testa o incremento da quantidade de tentativas de sincronia do checklist. Valida também se as
+     * mensagens são salvas da forma correta.
+     * <p>
+     * Esse método deve simular a realização de um checklist, tentativa de sincronia, e após isso, validar se as
+     * informações estão de acordo com o que deve ser.
+     * Para isso o teste deve:
+     * 1 - Criar um modelo de checklist para utilizar no teste.
+     * 2 - Realizar um checklist utilizando o modelo de checklist criado.
+     * 3 - Inserir esse checklist na base do ProLog e nas tabelas de mapeamento.
+     * 4 - Simular uma tentativa de sincronia.
+     * 5 - Validar se a contagem de tentativas aumentou.
+     *
+     * @throws Throwable Teste executado apresentou erro
+     */
+    @Test
+    void testIncrementaQtdTentativasSincronia() throws Throwable {
+        // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura Ordem Serviço Integração ");
+
+        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
+
+        final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
+
+        Thread.sleep(1000);
+
+        Executors.newSingleThreadExecutor().execute(
+                new ChecklistItensNokGlobusTask(
+                        codChecklistInserido,
+                        true,
+                        new SistemaGlobusPiccoloturDaoImpl(),
+                        new GlobusPiccoloturRequesterImpl(),
+                        null));
+
+        Thread.sleep(1000);
+
+        Executors.newSingleThreadExecutor().execute(
+                new ChecklistItensNokGlobusTask(
+                        codChecklistInserido,
+                        true,
+                        new SistemaGlobusPiccoloturDaoImpl(),
+                        new GlobusPiccoloturRequesterImpl(),
+                        null));
+
+        Thread.sleep(1000);
+
+        Executors.newSingleThreadExecutor().execute(
+                new ChecklistItensNokGlobusTask(
+                        codChecklistInserido,
+                        true,
+                        new SistemaGlobusPiccoloturDaoImpl(),
+                        new GlobusPiccoloturRequesterImpl(),
+                        null));
+        Thread.sleep(1000);
     }
 
     private void marcarChecklistComoSincronizado(final Long codChecklistInserido,
@@ -518,8 +577,8 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
                 nomeModeloChecklist + new Random().nextInt(999),
                 codUnidade,
-                Arrays.asList(326L, 327L, 397L, 399L, 400L, 412L, 419L, 483L, 484L),
-                Collections.singletonList(507L),
+                Arrays.asList(13L, 63L, 64L, 65L),
+                Collections.singletonList(951L),
                 perguntasModelo);
         return modeloChecklistService.insertModeloChecklist(modelo, tokenIntegrado);
     }
@@ -583,9 +642,9 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 codUnidade,
                 resultModeloChecklist.getCodModeloChecklistInserido(),
                 resultModeloChecklist.getCodVersaoModeloChecklistInserido(),
-                19317L,
-                23246L,
-                "EBX2850",
+                2272L,
+                705L,
+                "PRO0006",
                 TipoChecklist.SAIDA,
                 11222,
                 10000,

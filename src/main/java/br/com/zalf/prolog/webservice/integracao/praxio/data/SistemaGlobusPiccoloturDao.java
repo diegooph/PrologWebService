@@ -79,10 +79,14 @@ public interface SistemaGlobusPiccoloturDao {
     /**
      * Método utilizado para atualizar um código de checklist com o erro que foi identificado ao tentar sincronizar.
      *
+     * @param conn               Conexão utilizada para inserir os dados no banco de dados.
      * @param codChecklistProLog Código do checklist que teve erro ao sincronizar.
      * @param errorMessage       Mensagem de erro identificada ao sincronizar.
+     * @param throwable          Exception que gerou a mensagem de erro.
      * @throws Throwable Se algum erro ocorrer ao salvar a identificação.
      */
-    void erroAoSicronizarChecklist(@NotNull final Long codChecklistProLog,
-                                   @NotNull final String errorMessage) throws Throwable;
+    void erroAoSicronizarChecklist(@NotNull final Connection conn,
+                                   @NotNull final Long codChecklistProLog,
+                                   @NotNull final String errorMessage,
+                                   @NotNull final Throwable throwable) throws Throwable;
 }
