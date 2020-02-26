@@ -1,20 +1,15 @@
 Stage
 ==========
 
-### Refactors
-* Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
-
-Change Log
-==========
-
-<a name="v1.0.20"></a>
-## Version [v1.0.20](https://github.com/luizfp/PrologWebService/compare/v1.0.19...v1.0.20) (release-date) [unreleased]
-
 ### Features
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
 
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
+* Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
+
+Change Log
+==========
 
 <a name="v1.0.21"></a>
 ## Version [v1.0.21](https://github.com/luizfp/PrologWebService/compare/v1.0.20...v1.0.21) (release-date) [unreleased]
