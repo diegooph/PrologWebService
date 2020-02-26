@@ -4,7 +4,12 @@ import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.ApiPneuService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.ApiCadastroPneuService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCadastro;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.model.*;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCargaInicial;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCargaInicialResponse;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatusAnalise;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatusDescarte;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
@@ -39,6 +44,78 @@ public final class PneuCrudApiTest extends BaseTest {
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
+    }
+
+
+    @Test
+    @DisplayName("Inserção carga inicial de Pneus")
+    void adicionaCargaInicialPneuSemErroTest() throws Throwable {
+        //Cenário
+        final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
+        cargaInicial.add(new ApiPneuCargaInicial(
+                21L,
+                "CARGA_INICIAL_P1",
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null
+        ));
+
+        cargaInicial.add(new ApiPneuCargaInicial(
+                22L,
+                "CARGA_INICIAL_P2",
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null
+        ));
+
+        cargaInicial.add(new ApiPneuCargaInicial(
+                23L,
+                "CARGA_INICIAL_P3",
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null
+        ));
+
+        //Execução
+        final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
+                apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        //Verificações
+        assertThat(apiPneuCargaInicialResponses).isNotEmpty();
+
     }
 
     @Test
@@ -95,35 +172,12 @@ public final class PneuCrudApiTest extends BaseTest {
                 new BigDecimal(100.89)
         ));
 
-//        apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusEstoque(
-//                999L,
-//                "PNEU_01",
-//                5L,
-//                "03383283194",
-//                LocalDateTime.now(),
-//                false,
-//                null,
-//                null
-//
-//        ));
-
-//        apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusVeiculo(
-//                999L,
-//                "PNEU_01",
-//                5L,
-//                "03383283194",
-//                LocalDateTime.now(),
-//                "PRO1010",
-//                111,
-//                false,
-//                null,
-//                null
-//        ));
-
         //Excecução
         final SuccessResponseIntegracao successResponseIntegracao = apiPneuService.atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus);
 
         //Verificações
         assertThat(successResponseIntegracao).isNotNull();
     }
+
+
 }
