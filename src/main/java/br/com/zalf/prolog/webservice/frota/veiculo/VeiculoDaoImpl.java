@@ -725,7 +725,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 throw new SQLException("Erro ao aplicar o pneu " + codPneu + " ao veículo " + placa);
             }
         } finally {
-            close(stmt);
+            close(stmt, rSet);
         }
     }
 
