@@ -3,6 +3,7 @@ Stage
 
 ### Refactors
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
+* Altera as interações com o banco de dados para implementar a amarração entre pneus e veículos (PL-1965)
 
 Change Log
 ==========
