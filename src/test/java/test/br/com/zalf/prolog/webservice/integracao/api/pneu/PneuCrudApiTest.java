@@ -46,67 +46,27 @@ public final class PneuCrudApiTest extends BaseTest {
         DatabaseManager.finish();
     }
 
+    public Long geraValorAleatorio() {
+        int random = (int) (Math.random() * ((99999 - 1) + 1)) + 1;
+        Long valor = Long.valueOf(random);
+        return valor;
+    }
+
     @Test
     @DisplayName("Inserção carga inicial de Pneus sem erros")
     void adicionaCargaInicialPneuSemErroTest() throws Throwable {
         //Cenário
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
-        cargaInicial.add(new ApiPneuCargaInicial(
-                21L,
-                "CARGA_INICIAL_P1",
-                5L,
-                129L,
-                1L,
-                120.0,
-                1,
-                4,
-                "1010",
-                new BigDecimal(1500.0),
-                true,
-                null,
-                null,
-                ApiStatusPneu.ESTOQUE,
-                null,
-                null
-        ));
-
-        cargaInicial.add(new ApiPneuCargaInicial(
-                22L,
-                "CARGA_INICIAL_P2",
-                5L,
-                129L,
-                1L,
-                120.0,
-                1,
-                4,
-                "1010",
-                new BigDecimal(1500.0),
-                true,
-                null,
-                null,
-                ApiStatusPneu.ESTOQUE,
-                null,
-                null
-        ));
-
-        cargaInicial.add(new ApiPneuCargaInicial(
-                23L,
-                "CARGA_INICIAL_P3",
-                5L,
-                129L,
-                1L,
-                120.0,
-                1,
-                4,
-                "1010",
-                new BigDecimal(1500.0),
-                true,
-                null,
-                null,
-                ApiStatusPneu.ESTOQUE,
-                null,
-                null
-        ));
+        cargaInicial.add(criaPneuSemErroComCodigoClienteValido());
+        cargaInicial.add(criaPneuSemErroComUnidadeValida());
+        cargaInicial.add(criaPneuSemErroComModeloPneuValido());
+        cargaInicial.add(criaPneuSemErroComDimensaoValida());
+        cargaInicial.add(criaPneuSemErroComPressaoValida());
+        cargaInicial.add(criaPneuSemErroComVidaAtualValida());
+        cargaInicial.add(criaPneuSemErroComDotValido());
+        cargaInicial.add(criaPneuSemErroComModeloDeBandaValido());
+        cargaInicial.add(criaPneuSemErroComPlacaPneuValida());
+        cargaInicial.add(criaPneuSemErroComPosicaoPneuValida());
 
         //Execução
         final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses = apiCadastroPneuService
@@ -123,16 +83,16 @@ public final class PneuCrudApiTest extends BaseTest {
     void adicionaCargaInicialPneuComErroTest() throws Throwable {
         //Cenário
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
-        cargaInicial.add(criaPneuErroCodigoClienteJaExiste());
-        cargaInicial.add(criaPneuErroCodigoUnidadeNaoExiste());
-        cargaInicial.add(criaPneuErroCodigoModeloNaoExiste());
-        cargaInicial.add(criaPneuErroCodigoDimensaoNaoExiste());
-        cargaInicial.add(criaPneuErroPressaoIncorreta());
-        cargaInicial.add(criaPneuErroVidaAtualMaiorQueTotal());
-        cargaInicial.add(criaPneuErroDotInvalido());
-        cargaInicial.add(criaPneuErroModeloBandaNaoExiste());
-        cargaInicial.add(criaPneuErroPlacaPneuNaoExistente());
-        cargaInicial.add(criaPneuErroPosicaoPneuAplicadoNaoExistente());
+        cargaInicial.add(criaPneuComErroCodigoClienteJaExiste());
+        cargaInicial.add(criaPneuComErroCodigoUnidadeNaoExiste());
+        cargaInicial.add(criaPneuComErroCodigoModeloNaoExiste());
+        cargaInicial.add(criaPneuComErroCodigoDimensaoNaoExiste());
+        cargaInicial.add(criaPneuComErroPressaoIncorreta());
+        cargaInicial.add(criaPneuComErroVidaAtualMaiorQueTotal());
+        cargaInicial.add(criaPneuComErroDotInvalido());
+        cargaInicial.add(criaPneuComErroModeloBandaNaoExiste());
+        cargaInicial.add(criaPneuComErroPlacaPneuNaoExistente());
+        cargaInicial.add(criaPneuComErroPosicaoPneuAplicadoNaoExistente());
 
         //Execução
         final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses = apiCadastroPneuService
@@ -271,8 +231,209 @@ public final class PneuCrudApiTest extends BaseTest {
         assertThat(successResponseIntegracao).isNotNull();
     }
 
-    //Objetos para determinados cenários de teste em Carga Inicial de Pneus.
-    private ApiPneuCargaInicial criaPneuErroCodigoClienteJaExiste() {
+    //Objetos para determinados cenários de teste em Carga Inicial de Pneus sem erro.
+    private ApiPneuCargaInicial criaPneuSemErroComCodigoClienteValido() {
+        return new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null);
+    }
+
+    private ApiPneuCargaInicial criaPneuSemErroComUnidadeValida() {
+        return new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null);
+    }
+
+    private ApiPneuCargaInicial criaPneuSemErroComModeloPneuValido() {
+        return new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null);
+    }
+
+    private ApiPneuCargaInicial criaPneuSemErroComDimensaoValida() {
+        return new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null);
+    }
+
+    private ApiPneuCargaInicial criaPneuSemErroComPressaoValida() {
+        return new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null);
+    }
+
+    private ApiPneuCargaInicial criaPneuSemErroComVidaAtualValida() {
+        return new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null);
+    }
+
+    private ApiPneuCargaInicial criaPneuSemErroComDotValido() {
+        return new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null);
+    }
+
+    private ApiPneuCargaInicial criaPneuSemErroComModeloDeBandaValido() {
+        return new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                false,
+                11L,
+                new BigDecimal(100.00),
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null);
+    }
+
+    private ApiPneuCargaInicial criaPneuSemErroComPlacaPneuValida() {
+        return new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                false,
+                11L,
+                new BigDecimal(100.00),
+                ApiStatusPneu.ESTOQUE,
+                "LLL1234",
+                904);
+    }
+
+    private ApiPneuCargaInicial criaPneuSemErroComPosicaoPneuValida() {
+        return new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                false,
+                11L,
+                new BigDecimal(100.00),
+                ApiStatusPneu.ESTOQUE,
+                "LLL1234",
+                904);
+    }
+
+    //Objetos para determinados cenários de teste em Carga Inicial de Pneus com erro.
+    private ApiPneuCargaInicial criaPneuComErroCodigoClienteJaExiste() {
         return new ApiPneuCargaInicial(
                 23L,
                 "CARGA_INICIAL_P3",
@@ -293,7 +454,7 @@ public final class PneuCrudApiTest extends BaseTest {
         );
     }
 
-    private ApiPneuCargaInicial criaPneuErroCodigoUnidadeNaoExiste() {
+    private ApiPneuCargaInicial criaPneuComErroCodigoUnidadeNaoExiste() {
         return new ApiPneuCargaInicial(
                 384L,
                 "PNEU_909090",
@@ -314,7 +475,7 @@ public final class PneuCrudApiTest extends BaseTest {
         );
     }
 
-    private ApiPneuCargaInicial criaPneuErroCodigoModeloNaoExiste() {
+    private ApiPneuCargaInicial criaPneuComErroCodigoModeloNaoExiste() {
         return new ApiPneuCargaInicial(
                 111L,
                 "CARGA_INICIAL_P3",
@@ -335,7 +496,7 @@ public final class PneuCrudApiTest extends BaseTest {
         );
     }
 
-    private ApiPneuCargaInicial criaPneuErroCodigoDimensaoNaoExiste() {
+    private ApiPneuCargaInicial criaPneuComErroCodigoDimensaoNaoExiste() {
         return new ApiPneuCargaInicial(
                 23L,
                 "CARGA_INICIAL_P3",
@@ -356,7 +517,7 @@ public final class PneuCrudApiTest extends BaseTest {
         );
     }
 
-    private ApiPneuCargaInicial criaPneuErroPressaoIncorreta() {
+    private ApiPneuCargaInicial criaPneuComErroPressaoIncorreta() {
         return new ApiPneuCargaInicial(
                 23L,
                 "CARGA_INICIAL_P3",
@@ -377,7 +538,7 @@ public final class PneuCrudApiTest extends BaseTest {
         );
     }
 
-    private ApiPneuCargaInicial criaPneuErroVidaAtualMaiorQueTotal() {
+    private ApiPneuCargaInicial criaPneuComErroVidaAtualMaiorQueTotal() {
         return new ApiPneuCargaInicial(
                 23L,
                 "CARGA_INICIAL_P3",
@@ -398,7 +559,7 @@ public final class PneuCrudApiTest extends BaseTest {
         );
     }
 
-    private ApiPneuCargaInicial criaPneuErroDotInvalido() {
+    private ApiPneuCargaInicial criaPneuComErroDotInvalido() {
         return new ApiPneuCargaInicial(
                 23L,
                 "CARGA_INICIAL_P3",
@@ -419,7 +580,7 @@ public final class PneuCrudApiTest extends BaseTest {
         );
     }
 
-    private ApiPneuCargaInicial criaPneuErroModeloBandaNaoExiste() {
+    private ApiPneuCargaInicial criaPneuComErroModeloBandaNaoExiste() {
         return new ApiPneuCargaInicial(
                 23L,
                 "CARGA_INICIAL_P3",
@@ -440,7 +601,7 @@ public final class PneuCrudApiTest extends BaseTest {
         );
     }
 
-    private ApiPneuCargaInicial criaPneuErroPlacaPneuNaoExistente() {
+    private ApiPneuCargaInicial criaPneuComErroPlacaPneuNaoExistente() {
         return new ApiPneuCargaInicial(
                 23L,
                 "CARGA_INICIAL_P3",
@@ -461,7 +622,7 @@ public final class PneuCrudApiTest extends BaseTest {
         );
     }
 
-    private ApiPneuCargaInicial criaPneuErroPosicaoPneuAplicadoNaoExistente() {
+    private ApiPneuCargaInicial criaPneuComErroPosicaoPneuAplicadoNaoExistente() {
         return new ApiPneuCargaInicial(
                 23L,
                 "CARGA_INICIAL_P3",
@@ -481,5 +642,4 @@ public final class PneuCrudApiTest extends BaseTest {
                 7777
         );
     }
-
 }
