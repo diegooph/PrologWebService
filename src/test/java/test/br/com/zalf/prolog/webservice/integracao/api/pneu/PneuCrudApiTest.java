@@ -119,35 +119,22 @@ public final class PneuCrudApiTest extends BaseTest {
                 .inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro);
 
         //Verificações
+        assertThat(successResponseIntegracao).isNotNull();
         assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
-        assertThat(successResponseIntegracao.getMsg().equals("Pneu cadastrado com sucesso no Sistema ProLog"));
     }
 
     @Test
     @DisplayName("Inserção de um novo Pneu com erro")
     void adicionaPneuComErrosTest() throws Throwable {
         //Cenário
-        final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                888L,
-                "PNEU_02",
-                5L,
-                129L,
-                1L,
-                120.0,
-                1,
-                4,
-                "1010",
-                new BigDecimal(1000.00),
-                true,
-                12L,
-                new BigDecimal(100.00)
-        );
+        final ApiPneuCadastro apiPneuCadastro = criaPneuParaInserirComErro();
 
         //Execução
         final SuccessResponseIntegracao successResponseIntegracao = apiCadastroPneuService
                 .inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro);
 
         //Verificações
+        assertThat(successResponseIntegracao).isNotNull();
         assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
     }
 
@@ -157,8 +144,8 @@ public final class PneuCrudApiTest extends BaseTest {
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusAnalise(
-                999L,
-                "PNEU_01",
+                13218L,
+                "95687",
                 5L,
                 "03383283194",
                 LocalDateTime.now(),
@@ -168,14 +155,14 @@ public final class PneuCrudApiTest extends BaseTest {
         ));
 
         apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusDescarte(
-                888L,
-                "PNEU_02",
+                94617L,
+                "71157",
                 5L,
-                "03383283194",
+                "12345678910",
                 LocalDateTime.now(),
                 true,
-                10L,
-                new BigDecimal(100.89)
+                11L,
+                new BigDecimal(69.00)
         ));
 
         //Excecução
@@ -184,6 +171,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(successResponseIntegracao).isNotNull();
+        assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
     }
 
     @Test
@@ -192,8 +180,8 @@ public final class PneuCrudApiTest extends BaseTest {
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusAnalise(
-                999L,
-                "PNEU_01",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
                 "03383283194",
                 LocalDateTime.now(),
@@ -203,14 +191,14 @@ public final class PneuCrudApiTest extends BaseTest {
         ));
 
         apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusDescarte(
-                888L,
-                "PNEU_02",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
-                "03383283194",
+                "12345678910",
                 LocalDateTime.now(),
                 true,
-                10L,
-                new BigDecimal(100.89)
+                11L,
+                new BigDecimal(69.00)
         ));
 
         //Excecução
@@ -219,6 +207,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(successResponseIntegracao).isNotNull();
+        assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
     }
 
     //Objetos Pneu para testes em Carga Inicial sem erro.
@@ -652,4 +641,20 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     //Objeto Pneu preenchido para testes com erro.
+    private ApiPneuCadastro criaPneuParaInserirComErro() {
+        return new ApiPneuCadastro(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                1115L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1000.00),
+                true,
+                12L,
+                new BigDecimal(100.00));
+    }
 }
