@@ -74,8 +74,10 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(apiPneuCargaInicialResponses).isNotEmpty();
-        //size e pra cada pneu
-
+        assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
+        for (int i = 0; i <= apiPneuCargaInicialResponses.size(); i++) {
+            assertThat(apiPneuCargaInicialResponses.get(i).getSucesso()).isTrue();
+        }
     }
 
     @Test
