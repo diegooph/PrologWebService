@@ -75,7 +75,7 @@ public final class PneuCrudApiTest extends BaseTest {
         //Verificações
         assertThat(apiPneuCargaInicialResponses).isNotEmpty();
         assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
-        for (int i = 0; i <= apiPneuCargaInicialResponses.size(); i++) {
+        for (int i = 0; i < apiPneuCargaInicialResponses.size(); i++) {
             assertThat(apiPneuCargaInicialResponses.get(i).getSucesso()).isTrue();
         }
     }
@@ -103,8 +103,9 @@ public final class PneuCrudApiTest extends BaseTest {
         //Verificações
         assertThat(apiPneuCargaInicialResponses).isNotEmpty();
         assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
-
-
+        for (int i = 0; i < apiPneuCargaInicialResponses.size(); i++) {
+            assertThat(apiPneuCargaInicialResponses.get(i).getSucesso()).isFalse();
+        }
     }
 
     @Test
