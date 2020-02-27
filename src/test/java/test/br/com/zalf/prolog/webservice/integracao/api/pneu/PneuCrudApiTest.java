@@ -132,17 +132,13 @@ public final class PneuCrudApiTest extends BaseTest {
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = criaPneuParaInserirComErro();
 
-        try {
-            //Execução
-            final SuccessResponseIntegracao successResponseIntegracao = apiCadastroPneuService
-                    .inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro);
+        //Excecução
+        final Throwable throwable = assertThrows(
+                ProLogException.class, () -> new ApiCadastroPneuService().inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro));
 
-            //Verificações
-            assertThat(successResponseIntegracao).isNotNull();
-            assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
-        } catch (final Throwable t) {
-            assertThat(t).isNotNull();
-        }
+        //Verificações
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
+        assertThat(throwable.getMessage()).isEqualTo("A Unidade 1115 repassada não existe no Sistema ProLog");
     }
 
     @Test
@@ -179,7 +175,6 @@ public final class PneuCrudApiTest extends BaseTest {
         //Verificações
         assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
         assertThat(throwable.getMessage()).isEqualTo("O pneu de código interno 61177 não está mapeado no Sistema ProLog");
-
     }
 
     //Objetos Pneu para testes em Carga Inicial sem erro.
