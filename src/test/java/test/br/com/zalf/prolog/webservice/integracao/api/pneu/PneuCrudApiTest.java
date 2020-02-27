@@ -112,21 +112,7 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Inserção de um novo Pneu sem erro")
     void adicionaPneuSemErrosTest() throws Throwable {
         //Cenário
-        final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                88989898L,
-                "PNEU_as02",
-                5L,
-                129L,
-                1L,
-                120.0,
-                1,
-                4,
-                "1010",
-                new BigDecimal(1000.00),
-                true,
-                12L,
-                new BigDecimal(100.00)
-        );
+        final ApiPneuCadastro apiPneuCadastro = criaPneuParaInsertSemErro();
 
         //Execução
         final SuccessResponseIntegracao successResponseIntegracao = apiCadastroPneuService
@@ -134,6 +120,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
+        assertThat(successResponseIntegracao.getMsg().equals("Pneu cadastrado com sucesso no Sistema ProLog"));
     }
 
     @Test
@@ -234,7 +221,7 @@ public final class PneuCrudApiTest extends BaseTest {
         assertThat(successResponseIntegracao).isNotNull();
     }
 
-    //Objetos para determinados cenários de teste em Carga Inicial de Pneus sem erro.
+    //Objetos Pneu para testes em Carga Inicial sem erro.
     private ApiPneuCargaInicial criaPneuSemErroComCodigoClienteValido() {
         return new ApiPneuCargaInicial(
                 geraValorAleatorio(),
@@ -435,11 +422,11 @@ public final class PneuCrudApiTest extends BaseTest {
                 904);
     }
 
-    //Objetos para determinados cenários de teste em Carga Inicial de Pneus com erro.
+    //Objetos Pneu para testes em Carga Inicial com erro.
     private ApiPneuCargaInicial criaPneuComErroCodigoClienteJaExiste() {
         return new ApiPneuCargaInicial(
-                23L,
-                "CARGA_INICIAL_P3",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
                 129L,
                 1L,
@@ -459,8 +446,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     private ApiPneuCargaInicial criaPneuComErroCodigoUnidadeNaoExiste() {
         return new ApiPneuCargaInicial(
-                384L,
-                "PNEU_909090",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 909090L,
                 129L,
                 1L,
@@ -480,8 +467,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     private ApiPneuCargaInicial criaPneuComErroCodigoModeloNaoExiste() {
         return new ApiPneuCargaInicial(
-                111L,
-                "CARGA_INICIAL_P3",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
                 575L,
                 1L,
@@ -501,8 +488,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     private ApiPneuCargaInicial criaPneuComErroCodigoDimensaoNaoExiste() {
         return new ApiPneuCargaInicial(
-                23L,
-                "CARGA_INICIAL_P3",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
                 129L,
                 455L,
@@ -522,8 +509,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     private ApiPneuCargaInicial criaPneuComErroPressaoIncorreta() {
         return new ApiPneuCargaInicial(
-                23L,
-                "CARGA_INICIAL_P3",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
                 129L,
                 1L,
@@ -543,8 +530,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     private ApiPneuCargaInicial criaPneuComErroVidaAtualMaiorQueTotal() {
         return new ApiPneuCargaInicial(
-                23L,
-                "CARGA_INICIAL_P3",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
                 129L,
                 1L,
@@ -564,8 +551,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     private ApiPneuCargaInicial criaPneuComErroDotInvalido() {
         return new ApiPneuCargaInicial(
-                23L,
-                "CARGA_INICIAL_P3",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
                 129L,
                 1L,
@@ -585,8 +572,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     private ApiPneuCargaInicial criaPneuComErroModeloBandaNaoExiste() {
         return new ApiPneuCargaInicial(
-                23L,
-                "CARGA_INICIAL_P3",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
                 129L,
                 1L,
@@ -606,8 +593,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     private ApiPneuCargaInicial criaPneuComErroPlacaPneuNaoExistente() {
         return new ApiPneuCargaInicial(
-                23L,
-                "CARGA_INICIAL_P3",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
                 129L,
                 1L,
@@ -627,8 +614,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     private ApiPneuCargaInicial criaPneuComErroPosicaoPneuAplicadoNaoExistente() {
         return new ApiPneuCargaInicial(
-                23L,
-                "CARGA_INICIAL_P3",
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
                 5L,
                 129L,
                 1L,
@@ -645,4 +632,24 @@ public final class PneuCrudApiTest extends BaseTest {
                 7777
         );
     }
+
+    //Objeto Pneu preenchido para testes sem erro.
+    private ApiPneuCadastro criaPneuParaInsertSemErro() {
+        return new ApiPneuCadastro(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                new BigDecimal(1000.00),
+                true,
+                12L,
+                new BigDecimal(100.00));
+    }
+
+    //Objeto Pneu preenchido para testes com erro.
 }
