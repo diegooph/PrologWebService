@@ -224,7 +224,8 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM INTEGRACAO.FUNC_GERAL_BUSCA_CONFIG_ABERTURA_SERVICO_PNEU(F_COD_UNIDADE => ?)");
+                    "FROM INTEGRACAO.FUNC_GERAL_BUSCA_CONFIG_ABERTURA_SERVICO_PNEU(F_COD_UNIDADE => ?) " +
+                    "AS DEVE_ABRIR_SERVICO_PNEU");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
