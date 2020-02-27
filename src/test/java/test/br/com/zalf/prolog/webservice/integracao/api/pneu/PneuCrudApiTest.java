@@ -1,6 +1,8 @@
 package test.br.com.zalf.prolog.webservice.integracao.api.pneu;
 
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
+import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.ApiPneuService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.ApiCadastroPneuService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCadastro;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Created on 25/02/2020
@@ -147,27 +150,8 @@ public final class PneuCrudApiTest extends BaseTest {
     void atualizaStatusPneuSemErroTest() throws Throwable {
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
-        apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusAnalise(
-                13218L,
-                "95687",
-                5L,
-                "03383283194",
-                LocalDateTime.now(),
-                false,
-                null,
-                null
-        ));
-
-        apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusDescarte(
-                94617L,
-                "71157",
-                5L,
-                "12345678910",
-                LocalDateTime.now(),
-                true,
-                11L,
-                new BigDecimal(69.00)
-        ));
+        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusAnaliseSemErro());
+        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusDescarteSemErro());
 
         //Excecução
         final SuccessResponseIntegracao successResponseIntegracao = apiPneuService
@@ -183,39 +167,19 @@ public final class PneuCrudApiTest extends BaseTest {
     void atualizaStatusPneuComErroTest() throws Throwable {
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
-        apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusAnalise(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
-                5L,
-                "03383283194",
-                LocalDateTime.now(),
-                false,
-                null,
-                null
-        ));
+        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusComErroCodEmpresaIntegrada());
+        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusComErroCodigoCliente());
+        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusComErroCodigoUnidade());
+        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusComErroCodigoModeloBanda());
 
-        apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusDescarte(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
-                5L,
-                "12345678910",
-                LocalDateTime.now(),
-                true,
-                11L,
-                new BigDecimal(69.00)
-        ));
+        //Excecução
+        final Throwable throwable = assertThrows(
+                ProLogException.class, () -> new ApiPneuService().atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus));
 
-        try {
-            //Excecução
-            final SuccessResponseIntegracao successResponseIntegracao = apiPneuService
-                    .atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus);
+        //Verificações
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
+        assertThat(throwable.getMessage()).isEqualTo("O pneu de código interno 61177 não está mapeado no Sistema ProLog");
 
-            //Verificações
-            assertThat(successResponseIntegracao).isNotNull();
-            assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
-        } catch (final Throwable t) {
-            assertThat(t).isNotNull();
-        }
     }
 
     //Objetos Pneu para testes em Carga Inicial sem erro.
@@ -664,5 +628,85 @@ public final class PneuCrudApiTest extends BaseTest {
                 true,
                 12L,
                 new BigDecimal(100.00));
+    }
+
+    //Objetos Pneu para testes na atualização do Status de um pneu sem erro
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusAnaliseSemErro() {
+        return new ApiPneuAlteracaoStatusAnalise(
+                13218L,
+                "95687",
+                5L,
+                "03383283194",
+                LocalDateTime.now(),
+                false,
+                null,
+                null
+        );
+    }
+
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusDescarteSemErro() {
+        return new ApiPneuAlteracaoStatusDescarte(
+                94617L,
+                "71157",
+                5L,
+                "12345678910",
+                LocalDateTime.now(),
+                true,
+                11L,
+                new BigDecimal(69.00)
+        );
+    }
+
+    //Objetos Pneu para testes na atualização do Status de um pneu com erro
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusComErroCodEmpresaIntegrada() {
+        return new ApiPneuAlteracaoStatusAnalise(
+                61177L,
+                "71157",
+                5L,
+                "03383283194",
+                LocalDateTime.now(),
+                false,
+                null,
+                null
+        );
+    }
+
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusComErroCodigoCliente() {
+        return new ApiPneuAlteracaoStatusDescarte(
+                94617L,
+                geraValorAleatorio().toString(),
+                5L,
+                "12345678910",
+                LocalDateTime.now(),
+                true,
+                11L,
+                new BigDecimal(69.00)
+        );
+    }
+
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusComErroCodigoUnidade() {
+        return new ApiPneuAlteracaoStatusDescarte(
+                94617L,
+                "71157",
+                115L,
+                "12345678910",
+                LocalDateTime.now(),
+                true,
+                11L,
+                new BigDecimal(69.00)
+        );
+    }
+
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusComErroCodigoModeloBanda() {
+        return new ApiPneuAlteracaoStatusDescarte(
+                94617L,
+                "71157",
+                5L,
+                "12345678910",
+                LocalDateTime.now(),
+                true,
+                1090L,
+                new BigDecimal(69.00)
+        );
     }
 }
