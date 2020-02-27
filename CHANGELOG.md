@@ -1,6 +1,9 @@
 Stage
 ==========
 
+### Features
+* Criar configuração para saber se uma integração abre serviços de pneu (PLI-78)
+
 ### Refactors
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
 
