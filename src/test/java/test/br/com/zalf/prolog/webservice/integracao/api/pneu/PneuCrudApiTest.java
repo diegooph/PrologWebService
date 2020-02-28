@@ -398,17 +398,49 @@ public final class PneuCrudApiTest extends BaseTest {
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusComErroCodEmpresaIntegrada());
-        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusComErroCodigoCliente());
-        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusComErroCodigoUnidade());
-        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusComErroCodigoModeloBanda());
 
         //Excecução
         final Throwable throwable = assertThrows(
-                ProLogException.class, () -> new ApiPneuService().atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus));
+                ProLogException.class, () -> new ApiPneuService()
+                        .atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus));
 
         //Verificações
         assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
         assertThat(throwable.getMessage()).isEqualTo("O pneu de código interno 61177 não está mapeado no Sistema ProLog");
+    }
+
+    @Test
+    @DisplayName("Teste atualiza status do pneu com código unidade inválido")
+    void atualizaStatusPneuComCodigoUnidadeInvalido() {
+        //Cenário
+        final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
+        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusComErroCodigoUnidade());
+
+        //Excecução
+        final Throwable throwable = assertThrows(
+                ProLogException.class, () -> new ApiPneuService()
+                        .atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus));
+
+        //Verificações
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
+        assertThat(throwable.getMessage()).isEqualTo("A Unidade 115 não está configurada para esta empresa");
+    }
+
+    @Test
+    @DisplayName("Teste atualiza status do pneu com código modelo de banda inválido")
+    void atualizaStatusPneuComCodigoModeloBandaInvalido() {
+        //Cenário
+        final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
+        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusComErroCodigoModeloBanda());
+
+        //Excecução
+        final Throwable throwable = assertThrows(
+                ProLogException.class, () -> new ApiPneuService()
+                        .atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus));
+
+        //Verificações
+        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
+        assertThat(throwable.getMessage()).isEqualTo("O modelo da banda do pneu 1090 não está mapeado no Sistema ProLog");
     }
 
     //Objetos Pneu para testes em Carga Inicial sem erro.
@@ -919,19 +951,6 @@ public final class PneuCrudApiTest extends BaseTest {
                 false,
                 null,
                 null
-        );
-    }
-
-    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusComErroCodigoCliente() {
-        return new ApiPneuAlteracaoStatusDescarte(
-                94617L,
-                geraValorAleatorio().toString(),
-                5L,
-                "12345678910",
-                LocalDateTime.now(),
-                true,
-                11L,
-                new BigDecimal(69.00)
         );
     }
 
