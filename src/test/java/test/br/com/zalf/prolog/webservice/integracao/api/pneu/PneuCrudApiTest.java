@@ -36,6 +36,7 @@ public final class PneuCrudApiTest extends BaseTest {
     private static final String TOKEN_INTEGRACAO = "NATAN";
     private ApiCadastroPneuService apiCadastroPneuService;
     private ApiPneuService apiPneuService;
+    private ApiPneuCargaInicial apiPneuCargaInicialPneuInseridoNoBanco;
 
     @BeforeAll
     public void initialize() throws Throwable {
@@ -108,6 +109,54 @@ public final class PneuCrudApiTest extends BaseTest {
         assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
         for (int i = 0; i < apiPneuCargaInicialResponses.size(); i++) {
             assertThat(apiPneuCargaInicialResponses.get(i).getSucesso()).isFalse();
+        }
+    }
+
+    @Test
+    @DisplayName("Carga inicial de um pneu existente no banco com vida atual = 3 porém sobrescrevendo o mesmo para vida atual = 1")
+    void sobrescrevePneuJaCadastradoComVidaMenorQueAtualCargaInicial() {
+        //Cenário específico da PLI-4 (Erro ao sobrescrever pneus que voltam para vida 1);
+        //Cria pneu com vida atual = 3;
+        final ApiPneuCadastro apiPneuCadastro = criaPneuParaInsertSemErro();
+
+        //Execução: Adiciona pneu;
+        final SuccessResponseIntegracao successResponseIntegracao = apiCadastroPneuService
+                .inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro);
+
+        //Verificações: Valida inserção;
+        assertThat(successResponseIntegracao).isNotNull();
+        assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
+
+        //Usa pneu já inserido para carga inicial, mas o pneu agora passa a ter vida atual = 1;
+        final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
+        cargaInicial.add(new ApiPneuCargaInicial(
+                apiPneuCadastro.getCodigoSistemaIntegrado(),
+                apiPneuCadastro.getCodigoCliente(),
+                apiPneuCadastro.getCodUnidadePneu(),
+                apiPneuCadastro.getCodModeloPneu(),
+                apiPneuCadastro.getCodDimensaoPneu(),
+                apiPneuCadastro.getPressaoCorretaPneu(),
+                1,
+                apiPneuCadastro.getVidaTotalPneu(),
+                apiPneuCadastro.getDotPneu(),
+                apiPneuCadastro.getValorPneu(),
+                apiPneuCadastro.getPneuNovoNuncaRodado(),
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null));
+
+        //Execução
+        final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses = apiCadastroPneuService
+                .inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        //Verificações
+        assertThat(apiPneuCargaInicialResponses).isNotEmpty();
+        assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
+
+        for (int i = 0; i < apiPneuCargaInicialResponses.size(); i++) {
+            assertThat(apiPneuCargaInicialResponses.get(i).getSucesso()).isTrue();
         }
     }
 
@@ -186,7 +235,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 129L,
                 1L,
                 120.0,
-                1,
+                3,
                 4,
                 "1010",
                 new BigDecimal(1500.0),
@@ -592,17 +641,19 @@ public final class PneuCrudApiTest extends BaseTest {
     //Objeto Pneu preenchido para testes sem erro.
     private ApiPneuCadastro criaPneuParaInsertSemErro() {
         return new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                //geraValorAleatorio(),
+                //geraValorAleatorio().toString(),
+                111111L,
+                "111111",
                 5L,
                 129L,
                 1L,
                 120.0,
-                1,
+                3,
                 4,
                 "1010",
                 new BigDecimal(1000.00),
-                true,
+                false,
                 12L,
                 new BigDecimal(100.00));
     }
