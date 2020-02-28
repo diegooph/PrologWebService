@@ -56,7 +56,7 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Teste Inserção Carga Cnicial de Pneus sem erros")
+    @DisplayName("Teste Inserção Carga Inicial de Pneus sem erros")
     void adicionaCargaInicialPneuSemErroTest() throws Throwable {
         //Cenário
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -80,25 +80,6 @@ public final class PneuCrudApiTest extends BaseTest {
         assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
         for (int i = 0; i < apiPneuCargaInicialResponses.size(); i++) {
             assertThat(apiPneuCargaInicialResponses.get(i).getSucesso()).isTrue();
-        }
-    }
-
-    @Test
-    @DisplayName("Teste Carga Inicial com código cliente já cadastrado na unidade")
-    void adicionaCargaInicialPneuComErroCodClienteJaExisteTest() {
-        //Cenário
-        final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
-        cargaInicial.add(criaPneuComErroCodigoClienteJaExiste());
-
-        //Execução
-        final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses = apiCadastroPneuService
-                .inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
-
-        //Verificações
-        assertThat(apiPneuCargaInicialResponses).isNotEmpty();
-        assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
-        for (int i = 0; i < apiPneuCargaInicialResponses.size(); i++) {
-            assertThat(apiPneuCargaInicialResponses.get(i).getSucesso()).isFalse();
         }
     }
 
@@ -439,13 +420,13 @@ public final class PneuCrudApiTest extends BaseTest {
                 129L,
                 1L,
                 120.0,
-                3,
+                1,
                 4,
                 "1010",
                 new BigDecimal(1500.0),
-                true,
-                null,
-                null,
+                false,
+                11L,
+                new BigDecimal(500),
                 ApiStatusPneu.ESTOQUE,
                 null,
                 null);
@@ -632,27 +613,6 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     //Objetos Pneu para testes em Carga Inicial com erro.
-    private ApiPneuCargaInicial criaPneuComErroCodigoClienteJaExiste() {
-        return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                "22959",
-                5L,
-                129L,
-                1L,
-                120.0,
-                1,
-                4,
-                "1010",
-                new BigDecimal(1500.0),
-                true,
-                null,
-                null,
-                ApiStatusPneu.ESTOQUE,
-                null,
-                null
-        );
-    }
-
     private ApiPneuCargaInicial criaPneuComErroCodigoUnidadeNaoExiste() {
         return new ApiPneuCargaInicial(
                 geraValorAleatorio(),
