@@ -17,10 +17,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static br.com.zalf.prolog.webservice.commons.util.StringUtils.removeExtraSpaces;
 import static br.com.zalf.prolog.webservice.commons.util.StringUtils.stripSpecialCharacters;
@@ -138,29 +141,27 @@ final class NotificadorSocorroRota {
                                                 .put("placa_veiculo", placaVeiculoProblema)
                                                 .put("link_socorro_rota", "https://adm.prologapp.com/socorro-em-rota")
                                                 .build()));
+            } else {
+                Log.d(TAG, "Nenhum colaborador para notificar VIA E-MAIL sobre abertura do socorro");
             }
 
-
-            // Envia notificação via firebase.
-            final String messageBody = String.format(
-                    "%s solicitou um socorro para o veículo %s. Clique para ver mais.",
-                    formataNomeColaborador(nomeColaboradorAbertura),
-                    placaVeiculoProblema.trim());
-
-            final List<SimplePushDestination> destinations = new ArrayList<>();
-            for (final ColaboradorNotificacaoAberturaSocorroRota colaborador : colaboradores) {
-                final String[] tokens = colaborador.getTokensPushFirebase();
-                if (tokens != null) {
-                    //noinspection ForLoopReplaceableByForEach
-                    for (int i = 0; i < tokens.length; i++) {
-                        destinations.add(new SimplePushDestination(
-                                String.valueOf(colaborador.getCodColaborador()),
-                                tokens[i]));
-                    }
-                }
-            }
+            final List<SimplePushDestination> destinations = colaboradores
+                    .stream()
+                    .filter(c -> c.getTokensPushFirebase() != null)
+                    .map(c ->
+                            Arrays.stream(c.getTokensPushFirebase())
+                                    .map(token -> new SimplePushDestination(String.valueOf(c.getCodColaborador()), token))
+                                    .collect(Collectors.toList()))
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
 
             if (!destinations.isEmpty()) {
+                // Envia notificação via firebase.
+                final String messageBody = String.format(
+                        "%s solicitou um socorro para o veículo %s. Clique para ver mais.",
+                        formataNomeColaborador(nomeColaboradorAbertura),
+                        placaVeiculoProblema.trim());
+
                 //noinspection unchecked
                 new FirebasePushMessageApi().deliver(
                         (List<PushDestination>) (List<?>) destinations,
@@ -173,6 +174,8 @@ final class NotificadorSocorroRota {
                                 .withScreenToNavigate(AndroidAppScreens.VISUALIZAR_SOCORRO_ROTA)
                                 .withMetadataScreen(String.valueOf(codSocorro))
                                 .build());
+            } else {
+                Log.d(TAG, "Nenhum colaborador para notificar VIA PUSH sobre abertura do socorro");
             }
         } else {
             Log.d(TAG, "Nenhum colaborador para notificar sobre abertura do socorro");
