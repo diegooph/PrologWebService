@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
+package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;

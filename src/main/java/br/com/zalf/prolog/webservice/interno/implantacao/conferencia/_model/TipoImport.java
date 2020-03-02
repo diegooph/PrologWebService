@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia._model;
+package br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;

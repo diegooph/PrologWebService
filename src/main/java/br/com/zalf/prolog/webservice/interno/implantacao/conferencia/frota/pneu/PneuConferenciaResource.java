@@ -1,10 +1,11 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu;
+package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDaoImpl;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,7 @@ public final class PneuConferenciaResource {
 
     @NotNull
     private final PneuConferenciaService service = new PneuConferenciaService();
+
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
