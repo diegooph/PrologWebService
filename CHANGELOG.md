@@ -7,13 +7,18 @@ Stage
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
-* Adiciona codModeloChecklist no envio dos dados para o Globus (PLI-89)
 
 Change Log
 ==========
 
+<a name="v1.0.22"></a>
+## Version [v1.0.22](https://github.com/luizfp/PrologWebService/compare/v1.0.21...v1.0.22) (release-date) [unreleased]
+
 <a name="v1.0.21"></a>
-## Version [v1.0.21](https://github.com/luizfp/PrologWebService/compare/v1.0.20...v1.0.21) (release-date) [unreleased]
+## Version [v1.0.21](https://github.com/luizfp/PrologWebService/compare/v1.0.20...v1.0.21) (2020-02-25)
+
+### Refactors
+* Adiciona codModeloChecklist no envio dos dados para o Globus (PLI-89)
 
 <a name="v1.0.20"></a>
 ## Version [v1.0.20](https://github.com/luizfp/PrologWebService/compare/v1.0.19...v1.0.20) (2020-02-25)
