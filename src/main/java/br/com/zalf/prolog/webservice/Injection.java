@@ -142,12 +142,12 @@ import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRel
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDao;
 import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDaoImpl;
-import br.com.zalf.prolog.webservice.implantacao.autenticacao.ImplantacaoLoginSenhaDao;
-import br.com.zalf.prolog.webservice.implantacao.autenticacao.ImplantacaoLoginSenhaDaoImpl;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu.PneuConferenciaDao;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu.PneuConferenciaDaoImpl;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDao;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDao;
@@ -285,8 +285,8 @@ public final class Injection {
         return new MovimentacaoRelatorioDaoImpl();
     }
 
-    public static ImplantacaoLoginSenhaDao provideImplantacaoLoginSenhaDao() {
-        return new ImplantacaoLoginSenhaDaoImpl();
+    public static AutenticacaoLoginSenhaDao provideAutenticacaoLoginSenhaDao() {
+        return new AutenticacaoLoginSenhaDaoImpl();
     }
 
     @NotNull
