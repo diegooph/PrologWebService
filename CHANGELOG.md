@@ -7,6 +7,7 @@ Stage
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
+* Adiciona codModeloChecklist no envio dos dados para o Globus (PLI-89)
 
 Change Log
 ==========
@@ -17,7 +18,7 @@ Change Log
 <a name="v1.0.20"></a>
 ## Version [v1.0.20](https://github.com/luizfp/PrologWebService/compare/v1.0.19...v1.0.20) (2020-02-25)
 
-### Recators
+### Refactors
 * Reestrutura mensagens de erro na sincronização dos checklists integrados (PLI-70)
 
 ### Bug Fixes
@@ -34,7 +35,7 @@ Change Log
 <a name="v1.0.18"></a>
 ## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (2020-02-13)
 
-### Recators
+### Refactors
 * Remove roteamento de tipos de veículos e cria busca específica para checklists (PL-2536)
 * Cria bloqueio de integração por unidades (PLI-71)
 
