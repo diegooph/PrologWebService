@@ -120,5 +120,13 @@ public interface IntegracaoDao {
     @NotNull
     List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken) throws Throwable;
 
+    /**
+     * Método utilizado para verificar se uma unidade possui configuração para abrir serviço para pneus.
+     *
+     * @param codUnidade código da unidade.
+     * @return Uma flag para identificar se deve abrir serviço para os pneus.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
     boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable;
 }

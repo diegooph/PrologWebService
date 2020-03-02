@@ -216,6 +216,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
+    @NotNull
     @Override
     public boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
