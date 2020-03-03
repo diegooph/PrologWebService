@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
@@ -236,54 +237,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
 
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_RESOLVER_ITENS(" +
-                    "F_COD_UNIDADE := ?," +
-                    "F_COD_ITENS := ?," +
-                    "F_CPF := ?," +
-                    "F_TEMPO_REALIZACAO := ?," +
-                    "F_KM := ?," +
-                    "F_STATUS_RESOLUCAO := ?," +
-                    "F_DATA_HORA_CONSERTO := ?," +
-                    "F_DATA_HORA_INICIO_RESOLUCAO := ?," +
-                    "F_DATA_HORA_FIM_RESOLUCAO := ?," +
-                    "F_FEEDBACK_CONSERTO := ?);");
-            final OffsetDateTime now = Now.offsetDateTimeUtc();
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(item.getCodUnidadeOrdemServico(), conn);
-            final List<Long> codItensResolvidos = new ArrayList<>();
-            codItensResolvidos.add(item.getCodItemResolvido());
-            stmt.setLong(1, item.getCodUnidadeOrdemServico());
-            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensResolvidos));
-            stmt.setLong(3, item.getCpfColaboradoResolucao());
-            stmt.setLong(4, item.getDuracaoResolucaoMillis());
-            stmt.setLong(5, item.getKmColetadoVeiculo());
-            stmt.setString(6, StatusItemOrdemServico.RESOLVIDO.asString());
-            stmt.setObject(7, now);
-            stmt.setObject(8, item.getDataHoraInicioResolucao().atZone(zoneId).toOffsetDateTime());
-            stmt.setObject(9, item.getDataHoraFimResolucao().atZone(zoneId).toOffsetDateTime());
-            stmt.setString(10, item.getFeedbackResolucao().trim());
-            rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.getInt(1) > 0) {
-                updateStatusOs(conn, item.getCodOrdemServico(), item.getCodUnidadeOrdemServico());
-                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(item.getPlacaVeiculo(), item.getKmColetadoVeiculo(), conn);
-                conn.commit();
-            } else {
-                throw new SQLException("Erro ao resolver o item");
-            }
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
-        } finally {
-            close(conn, stmt, rSet);
-        }
+        resolverItens(ResolverMultiplosItensOs.createFrom(item));
     }
 
     @Override
@@ -316,7 +270,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt.setObject(7, now);
             stmt.setObject(8, itensResolucao.getDataHoraInicioResolucao().atZone(zoneId).toOffsetDateTime());
             stmt.setObject(9, itensResolucao.getDataHoraFimResolucao().atZone(zoneId).toOffsetDateTime());
-            stmt.setString(10, itensResolucao.getFeedbackResolucao().trim());
+            stmt.setString(10, StringUtils.trimToNull(itensResolucao.getFeedbackResolucao()));
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.getInt(1) == itensResolucao.getCodigosItens().size()) {
                 fechaOrdensServicosComBaseItens(
