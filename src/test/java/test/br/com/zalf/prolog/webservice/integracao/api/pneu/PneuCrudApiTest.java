@@ -1,6 +1,7 @@
 package test.br.com.zalf.prolog.webservice.integracao.api.pneu;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.ApiPneuService;
@@ -16,6 +17,10 @@ import org.junit.jupiter.api.*;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,15 +39,19 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private static final String TOKEN_INTEGRACAO = "NATAN";
     @NotNull
+    private static final Long COD_EMPRESA = 3L;
+    @NotNull
     private static final Random RANDOM = new Random();
     private ApiCadastroPneuService apiCadastroPneuService;
     private ApiPneuService apiPneuService;
+    private DatabaseConnectionProvider connectionProvider;
 
     @BeforeAll
     public void initialize() {
         DatabaseManager.init();
         this.apiCadastroPneuService = new ApiCadastroPneuService();
         this.apiPneuService = new ApiPneuService();
+        this.connectionProvider = new DatabaseConnectionProvider();
         // TODO - inserir Token e CHAVES necessárias nas tabelas de integração.
     }
 
@@ -447,8 +456,10 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial de um pneu existente no banco com vida atual = 3 sendo sobrescrito para vida atual = 1")
-    void sobrescrevePneuJaCadastradoComVidaMenorQueAtualCargaInicialSemErroTest() {
-        // TODO - Ativar a sobrescrita de pneus.
+    void sobrescrevePneuJaCadastradoComVidaMenorQueAtualCargaInicialSemErroTest() throws Throwable {
+        //Ativa configuração da empresa
+        ativaSobrescritaPneuEmpresa(COD_EMPRESA);
+
         //Cenário específico da PLI-4 (Erro ao sobrescrever pneus que voltam para vida 1);
         //Cria pneu com vida atual = 3;
         final ApiPneuCadastro apiPneuCadastro = criaPneuParaInsertSemErro();
@@ -485,7 +496,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
                 apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
 
-        // TODO - desativar a sobrescrita de pneus.
+        //Desativa configuração da empresa
+        desativaSobrescritaPneuEmpresa(COD_EMPRESA);
 
         //Verificações
         assertThat(apiPneuCargaInicialResponses).isNotEmpty();
@@ -780,9 +792,11 @@ public final class PneuCrudApiTest extends BaseTest {
                 .isEqualTo("O valor da banda do pneu não pode ser um número negativo");
     }
 
+    //##################################################################################################################
+
     @Test
     @DisplayName("Teste Atualiza status do pneu sem erros")
-    void atualizaStatusPneuSemErroTest() {
+    void atualizaStatusPneuSemErroTest() throws Throwable {
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusAnaliseSemErro());
@@ -858,8 +872,8 @@ public final class PneuCrudApiTest extends BaseTest {
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusDescarte(
-                94617L,
-                "71157",
+                4650994675804429900L,
+                "-5565091848701232116",
                 5L,
                 "12345678910",
                 LocalDateTime.now(),
@@ -875,6 +889,49 @@ public final class PneuCrudApiTest extends BaseTest {
         //Verificações
         assertThat(throwable.getMessage())
                 .isEqualTo("O modelo da banda do pneu " + codModeloPneu + " não está mapeado no Sistema ProLog");
+    }
+
+    //Configuração de sobrescrita de uma empresa.
+    @NotNull
+    public void ativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.EMPRESA_CONFIG_CARGA_INICIAL(" +
+                    "COD_EMPRESA, " +
+                    "SOBRESCREVE_PNEUS, " +
+                    "SOBRESCREVE_VEICULOS) " +
+                    "VALUES(?,?,?) ON CONFLICT(COD_EMPRESA) DO NOTHING");
+
+            stmt.setLong(1, codEmpresa);
+            stmt.setBoolean(2, true);
+            stmt.setBoolean(3, false);
+            stmt.executeUpdate();
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao ativar configuração de sobrescrita do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    public void desativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("DELETE FROM INTEGRACAO.EMPRESA_CONFIG_CARGA_INICIAL " +
+                    "WHERE COD_EMPRESA = ?");
+            stmt.setLong(1, codEmpresa);
+            stmt.executeUpdate();
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao desativar configuração de sobrescrita do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
     }
 
     //Objetos Pneu para testes em Carga Inicial sem erro.
@@ -1111,8 +1168,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusAnaliseSemErro() {
         return new ApiPneuAlteracaoStatusAnalise(
-                13218L,
-                "95687",
+                -7293833540891969054L,
+                "4817684193521641257",
                 5L,
                 "03383283194",
                 LocalDateTime.now(),
@@ -1124,8 +1181,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusDescarteSemErro() {
         return new ApiPneuAlteracaoStatusDescarte(
-                94617L,
-                "71157",
+                1079779712351819902L,
+                "-5715769363840374124",
                 5L,
                 "12345678910",
                 LocalDateTime.now(),
@@ -1137,8 +1194,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEstoqueSemErro() {
         return new ApiPneuAlteracaoStatusEstoque(
-                94617L,
-                "71157",
+                -6917893272275936059L,
+                "5032291439493242524",
                 5L,
                 "12345678910",
                 LocalDateTime.now(),
@@ -1150,13 +1207,13 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEmUsoSemErro() {
         return new ApiPneuAlteracaoStatusVeiculo(
-                13218L,
-                "95687",
+                7553853001666560327L,
+                "-4887143135778876712",
                 5L,
                 "03383283194",
                 Now.localDateTimeUtc(),
                 "PRO0042",
-                907,
+                906,
                 false,
                 null,
                 null);
