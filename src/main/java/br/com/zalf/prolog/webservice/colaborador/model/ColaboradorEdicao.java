@@ -41,7 +41,7 @@ public final class ColaboradorEdicao {
 
     @NotNull(message = "O nome do colaborador não pode estar vazio.")
     @NotBlank(message = "O nome do colaborador não pode estar vazio.")
-    @Pattern(regexp = "^[a-zA-Z ]*$", message = "É permitido somente letras no nome do colaborador.")
+    @Pattern(regexp = "^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$", message = "É permitido somente letras no nome do colaborador.")
     private final String nome;
 
     @Nullable
