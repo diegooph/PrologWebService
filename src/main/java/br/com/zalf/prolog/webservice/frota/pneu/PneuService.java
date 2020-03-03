@@ -129,15 +129,6 @@ public final class PneuService {
         }
     }
 
-    public boolean vinculaPneuVeiculo(String placaVeiculo, List<PneuComum> pneus) {
-        try {
-            return dao.vinculaPneuVeiculo(placaVeiculo, pneus);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao vincular pneus ao veículo: " + placaVeiculo, e);
-            return false;
-        }
-    }
-
     public void marcarFotoComoSincronizada(@NotNull final Long codPneu,
                                            @NotNull final String urlFotoPneu) {
         try {

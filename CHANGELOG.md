@@ -7,6 +7,7 @@ Stage
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
+* Altera as interações com o banco de dados para implementar a amarração entre pneus e veículos (PL-1965)
 
 Change Log
 ==========

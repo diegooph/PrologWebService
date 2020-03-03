@@ -157,16 +157,6 @@ public interface PneuDao {
     List<PneuComum.Dimensao> getDimensoes() throws SQLException;
 
     /**
-     * Vincula pneus a um veículo
-     *
-     * @param placaVeiculo a placa de um veículo
-     * @param pneus        os pneus que se deseja vincular
-     * @return true se deu certo; caso contrário false
-     * @throws SQLException caso ocorra erro no banco
-     */
-    boolean vinculaPneuVeiculo(String placaVeiculo, List<PneuComum> pneus) throws SQLException;
-
-    /**
      * Busca um pneu através de seu código e código da sua unidade.
      */
     @NotNull

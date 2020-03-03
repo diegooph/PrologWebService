@@ -400,39 +400,6 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         return dimensoes;
     }
 
-    @Override
-    public boolean vinculaPneuVeiculo(String placaVeiculo, List<PneuComum> pneus) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            for (PneuComum pneu : pneus) {
-                stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU VALUES(?,?,(SELECT COD_UNIDADE FROM VEICULO " +
-                        "WHERE PLACA = ?),?);");
-                stmt.setString(1, placaVeiculo);
-                stmt.setLong(2, pneu.getCodigo());
-                stmt.setString(3, placaVeiculo);
-                stmt.setInt(4, pneu.getPosicao());
-                rSet = stmt.executeQuery();
-                if (rSet.next()) {
-                    updateStatus(conn, pneu, StatusPneu.EM_USO);
-                    updatePneuNovoNuncaRodado(conn, pneu.getCodigo(), false);
-                } else {
-                    throw new SQLException("Erro ao vincular o pneu ao veículo");
-                }
-            }
-            conn.commit();
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return true;
-    }
-
     @NotNull
     @Override
     public Pneu getPneuByCod(@NotNull final Long codPneu, @NotNull final Long codUnidade) throws Throwable {
