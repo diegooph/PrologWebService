@@ -85,7 +85,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             conn.setAutoCommit(false);
 
             // Busca armazena informações do veículo atual
-            final Veiculo veiculoBd = getVeiculoByPlaca(conn, placaOriginal, true);
+            final Veiculo veiculoBd = getVeiculoByPlaca(conn, placaOriginal, false);
             // A verificação de pneus aplicados para alteração de tipo agora é feita diretamente na function
 
             // O 'veiculoBd' é o veículo antes de ser atualizado as informações.
