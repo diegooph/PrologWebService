@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice.integracao.api.pneu;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.ApiPneuService;
@@ -8,9 +9,7 @@ import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuC
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCargaInicial;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCargaInicialResponse;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatusAnalise;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatusDescarte;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.model.*;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
@@ -785,10 +784,11 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Teste Atualiza status do pneu sem erros")
     void atualizaStatusPneuSemErroTest() {
         //Cenário
-        // TODO - Colocar todos os status aqui EM_USO, ESTOQUE, ANALISE, DESCARTE.
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusAnaliseSemErro());
         apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusDescarteSemErro());
+        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusEmUsoSemErro());
+        apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusEstoqueSemErro());
 
         //Excecução
         final SuccessResponseIntegracao successResponseIntegracao =
@@ -1132,5 +1132,33 @@ public final class PneuCrudApiTest extends BaseTest {
                 true,
                 11L,
                 new BigDecimal(69.00));
+    }
+
+    @NotNull
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEstoqueSemErro() {
+        return new ApiPneuAlteracaoStatusEstoque(
+                94617L,
+                "71157",
+                5L,
+                "12345678910",
+                LocalDateTime.now(),
+                true,
+                11L,
+                new BigDecimal(69.00));
+    }
+
+    @NotNull
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEmUsoSemErro() {
+        return new ApiPneuAlteracaoStatusVeiculo(
+                13218L,
+                "95687",
+                5L,
+                "03383283194",
+                Now.localDateTimeUtc(),
+                "PRO0042",
+                907,
+                false,
+                null,
+                null);
     }
 }
