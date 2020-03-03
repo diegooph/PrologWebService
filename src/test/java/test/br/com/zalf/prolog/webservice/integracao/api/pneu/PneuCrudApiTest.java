@@ -53,6 +53,11 @@ public final class PneuCrudApiTest extends BaseTest {
         DatabaseManager.finish();
     }
 
+    @NotNull
+    private Long geraValorAleatorio() {
+        return RANDOM.nextLong();
+    }
+
     @Test
     @DisplayName("Teste Inserção Carga Inicial de Pneus sem erros")
     void adicionaCargaInicialPneuSemErroTest() {
@@ -85,11 +90,12 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Teste Carga Inicial com código da unidade inválido")
     void adicionaCargaInicialPneuComErroCodUnidadeNaoExisteTest() {
         //Cenário
+        final Long codUnidade = 909090L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraValorAleatorio(),
                 geraValorAleatorio().toString(),
-                909090L,
+                codUnidade,
                 129L,
                 1L,
                 120.0,
@@ -120,12 +126,13 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Teste Carga Inicial com código do modelo do pneu inválido")
     void adicionaCargaInicialPneuComErroCodModeloPneuNaoExisteTest() {
         //Cenário
+        final Long codModeloPneu = 5754343L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraValorAleatorio(),
                 geraValorAleatorio().toString(),
                 5L,
-                5754343L,
+                codModeloPneu,
                 1L,
                 120.0,
                 1,
@@ -155,13 +162,14 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Teste Carga Inicial com código dimensão inválido")
     void adicionaCargaInicialPneuComErroCodDimensaoNaoExisteTest() {
         //Cenário
+        final Long codDimensao = 4543235L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraValorAleatorio(),
                 geraValorAleatorio().toString(),
                 5L,
                 129L,
-                4543235L,
+                codDimensao,
                 120.0,
                 1,
                 4,
@@ -190,6 +198,7 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Teste Carga Inicial com pressão inválida")
     void adicionaCargaInicialPneuComErroPressaoIncorretaTest() {
         //Cenário
+        final Double codPressao = -120.0;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraValorAleatorio(),
@@ -197,11 +206,47 @@ public final class PneuCrudApiTest extends BaseTest {
                 5L,
                 129L,
                 1L,
-                -120.0,
+                codPressao,
                 1,
                 4,
                 "1010",
                 new BigDecimal(1500.0),
+                true,
+                null,
+                null,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null));
+
+        //Execução
+        final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
+                apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        //Verificações
+        assertThat(apiPneuCargaInicialResponses).isNotEmpty();
+        assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
+        for (int i = 0; i < apiPneuCargaInicialResponses.size(); i++) {
+            assertThat(apiPneuCargaInicialResponses.get(i).getSucesso()).isFalse();
+        }
+    }
+
+    @Test
+    @DisplayName("Teste Carga Inicial com valor do pneu inválido")
+    void adicionaCargaInicialPneuComErroValorPneuInvalidoTest() {
+        //Cenário
+        final BigDecimal valorPneu = new BigDecimal(-1);
+        final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
+        cargaInicial.add(new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                valorPneu,
                 true,
                 null,
                 null,
@@ -225,6 +270,7 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Teste Carga Inicial com vida atual do pneu maior que a vida total")
     void adicionaCargaInicialPneuComErroVidaAtualMaiorQueTotalTest() {
         //Cenário
+        final int vidaAtual = 5;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraValorAleatorio(),
@@ -233,7 +279,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 129L,
                 1L,
                 120.0,
-                5,
+                vidaAtual,
                 4,
                 "1010",
                 new BigDecimal(1500.0),
@@ -257,9 +303,82 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("Teste Carga Inicial com modelo de banda inválido")
+    void adicionaCargaInicialPneuComErroModeloBandaInvalidoTest() {
+        //Cenário
+        final Long modeloBanda = -1L;
+        final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
+        cargaInicial.add(new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                3,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                false,
+                modeloBanda,
+                new BigDecimal(400.00),
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null));
+
+        //Execução
+        final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
+                apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        assertThat(apiPneuCargaInicialResponses).isNotEmpty();
+        assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
+        for (int i = 0; i < apiPneuCargaInicialResponses.size(); i++) {
+            assertThat(apiPneuCargaInicialResponses.get(i).getSucesso()).isFalse();
+        }
+
+    }
+
+    @Test
+    @DisplayName("Teste Carga Inicial com valor da banda inválido")
+    void adicionaCargaInicialPneuComErroValorBandaInvalidoTest() {
+        //Cenário
+        final BigDecimal valorBanda = new BigDecimal(-1);
+        final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
+        cargaInicial.add(new ApiPneuCargaInicial(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                3,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                false,
+                12L,
+                valorBanda,
+                ApiStatusPneu.ESTOQUE,
+                null,
+                null));
+
+        //Execução
+        final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
+                apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        assertThat(apiPneuCargaInicialResponses).isNotEmpty();
+        assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
+        for (int i = 0; i < apiPneuCargaInicialResponses.size(); i++) {
+            assertThat(apiPneuCargaInicialResponses.get(i).getSucesso()).isFalse();
+        }
+
+    }
+
+    @Test
     @DisplayName("Teste Carga Inicial com placa inválida")
     void adicionaCargaInicialPneuComErroPlacaPneuNaoExisteTest() {
         //Cenário
+        final String placaVeiculo = "OOO9891";
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraValorAleatorio(),
@@ -276,7 +395,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 7645L,
                 new BigDecimal(400.00),
                 ApiStatusPneu.EM_USO,
-                "OOO9891",
+                placaVeiculo,
                 111));
 
         //Execução
@@ -295,6 +414,7 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Teste Carga Inicial com posição do pneu em relação ao veículo inválida")
     void adicionaCargaInicialPneuComErroPosicaoPneuInvalidaTest() {
         //Cenário
+        final int posicaoPneu = 7777;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraValorAleatorio(),
@@ -311,9 +431,8 @@ public final class PneuCrudApiTest extends BaseTest {
                 7645L,
                 new BigDecimal(400.00),
                 ApiStatusPneu.EM_USO,
-                // TODO - Melhorar o cenário da placa.
-                " PRECISA-SE DE UMA PLACA",
-                7777));
+                "PRO0004",
+                posicaoPneu));
 
         //Execução
         final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
@@ -341,7 +460,6 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações: Valida inserção;
         assertThat(successResponseIntegracao).isNotNull();
-        assertThat(successResponseIntegracao.getCodigo()).isEqualTo(200L);
         assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
 
         //Usa pneu já inserido para carga inicial, mas o pneu agora passa a ter vida atual = 1;
@@ -391,7 +509,6 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(successResponseIntegracao).isNotNull();
-        assertThat(successResponseIntegracao.getCodigo()).isEqualTo(200L);
         assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
     }
 
@@ -427,7 +544,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com código modelo inválido")
-    void adicionaPneuComErroCodModeloPneuInvalido() {
+    void adicionaPneuComErroCodModeloPneuInvalidoTest() {
         final Long codModelo = 909090L;
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
@@ -456,8 +573,38 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("Teste Inserção de um novo Pneu com código modelo banda inválido")
+    void adicionaPneuComErroCodModeloBandaInvalidoTest() {
+        final Long codModeloBanda = -1L;
+        //Cenário
+        final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                2,
+                4,
+                "1010",
+                new BigDecimal(1000.00),
+                true,
+                codModeloBanda,
+                new BigDecimal(100.00));
+
+        //Excecução
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new ApiCadastroPneuService().inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro));
+
+        //Verificações
+        assertThat(throwable.getMessage())
+                .isEqualTo("O modelo da banda " + codModeloBanda + " do pneu não está mapeado no Sistema ProLog");
+    }
+
+    @Test
     @DisplayName("Teste Inserção de um novo Pneu com código dimensão inválido")
-    void adicionaPneuComErroCodDimensaoInvalido() {
+    void adicionaPneuComErroCodDimensaoInvalidoTest() {
         final Long codDimensao = 9999999L;
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
@@ -487,15 +634,16 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com pressão inválida")
-    void adicionaPneuComErroPressaoInvalida() {
+    void adicionaPneuComErroPressaoInvalidaTest() {
         //Cenário
+        final Double pressaoPneu = -120.0;
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraValorAleatorio(),
                 geraValorAleatorio().toString(),
                 5L,
                 129L,
                 1L,
-                -120.0,
+                pressaoPneu,
                 1,
                 4,
                 "1010",
@@ -516,8 +664,9 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com vida atual inválida")
-    void adicionaPneuComErroVidaAtualInvalida() {
+    void adicionaPneuComErroVidaAtualInvalidaTest() {
         //Cenário
+        final int vidaAtual = 5;
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraValorAleatorio(),
                 geraValorAleatorio().toString(),
@@ -525,7 +674,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 129L,
                 1L,
                 120.0,
-                5,
+                vidaAtual,
                 4,
                 "1010",
                 new BigDecimal(1000.00),
@@ -545,7 +694,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com vida atual inválida")
-    void adicionaPneuComErroVidaTotalInvalida() {
+    void adicionaPneuComErroVidaTotalInvalidaTest() {
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraValorAleatorio(),
@@ -573,6 +722,66 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("Teste Inserção de um novo Pneu com valor pneu inválido")
+    void adicionaPneuComErroValorPneuInvalidoTest() {
+        //Cenário
+        final BigDecimal valor = new BigDecimal(-1.00);
+        final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                1,
+                4,
+                "1010",
+                valor,
+                true,
+                null,
+                null);
+
+        //Excecução
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new ApiCadastroPneuService().inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro));
+
+        //Verificações
+        assertThat(throwable.getMessage())
+                .isEqualTo("O valor do pneu não pode ser um número negativo");
+    }
+
+    @Test
+    @DisplayName("Teste Inserção de um novo Pneu com valor banda inválido")
+    void adicionaPneuComErroValorBandaInvalidoTest() {
+        //Cenário
+        final BigDecimal valor = new BigDecimal(-1.00);
+        final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
+                geraValorAleatorio(),
+                geraValorAleatorio().toString(),
+                5L,
+                129L,
+                1L,
+                120.0,
+                2,
+                4,
+                "1010",
+                new BigDecimal(100.00),
+                false,
+                12L,
+                valor);
+
+        //Excecução
+        final Throwable throwable = assertThrows(
+                ProLogException.class,
+                () -> new ApiCadastroPneuService().inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro));
+
+        //Verificações
+        assertThat(throwable.getMessage())
+                .isEqualTo("O valor da banda do pneu não pode ser um número negativo");
+    }
+
+    @Test
     @DisplayName("Teste Atualiza status do pneu sem erros")
     void atualizaStatusPneuSemErroTest() {
         //Cenário
@@ -587,7 +796,6 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(successResponseIntegracao).isNotNull();
-        assertThat(successResponseIntegracao.getCodigo()).isEqualTo(200L);
         assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
     }
 
@@ -619,7 +827,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste atualiza status do pneu com código unidade inválido")
-    void atualizaStatusPneuComCodigoUnidadeInvalido() {
+    void atualizaStatusPneuComCodigoUnidadeInvalidoTest() {
         final Long codUnidade = 115431234L;
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
@@ -640,12 +848,12 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(throwable.getMessage())
-                .isEqualTo("A Unidade " + codUnidade + " não está configurada para esta empresa");
+                .isEqualTo("A Unidade " + codUnidade + " repassada não existe no Sistema ProLog");
     }
 
     @Test
     @DisplayName("Teste atualiza status do pneu com código modelo de banda inválido")
-    void atualizaStatusPneuComCodigoModeloBandaInvalido() {
+    void atualizaStatusPneuComCodigoModeloBandaInvalidoTest() {
         final Long codModeloPneu = 10908787L;
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
@@ -667,11 +875,6 @@ public final class PneuCrudApiTest extends BaseTest {
         //Verificações
         assertThat(throwable.getMessage())
                 .isEqualTo("O modelo da banda do pneu " + codModeloPneu + " não está mapeado no Sistema ProLog");
-    }
-
-    @NotNull
-    private Long geraValorAleatorio() {
-        return RANDOM.nextLong();
     }
 
     //Objetos Pneu para testes em Carga Inicial sem erro.
