@@ -80,6 +80,7 @@ public final class GlobusPiccoloturConverter {
         return new ChecklistItensNokGlobus(
                 codUnidadeProLog,
                 codChecklistProLog,
+                checklist.getCodModelo(),
                 checklist.getColaborador().getCpfAsString(),
                 checklist.getPlacaVeiculo(),
                 checklist.getKmAtualVeiculo(),
@@ -95,6 +96,7 @@ public final class GlobusPiccoloturConverter {
         final OrdemDeServicoCorretivaPrologVO osGlobus = new OrdemDeServicoCorretivaPrologVO();
         osGlobus.setCodUnidadeChecklist(checklistItensNokGlobus.getCodUnidadeChecklist().intValue());
         osGlobus.setCodChecklistRealizado(checklistItensNokGlobus.getCodChecklistRealizado().intValue());
+        osGlobus.setCodModeloChecklist(checklistItensNokGlobus.getCodModeloChecklistRealizado().intValue());
         osGlobus.setCpfColaboradorRealizacao(checklistItensNokGlobus.getCpfColaboradorRealizacao());
         osGlobus.setPlacaVeiculoChecklist(checklistItensNokGlobus.getPlacaVeiculoChecklist());
         osGlobus.setKmColetadoChecklist(checklistItensNokGlobus.getKmColetadoChecklist().intValue());

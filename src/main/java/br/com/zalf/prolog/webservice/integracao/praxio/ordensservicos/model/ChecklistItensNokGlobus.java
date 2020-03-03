@@ -31,6 +31,11 @@ public final class ChecklistItensNokGlobus {
     @NotNull
     private final Long codChecklistRealizado;
     /**
+     * Código único de identificação do modelo do checklist que foi realizado pelo usuário.
+     */
+    @NotNull
+    private final Long codModeloChecklistRealizado;
+    /**
      * CPF do colaborador que realizou o checklist e apontou os itens como NOK.
      */
     @NotNull
@@ -66,6 +71,7 @@ public final class ChecklistItensNokGlobus {
 
     public ChecklistItensNokGlobus(@NotNull final Long codUnidadeChecklist,
                                    @NotNull final Long codChecklistRealizado,
+                                   @NotNull final Long codModeloChecklistRealizado,
                                    @NotNull final String cpfColaboradorRealizacao,
                                    @NotNull final String placaVeiculoChecklist,
                                    @NotNull final Long kmColetadoChecklist,
@@ -74,6 +80,7 @@ public final class ChecklistItensNokGlobus {
                                    @NotNull final List<PerguntaNokGlobus> perguntasNok) {
         this.codUnidadeChecklist = codUnidadeChecklist;
         this.codChecklistRealizado = codChecklistRealizado;
+        this.codModeloChecklistRealizado = codModeloChecklistRealizado;
         this.cpfColaboradorRealizacao = cpfColaboradorRealizacao;
         this.placaVeiculoChecklist = placaVeiculoChecklist;
         this.kmColetadoChecklist = kmColetadoChecklist;
@@ -89,6 +96,7 @@ public final class ChecklistItensNokGlobus {
         return new ChecklistItensNokGlobus(
                 5L,
                 13873L,
+                501L,
                 "03383283194",
                 "PRO0001",
                 54920L,
@@ -105,6 +113,11 @@ public final class ChecklistItensNokGlobus {
     @NotNull
     public Long getCodChecklistRealizado() {
         return codChecklistRealizado;
+    }
+
+    @NotNull
+    public Long getCodModeloChecklistRealizado() {
+        return codModeloChecklistRealizado;
     }
 
     @NotNull

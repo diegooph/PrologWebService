@@ -1,21 +1,34 @@
 Stage
 ==========
 
+### Features
+* Adiciona a quantidade de permissões na busca de cargos (PL-2532)
+
 ### Refactors
+* Modifica update do pneu, permitindo atualizar vida total (PL-2145)
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
 * Altera as interações com o banco de dados para implementar a amarração entre pneus e veículos (PL-1965)
 
 Change Log
 ==========
 
-<a name="v1.0.20"></a>
-## Version [v1.0.20](https://github.com/luizfp/PrologWebService/compare/v1.0.19...v1.0.20) (release-date) [unreleased]
+<a name="v1.0.22"></a>
+## Version [v1.0.22](https://github.com/luizfp/PrologWebService/compare/v1.0.21...v1.0.22) (release-date) [unreleased]
 
-### Features
-* Adiciona a quantidade de permissões na busca de cargos (PL-2532)
+<a name="v1.0.21"></a>
+## Version [v1.0.21](https://github.com/luizfp/PrologWebService/compare/v1.0.20...v1.0.21) (2020-02-25)
 
 ### Refactors
-* Modifica update do pneu, permitindo atualizar vida total (PL-2145)
+* Adiciona codModeloChecklist no envio dos dados para o Globus (PLI-89)
+
+<a name="v1.0.20"></a>
+## Version [v1.0.20](https://github.com/luizfp/PrologWebService/compare/v1.0.19...v1.0.20) (2020-02-25)
+
+### Refactors
+* Reestrutura mensagens de erro na sincronização dos checklists integrados (PLI-70)
+
+### Bug Fixes
+* Hotfix - Corrige erro de cast da function de atualização de status do pneu (PLI-87)
 
 <a name="v1.0.19"></a>
 ## Version [v1.0.19](https://github.com/luizfp/PrologWebService/compare/v1.0.18...v1.0.19) (2020-02-15)
@@ -28,10 +41,9 @@ Change Log
 <a name="v1.0.18"></a>
 ## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (2020-02-13)
 
-### Recators
+### Refactors
 * Remove roteamento de tipos de veículos e cria busca específica para checklists (PL-2536)
 * Cria bloqueio de integração por unidades (PLI-71)
-
 
 <a name="v1.0.17"></a>
 ## Version [v1.0.17](https://github.com/luizfp/PrologWebService/compare/v1.0.16...v1.0.17) (2020-02-11)

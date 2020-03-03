@@ -78,6 +78,9 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                 // Marcamos que o checklist precisa ser sincronizado. Isso será útil para que o processamento disparado
                 // pelo agendador consiga distinguir quais checklists são necessários serem sincronizados.
                 getSistemaGlobusPiccoloturDaoImpl().insertItensNokPendentesParaSincronizar(conn, codChecklistProLog);
+                // Precisamos realizar o commit antes de executar a thread, para evitar problemas de concorrência ao
+                // acessar uma tabela que foi alterada pela connection, porém os dados ainda não commitados.
+                conn.commit();
                 // Faremos o processamento de envio dos itens NOK noutra thread para que o usuário que está realizando
                 // o checklist possa seguir seu rumo naturalmente.
                 Executors.newSingleThreadExecutor().execute(
@@ -87,8 +90,11 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                 getSistemaGlobusPiccoloturDaoImpl(),
                                 requester,
                                 null));
+            } else {
+                // Caso não precisamos processar nenhum envio, apenas fechamos a connection para garantir que tudo que
+                // foi executado será salvo.
+                conn.commit();
             }
-            conn.commit();
             return codChecklistProLog;
         } catch (final Throwable t) {
             if (conn != null) {

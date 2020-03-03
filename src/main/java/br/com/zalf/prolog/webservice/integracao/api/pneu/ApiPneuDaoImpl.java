@@ -41,8 +41,8 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
                     "F_DATA_HORA_ALTERACAO_STATUS := ?, " +
                     "F_STATUS_PNEU := ?, " +
                     "F_TROCOU_DE_BANDA := ?, " +
-                    "F_COD_NOVO_MODELO_BANDA_PNEU := ?, " +
-                    "F_VALOR_NOVA_BANDA_PNEU := ?, " +
+                    "F_COD_NOVO_MODELO_BANDA_PNEU := ?::BIGINT, " +
+                    "F_VALOR_NOVA_BANDA_PNEU := ?::NUMERIC, " +
                     "F_PLACA_VEICULO_PNEU_APLICADO := ?, " +
                     "F_POSICAO_VEICULO_PNEU_APLICADO := ?, " +
                     "F_TOKEN_INTEGRACAO := ?) AS COD_PNEU_PROLOG;");
