@@ -472,7 +472,8 @@ public final class PneuCrudApiTest extends BaseTest {
     void sobrescrevePneuJaCadastradoComVidaMenorQueAtualCargaInicialSemErroTest() throws Throwable {
         //Ativa configuração da empresa
         ativaSobrescritaPneuEmpresa(COD_EMPRESA);
-
+        int vidaAtualPneuAtualizado = 0;
+        int vidaAtualPneu = 1;
         //Cenário específico da PLI-4 (Erro ao sobrescrever pneus que voltam para vida 1);
         //Cria pneu com vida atual = 3;
         final ApiPneuCadastro apiPneuCadastro = criaPneuParaInsertSemErro();
@@ -494,7 +495,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 apiPneuCadastro.getCodModeloPneu(),
                 apiPneuCadastro.getCodDimensaoPneu(),
                 apiPneuCadastro.getPressaoCorretaPneu(),
-                1,
+                vidaAtualPneu,
                 apiPneuCadastro.getVidaTotalPneu(),
                 apiPneuCadastro.getDotPneu(),
                 apiPneuCadastro.getValorPneu(),
@@ -512,7 +513,15 @@ public final class PneuCrudApiTest extends BaseTest {
         //Desativa configuração da empresa
         desativaSobrescritaPneuEmpresa(COD_EMPRESA);
 
+        //Busca vida atual do pneu atualizado
+        vidaAtualPneuAtualizado = buscaVidaAtualPneuAtualizado(
+                apiPneuCadastro.getCodigoSistemaIntegrado(),
+                apiPneuCadastro.getCodigoCliente(),
+                apiPneuCadastro.getCodUnidadePneu(),
+                COD_EMPRESA);
+
         //Verificações
+        assertThat(vidaAtualPneuAtualizado).isEqualTo(vidaAtualPneu);
         assertThat(apiPneuCargaInicialResponses).isNotEmpty();
         assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
 
@@ -1270,6 +1279,71 @@ public final class PneuCrudApiTest extends BaseTest {
             connectionProvider.closeResources(conn, stmt, rSet);
         }
         return codSistemaIntegradoResultante;
+    }
+
+    //Método responsável por buscar vida atual do pneu cadastrado no prolog.
+    @NotNull
+    private int buscaVidaAtualPneuAtualizado(final @NotNull Long codSistemaIntegrado,
+                                             final @NotNull String codCliente,
+                                             final @NotNull Long codUnidade,
+                                             final @NotNull Long codEmpresa) throws Throwable {
+        Long codPneuCadastroProlog = buscaCodPneuCadastroProlog(codSistemaIntegrado, codCliente, codUnidade, codEmpresa);
+        int vidaAtualPneu = 0;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT VIDA_ATUAL FROM PNEU WHERE " +
+                    "CODIGO = ? AND " +
+                    "CODIGO_CLIENTE = ? AND " +
+                    "COD_UNIDADE = ?");
+            stmt.setLong(1, codPneuCadastroProlog);
+            stmt.setString(2, codCliente);
+            stmt.setLong(3, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                vidaAtualPneu = rSet.getInt("VIDA_ATUAL");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar vida atual do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+        return vidaAtualPneu;
+    }
+
+    //Método responsável por buscar código do pneu cadastrado no prolog.
+    @NotNull
+    private Long buscaCodPneuCadastroProlog(final @NotNull Long codSistemaIntegrado,
+                                            final @NotNull String codCliente,
+                                            final @NotNull Long codUnidade,
+                                            final @NotNull Long codEmpresa) throws Throwable {
+        Long codPneuCadastroProlog = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT COD_PNEU_CADASTRO_PROLOG FROM INTEGRACAO.PNEU_CADASTRADO WHERE " +
+                    "COD_UNIDADE_CADASTRO = ? AND " +
+                    "COD_EMPRESA_CADASTRO = ? AND " +
+                    "COD_CLIENTE_PNEU_CADASTRO = ? AND " +
+                    "COD_PNEU_SISTEMA_INTEGRADO = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codEmpresa);
+            stmt.setString(3, codCliente);
+            stmt.setLong(4, codSistemaIntegrado);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                codPneuCadastroProlog = rSet.getLong("COD_PNEU_CADASTRO_PROLOG");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar código pneu Prolog");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+        return codPneuCadastroProlog;
     }
 
 }
