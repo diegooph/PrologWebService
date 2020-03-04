@@ -12,8 +12,14 @@ Stage
 Change Log
 ==========
 
+<a name="v1.0.23"></a>
+## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (release-date) [unreleased]
+
 <a name="v1.0.22"></a>
-## Version [v1.0.22](https://github.com/luizfp/PrologWebService/compare/v1.0.21...v1.0.22) (release-date) [unreleased]
+## Version [v1.0.22](https://github.com/luizfp/PrologWebService/compare/v1.0.21...v1.0.22) (2020-03-03)
+
+### Bug Fixes
+* Corrige problema do último release onde faltavam as implementações da versão: v1.0.19
 
 <a name="v1.0.21"></a>
 ## Version [v1.0.21](https://github.com/luizfp/PrologWebService/compare/v1.0.20...v1.0.21) (2020-02-25)
