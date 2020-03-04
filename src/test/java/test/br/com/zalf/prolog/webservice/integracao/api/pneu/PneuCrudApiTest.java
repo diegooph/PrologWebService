@@ -824,6 +824,7 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Teste Atualiza status do pneu sem erros")
     void atualizaStatusPneuSemErroTest() throws Throwable {
         //Cenário
+        Long codPneuProlog = null;
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusAnaliseSemErro());
         apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusDescarteSemErro());
@@ -833,6 +834,16 @@ public final class PneuCrudApiTest extends BaseTest {
         //Excecução
         final SuccessResponseIntegracao successResponseIntegracao =
                 apiPneuService.atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus);
+
+        //Verifica se os dados foram salvos como previstos
+        for (int i = 0; i < apiPneuAlteracaoStatus.size(); i++) {
+            codPneuProlog = buscaCodPneuCadastroProlog(apiPneuAlteracaoStatus.get(i).getCodigoSistemaIntegrado(),
+                    apiPneuAlteracaoStatus.get(i).getCodigoCliente(), apiPneuAlteracaoStatus.get(i).getCodUnidadePneu(),
+                    COD_EMPRESA);
+            boolean verificaPneu =
+                    verificaSePneuFoiCadastrado(codPneuProlog, apiPneuAlteracaoStatus.get(i).getStatusPneu().toString());
+            assertThat(verificaPneu).isTrue();
+        }
 
         //Verificações
         assertThat(successResponseIntegracao).isNotNull();
@@ -1171,7 +1182,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 LocalDateTime.now(),
                 true,
                 11L,
-                new BigDecimal(69.00));
+                new BigDecimal(400.00));
     }
 
     @NotNull
@@ -1183,8 +1194,8 @@ public final class PneuCrudApiTest extends BaseTest {
                 "12345678910",
                 LocalDateTime.now(),
                 true,
-                11L,
-                new BigDecimal(69.00));
+                12L,
+                new BigDecimal(120.00));
     }
 
     @NotNull
@@ -1197,11 +1208,12 @@ public final class PneuCrudApiTest extends BaseTest {
                 Now.localDateTimeUtc(),
                 "PRO0042",
                 906,
-                false,
-                null,
-                null);
+                true,
+                11L,
+                new BigDecimal(300.00));
     }
 
+    //Métodos com acesso ao banco de dados.
     //Configuração de sobrescrita de uma empresa.
     @NotNull
     public void ativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
@@ -1346,4 +1358,27 @@ public final class PneuCrudApiTest extends BaseTest {
         return codPneuCadastroProlog;
     }
 
+    @NotNull
+    private boolean verificaSePneuFoiCadastrado(final @NotNull Long codPneuProlog,
+                                                final @NotNull String status) throws Throwable {
+        boolean existe = false;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT * FROM PNEU WHERE CODIGO = ? AND STATUS = ?");
+            stmt.setLong(1, codPneuProlog);
+            stmt.setString(2, status);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                existe = true;
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+        return existe;
+    }
 }
