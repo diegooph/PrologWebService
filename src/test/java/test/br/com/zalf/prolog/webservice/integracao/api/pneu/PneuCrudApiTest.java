@@ -68,8 +68,9 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção Carga Inicial de Pneus sem erros")
-    void adicionaCargaInicialPneuSemErroTest() {
+    void adicionaCargaInicialPneuSemErroTest() throws Throwable {
         //Cenário
+        Long codSistemaIntegrado = null;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(criaPneuSemErroComCodigoClienteValido());
         cargaInicial.add(criaPneuSemErroComUnidadeValida());
@@ -85,6 +86,18 @@ public final class PneuCrudApiTest extends BaseTest {
         //Execução
         final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
                 apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        //Verifica se os pneus foram inseridos
+        for (int i = 0; i < cargaInicial.size(); i++) {
+            codSistemaIntegrado = buscaCodSistemaIntegradoPneuInserido(
+                    cargaInicial.get(i).getCodigoSistemaIntegrado(),
+                    cargaInicial.get(i).getCodigoCliente(),
+                    cargaInicial.get(i).getCodUnidadePneu(),
+                    COD_EMPRESA,
+                    TOKEN_INTEGRACAO);
+            assertThat(codSistemaIntegrado).isNotNull();
+            assertThat(codSistemaIntegrado).isEqualTo(cargaInicial.get(i).getCodigoSistemaIntegrado());
+        }
 
         //Verificações
         assertThat(apiPneuCargaInicialResponses).isNotEmpty();
@@ -510,8 +523,9 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu sem erro")
-    void adicionaPneuSemErroTest() {
+    void adicionaPneuSemErroTest() throws Throwable {
         //Cenário
+        Long codSistemaIntegradoCadastrado = null;
         final ApiPneuCadastro apiPneuCadastro = criaPneuParaInsertSemErro();
 
         //Execução
@@ -521,6 +535,12 @@ public final class PneuCrudApiTest extends BaseTest {
         //Verificações
         assertThat(successResponseIntegracao).isNotNull();
         assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
+
+        //Verifica se realmente o pneu foi salvo no banco
+        codSistemaIntegradoCadastrado = buscaCodSistemaIntegradoPneuInserido(apiPneuCadastro.getCodigoSistemaIntegrado(),
+                apiPneuCadastro.getCodigoCliente(), apiPneuCadastro.getCodUnidadePneu(), COD_EMPRESA, TOKEN_INTEGRACAO);
+        assertThat(codSistemaIntegradoCadastrado).isNotNull();
+        assertThat(apiPneuCadastro.getCodigoSistemaIntegrado()).isEqualTo(codSistemaIntegradoCadastrado);
     }
 
     @Test
@@ -547,7 +567,6 @@ public final class PneuCrudApiTest extends BaseTest {
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new ApiCadastroPneuService().inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro));
-
         //Verificações
         assertThat(throwable.getMessage())
                 .isEqualTo("A Unidade " + codUnidade + " repassada não existe no Sistema ProLog");
@@ -792,8 +811,6 @@ public final class PneuCrudApiTest extends BaseTest {
                 .isEqualTo("O valor da banda do pneu não pode ser um número negativo");
     }
 
-    //##################################################################################################################
-
     @Test
     @DisplayName("Teste Atualiza status do pneu sem erros")
     void atualizaStatusPneuSemErroTest() throws Throwable {
@@ -889,49 +906,6 @@ public final class PneuCrudApiTest extends BaseTest {
         //Verificações
         assertThat(throwable.getMessage())
                 .isEqualTo("O modelo da banda do pneu " + codModeloPneu + " não está mapeado no Sistema ProLog");
-    }
-
-    //Configuração de sobrescrita de uma empresa.
-    @NotNull
-    public void ativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.EMPRESA_CONFIG_CARGA_INICIAL(" +
-                    "COD_EMPRESA, " +
-                    "SOBRESCREVE_PNEUS, " +
-                    "SOBRESCREVE_VEICULOS) " +
-                    "VALUES(?,?,?) ON CONFLICT(COD_EMPRESA) DO NOTHING");
-
-            stmt.setLong(1, codEmpresa);
-            stmt.setBoolean(2, true);
-            stmt.setBoolean(3, false);
-            stmt.executeUpdate();
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao ativar configuração de sobrescrita do pneu");
-        } finally {
-            connectionProvider.closeResources(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    public void desativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("DELETE FROM INTEGRACAO.EMPRESA_CONFIG_CARGA_INICIAL " +
-                    "WHERE COD_EMPRESA = ?");
-            stmt.setLong(1, codEmpresa);
-            stmt.executeUpdate();
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao desativar configuração de sobrescrita do pneu");
-        } finally {
-            connectionProvider.closeResources(conn, stmt, rSet);
-        }
     }
 
     //Objetos Pneu para testes em Carga Inicial sem erro.
@@ -1218,4 +1192,84 @@ public final class PneuCrudApiTest extends BaseTest {
                 null,
                 null);
     }
+
+    //Configuração de sobrescrita de uma empresa.
+    @NotNull
+    public void ativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.EMPRESA_CONFIG_CARGA_INICIAL(" +
+                    "COD_EMPRESA, " +
+                    "SOBRESCREVE_PNEUS, " +
+                    "SOBRESCREVE_VEICULOS) " +
+                    "VALUES(?,?,?) ON CONFLICT(COD_EMPRESA) DO NOTHING");
+
+            stmt.setLong(1, codEmpresa);
+            stmt.setBoolean(2, true);
+            stmt.setBoolean(3, false);
+            stmt.executeUpdate();
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao ativar configuração de sobrescrita do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    public void desativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("DELETE FROM INTEGRACAO.EMPRESA_CONFIG_CARGA_INICIAL " +
+                    "WHERE COD_EMPRESA = ?");
+            stmt.setLong(1, codEmpresa);
+            stmt.executeUpdate();
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao desativar configuração de sobrescrita do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por buscar código sistema integrado de um pneu específico para o teste de inserção,
+    @NotNull
+    private Long buscaCodSistemaIntegradoPneuInserido(final @NotNull Long codSistemaIntegrado,
+                                                      final @NotNull String codCliente,
+                                                      final @NotNull Long codUnidade,
+                                                      final @NotNull Long codEmpresa,
+                                                      final @NotNull String token) throws Throwable {
+        Long codSistemaIntegradoResultante = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT COD_PNEU_SISTEMA_INTEGRADO FROM INTEGRACAO.PNEU_CADASTRADO " +
+                    "WHERE COD_PNEU_SISTEMA_INTEGRADO = ? " +
+                    "AND COD_EMPRESA_CADASTRO = ? " +
+                    "AND COD_UNIDADE_CADASTRO = ? " +
+                    "AND  COD_CLIENTE_PNEU_CADASTRO = ? " +
+                    "AND TOKEN_AUTENTICACAO_CADASTRO = ?");
+            stmt.setLong(1, codSistemaIntegrado);
+            stmt.setLong(2, codEmpresa);
+            stmt.setLong(3, codUnidade);
+            stmt.setString(4, codCliente);
+            stmt.setString(5, token);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                codSistemaIntegradoResultante = rSet.getLong("COD_PNEU_SISTEMA_INTEGRADO");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+        return codSistemaIntegradoResultante;
+    }
+
 }
