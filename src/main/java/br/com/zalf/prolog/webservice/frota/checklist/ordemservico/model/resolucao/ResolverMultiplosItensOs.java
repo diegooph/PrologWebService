@@ -4,10 +4,12 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,127 +23,135 @@ public final class ResolverMultiplosItensOs {
     /**
      * CPF do {@link Colaborador} que resolveu os Itens.
      */
-    private Long cpfColaboradorResolucao;
+    @NotNull
+    private final Long cpfColaboradorResolucao;
 
     /**
      * Placa do {@link Veiculo} a qual os Itens resolvidos pertencem.
      */
-    private String placaVeiculo;
+    @NotNull
+    private final String placaVeiculo;
 
     /**
      * A data e hora em que a resolução do item foi iniciada pelo colaborador.
      */
-    private LocalDateTime dataHoraInicioResolucao;
+    @NotNull
+    private final LocalDateTime dataHoraInicioResolucao;
 
     /**
      * A data e hora em que a resolução do item foi finalizada pelo colaborador.
      */
-    private LocalDateTime dataHoraFimResolucao;
+    @NotNull
+    private final LocalDateTime dataHoraFimResolucao;
 
     /**
      * Quilometragem do {@link Veiculo} no momento de resolução dos Itens.
      */
-    private long kmColetadoVeiculo;
+    private final long kmColetadoVeiculo;
 
     /**
      * Descrição inserida pelo {@link Colaborador} no momento de resolução dos Itens.
      */
-    private String feedbackResolucao;
+    @Nullable
+    private final String feedbackResolucao;
 
     /**
      * O código da {@link Unidade} da qual os itens da Ordem de Serviço pertencem.
      */
-    private Long codUnidadeOrdemServico;
+    @NotNull
+    private final Long codUnidadeOrdemServico;
 
     /**
      * Códigos dos itens que foram resolvidos.
      */
-    private List<Long> codigosItens;
+    @NotNull
+    private final List<Long> codigosItens;
 
-    public ResolverMultiplosItensOs() {
-
+    public ResolverMultiplosItensOs(@NotNull final Long cpfColaboradorResolucao,
+                                    @NotNull final String placaVeiculo,
+                                    @NotNull final LocalDateTime dataHoraInicioResolucao,
+                                    @NotNull final LocalDateTime dataHoraFimResolucao,
+                                    final long kmColetadoVeiculo,
+                                    @Nullable final String feedbackResolucao,
+                                    @NotNull final Long codUnidadeOrdemServico,
+                                    @NotNull final List<Long> codigosItens) {
+        this.cpfColaboradorResolucao = cpfColaboradorResolucao;
+        this.placaVeiculo = placaVeiculo;
+        this.dataHoraInicioResolucao = dataHoraInicioResolucao;
+        this.dataHoraFimResolucao = dataHoraFimResolucao;
+        this.kmColetadoVeiculo = kmColetadoVeiculo;
+        this.feedbackResolucao = feedbackResolucao;
+        this.codUnidadeOrdemServico = codUnidadeOrdemServico;
+        this.codigosItens = codigosItens;
     }
 
     @NotNull
     public static ResolverMultiplosItensOs createDummy() {
-        final ResolverMultiplosItensOs resolverItens = new ResolverMultiplosItensOs();
-        resolverItens.setCpfColaboradorResolucao(12345678987L);
-        resolverItens.setPlacaVeiculo("AAA1234");
-        resolverItens.setDataHoraInicioResolucao(LocalDateTime.now());
-        resolverItens.setDataHoraFimResolucao(LocalDateTime.now().plusDays(1));
-        resolverItens.setKmColetadoVeiculo(234000);
-        resolverItens.setFeedbackResolucao("Tudo resolvido!");
-        resolverItens.setCodUnidadeOrdemServico(5L);
         final List<Long> codItens = new ArrayList<>();
         codItens.add(1L);
         codItens.add(2L);
         codItens.add(3L);
-        resolverItens.setCodigosItens(codItens);
-        return resolverItens;
+        return new ResolverMultiplosItensOs(
+                12345678987L,
+                "AAA1234",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(1),
+                234000,
+                "Tudo resolvido!",
+                5L,
+                codItens);
     }
 
-    public Long getCodUnidadeOrdemServico() {
-        return codUnidadeOrdemServico;
+    @NotNull
+    public static ResolverMultiplosItensOs createFrom(@NotNull final ResolverItemOrdemServico item) {
+        return new ResolverMultiplosItensOs(
+                item.getCpfColaboradoResolucao(),
+                item.getPlacaVeiculo(),
+                item.getDataHoraInicioResolucao(),
+                item.getDataHoraFimResolucao(),
+                item.getKmColetadoVeiculo(),
+                item.getFeedbackResolucao(),
+                item.getCodUnidadeOrdemServico(),
+                Collections.singletonList(item.getCodItemResolvido()));
     }
 
-    public void setCodUnidadeOrdemServico(final Long codUnidadeOrdemServico) {
-        this.codUnidadeOrdemServico = codUnidadeOrdemServico;
-    }
-
-    public String getPlacaVeiculo() {
-        return placaVeiculo;
-    }
-
-    public void setPlacaVeiculo(final String placaVeiculo) {
-        this.placaVeiculo = placaVeiculo;
-    }
-
+    @NotNull
     public Long getCpfColaboradorResolucao() {
         return cpfColaboradorResolucao;
     }
 
-    public void setCpfColaboradorResolucao(final Long cpfColaboradorResolucao) {
-        this.cpfColaboradorResolucao = cpfColaboradorResolucao;
+    @NotNull
+    public String getPlacaVeiculo() {
+        return placaVeiculo;
     }
 
+    @NotNull
     public LocalDateTime getDataHoraInicioResolucao() {
         return dataHoraInicioResolucao;
     }
 
-    public void setDataHoraInicioResolucao(final LocalDateTime dataHoraInicioResolucao) {
-        this.dataHoraInicioResolucao = dataHoraInicioResolucao;
-    }
-
+    @NotNull
     public LocalDateTime getDataHoraFimResolucao() {
         return dataHoraFimResolucao;
-    }
-
-    public void setDataHoraFimResolucao(final LocalDateTime dataHoraFimResolucao) {
-        this.dataHoraFimResolucao = dataHoraFimResolucao;
     }
 
     public long getKmColetadoVeiculo() {
         return kmColetadoVeiculo;
     }
 
-    public void setKmColetadoVeiculo(final long kmColetadoVeiculo) {
-        this.kmColetadoVeiculo = kmColetadoVeiculo;
-    }
-
+    @Nullable
     public String getFeedbackResolucao() {
         return feedbackResolucao;
     }
 
-    public void setFeedbackResolucao(final String feedbackResolucao) {
-        this.feedbackResolucao = feedbackResolucao;
+    @NotNull
+    public Long getCodUnidadeOrdemServico() {
+        return codUnidadeOrdemServico;
     }
 
+    @NotNull
     public List<Long> getCodigosItens() {
         return codigosItens;
-    }
-
-    public void setCodigosItens(final List<Long> codigosItens) {
-        this.codigosItens = codigosItens;
     }
 
     public long getDuracaoResolucaoMillis() {

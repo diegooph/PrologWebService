@@ -1,5 +1,8 @@
-Stage
+Change Log
 ==========
+
+<a name="v1.0.23"></a>
+## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (release-date) [unreleased]
 
 ### Features
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
@@ -8,12 +11,7 @@ Stage
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
 * Altera as interações com o banco de dados para implementar a amarração entre pneus e veículos (PL-1965)
-
-Change Log
-==========
-
-<a name="v1.0.23"></a>
-## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (release-date) [unreleased]
+* Impedir que itens sejam resolvidos com data anterior à realização do check (PL-2500)
 
 <a name="v1.0.22"></a>
 ## Version [v1.0.22](https://github.com/luizfp/PrologWebService/compare/v1.0.21...v1.0.22) (2020-03-03)
