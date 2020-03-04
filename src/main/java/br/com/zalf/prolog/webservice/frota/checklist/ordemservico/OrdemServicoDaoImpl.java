@@ -414,31 +414,4 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             close(stmt, rSet);
         }
     }
-
-    private void updateStatusOs(@NotNull final Connection conn,
-                                @NotNull final Long codOs,
-                                @NotNull final Long codUnidadeOs) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO SET " +
-                    "  STATUS = ?, " +
-                    "  DATA_HORA_FECHAMENTO = ? " +
-                    "WHERE COD_UNIDADE = ? " +
-                    "      AND CODIGO = ? " +
-                    "      AND (SELECT COUNT(*) FROM CHECKLIST_ORDEM_SERVICO_ITENS " +
-                    "WHERE COD_UNIDADE = ? " +
-                    "      AND COD_OS = ? " +
-                    "      AND STATUS_RESOLUCAO = ?) = 0;");
-            stmt.setString(1, StatusOrdemServico.FECHADA.asString());
-            stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
-            stmt.setLong(3, codUnidadeOs);
-            stmt.setLong(4, codOs);
-            stmt.setLong(5, codUnidadeOs);
-            stmt.setLong(6, codOs);
-            stmt.setString(7, StatusItemOrdemServico.PENDENTE.asString());
-            stmt.execute();
-        } finally {
-            close(stmt);
-        }
-    }
 }
