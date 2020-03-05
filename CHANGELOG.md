@@ -1,3 +1,9 @@
+Stage
+==========
+
+### Refactors
+* Adição de código auxiliar no tipo de veículo
+
 Change Log
 ==========
 
