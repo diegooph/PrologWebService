@@ -8,12 +8,14 @@ public class TipoVeiculo {
     private Long codDiagrama;
     private Long codigo;
     private String nome;
+    private String codAuxiliar;
 
-    public TipoVeiculo(Long codEmpresa, Long codDiagrama, Long codigo, String nome) {
+    public TipoVeiculo(Long codEmpresa, Long codDiagrama, Long codigo, String nome, String codAuxiliar) {
         this.codEmpresa = codEmpresa;
         this.codDiagrama = codDiagrama;
         this.codigo = codigo;
         this.nome = nome;
+        this.codAuxiliar = codAuxiliar;
     }
 
     public TipoVeiculo() {
@@ -51,6 +53,10 @@ public class TipoVeiculo {
     public void setNome(String nome) {
         this.nome = nome;
     }
+
+    public String getCodAuxiliar() { return codAuxiliar; }
+
+    public void setCodAuxiliar(String codAuxiliar) { this.codAuxiliar = codAuxiliar; }
 
     @Override
     public boolean equals(Object obj) {

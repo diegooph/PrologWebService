@@ -28,12 +28,13 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "INSERT INTO VEICULO_TIPO(COD_EMPRESA, COD_DIAGRAMA, NOME, STATUS_ATIVO) " +
-                            "VALUES (?, ?, ?, ?) RETURNING CODIGO;");
+                    "INSERT INTO VEICULO_TIPO(COD_EMPRESA, COD_DIAGRAMA, NOME, STATUS_ATIVO, COD_AUXILIAR) " +
+                            "VALUES (?, ?, ?, ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, tipoVeiculo.getCodEmpresa());
             stmt.setLong(2, tipoVeiculo.getCodDiagrama());
             stmt.setString(3, tipoVeiculo.getNome().trim());
             stmt.setBoolean(4, true);
+            stmt.setString(5, tipoVeiculo.getCodAuxiliar().trim());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -52,10 +53,11 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_UPDATE_TIPO_VEICULO(?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_UPDATE_TIPO_VEICULO(?, ?, ?, ?);");
             stmt.setLong(1, tipoVeiculo.getCodigo());
             stmt.setString(2, tipoVeiculo.getNome().trim());
             stmt.setLong(3, tipoVeiculo.getCodDiagrama());
+            stmt.setString(4, tipoVeiculo.getCodAuxiliar().trim());
             rSet = stmt.executeQuery();
             if (!rSet.next() || rSet.getInt(1) <= 0) {
                 throw new SQLException("Erro ao atualizar o tipo de veículo: " + tipoVeiculo.getCodigo());
@@ -78,10 +80,12 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
                             "  VT.COD_EMPRESA, " +
                             "  VT.COD_DIAGRAMA, " +
                             "  VT.CODIGO, " +
-                            "  VT.NOME " +
+                            "  VT.NOME, " +
+                            "  VT.COD_AUXILIAR " +
                             "FROM VEICULO_TIPO VT " +
                             "WHERE VT.COD_EMPRESA = ? " +
-                            "      AND VT.STATUS_ATIVO = TRUE;");
+                            "      AND VT.STATUS_ATIVO = TRUE " +
+                            "ORDER BY VT.NOME;");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             final List<TipoVeiculo> tiposVeiculos = new ArrayList<>();
@@ -90,7 +94,8 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
                         rSet.getLong("COD_EMPRESA"),
                         NullIf.equalOrLess(rSet.getLong("COD_DIAGRAMA"), 0),
                         rSet.getLong("CODIGO"),
-                        rSet.getString("NOME")));
+                        rSet.getString("NOME"),
+                        rSet.getString("COD_AUXILIAR")));
             }
             return tiposVeiculos;
         } finally {
@@ -111,7 +116,8 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
                             "VT.COD_EMPRESA, " +
                             "VT.COD_DIAGRAMA, " +
                             "VT.CODIGO, " +
-                            "VT.NOME " +
+                            "VT.NOME, " +
+                            "VT.COD_AUXILIAR " +
                             "FROM VEICULO_TIPO VT " +
                             "WHERE VT.CODIGO = ?;");
             stmt.setLong(1, codTipoVeiculo);
@@ -121,7 +127,8 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
                         rSet.getLong("COD_EMPRESA"),
                         NullIf.equalOrLess(rSet.getLong("COD_DIAGRAMA"), 0),
                         rSet.getLong("CODIGO"),
-                        rSet.getString("NOME"));
+                        rSet.getString("NOME"),
+                        rSet.getString("COD_AUXILIAR"));
             } else {
                 throw new IllegalStateException("Tipo de veículo não encontrado com o código: " + codTipoVeiculo);
             }
