@@ -38,8 +38,7 @@ public final class PrologEmailWorker {
         Throwable sendException = null;
         EmailRequestResponseHolder holder = null;
         try {
-            final PrologSendEmailTask sendEmailTask = new PrologSendEmailTask();
-            holder = sendEmailTask.deliverTemplate(emailsToSend, templateMessage);
+            holder = new PrologSendEmailTask().deliverTemplate(emailsToSend, templateMessage);
         } catch (final Throwable throwable) {
             sendException = throwable;
             Log.e(TAG, "Erro fatal ao enviar e-mails via API! Nada foi enviado", throwable);

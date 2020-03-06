@@ -1,7 +1,5 @@
 package br.com.zalf.prolog.webservice.messaging.email._model;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Created on 2020-02-25
  *

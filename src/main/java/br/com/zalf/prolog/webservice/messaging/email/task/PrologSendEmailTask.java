@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.messaging.email.task;
 
-import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailRequestResponseHolder;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailTemplateMessage;
 import com.mailjet.client.ClientOptions;
@@ -24,7 +23,6 @@ import java.util.List;
 public final class PrologSendEmailTask {
 
     public PrologSendEmailTask() {
-
     }
 
     @NotNull

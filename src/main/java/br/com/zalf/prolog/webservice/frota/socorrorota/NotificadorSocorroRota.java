@@ -21,9 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static br.com.zalf.prolog.webservice.commons.util.StringUtils.removeExtraSpaces;
 import static br.com.zalf.prolog.webservice.commons.util.StringUtils.stripSpecialCharacters;
@@ -122,60 +120,21 @@ final class NotificadorSocorroRota {
 
         if (!colaboradores.isEmpty()) {
             // Envia e-mail.
-            final List<String> emails = colaboradores
-                    .stream()
-                    .map(ColaboradorNotificacaoAberturaSocorroRota::getEmailColaborador)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-            if (!emails.isEmpty()) {
-                new PrologEmailApi()
-                        .deliverTemplate(
-                                emails,
-                                MessageScope.ABERTURA_SOCORRO_ROTA,
-                                new EmailTemplateMessage(
-                                        EmailTemplate.ABERTURA_SOCORRO_ROTA,
-                                        EmailSender.of("socorroemrota@prologapp.com", "Socorro em Rota"),
-                                        String.format("Pedido de Socorro • %s", placaVeiculoProblema),
-                                        new ImmutableMap.Builder<String, String>()
-                                                .put("nome_colaborador", nomeColaboradorAbertura)
-                                                .put("placa_veiculo", placaVeiculoProblema)
-                                                .put("link_socorro_rota", "https://adm.prologapp.com/socorro-em-rota")
-                                                .build()));
-            } else {
-                Log.d(TAG, "Nenhum colaborador para notificar VIA E-MAIL sobre abertura do socorro");
+            // Utilizamos um try/catch para evitar que estoure algum erro e impeça o envio das notificações push.
+            try {
+                notificaAberturaSocorroEmail(colaboradores, placaVeiculoProblema, nomeColaboradorAbertura);
+            } catch (final Throwable t) {
+                // Logamos erro para ter controle no Sentry se estamos deixando de avisar os responsáveis sobre os
+                // socorros solicitados.
+                Log.e(TAG, "Erro ao enviar e-mail de abertura de socorro", t);
             }
 
-            final List<SimplePushDestination> destinations = colaboradores
-                    .stream()
-                    .filter(c -> c.getTokensPushFirebase() != null)
-                    .map(c ->
-                            Arrays.stream(c.getTokensPushFirebase())
-                                    .map(token -> new SimplePushDestination(String.valueOf(c.getCodColaborador()), token))
-                                    .collect(Collectors.toList()))
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
-
-            if (!destinations.isEmpty()) {
-                // Envia notificação via firebase.
-                final String messageBody = String.format(
-                        "%s solicitou um socorro para o veículo %s. Clique para ver mais.",
-                        formataNomeColaborador(nomeColaboradorAbertura),
-                        placaVeiculoProblema.trim());
-
-                //noinspection unchecked
-                new FirebasePushMessageApi().deliver(
-                        (List<PushDestination>) (List<?>) destinations,
-                        MessageScope.ABERTURA_SOCORRO_ROTA,
-                        PushMessage.builder()
-                                .withTitle("ATENÇÃO! Pedido de Socorro!")
-                                .withBody(messageBody)
-                                .withAndroidSmallIcon(AndroidSmallIcon.SOS_NOTIFICATION)
-                                .withAndroidLargeIcon(AndroidLargeIcon.SOS_NOTIFICATION)
-                                .withScreenToNavigate(AndroidAppScreens.VISUALIZAR_SOCORRO_ROTA)
-                                .withMetadataScreen(String.valueOf(codSocorro))
-                                .build());
-            } else {
-                Log.d(TAG, "Nenhum colaborador para notificar VIA PUSH sobre abertura do socorro");
+            try {
+                notificaAberturaSocorroPush(codSocorro, colaboradores, placaVeiculoProblema, nomeColaboradorAbertura);
+            } catch (final Throwable t) {
+                // Logamos erro para ter controle no Sentry se estamos deixando de avisar os responsáveis sobre os
+                // socorros solicitados.
+                Log.e(TAG, "Erro ao enviar push notification de abertura de socorro", t);
             }
         } else {
             Log.d(TAG, "Nenhum colaborador para notificar sobre abertura do socorro");
@@ -211,6 +170,74 @@ final class NotificadorSocorroRota {
                             .build());
         } else {
             Log.d(TAG, "Nenhum token para notificar sobre atendimento do socorro");
+        }
+    }
+
+    private void notificaAberturaSocorroPush(
+            @NotNull final Long codSocorro,
+            @NotNull final List<ColaboradorNotificacaoAberturaSocorroRota> colaboradores,
+            @NotNull final String placaVeiculoProblema,
+            @NotNull final String nomeColaboradorAbertura) {
+        final List<SimplePushDestination> pushDestinations = colaboradores
+                .stream()
+                .filter(c -> c.getTokensPushFirebase() != null)
+                .map(c ->
+                        Arrays.stream(c.getTokensPushFirebase())
+                                .map(token -> new SimplePushDestination(String.valueOf(c.getCodColaborador()), token))
+                                .collect(Collectors.toList()))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        if (!pushDestinations.isEmpty()) {
+            // Envia notificação via firebase.
+            final String messageBody = String.format(
+                    "%s solicitou um socorro para o veículo %s. Clique para ver mais.",
+                    formataNomeColaborador(nomeColaboradorAbertura),
+                    placaVeiculoProblema.trim());
+
+            //noinspection unchecked
+            new FirebasePushMessageApi().deliver(
+                    (List<PushDestination>) (List<?>) pushDestinations,
+                    MessageScope.ABERTURA_SOCORRO_ROTA,
+                    PushMessage.builder()
+                            .withTitle("ATENÇÃO! Pedido de Socorro!")
+                            .withBody(messageBody)
+                            .withAndroidSmallIcon(AndroidSmallIcon.SOS_NOTIFICATION)
+                            .withAndroidLargeIcon(AndroidLargeIcon.SOS_NOTIFICATION)
+                            .withScreenToNavigate(AndroidAppScreens.VISUALIZAR_SOCORRO_ROTA)
+                            .withMetadataScreen(String.valueOf(codSocorro))
+                            .build());
+        } else {
+            Log.d(TAG, "Nenhum colaborador para notificar VIA PUSH sobre abertura do socorro");
+        }
+    }
+
+    private void notificaAberturaSocorroEmail(
+            @NotNull final List<ColaboradorNotificacaoAberturaSocorroRota> colaboradores,
+            @NotNull final String placaVeiculoProblema,
+            @NotNull final String nomeColaboradorAbertura) {
+        final List<String> emails = colaboradores
+                .stream()
+                .map(ColaboradorNotificacaoAberturaSocorroRota::getEmailColaborador)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        if (!emails.isEmpty()) {
+            new PrologEmailApi()
+                    .deliverTemplate(
+                            emails,
+                            MessageScope.ABERTURA_SOCORRO_ROTA,
+                            new EmailTemplateMessage(
+                                    EmailTemplate.ABERTURA_SOCORRO_ROTA,
+                                    EmailSender.of("socorroemrota@prologapp.com", "Socorro em Rota"),
+                                    String.format("Pedido de Socorro • %s", placaVeiculoProblema),
+                                    new ImmutableMap.Builder<String, String>()
+                                            .put("nome_colaborador", nomeColaboradorAbertura)
+                                            .put("placa_veiculo", placaVeiculoProblema)
+                                            .put("link_socorro_rota", "https://adm.prologapp.com/socorro-em-rota")
+                                            .build()));
+        } else {
+            Log.d(TAG, "Nenhum colaborador para notificar VIA E-MAIL sobre abertura do socorro");
         }
     }
 
