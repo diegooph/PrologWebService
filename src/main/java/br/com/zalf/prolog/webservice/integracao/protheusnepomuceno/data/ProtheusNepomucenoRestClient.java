@@ -5,5 +5,5 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public class ProtheusNepomucenoRestClient {
+public final class ProtheusNepomucenoRestClient {
 }

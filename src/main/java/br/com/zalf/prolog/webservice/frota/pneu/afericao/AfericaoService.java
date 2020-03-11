@@ -85,11 +85,14 @@ public class AfericaoService {
     }
 
     @NotNull
-    NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final Long codUnidade,
+    NovaAfericaoAvulsa getNovaAfericaoAvulsa(@NotNull final String userToken,
+                                             @NotNull final Long codUnidade,
                                              @NotNull final Long codPneu,
                                              @NotNull final String tipoAfericao) throws ProLogException {
         try {
-            return dao.getNovaAfericaoAvulsa(codUnidade, codPneu, TipoMedicaoColetadaAfericao.fromString(tipoAfericao));
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getNovaAfericaoAvulsa(codUnidade, codPneu, TipoMedicaoColetadaAfericao.fromString(tipoAfericao));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar NovaAfericao para o pneu: " + codPneu, e);
             throw exceptionHandler.map(e, "Erro ao inicar uma nova aferição, tente novamente");

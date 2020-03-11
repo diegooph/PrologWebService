@@ -148,6 +148,15 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
+    public NovaAfericaoAvulsa getNovaAfericaoAvulsa(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable {
+        return getIntegradorProLog().getNovaAfericaoAvulsa(codUnidade, codPneu, tipoMedicaoColetadaAfericao);
+    }
+
+    @NotNull
+    @Override
     public Report getAfericoesAvulsas(@NotNull final Long codUnidade,
                                       @Nullable final Long codColaborador,
                                       @NotNull final LocalDate dataInicial,
