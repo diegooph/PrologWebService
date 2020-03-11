@@ -116,8 +116,8 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CODIGO, PLACA, KM FROM VEICULO WHERE COD_UNIDADE = ? AND " +
-                    "STATUS_ATIVO = TRUE ORDER BY PLACA;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_GET_VEICULOS_DISPONIVEIS_BY_UNIDADE(" +
+                    "F_COD_UNIDADE := ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             final List<VeiculoAberturaSocorro> veiculos = new ArrayList<>();

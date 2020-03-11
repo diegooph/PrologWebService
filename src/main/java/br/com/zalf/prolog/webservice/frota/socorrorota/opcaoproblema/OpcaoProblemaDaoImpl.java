@@ -19,6 +19,7 @@ import java.util.List;
  */
 
 public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements OpcaoProblemaDao {
+
     @NotNull
     @Override
     public List<OpcaoProblemaAberturaSocorro> getOpcoesProblemasDisponiveisAberturaSocorroByEmpresa(
@@ -28,10 +29,8 @@ public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements Op
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CODIGO, DESCRICAO, OBRIGA_DESCRICAO " +
-                    "FROM SOCORRO_ROTA_OPCAO_PROBLEMA " +
-                    "WHERE COD_EMPRESA = ? AND STATUS_ATIVO IS TRUE " +
-                    "ORDER BY DESCRICAO;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_OPCAO_PROBLEMA_DISPONIVEIS_ABERTURA_SOCORRO_BY_EMPRESA(" +
+                    "F_COD_EMPRESA := ?);");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             final List<OpcaoProblemaAberturaSocorro> opcoesProblemas = new ArrayList<>();
