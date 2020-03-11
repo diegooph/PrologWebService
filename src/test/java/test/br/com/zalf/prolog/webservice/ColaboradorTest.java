@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import junit.framework.TestCase;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import org.jetbrains.annotations.NotNull;
 

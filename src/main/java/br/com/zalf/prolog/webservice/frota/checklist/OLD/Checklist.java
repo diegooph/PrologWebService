@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

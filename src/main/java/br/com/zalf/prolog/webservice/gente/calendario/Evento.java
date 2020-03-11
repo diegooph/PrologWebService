@@ -1,11 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
-import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Equipe;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * Created by luiz on 2/8/16.

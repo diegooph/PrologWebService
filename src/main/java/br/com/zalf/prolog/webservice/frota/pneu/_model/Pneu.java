@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu._model;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
-import br.com.zalf.prolog.webservice.colaborador.model.Regional;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
+import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.commons.util.Log;
