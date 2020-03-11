@@ -29,7 +29,7 @@ public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements Op
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_OPCAO_PROBLEMA_DISPONIVEIS_ABERTURA_SOCORRO_BY_EMPRESA(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_OPS_PROBLEM_DISP_ABERTURA_SOCORRO_BY_EMP(" +
                     "F_COD_EMPRESA := ?);");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
