@@ -2,6 +2,9 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created on 11/03/20
  *
@@ -9,46 +12,52 @@ import org.jetbrains.annotations.NotNull;
  */
 public class VeiculoAfericaoProtheusNepomuceno {
     /**
-     * Atributo alfanumérico que representa o código único
+     * Atributo alfanumérico que representa o código único.
      */
     @NotNull
     private final String codVeiculo;
 
     /**
-     * Atributo alfanumérico que representa a placa
+     * Atributo alfanumérico que representa a placa.
     */
     @NotNull
     private final String placaVeiculo;
 
     /**
-     * Atributo alfanumérico que representa o código da empresa
+     * Atributo alfanumérico que representa o código da empresa.
      */
     @NotNull
     private final String codEmpresaVeiculo;
 
     /**
-     * Atributo alfanumérico que representa o código da unidade
+     * Atributo alfanumérico que representa o código da unidade.
      */
     @NotNull
     private final String codUnidadeVeiculo;
 
     /**
-     * Atributo alfanumérico que representa o código de frota
+     * Atributo alfanumérico que representa o código de frota.
      */
     @NotNull
     private final String codigoFrota;
 
     /**
-     * Valor numérico que representa a quilimetragem atual
+     * Valor numérico que representa a quilimetragem atual.
      */
     @NotNull
     private final Long kmAtualVeiculo;
 
     /**
-     * Atributo alfanumérico que representa o código de estrutura
+     * Atributo alfanumérico que representa o código de estrutura.
      */
     @NotNull
     private final String codEstruturaVeiculo;
+
+    /**
+     * Lista de {@link PneuAplicadoProtheusNepomuceno pneusAplicados}.
+     */
+    @NotNull
+    private final List<PneuAplicadoProtheusNepomuceno> pneusAplicados;
 
     public VeiculoAfericaoProtheusNepomuceno(@NotNull final String codVeiculo,
                                              @NotNull final String placaVeiculo,
@@ -56,7 +65,8 @@ public class VeiculoAfericaoProtheusNepomuceno {
                                              @NotNull final String codUnidadeVeiculo,
                                              @NotNull final String codigoFrota,
                                              @NotNull final Long kmAtualVeiculo,
-                                             @NotNull final String codEstruturaVeiculo) {
+                                             @NotNull final String codEstruturaVeiculo,
+                                             @NotNull final List<PneuAplicadoProtheusNepomuceno> pneusAplicados) {
         this.codVeiculo = codVeiculo;
         this.placaVeiculo = placaVeiculo;
         this.codEmpresaVeiculo = codEmpresaVeiculo;
@@ -64,10 +74,15 @@ public class VeiculoAfericaoProtheusNepomuceno {
         this.codigoFrota = codigoFrota;
         this.kmAtualVeiculo = kmAtualVeiculo;
         this.codEstruturaVeiculo = codEstruturaVeiculo;
+        this.pneusAplicados = pneusAplicados;
     }
 
     @NotNull
     static VeiculoAfericaoProtheusNepomuceno getMedicaoDummy() {
+        final List<PneuAplicadoProtheusNepomuceno> pneusAplicados = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            pneusAplicados.add(PneuAplicadoProtheusNepomuceno.getPneuAplicadoDummy());
+        }
         return new VeiculoAfericaoProtheusNepomuceno(
                 "1234",
                 "ZZZ0000",
@@ -75,7 +90,8 @@ public class VeiculoAfericaoProtheusNepomuceno {
                 "F0001",
                 "Z01",
                 12L,
-                "F0001:M0001"
+                "F0001:M0001",
+                pneusAplicados
         );
     }
 
