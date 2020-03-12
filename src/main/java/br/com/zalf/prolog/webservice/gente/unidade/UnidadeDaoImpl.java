@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,8 +71,30 @@ public class UnidadeDaoImpl extends DatabaseConnection implements UnidadeDao {
 
     @NotNull
     @Override
-    public List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(final Long codEmpresa, final Long codRegional) throws SQLException {
-        return null;
+    public List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(final Long codEmpresa, final Long codRegional) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_GENTE_GET_UNIDADES_BY_COD_EMPRESA_N_COD_REGIONAL(" +
+                    "F_COD_EMPRESA := ?," +
+                    "F_COD_REGIONAL := ?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codRegional);
+
+            rSet = stmt.executeQuery();
+
+            final List<UnidadeVisualizacao> unidadesVisualizacao = new ArrayList<UnidadeVisualizacao>();
+            while (rSet.next()) {
+                unidadesVisualizacao.add(UnidadeConverter.createUnidadeVisualizacao(rSet));
+            }
+
+            return unidadesVisualizacao;
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
 }
