@@ -1,12 +1,3 @@
-Stage
-==========
-
-### Features
-* Criar configuração para saber se uma integração abre serviços de pneu (PLI-78)
-
-### Refactors
-* Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
-
 Change Log
 ==========
 
@@ -15,6 +6,7 @@ Change Log
 
 ### Features
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
+* Criar configuração para saber se uma integração abre serviços de pneu (PLI-78)
 
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
