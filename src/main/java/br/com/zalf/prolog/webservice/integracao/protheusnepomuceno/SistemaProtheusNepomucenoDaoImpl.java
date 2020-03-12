@@ -87,6 +87,7 @@ public class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection impleme
                     "F_COD_AFERICAO_INTEGRADA := ?," +
                     "F_COD_PNEU_PROLOG := ?, " +
                     "F_COD_PNEU_CLIENTE := ?, " +
+                    "F_COD_PNEU_CLIENTE_AUXILIAR := ?, " +
                     "F_VIDA_ATUAL := ?, " +
                     "F_PSI := ?, " +
                     "F_ALTURA_SULCO_INTERNO := ?, " +
@@ -101,33 +102,34 @@ public class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection impleme
                 // A integração com o sistema da Nepomuceno não mantém pneus no Prolog
                 stmt.setNull(2, Types.VARCHAR);
                 stmt.setString(3, String.valueOf(pneu.getCodigo()));
-                stmt.setString(4, String.valueOf(pneu.getVidaAtual()));
+                stmt.setString(4, String.valueOf(pneu.getCodigoCliente()));
+                stmt.setString(5, String.valueOf(pneu.getVidaAtual()));
 
                 // Já aproveitamos esse switch para atualizar as medições do pneu na tabela PNEU.
                 switch (afericao.getTipoMedicaoColetadaAfericao()) {
                     case SULCO_PRESSAO:
-                        stmt.setString(5, String.valueOf(pneu.getPressaoAtual()));
-                        stmt.setString(6, String.valueOf(pneu.getSulcosAtuais().getInterno()));
-                        stmt.setString(7, String.valueOf(pneu.getSulcosAtuais().getCentralInterno()));
-                        stmt.setString(8, String.valueOf(pneu.getSulcosAtuais().getExterno()));
-                        stmt.setString(9, String.valueOf(pneu.getSulcosAtuais().getCentralExterno()));
+                        stmt.setString(6, String.valueOf(pneu.getPressaoAtual()));
+                        stmt.setString(7, String.valueOf(pneu.getSulcosAtuais().getInterno()));
+                        stmt.setString(8, String.valueOf(pneu.getSulcosAtuais().getCentralInterno()));
+                        stmt.setString(9, String.valueOf(pneu.getSulcosAtuais().getExterno()));
+                        stmt.setString(10, String.valueOf(pneu.getSulcosAtuais().getCentralExterno()));
                         break;
                     case SULCO:
-                        stmt.setNull(5, Types.VARCHAR);
-                        stmt.setString(6, String.valueOf(pneu.getSulcosAtuais().getInterno()));
-                        stmt.setString(7, String.valueOf(pneu.getSulcosAtuais().getCentralInterno()));
-                        stmt.setString(8, String.valueOf(pneu.getSulcosAtuais().getExterno()));
-                        stmt.setString(9, String.valueOf(pneu.getSulcosAtuais().getCentralExterno()));
+                        stmt.setNull(6, Types.VARCHAR);
+                        stmt.setString(7, String.valueOf(pneu.getSulcosAtuais().getInterno()));
+                        stmt.setString(8, String.valueOf(pneu.getSulcosAtuais().getCentralInterno()));
+                        stmt.setString(9, String.valueOf(pneu.getSulcosAtuais().getExterno()));
+                        stmt.setString(10, String.valueOf(pneu.getSulcosAtuais().getCentralExterno()));
                         break;
                     case PRESSAO:
-                        stmt.setString(5, String.valueOf(pneu.getPressaoAtual()));
-                        stmt.setNull(6, Types.VARCHAR);
+                        stmt.setString(6, String.valueOf(pneu.getPressaoAtual()));
                         stmt.setNull(7, Types.VARCHAR);
                         stmt.setNull(8, Types.VARCHAR);
                         stmt.setNull(9, Types.VARCHAR);
+                        stmt.setNull(10, Types.VARCHAR);
                         break;
                 }
-                stmt.setString(10, String.valueOf(pneu.getVidaAtual()));
+                stmt.setString(11, String.valueOf(pneu.getPosicao()));
                 if (stmt.executeUpdate() == 0) {
                     throw new SQLException("Não foi possível atualizar as medidas para o pneu: " + pneu.getCodigo());
                 }
