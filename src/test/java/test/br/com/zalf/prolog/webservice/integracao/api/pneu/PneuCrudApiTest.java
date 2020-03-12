@@ -55,6 +55,8 @@ public final class PneuCrudApiTest extends BaseTest {
         this.apiPneuService = new ApiPneuService();
         this.connectionProvider = new DatabaseConnectionProvider();
         // TODO - inserir Token e CHAVES necessárias nas tabelas de integração.
+        // TODO - Deixar os objetos ainda mais automatizados criando modelos de pneu e banda a cada vez que rodar o teste
+        // TODO - Utilizar os código (modelos de pneu e banda) para criar os pneus
     }
 
     @AfterAll
@@ -90,17 +92,15 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verifica se os pneus foram inseridos
         for (ApiPneuCargaInicial apiPneuCargaInicial : cargaInicial) {
-
-            assertThat(buscaCodSistemaIntegradoPneuInserido(apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente(),
-                    apiPneuCargaInicial.getCodUnidadePneu(),
-                    COD_EMPRESA,
-                    TOKEN_INTEGRACAO)).isNotNull();
-            assertThat(buscaCodSistemaIntegradoPneuInserido(apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente(),
-                    apiPneuCargaInicial.getCodUnidadePneu(),
-                    COD_EMPRESA,
-                    TOKEN_INTEGRACAO)).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
+            final Long codSistemaIntegradoPneu =
+                    buscaCodSistemaIntegradoPneuInserido(
+                            apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                            apiPneuCargaInicial.getCodigoCliente(),
+                            apiPneuCargaInicial.getCodUnidadePneu(),
+                            COD_EMPRESA,
+                            TOKEN_INTEGRACAO);
+            assertThat(codSistemaIntegradoPneu).isNotNull();
+            assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
         }
 
         //Verificações
@@ -518,9 +518,13 @@ public final class PneuCrudApiTest extends BaseTest {
         desativaSobrescritaPneuEmpresa(COD_EMPRESA);
 
         //Verificações
-        assertThat(buscaVidaAtualPneuAtualizado(apiPneuCadastro.getCodigoSistemaIntegrado(),
-                apiPneuCadastro.getCodigoCliente(), apiPneuCadastro.getCodUnidadePneu(), COD_EMPRESA))
-                .isEqualTo(vidaAtualPneu);
+        final int vidaAtualPneuAtualizado =
+                buscaVidaAtualPneuAtualizado(
+                        apiPneuCadastro.getCodigoSistemaIntegrado(),
+                        apiPneuCadastro.getCodigoCliente(),
+                        apiPneuCadastro.getCodUnidadePneu(),
+                        COD_EMPRESA);
+        assertThat(vidaAtualPneuAtualizado).isEqualTo(vidaAtualPneu);
         assertThat(apiPneuCargaInicialResponses).isNotEmpty();
         assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
         for (ApiPneuCargaInicialResponse apiPneuCargaInicialRespons : apiPneuCargaInicialResponses) {
@@ -540,13 +544,15 @@ public final class PneuCrudApiTest extends BaseTest {
         assertThat(successResponseIntegracao).isNotNull();
         assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
         //Verifica se realmente o pneu foi salvo no banco
-        assertThat(buscaCodSistemaIntegradoPneuInserido(apiPneuCadastro.getCodigoSistemaIntegrado(),
-                apiPneuCadastro.getCodigoCliente(), apiPneuCadastro.getCodUnidadePneu(), COD_EMPRESA, TOKEN_INTEGRACAO))
-                .isNotNull();
-        assertThat(apiPneuCadastro.getCodigoSistemaIntegrado())
-                .isEqualTo(buscaCodSistemaIntegradoPneuInserido(apiPneuCadastro.getCodigoSistemaIntegrado(),
-                        apiPneuCadastro.getCodigoCliente(), apiPneuCadastro.getCodUnidadePneu(), COD_EMPRESA,
-                        TOKEN_INTEGRACAO));
+        final Long codSistemaIntegradoPneu =
+                buscaCodSistemaIntegradoPneuInserido(
+                        apiPneuCadastro.getCodigoSistemaIntegrado(),
+                        apiPneuCadastro.getCodigoCliente(),
+                        apiPneuCadastro.getCodUnidadePneu(),
+                        COD_EMPRESA,
+                        TOKEN_INTEGRACAO);
+        assertThat(codSistemaIntegradoPneu).isNotNull();
+        assertThat(apiPneuCadastro.getCodigoSistemaIntegrado()).isEqualTo(codSistemaIntegradoPneu);
     }
 
     @Test
@@ -832,19 +838,20 @@ public final class PneuCrudApiTest extends BaseTest {
             assertThat(successResponseIntegracaoInserido).isNotNull();
             assertThat(successResponseIntegracaoInserido.getMsg()).isNotEmpty();
             //Verifica se realmente o pneu foi salvo no banco
-            assertThat(buscaCodSistemaIntegradoPneuInserido(apiPneuCadastro.getCodigoSistemaIntegrado(),
-                    apiPneuCadastro.getCodigoCliente(), apiPneuCadastro.getCodUnidadePneu(), COD_EMPRESA, TOKEN_INTEGRACAO))
-                    .isNotNull();
-            assertThat(apiPneuCadastro.getCodigoSistemaIntegrado())
-                    .isEqualTo(buscaCodSistemaIntegradoPneuInserido(apiPneuCadastro.getCodigoSistemaIntegrado(),
-                            apiPneuCadastro.getCodigoCliente(), apiPneuCadastro.getCodUnidadePneu(), COD_EMPRESA,
-                            TOKEN_INTEGRACAO));
+            final Long codSistemaIntegradoPneu =
+                    buscaCodSistemaIntegradoPneuInserido(
+                            apiPneuCadastro.getCodigoSistemaIntegrado(),
+                            apiPneuCadastro.getCodigoCliente(),
+                            apiPneuCadastro.getCodUnidadePneu(),
+                            COD_EMPRESA,
+                            TOKEN_INTEGRACAO);
+            assertThat(codSistemaIntegradoPneu).isNotNull();
+            assertThat(apiPneuCadastro.getCodigoSistemaIntegrado()).isEqualTo(codSistemaIntegradoPneu);
             //Guarda pneus
             pneusSalvos.add(apiPneuCadastro);
         }
 
         //Cenário
-        Long codPneuProlog;
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusAnaliseSemErro(pneusSalvos.get(0)));
         apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusDescarteSemErro(pneusSalvos.get(1)));
@@ -857,10 +864,14 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verifica se os dados foram salvos como previstos
         for (ApiPneuAlteracaoStatus pneuAlteracaoStatus : apiPneuAlteracaoStatus) {
-            codPneuProlog = buscaCodPneuCadastroProlog(pneuAlteracaoStatus.getCodigoSistemaIntegrado(),
-                    pneuAlteracaoStatus.getCodigoCliente(), pneuAlteracaoStatus.getCodUnidadePneu(),
-                    COD_EMPRESA);
-            boolean verificaPneu = verificaSePneuFoiAtualizado(codPneuProlog,
+            final Long codPneuProlog =
+                    buscaCodPneuCadastroProlog(
+                            pneuAlteracaoStatus.getCodigoSistemaIntegrado(),
+                            pneuAlteracaoStatus.getCodigoCliente(),
+                            pneuAlteracaoStatus.getCodUnidadePneu(),
+                            COD_EMPRESA);
+            final boolean verificaPneu = verificaSePneuFoiAtualizado(
+                    codPneuProlog,
                     pneuAlteracaoStatus.getStatusPneu().toString());
             assertThat(verificaPneu).isTrue();
         }
@@ -898,7 +909,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste atualiza status do pneu com código unidade inválido")
-    void atualizaStatusPneuComCodigoUnidadeInvalidoTest() {
+    void atualizaStatusPneuComErroCodigoUnidadeInvalidoTest() {
         final Long codUnidade = 115431234L;
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
@@ -924,7 +935,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste atualiza status do pneu com código modelo de banda inválido")
-    void atualizaStatusPneuComCodigoModeloBandaInvalidoTest() {
+    void atualizaStatusPneuComErroCodigoModeloBandaInvalidoTest() {
         final Long codModeloPneu = 10908787L;
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
@@ -946,6 +957,184 @@ public final class PneuCrudApiTest extends BaseTest {
         //Verificações
         assertThat(throwable.getMessage())
                 .isEqualTo("O modelo da banda do pneu " + codModeloPneu + " não está mapeado no Sistema ProLog");
+    }
+
+    //Métodos com acesso ao banco de dados.
+    //Configuração de sobrescrita de uma empresa.
+    void ativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.EMPRESA_CONFIG_CARGA_INICIAL(" +
+                    "COD_EMPRESA, " +
+                    "SOBRESCREVE_PNEUS, " +
+                    "SOBRESCREVE_VEICULOS) " +
+                    "VALUES(?,?,?) ON CONFLICT(COD_EMPRESA) DO NOTHING");
+            stmt.setLong(1, codEmpresa);
+            stmt.setBoolean(2, true);
+            stmt.setBoolean(3, false);
+            stmt.executeUpdate();
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao ativar configuração de sobrescrita do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt);
+        }
+    }
+
+    void desativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("DELETE FROM INTEGRACAO.EMPRESA_CONFIG_CARGA_INICIAL " +
+                    "WHERE COD_EMPRESA = ?");
+            stmt.setLong(1, codEmpresa);
+            stmt.executeUpdate();
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao desativar configuração de sobrescrita do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt);
+        }
+    }
+
+    //Método responsável por buscar código sistema integrado de um pneu específico para o teste de inserção,
+    private Long buscaCodSistemaIntegradoPneuInserido(@NotNull final Long codSistemaIntegrado,
+                                                      @NotNull final String codCliente,
+                                                      @NotNull final Long codUnidade,
+                                                      @NotNull final Long codEmpresa,
+                                                      @NotNull final String token) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT COD_PNEU_SISTEMA_INTEGRADO FROM INTEGRACAO.PNEU_CADASTRADO " +
+                    "WHERE COD_PNEU_SISTEMA_INTEGRADO = ? " +
+                    "AND COD_EMPRESA_CADASTRO = ? " +
+                    "AND COD_UNIDADE_CADASTRO = ? " +
+                    "AND  COD_CLIENTE_PNEU_CADASTRO = ? " +
+                    "AND TOKEN_AUTENTICACAO_CADASTRO = ?");
+            stmt.setLong(1, codSistemaIntegrado);
+            stmt.setLong(2, codEmpresa);
+            stmt.setLong(3, codUnidade);
+            stmt.setString(4, codCliente);
+            stmt.setString(5, token);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("COD_PNEU_SISTEMA_INTEGRADO");
+            } else {
+                return null;
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por buscar vida atual do pneu cadastrado no prolog.
+    private int buscaVidaAtualPneuAtualizado(@NotNull final Long codSistemaIntegrado,
+                                             @NotNull final String codCliente,
+                                             @NotNull final Long codUnidade,
+                                             @NotNull final Long codEmpresa) throws Throwable {
+        Long codPneuCadastroProlog = buscaCodPneuCadastroProlog(codSistemaIntegrado, codCliente, codUnidade, codEmpresa);
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT VIDA_ATUAL FROM PNEU WHERE " +
+                    "CODIGO = ? AND " +
+                    "CODIGO_CLIENTE = ? AND " +
+                    "COD_UNIDADE = ?");
+            stmt.setLong(1, codPneuCadastroProlog);
+            stmt.setString(2, codCliente);
+            stmt.setLong(3, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getInt("VIDA_ATUAL");
+            } else {
+                throw new SQLException("Erro ao buscar vida atual do pneu");
+            }
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por buscar código do pneu cadastrado no prolog.
+    private Long buscaCodPneuCadastroProlog(@NotNull final Long codSistemaIntegrado,
+                                            @NotNull final String codCliente,
+                                            @NotNull final Long codUnidade,
+                                            @NotNull final Long codEmpresa) throws Throwable {
+        Long codPneuCadastroProlog = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT COD_PNEU_CADASTRO_PROLOG FROM INTEGRACAO.PNEU_CADASTRADO WHERE " +
+                    "COD_UNIDADE_CADASTRO = ? AND " +
+                    "COD_EMPRESA_CADASTRO = ? AND " +
+                    "COD_CLIENTE_PNEU_CADASTRO = ? AND " +
+                    "COD_PNEU_SISTEMA_INTEGRADO = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codEmpresa);
+            stmt.setString(3, codCliente);
+            stmt.setLong(4, codSistemaIntegrado);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                codPneuCadastroProlog = rSet.getLong("COD_PNEU_CADASTRO_PROLOG");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar código pneu Prolog");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+        return codPneuCadastroProlog;
+    }
+
+    //Método responsável por verificar se pneu foi atualizado.
+    private boolean verificaSePneuFoiAtualizado(@NotNull final Long codPneuProlog,
+                                                @NotNull final String status) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT * FROM PNEU WHERE CODIGO = ? AND STATUS = ?");
+            stmt.setLong(1, codPneuProlog);
+            stmt.setString(2, status);
+            rSet = stmt.executeQuery();
+            return rSet.next();
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao verificar pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por remover um pneu de uma placa em uma posicao específica.
+    private void removePneuDeUmaPlacaPosicaoEspecifica(@NotNull final String placa,
+                                                       final int posicao,
+                                                       @NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE " +
+                    "PLACA = ? AND " +
+                    "POSICAO = ? AND " +
+                    "COD_UNIDADE = ?;");
+            stmt.setString(1, placa);
+            stmt.setInt(2, posicao);
+            stmt.setLong(3, codUnidade);
+            stmt.executeUpdate();
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao deletar pneus da placa");
+        } finally {
+            connectionProvider.closeResources(conn, stmt);
+        }
     }
 
     //Objetos Pneu para testes em Carga Inicial sem erro.
@@ -1233,186 +1422,5 @@ public final class PneuCrudApiTest extends BaseTest {
                 true,
                 11L,
                 new BigDecimal(300.00));
-    }
-
-    //Métodos com acesso ao banco de dados.
-    //Configuração de sobrescrita de uma empresa.
-    void ativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.EMPRESA_CONFIG_CARGA_INICIAL(" +
-                    "COD_EMPRESA, " +
-                    "SOBRESCREVE_PNEUS, " +
-                    "SOBRESCREVE_VEICULOS) " +
-                    "VALUES(?,?,?) ON CONFLICT(COD_EMPRESA) DO NOTHING");
-
-            stmt.setLong(1, codEmpresa);
-            stmt.setBoolean(2, true);
-            stmt.setBoolean(3, false);
-            stmt.executeUpdate();
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao ativar configuração de sobrescrita do pneu");
-        } finally {
-            connectionProvider.closeResources(conn, stmt);
-        }
-    }
-
-    void desativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("DELETE FROM INTEGRACAO.EMPRESA_CONFIG_CARGA_INICIAL " +
-                    "WHERE COD_EMPRESA = ?");
-            stmt.setLong(1, codEmpresa);
-            stmt.executeUpdate();
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao desativar configuração de sobrescrita do pneu");
-        } finally {
-            connectionProvider.closeResources(conn, stmt);
-        }
-    }
-
-    //Método responsável por buscar código sistema integrado de um pneu específico para o teste de inserção,
-    private Long buscaCodSistemaIntegradoPneuInserido(final @NotNull Long codSistemaIntegrado,
-                                                      final @NotNull String codCliente,
-                                                      final @NotNull Long codUnidade,
-                                                      final @NotNull Long codEmpresa,
-                                                      final @NotNull String token) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("SELECT COD_PNEU_SISTEMA_INTEGRADO FROM INTEGRACAO.PNEU_CADASTRADO " +
-                    "WHERE COD_PNEU_SISTEMA_INTEGRADO = ? " +
-                    "AND COD_EMPRESA_CADASTRO = ? " +
-                    "AND COD_UNIDADE_CADASTRO = ? " +
-                    "AND  COD_CLIENTE_PNEU_CADASTRO = ? " +
-                    "AND TOKEN_AUTENTICACAO_CADASTRO = ?");
-            stmt.setLong(1, codSistemaIntegrado);
-            stmt.setLong(2, codEmpresa);
-            stmt.setLong(3, codUnidade);
-            stmt.setString(4, codCliente);
-            stmt.setString(5, token);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("COD_PNEU_SISTEMA_INTEGRADO");
-            } else {
-                return null;
-            }
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao buscar pneu");
-        } finally {
-            connectionProvider.closeResources(conn, stmt, rSet);
-        }
-    }
-
-    //Método responsável por buscar vida atual do pneu cadastrado no prolog.
-    private int buscaVidaAtualPneuAtualizado(final @NotNull Long codSistemaIntegrado,
-                                             final @NotNull String codCliente,
-                                             final @NotNull Long codUnidade,
-                                             final @NotNull Long codEmpresa) throws Throwable {
-        Long codPneuCadastroProlog = buscaCodPneuCadastroProlog(codSistemaIntegrado, codCliente, codUnidade, codEmpresa);
-        int vidaAtualPneu = 0;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("SELECT VIDA_ATUAL FROM PNEU WHERE " +
-                    "CODIGO = ? AND " +
-                    "CODIGO_CLIENTE = ? AND " +
-                    "COD_UNIDADE = ?");
-            stmt.setLong(1, codPneuCadastroProlog);
-            stmt.setString(2, codCliente);
-            stmt.setLong(3, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                vidaAtualPneu = rSet.getInt("VIDA_ATUAL");
-            }
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao buscar vida atual do pneu");
-        } finally {
-            connectionProvider.closeResources(conn, stmt, rSet);
-        }
-        return vidaAtualPneu;
-    }
-
-    //Método responsável por buscar código do pneu cadastrado no prolog.
-    private Long buscaCodPneuCadastroProlog(final @NotNull Long codSistemaIntegrado,
-                                            final @NotNull String codCliente,
-                                            final @NotNull Long codUnidade,
-                                            final @NotNull Long codEmpresa) throws Throwable {
-        Long codPneuCadastroProlog = null;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("SELECT COD_PNEU_CADASTRO_PROLOG FROM INTEGRACAO.PNEU_CADASTRADO WHERE " +
-                    "COD_UNIDADE_CADASTRO = ? AND " +
-                    "COD_EMPRESA_CADASTRO = ? AND " +
-                    "COD_CLIENTE_PNEU_CADASTRO = ? AND " +
-                    "COD_PNEU_SISTEMA_INTEGRADO = ?");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codEmpresa);
-            stmt.setString(3, codCliente);
-            stmt.setLong(4, codSistemaIntegrado);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                codPneuCadastroProlog = rSet.getLong("COD_PNEU_CADASTRO_PROLOG");
-            }
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao buscar código pneu Prolog");
-        } finally {
-            connectionProvider.closeResources(conn, stmt, rSet);
-        }
-        return codPneuCadastroProlog;
-    }
-
-    //Método responsável por verificar se pneu foi atualizado.
-    private boolean verificaSePneuFoiAtualizado(final @NotNull Long codPneuProlog,
-                                                final @NotNull String status) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PNEU WHERE CODIGO = ? AND STATUS = ?");
-            stmt.setLong(1, codPneuProlog);
-            stmt.setString(2, status);
-            rSet = stmt.executeQuery();
-            return rSet.next();
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao verificar pneu");
-        } finally {
-            connectionProvider.closeResources(conn, stmt, rSet);
-        }
-    }
-
-    //Método responsável por remover um pneu de uma placa em uma posicao específica.
-    private void removePneuDeUmaPlacaPosicaoEspecifica(final @NotNull String placa,
-                                                       final @NotNull int posicao,
-                                                       final @NotNull Long codUnidade) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE " +
-                    "PLACA = ? AND " +
-                    "POSICAO = ? AND " +
-                    "COD_UNIDADE = ?;");
-            stmt.setString(1, placa);
-            stmt.setInt(2, posicao);
-            stmt.setLong(3, codUnidade);
-            stmt.executeUpdate();
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao deletar pneus da placa");
-        } finally {
-            connectionProvider.closeResources(conn, stmt);
-        }
     }
 }
