@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.unidade;
 
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeVisualizacao;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 2020-03-12
@@ -52,11 +55,11 @@ public class UnidadeDaoImpl extends DatabaseConnection implements UnidadeDao {
         try {
             conn = getConnection();
 
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_GENTE_GET_UNIDADES_BY_COD_EMPRESA_N_COD_REGIONAL(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_GENTE_GET_UNIDADES_BY_COD_EMPRESA_AND_COD_REGIONAL(" +
                     "F_COD_EMPRESA := ?," +
                     "F_COD_REGIONAL := ?);");
             stmt.setLong(1, codEmpresa);
-            stmt.setLong(2, codRegional);
+            bindValueOrNull(stmt, 2, codRegional, SqlType.BIGINT);
 
             rSet = stmt.executeQuery();
 
