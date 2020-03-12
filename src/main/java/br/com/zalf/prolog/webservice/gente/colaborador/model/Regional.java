@@ -16,10 +16,15 @@ public class Regional {
     private String nome;
     private List<Unidade> listUnidade;
 
-    public Regional(Long codigo, String nome, List<Unidade> listUnidade) {
+    public Regional(final Long codigo, final String nome, final List<Unidade> listUnidade) {
         this.codigo = codigo;
         this.nome = nome;
         this.listUnidade = listUnidade;
+    }
+
+    public Regional(final Long codigo, final String nome) {
+        this.codigo = codigo;
+        this.nome = nome;
     }
 
     public Regional() {
@@ -29,7 +34,7 @@ public class Regional {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
@@ -37,7 +42,7 @@ public class Regional {
         return nome;
     }
 
-    public void setNome(String nome) {
+    public void setNome(final String nome) {
         this.nome = nome;
     }
 
@@ -45,7 +50,7 @@ public class Regional {
         return listUnidade;
     }
 
-    public void setListUnidade(List<Unidade> listUnidade) {
+    public void setListUnidade(final List<Unidade> listUnidade) {
         this.listUnidade = listUnidade;
     }
 
