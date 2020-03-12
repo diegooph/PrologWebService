@@ -5,6 +5,7 @@ Change Log
 
 ### Refactors
 * Remove lista de pneus disponíveis do `ServicoHolder` (PL-2510)
+* Bloqueia busca do `ServicoHolder` para apps <= 101 (PL-2510)
 
 <a name="v1.0.23"></a>
 ## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (release-date) [unreleased]
