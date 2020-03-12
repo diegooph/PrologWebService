@@ -36,18 +36,20 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                final boolean deveAbrirServico) throws Throwable {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        final SistemaProtheusNepomucenoDaoImpl SistemaProtheusNepomucenoDaoImpl = new SistemaProtheusNepomucenoDaoImpl();
         try {
             conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
             final Long codAfericaoInserida =
-                    Injection.provideAfericaoDao().insert(conn, codUnidade, afericao, deveAbrirServico);
+                    SistemaProtheusNepomucenoDaoImpl.insert(conn, codUnidade, afericao);
+            final String codAuxiliarUnidade = SistemaProtheusNepomucenoDaoImpl.getCodAuxiliarUnidade(conn, codUnidade);
 
             if (afericao instanceof AfericaoPlaca) {
                 requester.insertAfericaoPlaca(
-                        ProtheusNepomucenoConverter.convert(codUnidade, (AfericaoPlaca) afericao));
+                        ProtheusNepomucenoConverter.convert(codAuxiliarUnidade, (AfericaoPlaca) afericao));
             } else {
                 requester.insertAfericaoAvulsa(
-                        ProtheusNepomucenoConverter.convert(codUnidade, (AfericaoAvulsa) afericao));
+                        ProtheusNepomucenoConverter.convert(codAuxiliarUnidade, (AfericaoAvulsa) afericao));
             }
             conn.commit();
             return codAfericaoInserida;
