@@ -71,8 +71,7 @@ public class UnidadeVisualizacao {
         return codUnidade;
     }
 
-    public void setCodUnidade(
-            @NotNull final Long codUnidade) {
+    public void setCodUnidade(@NotNull final Long codUnidade) {
         this.codUnidade = codUnidade;
     }
 
@@ -81,8 +80,7 @@ public class UnidadeVisualizacao {
         return nomeUnidade;
     }
 
-    public void setNomeUnidade(
-            @NotNull final String nomeUnidade) {
+    public void setNomeUnidade(@NotNull final String nomeUnidade) {
         this.nomeUnidade = nomeUnidade;
     }
 
@@ -91,8 +89,7 @@ public class UnidadeVisualizacao {
         return totalColaboradores;
     }
 
-    public void setTotalColaboradores(
-            @NotNull final Integer totalColaboradores) {
+    public void setTotalColaboradores(@NotNull final Integer totalColaboradores) {
         this.totalColaboradores = totalColaboradores;
     }
 
@@ -101,8 +98,7 @@ public class UnidadeVisualizacao {
         return regional;
     }
 
-    public void setRegional(
-            @NotNull final Regional regional) {
+    public void setRegional(@NotNull final Regional regional) {
         this.regional = regional;
     }
 
@@ -111,8 +107,7 @@ public class UnidadeVisualizacao {
         return timezoneUnidade;
     }
 
-    public void setTimezoneUnidade(
-            @NotNull final String timezoneUnidade) {
+    public void setTimezoneUnidade(@NotNull final String timezoneUnidade) {
         this.timezoneUnidade = timezoneUnidade;
     }
 
@@ -121,8 +116,7 @@ public class UnidadeVisualizacao {
         return dataHoraCadastroUnidade;
     }
 
-    public void setDataHoraCadastroUnidade(
-            @NotNull final LocalDateTime dataHoraCadastroUnidade) {
+    public void setDataHoraCadastroUnidade(@NotNull final LocalDateTime dataHoraCadastroUnidade) {
         this.dataHoraCadastroUnidade = dataHoraCadastroUnidade;
     }
 
@@ -131,8 +125,7 @@ public class UnidadeVisualizacao {
         return unidadeAtiva;
     }
 
-    public void setUnidadeAtiva(
-            @NotNull final Boolean unidadeAtiva) {
+    public void setUnidadeAtiva(@NotNull final Boolean unidadeAtiva) {
         this.unidadeAtiva = unidadeAtiva;
     }
 
@@ -141,8 +134,7 @@ public class UnidadeVisualizacao {
         return codAuxiliar;
     }
 
-    public void setCodAuxiliar(
-            @Nullable final String codAuxiliar) {
+    public void setCodAuxiliar(@Nullable final String codAuxiliar) {
         this.codAuxiliar = codAuxiliar;
     }
 
@@ -151,8 +143,7 @@ public class UnidadeVisualizacao {
         return latitudeUnidade;
     }
 
-    public void setLatitudeUnidade(
-            @Nullable final String latitudeUnidade) {
+    public void setLatitudeUnidade(@Nullable final String latitudeUnidade) {
         this.latitudeUnidade = latitudeUnidade;
     }
 
@@ -161,8 +152,7 @@ public class UnidadeVisualizacao {
         return longitudeUnidade;
     }
 
-    public void setLongitudeUnidade(
-            @Nullable final String longitudeUnidade) {
+    public void setLongitudeUnidade(@Nullable final String longitudeUnidade) {
         this.longitudeUnidade = longitudeUnidade;
     }
 
