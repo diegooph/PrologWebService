@@ -14,7 +14,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @DebugLog
-@Path("/unidade")
+@Path("/unidades")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class UnidadeResource {
 
