@@ -31,7 +31,7 @@ public interface UnidadeDao {
      * @throws SQLException caso ocorrer erro no banco.
      */
     @NotNull
-    List<UnidadeVisualizacao> getAllUnidadeByCodEmpresa(Long codEmpresa) throws SQLException;
+    List<UnidadeVisualizacao> getAllUnidadeByCodEmpresa(Long codEmpresa) throws Throwable;
 
     /**
      * Busca todas as unidades baseado no código da empresa e da regional.
@@ -42,6 +42,6 @@ public interface UnidadeDao {
      * @throws SQLException caso ocorrer erro no banco.
      */
     @NotNull
-    List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(Long codEmpresa, Long codRegional) throws SQLException;
+    List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(Long codEmpresa, Long codRegional) throws Throwable;
 
 }
