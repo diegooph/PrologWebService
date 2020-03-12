@@ -71,10 +71,7 @@ public class UnidadeVisualizacao {
         this.longitudeUnidade = longitudeUnidade;
     }
 
-    public UnidadeVisualizacao() {
-
-    }
-
+    @NotNull
     public Long getCodUnidade() {
         return codUnidade;
     }
