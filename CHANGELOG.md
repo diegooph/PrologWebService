@@ -15,6 +15,7 @@ Change Log
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
 * Altera as interações com o banco de dados para implementar a amarração entre pneus e veículos (PL-1965)
 * Impedir que itens sejam resolvidos com data anterior à realização do check (PL-2500)
+* Remove arquivos de config antigos do eclipse
 
 <a name="v1.0.22"></a>
 ## Version [v1.0.22](https://github.com/luizfp/PrologWebService/compare/v1.0.21...v1.0.22) (2020-03-03)
