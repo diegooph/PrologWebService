@@ -44,34 +44,8 @@ public class UnidadeDaoImpl extends DatabaseConnection implements UnidadeDao {
 
     @NotNull
     @Override
-    public List<UnidadeVisualizacao> getAllUnidadeByCodEmpresa(final Long codEmpresa) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_GENTE_GET_UNIDADES_BY_COD_EMPRESA(" +
-                    "F_COD_EMPRESA := ?);");
-            stmt.setLong(1, codEmpresa);
-
-            rSet = stmt.executeQuery();
-
-            final List<UnidadeVisualizacao> unidadesVisualizacao = new ArrayList<UnidadeVisualizacao>();
-            while (rSet.next()) {
-                unidadesVisualizacao.add(UnidadeConverter.createUnidadeVisualizacao(rSet));
-            }
-
-            return unidadesVisualizacao;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-
-    }
-
-    @NotNull
-    @Override
-    public List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(final Long codEmpresa, final Long codRegional) throws Throwable {
+    public List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(final Long codEmpresa,
+                                                                             final Long codRegional) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
