@@ -21,7 +21,7 @@ public interface UnidadeDao {
      * @throws SQLException caso ocorrer erro no banco.
      */
     @NotNull
-    UnidadeVisualizacao getUnidadeByCodUnidade(Long codUnidade) throws SQLException;
+    UnidadeVisualizacao getUnidadeByCodUnidade(Long codUnidade) throws Throwable;
 
     /**
      * Busca todas as unidades baseado no código da empresa.
