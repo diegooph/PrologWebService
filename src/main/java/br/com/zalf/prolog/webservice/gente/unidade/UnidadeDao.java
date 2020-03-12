@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.unidade;
 
+import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeEdicao;
 import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeVisualizacao;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -13,6 +15,14 @@ import java.util.List;
 public interface UnidadeDao {
 
     /**
+     * Atualiza os dados de uma {@link UnidadeEdicao unidade}.
+     *
+     * @param unidade Dados da unidade a ser atualizada.
+     * @throws Throwable Caso não seja possível atualizar as informações.
+     */
+    void update(@NotNull final UnidadeEdicao unidade) throws Throwable;
+
+    /**
      * Busca uma unidade baseado no seu código.
      *
      * @param codUnidade um código de uma unidade.
@@ -20,7 +30,7 @@ public interface UnidadeDao {
      * @throws Throwable caso ocorrer erro no banco.
      */
     @NotNull
-    UnidadeVisualizacao getUnidadeByCodUnidade(Long codUnidade) throws Throwable;
+    UnidadeVisualizacao getUnidadeByCodUnidade(@NotNull Long codUnidade) throws Throwable;
 
     /**
      * Busca todas as unidades baseado no código da empresa e da regional.
@@ -31,7 +41,7 @@ public interface UnidadeDao {
      * @throws Throwable caso ocorrer erro no banco.
      */
     @NotNull
-    List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(Long codEmpresa,
-                                                                      Long codRegional) throws Throwable;
+    List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(@NotNull Long codEmpresa,
+                                                                      @Nullable Long codRegional) throws Throwable;
 
 }
