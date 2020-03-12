@@ -1,15 +1,14 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data;
 
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.AfericaoAvulsaProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.AfericaoPlacaProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.VeiculoAfericaoProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.VeiculoListagemProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.*;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+
+import java.util.List;
 
 /**
  * Created on 3/10/20
@@ -19,10 +18,10 @@ import retrofit2.http.Query;
 public interface ProtheusNepomucenoRest {
 
     @GET()
-    Call<VeiculoListagemProtheusNepomuceno> getListagemVeiculosUnidadesSelecionadas(
+    Call<List<VeiculoListagemProtheusNepomuceno>> getListagemVeiculosUnidadesSelecionadas(
             @Query("codFiliais") @NotNull final String codFiliais);
 
-    @GET("NEWAFERI")
+    @GET("")
     Call<VeiculoAfericaoProtheusNepomuceno> getPlacaPneusAfericaoPlaca(
             @Query("codFilial") @NotNull final String codFilial,
             @Query("placaVeiculo") @NotNull final String placaVeiculo);
@@ -32,11 +31,11 @@ public interface ProtheusNepomucenoRest {
             @Body @NotNull final AfericaoPlacaProtheusNepomuceno afericaoPlaca);
 
     @GET()
-    Call<Object> getListagemPneusEmEstoque(
+    Call<List<PneuEstoqueProtheusNepomuceno>> getListagemPneusEmEstoque(
             @Query("codFiliais") @NotNull final String codFiliais);
 
-    @GET("NEWAFERI")
-    Call<Object> getPneuEmEstoqueAfericaoAvulsa(
+    @GET("")
+    Call<PneuEstoqueProtheusNepomuceno> getPneuEmEstoqueAfericaoAvulsa(
             @Query("codFilial") @NotNull final String codFilial,
             @Query("placaVeiculo") @NotNull final String placaVeiculo);
 
