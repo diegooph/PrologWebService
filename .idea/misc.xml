@@ -11,6 +11,7 @@
       </PanelProvider>
     </PreviewSettings>
     <ParserSettings gitHubSyntaxChange="false">
+
       <PegdownExtensions>
         <option name="ABBREVIATIONS" value="false" />
         <option name="ANCHORLINKS" value="true" />
