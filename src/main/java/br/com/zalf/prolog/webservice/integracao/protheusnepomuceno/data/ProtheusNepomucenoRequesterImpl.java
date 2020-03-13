@@ -21,59 +21,65 @@ public final class ProtheusNepomucenoRequesterImpl implements ProtheusNepomuceno
     @NotNull
     @Override
     public List<VeiculoListagemProtheusNepomuceno> getListagemVeiculosUnidadesSelecionadas(
+            @NotNull final String url,
             @NotNull final String codFiliais) throws Throwable {
         final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
         final Call<List<VeiculoListagemProtheusNepomuceno>> call =
-                service.getListagemVeiculosUnidadesSelecionadas("", codFiliais);
+                service.getListagemVeiculosUnidadesSelecionadas(url, codFiliais);
         return handleResponse(call.execute());
     }
 
     @NotNull
     @Override
     public VeiculoAfericaoProtheusNepomuceno getPlacaPneusAfericaoPlaca(
+            @NotNull final String url,
             @NotNull final String codFilial,
             @NotNull final String placaVeiculo) throws Throwable {
         final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
         final Call<VeiculoAfericaoProtheusNepomuceno> call =
-                service.getPlacaPneusAfericaoPlaca("", codFilial, placaVeiculo);
+                service.getPlacaPneusAfericaoPlaca(url, codFilial, placaVeiculo);
         return handleResponse(call.execute());
     }
 
     @NotNull
     @Override
     public ResponseAfericaoProtheusNepomuceno insertAfericaoPlaca(
+            @NotNull final String url,
             @NotNull final AfericaoPlacaProtheusNepomuceno afericaoPlaca) throws Throwable {
         final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
-        final Call<ResponseAfericaoProtheusNepomuceno> call = service.insertAfericaoPlaca("", afericaoPlaca);
+        final Call<ResponseAfericaoProtheusNepomuceno> call = service.insertAfericaoPlaca(url, afericaoPlaca);
         return handleResponse(call.execute());
     }
 
     @NotNull
     @Override
     public List<PneuEstoqueProtheusNepomuceno> getListagemPneusEmEstoque(
+            @NotNull final String url,
             @NotNull final String codFiliais) throws Throwable {
         final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
-        final Call<List<PneuEstoqueProtheusNepomuceno>> call = service.getListagemPneusEmEstoque("", codFiliais);
+        final Call<List<PneuEstoqueProtheusNepomuceno>> call = service.getListagemPneusEmEstoque(url, codFiliais);
         return handleResponse(call.execute());
     }
 
     @NotNull
     @Override
     public PneuEstoqueProtheusNepomuceno getPneuEmEstoqueAfericaoAvulsa(
+            @NotNull final String url,
             @NotNull final String codFilial,
             @NotNull final String codPneu) throws Throwable {
         final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
         final Call<PneuEstoqueProtheusNepomuceno> call =
-                service.getPneuEmEstoqueAfericaoAvulsa("", codFilial, codPneu);
+                service.getPneuEmEstoqueAfericaoAvulsa(url, codFilial, codPneu);
         return handleResponse(call.execute());
     }
 
     @NotNull
     @Override
     public ResponseAfericaoProtheusNepomuceno insertAfericaoAvulsa(
+            @NotNull final String url,
             @NotNull final AfericaoAvulsaProtheusNepomuceno afericaoAvulsa) throws Throwable {
         final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
-        final Call<ResponseAfericaoProtheusNepomuceno> call = service.insertAfericaoAvulsa("", afericaoAvulsa);
+        final Call<ResponseAfericaoProtheusNepomuceno> call = service.insertAfericaoAvulsa(url, afericaoAvulsa);
         return handleResponse(call.execute());
     }
 

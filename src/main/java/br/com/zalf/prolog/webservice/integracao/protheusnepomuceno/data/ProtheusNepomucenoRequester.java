@@ -14,24 +14,30 @@ import java.util.List;
 public interface ProtheusNepomucenoRequester extends Requester {
     @NotNull
     List<VeiculoListagemProtheusNepomuceno> getListagemVeiculosUnidadesSelecionadas(
+            @NotNull final String url,
             @NotNull final String codFiliais) throws Throwable;
 
     @NotNull
-    VeiculoAfericaoProtheusNepomuceno getPlacaPneusAfericaoPlaca(@NotNull final String codFilial,
+    VeiculoAfericaoProtheusNepomuceno getPlacaPneusAfericaoPlaca(@NotNull final String url,
+                                                                 @NotNull final String codFilial,
                                                                  @NotNull final String placaVeiculo) throws Throwable;
 
     @NotNull
     ResponseAfericaoProtheusNepomuceno insertAfericaoPlaca(
+            @NotNull final String url,
             @NotNull final AfericaoPlacaProtheusNepomuceno afericaoPlaca) throws Throwable;
 
     @NotNull
-    List<PneuEstoqueProtheusNepomuceno> getListagemPneusEmEstoque(@NotNull final String codFiliais) throws Throwable;
+    List<PneuEstoqueProtheusNepomuceno> getListagemPneusEmEstoque(@NotNull final String url,
+                                                                  @NotNull final String codFiliais) throws Throwable;
 
     @NotNull
-    PneuEstoqueProtheusNepomuceno getPneuEmEstoqueAfericaoAvulsa(@NotNull final String codFilial,
+    PneuEstoqueProtheusNepomuceno getPneuEmEstoqueAfericaoAvulsa(@NotNull final String url,
+                                                                 @NotNull final String codFilial,
                                                                  @NotNull final String codPneu) throws Throwable;
 
     @NotNull
     ResponseAfericaoProtheusNepomuceno insertAfericaoAvulsa(
+            @NotNull final String url,
             @NotNull final AfericaoAvulsaProtheusNepomuceno afericaoAvulsa) throws Throwable;
 }
