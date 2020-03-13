@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.PneuEstoqueProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -80,6 +81,24 @@ public final class SistemaProtheusNepomuceno extends Sistema {
     @Override
     @NotNull
     public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        final SistemaProtheusNepomucenoDaoImpl SistemaProtheusNepomucenoDaoImpl = new SistemaProtheusNepomucenoDaoImpl();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+
+            // Busca o código auxiliar da unidade selecionada
+            final String codAuxiliarUnidade = SistemaProtheusNepomucenoDaoImpl.getCodAuxiliarUnidade(conn, codUnidade);
+
+            // Busca a lista de pneus em estoque do Protheus
+            final List<PneuEstoqueProtheusNepomuceno> pneusEstoqueProtheus = requester.getListagemPneusEmEstoque(codAuxiliarUnidade);
+
+
+        } catch (final Throwable t) {
+            throw t;
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
         return super.getPneusAfericaoAvulsa(codUnidade);
     }
 
