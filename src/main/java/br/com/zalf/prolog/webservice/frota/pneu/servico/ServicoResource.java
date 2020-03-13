@@ -59,6 +59,11 @@ public class ServicoResource {
     @GET
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/abertos/veiculos/{placaVeiculo}/completo")
+    @AppVersionCodeHandler(
+            implementation = DefaultAppVersionCodeHandler.class,
+            targetVersionCode = 101,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public ServicoHolder getServicoHolder(@PathParam("placaVeiculo") @Required String placa,
                                           @QueryParam("codUnidade") @Required Long codUnidade) {
         return service.getServicoHolder(placa, codUnidade);
