@@ -217,6 +217,24 @@ public class ModeloPlacasAfericao {
         public PlacaAfericao() {
         }
 
+        public boolean isAfericaoSulcoNoPrazo(final int metaSulco) {
+            return !isAfericaoSulcoVencidaOuNuncaAferida(metaSulco);
+        }
+
+        public boolean isAfericaoPressaoNoPrazo(final int metaPressao) {
+            return !isAfericaoPressaoVencidaOuNuncaAferida(metaPressao);
+        }
+
+        private boolean isAfericaoPressaoVencidaOuNuncaAferida(final int metaPressao) {
+            return intervaloUltimaAfericaoPressao > metaPressao
+                    || intervaloUltimaAfericaoPressao == PlacaAfericao.INTERVALO_INVALIDO;
+        }
+
+        private boolean isAfericaoSulcoVencidaOuNuncaAferida(final int metaSulco) {
+            return intervaloUltimaAfericaoSulco > metaSulco
+                    || intervaloUltimaAfericaoSulco == PlacaAfericao.INTERVALO_INVALIDO;
+        }
+
         @Override
         public String toString() {
             return "PlacaAfericao{" +

@@ -8,9 +8,11 @@ import org.jetbrains.annotations.NotNull;
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 public final class VeiculoListagemProtheusNepomuceno {
+    @NotNull
+    private static final String EMPRESA_FILIAL_SEPARATOR = ":";
     /**
      * Atributo alfanumérico que representa a placa
-    */
+     */
     @NotNull
     private final String placaVeiculo;
 
@@ -107,32 +109,57 @@ public final class VeiculoListagemProtheusNepomuceno {
     }
 
     @NotNull
-    public String getPlacaVeiculo() { return placaVeiculo; }
+    public String getPlacaVeiculo() {
+        return placaVeiculo;
+    }
 
     @NotNull
-    public String getCodVeiculo() { return codVeiculo; }
+    public String getCodVeiculo() {
+        return codVeiculo;
+    }
 
     @NotNull
-    public String getCodigoFrota() { return codigoFrota; }
+    public String getCodigoFrota() {
+        return codigoFrota;
+    }
 
     @NotNull
-    public String getCodEmpresaVeiculo() { return codEmpresaVeiculo; }
+    public String getCodEmpresaVeiculo() {
+        return codEmpresaVeiculo;
+    }
 
     @NotNull
-    public String getCodFilialVeiculo() { return codFilialVeiculo; }
+    public String getCodFilialVeiculo() {
+        return codFilialVeiculo;
+    }
 
     @NotNull
-    public String getNomeModeloVeiculo() { return nomeModeloVeiculo; }
+    public String getNomeModeloVeiculo() {
+        return nomeModeloVeiculo;
+    }
 
     @NotNull
-    public String getCodModeloVeiculo() { return codModeloVeiculo; }
+    public String getCodModeloVeiculo() {
+        return codModeloVeiculo;
+    }
 
     @NotNull
-    public Long getKmAtualVeiculo() { return kmAtualVeiculo; }
+    public Long getKmAtualVeiculo() {
+        return kmAtualVeiculo;
+    }
 
     @NotNull
-    public String getCodEstruturaVeiculo() { return codEstruturaVeiculo; }
+    public String getCodEstruturaVeiculo() {
+        return codEstruturaVeiculo;
+    }
 
     @NotNull
-    public Integer getQtsPneusAplicadosVeiculo() { return qtsPneusAplicadosVeiculo; }
+    public Integer getQtsPneusAplicadosVeiculo() {
+        return qtsPneusAplicadosVeiculo;
+    }
+
+    @NotNull
+    public String getCodEmpresaFilialVeiculo() {
+        return this.getCodEmpresaVeiculo().concat(EMPRESA_FILIAL_SEPARATOR).concat(this.getCodFilialVeiculo());
+    }
 }
