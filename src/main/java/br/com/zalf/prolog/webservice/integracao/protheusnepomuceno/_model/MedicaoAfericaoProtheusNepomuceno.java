@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public class MedicaoAfericaoProtheusNepomuceno {
+public final class MedicaoAfericaoProtheusNepomuceno {
     /**
      * Atributo alfanumérico que representa o código pelo qual o usuário identifica o pneu. Normalmente costuma-se
      * utilizar o código de fogo do pneu para identificá-lo.

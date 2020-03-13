@@ -3,13 +3,12 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.AfericaoAvulsaProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.AfericaoPlacaProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.MedicaoAfericaoProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.TipoMedicaoAfericaoProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoAvulsaProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoPlacaProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.MedicaoAfericaoProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.TipoMedicaoAfericaoProtheusNepomuceno;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 

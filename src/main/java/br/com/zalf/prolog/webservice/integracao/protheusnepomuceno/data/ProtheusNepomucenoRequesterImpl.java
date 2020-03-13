@@ -2,14 +2,15 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data;
 
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
 import br.com.zalf.prolog.webservice.integracao.network.RestClient;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.AfericaoAvulsaProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.AfericaoPlacaProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.error.ProtheusNepomucenoException;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import java.util.List;
 
 /**
  * Created on 3/10/20
@@ -19,10 +20,51 @@ import retrofit2.Response;
 public final class ProtheusNepomucenoRequesterImpl implements ProtheusNepomucenoRequester {
     @NotNull
     @Override
+    public List<VeiculoListagemProtheusNepomuceno> getListagemVeiculosUnidadesSelecionadas(
+            @NotNull final String codFiliais) throws Throwable {
+        final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
+        final Call<List<VeiculoListagemProtheusNepomuceno>> call =
+                service.getListagemVeiculosUnidadesSelecionadas("", codFiliais);
+        return handleResponse(call.execute());
+    }
+
+    @NotNull
+    @Override
+    public VeiculoAfericaoProtheusNepomuceno getPlacaPneusAfericaoPlaca(
+            @NotNull final String codFilial,
+            @NotNull final String placaVeiculo) throws Throwable {
+        final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
+        final Call<VeiculoAfericaoProtheusNepomuceno> call =
+                service.getPlacaPneusAfericaoPlaca("", codFilial, placaVeiculo);
+        return handleResponse(call.execute());
+    }
+
+    @NotNull
+    @Override
     public ResponseAfericaoProtheusNepomuceno insertAfericaoPlaca(
             @NotNull final AfericaoPlacaProtheusNepomuceno afericaoPlaca) throws Throwable {
         final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
         final Call<ResponseAfericaoProtheusNepomuceno> call = service.insertAfericaoPlaca("", afericaoPlaca);
+        return handleResponse(call.execute());
+    }
+
+    @NotNull
+    @Override
+    public List<PneuEstoqueProtheusNepomuceno> getListagemPneusEmEstoque(
+            @NotNull final String codFiliais) throws Throwable {
+        final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
+        final Call<List<PneuEstoqueProtheusNepomuceno>> call = service.getListagemPneusEmEstoque("", codFiliais);
+        return handleResponse(call.execute());
+    }
+
+    @NotNull
+    @Override
+    public PneuEstoqueProtheusNepomuceno getPneuEmEstoqueAfericaoAvulsa(
+            @NotNull final String codFilial,
+            @NotNull final String codPneu) throws Throwable {
+        final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
+        final Call<PneuEstoqueProtheusNepomuceno> call =
+                service.getPneuEmEstoqueAfericaoAvulsa("", codFilial, codPneu);
         return handleResponse(call.execute());
     }
 
@@ -36,7 +78,7 @@ public final class ProtheusNepomucenoRequesterImpl implements ProtheusNepomuceno
     }
 
     @NotNull
-    private <T> T handleResponse(@Nullable final Response<T> response) throws Throwable {
+    private <T> T handleResponse(@Nullable final Response<T> response) {
         if (response != null) {
             if (response.isSuccessful() && response.body() != null) {
                 return response.body();

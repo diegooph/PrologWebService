@@ -1,6 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model;
-
-import br.com.zalf.prolog.webservice.frota.pneu._model.PneuEstoque;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,7 +10,7 @@ import javax.validation.constraints.NotNull;
  * @author Wellington Moraes (https://github.com/wvinim)
  * {@see protheusnepomuceno}
  */
-public class PneuEstoqueProtheusNepomuceno {
+public final class PneuAplicadoProtheusNepomuceno {
     /**
      * Código único de identificação do pneu no banco de dados.
      */
@@ -49,6 +47,12 @@ public class PneuEstoqueProtheusNepomuceno {
      */
     @NotNull
     private final Integer vidaTotalPneu;
+
+    /**
+     * Atributo alfanumérico que representa a posição em que o pneu está aplicado.
+     */
+    @NotNull
+    private final String posicaoAplicado;
 
     /**
      * Atributo alfanumérico que representa a pressão recomendada.
@@ -134,31 +138,40 @@ public class PneuEstoqueProtheusNepomuceno {
     @NotNull
     private final Integer qtdSulcosModeloBanda;
 
-    public PneuEstoqueProtheusNepomuceno(@NotNull final String codPneu,
-                                         @NotNull final String codigoCliente,
-                                         @NotNull final String codEmpresaPneu,
-                                         @NotNull final String codUnidadePneu,
-                                         @NotNull final Integer vidaAtualPneu,
-                                         @NotNull final Integer vidaTotalPneu,
-                                         @NotNull final Double pressaoRecomendadaPneu,
-                                         @NotNull final Double pressaoAtualPneu,
-                                         @NotNull final Double sulcoInternoPneu,
-                                         @NotNull final Double sulcoCentralInternoPneu,
-                                         @NotNull final Double sulcoCentralExternoPneu,
-                                         @NotNull final Double sulcoExternoPneu,
-                                         @NotNull final String dotPneu,
-                                         @NotNull final String nomeModeloPneu,
-                                         @NotNull final String codModeloPneu,
-                                         @NotNull final Integer qtdSulcosModeloPneu,
-                                         @NotNull final String nomeModeloBanda,
-                                         @NotNull final String codModeloBanda,
-                                         @NotNull final Integer qtdSulcosModeloBanda){
+    /**
+     * Booleano que define se o pneu está aplicado como estepe.
+     */
+    @NotNull
+    private final Boolean isPneuEstepe;
+
+    public PneuAplicadoProtheusNepomuceno(@NotNull final String codPneu,
+                                          @NotNull final String codigoCliente,
+                                          @NotNull final String codEmpresaPneu,
+                                          @NotNull final String codUnidadePneu,
+                                          @NotNull final Integer vidaAtualPneu,
+                                          @NotNull final Integer vidaTotalPneu,
+                                          @NotNull final String posicaoAplicado,
+                                          @NotNull final Double pressaoRecomendadaPneu,
+                                          @NotNull final Double pressaoAtualPneu,
+                                          @NotNull final Double sulcoInternoPneu,
+                                          @NotNull final Double sulcoCentralInternoPneu,
+                                          @NotNull final Double sulcoCentralExternoPneu,
+                                          @NotNull final Double sulcoExternoPneu,
+                                          @NotNull final String dotPneu,
+                                          @NotNull final String nomeModeloPneu,
+                                          @NotNull final String codModeloPneu,
+                                          @NotNull final Integer qtdSulcosModeloPneu,
+                                          @NotNull final String nomeModeloBanda,
+                                          @NotNull final String codModeloBanda,
+                                          @NotNull final Integer qtdSulcosModeloBanda,
+                                          @NotNull final Boolean isPneuEstepe){
         this.codPneu = codPneu;
         this.codigoCliente = codigoCliente;
         this.codEmpresaPneu = codEmpresaPneu;
         this.codUnidadePneu = codUnidadePneu;
         this.vidaAtualPneu = vidaAtualPneu;
         this.vidaTotalPneu = vidaTotalPneu;
+        this.posicaoAplicado = posicaoAplicado;
         this.pressaoRecomendadaPneu = pressaoRecomendadaPneu;
         this.pressaoAtualPneu = pressaoAtualPneu;
         this.sulcoInternoPneu = sulcoInternoPneu;
@@ -172,17 +185,19 @@ public class PneuEstoqueProtheusNepomuceno {
         this.nomeModeloBanda = nomeModeloBanda;
         this.codModeloBanda = codModeloBanda;
         this.qtdSulcosModeloBanda = qtdSulcosModeloBanda;
+        this.isPneuEstepe = isPneuEstepe;
     }
 
     @NotNull
-    static PneuEstoqueProtheusNepomuceno getPneuEstoqueDummy() {
-        return new PneuEstoqueProtheusNepomuceno(
+    static PneuAplicadoProtheusNepomuceno getPneuAplicadoDummy() {
+        return new PneuAplicadoProtheusNepomuceno(
                 "PN1123",
                 "1000084",
                 "01",
                 "01",
                 1,
                 4,
+                "1DE",
                 115.0,
                 110.0,
                 11.1,
@@ -195,7 +210,8 @@ public class PneuEstoqueProtheusNepomuceno {
                 3,
                 "DV-RM 226",
                 "89",
-                3
+                3,
+                false
         );
     }
 
@@ -216,6 +232,9 @@ public class PneuEstoqueProtheusNepomuceno {
 
     @NotNull
     public Integer getVidaTotalPneu() { return vidaTotalPneu; }
+
+    @NotNull
+    public String getPosicaoAplicado() { return posicaoAplicado; }
 
     @NotNull
     public Double getPressaoRecomendadaPneu() { return pressaoRecomendadaPneu; }
@@ -255,4 +274,7 @@ public class PneuEstoqueProtheusNepomuceno {
 
     @NotNull
     public Integer getQtdSulcosModeloBanda() { return qtdSulcosModeloBanda; }
+
+    @NotNull
+    public Boolean getPneuEstepe() { return isPneuEstepe; }
 }

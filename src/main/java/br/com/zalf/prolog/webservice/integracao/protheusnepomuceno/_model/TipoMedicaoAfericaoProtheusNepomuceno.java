@@ -1,6 +1,5 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
-import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.TipoMedicaoAfericaoProtheusRodalog;
 import org.jetbrains.annotations.NotNull;
 
 /**

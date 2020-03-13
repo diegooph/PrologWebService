@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.error;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.IntegracaoException;
 import org.jetbrains.annotations.NotNull;

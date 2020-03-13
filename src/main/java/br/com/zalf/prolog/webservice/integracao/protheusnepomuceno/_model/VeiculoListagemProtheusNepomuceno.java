@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public class VeiculoListagemProtheusNepomuceno {
+public final class VeiculoListagemProtheusNepomuceno {
     /**
      * Atributo alfanumérico que representa a placa
     */

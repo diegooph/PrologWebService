@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data;
 
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model.*;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.http.*;

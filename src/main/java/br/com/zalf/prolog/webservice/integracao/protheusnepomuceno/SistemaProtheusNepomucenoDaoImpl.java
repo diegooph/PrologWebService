@@ -1,15 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-
-import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
@@ -21,8 +15,8 @@ import java.util.List;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection implements SistemaProtheusNepomucenoDao{
-    public SistemaProtheusNepomucenoDaoImpl(){
+public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection implements SistemaProtheusNepomucenoDao {
+    public SistemaProtheusNepomucenoDaoImpl() {
 
     }
 
@@ -142,7 +136,7 @@ public class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection impleme
     @NotNull
     @Override
     public String getCodAuxiliarUnidade(@NotNull final Connection conn,
-                                        @NotNull final Long codUnidade) throws  Throwable{
+                                        @NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {

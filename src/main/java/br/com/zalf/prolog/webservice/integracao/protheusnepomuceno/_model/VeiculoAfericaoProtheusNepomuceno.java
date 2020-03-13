@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public class VeiculoAfericaoProtheusNepomuceno {
+public final class VeiculoAfericaoProtheusNepomuceno {
     /**
      * Atributo alfanumérico que representa o código único.
      */

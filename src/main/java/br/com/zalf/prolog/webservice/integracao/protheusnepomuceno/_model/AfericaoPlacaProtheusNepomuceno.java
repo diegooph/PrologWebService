@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.model;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -6,15 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Objeto que contem as informações do {@link AfericaoAvulsaProtheusNepomuceno pneu} utilizado para a realização da aferição.
+ * Este objeto representa a {@link AfericaoPlacaProtheusNepomuceno aferição} realizada em um veículo.
+ * Neste objeto estarão todas as informações capturadas através do processo de medição do ProLog.
  * <p>
- * Todos os atributos do pneu são buscados no endpoint integrado.
+ * Utilizamos um objeto específico para não criar dependência entre a integração com o Protheus, da empresa Nepomuceno,
+ * com as demais integrações, assim, este objeto fica de uso exclusivo para esta integração.
+ * <p>
+ * Estas informações serão enviadas para um endpoint integrado e este deve estar preparado para receber estas
+ * informações neste padrão.
  * <p>
  * Created on 10/03/20
  *
  * @author Wellington Moraes (https://github.com/wvinim)
+ * <p>
+ * {@see protheusnepomuceno}
  */
-public class AfericaoAvulsaProtheusNepomuceno {
+public final class AfericaoPlacaProtheusNepomuceno {
     /**
      * Atributo alfanumérico que representa o código da empresa do cliente
      */
@@ -28,10 +35,22 @@ public class AfericaoAvulsaProtheusNepomuceno {
     private final String codUnidade;
 
     /**
+     * Atributo alfanumérico que representa a placa do veículo que foi aferido.
+     */
+    @NotNull
+    private final String placaAfericao;
+
+    /**
      * Atributo alfanumérico que representa o CPF do colaborador que realizou a aferição do veículo.
      */
     @NotNull
     private final String cpfColaboradorAfericao;
+
+    /**
+     * Valor numérico que representa a quilomentragem (KM) do veículo no momento que foi feita a aferição.
+     */
+    @NotNull
+    private final Long kmMomentoAfericao;
 
     /**
      * Valor numérico que representa o montante de tempo que o colaborador demorou para aferir todos os pneus do
@@ -66,16 +85,20 @@ public class AfericaoAvulsaProtheusNepomuceno {
     @NotNull
     private final List<MedicaoAfericaoProtheusNepomuceno> medicoes;
 
-    public AfericaoAvulsaProtheusNepomuceno(@NotNull final String codEmpresa,
-                                            @NotNull final String codUnidade,
-                                            @NotNull final String cpfColaboradorAfericao,
-                                            @NotNull final Long tempoRealizacaoAfericaoInMillis,
-                                            @NotNull final LocalDateTime dataHoraAfericaoUtc,
-                                            @NotNull final TipoMedicaoAfericaoProtheusNepomuceno tipoMedicaoColetadaAfericao,
-                                            @NotNull final List<MedicaoAfericaoProtheusNepomuceno> medicoes) {
+    public AfericaoPlacaProtheusNepomuceno(@NotNull final String codEmpresa,
+                                           @NotNull final String codUnidade,
+                                           @NotNull final String placaAfericao,
+                                           @NotNull final String cpfColaboradorAfericao,
+                                           @NotNull final Long kmMomentoAfericao,
+                                           @NotNull final Long tempoRealizacaoAfericaoInMillis,
+                                           @NotNull final LocalDateTime dataHoraAfericaoUtc,
+                                           @NotNull final TipoMedicaoAfericaoProtheusNepomuceno tipoMedicaoColetadaAfericao,
+                                           @NotNull final List<MedicaoAfericaoProtheusNepomuceno> medicoes) {
         this.codEmpresa = codEmpresa;
         this.codUnidade = codUnidade;
+        this.placaAfericao = placaAfericao;
         this.cpfColaboradorAfericao = cpfColaboradorAfericao;
+        this.kmMomentoAfericao = kmMomentoAfericao;
         this.tempoRealizacaoAfericaoInMillis = tempoRealizacaoAfericaoInMillis;
         this.dataHoraAfericaoUtc = dataHoraAfericaoUtc;
         this.tipoMedicaoColetadaAfericao = tipoMedicaoColetadaAfericao;
@@ -83,16 +106,18 @@ public class AfericaoAvulsaProtheusNepomuceno {
     }
 
     @NotNull
-    public static AfericaoAvulsaProtheusNepomuceno getAfericaoDummy() {
+    public static AfericaoPlacaProtheusNepomuceno getAfericaoDummy() {
         final List<MedicaoAfericaoProtheusNepomuceno> medicoes = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             medicoes.add(MedicaoAfericaoProtheusNepomuceno.getMedicaoDummy());
         }
-        return new AfericaoAvulsaProtheusNepomuceno(
+        return new AfericaoPlacaProtheusNepomuceno(
                 "E0001",
                 "F0001",
+                "ZZZ0000",
                 "000.000.000-00",
-                9000L,
+                101010L,
+                90000L,
                 LocalDateTime.now(),
                 TipoMedicaoAfericaoProtheusNepomuceno.SULCO_PRESSAO,
                 medicoes
@@ -106,7 +131,13 @@ public class AfericaoAvulsaProtheusNepomuceno {
     public String getCodUnidade() { return codUnidade; }
 
     @NotNull
+    public String getPlacaAfericao() { return placaAfericao; }
+
+    @NotNull
     public String getCpfColaboradorAfericao() { return cpfColaboradorAfericao; }
+
+    @NotNull
+    public Long getKmMomentoAfericao() { return kmMomentoAfericao; }
 
     @NotNull
     public Long getTempoRealizacaoAfericaoInMillis() { return tempoRealizacaoAfericaoInMillis; }
