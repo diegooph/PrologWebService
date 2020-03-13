@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Objeto responsável por conter as {@link MedicaoAfericaoProtheusNepomuceno medidas} capturadas em um pneu através do
