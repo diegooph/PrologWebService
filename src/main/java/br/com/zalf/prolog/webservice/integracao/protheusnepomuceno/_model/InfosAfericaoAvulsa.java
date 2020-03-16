@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,14 +50,14 @@ public final class InfosAfericaoAvulsa {
     private final String nomeColaboradorAfericao;
 
     /**
-     * Constante alfanumérica que representa o {@link TipoMedicaoAfericaoProtheusNepomuceno tipo de medição} que foi
+     * Constante alfanumérica que representa o {@link TipoMedicaoColetadaAfericao tipo de medição} que foi
      * utilizado para a captura de informações, podem ter sido utilizados 3 tipos:
-     * *{@link TipoMedicaoAfericaoProtheusNepomuceno#SULCO}
-     * *{@link TipoMedicaoAfericaoProtheusNepomuceno#PRESSAO}
-     * *{@link TipoMedicaoAfericaoProtheusNepomuceno#SULCO_PRESSAO}
+     * *{@link TipoMedicaoColetadaAfericao#SULCO}
+     * *{@link TipoMedicaoColetadaAfericao#PRESSAO}
+     * *{@link TipoMedicaoColetadaAfericao#SULCO_PRESSAO}
      */
     @NotNull
-    private final TipoMedicaoAfericaoProtheusNepomuceno tipoMedicaoColetadaAfericao;
+    private final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao;
 
     /**
      * Constante alfanumérica que representa o {@link TipoProcessoColetaAfericao tipo de processo de coleta} que foi
@@ -79,7 +80,7 @@ public final class InfosAfericaoAvulsa {
                                @NotNull final String codPneuAuxiliar,
                                @NotNull final String dataHoraUltimaAfericao,
                                @NotNull final String nomeColaboradorAfericao,
-                               @NotNull final TipoMedicaoAfericaoProtheusNepomuceno tipoMedicaoColetadaAfericao,
+                               @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao,
                                @NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao,
                                @Nullable final String placaAplicadoQuandoAferido) {
         this.codUltimaAfericao = codUltimaAfericao;
@@ -102,7 +103,7 @@ public final class InfosAfericaoAvulsa {
                 "P0001",
                 "2020-03-13 08:00:00",
                 "John Doe",
-                TipoMedicaoAfericaoProtheusNepomuceno.SULCO_PRESSAO,
+                TipoMedicaoColetadaAfericao.SULCO_PRESSAO,
                 TipoProcessoColetaAfericao.PLACA,
                 "AAA1111"
         );
@@ -127,7 +128,7 @@ public final class InfosAfericaoAvulsa {
     public String getNomeColaboradorAfericao() { return nomeColaboradorAfericao; }
 
     @NotNull
-    public TipoMedicaoAfericaoProtheusNepomuceno getTipoMedicaoColetadaAfericao() { return tipoMedicaoColetadaAfericao; }
+    public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao() { return tipoMedicaoColetadaAfericao; }
 
     @NotNull
     public TipoProcessoColetaAfericao getTipoProcessoColetaAfericao() { return tipoProcessoColetaAfericao; }

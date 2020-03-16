@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuEstoque;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
@@ -11,10 +14,8 @@ import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -216,36 +217,76 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         try {
             conn = connectionProvider.provideDatabaseConnection();
 
-            // Busca o código auxiliar da unidade selecionada
+            // Busca o código auxiliar da unidade selecionada.
             final String codAuxiliarUnidade = sistemaProtheusNepomucenoDaoImpl.getCodAuxiliarUnidade(conn, codUnidade);
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
 
-            // Busca a lista de pneus em estoque do Protheus
+            // Busca a lista de pneus em estoque do Protheus.
             final List<PneuEstoqueProtheusNepomuceno> pneusEstoqueProtheus =
                     requester.getListagemPneusEmEstoque(
                             getIntegradorProLog()
                                     .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_PNEUS_AFERICAO_AVULSA),
                             codAuxiliarUnidade);
 
+            // Cria um array contendo apenas os códigos de pneus.
             final List<String> codPneus =
                     pneusEstoqueProtheus.stream().map(PneuEstoqueProtheusNepomuceno::getCodPneu).collect(Collectors.toList());
 
-            /**
-             TODO:
-             1 - Criar uma dao para buscar as infos de aferição com base nos pneus da lista codPneus.
-             2 - Utilizar a function FUNC_PNEU_AFERICAO_GET_INFOS_AFERICOES_INTEGRADA e criar uma lista com o objeto de
-             InfosAfericaoAvulsa.
-             3 - Percorrer a lista de objetos de pneusEstoqueProtheus e montar o objeto PneuAfericaoAvulsa, cruzando com
-             as informações da lista criada no item 2.
-             */
+            // Busca as infos de aferição com base nos pneus da lista codPneus.
+            final List<InfosAfericaoAvulsa> listagemInfosAfericaoAvulsa =
+                    sistemaProtheusNepomucenoDaoImpl.getInfosAfericaoAvulsa(conn, codUnidade, codPneus);
 
-            throw new IllegalStateException("erro pq sim");
+            // Cria a variável de retorno com a lista de objetos de PneuAfericaoAvulsa.
+            final List<PneuAfericaoAvulsa> pneusAfericaoAvulsa = new ArrayList<>();
+
+            for (PneuEstoqueProtheusNepomuceno pneuEstoqueProtheusNepomuceno : pneusEstoqueProtheus){
+                // Cria um objeto de PneuAfericaoAvulsa.
+                final PneuAfericaoAvulsa pneuAfericaoAvulsa = new PneuAfericaoAvulsa();
+
+                // Cria um objeto de Pneu.
+                final PneuEstoque pneu = new PneuEstoque();
+                pneu.setCodigo(Long.valueOf(pneuEstoqueProtheusNepomuceno.getCodPneu()));
+                pneu.setCodigoCliente(pneuEstoqueProtheusNepomuceno.getCodigoCliente());
+                pneu.setPressaoCorreta(pneuEstoqueProtheusNepomuceno.getPressaoRecomendadaPneu());
+                pneu.setPressaoAtual(pneuEstoqueProtheusNepomuceno.getPressaoAtualPneu());
+                pneu.setVidaAtual(pneuEstoqueProtheusNepomuceno.getVidaAtualPneu());
+                pneu.setVidasTotal(pneuEstoqueProtheusNepomuceno.getVidaTotalPneu());
+
+                final Sulcos sulcos = new Sulcos();
+                sulcos.setInterno(pneuEstoqueProtheusNepomuceno.getSulcoInternoPneu());
+                sulcos.setCentralInterno(pneuEstoqueProtheusNepomuceno.getSulcoCentralInternoPneu());
+                sulcos.setCentralExterno(pneuEstoqueProtheusNepomuceno.getSulcoCentralExternoPneu());
+                sulcos.setExterno(pneuEstoqueProtheusNepomuceno.getSulcoExternoPneu());
+                pneu.setSulcosAtuais(sulcos);
+
+                // Seta o objeto de Pneu ao Objeto PneuAfericaoAvulsa.
+                pneuAfericaoAvulsa.setPneu(pneu);
+
+                // Verifica se o pneu existe na listagem de informações das aferições avulsas realizadas.
+                final Optional<InfosAfericaoAvulsa> optionalInfosAfericaoAvulsa =
+                listagemInfosAfericaoAvulsa.stream()
+                        .filter(InfosAfericaoAvulsa -> InfosAfericaoAvulsa.getCodPneuProlog()
+                                .equals(pneuEstoqueProtheusNepomuceno.getCodPneu()))
+                        .findFirst();
+
+                if(optionalInfosAfericaoAvulsa.isPresent()){
+                    pneuAfericaoAvulsa.setDataHoraUltimaAfericao(LocalDateTime.parse(optionalInfosAfericaoAvulsa.get().getDataHoraUltimaAfericao()));
+                    pneuAfericaoAvulsa.setNomeColaboradorAfericao(optionalInfosAfericaoAvulsa.get().getNomeColaboradorAfericao());
+                    pneuAfericaoAvulsa.setTipoMedicaoColetadaUltimaAfericao(TipoMedicaoColetadaAfericao.fromString(optionalInfosAfericaoAvulsa.get().getTipoMedicaoColetadaAfericao().toString()));
+                    pneuAfericaoAvulsa.setCodigoUltimaAfericao(optionalInfosAfericaoAvulsa.get().getCodUltimaAfericao());
+                    pneuAfericaoAvulsa.setTipoProcessoAfericao(optionalInfosAfericaoAvulsa.get().getTipoProcessoColetaAfericao());
+                    pneuAfericaoAvulsa.setPlacaAplicadoQuandoAferido(optionalInfosAfericaoAvulsa.get().getPlacaAplicadoQuandoAferido());
+                }
+
+                pneusAfericaoAvulsa.add(pneuAfericaoAvulsa);
+            }
+
+            return pneusAfericaoAvulsa;
         } catch (final Throwable t) {
             throw t;
         } finally {
             connectionProvider.closeResources(conn);
         }
-//        return super.getPneusAfericaoAvulsa(codUnidade);
     }
 
     @Override

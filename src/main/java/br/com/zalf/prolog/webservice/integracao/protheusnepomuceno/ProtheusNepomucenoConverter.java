@@ -6,14 +6,13 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoAvulsaProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoPlacaProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.MedicaoAfericaoProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.TipoMedicaoAfericaoProtheusNepomuceno;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created on 3/10/20
+ * Created on 10/03/20
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
@@ -56,7 +55,7 @@ public final class ProtheusNepomucenoConverter {
                 afericaoPlaca.getKmMomentoAfericao(),
                 afericaoPlaca.getTempoRealizacaoAfericaoInMillis(),
                 afericaoPlaca.getDataHora(),
-                TipoMedicaoAfericaoProtheusNepomuceno.fromString(afericaoPlaca.getTipoMedicaoColetadaAfericao().asString()),
+                afericaoPlaca.getTipoMedicaoColetadaAfericao(),
                 medicoes
         );
         return afericaoPlacaProtheus;
@@ -95,7 +94,7 @@ public final class ProtheusNepomucenoConverter {
                 String.valueOf(afericaoAvulsa.getColaborador().getCpf()),
                 afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
                 afericaoAvulsa.getDataHora(),
-                TipoMedicaoAfericaoProtheusNepomuceno.fromString(afericaoAvulsa.getTipoMedicaoColetadaAfericao().asString()),
+                afericaoAvulsa.getTipoMedicaoColetadaAfericao(),
                 medicoes
         );
         return afericaoPlacaProtheus;
