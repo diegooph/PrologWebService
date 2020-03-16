@@ -1,14 +1,21 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 12/03/20
@@ -16,9 +23,6 @@ import java.util.List;
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection implements SistemaProtheusNepomucenoDao {
-    public SistemaProtheusNepomucenoDaoImpl() {
-
-    }
 
     @NotNull
     @Override
@@ -148,6 +152,166 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             }
 
             throw new SQLException("Não foi possível encontrar o código auxiliar da unidade: " + codUnidade);
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public String getCodFiliais(@NotNull final Connection conn,
+                                @NotNull final List<Long> codUnidades) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT STRING_AGG(COD_AUXILIAR, '_') AS COD_AUXILIAR " +
+                    "FROM PUBLIC.UNIDADE WHERE CODIGO = ANY(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getString("COD_AUXILIAR");
+            } else {
+                throw new SQLException("Nenhum código de filial mapeado para as unidades:\n" +
+                        "codUnidades: " + codUnidades.toString());
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Map<String, InfosUnidadeRestricao> getInfosUnidadeRestricao(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codUnidades) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT U.COD_AUXILIAR AS COD_AUXILIAR, " +
+                    "PRU.COD_UNIDADE AS COD_UNIDADE, " +
+                    "PRU.PERIODO_AFERICAO_SULCO AS PERIODO_DIAS_AFERICAO_SULCO, " +
+                    "PRU.PERIODO_AFERICAO_PRESSAO AS PERIODO_DIAS_AFERICAO_PRESSAO " +
+                    "FROM PNEU_RESTRICAO_UNIDADE PRU " +
+                    "         JOIN UNIDADE U ON PRU.COD_UNIDADE = U.CODIGO " +
+                    "WHERE COD_UNIDADE = ANY (?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            final Map<String, InfosUnidadeRestricao> infosUnidadeRestricao = new HashMap<>();
+            if (rSet.next()) {
+                do {
+                    infosUnidadeRestricao.put(
+                            rSet.getString("COD_AUXILIAR"),
+                            new InfosUnidadeRestricao(
+                                    rSet.getLong("COD_UNIDADE"),
+                                    rSet.getInt("PERIODO_DIAS_AFERICAO_SULCO"),
+                                    rSet.getInt("PERIODO_DIAS_AFERICAO_PRESSAO")));
+                } while (rSet.next());
+            } else {
+                throw new SQLException("Nenhuma informação de restrição de unidade encontrarada para as unidades:\n" +
+                        "codUnidades: " + codUnidades.toString());
+            }
+            return infosUnidadeRestricao;
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Map<String, InfosTipoVeiculoConfiguracaoAfericao> getInfosTipoVeiculoConfiguracaoAfericao(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codUnidades) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT VT.COD_AUXILIAR                 AS COD_AUXILIAR, " +
+                    "ACTAV.COD_UNIDADE               AS COD_UNIDADE, " +
+                    "ACTAV.COD_TIPO_VEICULO          AS COD_TIPO_VEICULO, " +
+                    "ACTAV.PODE_AFERIR_SULCO         AS PODE_AFERIR_SULCO, " +
+                    "ACTAV.PODE_AFERIR_PRESSAO       AS PODE_AFERIR_PRESSAO, " +
+                    "ACTAV.PODE_AFERIR_SULCO_PRESSAO AS PODE_AFERIR_SULCO_PRESSAO, " +
+                    "ACTAV.PODE_AFERIR_ESTEPE        AS PODE_AFERIR_ESTEPE " +
+                    "FROM AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO ACTAV " +
+                    "         JOIN VEICULO_TIPO VT ON ACTAV.COD_TIPO_VEICULO = VT.CODIGO " +
+                    "WHERE COD_UNIDADE = ANY (?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao = new HashMap<>();
+            if (rSet.next()) {
+                do {
+                    tipoVeiculoConfiguracao.put(
+                            rSet.getString("COD_AUXILIAR"),
+                            new InfosTipoVeiculoConfiguracaoAfericao(
+                                    rSet.getLong("COD_UNIDADE"),
+                                    rSet.getLong("COD_TIPO_VEICULO"),
+                                    rSet.getBoolean("PODE_AFERIR_SULCO"),
+                                    rSet.getBoolean("PODE_AFERIR_PRESSAO"),
+                                    rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"),
+                                    rSet.getBoolean("PODE_AFERIR_ESTEPE")));
+                } while (rSet.next());
+            } else {
+                throw new SQLException("Nenhuma configuração de tipo de veículo encontrarada para as unidades:\n" +
+                        "codUnidades: " + codUnidades.toString());
+            }
+            return tipoVeiculoConfiguracao;
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Map<String, InfosAfericaoRealizadaPlaca> getInfosAfericaoRealizadaPlaca(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa,
+            @NotNull final List<String> placasNepomuceno) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("WITH PLACAS AS (SELECT UNNEST(?) AS PLACA)\n" +
+                    "SELECT P.PLACA,\n" +
+                    "       COALESCE(INTERVALO_PRESSAO.INTERVALO, -1) :: INTEGER AS INTERVALO_PRESSAO,\n" +
+                    "       COALESCE(INTERVALO_SULCO.INTERVALO, -1) :: INTEGER   AS INTERVALO_SULCO\n" +
+                    "FROM PLACAS P\n" +
+                    "         LEFT JOIN INTEGRACAO.AFERICAO_INTEGRADA AI\n" +
+                    "                   ON P.PLACA = AI.PLACA_VEICULO AND AI.COD_EMPRESA_PROLOG::BIGINT = ?\n" +
+                    "         LEFT JOIN (SELECT AI.PLACA_VEICULO                                                  AS PLACA_INTERVALO,\n" +
+                    "                           EXTRACT(DAYS FROM (NOW()) -\n" +
+                    "                                             MAX(AI.DATA_HORA::TIMESTAMP WITH TIME ZONE AT TIME ZONE\n" +
+                    "                                                 TZ_UNIDADE(AI.COD_UNIDADE_PROLOG::BIGINT))) AS INTERVALO\n" +
+                    "                    FROM INTEGRACAO.AFERICAO_INTEGRADA AI\n" +
+                    "                    WHERE AI.TIPO_MEDICAO_COLETADA = 'PRESSAO'\n" +
+                    "                       OR AI.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'\n" +
+                    "                    GROUP BY AI.PLACA_VEICULO) AS INTERVALO_PRESSAO\n" +
+                    "                   ON INTERVALO_PRESSAO.PLACA_INTERVALO = P.PLACA\n" +
+                    "         LEFT JOIN (SELECT AI.PLACA_VEICULO                                                  AS PLACA_INTERVALO,\n" +
+                    "                           EXTRACT(DAYS FROM (NOW()) -\n" +
+                    "                                             MAX(AI.DATA_HORA::TIMESTAMP WITH TIME ZONE AT TIME ZONE\n" +
+                    "                                                 TZ_UNIDADE(AI.COD_UNIDADE_PROLOG::BIGINT))) AS INTERVALO\n" +
+                    "                    FROM INTEGRACAO.AFERICAO_INTEGRADA AI\n" +
+                    "                    WHERE AI.TIPO_MEDICAO_COLETADA = 'SULCO'\n" +
+                    "                       OR AI.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'\n" +
+                    "                    GROUP BY AI.PLACA_VEICULO) AS INTERVALO_SULCO\n" +
+                    "                   ON INTERVALO_SULCO.PLACA_INTERVALO = P.PLACA;");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, placasNepomuceno));
+            stmt.setLong(2, codEmpresa);
+            rSet = stmt.executeQuery();
+            final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca = new HashMap<>();
+            if (rSet.next()) {
+                do {
+                    afericaoRealizadaPlaca.put(
+                            rSet.getString("PLACA"),
+                            new InfosAfericaoRealizadaPlaca(
+                                    rSet.getString("PLACA"),
+                                    rSet.getInt("INTERVALO_SULCO"),
+                                    rSet.getInt("INTERVALO_PRESSAO")
+                            ));
+                } while (rSet.next());
+            } else {
+                throw new SQLException("Nenhuma informação de aferição encontrada para as placas:\n" +
+                        "placasNepomuceno: " + placasNepomuceno.toString());
+            }
+            return afericaoRealizadaPlaca;
         } finally {
             close(stmt, rSet);
         }

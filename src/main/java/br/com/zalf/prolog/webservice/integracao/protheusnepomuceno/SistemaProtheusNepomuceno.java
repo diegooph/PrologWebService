@@ -84,6 +84,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         final SistemaProtheusNepomucenoDaoImpl sistemaProtheusNepomucenoDaoImpl = new SistemaProtheusNepomucenoDaoImpl();
         try {
             conn = connectionProvider.provideDatabaseConnection();
+            // Podemos, com toda certeza, utilizar codUnidades.get(0) pois no mínimo teremos uma unidade nesta lista.
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
 
             final Map<String, InfosUnidadeRestricao> unidadeRestricao =
@@ -91,33 +92,34 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
                     sistemaProtheusNepomucenoDaoImpl.getInfosTipoVeiculoConfiguracaoAfericao(conn, codUnidades);
 
+            final String url = getIntegradorProLog()
+                    .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_VEICULOS_CRONOGRAMA_AFERICAO);
+            final String codFiliais = sistemaProtheusNepomucenoDaoImpl.getCodFiliais(conn, codUnidades);
             final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
-                    requester.getListagemVeiculosUnidadesSelecionadas(
-                            getIntegradorProLog()
-                                    .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_VEICULOS_CRONOGRAMA_AFERICAO),
-                            codFiliais);
+                    requester.getListagemVeiculosUnidadesSelecionadas(url, codFiliais);
             final List<String> placasNepomuceno = listagemVeiculos.stream()
                     .map(VeiculoListagemProtheusNepomuceno::getPlacaVeiculo)
                     .distinct()
                     .collect(Collectors.toList());
 
             final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca =
-                    sistemaProtheusNepomucenoDaoImpl.getInfosAfericaoRealizadaPlaca(conn, placasNepomuceno);
+                    sistemaProtheusNepomucenoDaoImpl.getInfosAfericaoRealizadaPlaca(conn, codEmpresa, placasNepomuceno);
 
             // Aqui começamos a montar o cronograma
             final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo = new HashMap<>();
             final Map<String, List<ModeloPlacasAfericao.PlacaAfericao>> placasEstruturaVeiculo = new HashMap<>();
-            final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
             for (final VeiculoListagemProtheusNepomuceno veiculo : listagemVeiculos) {
                 if (!modelosEstruturaVeiculo.containsKey(veiculo.getCodModeloVeiculo())) {
                     modelosEstruturaVeiculo.put(
                             veiculo.getCodModeloVeiculo(),
-                            createModeloPlacasAfericao(veiculo, placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo())));
+                            ProtheusNepomucenoConverter.createModeloPlacasAfericaoProlog(
+                                    veiculo,
+                                    placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo())));
                 }
 
                 if (placasEstruturaVeiculo.containsKey(veiculo.getCodModeloVeiculo())) {
                     placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo()).add(
-                            createPlacaAfericao(
+                            ProtheusNepomucenoConverter.createPlacaAfericaoProlog(
                                     veiculo,
                                     unidadeRestricao,
                                     tipoVeiculoConfiguracao,
@@ -127,76 +129,11 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                 }
 
             }
-            final ArrayList<ModeloPlacasAfericao> modelosPlacasAfericao = new ArrayList<>(modelosEstruturaVeiculo.values());
-            cronogramaAfericao.setModelosPlacasAfericao(modelosPlacasAfericao);
-            int totalModelosSulcoOk = 0;
-            int totalModelosPressaoOk = 0;
-            int totalModelosSulcoPressaoOk = 0;
-            for (final ModeloPlacasAfericao modeloPlacasAfericao : modelosPlacasAfericao) {
-                totalModelosSulcoOk = totalModelosSulcoOk + modeloPlacasAfericao.getQtdModeloSulcoOk();
-                totalModelosPressaoOk = totalModelosPressaoOk + modeloPlacasAfericao.getQtdModeloPressaoOk();
-                totalModelosSulcoPressaoOk = totalModelosSulcoPressaoOk + modeloPlacasAfericao.getQtdModeloSulcoPressaoOk();
-            }
-            cronogramaAfericao.setTotalSulcosOk(totalModelosSulcoOk);
-            cronogramaAfericao.setTotalPressaoOk(totalModelosPressaoOk);
-            cronogramaAfericao.setTotalSulcoPressaoOk(totalModelosSulcoPressaoOk);
-            cronogramaAfericao.setTotalVeiculos(listagemVeiculos.size());
-            return cronogramaAfericao;
+            return ProtheusNepomucenoConverter
+                    .createCronogramaAfericaoProlog(modelosEstruturaVeiculo, listagemVeiculos.size());
         } finally {
             connectionProvider.closeResources(conn);
         }
-    }
-
-    private ModeloPlacasAfericao createModeloPlacasAfericao(
-            @NotNull final VeiculoListagemProtheusNepomuceno veiculo,
-            @NotNull final List<ModeloPlacasAfericao.PlacaAfericao> placasAfericao) {
-        final ModeloPlacasAfericao modeloPlacasAfericao = new ModeloPlacasAfericao();
-        modeloPlacasAfericao.setNomeModelo(veiculo.getNomeModeloVeiculo());
-        modeloPlacasAfericao.setPlacasAfericao(placasAfericao);
-        int qtdModeloSulcoOk = 0;
-        int qtdModeloPressaoOk = 0;
-        int qtdModeloSulcoPressaoOk = 0;
-        for (final ModeloPlacasAfericao.PlacaAfericao placa : placasAfericao) {
-            if (placa.isAfericaoPressaoNoPrazo(placa.getMetaAfericaoPressao())
-                    && placa.isAfericaoSulcoNoPrazo(placa.getMetaAfericaoSulco())) {
-                qtdModeloSulcoPressaoOk++;
-                qtdModeloPressaoOk++;
-                qtdModeloSulcoOk++;
-            } else if (placa.isAfericaoSulcoNoPrazo(placa.getMetaAfericaoSulco())) {
-                qtdModeloSulcoOk++;
-            } else {
-                qtdModeloPressaoOk++;
-            }
-        }
-        modeloPlacasAfericao.setQtdModeloSulcoOk(qtdModeloSulcoOk);
-        modeloPlacasAfericao.setQtdModeloPressaoOk(qtdModeloPressaoOk);
-        modeloPlacasAfericao.setQtdModeloSulcoPressaoOk(qtdModeloSulcoPressaoOk);
-        modeloPlacasAfericao.setTotalVeiculosModelo(placasAfericao.size());
-        return modeloPlacasAfericao;
-    }
-
-    private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(
-            @NotNull final VeiculoListagemProtheusNepomuceno veiculo,
-            @NotNull final Map<String, InfosUnidadeRestricao> unidadeRestricao,
-            @NotNull final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao,
-            @NotNull final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca) {
-        final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
-        placaAfericao.setPlaca(veiculo.getPlacaVeiculo());
-        final InfosAfericaoRealizadaPlaca infosAfericaoRealizadaPlaca =
-                afericaoRealizadaPlaca.get(veiculo.getPlacaVeiculo());
-        placaAfericao.setIntervaloUltimaAfericaoPressao(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoPressao());
-        placaAfericao.setIntervaloUltimaAfericaoSulco(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoSulco());
-        placaAfericao.setQuantidadePneus(veiculo.getQtsPneusAplicadosVeiculo());
-        final InfosTipoVeiculoConfiguracaoAfericao infosTipoVeiculoConfiguracaoAfericao =
-                tipoVeiculoConfiguracao.get(veiculo.getCodEstruturaVeiculo());
-        placaAfericao.setPodeAferirSulco(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirSulco());
-        placaAfericao.setPodeAferirPressao(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirPressao());
-        placaAfericao.setPodeAferirSulcoPressao(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirSulcoPressao());
-        placaAfericao.setPodeAferirEstepe(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirEstepes());
-        final InfosUnidadeRestricao infosUnidadeRestricao = unidadeRestricao.get(veiculo.getCodEmpresaFilialVeiculo());
-        placaAfericao.setMetaAfericaoSulco(infosUnidadeRestricao.getPeriodoDiasAfericaoSulco());
-        placaAfericao.setMetaAfericaoPressao(infosUnidadeRestricao.getPeriodoDiasAfericaoPressao());
-        return placaAfericao;
     }
 
     @Override

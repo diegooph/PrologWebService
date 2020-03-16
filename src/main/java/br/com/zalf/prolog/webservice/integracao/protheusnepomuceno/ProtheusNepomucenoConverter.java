@@ -3,14 +3,14 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoAvulsaProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoPlacaProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.MedicaoAfericaoProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.TipoMedicaoAfericaoProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.CronogramaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ModeloPlacasAfericao;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 3/10/20
@@ -99,5 +99,81 @@ public final class ProtheusNepomucenoConverter {
                 medicoes
         );
         return afericaoPlacaProtheus;
+    }
+
+    @NotNull
+    public static ModeloPlacasAfericao createModeloPlacasAfericaoProlog(
+            @NotNull final VeiculoListagemProtheusNepomuceno veiculo,
+            @NotNull final List<ModeloPlacasAfericao.PlacaAfericao> placasAfericao) {
+        final ModeloPlacasAfericao modeloPlacasAfericao = new ModeloPlacasAfericao();
+        modeloPlacasAfericao.setNomeModelo(veiculo.getNomeModeloVeiculo());
+        modeloPlacasAfericao.setPlacasAfericao(placasAfericao);
+        int qtdModeloSulcoOk = 0;
+        int qtdModeloPressaoOk = 0;
+        int qtdModeloSulcoPressaoOk = 0;
+        for (final ModeloPlacasAfericao.PlacaAfericao placa : placasAfericao) {
+            if (placa.isAfericaoPressaoNoPrazo(placa.getMetaAfericaoPressao())
+                    && placa.isAfericaoSulcoNoPrazo(placa.getMetaAfericaoSulco())) {
+                qtdModeloSulcoPressaoOk++;
+                qtdModeloPressaoOk++;
+                qtdModeloSulcoOk++;
+            } else if (placa.isAfericaoSulcoNoPrazo(placa.getMetaAfericaoSulco())) {
+                qtdModeloSulcoOk++;
+            } else {
+                qtdModeloPressaoOk++;
+            }
+        }
+        modeloPlacasAfericao.setQtdModeloSulcoOk(qtdModeloSulcoOk);
+        modeloPlacasAfericao.setQtdModeloPressaoOk(qtdModeloPressaoOk);
+        modeloPlacasAfericao.setQtdModeloSulcoPressaoOk(qtdModeloSulcoPressaoOk);
+        modeloPlacasAfericao.setTotalVeiculosModelo(placasAfericao.size());
+        return modeloPlacasAfericao;
+    }
+
+    @NotNull
+    public static ModeloPlacasAfericao.PlacaAfericao createPlacaAfericaoProlog(
+            @NotNull final VeiculoListagemProtheusNepomuceno veiculo,
+            @NotNull final Map<String, InfosUnidadeRestricao> unidadeRestricao,
+            @NotNull final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao,
+            @NotNull final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca) {
+        final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
+        placaAfericao.setPlaca(veiculo.getPlacaVeiculo());
+        final InfosAfericaoRealizadaPlaca infosAfericaoRealizadaPlaca =
+                afericaoRealizadaPlaca.get(veiculo.getPlacaVeiculo());
+        placaAfericao.setIntervaloUltimaAfericaoPressao(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoPressao());
+        placaAfericao.setIntervaloUltimaAfericaoSulco(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoSulco());
+        placaAfericao.setQuantidadePneus(veiculo.getQtsPneusAplicadosVeiculo());
+        final InfosTipoVeiculoConfiguracaoAfericao infosTipoVeiculoConfiguracaoAfericao =
+                tipoVeiculoConfiguracao.get(veiculo.getCodEstruturaVeiculo());
+        placaAfericao.setPodeAferirSulco(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirSulco());
+        placaAfericao.setPodeAferirPressao(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirPressao());
+        placaAfericao.setPodeAferirSulcoPressao(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirSulcoPressao());
+        placaAfericao.setPodeAferirEstepe(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirEstepes());
+        final InfosUnidadeRestricao infosUnidadeRestricao = unidadeRestricao.get(veiculo.getCodEmpresaFilialVeiculo());
+        placaAfericao.setMetaAfericaoSulco(infosUnidadeRestricao.getPeriodoDiasAfericaoSulco());
+        placaAfericao.setMetaAfericaoPressao(infosUnidadeRestricao.getPeriodoDiasAfericaoPressao());
+        return placaAfericao;
+    }
+
+    @NotNull
+    public static CronogramaAfericao createCronogramaAfericaoProlog(
+            @NotNull final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo,
+            final int totalVeiculosListagem) {
+        final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
+        final ArrayList<ModeloPlacasAfericao> modelosPlacasAfericao = new ArrayList<>(modelosEstruturaVeiculo.values());
+        cronogramaAfericao.setModelosPlacasAfericao(modelosPlacasAfericao);
+        int totalModelosSulcoOk = 0;
+        int totalModelosPressaoOk = 0;
+        int totalModelosSulcoPressaoOk = 0;
+        for (final ModeloPlacasAfericao modeloPlacasAfericao : modelosPlacasAfericao) {
+            totalModelosSulcoOk = totalModelosSulcoOk + modeloPlacasAfericao.getQtdModeloSulcoOk();
+            totalModelosPressaoOk = totalModelosPressaoOk + modeloPlacasAfericao.getQtdModeloPressaoOk();
+            totalModelosSulcoPressaoOk = totalModelosSulcoPressaoOk + modeloPlacasAfericao.getQtdModeloSulcoPressaoOk();
+        }
+        cronogramaAfericao.setTotalSulcosOk(totalModelosSulcoOk);
+        cronogramaAfericao.setTotalPressaoOk(totalModelosPressaoOk);
+        cronogramaAfericao.setTotalSulcoPressaoOk(totalModelosSulcoPressaoOk);
+        cronogramaAfericao.setTotalVeiculos(totalVeiculosListagem);
+        return cronogramaAfericao;
     }
 }
