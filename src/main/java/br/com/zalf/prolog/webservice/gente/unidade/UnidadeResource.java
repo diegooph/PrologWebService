@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeEdicao;
 import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -24,7 +25,7 @@ public class UnidadeResource {
     private final UnidadeService service = new UnidadeService();
 
     @PUT
-    @Secured
+    @Secured(permissions = {Pilares.Geral.Empresa.EDITAR})
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateUnidade(@Valid final UnidadeEdicao unidade) {
         if (service.updateUnidade(unidade)) {
@@ -36,14 +37,14 @@ public class UnidadeResource {
     }
 
     @GET
-    @Secured
+    @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR})
     @Path("/getByCodUnidade/{codUnidade}")
     public UnidadeVisualizacao getUnidadeByCodUnidade(@PathParam("codUnidade") final Long codUnidade) throws Throwable {
         return service.getUnidadeByCodUnidade(codUnidade);
     }
 
     @GET
-    @Secured
+    @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR})
     @Path("/getAllByCodEmpresaAndCodRegional")
     public List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(@QueryParam("codEmpresa") final Long codEmpresa,
                                                                              @QueryParam("codRegional") final Long codRegional) throws Throwable {
