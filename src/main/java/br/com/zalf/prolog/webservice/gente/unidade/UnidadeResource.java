@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.unidade;
 
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeEdicao;
 import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -19,6 +22,18 @@ import java.util.List;
 public class UnidadeResource {
 
     private final UnidadeService service = new UnidadeService();
+
+    @PUT
+    @Secured
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Response updateUnidade(@Valid final UnidadeEdicao unidade) {
+        if (service.updateUnidade(unidade)) {
+            return Response.ok("Unidade atualizada com sucesso.");
+        } else {
+            return Response.error("Erro ao atualizar unidade.");
+
+        }
+    }
 
     @GET
     @Secured

@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.unidade;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.gente.calendario.CalendarioService;
+import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeEdicao;
 import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,8 +17,18 @@ import java.util.List;
  */
 public class UnidadeService {
 
-    private static final String TAG = CalendarioService.class.getSimpleName();
+    private static final String TAG = UnidadeService.class.getSimpleName();
     private final UnidadeDao dao = Injection.provideUnidadeDao();
+
+    public boolean updateUnidade(@NotNull final UnidadeEdicao unidadeEdicao) {
+        try {
+            dao.update(unidadeEdicao);
+            return true;
+        } catch (final Throwable e) {
+            Log.e(TAG, String.format("Erro ao atualizar a unidade %d", unidadeEdicao.getCodUnidade()), e);
+            return false;
+        }
+    }
 
     @NotNull
     public UnidadeVisualizacao getUnidadeByCodUnidade(final Long codUnidade) throws Throwable {
