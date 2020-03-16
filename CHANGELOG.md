@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+###Features
+* Cria edição, visualização e listagem de unidade.
+
 ###Refactors
 * Refatora métodos do socorro-rota que ainda estavam em hardcode (PL-2577)
 
