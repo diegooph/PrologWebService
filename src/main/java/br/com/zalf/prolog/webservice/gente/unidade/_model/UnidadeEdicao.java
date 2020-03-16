@@ -20,13 +20,13 @@ public class UnidadeEdicao {
     private String nomeUnidade;
 
     @Nullable
-    private String codAuxiliar;
+    private String codAuxiliarUnidade;
 
     @Nullable
-    private String latitude;
+    private String latitudeUnidade;
 
     @Nullable
-    private String longitude;
+    private String longitudeUnidade;
 
     @NotNull
     public Long getCodUnidade() {
@@ -47,30 +47,30 @@ public class UnidadeEdicao {
     }
 
     @Nullable
-    public String getLatitude() {
-        return latitude;
+    public String getLatitudeUnidade() {
+        return latitudeUnidade;
     }
 
-    public void setLatitude(@Nullable final String latitude) {
-        this.latitude = latitude;
-    }
-
-    @Nullable
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(@Nullable final String longitude) {
-        this.longitude = longitude;
+    public void setLatitudeUnidade(@Nullable final String latitudeUnidade) {
+        this.latitudeUnidade = latitudeUnidade;
     }
 
     @Nullable
-    public String getCodAuxiliar() {
-        return codAuxiliar;
+    public String getLongitudeUnidade() {
+        return longitudeUnidade;
     }
 
-    public void setCodAuxiliar(@Nullable final String codAuxiliar) {
-        this.codAuxiliar = codAuxiliar;
+    public void setLongitudeUnidade(@Nullable final String longitudeUnidade) {
+        this.longitudeUnidade = longitudeUnidade;
+    }
+
+    @Nullable
+    public String getCodAuxiliarUnidade() {
+        return codAuxiliarUnidade;
+    }
+
+    public void setCodAuxiliarUnidade(@Nullable final String codAuxiliarUnidade) {
+        this.codAuxiliarUnidade = codAuxiliarUnidade;
     }
 
 }
