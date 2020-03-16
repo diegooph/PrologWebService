@@ -86,7 +86,6 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             conn = connectionProvider.provideDatabaseConnection();
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
 
-
             final Map<String, InfosUnidadeRestricao> unidadeRestricao =
                     sistemaProtheusNepomucenoDaoImpl.getInfosUnidadeRestricao(conn, codUnidades);
             final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
@@ -228,12 +227,25 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                     .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_PNEUS_AFERICAO_AVULSA),
                             codAuxiliarUnidade);
 
+            final List<String> codPneus =
+                    pneusEstoqueProtheus.stream().map(PneuEstoqueProtheusNepomuceno::getCodPneu).collect(Collectors.toList());
+
+            /**
+             TODO:
+             1 - Criar uma dao para buscar as infos de aferição com base nos pneus da lista codPneus.
+             2 - Utilizar a function FUNC_PNEU_AFERICAO_GET_INFOS_AFERICOES_INTEGRADA e criar uma lista com o objeto de
+             InfosAfericaoAvulsa.
+             3 - Percorrer a lista de objetos de pneusEstoqueProtheus e montar o objeto PneuAfericaoAvulsa, cruzando com
+             as informações da lista criada no item 2.
+             */
+
+            throw new IllegalStateException("erro pq sim");
         } catch (final Throwable t) {
             throw t;
         } finally {
             connectionProvider.closeResources(conn);
         }
-        return super.getPneusAfericaoAvulsa(codUnidade);
+//        return super.getPneusAfericaoAvulsa(codUnidade);
     }
 
     @Override

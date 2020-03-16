@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
-import javax.validation.constraints.NotNull;
+import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

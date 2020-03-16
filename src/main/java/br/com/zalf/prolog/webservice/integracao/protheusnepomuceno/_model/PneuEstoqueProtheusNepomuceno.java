@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
-import javax.validation.constraints.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Este objeto contém informações de pneus aplicados vindos do endpoint do cliente via integração.
@@ -173,7 +173,7 @@ public final class PneuEstoqueProtheusNepomuceno {
     }
 
     @NotNull
-    static PneuEstoqueProtheusNepomuceno getPneuEstoqueDummy() {
+    public static PneuEstoqueProtheusNepomuceno getPneuEstoqueDummy() {
         return new PneuEstoqueProtheusNepomuceno(
                 "PN1123",
                 "1000084",
